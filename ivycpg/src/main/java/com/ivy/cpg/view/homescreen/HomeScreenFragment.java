@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,14 +15,10 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -32,7 +27,6 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,8 +59,6 @@ import com.ivy.cpg.view.acknowledgement.AcknowledgementActivity;
 import com.ivy.cpg.view.acknowledgement.AcknowledgementFragment;
 import com.ivy.cpg.view.jointcall.JoinCallFragment;
 import com.ivy.cpg.view.leaveapproval.LeaveApprovalFragment;
-import com.ivy.cpg.view.login.LoginHelper;
-import com.ivy.cpg.view.login.password.ChangePasswordActivity;
 import com.ivy.cpg.view.mvp.MVPFragment;
 import com.ivy.cpg.view.nonfield.NonFieldHelper;
 import com.ivy.cpg.view.nonfield.NonFieldHomeFragment;
@@ -82,9 +74,7 @@ import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
-import com.ivy.cpg.view.task.Task;
 import com.ivy.cpg.view.task.TaskFragment;
-import com.ivy.cpg.view.task.TaskHelper;
 import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.cpg.view.van.stockproposal.StockProposalFragment;
 import com.ivy.cpg.view.webview.WebViewActivity;
@@ -138,7 +128,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     public static boolean isLeave_today;
 
     private boolean isClicked;
-    private boolean isInandOut = false;
+    private boolean isInandOutModuleEnabled = false;
     private boolean isVisit;
 
     private static final HashMap<String, Integer> menuIcons = new HashMap<>();
@@ -264,7 +254,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         profileImageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                takePhoto();
+                captureUserProfilePicture();
                 return false;
             }
         });
@@ -272,7 +262,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         profileImageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                File filePath = null;
+                File profileImage = null;
 
                 if (bmodel.userMasterHelper.getUserMasterBO().getImagePath() != null
                         && !"".equals(bmodel.userMasterHelper.getUserMasterBO().getImagePath())) {
@@ -282,11 +272,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                     if (bmodel.userMasterHelper.hasProfileImageSetLocally(bmodel.userMasterHelper.getUserMasterBO())) {
 
-                        filePath = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
+                        profileImage = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
                                 + DataMembers.photoFolderName + "/" + path);
                     } else {
 
-                        filePath = new File(getActivity().getExternalFilesDir(
+                        profileImage = new File(getActivity().getExternalFilesDir(
                                 Environment.DIRECTORY_DOWNLOADS)
                                 + "/"
                                 + bmodel.userMasterHelper.getUserMasterBO()
@@ -299,9 +289,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                 }
 
-                if (filePath != null && filePath.exists()) {
+                if (profileImage != null && profileImage.exists()) {
                     try {
-                        openImage(filePath.getAbsolutePath());
+                        openImage(profileImage.getAbsolutePath());
                     } catch (Exception e) {
                         Commons.printException("" + e);
                     }
@@ -403,7 +393,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         // Initilize photo filder path and create directory if not exisit.
         if(!AppUtils.createPhotoPathAndFolder(getContext())) {
-            Toast.makeText(getContext(),"Photo path not initilised properly.",Toast.LENGTH_LONG).show();
+            Toast.makeText(getContext(),"Photo storage folder not created..",Toast.LENGTH_LONG).show();
         }
 
         for (ConfigureBO con : bmodel.configurationMasterHelper.getConfig()) {
@@ -417,7 +407,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
 
             if (con.getConfigCode().equals(MENU_IN_OUT)) {
-                isInandOut = true;
+                isInandOutModuleEnabled = true;
             }
         }
 
@@ -482,7 +472,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 // showing first menu by default
                 //gotoNextActivity(leftmenuDB.get(0));
                 for (ConfigureBO configureBO : leftmenuDB) {
-                    if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut && isLeave_today) {
+                    if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled && isLeave_today) {
                         if (configureBO.getConfigCode().equalsIgnoreCase(MENU_IN_OUT)) {
                             gotoNextActivity(configureBO);
                             break;
@@ -622,7 +612,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         getResources().getString(R.string.day_closed),
                         Toast.LENGTH_SHORT).show();
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -670,7 +660,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         getResources().getString(R.string.day_closed),
                         Toast.LENGTH_SHORT).show();
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -679,7 +669,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
-                    && isInandOut
+                    && isInandOutModuleEnabled
                     && AttendanceHelper.getInstance(getContext()).isSellerWorking(getContext())) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.mark_attendance_working),
@@ -724,7 +714,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         getResources().getString(R.string.day_closed),
                         Toast.LENGTH_SHORT).show();
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -784,7 +774,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         getResources().getString(R.string.day_closed),
                         Toast.LENGTH_SHORT).show();
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -823,7 +813,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         Toast.LENGTH_SHORT).show();
 
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -850,7 +840,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         getResources().getString(R.string.day_closed),
                         Toast.LENGTH_SHORT).show();
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -871,7 +861,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         Toast.LENGTH_SHORT).show();
 
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -894,7 +884,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         Toast.LENGTH_SHORT).show();
 
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -915,7 +905,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         Toast.LENGTH_SHORT).show();
 
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -963,7 +953,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         Toast.LENGTH_SHORT).show();
 
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -987,7 +977,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         Toast.LENGTH_SHORT).show();
 
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -1008,7 +998,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         Toast.LENGTH_SHORT).show();
 
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -1030,7 +1020,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         Toast.LENGTH_SHORT).show();
 
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -1052,7 +1042,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         Toast.LENGTH_SHORT).show();
 
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -1070,7 +1060,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         } else if (menuItem.getConfigCode().equals(MENU_JOINT_CALL)) {
             if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -1097,7 +1087,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         Toast.LENGTH_SHORT).show();
 
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -1172,7 +1162,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         Toast.LENGTH_SHORT).show();
 
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -1223,7 +1213,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         Toast.LENGTH_SHORT).show();
 
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -1280,7 +1270,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         Toast.LENGTH_SHORT).show();
 
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -1314,7 +1304,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         Toast.LENGTH_SHORT).show();
 
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -1347,7 +1337,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         Toast.LENGTH_SHORT).show();
 
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -1405,7 +1395,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         getResources().getString(R.string.day_closed),
                         Toast.LENGTH_SHORT).show();
             } else if (isLeave_today) {
-                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOut)
+                if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.mark_attendance),
                             Toast.LENGTH_SHORT).show();
@@ -2701,15 +2691,15 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     /**
      * Open camera to capture profile picture.
      */
-    private void takePhoto() {
-        if (bmodel.isExternalStorageAvailable()) {
+    private void captureUserProfilePicture() {
+        if (AppUtils.isExternalStorageAvailable()) {
             imageFileName = "USER_" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "_"
                     + Commons.now(Commons.DATE_TIME) + "_img.jpg";
 
             try {
                 Intent intent = new Intent(getActivity(), CameraActivity.class);
-                intent.putExtra(getResources().getString(R.string.quality), 40);
-                intent.putExtra(getResources().getString(R.string.path), AppUtils.photoFolderPath + "/" + imageFileName);
+                intent.putExtra(CameraActivity.QUALITY, 40);
+                intent.putExtra(CameraActivity.PATH, AppUtils.photoFolderPath + "/" + imageFileName);
                 startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
             } catch (Exception e) {

@@ -352,8 +352,8 @@ public class ExpenseFragment extends IvyBaseFragment {
             String path = photoNamePath + "/" + imageFileName;
             try {
                 Intent intent = new Intent(mContext, CameraActivity.class);
-                intent.putExtra(getResources().getString(R.string.quality), 40);
-                intent.putExtra(getResources().getString(R.string.path), path);
+                intent.putExtra(CameraActivity.QUALITY, 40);
+                intent.putExtra(CameraActivity.PATH, path);
                 startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
             } catch (Exception e) {

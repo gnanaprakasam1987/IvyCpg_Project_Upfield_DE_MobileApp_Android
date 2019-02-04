@@ -457,8 +457,8 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
 
                         pathSrc = path;
                         Log.e("TakenPath", path);
-                        intent.putExtra("quality", 40);
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
+                        intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 CAMERA_REQUEST_CODE);
                     } catch (Exception e) {

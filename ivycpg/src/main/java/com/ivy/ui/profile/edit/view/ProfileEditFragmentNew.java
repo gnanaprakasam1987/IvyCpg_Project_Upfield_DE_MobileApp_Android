@@ -349,8 +349,8 @@ public class ProfileEditFragmentNew extends BaseFragment
         if (AppUtils.isExternalStorageAvailable()) {
             try {
                 Intent intent = new Intent(getActivity(), CameraActivity.class);
-                intent.putExtra(getResources().getString(R.string.quality), 40);
-                intent.putExtra(getResources().getString(R.string.path), AppUtils.photoFolderPath + "/" + ((!isForLatLong) ? imageFileName : AppUtils.latlongImageFileName));
+                intent.putExtra(CameraActivity.QUALITY, 40);
+                intent.putExtra(CameraActivity.PATH, AppUtils.photoFolderPath + "/" + ((!isForLatLong) ? imageFileName : AppUtils.latlongImageFileName));
                 startActivityForResult(intent, (!isForLatLong) ? CAMERA_REQUEST_CODE : LATLONG_CAMERA_REQUEST_CODE);
 
             } catch (Exception e) {

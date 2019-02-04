@@ -1625,8 +1625,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                     questBO.setImage2Captured(true);
                                 }
                                 Log.e("TakenPath", path);
-                                intent.putExtra("quality", 40);
-                                intent.putExtra("path", path);
+                                intent.putExtra(CameraActivity.QUALITY, 40);
+                                intent.putExtra(CameraActivity.PATH, path);
                                 startActivityForResult(intent,
                                         CAMERA_REQUEST_CODE);
                             } catch (Exception e) {

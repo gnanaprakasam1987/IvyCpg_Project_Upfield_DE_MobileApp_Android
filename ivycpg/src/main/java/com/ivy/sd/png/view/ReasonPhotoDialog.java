@@ -210,10 +210,10 @@ public class ReasonPhotoDialog extends DialogFragment {
                                                         } else {
                                                             Intent intent = new Intent(getActivity(),
                                                                     CameraActivity.class);
-                                                            intent.putExtra("quality", 40);
+                                                            intent.putExtra(CameraActivity.QUALITY, 40);
                                                             String path = AppUtils.photoFolderPath + "/"
                                                                     + mImageName;
-                                                            intent.putExtra("path", path);
+                                                            intent.putExtra(CameraActivity.PATH, path);
                                                             startActivityForResult(intent,
                                                                     bmodel.CAMERA_REQUEST_CODE);
                                                         }
@@ -260,9 +260,9 @@ public class ReasonPhotoDialog extends DialogFragment {
                         isPhotoTaken = false;
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
                         String path = AppUtils.photoFolderPath + "/" + mImageName;
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);
                     }

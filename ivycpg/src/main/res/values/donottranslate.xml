@@ -11,7 +11,7 @@
     <string name="dummy_txt">text</string>
     <string name="da">DA</string>
     <string name="nan">NaN</string>
-    <string name="path">path</string>
+
 
     <string-array name="languageList">
         <item name="en">English</item>

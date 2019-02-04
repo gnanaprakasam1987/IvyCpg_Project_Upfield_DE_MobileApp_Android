@@ -1257,9 +1257,9 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
                         String _path = photoPath + "/" + imageName;
-                        intent.putExtra("path", _path);
+                        intent.putExtra(CameraActivity.PATH, _path);
                         startActivityForResult(intent, CAMERA_REQUEST_CODE);
                     }
                 }, new CommonDialog.negativeOnClickListener() {
@@ -1558,9 +1558,9 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         try {
             Intent intent = new Intent(getActivity(),
                     CameraActivity.class);
-            intent.putExtra("quality", 40);
+            intent.putExtra(CameraActivity.QUALITY, 40);
             String path = photoPath + "/" + imageName;
-            intent.putExtra("path", path);
+            intent.putExtra(CameraActivity.PATH, path);
             startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
         } catch (Exception e) {

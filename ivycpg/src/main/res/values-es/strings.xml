@@ -84,7 +84,7 @@
     <string name="retailername">Nombre de Tienda</string>
     <string name="version">Version:</string>
     <string name="all">Todos</string>
-    <string name="quality">calidad</string>
+
     <string name="mrp">Pr Max</string>
     <string name="gallery">Galería</string>
     <string name="enter_activation_key">Ingrese la Clave de Activación</string>
@@ -449,7 +449,7 @@
     <string name="opencalendar">Calendario Abierto</string>
     <string name="pc">Pz</string>
     <string name="invaliddate">Fecha Inválida</string>
-    <string name="saverequired">Se Requiere Guardar</string>
+
     <string name="cant_skip_go_by_sequence">No se puede omitir, siga la secuencia</string>
     <string name="no_damaged_stock_to_unload">No existe producto dañado por descargar</string>
     <string name="do_you_want_to_save_stock">¿Quiere guardar el nivel de inventario?</string>

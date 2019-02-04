@@ -965,7 +965,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
                                 ChequeImgname = mImageName;
                             }
                             Intent intent = new Intent(CollectionBeforeInvoiceActivity.this, CameraActivity.class);
-                            intent.putExtra("quality", 40);
+                            intent.putExtra(CameraActivity.QUALITY, 40);
                             mImagePath = "Collection" + "/" + bmodel.userMasterHelper.getUserMasterBO
                                     ().getDownloadDate().replace("/", "")
                                     + "/"
@@ -974,8 +974,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
                             mImageName = mImagePath + mImageName;
                             String path = AppUtils.photoFolderPath + "/" + mImageName;
 
-                            Commons.print("photoPath : " + mImagePath);
-                            intent.putExtra("path", path);
+                            intent.putExtra(CameraActivity.PATH, path);
                             startActivityForResult(intent,
                                     bmodel.CAMERA_REQUEST_CODE);
                             return;
@@ -1012,10 +1011,9 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
                         dialog.dismiss();
                         Intent intent = new Intent(CollectionBeforeInvoiceActivity.this,
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
                         String _path = AppUtils.photoFolderPath + "/" + mImageName;
-                        Commons.print("PhotoPAth:  -      " + _path);
-                        intent.putExtra("path", _path);
+                        intent.putExtra(CameraActivity.PATH, _path);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);
                         return;

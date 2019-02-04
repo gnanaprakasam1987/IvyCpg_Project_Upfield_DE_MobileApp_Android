@@ -268,10 +268,10 @@ public class RoadFragment extends IvyBaseFragment {
                                 + "_img.jpg";
 
                         Intent intent = new Intent(getActivity(), CameraActivity.class);
-                        intent.putExtra("quality", 40);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
                         String mImagePath = AppUtils.photoFolderPath + "/" + mImageName;
                         Commons.print("photoPath : " + mImagePath);
-                        intent.putExtra("path", mImagePath);
+                        intent.putExtra(CameraActivity.PATH, mImagePath);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);
 
@@ -419,10 +419,10 @@ public class RoadFragment extends IvyBaseFragment {
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
                         String _path = AppUtils.photoFolderPath + "/" + mImageName;
                         Commons.print("PhotoPAth:  -      " + _path);
-                        intent.putExtra("path", _path);
+                        intent.putExtra(CameraActivity.PATH, _path);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);
                     }

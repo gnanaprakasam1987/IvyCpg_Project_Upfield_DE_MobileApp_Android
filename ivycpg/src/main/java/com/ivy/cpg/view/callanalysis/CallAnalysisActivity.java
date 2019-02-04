@@ -1585,10 +1585,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 } else {
                     Intent intent = new Intent(this,
                             CameraActivity.class);
-                    intent.putExtra("quality", 40);
+                    intent.putExtra(CameraActivity.QUALITY, 40);
                     String path = AppUtils.photoFolderPath + "/"
                             + mImageName;
-                    intent.putExtra("path", path);
+                    intent.putExtra(CameraActivity.PATH, path);
                     startActivityForResult(intent,
                             bmodel.CAMERA_REQUEST_CODE);
                 }
@@ -1617,9 +1617,9 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                         isPhotoTaken = false;
                         Intent intent = new Intent(CallAnalysisActivity.this,
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
                         String path = AppUtils.photoFolderPath + "/" + mImageName;
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);
                     }

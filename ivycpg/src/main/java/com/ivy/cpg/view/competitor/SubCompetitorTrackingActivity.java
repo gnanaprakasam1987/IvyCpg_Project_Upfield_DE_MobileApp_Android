@@ -710,12 +710,12 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 
                     Intent intent = new Intent(this,
                             CameraActivity.class);
-                    intent.putExtra(getResources().getString(R.string.quality),
+                    intent.putExtra(CameraActivity.QUALITY,
                             40);
-                    intent.putExtra(getResources().getString(R.string.path),
+                    intent.putExtra(CameraActivity.PATH,
                             _path);
                     intent.putExtra(
-                            getResources().getString(R.string.saverequired),
+                            CameraActivity.ISSAVEREQUIRED,
                             false);
                     startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
@@ -812,11 +812,11 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                                 CameraActivity.class);
                         String _path = AppUtils.photoFolderPath + "/" + imageName;
                         intent.putExtra(
-                                getResources().getString(R.string.quality), 40);
+                                CameraActivity.QUALITY, 40);
                         intent.putExtra(
-                                getResources().getString(R.string.path), _path);
+                                CameraActivity.PATH, _path);
                         intent.putExtra(
-                                getResources().getString(R.string.saverequired),
+                                CameraActivity.ISSAVEREQUIRED,
                                 false);
                         startActivityForResult(intent, CAMERA_REQUEST_CODE);
 

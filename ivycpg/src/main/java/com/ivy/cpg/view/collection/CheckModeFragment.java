@@ -259,7 +259,7 @@ public class CheckModeFragment extends IvyBaseFragment
 
 
                         Intent intent = new Intent(getActivity(), CameraActivity.class);
-                        intent.putExtra("quality", 40);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
                         mImagePath = "Collection" + "/" + bmodel.userMasterHelper.getUserMasterBO
                                 ().getDownloadDate().replace("/", "")
                                 + "/"
@@ -270,7 +270,7 @@ public class CheckModeFragment extends IvyBaseFragment
 
                         mPaymentBO.setImageName(mImagePath);
 
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);
 

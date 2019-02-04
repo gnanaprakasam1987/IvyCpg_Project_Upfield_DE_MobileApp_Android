@@ -413,8 +413,8 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
             try {
                 Intent intent = new Intent(getActivity(), CameraActivity.class);
-                intent.putExtra(getResources().getString(R.string.quality), 40);
-                intent.putExtra(getResources().getString(R.string.path), path);
+                intent.putExtra(CameraActivity.QUALITY, 40);
+                intent.putExtra(CameraActivity.PATH, path);
                 startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
             } catch (Exception e) {
@@ -923,9 +923,9 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
                         Intent intent = new Intent(getActivity(),CameraActivity.class);
                         String _path = AppUtils.photoFolderPath + "/" + imageName;
-                        intent.putExtra(getResources().getString(R.string.quality), 40);
-                        intent.putExtra(getResources().getString(R.string.path), _path);
-                        intent.putExtra(getResources().getString(R.string.saverequired),
+                        intent.putExtra(CameraActivity.QUALITY, 40);
+                        intent.putExtra(CameraActivity.PATH, _path);
+                        intent.putExtra(CameraActivity.ISSAVEREQUIRED,
                                 false);
                         startActivityForResult(intent, CAMERA_REQUEST_CODE);
 

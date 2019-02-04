@@ -708,8 +708,8 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                                 CameraActivity.class);
                         String _path = AppUtils.photoFolderPath + "/"
                                 + mImageName;
-                        intent.putExtra("quality", 40);
-                        intent.putExtra("path", _path);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
+                        intent.putExtra(CameraActivity.PATH, _path);
                         startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
                     }

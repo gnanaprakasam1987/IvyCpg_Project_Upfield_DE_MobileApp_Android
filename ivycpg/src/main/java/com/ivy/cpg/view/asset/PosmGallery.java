@@ -334,9 +334,9 @@ public class PosmGallery extends IvyBaseActivityNoActionBar {
                     + "_img.jpg";
             Intent intent = new Intent(this,
                     CameraActivity.class);
-            intent.putExtra("quality", 40);
+            intent.putExtra(CameraActivity.QUALITY, 40);
             String path = photoPath + "/" + imageName;
-            intent.putExtra("path", path);
+            intent.putExtra(CameraActivity.PATH, path);
             startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
         } catch (Exception e) {

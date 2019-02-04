@@ -616,9 +616,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
                         String path = AppUtils.photoFolderPath + "/" + mImageName;
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 businessModel.CAMERA_REQUEST_CODE);
                     }
@@ -975,10 +975,10 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                             } else {
                                 Intent intent = new Intent(getActivity(),
                                         CameraActivity.class);
-                                intent.putExtra("quality", 40);
+                                intent.putExtra(CameraActivity.QUALITY, 40);
                                 String path = AppUtils.photoFolderPath + "/"
                                         + mImageName;
-                                intent.putExtra("path", path);
+                                intent.putExtra(CameraActivity.PATH, path);
                                 startActivityForResult(intent,
                                         businessModel.CAMERA_REQUEST_CODE);
                                 holder.btnPhoto.requestFocus();
