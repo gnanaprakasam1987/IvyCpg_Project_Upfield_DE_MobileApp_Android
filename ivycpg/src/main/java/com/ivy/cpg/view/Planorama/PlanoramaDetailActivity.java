@@ -359,7 +359,7 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
             }
 
             if(planoramaHelper.isAnalysisReady(responseOutput.toString())) {
-                planoramaHelper.prepareProductList(responseOutput.toString());
+                planoramaHelper.prepareProductList(this,responseOutput.toString());
                 planoramaHelper.updateProductAvailability(responseOutput.toString());
                 planoramaHelper.preparePlanoramaSOSList(responseOutput.toString());
             }

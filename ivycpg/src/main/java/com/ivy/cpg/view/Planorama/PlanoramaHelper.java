@@ -6,8 +6,11 @@ import android.util.Log;
 
 import com.ivy.core.data.app.AppDataProviderImpl;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.LocationBO;
+import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
@@ -23,6 +26,11 @@ public class PlanoramaHelper {
 
     private static PlanoramaHelper instance;
     private BusinessModel mBusinessModel;
+
+    public boolean SHOW_STOCK_SP;
+    public boolean SHOW_STOCK_SC;
+    public boolean SHOW_STOCK_CB;
+    public boolean SHOW_SHELF_OUTER;
 
     public ArrayList<PlanoramaProductBO> getmProductList() {
         if(mProductList==null)
@@ -133,9 +141,10 @@ public class PlanoramaHelper {
     }
 
 
-    public void prepareProductList(String responseOutput){
+    public void prepareProductList(Context context,String responseOutput){
         try {
             getmProductList().clear();
+            ProductHelper productHelper=ProductHelper.getInstance(context);
 
             if (!responseOutput.equals("")) {
                 //list_visits = new ArrayList<>();
@@ -153,6 +162,8 @@ public class PlanoramaHelper {
                     planoramaProductBO.setProductId(jsonProduct.getString("ean"));
                     planoramaProductBO.setProductName(jsonProduct.getString("description"));
 
+                    planoramaProductBO.setLocations(cloneInStoreLocationList(productHelper.locations));
+
                     getmProductList().add(planoramaProductBO);
                 }
 
@@ -164,6 +175,20 @@ public class PlanoramaHelper {
         catch (Exception ex){
             Commons.printException(ex);
         }
+    }
+
+    /**
+     * Duplicate the Location List
+     *
+     * @param list list
+     * @return clone list
+     */
+    public static ArrayList<LocationBO> cloneInStoreLocationList(
+            ArrayList<LocationBO> list) {
+        ArrayList<LocationBO> clone = new ArrayList<LocationBO>(list.size());
+        for (LocationBO item : list)
+            clone.add(new LocationBO(item));
+        return clone;
     }
 
     public void updateProductAvailability(String jsonResponse){
@@ -258,4 +283,212 @@ public class PlanoramaHelper {
 
         return false;
     }
+
+    public void saveStock(Context mContext,ArrayList<PlanoramaProductBO> productList){
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+            db.openDataBase();
+
+            boolean isData;
+            String id = AppUtils.QT(mBusinessModel.getAppDataProvider().getUser().getUserid()
+                    + SDUtil.now(SDUtil.DATE_TIME_ID));
+            if (mBusinessModel.isEditStockCheck()) {
+                Cursor closingStockCursor = db
+                        .selectSQL("select StockID from ClosingStockHeader where RetailerID="
+                                + mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID() + "");
+
+                if (closingStockCursor.getCount() > 0) {
+                    closingStockCursor.moveToNext();
+                    id = AppUtils.QT(closingStockCursor.getString(0));
+                    db.deleteSQL("ClosingStockHeader", "StockID=" + id, false);
+                    db.deleteSQL("ClosingStockDetail", "StockID=" + id, false);
+                }
+                closingStockCursor.close();
+            }
+
+
+            // ClosingStock Detail entry
+
+            String detailColumns = "StockID,Date,ProductID,uomqty,retailerid,uomid,msqqty,Qty,ouomid,ouomqty,"
+                    + " Shelfpqty,Shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,reasonID,isDone," +
+                    "Facing,IsOwn,PcsUOMId,isAvailable";
+            String values="";
+
+            isData = false;
+            int siz;
+
+            PlanoramaProductBO product;
+
+            for (int i = 0; i < productList.size(); ++i) {
+                    product = productList.get(i);
+
+                int siz1 = product.getLocations().size();
+                for (int j = 0; j < siz1; j++) {
+                    if ((SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
+                            || (SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() > -1)
+                            || (SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() > -1)
+                            || (SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() > -1)
+                            || product.getLocations().get(j).getFacingQty() > 0
+                            || product.getLocations().get(j).getAudit() != 2
+                            || product.getLocations().get(j).getReasonId() != 0) {
+
+                        int count = product.getLocations().get(j)
+                                .getShelfPiece()
+                                + product.getLocations().get(j).getWHPiece();
+
+
+                        ProductMasterBO productMasterBO =mBusinessModel.productHelper.getProductMasterBOById(product.getProductId());
+                        if(productMasterBO!=null) {
+                            int shelfCase = ((product.getLocations().get(j).getShelfCase() == -1) ? 0 : product.getLocations().get(j).getShelfCase());
+                            int shelfPiece = ((product.getLocations().get(j).getShelfPiece() == -1) ? 0 : product.getLocations().get(j).getShelfPiece());
+                            int shelfOuter = ((product.getLocations().get(j).getShelfOuter() == -1) ? 0 : product.getLocations().get(j).getShelfOuter());
+                            int availability = ((product.getLocations().get(j).getAvailability() == -1) ? 0 : product.getLocations().get(j).getAvailability());
+                            values = (id) + ","
+                                    + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                                    + AppUtils.QT(product.getProductId()) + ","
+                                    + productMasterBO.getCaseSize() + ","
+                                    + AppUtils.QT(mBusinessModel.retailerMasterBO.getRetailerID()) + ","
+                                    + productMasterBO.getCaseUomId() + ","
+                                    + productMasterBO.getMSQty() + "," + count + ","
+                                    + productMasterBO.getOuUomid() + ","
+                                    + productMasterBO.getOutersize() + ","
+                                    + shelfPiece
+                                    + ","
+                                    + shelfCase
+                                    + ","
+                                    + shelfOuter
+                                    + ","
+                                    + product.getLocations().get(j).getWHPiece()
+                                    + ","
+                                    + product.getLocations().get(j).getWHCase()
+                                    + ","
+                                    + product.getLocations().get(j).getWHOuter()
+                                    + ","
+                                    + product.getLocations().get(j).getLocationId()
+                                    + ","
+                                    + product.getLocations().get(j).getReasonId() + ","
+                                    + product.getLocations().get(j).getAudit()
+                                    + ","
+                                    + product.getLocations().get(j).getFacingQty()
+                                    + "," + productMasterBO.getOwn()
+                                    + "," + productMasterBO.getPcUomid()
+                                    + "," + availability;
+
+                            db.insertSQL(DataMembers.tbl_closingstockdetail,
+                                    detailColumns, values);
+                            isData = true;
+                        }
+
+                    }
+                }
+            }
+
+
+            // ClosingStock Header entry
+            if (isData) {
+              String  columns = "StockID,Date,RetailerID,RetailerCode,remark,DistributorID,AvailabilityShare,ridSF,VisitId";
+
+                values = (id) + ", " + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + ", " + AppUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()) + ", "
+                        + AppUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerCode()) + ","
+                        + AppUtils.QT(mBusinessModel.getStockCheckRemark()) + "," + mBusinessModel.getAppDataProvider().getRetailMaster().getDistributorId();
+
+                if (mBusinessModel.configurationMasterHelper.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) {
+                    String availabilityShare = (mBusinessModel.getAvailablilityShare() == null ||
+                            mBusinessModel.getAvailablilityShare().trim().length() == 0) ? "0.0" : mBusinessModel.getAvailablilityShare();
+                    values = values + "," + AppUtils.QT(availabilityShare);
+                } else {
+                    values = values + "," + AppUtils.QT("0.0");
+                }
+
+                values = values + "," + AppUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                        + mBusinessModel.getAppDataProvider().getUniqueId();
+
+                db.insertSQL(DataMembers.tbl_closingstockheader, columns, values);
+
+
+            }
+
+            db.closeDB();
+
+
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+    }
+
+
+    public void loadStockCheckConfiguration(Context context, int subChannelID) {
+
+
+        SHOW_STOCK_SP = false;
+        SHOW_STOCK_SC = false;
+        SHOW_SHELF_OUTER = false;
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
+        db.openDataBase();
+        String codeValue = null;
+        String sql = "select RField from "
+                + DataMembers.tbl_HhtModuleMaster
+                + " where hhtCode='CSSTK01' and SubchannelId="
+                + subChannelID;
+        Cursor c = db.selectSQL(sql);
+        if (c != null && c.getCount() != 0) {
+            if (c.moveToNext()) {
+                codeValue = c.getString(0);
+            }
+            c.close();
+        } else {
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode='CSSTK01' and SubChannelId= 0 and ForSwitchSeller = 0";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    codeValue = c.getString(0);
+                }
+                c.close();
+            }
+
+        }
+        if (codeValue != null) {
+
+            String codeSplit[] = codeValue.split(",");
+            for (String temp : codeSplit)
+                switch (temp) {
+                    case "SP":
+                        SHOW_STOCK_SP = true;
+                        break;
+                    case "SC":
+                        SHOW_STOCK_SC = true;
+                        break;
+                    case "SHO":
+                        SHOW_SHELF_OUTER = true;
+                        break;
+                    case "CB":
+                        SHOW_STOCK_CB = true;
+                        break;
+                    /*case "REASON":
+                        SHOW_STOCK_RSN = true;
+                        break;
+                    case "TOTAL":
+                        SHOW_STOCK_TOTAL = true;
+                        break;
+                    case "FC":
+                        SHOW_STOCK_FC = true;
+                        break;
+                    case "CB01":
+                        CHANGE_AVAL_FLOW = true;
+                        break;
+                    case "AVGDAYS":
+                        SHOW_STOCK_AVGDAYS = true;
+                        break;*/
+
+
+                }
+        }
+    }
+
 }

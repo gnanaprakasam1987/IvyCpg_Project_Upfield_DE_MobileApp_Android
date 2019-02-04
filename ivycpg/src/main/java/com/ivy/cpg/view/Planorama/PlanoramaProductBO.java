@@ -1,5 +1,9 @@
 package com.ivy.cpg.view.Planorama;
 
+import com.ivy.sd.png.bo.LocationBO;
+
+import java.util.ArrayList;
+
 public class PlanoramaProductBO {
 
     private String productId,productName;
@@ -58,5 +62,15 @@ public class PlanoramaProductBO {
 
     private String sosActual;
 
+
+    private ArrayList<LocationBO> locations;
+
+    public ArrayList<LocationBO> getLocations() {
+        return locations;
+    }
+
+    public void setLocations(ArrayList<LocationBO> locations) {
+        this.locations = locations;
+    }
 
 }
