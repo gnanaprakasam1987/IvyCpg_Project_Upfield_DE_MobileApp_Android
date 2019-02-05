@@ -49,6 +49,7 @@ import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.print.DemoSleeper;
 import com.ivy.sd.print.SettingsHelper;
+import com.ivy.utils.AppUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -442,14 +443,14 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
 
 
                         nfiles_there = bmodel.checkForNFilesInFolder(
-                                HomeScreenFragment.photoPath, mImageCount, fnameStarts);
+                                AppUtils.photoFolderPath, mImageCount, fnameStarts);
                         if (nfiles_there) {
                             showFileDeleteAlert(fnameStarts);
                         } else {
                             Intent intent = new Intent(getActivity(), CameraActivity.class);
-                            intent.putExtra("quality", 40);
-                            String path = HomeScreenFragment.photoPath + "/" + mImageName;
-                            intent.putExtra("path", path);
+                            intent.putExtra(CameraActivity.QUALITY, 40);
+                            String path = AppUtils.photoFolderPath + "/" + mImageName;
+                            intent.putExtra(CameraActivity.PATH, path);
                             startActivityForResult(intent,
                                     bmodel.CAMERA_REQUEST_CODE);
                         }
@@ -738,15 +739,15 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                        bmodel.deleteFiles(AppUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
-                        String _path = HomeScreenFragment.photoPath + "/" + mImageName;
+                        intent.putExtra(CameraActivity.QUALITY, 40);
+                        String _path = AppUtils.photoFolderPath + "/" + mImageName;
                         Commons.print("PhotoPAth:  -      " + _path);
-                        intent.putExtra("path", _path);
+                        intent.putExtra(CameraActivity.PATH, _path);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);
                     }

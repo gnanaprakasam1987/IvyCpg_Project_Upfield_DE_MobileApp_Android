@@ -45,6 +45,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 
@@ -377,7 +378,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                     public void onClick(View view) {
                         mSelectedBill = holder.invoiceHeaderBO.getInvoiceNo();
                         if (holder.invoiceHeaderBO.getDocSignImage() != null && holder.invoiceHeaderBO.getDocSignImage().length() > 0) {
-                            if (bmodel.checkForNFilesInFolder(HomeScreenFragment.photoPath, 1, holder.invoiceHeaderBO.getDocSignImage())) {
+                            if (bmodel.checkForNFilesInFolder(AppUtils.photoFolderPath, 1, holder.invoiceHeaderBO.getDocSignImage())) {
                                 DialogFragment dialog = new signatureExistingAlert();
                                 Bundle args = new Bundle();
                                 args.putString("title", getResources().getString(
@@ -565,7 +566,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                            bmodel.deleteFiles(AppUtils.photoFolderPath,
                                     imgName);
                             Intent i = new Intent(getActivity(),
                                     CaptureSignatureActivity.class);

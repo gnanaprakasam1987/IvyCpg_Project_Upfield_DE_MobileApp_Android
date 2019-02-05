@@ -240,7 +240,6 @@ public class BusinessModel extends Application {
 
     public String regid;
 
-    public static String photoPath;
 
     public InitiativeHelper initiativeHelper;
     public BeatMasterHelper beatMasterHealper;
@@ -448,6 +447,8 @@ public class BusinessModel extends Application {
         return mInstance;
 
     }
+
+
 
     private void loadActivity(Activity ctxx, String act) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
@@ -4237,7 +4238,7 @@ public class BusinessModel extends Application {
             TransferUtility tm = new TransferUtility(ec2, getApplicationContext
                     ());
 
-            folder = new File(HomeScreenFragment.photoPath + "/");
+            folder = new File(AppUtils.photoFolderPath + "/");
 
             sfFiles = folder.listFiles();
 
@@ -4945,19 +4946,7 @@ public class BusinessModel extends Application {
         return "UTC";
     }
 
-    /**
-     * @return the orderSplitScreenTitle
-     */
-    public String getOrderSplitScreenTitle() {
-        return orderSplitScreenTitle;
-    }
 
-    /**
-     * @param orderSplitScreenTitle the orderSplitScreenTitle to set
-     */
-    public void setOrderSplitScreenTitle(String orderSplitScreenTitle) {
-        this.orderSplitScreenTitle = orderSplitScreenTitle;
-    }
 
     public int getTotalLines() {
         try {
@@ -7243,6 +7232,7 @@ public class BusinessModel extends Application {
         HashMap<String, String> mUserCredentials = new HashMap<>();
         mUserCredentials.put("EMAILID", "");
         mUserCredentials.put("PASSWORD", "");
+        mUserCredentials.put("TYPE", "");
         try {
             DBUtil db = new DBUtil(getContext(), DataMembers.DB_NAME
             );
@@ -7263,6 +7253,16 @@ public class BusinessModel extends Application {
             if (c != null) {
                 if (c.moveToNext()) {
                     mUserCredentials.put("PASSWORD", c.getString(0));
+                }
+                c.close();
+            }
+
+            s = "SELECT ListName FROM StandardListMaster where listcode='DELIVERY_TYPE' and listtype='DELIVERY_MAIL'";
+
+            c = db.selectSQL(s);
+            if (c != null) {
+                if (c.moveToNext()) {
+                    mUserCredentials.put("TYPE", c.getString(0));
                 }
                 c.close();
             }

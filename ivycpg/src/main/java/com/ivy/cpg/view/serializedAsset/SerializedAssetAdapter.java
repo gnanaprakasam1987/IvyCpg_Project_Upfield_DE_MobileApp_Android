@@ -328,9 +328,9 @@ public class SerializedAssetAdapter extends BaseAdapter {
                         } else {
                             Intent intent = new Intent(mContext,
                                     CameraActivity.class);
-                            intent.putExtra("quality", 40);
+                            intent.putExtra(CameraActivity.QUALITY, 40);
                             String path = photoPath + "/" + imageName;
-                            intent.putExtra("path", path);
+                            intent.putExtra(CameraActivity.PATH, path);
                             mFragment.startActivityForResult(intent, CAMERA_REQUEST_CODE);
                             holder.photoBTN.requestFocus();
                         }
@@ -624,9 +624,9 @@ public class SerializedAssetAdapter extends BaseAdapter {
 
                         Intent intent = new Intent(mContext,
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
                         String path = photoPath + "/" + imageName;
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.PATH, path);
                         mFragment.startActivityForResult(intent, CAMERA_REQUEST_CODE);
                     }
                 }, new CommonDialog.negativeOnClickListener() {

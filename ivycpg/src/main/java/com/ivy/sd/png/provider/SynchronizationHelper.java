@@ -870,7 +870,7 @@ SynchronizationHelper {
 
     public boolean checkForImageToUpload() {
         try {
-            File f = new File(HomeScreenFragment.photoPath);
+            File f = new File(AppUtils.photoFolderPath);
             if (f.listFiles() != null) {
                 String fnames[] = f.list();
                 for (String str : fnames) {

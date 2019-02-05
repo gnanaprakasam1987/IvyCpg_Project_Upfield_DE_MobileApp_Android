@@ -126,6 +126,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.profile.ProfileActivity;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import java.io.File;
@@ -4689,7 +4690,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         try {
             String[] imgPaths = retailerObj.getProfileImagePath().split("/");
             String path = imgPaths[imgPaths.length - 1];
-            Uri uri = bmodel.profilehelper.getUriFromFile(HomeScreenFragment.photoPath + "/" + path);
+            Uri uri = bmodel.profilehelper.getUriFromFile(AppUtils.photoFolderPath + "/" + path);
             retProfileImage.invalidate();
             retProfileImage.setImageURI(uri);
         } catch (Exception e) {

@@ -46,8 +46,9 @@ public class AssetTrackingHelper {
     private Vector<AssetTrackingBO> assetServiceList = null;
 
     public int mSelectedAssetID = 0;
-    public String mSelectedImageName = "";
+    public String mSelectedSerialNumber = "";
     public int mSelectedProductID = 0;
+    public String mSelectedImageName = "";
 
     // Asset configuration
     private static final String CODE_ASSET_COLUMNS = "AT01";
@@ -684,7 +685,7 @@ public class AssetTrackingHelper {
                     String mappingID = detailCursor.getString(15);
 
 
-                    setAssetDetails(mContext,
+                    setAssetDetails(mContext, moduleName,
                             mAssetId,
                             qty,
                             imageName,
@@ -1866,7 +1867,7 @@ public class AssetTrackingHelper {
      * @param serialNo  serial Number
      * @param imgName   image Name
      */
-    private void setAssetDetails(Context mcontext, int assetID, int qty, String imageName,
+    private void setAssetDetails(Context mcontext, String menuName, int assetID, int qty, String imageName,
                                  String mReasonId, String serialNo,
                                  String conditionId, String installDate, String serviceDate, int audit,
                                  int pid, int compQty, int locId, int isExec, String imgName,
@@ -1919,7 +1920,10 @@ public class AssetTrackingHelper {
                         if (SHOW_LOCATION_POSM)
                             assetBO.setLocationID(locId);
 
-                        assetBO.setImageList(getImagesList(mcontext, assetID, locId, pid));
+                        if (menuName.equals(MENU_ASSET))
+                            assetBO.setImageList(getImagesList(mcontext, assetID, locId));
+                        else
+                            assetBO.setImageList(getPosmImagesList(mcontext, assetID, pid, locId));
 
                     }
 
@@ -1973,19 +1977,48 @@ public class AssetTrackingHelper {
         return retailerMovedData;
     }
 
-    public ArrayList<String> getImagesList(Context mContext, int assetId, int locId, int pid) {
+    public ArrayList<String> getImagesList(Context mContext, int assetId, int locId) {
         ArrayList<String> imageList = new ArrayList<>();
         try {
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-            );
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String sql;
             Cursor c;
 
             sql = "select ImageName from AssetImageDetails "
-                    + " where AssetID = " + assetId + " AND LocId = " + locId + " AND PID = " + pid
+                    + " where AssetID = " + assetId + " AND LocId = " + locId
+                    + " AND Upload = " + QT("N");
+            c = db.selectSQL(sql);
+
+            if (c != null) {
+                while (c.moveToNext()) {
+                    imageList.add(c.getString(0));
+                }
+                c.close();
+            }
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return imageList;
+    }
+
+    public ArrayList<String> getPosmImagesList(Context mContext, int assetId, int productID, int locId) {
+        ArrayList<String> imageList = new ArrayList<>();
+        try {
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+            db.createDataBase();
+            db.openDataBase();
+            String sql;
+            Cursor c;
+
+            sql = "select ImageName from AssetImageDetails "
+                    + " where AssetID = " + assetId + " AND LocId = " + locId + " AND Pid = " + productID
                     + " AND Upload = " + QT("N");
             c = db.selectSQL(sql);
 

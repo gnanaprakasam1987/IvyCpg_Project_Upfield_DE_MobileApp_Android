@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.AppUtils;
 
 import java.util.List;
 
@@ -115,8 +116,7 @@ class ListAdapter extends RecyclerView.Adapter<ListAdapter.ListViewHolder>
     }
 
     private void setImageFromSrc(ImageView imageView, String src) {
-        String localPath = HomeScreenFragment.folder
-                .getPath() + "/";
+        String localPath = AppUtils.photoFolderPath + "/";
         if(src.contains("SVY_")) {
             int index = src.indexOf("SVY_");
             src = src.substring(index);

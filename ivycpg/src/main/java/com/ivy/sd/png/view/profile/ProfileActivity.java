@@ -1981,9 +1981,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     private void callCamera(String imageName) {
         Intent intent = new Intent(this, CameraActivity.class);
-        intent.putExtra("quality", 40);
+        intent.putExtra(CameraActivity.QUALITY, 40);
         String mPath = getPhotoPath() + "/" + imageName;
-        intent.putExtra("path", mPath);
+        intent.putExtra(CameraActivity.PATH, mPath);
         startActivityForResult(intent, CAMERA_REQUEST_CODE);
     }
 

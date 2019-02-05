@@ -268,10 +268,10 @@ public class RoadFragment extends IvyBaseFragment {
                                 + "_img.jpg";
 
                         Intent intent = new Intent(getActivity(), CameraActivity.class);
-                        intent.putExtra("quality", 40);
-                        String mImagePath = HomeScreenFragment.photoPath + "/" + mImageName;
+                        intent.putExtra(CameraActivity.QUALITY, 40);
+                        String mImagePath = AppUtils.photoFolderPath + "/" + mImageName;
                         Commons.print("photoPath : " + mImagePath);
-                        intent.putExtra("path", mImagePath);
+                        intent.putExtra(CameraActivity.PATH, mImagePath);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);
 
@@ -414,15 +414,15 @@ public class RoadFragment extends IvyBaseFragment {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                        bmodel.deleteFiles(AppUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
-                        String _path = HomeScreenFragment.photoPath + "/" + mImageName;
+                        intent.putExtra(CameraActivity.QUALITY, 40);
+                        String _path = AppUtils.photoFolderPath + "/" + mImageName;
                         Commons.print("PhotoPAth:  -      " + _path);
-                        intent.putExtra("path", _path);
+                        intent.putExtra(CameraActivity.PATH, _path);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);
                     }

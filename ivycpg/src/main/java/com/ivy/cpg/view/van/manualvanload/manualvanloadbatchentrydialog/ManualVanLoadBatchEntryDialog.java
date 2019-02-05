@@ -67,20 +67,20 @@ public class ManualVanLoadBatchEntryDialog extends Dialog implements
         setCancelable(true);
         bmodel = (BusinessModel) activity.getApplicationContext();
         outPutDateFormat = ConfigurationMasterHelper.outDateFormat;
-        TextView product_name = (TextView) findViewById(R.id.product_name);
+        TextView product_name =  findViewById(R.id.product_name);
         product_name
                 .setText(product.getProductshortname() + " [" + product.getProductid() + "]");
-        batch_no = (EditText) findViewById(R.id.batch_no);
-        Button add = (Button) findViewById(R.id.add);
+        batch_no =  findViewById(R.id.batch_no);
+        Button add =  findViewById(R.id.add);
         add.setOnClickListener(this);
-        Button close = (Button) findViewById(R.id.close);
+        Button close =  findViewById(R.id.close);
         close.setOnClickListener(this);
-        mfg_date = (Button) findViewById(R.id.mfg_date);
+        mfg_date =  findViewById(R.id.mfg_date);
         mfg_date.setText((DateUtil.convertFromServerDateToRequestedFormat(
                 SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat)));
         product.setMfgDate(mfg_date.getText().toString());
         mfg_date.setOnClickListener(this);
-        exp_date = (Button) findViewById(R.id.exp_date);
+        exp_date =  findViewById(R.id.exp_date);
         exp_date.setText((DateUtil.convertFromServerDateToRequestedFormat(
                 SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat)));
         product.setExpDate(exp_date.getText().toString());
@@ -244,11 +244,11 @@ public class ManualVanLoadBatchEntryDialog extends Dialog implements
         try {
             LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             View layout = inflater.inflate(R.layout.custom_alert_dialog,
-                    (ViewGroup) activity.findViewById(R.id.layout_root));
+                     activity.findViewById(R.id.layout_root));
 
-            TextView title = (TextView) layout.findViewById(R.id.title);
+            TextView title =  layout.findViewById(R.id.title);
             title.setText(DataMembers.SD);
-            messagetv = (TextView) layout.findViewById(R.id.text);
+            messagetv =  layout.findViewById(R.id.text);
             messagetv.setText(activity.getResources().getString(R.string.loading));
 
             builder.setView(layout);

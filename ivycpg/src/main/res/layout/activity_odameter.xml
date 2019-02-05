@@ -3,33 +3,26 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.ivy.cpg.view.collection.CollectionScreen">
 
-    <RelativeLayout
-        android:id="@+id/tolllayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
-
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/material_tool_bar" />
-    </RelativeLayout>
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
 
     <ScrollView
         android:id="@+id/scrl1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/tolllayout">
+        android:layout_above="@+id/footer"
+        android:layout_below="@+id/toolbar">
 
 
         <android.support.v7.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_margin="@dimen/list_margin"
             card_view:cardBackgroundColor="@color/white"
             card_view:cardCornerRadius="0dp"
@@ -38,171 +31,149 @@
             card_view:cardUseCompatPadding="true"
             card_view:contentPadding="0dp">
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/odameterlayout"
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="fill_parent"
+
+                <TextView
+                    android:id="@+id/vanno"
+                    style="@style/TextViewNormal"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
-                    android:orientation="vertical"
-                    android:padding="15dp">
+                    android:layout_alignParentTop="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:tag="loadvan"
+                    android:text="@string/vanno" />
 
-                    <TextView
-                        android:id="@+id/vanno"
-                        style="@style/TextViewListItemPrimary"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="2dp"
-                        android:tag="loadvan"
-                        android:text="@string/vanno"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/font_small" />
-
-                    <TextView
-                        android:id="@+id/vannovalue"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:padding="2dp"
-                        android:text="123"
-                        android:textSize="@dimen/font_small" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="fill_parent"
+                <TextView
+                    android:id="@+id/vannovalue"
+                    style="@style/TextViewCaptionNormal"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/store_margin_top"
-                    android:layout_marginStart="@dimen/store_margin_top"
-                    android:layout_marginTop="@dimen/plano_list_top_margin"
-                    android:background="@color/light_gray"
+                    android:layout_below="@+id/vanno"
+                    android:layout_centerVertical="true"
+                    android:gravity="center"
+                    android:text="@string/zero" />
+
+
+                <RelativeLayout
+                    android:id="@+id/start_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/vannovalue"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="@dimen/store_margin_top"
+                    android:background="@color/divider_view_color"
+                    android:baselineAligned="false"
                     android:orientation="horizontal"
+                    android:padding="@dimen/dimens_14dp">
 
-                    >
-
-                    <LinearLayout
-                        android:layout_width="fill_parent"
+                    <TextView
+                        android:id="@+id/datetxtview"
+                        style="@style/BannerTextViewLabel"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/ret_list_div"
-                        android:background="@color/divider_view_color"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/plano_list_top_margin">
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toStartOf="@+id/inner_line1"
+                        android:layout_toLeftOf="@+id/inner_line1"
+                        android:gravity="center"
+                        android:text="@string/date" />
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="@dimen/plano_list_top_margin">
+                    <TextView
+                        android:id="@+id/datevalue"
+                        style="@style/TextViewNormal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/datetxtview"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toStartOf="@+id/inner_line1"
+                        android:layout_toLeftOf="@+id/inner_line1"
+                        android:gravity="center"
+                        android:text="11/2/1" />
 
-                            <TextView
-                                android:id="@+id/datetxtview"
-                                style="?textFieldStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="@string/date"
-                                android:textColor="?attr/accentcolor"
-                                android:textSize="@dimen/footer_label_size" />
 
-                            <TextView
-                                android:id="@+id/datevalue"
-                                style="@style/TextViewListItemPrimary"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="11/2/1" />
-                        </LinearLayout>
+                    <TextView
+                        android:id="@+id/inner_line1"
+                        android:layout_width="1dp"
+                        android:layout_height="@dimen/dimens_50dp"
+                        android:layout_centerInParent="true"
+                        android:background="@color/light_gray" />
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="@dimen/plano_list_top_margin">
+                    <TextView
+                        android:id="@+id/timetxtview"
+                        style="@style/BannerTextViewLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/inner_line1"
+                        android:layout_toRightOf="@+id/inner_line1"
+                        android:gravity="center"
+                        android:text="@string/time" />
 
-                            <TextView
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent"
-                                android:background="@color/light_gray" />
+                    <TextView
+                        android:id="@+id/timevalue"
+                        style="@style/TextViewNormal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/timetxtview"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/inner_line1"
+                        android:layout_toRightOf="@+id/inner_line1"
+                        android:gravity="center"
+                        android:text="23:5:50" />
 
-                        </LinearLayout>
+                    <TextView
+                        android:id="@+id/timevaluestart"
+                        style="@style/TextViewListItemPrimary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/timevalue"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/inner_line1"
+                        android:layout_toRightOf="@+id/inner_line1"
+                        android:gravity="center"
+                        android:padding="2dp"
+                        android:text="23:5:50"
+                        android:visibility="gone" />
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="@dimen/plano_list_top_margin">
+                    <com.ivy.cpg.view.van.odameter.CustomDigitalClock
+                        android:id="@+id/digitalClock1"
+                        style="@style/TextViewCaptionNormal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/timevaluestart"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/inner_line1"
+                        android:layout_toRightOf="@+id/inner_line1"
+                        android:gravity="center"
+                        android:visibility="visible" />
 
-                            <TextView
-                                android:id="@+id/timetxtview"
-                                style="?textFieldStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="@string/time"
-                                android:textColor="?attr/accentcolor"
-                                android:textSize="@dimen/footer_label_size" />
-
-                            <TextView
-                                android:id="@+id/timevalue"
-                                style="@style/TextViewListItemPrimary"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="23:5:50" />
-
-                            <TextView
-                                android:id="@+id/timevaluestart"
-                                style="@style/TextViewListItemPrimary"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="23:5:50"
-                                android:visibility="gone" />
-
-                            <com.ivy.cpg.view.van.odameter.CustomDigitalClock
-                                android:id="@+id/digitalClock1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:textSize="15sp"
-                                android:visibility="visible" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-                </LinearLayout>
+                </RelativeLayout>
 
                 <LinearLayout
                     android:id="@+id/starttriplayout"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/start_ll"
                     android:layout_marginTop="@dimen/plano_list_top_margin"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:padding="15dp">
+                    android:padding="5dp">
 
                     <TextView
                         android:id="@+id/starttriptxtview"
-                        style="@style/TextViewListItemPrimary"
+                        style="@style/TextViewCaptionNormal"
                         android:layout_width="@dimen/meter_value_width_large"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
@@ -215,17 +186,17 @@
                         android:layout_width="@dimen/day_spinner_width"
                         android:layout_height="wrap_content"
                         android:digits="0123456789$&amp;*"
+                        android:gravity="start"
                         android:imeOptions="actionDone"
                         android:inputType="numberDecimal"
                         android:maxLength="8"
-                        android:gravity="start"
                         android:maxLines="1"
                         android:textColorHint="@color/black_bg1" />
 
 
                     <TextView
                         android:id="@+id/kms"
-                        style="@style/TextViewListItemValues"
+                        style="@style/TextViewCaptionNormal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
@@ -236,6 +207,7 @@
                         android:id="@+id/starttripimgiv"
                         android:layout_width="@dimen/icon"
                         android:layout_height="@dimen/icon"
+                        android:layout_marginStart="@dimen/card_margin"
                         android:layout_marginLeft="@dimen/card_margin"
                         android:background="@drawable/ic_photo_camera_blue_24dp"
                         android:gravity="start"
@@ -245,141 +217,135 @@
 
 
                 <View
+                    android:id="@+id/line_view1"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_1dp"
-                    android:layout_marginEnd="@dimen/values_editextWidth"
+                    android:layout_below="@+id/starttriplayout"
                     android:layout_marginStart="@dimen/values_editextWidth"
                     android:layout_marginTop="@dimen/survey_group_margin_height"
+                    android:layout_marginEnd="@dimen/values_editextWidth"
                     android:background="@color/divider_view_color" />
 
-                <LinearLayout
-                    android:layout_width="fill_parent"
+                <RelativeLayout
+                    android:id="@+id/enddatetime_layout"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/store_margin_top"
-                    android:layout_marginStart="@dimen/store_margin_top"
-                    android:layout_marginTop="@dimen/dialog_list_item_left_margin"
-                    android:background="@color/light_gray"
-                    android:orientation="horizontal">
+                    android:layout_below="@+id/line_view1"
+                    android:layout_margin="@dimen/store_margin_top"
+                    android:background="@color/divider_view_color"
+                    android:baselineAligned="false"
+                    android:orientation="horizontal"
+                    android:padding="@dimen/dimens_14dp">
 
-                    <LinearLayout
-                        android:id="@+id/enddatetime_layout"
-                        android:layout_width="fill_parent"
+
+                    <TextView
+                        android:id="@+id/enddatetxtview"
+                        style="@style/BannerTextViewLabel"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/ret_list_div"
-                        android:background="@color/divider_view_color"
-                        android:orientation="horizontal"
-                        android:padding="@dimen/store_margin_top">
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentTop="true"
+                        android:layout_toStartOf="@+id/inner_line2"
+                        android:layout_toLeftOf="@+id/inner_line2"
+                        android:gravity="center"
+                        android:text="@string/dateend"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="@dimen/footer_label_size" />
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="@dimen/margin_top_spinner">
+                    <TextView
+                        android:id="@+id/enddatevalue"
+                        style="@style/TextViewNormal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/enddatetxtview"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_toStartOf="@+id/inner_line2"
+                        android:layout_toLeftOf="@+id/inner_line2"
+                        android:gravity="center"
+                        android:text="11/2/1" />
 
-                            <TextView
-                                android:id="@+id/enddatetxtview"
-                                style="?textFieldStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="@string/dateend"
-                                android:textColor="@color/colorAccent"
-                                android:textSize="@dimen/footer_label_size" />
 
-                            <TextView
-                                android:id="@+id/enddatevalue"
-                                style="@style/TextViewListItemPrimary"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="11/2/1" />
-                        </LinearLayout>
+                    <TextView
+                        android:id="@+id/inner_line2"
+                        android:layout_width="1dp"
+                        android:layout_height="@dimen/dimens_50dp"
+                        android:layout_centerInParent="true"
+                        android:background="@color/light_gray" />
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="@dimen/margin_top_spinner">
 
-                            <TextView
-                                android:layout_width="1dp"
-                                android:layout_height="match_parent"
-                                android:background="@color/light_gray" />
+                    <TextView
+                        android:id="@+id/endtimetxtview"
+                        style="@style/BannerTextViewLabel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/inner_line2"
+                        android:layout_toRightOf="@+id/inner_line2"
+                        android:gravity="center"
+                        android:text="@string/timeend"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="@dimen/footer_label_size" />
 
-                        </LinearLayout>
+                    <TextView
+                        android:id="@+id/endtimevalue"
+                        style="@style/TextViewNormal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/endtimetxtview"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/inner_line2"
+                        android:layout_toRightOf="@+id/inner_line2"
+                        android:gravity="center"
+                        android:text="23:5:50" />
 
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:adjustViewBounds="true"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:padding="@dimen/margin_top_spinner">
+                    <TextView
+                        android:id="@+id/timeend"
+                        style="@style/TextViewNormal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/endtimevalue"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/inner_line2"
+                        android:layout_toRightOf="@+id/inner_line2"
+                        android:gravity="center"
+                        android:text="23:5:50"
+                        android:visibility="gone" />
 
-                            <TextView
-                                android:id="@+id/endtimetxtview"
-                                style="?textFieldStyle"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="@string/timeend"
-                                android:textColor="@color/colorAccent"
-                                android:textSize="@dimen/footer_label_size" />
+                    <com.ivy.cpg.view.van.odameter.CustomDigitalClock
+                        android:id="@+id/digitalClock2"
+                        style="@style/TextViewCaptionNormal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@+id/timeend"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_toEndOf="@+id/inner_line2"
+                        android:layout_toRightOf="@+id/inner_line2"
+                        android:gravity="center"
+                        android:visibility="visible" />
 
-                            <TextView
-                                android:id="@+id/endtimevalue"
-                                style="@style/TextViewListItemPrimary"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="23:5:50" />
-
-                            <TextView
-                                android:id="@+id/timeend"
-                                style="@style/TextViewListItemPrimary"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:gravity="center"
-                                android:padding="2dp"
-                                android:text="23:5:50"
-                                android:visibility="gone" />
-
-                            <com.ivy.cpg.view.van.odameter.CustomDigitalClock
-                                android:id="@+id/digitalClock2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_centerInParent="true"
-                                android:textSize="15sp"
-                                android:visibility="visible" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-                </LinearLayout>
+                </RelativeLayout>
 
 
                 <LinearLayout
                     android:id="@+id/endingtriplayout"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/enddatetime_layout"
                     android:layout_marginTop="@dimen/toolbar_image_top"
                     android:gravity="center"
                     android:orientation="horizontal"
-                    android:padding="15dp">
+                    android:padding="5dp">
 
                     <TextView
                         android:id="@+id/endtriptxtview"
-                        style="@style/TextViewListItemPrimary"
+                        style="@style/TextViewCaptionNormal"
                         android:layout_width="@dimen/meter_value_width_large"
                         android:layout_height="wrap_content"
                         android:padding="5dp"
@@ -392,11 +358,11 @@
                         android:layout_width="@dimen/day_spinner_width"
                         android:layout_height="wrap_content"
                         android:digits="0123456789$&amp;*"
+                        android:gravity="start"
                         android:imeOptions="actionDone"
                         android:inputType="numberDecimal"
                         android:maxLength="8"
                         android:maxLines="1"
-                        android:gravity="start"
                         android:textColorHint="@color/black_bg1" />
 
 
@@ -413,6 +379,7 @@
                         android:id="@+id/endtripimgiv"
                         android:layout_width="@dimen/icon"
                         android:layout_height="@dimen/icon"
+                        android:layout_marginStart="@dimen/card_margin"
                         android:layout_marginLeft="@dimen/card_margin"
                         android:background="@drawable/ic_photo_camera_blue_24dp"
                         android:gravity="start"
@@ -423,105 +390,92 @@
 
 
                 <View
+                    android:id="@+id/line_view2"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_1dp"
-                    android:layout_marginEnd="@dimen/values_editextWidth"
+                    android:layout_below="@+id/endingtriplayout"
                     android:layout_marginStart="@dimen/values_editextWidth"
                     android:layout_marginTop="@dimen/survey_group_margin_height"
+                    android:layout_marginEnd="@dimen/values_editextWidth"
                     android:background="@color/divider_view_color" />
 
                 <RelativeLayout
                     android:id="@+id/distancelayout"
-                    android:layout_width="fill_parent"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/store_margin_top"
+                    android:layout_below="@+id/line_view2"
                     android:orientation="horizontal"
-                    android:padding="15dp">
+                    android:layout_margin="@dimen/store_margin_top"
+                    android:padding="@dimen/dimens_14dp">
 
                     <TextView
                         android:id="@+id/distencetxtview"
-                        style="@style/TextViewListItemPrimary"
+                        style="@style/TextViewCaptionNormal"
                         android:layout_width="@dimen/order_stock_list_product_name_width"
                         android:layout_height="wrap_content"
                         android:layout_alignParentStart="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
                         android:padding="5dp"
                         android:text="@string/distance_covered"
-                        android:textColor="@color/black_bg1"
-                        android:layout_alignParentLeft="true" />
+                        android:textColor="@color/black_bg1" />
 
                     <TextView
                         android:id="@+id/distance_covered"
+                        style="@style/TextViewNormal"
                         android:layout_width="@dimen/day_spinner_width"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
                         android:layout_toStartOf="@+id/kms2"
+                        android:layout_toLeftOf="@+id/kms2"
                         android:gravity="start"
                         android:text="@string/zero"
-                        android:textColor="@color/black_bg1"
-                        android:layout_toLeftOf="@+id/kms2"></TextView>
+                        android:textColor="@color/black_bg1" />
 
                     <TextView
                         android:id="@+id/kms2"
-                        style="@style/TextViewListItemValues"
+                        style="@style/TextViewCaptionNormal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
                         android:padding="5dp"
                         android:text="@string/km"
-                        android:textColor="@color/black_bg1"
-                        android:layout_alignParentRight="true" />
+                        android:textColor="@color/black_bg1" />
                 </RelativeLayout>
 
-            </LinearLayout>
+            </RelativeLayout>
 
         </android.support.v7.widget.CardView>
     </ScrollView>
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/footer"
-        android:background="@color/light_gray"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:id="@+id/footer1"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/ret_list_div"
-            android:background="@color/white_box_border"
-            android:gravity="center_horizontal">
-
-            <Button
-                android:id="@+id/startjourney"
-                style="?attr/roundedCustomButtonNormal"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="@dimen/target_top_margin"
-                android:text="@string/start_journey"
-                android:textAllCaps="false" />
-
-            <Button
-                android:id="@+id/endjourney"
-                style="?attr/roundedCustomButtonNormal"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="@dimen/target_top_margin"
-                android:text="@string/end_journey"
-                android:textAllCaps="false" />
-
-        </LinearLayout>
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/footer"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:orientation="vertical">
+        android:background="?attr/customFooterBackgroundColor"
+        android:gravity="center_horizontal|end"
+        android:padding="5dp">
 
-        <include
-            layout="@layout/keypad"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
+        <Button
+            android:id="@+id/startjourney"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/target_top_margin"
+            android:text="@string/start_journey"
+            android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/endjourney"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_gravity="center_vertical"
+            android:layout_margin="@dimen/target_top_margin"
+            android:text="@string/end_journey"
+            android:textAllCaps="false" />
+
     </LinearLayout>
 
 </RelativeLayout>

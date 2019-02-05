@@ -84,6 +84,7 @@ import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.RetailerOTPDialog;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 
 
@@ -3329,8 +3330,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                     }
                 }
 
-                Uri uri = bmodel.profilehelper.getUriFromFile(HomeScreenFragment.photoPath + "/" + imageFileName);
-                cameraFilePath = HomeScreenFragment.photoPath + "/" + imageFileName;
+                Uri uri = bmodel.profilehelper.getUriFromFile(AppUtils.photoFolderPath + "/" + imageFileName);
+                cameraFilePath = AppUtils.photoFolderPath + "/" + imageFileName;
                 imageView.setImageDrawable(null);
                 imageView.invalidate();
                 imageView.setImageURI(uri);
@@ -4176,8 +4177,8 @@ public class ProfileEditFragment extends IvyBaseFragment
             }
             try {
                 Intent intent = new Intent(getActivity(), CameraActivity.class);
-                intent.putExtra(getResources().getString(R.string.quality), 40);
-                intent.putExtra(getResources().getString(R.string.path), HomeScreenFragment.photoPath + "/" + ((!isForLatLong) ? imageFileName : bmodel.latlongImageFileName));
+                intent.putExtra(CameraActivity.QUALITY, 40);
+                intent.putExtra(CameraActivity.PATH, AppUtils.photoFolderPath + "/" + ((!isForLatLong) ? imageFileName : bmodel.latlongImageFileName));
                 startActivityForResult(intent, (!isForLatLong) ? CAMERA_REQUEST_CODE : LATLONG_CAMERA_REQUEST_CODE);
 
             } catch (Exception e) {
@@ -4210,7 +4211,7 @@ public class ProfileEditFragment extends IvyBaseFragment
         try {
             String[] imgPaths = retailerObj.getProfileImagePath().split("/");
             String path = imgPaths[imgPaths.length - 1];
-            Uri uri = bmodel.profilehelper.getUriFromFile(HomeScreenFragment.photoPath + "/" + path);
+            Uri uri = bmodel.profilehelper.getUriFromFile(AppUtils.photoFolderPath + "/" + path);
             imageView.invalidate();
             imageView.setImageURI(uri);
         } catch (Exception e) {

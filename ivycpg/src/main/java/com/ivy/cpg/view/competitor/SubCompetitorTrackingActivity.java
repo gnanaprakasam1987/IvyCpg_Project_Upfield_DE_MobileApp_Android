@@ -57,6 +57,7 @@ import com.ivy.sd.png.util.DateUtil;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -652,7 +653,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
     private void setPictureToImageView(String imageName, final ImageView imageView) {
         Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_photo_camera_blue_24dp);
         Glide.with(SubCompetitorTrackingActivity.this)
-                .load(HomeScreenFragment.photoPath + "/" + imageName)
+                .load(AppUtils.photoFolderPath + "/" + imageName)
                 .asBitmap()
                 .centerCrop()
                 .placeholder(new BitmapDrawable(getResources(), defaultIcon))
@@ -689,7 +690,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
             String fnameStarts = path_prefix + "_" + Commons.now(Commons.DATE);
 
             boolean nfiles_there = bmodel.checkForNFilesInFolder(
-                    HomeScreenFragment.folder.getPath(), 1, fnameStarts);
+                    AppUtils.photoFolderPath, 1, fnameStarts);
 
             if (nfiles_there) {
                 if (isCompPhoto)
@@ -704,17 +705,17 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                     this.sendBroadcast(i);
                     Thread.sleep(100);
 
-                    String _path = HomeScreenFragment.photoPath + "/" + imageName;
+                    String _path = AppUtils.photoFolderPath + "/" + imageName;
                     bmodel.getPhotosTakeninCurrentCompetitorTracking().put(trackinglistId + "", _path);
 
                     Intent intent = new Intent(this,
                             CameraActivity.class);
-                    intent.putExtra(getResources().getString(R.string.quality),
+                    intent.putExtra(CameraActivity.QUALITY,
                             40);
-                    intent.putExtra(getResources().getString(R.string.path),
+                    intent.putExtra(CameraActivity.PATH,
                             _path);
                     intent.putExtra(
-                            getResources().getString(R.string.saverequired),
+                            CameraActivity.ISSAVEREQUIRED,
                             false);
                     startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
@@ -804,18 +805,18 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                         bmodel.competitorTrackingHelper
                                 .deleteImageName(imageNameStarts);
                         bmodel.competitorTrackingHelper.deleteFiles(
-                                HomeScreenFragment.folder.getPath(), imageNameStarts);
+                                AppUtils.photoFolderPath, imageNameStarts);
                         dialog.dismiss();
 
                         Intent intent = new Intent(SubCompetitorTrackingActivity.this,
                                 CameraActivity.class);
-                        String _path = HomeScreenFragment.photoPath + "/" + imageName;
+                        String _path = AppUtils.photoFolderPath + "/" + imageName;
                         intent.putExtra(
-                                getResources().getString(R.string.quality), 40);
+                                CameraActivity.QUALITY, 40);
                         intent.putExtra(
-                                getResources().getString(R.string.path), _path);
+                                CameraActivity.PATH, _path);
                         intent.putExtra(
-                                getResources().getString(R.string.saverequired),
+                                CameraActivity.ISSAVEREQUIRED,
                                 false);
                         startActivityForResult(intent, CAMERA_REQUEST_CODE);
 

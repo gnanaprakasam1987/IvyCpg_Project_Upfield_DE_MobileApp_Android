@@ -21,6 +21,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -57,6 +58,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
     private BusinessModel bmodel;
     private int mSelectedPos = 0;
     private SalesReturnDeliveryAdapter salesReturnDeliveryAdapter;
+    LinearLayout ll_keypad;
 
     @Nullable
     @Override
@@ -133,7 +135,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                 (view.findViewById(R.id.cqty)).setVisibility(View.GONE);
                 (view.findViewById(R.id.actual_caseQty)).setVisibility(View.GONE);
             }
-
+            ll_keypad = (LinearLayout) view.findViewById(R.id.ll_keypad);
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -480,6 +482,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                     }
                 }
                 if (bmodel.configurationMasterHelper.IS_SR_DELIVERY_SKU_LEVEL) {
+                    ll_keypad.setVisibility(View.GONE);
                     actualCaseQuantity.setOnClickListener(this);
                     actualPieceQuantity.setOnClickListener(this);
                 }

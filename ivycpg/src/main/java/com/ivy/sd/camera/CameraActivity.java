@@ -13,6 +13,10 @@ import com.ivy.sd.png.model.BusinessModel;
 
 public class CameraActivity extends IvyBaseActivityNoActionBar {
 
+    public static final String QUALITY = "quality";
+    public static final String PATH = "path";
+    public static final String ISSAVEREQUIRED = "IsSaveRequired";
+
     private static final int RESULT_SAVE = 1;
     private static final int RESULT_SAVE_NATIVE = 2;
     private BusinessModel bmodel;

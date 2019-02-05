@@ -416,7 +416,7 @@
             android:name="com.ivy.cpg.view.van.stockproposal.StockProposalScreen"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DeviceStatusActivity"
+            android:name="com.ivy.cpg.view.homescreen.deviceStatus.DeviceStatusActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.OrderDiscount"
@@ -536,7 +536,7 @@
             android:name="com.ivy.cpg.view.reports.distorderreport.DistOrderreportdetail"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.UserFeedbackActivity"
+            android:name="com.ivy.cpg.view.homescreen.userFeedback.UserFeedbackActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.profile.ProfileActivity"
@@ -874,6 +874,8 @@
         <activity android:name="com.ivy.cpg.view.supplierselect.SupplierSelectionActivity"
             android:screenOrientation="portrait"/>
         <activity android:name="com.ivy.cpg.view.order.scheme.SchemeDetailsActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.webview.PrivacyPolicyActivity"
             android:screenOrientation="portrait"/>
     </application>
 

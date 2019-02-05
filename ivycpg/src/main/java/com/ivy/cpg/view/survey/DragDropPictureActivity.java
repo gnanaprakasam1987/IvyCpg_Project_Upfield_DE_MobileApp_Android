@@ -35,6 +35,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.AppUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -445,8 +446,7 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
                         Intent intent = new Intent(
                                 DragDropPictureActivity.this,
                                 CameraActivity.class);
-                        String path = HomeScreenFragment.folder
-                                .getPath() + "/" + imageName;
+                        String path = AppUtils.photoFolderPath + "/" + imageName;
                         if (i == 0) {
                             questBO.setImage1Path(path);
                             questBO.setImage1Captured(true);
@@ -457,8 +457,8 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
 
                         pathSrc = path;
                         Log.e("TakenPath", path);
-                        intent.putExtra("quality", 40);
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
+                        intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 CAMERA_REQUEST_CODE);
                     } catch (Exception e) {

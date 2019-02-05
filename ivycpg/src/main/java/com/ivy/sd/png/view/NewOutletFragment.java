@@ -5866,9 +5866,9 @@ public class NewOutletFragment extends IvyBaseFragment
         try {
 
             Intent intent = new Intent(getActivity(), CameraActivity.class);
-            intent.putExtra("quality", 40);
+            intent.putExtra(CameraActivity.QUALITY, 40);
             String _path = PHOTO_PATH + "/" + imageName;
-            intent.putExtra("path", _path);
+            intent.putExtra(CameraActivity.PATH, _path);
             startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
         } catch (Exception e) {
@@ -5896,7 +5896,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         outlet.getImageId().remove(Integer.valueOf(imageId));
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
                         String _path = PHOTO_PATH + "/" + imageName;
                         intent.putExtra("path", _path);
                         startActivityForResult(intent, CAMERA_REQUEST_CODE);
