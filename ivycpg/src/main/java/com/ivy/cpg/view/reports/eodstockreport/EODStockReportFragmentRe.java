@@ -15,6 +15,8 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 
+import org.jetbrains.annotations.NotNull;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -33,12 +35,15 @@ public class EODStockReportFragmentRe extends Fragment implements IEodStockView 
     LinearLayout layoutPrint;
 
     private void initialize() {
-        modelPresenter = new EodStockModel(getActivity(), EODStockReportFragmentRe.this);
+        if (getActivity() != null)
+            modelPresenter = new EodStockModel(getActivity(), EODStockReportFragmentRe.this);
     }
 
     private void initializeBusinessModel() {
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        if (getActivity() != null) {
+            bmodel = (BusinessModel) getActivity().getApplicationContext();
+            bmodel.setContext(getActivity());
+        }
     }
 
     @Override
@@ -50,7 +55,7 @@ public class EODStockReportFragmentRe extends Fragment implements IEodStockView 
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_report_eod_stock,
@@ -73,7 +78,7 @@ public class EODStockReportFragmentRe extends Fragment implements IEodStockView 
 
         btnPrint.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                bmodel.mCommonPrintHelper.xmlRead("eod", false, null, null, null, bmodel.reportHelper.getEODStockReport(),null);
+                bmodel.mCommonPrintHelper.xmlRead("eod", false, null, null, null, bmodel.reportHelper.getEODStockReport(), null);
 
                 Intent intent = new Intent(getActivity(),
                         CommonPrintPreviewActivity.class);
@@ -83,7 +88,8 @@ public class EODStockReportFragmentRe extends Fragment implements IEodStockView 
                 intent.putExtra("isHomeBtnEnable", true);
                 intent.putExtra("sendMailAndLoadClass", "PRINT_FILE_ORDER");
                 startActivity(intent);
-                getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+                if (getActivity() != null)
+                    getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             }
         });
 
