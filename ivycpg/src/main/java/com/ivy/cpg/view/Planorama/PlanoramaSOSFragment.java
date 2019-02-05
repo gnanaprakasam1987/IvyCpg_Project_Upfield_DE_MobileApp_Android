@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
+import com.ivy.sd.png.bo.SOSBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 
@@ -45,9 +46,9 @@ public class PlanoramaSOSFragment extends IvyBaseFragment {
 
 
     private class MyAdapter extends BaseAdapter {
-        private final ArrayList<PlanoramaProductBO> items;
+        private final ArrayList<SOSBO> items;
 
-        public MyAdapter(ArrayList<PlanoramaProductBO> items) {
+        public MyAdapter(ArrayList<SOSBO> items) {
             super();
             this.items = items;
         }
@@ -97,8 +98,9 @@ public class PlanoramaSOSFragment extends IvyBaseFragment {
             holder.planoramaProductBO = items.get(position);
 
             holder.textView_productName.setText(holder.planoramaProductBO.getProductName());
-            holder.textView_actual.setText(String.valueOf(holder.planoramaProductBO.getSosActual()));
-            holder.textView_target.setText(String.valueOf(holder.planoramaProductBO.getSosTarget()));
+
+            holder.textView_actual.setText(holder.planoramaProductBO.getLocations().get(0).getPercentage()+" ("+holder.planoramaProductBO.getLocations().get(0).getActual()+"/"+holder.planoramaProductBO.getLocations().get(0).getParentTotal()+")");
+            holder.textView_target.setText(String.valueOf(holder.planoramaProductBO.getNorm()));
 
 
 
@@ -107,7 +109,7 @@ public class PlanoramaSOSFragment extends IvyBaseFragment {
     }
 
     class ViewHolder {
-        PlanoramaProductBO planoramaProductBO;
+        SOSBO planoramaProductBO;
         TextView textView_productName,textView_actual,textView_target;
 
     }

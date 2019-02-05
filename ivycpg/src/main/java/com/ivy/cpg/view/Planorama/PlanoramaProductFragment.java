@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -39,6 +40,7 @@ public class PlanoramaProductFragment extends IvyBaseFragment {
     BusinessModel bModel;
     PlanoramaHelper planoramaHelper;
     private EditText QUANTITY;
+    private String append = "";
     private InputMethodManager inputManager;
     int mSelectedLocationIndex=0;
 
@@ -157,7 +159,7 @@ public class PlanoramaProductFragment extends IvyBaseFragment {
                             @SuppressLint("SetTextI18n")
                             public void afterTextChanged(Editable s) {
 
-                               /* if (holder.productObj.getPcUomid() == 0) {
+                               /* if (holder.planoramaProductBO.getPcUomid() == 0) {
                                     holder.shelfPcsQty.removeTextChangedListener(this);
                                     holder.shelfPcsQty.setText("");
                                     holder.shelfPcsQty.addTextChangedListener(this);
@@ -208,20 +210,20 @@ public class PlanoramaProductFragment extends IvyBaseFragment {
                                     }
                                 }
 
-                                /*int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
+                                /*int totValue = getProductTotalValue(holder.planoramaProductBO);
                                 holder.total.setText(totValue + "");
                                 if (totValue > 0) {
                                     holder.mReason.setEnabled(false);
                                     holder.mReason.setSelected(false);
                                     holder.mReason.setSelection(0);
-                                    holder.productObj.getLocations()
+                                    holder.planoramaProductBO.getLocations()
                                             .get(mSelectedLocationIndex)
                                             .setReasonId(0);
                                 } else {
                                     holder.mReason.setEnabled(true);
                                     holder.mReason.setSelected(true);
-                                    holder.mReason.setSelection(stockCheckPresenter.getReasonIndex(holder.productObj
-                                            .getLocations().get(stockCheckPresenter.mSelectedLocationIndex).getReasonId() + ""));
+                                    holder.mReason.setSelection(getReasonIndex(holder.planoramaProductBO
+                                            .getLocations().get(mSelectedLocationIndex).getReasonId() + ""));
                                 }
 
                                 updateFooter();*/
@@ -243,7 +245,7 @@ public class PlanoramaProductFragment extends IvyBaseFragment {
                             public boolean onTouch(View v, MotionEvent event) {
 
                                 QUANTITY = holder.shelfCaseQty;
-                                QUANTITY.setTag(holder.productObj);
+                                QUANTITY.setTag(holder.planoramaProductBO);
                                 int inType = holder.shelfCaseQty
                                         .getInputType();
                                 holder.shelfCaseQty
@@ -264,7 +266,7 @@ public class PlanoramaProductFragment extends IvyBaseFragment {
                     public boolean onTouch(View v, MotionEvent event) {
 
                         QUANTITY = holder.shelfouter;
-                        QUANTITY.setTag(holder.productObj);
+                        QUANTITY.setTag(holder.planoramaProductBO);
                         int inType = holder.shelfouter.getInputType();
                         holder.shelfouter.setInputType(InputType.TYPE_NULL);
                         holder.shelfouter.onTouchEvent(event);
@@ -294,6 +296,8 @@ public class PlanoramaProductFragment extends IvyBaseFragment {
                 holder.editText_sp.setEnabled(true);
                 holder.editText_sho.setEnabled(true);
                 holder.textView_no_facing.setTextColor(getResources().getColor(R.color.colorPrimaryDarkGreen));
+
+                holder.spinner_reason.setSelection(0);
             }
             else {
                 holder.spinner_reason.setEnabled(true);
@@ -301,8 +305,46 @@ public class PlanoramaProductFragment extends IvyBaseFragment {
                 holder.editText_sp.setEnabled(false);
                 holder.editText_sho.setEnabled(false);
                 holder.textView_no_facing.setTextColor(getResources().getColor(R.color.RED));
+
+                holder.spinner_reason.setSelection(getReasonIndex(holder.planoramaProductBO
+                        .getLocations().get(mSelectedLocationIndex).getReasonId() + ""));
             }
 
+
+            if (planoramaHelper.SHOW_STOCK_SP) {
+                if (holder.planoramaProductBO.getLocations()
+                        .get(mSelectedLocationIndex).getShelfPiece() >= 0) {
+                    String strShelfPiece = holder.planoramaProductBO.getLocations()
+                            .get(mSelectedLocationIndex).getShelfPiece()
+                            + "";
+                    holder.editText_sp.setText(strShelfPiece);
+                } else {
+                    holder.editText_sp.setText("");
+                }
+            }
+
+            if (planoramaHelper.SHOW_STOCK_SC) {
+                if (holder.planoramaProductBO.getLocations()
+                        .get(mSelectedLocationIndex).getShelfCase() >= 0) {
+                    String strShelfCase = holder.planoramaProductBO.getLocations()
+                            .get(mSelectedLocationIndex).getShelfCase()
+                            + "";
+                    holder.editText_sc.setText(strShelfCase);
+                } else {
+                    holder.editText_sc.setText("");
+                }
+            }
+            if (planoramaHelper.SHOW_SHELF_OUTER) {
+                if (holder.planoramaProductBO.getLocations()
+                        .get(mSelectedLocationIndex).getShelfOuter() >= 0) {
+                    String strShelfOuter = holder.planoramaProductBO.getLocations()
+                            .get(mSelectedLocationIndex).getShelfOuter()
+                            + "";
+                    holder.editText_sho.setText(strShelfOuter);
+                } else {
+                    holder.editText_sho.setText("");
+                }
+            }
 
 
             return row;
@@ -316,4 +358,59 @@ public class PlanoramaProductFragment extends IvyBaseFragment {
         EditText editText_sp,editText_sc,editText_sho;
 
     }
+
+    /**
+     * Load selected reason name in the Screen
+     *
+     * @param reasonId reason id for which the index need to be found
+     * @return position of the reason id
+     */
+    public int getReasonIndex(String reasonId) {
+        if (spinnerAdapter.getCount() == 0)
+            return 0;
+        int len = spinnerAdapter.getCount();
+        if (len == 0)
+            return 0;
+        for (int i = 0; i < len; ++i) {
+            ReasonMaster s = spinnerAdapter.getItem(i);
+            if (s.getReasonID().equals(reasonId))
+                return i;
+        }
+        return -1;
+    }
+
+    public void numberPressed(View vw) {
+        if (QUANTITY == null) {
+            bModel.showAlert(
+                    getResources().getString(R.string.please_select_item), 0);
+        } else {
+            int id = vw.getId();
+            if (id == R.id.calcdel) {
+                String s = QUANTITY.getText().toString();
+                if (!(s.length() == 0)) {
+                    s = s.substring(0, s.length() - 1);
+                    if (s.length() == 0) {
+                        s = "";
+                    }
+                }
+                QUANTITY.setText(s);
+            } else {
+                if (getView() != null) {
+                    Button ed = getView().findViewById(vw.getId());
+                    append = ed.getText().toString();
+                }
+                eff();
+            }
+        }
+    }
+
+    private void eff() {
+        String s = QUANTITY.getText().toString();
+        if (!"0".equals(s) && !"0.0".equals(s)) {
+            String strQuantity = QUANTITY.getText() + append;
+            QUANTITY.setText(strQuantity);
+        } else
+            QUANTITY.setText(append);
+    }
+
 }

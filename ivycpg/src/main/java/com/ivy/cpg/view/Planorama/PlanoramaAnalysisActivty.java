@@ -1,7 +1,9 @@
 package com.ivy.cpg.view.Planorama;
 
+import android.app.AlertDialog;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -10,7 +12,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.ivy.sd.png.asean.view.R;
@@ -27,6 +31,8 @@ public class PlanoramaAnalysisActivty extends IvyBaseActivityNoActionBar {
 
     private String product_tab_title,pack_tab_title,sos_tab_title;
     android.support.v7.widget.Toolbar toolbar;
+    Button button_save;
+    PlanoramaHelper planoramaHelper;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,11 +52,26 @@ public class PlanoramaAnalysisActivty extends IvyBaseActivityNoActionBar {
 
         tabLayout = findViewById(R.id.tab_layout);
         viewPager = findViewById(R.id.pager);
+        button_save=findViewById(R.id.button_save);
         is7InchTablet = this.getResources().getConfiguration().isLayoutSizeAtLeast(SCREENLAYOUT_SIZE_LARGE);
 
         product_tab_title=getResources().getString(R.string.products);
         pack_tab_title="Pack";
         sos_tab_title="SOS";
+
+        planoramaHelper=PlanoramaHelper.getInstance(this);
+        button_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(planoramaHelper.hasStockCheck(planoramaHelper.getmProductList())) {
+                 new saveStockAsync().execute();
+                }
+                else {
+                    Toast.makeText(PlanoramaAnalysisActivty.this, getResources().getString(R.string.no_data_tosave), Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         addTabLayout();
     }
@@ -62,9 +83,9 @@ public class PlanoramaAnalysisActivty extends IvyBaseActivityNoActionBar {
 
         try {
 
-            tabLayout.addTab(tabLayout.newTab().setText(product_tab_title));
+            tabLayout.addTab(tabLayout.newTab().setText(product_tab_title).setTag(product_tab_title));
             //tabLayout.addTab(tabLayout.newTab().setText(pack_tab_title));
-            tabLayout.addTab(tabLayout.newTab().setText(sos_tab_title));
+            tabLayout.addTab(tabLayout.newTab().setText(sos_tab_title).setTag(sos_tab_title));
 
         } catch (Exception ex) {
             Commons.printException("Error while setting label for Profile Tab", ex);
@@ -159,5 +180,66 @@ public class PlanoramaAnalysisActivty extends IvyBaseActivityNoActionBar {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void numberPressed(View vw) {
+        try {
+            ((PlanoramaProductFragment) viewPager.getAdapter().instantiateItem(viewPager, viewPager.getCurrentItem())).numberPressed(vw);
+
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+    }
+
+    private class saveStockAsync extends AsyncTask<String, Void, String> {
+
+        private AlertDialog.Builder builder;
+        private AlertDialog alertDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            builder = new AlertDialog.Builder(PlanoramaAnalysisActivty.this);
+
+            customProgressDialog(builder, getResources().getString(R.string.saving));
+            alertDialog = builder.create();
+            alertDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... url) {
+
+
+            try {
+                    planoramaHelper.saveStock(PlanoramaAnalysisActivty.this, planoramaHelper.getmProductList());
+                    planoramaHelper.saveSOS(PlanoramaAnalysisActivty.this, planoramaHelper.getmSOSList());
+
+            }
+            catch (Exception ex){
+                Commons.printException(ex);
+                return "1";
+            }
+
+            return "0";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            if(result.equals("0"))
+            Toast.makeText(PlanoramaAnalysisActivty.this,getResources().getString(R.string.saved_successfully),Toast.LENGTH_LONG).show();
+            else Toast.makeText(PlanoramaAnalysisActivty.this,getResources().getString(R.string.error_in_saving),Toast.LENGTH_LONG).show();
+
+            if(alertDialog!=null)
+                alertDialog.dismiss();
+
+            finish();
+            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+
+        }
+    }
+
 
 }

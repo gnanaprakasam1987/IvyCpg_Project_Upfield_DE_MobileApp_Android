@@ -145,4 +145,5 @@
     <string name="load_analysis">Load Analysis</string>
     <string name="visit_created_successfully">Visit created Successfully</string>
     <string name="error_in_creating_visit">Error in creating visit</string>
+    <string name="error_in_saving">Error in Saving</string>
 </resources>

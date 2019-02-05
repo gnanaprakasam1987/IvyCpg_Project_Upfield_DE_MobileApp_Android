@@ -29,6 +29,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 
 import org.joda.time.DateTime;
@@ -164,10 +165,12 @@ public class PlanoramaActivity extends IvyBaseActivityNoActionBar {
         @Override
         protected String doInBackground(String... url) {
 
+
             String token=authenticate();
             if(!token.equals("")){
                 downloadVisits(token);
             }
+            PlanoramaHelper.getInstance(PlanoramaActivity.this).loadStockCheckConfiguration(PlanoramaActivity.this,bModel.getRetailerMasterBO().getSubchannelid());
 
             PlanoramaHelper.getInstance(PlanoramaActivity.this).getImageNameList(PlanoramaActivity.this);
 

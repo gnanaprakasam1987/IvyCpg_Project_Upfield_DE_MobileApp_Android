@@ -17,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.sf.SalesFundamentalHelper;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapViewPresenter;
 import com.ivy.sd.png.asean.view.R;
@@ -361,7 +362,7 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
             if(planoramaHelper.isAnalysisReady(responseOutput.toString())) {
                 planoramaHelper.prepareProductList(this,responseOutput.toString());
                 planoramaHelper.updateProductAvailability(responseOutput.toString());
-                planoramaHelper.preparePlanoramaSOSList(responseOutput.toString());
+                planoramaHelper.preparePlanoramaSOSList(this,responseOutput.toString());
             }
             else{
                 planoramaHelper.getmProductList().clear();
@@ -406,8 +407,27 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
             try {
                 String token = authenticate();
                 if (!token.equals("")) {
-                    return downloadVisitAnalysis(token, visitId);
+                    String status=downloadVisitAnalysis(token, visitId);
+
+                    if(status.equals("0")) {
+                        //Analysis ready, so updating existing stock values..
+                        if (mBModel.hasAlreadyStockChecked(mBModel.getRetailerMasterBO()
+                                .getRetailerID())) {
+                            mBModel.setEditStockCheck(true);
+                            planoramaHelper.loadStockCheckedProducts(PlanoramaDetailActivity.this, mBModel
+                                    .getRetailerMasterBO().getRetailerID());
+
+                        }
+
+
+
+                    }
+
+                    return status;
+
                 } else return "1";
+
+
             }
             catch (Exception ex){
                 Commons.printException(ex);
@@ -420,20 +440,23 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
 
+            if(alertDialog!=null)
+                alertDialog.dismiss();
+
             if(result.equals("1"))
             Toast.makeText(PlanoramaDetailActivity.this,getResources().getString(R.string.authentication_error),Toast.LENGTH_LONG).show();
             else if(result.equals("2"))
                 Toast.makeText(PlanoramaDetailActivity.this,"Analysis result is not ready.",Toast.LENGTH_LONG).show();
             else if(result.equals("3"))
                 Toast.makeText(PlanoramaDetailActivity.this,"Error in fetching analysis result",Toast.LENGTH_LONG).show();
+            else  startActivity(new Intent(PlanoramaDetailActivity.this,PlanoramaAnalysisActivty.class));
 
 
 
-                startActivity(new Intent(PlanoramaDetailActivity.this,PlanoramaAnalysisActivty.class));
 
 
-            if(alertDialog!=null)
-                alertDialog.dismiss();
+
+
         }
     }
 
