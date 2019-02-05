@@ -110,7 +110,8 @@ public class PlanningMapFragment extends SupportMapFragment implements
     private TextView infoSnippet, infoDistance;
     private Button startVisitBtn;
     private LinearLayout startVisitLty;
-    private ImageButton carDirBtn, walkDirBtn, clearRouteBtn;
+    private ImageButton carDirBtn;
+    private ImageButton walkDirBtn;
     private LayoutInflater layInflater;
     private OnInfoWindowElemTouchListener infoButtonListener;
     private boolean showToast = true;
@@ -202,7 +203,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
         walkDirBtn = (ImageButton) rootView.findViewById(R.id.walk_direction);
         bottomLayout = (LinearLayout) rootView.findViewById(R.id.bottom_view);
         hrsTextView = (TextView) rootView.findViewById(R.id.hrs_txt_value);
-        clearRouteBtn = (ImageButton) rootView.findViewById(R.id.clear_route_id);
+        ImageButton clearRouteBtn = (ImageButton) rootView.findViewById(R.id.clear_route_id);
         crossLine = (ImageView) rootView.findViewById(R.id.cross_line);
 
 

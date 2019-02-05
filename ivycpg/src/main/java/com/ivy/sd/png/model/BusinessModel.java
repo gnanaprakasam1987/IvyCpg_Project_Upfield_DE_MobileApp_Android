@@ -3274,8 +3274,10 @@ public class BusinessModel extends Application {
                             DataMembers.actHomeScreenTwo);
                 } else if (idd == DataMembers.NOTIFY_CLOSE_HOME) {
                     HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) ctx).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
-                    if (currentFragment != null)
+                    if (currentFragment != null) {
+                        currentFragment.loadHomeMenuConfiguration();
                         currentFragment.refreshList(false);
+                    }
                 } else if (idd == DataMembers.NOTIFY_SALES_RETURN_SAVED) {
                     SalesReturnSummery frm = (SalesReturnSummery) ctx;
                     Intent intent = new Intent();

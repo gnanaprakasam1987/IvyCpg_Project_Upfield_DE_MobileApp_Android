@@ -1,5 +1,9 @@
 package com.ivy.cpg.view.homescreen;
 
+import com.ivy.sd.png.asean.view.R;
+
+import java.util.HashMap;
+
 public class HomeMenuConstants {
 
     public static final String MENU_PLANNING_CONSTANT = "Day Planning";
@@ -54,5 +58,50 @@ public class HomeMenuConstants {
     public static final String MENU_OFLNE_PLAN = "MENU_OFLNE_PLAN"; //Offline Planning
     public static final String MENU_SUBD = "MENU_SUBD";
     public static final String MENU_Q_CALL = "MENU_QUICK_CALL";
+
+    public static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>(){{
+        put(MENU_PLANNING, R.drawable.ic_vector_planning);
+        put(MENU_VISIT, R.drawable.ic_vector_tradecoverage);
+        put(MENU_MVP, R.drawable.ic_mvp_icon);
+        put(MENU_SUBD, R.drawable.ic_vector_gallery);
+        put(MENU_Q_CALL, R.drawable.ic_vector_tradecoverage);
+        put(MENU_LOAD_MANAGEMENT, R.drawable.ic_load_mgmt_icon);
+        put(MENU_PLANNING_SUB, R.drawable.ic_action_icon_reports);
+        put(MENU_NEW_RETAILER, R.drawable.ic_new_retailer_icon);
+        put(MENU_LOAD_REQUEST, R.drawable.ic_stock_proposal_icon);
+        put(MENU_REPORT, R.drawable.ic_vector_reports);
+        put(MENU_SYNC, R.drawable.ic_vector_sync);
+        put(MENU_DASH_KPI, R.drawable.ic_vector_dashboard);
+        put(MENU_DASH, R.drawable.ic_vector_dashboard);
+        put(MENU_DASH_DAY, R.drawable.ic_vector_dashboard);
+        put(MENU_DASH_INC, R.drawable.ic_vector_dashboard);
+        put(MENU_SKUWISESTGT, R.drawable.ic_vector_dashboard);
+        put(MENU_JOINT_CALL, R.drawable.ic_vector_jointcall);
+        put(MENU_EMPTY_RECONCILIATION, R.drawable.ic_empty_reconcilation_icon);
+        put(MENU_ATTENDANCE, R.drawable.ic_vector_out_of_trade);
+        put(MENU_REALLOCATION, R.drawable.ic_reallocation_icon);
+        put(MENU_DIGITIAL_SELLER, R.drawable.ic_vector_gallery);
+        put(MENU_ROAD_ACTIVITY, R.drawable.icon_reports);
+        put(MENU_PRESENCE, R.drawable.ic_vector_out_of_trade);
+        put(MENU_IN_OUT, R.drawable.ic_vector_out_of_trade);
+        put(MENU_LEAVE_APR, R.drawable.ic_vector_out_of_trade);
+        put(MENU_EXPENSE, R.drawable.ic_expense_icon);
+        put(MENU_NEWRET_EDT, R.drawable.ic_new_retailer_icon);
+        put(MENU_TASK_NEW, R.drawable.task);
+        put(MENU_SURVEY_SW, R.drawable.ic_survey_icon);
+        put(MENU_SURVEY01_SW, R.drawable.ic_survey_icon);
+        put(MENU_SURVEY_BA_CS, R.drawable.ic_survey_icon);
+        put(MENU_JOINT_ACK, R.drawable.ic_survey_icon);
+        put(MENU_OFLNE_PLAN, R.drawable.ic_expense_icon);
+        put(MENU_NON_FIELD, R.drawable.ic_vector_planning);
+        put(MENU_BACKUP_SELLER, R.drawable.ic_reallocation_icon);
+        put(MENU_SUPERVISOR_REALTIME, R.drawable.ic_new_retailer_icon);
+        put(MENU_SUPERVISOR_MOVEMENT, R.drawable.ic_new_retailer_icon);
+        put(MENU_SUPERVISOR_CALLANALYSIS, R.drawable.ic_new_retailer_icon);
+        put(MENU_ROUTE_KPI, R.drawable.ic_vector_dashboard);
+        put(MENU_DENOMINATION, R.drawable.ic_vector_dashboard);
+
+    }};
+
 
 }
