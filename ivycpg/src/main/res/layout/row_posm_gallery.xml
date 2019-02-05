@@ -15,7 +15,8 @@
     <LinearLayout
         android:id="@+id/lldelete"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/footer_height"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/footer_height"
         android:layout_alignParentBottom="true"
         android:background="@color/light_gray"
         android:gravity="center">
