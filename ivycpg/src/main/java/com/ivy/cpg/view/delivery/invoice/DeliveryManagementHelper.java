@@ -454,9 +454,9 @@ public class DeliveryManagementHelper {
                         + ","
                         + DatabaseUtils.sqlEscapeString(productMasterBO.getProductID())
                         + ","
-                        + pieceQty
+                        + totalQty
                         + ","
-                        + caseQty
+                        + 0
                         + ","
                         + 0
                         + ","
@@ -468,7 +468,7 @@ public class DeliveryManagementHelper {
                         + ","
                         + AppUtils.QT("")
                         + ","
-                        + outerQty
+                        + 0
                         + ","
                         + productMasterBO.getOutersize()
                         + ","
