@@ -33,6 +33,7 @@ import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.zebra.sdk.comm.BluetoothConnection;
@@ -189,7 +190,7 @@ public class EODStockReportPreviewScreen extends IvyBaseActivityNoActionBar {
     private void doInitialize() {
         try {
 
-            mDetails = bmodel.reportHelper.getEODStockReport();
+            mDetails = ReportHelper.getInstance(this).getEODStockReport();
             String caseOrPieceOrOuter = "";
             String slash = "";
             if (bmodel.configurationMasterHelper.CONVERT_EOD_SIH_PS ||

@@ -30,7 +30,7 @@ public class CompetitorTrackingHelper {
 
     protected CompetitorTrackingHelper(Context context) {
         this.mContext = context;
-        this.bmodel = (BusinessModel) context;
+        this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     public static CompetitorTrackingHelper getInstance(Context context) {
@@ -253,12 +253,11 @@ public class CompetitorTrackingHelper {
 
             orderDetailCursor.close();
 
-            int siz = bmodel.competitorTrackingHelper.getCompetitorMaster()
+            int siz = getCompetitorMaster()
                     .size();
             for (int i = 0; i < siz; ++i) {
 
-                competitor = bmodel.competitorTrackingHelper
-                        .getCompetitorMaster().get(i);
+                competitor = getCompetitorMaster().get(i);
 
                 ArrayList<CompetetorPOSMBO> checktrackinglist = competitor
                         .getCompetitoreason();

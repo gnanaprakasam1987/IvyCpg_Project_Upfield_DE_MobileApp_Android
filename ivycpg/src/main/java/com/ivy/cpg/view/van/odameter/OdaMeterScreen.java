@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -189,7 +190,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         vannovalue.setText(" " + bmodel.userMasterHelper.getUserMasterBO().getVanno());
         //findViewById(R.id.calcdot).setVisibility(View.VISIBLE);
 
-        product = bmodel.loadManagementHelper.downloadOdameter();
+        product = LoadManagementHelper.getInstance(this).downloadOdameter();
 
         if (product == null)
             product = new VanLoadMasterBO();

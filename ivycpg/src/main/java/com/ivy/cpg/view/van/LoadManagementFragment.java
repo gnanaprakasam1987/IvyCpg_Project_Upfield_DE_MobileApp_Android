@@ -31,6 +31,7 @@ import com.ivy.cpg.view.van.damagestock.DamageStockHelper;
 import com.ivy.cpg.view.van.manualvanload.ManualVanLoadActivity;
 import com.ivy.cpg.view.van.manualvanload.ManualVanLoadHelper;
 import com.ivy.cpg.view.van.odameter.OdaMeterScreen;
+import com.ivy.cpg.view.van.stockproposal.StockProposalModuleHelper;
 import com.ivy.cpg.view.van.stockproposal.StockProposalScreen;
 import com.ivy.cpg.view.van.stockview.StockViewActivity;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyActivity;
@@ -83,12 +84,16 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private AlertDialog alertDialog;
     private View view;
     private boolean isClick = false;
+    private LoadManagementHelper loadManagementHelper;
+    private StockProposalModuleHelper stockProposalModuleHelper;
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        loadManagementHelper = LoadManagementHelper.getInstance(getActivity());
+        stockProposalModuleHelper = StockProposalModuleHelper.getInstance(getActivity());
     }
 
     @Nullable
@@ -578,7 +583,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
             if (menuCode.equals(MENU_VANLOAD_STOCK_VIEW)
                     || menuCode.equals(MENU_VAN_UNLOAD)) {
                 if (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION)
-                    distance = bmodel.loadManagementHelper.checkIsAllowed(menuCode);
+                    distance = loadManagementHelper.checkIsAllowed(menuCode);
             }
 
 
@@ -728,7 +733,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private void downloadVanloadData() {
         downloadAsyncTaskInterface.showProgress(new AlertDialog.Builder(getActivity()));
         AppSchedulerProvider appSchedulerProvider = new AppSchedulerProvider();
-        new CompositeDisposable().add(bmodel.loadManagementHelper.stockRefresh(getActivity())
+        new CompositeDisposable().add(loadManagementHelper.stockRefresh(getActivity())
                 .subscribeOn(appSchedulerProvider.io())
                 .observeOn(appSchedulerProvider.ui())
                 .subscribe(new Consumer<String>() {
@@ -790,9 +795,9 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 menuCode, menuCode);
 
         bmodel.updateProductUOM(menuCode, 2);
-        bmodel.stockProposalModuleHelper.loadInitiative();
-        bmodel.stockProposalModuleHelper.loadSBDData();
-        bmodel.stockProposalModuleHelper.loadPurchased();
+        stockProposalModuleHelper.loadInitiative();
+        stockProposalModuleHelper.loadSBDData();
+        stockProposalModuleHelper.loadPurchased();
     }
 
     private void loadSellerSurveyData(String menuCode){

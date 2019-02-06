@@ -17,10 +17,12 @@ public class OrderStatusPresenterImpl implements OrderStatusContractor.OrderStat
     private OrderStatusContractor.OrderStatusView orderStatusView;
     Vector<OrderStatusReportBO> orderStatusReportList;
     Vector<OrderStatusRetailerReportBO> orderStatusRetailerReportList;
+    private OrderStatusReportHelper orderStatusReportHelper;
 
     OrderStatusPresenterImpl(Context context) {
         this.context = context;
         businessModel = (BusinessModel) context.getApplicationContext();
+        orderStatusReportHelper = OrderStatusReportHelper.getInstance(context);
         businessModel.configurationMasterHelper.loadOrderStatusReportConfiguration();
     }
 
@@ -33,19 +35,19 @@ public class OrderStatusPresenterImpl implements OrderStatusContractor.OrderStat
     public void downloadOrderStatusReportList(boolean isOrderScreen) {
         try {
             if(!isOrderScreen){
-                businessModel.orderStatusReportHelper.getInvoiceStatusList();
-                businessModel.orderStatusReportHelper.getInvoiceStatusRetailerList();
+                orderStatusReportHelper.getInvoiceStatusList();
+                orderStatusReportHelper.getInvoiceStatusRetailerList();
             } else {
-                businessModel.orderStatusReportHelper.getOrderStatusList();
-                businessModel.orderStatusReportHelper.getOrderStatusRetailerList();
+                orderStatusReportHelper.getOrderStatusList();
+                orderStatusReportHelper.getOrderStatusRetailerList();
             }
-            if (businessModel.orderStatusReportHelper.getOrderStatusReportList() == null ||
-                    businessModel.orderStatusReportHelper.getOrderStatusReportList().size() == 0) {
+            if (orderStatusReportHelper.getOrderStatusReportList() == null ||
+                    orderStatusReportHelper.getOrderStatusReportList().size() == 0) {
                 orderStatusView.setEmptyView(context.getResources().getString(R.string.no_data_exists));
                 return;
             }
-            setOrderStatusReportList(businessModel.orderStatusReportHelper.getOrderStatusReportList());
-            setOrderStatusRetailerReportList(businessModel.orderStatusReportHelper.getOrderStatusRetailerReportList());
+            setOrderStatusReportList(orderStatusReportHelper.getOrderStatusReportList());
+            setOrderStatusRetailerReportList(orderStatusReportHelper.getOrderStatusRetailerReportList());
 
             orderStatusView.setAdapter();
             orderStatusView.setSpinnerAdapter();
@@ -72,7 +74,7 @@ public class OrderStatusPresenterImpl implements OrderStatusContractor.OrderStat
 
     @Override
     public void filterList(String retailerID) {
-        setOrderStatusReportList(businessModel.orderStatusReportHelper.filterRetailerList(retailerID));
+        setOrderStatusReportList(orderStatusReportHelper.filterRetailerList(retailerID));
         orderStatusView.setAdapter();
     }
 }

@@ -41,6 +41,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -95,6 +96,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
 
     private double mTotalInvoiceAmt = 0;
     private CollectionHelper collectionHelper;
+    private ReportHelper reportHelper;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -103,6 +105,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         collectionHelper = CollectionHelper.getInstance(getActivity());
+        reportHelper = ReportHelper.getInstance(getActivity());
     }
 
     @Nullable
@@ -724,7 +727,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
 
     private void printInvoice() {
         try {
-            int printDoneCount = bmodel.reportHelper.getPaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""));
+            int printDoneCount = reportHelper.getPaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""));
             for (int i = 0; i <= mSelectedPrintCount; i++) {
                 if (i == 0 && printDoneCount == 0)
                     zebraPrinterConnection.write(bmodel.printHelper.printCollection(true));
@@ -732,7 +735,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
                     zebraPrinterConnection.write(bmodel.printHelper.printCollection(false));
             }
 
-            bmodel.reportHelper.updatePaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""), ((mSelectedPrintCount + 1) + printDoneCount));
+            reportHelper.updatePaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""), ((mSelectedPrintCount + 1) + printDoneCount));
 
             DemoSleeper.sleep(1500);
             if (zebraPrinterConnection instanceof BluetoothConnection) {
@@ -934,7 +937,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 else isOriginal = false;
                 printTextLeft(bmodel.printHelper.printDataforBixolon3inchCollectionprinter(true, collectionHelper.collectionGroupId, isOriginal, true), DataMembers.PRINT_TEXT_SIZE);
             }
-            bmodel.reportHelper.updatePaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""), mSelectedPrintCount + 1);
+            reportHelper.updatePaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""), mSelectedPrintCount + 1);
 
             DemoSleeper.sleep(1500);
 
@@ -1095,7 +1098,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
 
 
                     }
-                    bmodel.reportHelper.updatePaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""), (mSelectedPrintCount + 1));
+                    reportHelper.updatePaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""), (mSelectedPrintCount + 1));
 
                     DemoSleeper.sleep(1600 * (mSelectedPrintCount + 1));
                     bmodel.showAlert(

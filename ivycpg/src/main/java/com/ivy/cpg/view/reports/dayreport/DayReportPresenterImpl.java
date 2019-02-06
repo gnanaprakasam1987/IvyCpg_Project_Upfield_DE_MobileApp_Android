@@ -5,6 +5,7 @@ import android.content.Context;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
@@ -418,7 +419,7 @@ public class DayReportPresenterImpl implements DayReportPresenter {
 
             //TODO:if the below condition is always true so remove the conditions
 
-            ArrayList<SubDepotBo> distributorList = mBusinessModel.loadManagementHelper.getSubDepotList();
+            ArrayList<SubDepotBo> distributorList = LoadManagementHelper.getInstance(mContext).getSubDepotList();
             String distributorAddress1 = "";
             String distributorAddress2 = "";
             String distributorContactNo = "";
