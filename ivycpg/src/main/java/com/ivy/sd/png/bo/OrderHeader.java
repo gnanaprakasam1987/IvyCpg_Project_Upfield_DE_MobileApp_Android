@@ -20,8 +20,8 @@ public class OrderHeader {
     private double remainigValue;
     private int crownCount;
     private int isSplitted;
-    private String SignatureName;
-    private String SignaturePath;
+    private String SignatureName = "";
+    private String SignaturePath = "";
     private boolean isSignCaptured;
     private float totalWeight;
     private String orderDate;
