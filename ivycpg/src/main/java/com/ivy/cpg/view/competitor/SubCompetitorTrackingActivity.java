@@ -52,6 +52,7 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
@@ -88,6 +89,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
     private EditText et_feedback;
     private Button btnSave;
     private String calledBy = "0";
+    private CompetitorTrackingHelper competitorTrackingHelper;
 
 
     @Override
@@ -109,6 +111,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
+        competitorTrackingHelper = CompetitorTrackingHelper.getInstance(this);
 
         outPutDateFormat = bmodel.configurationMasterHelper.outDateFormat;
 
@@ -154,7 +157,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
     }
 
     private void process() {
-        for (CompetitorBO competitorBO : bmodel.competitorTrackingHelper.getCompetitorMaster()) {
+        for (CompetitorBO competitorBO : competitorTrackingHelper.getCompetitorMaster()) {
             if (competitorBO.getCompanyID() == companyid && competitorBO.getCompetitorpid() == competitorid)
                 masterObj = competitorBO;
         }
@@ -278,7 +281,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
         } else if (i == R.id.menu_photo)
 
         {
-            if (bmodel.competitorTrackingHelper.getNoOfImages())
+            if (competitorTrackingHelper.getNoOfImages())
                 Toast.makeText(
                         this,
                         getResources()
@@ -777,7 +780,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        ArrayList<CompetitorBO> items = bmodel.competitorTrackingHelper
+                        ArrayList<CompetitorBO> items = competitorTrackingHelper
                                 .getCompetitorMaster();
                         if (bmodel.configurationMasterHelper.IS_PHOTO_COMPETITOR) {
                             for (int i = 0; i < items.size(); i++) {
@@ -802,9 +805,9 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                                 }
                             }
                         }
-                        bmodel.competitorTrackingHelper
+                        competitorTrackingHelper
                                 .deleteImageName(imageNameStarts);
-                        bmodel.competitorTrackingHelper.deleteFiles(
+                        competitorTrackingHelper.deleteFiles(
                                 AppUtils.photoFolderPath, imageNameStarts);
                         dialog.dismiss();
 
@@ -866,7 +869,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                bmodel.competitorTrackingHelper.saveCompetitor();
+                competitorTrackingHelper.saveCompetitor();
                 if (!calledBy.equals("3"))
                     bmodel.saveModuleCompletion(HomeScreenTwo.MENU_COMPETITOR);
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil

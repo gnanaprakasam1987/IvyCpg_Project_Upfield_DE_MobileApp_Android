@@ -554,7 +554,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             promoList = new ArrayList<>();
             // Iterate the List and the items to the ListHolder
             for (PromotionBO temp : items) {
-                if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !temp.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                if (temp.getProductId() > 0 && businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !temp.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
                     continue;
                 if (temp.getProductId() == mPid || mPid == -1)
                     promoList.add(temp);
@@ -1226,7 +1226,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             if (mAttributeProducts != null) {
                 if (mFilteredPid != 0) {
                     for (PromotionBO productBO : items) {
-                        if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productBO.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        if (productBO.getProductId() > 0 && businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !productBO.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
                             continue;
                         if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")
                                 && mAttributeProducts.contains(productBO.getProductId())) {
@@ -1237,7 +1237,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 } else {
                     for (int pid : mAttributeProducts) {
                         for (PromotionBO promoBO : items) {
-                            if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !promoBO.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            if (promoBO.getProductId() > 0 && businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !promoBO.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
                                 continue;
                             if (pid == promoBO.getProductId()) {
                                 promoList.add(promoBO);
@@ -1251,7 +1251,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 } else {
                     if (mFilterText.length() > 0) {
                         for (PromotionBO promoBO : items) {
-                            if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !promoBO.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            if (promoBO.getProductId() > 0 && businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !promoBO.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
                                 continue;
                             if (promoBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                                 promoList.add(promoBO);
@@ -1260,7 +1260,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                         }
                     } else {
                         for (PromotionBO promoBO : items) {
-                            if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !promoBO.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            if (promoBO.getProductId() > 0 && businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !promoBO.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
                                 continue;
                             promoList.add(promoBO);
                         }

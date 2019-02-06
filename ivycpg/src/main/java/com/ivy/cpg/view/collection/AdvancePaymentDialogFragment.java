@@ -40,6 +40,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -901,7 +902,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
 
     private void printInvoice() {
         try {
-            int printDoneCount = bmodel.reportHelper.getPaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""));
+            int printDoneCount = ReportHelper.getInstance(getActivity()).getPaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""));
             for (int i = 0; i <= mSelectedPrintCount; i++) {
                 if (i == 0 && printDoneCount == 0)
                     zebraPrinterConnection.write(bmodel.printHelper.printAdvancePayment(true));
@@ -909,7 +910,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                     zebraPrinterConnection.write(bmodel.printHelper.printAdvancePayment(false));
             }
 
-            bmodel.reportHelper.updatePaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""), ((mSelectedPrintCount + 1) + printDoneCount));
+            ReportHelper.getInstance(getActivity()).updatePaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""), ((mSelectedPrintCount + 1) + printDoneCount));
 
             DemoSleeper.sleep(1500);
             if (zebraPrinterConnection instanceof BluetoothConnection) {

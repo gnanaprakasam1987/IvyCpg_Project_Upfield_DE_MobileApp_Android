@@ -17,6 +17,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.print.CollectionPreviewScreen;
 
 import java.util.ArrayList;
@@ -36,12 +37,14 @@ public class CollectionReportDialog extends DialogFragment {
     Spinner spnRetailer,spnGroupId;
     String mSelectedGroupId;
     TextView tv_collection_label;
+    private ReportHelper reportHelper;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        reportHelper = ReportHelper.getInstance(getActivity());
 
 
     }
@@ -63,7 +66,7 @@ public class CollectionReportDialog extends DialogFragment {
 
         lstRetailers=new ArrayList<>();
         lstRetailers.add(0,new SpinnerBO(0,"ALL"));
-        lstRetailers.addAll(bmodel.reportHelper.downloadCollectionReportRetailer());
+        lstRetailers.addAll(reportHelper.downloadCollectionReportRetailer());
 
         mRetailerAdapter = new ArrayAdapter<SpinnerBO>(getActivity(),
                 R.layout.spinner_bluetext_layout,lstRetailers);
@@ -83,7 +86,7 @@ public class CollectionReportDialog extends DialogFragment {
                     spnGroupId.setVisibility(View.VISIBLE);
 
                     mGroupAdapter = new ArrayAdapter<String>(getActivity(),
-                            R.layout.spinner_blacktext_layout, bmodel.reportHelper.downloadCollectionReportGroups(lstRetailers.get(position).getId()));
+                            R.layout.spinner_blacktext_layout, reportHelper.downloadCollectionReportGroups(lstRetailers.get(position).getId()));
                     mGroupAdapter
                             .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
                     spnGroupId.setAdapter(mGroupAdapter);
@@ -105,7 +108,7 @@ public class CollectionReportDialog extends DialogFragment {
         spnGroupId.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                mSelectedGroupId=bmodel.reportHelper.getLstCollectionGroups().get(i);
+                mSelectedGroupId=reportHelper.getLstCollectionGroups().get(i);
             }
 
             @Override

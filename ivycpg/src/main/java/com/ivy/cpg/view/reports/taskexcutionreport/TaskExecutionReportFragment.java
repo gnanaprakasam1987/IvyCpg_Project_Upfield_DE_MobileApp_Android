@@ -24,6 +24,7 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ReportHelper;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -93,7 +94,7 @@ public class TaskExecutionReportFragment extends IvyBaseFragment {
 
         adapter = new ArrayAdapter<BeatMasterBO>(getActivity(),
                 android.R.layout.simple_spinner_item,
-                bmodel.reportHelper.getBeatinfo());
+                ReportHelper.getInstance(getActivity()).getBeatinfo());
 
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerRetailer.setAdapter(adapter);

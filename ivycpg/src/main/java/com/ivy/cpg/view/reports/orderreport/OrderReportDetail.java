@@ -23,6 +23,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -56,6 +57,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
     private EditText mEdt_searchProductName;
 
     private String orderID ="";
+    private ReportHelper reportHelper;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +71,8 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
         inputManager = (InputMethodManager) getSystemService(
                 INPUT_METHOD_SERVICE);
         productName =  findViewById(R.id.productTvName);
+
+        reportHelper = ReportHelper.getInstance(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         totalLines = findViewById(R.id.txttotallines);
@@ -176,11 +180,11 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
 
 
             orderID = obj.getOrderID();
-            list = businessModel.reportHelper.downloadOrderreportdetail(orderID);
+            list = reportHelper.downloadOrderreportdetail(orderID);
 
 
             //scheme products
-            schemeProductList = businessModel.reportHelper.getSchemeProductDetails(orderID, false);
+            schemeProductList = reportHelper.getSchemeProductDetails(orderID, false);
 
             if (schemeProductList != null && list != null) {
                 if (list.get(list.size() - 1).getSchemeProducts() != null)
@@ -215,7 +219,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
 
         if (businessModel.configurationMasterHelper.SHOW_TOTAL_LINES) {
             if (businessModel.configurationMasterHelper.SHOW_TOTAL_QTY_IN_ORDER_REPORT) {
-                totalLines.setText(String.valueOf(businessModel.reportHelper.getTotalQtyfororder(obj.getOrderID())));
+                totalLines.setText(String.valueOf(reportHelper.getTotalQtyfororder(obj.getOrderID())));
                 tv_lbl_total_lines.setText(getResources().getString(R.string.tot_qty));
             } else {
                 totalLines.setText(TotalLines);

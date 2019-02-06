@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -37,7 +38,7 @@ public class DayReportPrintHelper {
 
     public void doConnection(String printerName) {
         try {
-            bModel.loadManagementHelper.downloadSubDepots();
+            LoadManagementHelper.getInstance(mContext).downloadSubDepots();
             ZebraPrinter printer = connect();
             if (printer != null) {
                 printInvoice(printerName);

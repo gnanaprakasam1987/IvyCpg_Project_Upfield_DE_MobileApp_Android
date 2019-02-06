@@ -24,11 +24,13 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -36,6 +38,7 @@ import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -115,7 +118,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
         }
         try {
             Toolbar toolbar = findViewById(R.id.toolbar);
-
+            ReportHelper reportHelper = ReportHelper.getInstance(this);
 
             TextView text_totalValue = findViewById(R.id.txttotal);
             TextView text_totalLines = findViewById(R.id.txttotalqty);
@@ -214,7 +217,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 // All products not need to load.only invoice products loaded from
                 // sqLite and stored in object.Because invoice print file saved in sdcard
                 // we can show other details using the text file
-                mProductsForAdapter = businessModel.reportHelper.getReportDetails(mInvoiceId);
+                mProductsForAdapter = reportHelper.getReportDetails(mInvoiceId);
             } else {
                 for (ProductMasterBO productBO : mProducts) {
                     if ((productBO.getOrderedPcsQty() > 0
@@ -255,7 +258,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                     || businessModel.configurationMasterHelper.COMMON_PRINT_ZEBRA
                     || businessModel.configurationMasterHelper.COMMON_PRINT_LOGON
                     || businessModel.configurationMasterHelper.COMMON_PRINT_INTERMEC) {
-                schemeProductList = businessModel.reportHelper.getSchemeProductDetails(mInvoiceId, true);
+                schemeProductList = reportHelper.getSchemeProductDetails(mInvoiceId, true);
             } else {
                 //load accumulation scheme free products
                 schemeProductList = SchemeDetailsMasterHelper.getInstance(getApplicationContext()).downLoadAccumulationSchemeDetailReport(getApplicationContext(), mInvoiceId, true);
@@ -690,7 +693,7 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
         try {
             ZebraPrinter printer = connect();
             if (printer != null) {
-                businessModel.loadManagementHelper.downloadSubDepots();
+                LoadManagementHelper.getInstance(this).downloadSubDepots();
                 printInvoice(printerName);
             } else {
                 businessModel.productHelper.clearOrderTable();
