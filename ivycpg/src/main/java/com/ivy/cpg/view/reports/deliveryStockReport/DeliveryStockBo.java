@@ -15,6 +15,24 @@ public class DeliveryStockBo {
     private int orderedCaseQty;
     private int orderedPcsQty;
     private int orderedOuterQty;
+    private int outerSize;
+    private int caseSize;
+
+    public int getOuterSize() {
+        return outerSize;
+    }
+
+    public void setOuterSize(int outerSize) {
+        this.outerSize = outerSize;
+    }
+
+    public int getCaseSize() {
+        return caseSize;
+    }
+
+    public void setCaseSize(int caseSize) {
+        this.caseSize = caseSize;
+    }
 
     public String getProductID() {
         return ProductID;
