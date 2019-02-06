@@ -38,6 +38,7 @@ import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.sfdc.AccountData;
 import com.ivy.cpg.view.sfdc.RefreshAuthTokenAsync;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
@@ -155,6 +156,8 @@ SynchronizationHelper {
     public static final int DISTRIBUTOR_SELECTION_REQUEST_CODE = 51;
     public String dataMissedTable = "";
     public String passwordType;
+
+    private JExcelHelper jExcelHelper;
 
     public enum FROM_SCREEN {
         LOGIN(0),
@@ -1190,7 +1193,7 @@ SynchronizationHelper {
             ArrayList<String> valuesList = new ArrayList<>();
 
             JSONArray first = jsonObject.getJSONArray(JSON_DATA_KEY);
-            ArrayList<VanLoadMasterBO> uidList = bmodel.loadManagementHelper.downloadExistingUid();
+            ArrayList<VanLoadMasterBO> uidList = LoadManagementHelper.getInstance(context).downloadExistingUid();
 
             for (int j = 0; j < first.length(); j++) {
                 boolean flag = false;
@@ -1767,6 +1770,7 @@ SynchronizationHelper {
     }
 
     public void getURLResponse() {
+        jExcelHelper = JExcelHelper.getInstance(context);
         ArrayList<JExcelHelper.ExcelBO> mExcelBOList = new ArrayList<>();
         JExcelHelper.ExcelBO excel;
 
@@ -1790,7 +1794,7 @@ SynchronizationHelper {
             columnValues.add(row);
         }
 
-        excel = bmodel.mJExcelHelper.new ExcelBO();
+        excel = jExcelHelper.new ExcelBO();
         excel.setSheetName("Server Response");
         excel.setColumnNames(columnNames);
         excel.setColumnValues(columnValues);
@@ -1811,14 +1815,14 @@ SynchronizationHelper {
             columnValues.add(row);
         }
 
-        excel = bmodel.mJExcelHelper.new ExcelBO();
+        excel = jExcelHelper.new ExcelBO();
         excel.setSheetName("Data Save");
         excel.setColumnNames(columnNames);
         excel.setColumnValues(columnValues);
 
         mExcelBOList.add(excel);
 
-        bmodel.mJExcelHelper.createExcel("Data_Download_Save.xls", mExcelBOList);
+        jExcelHelper.createExcel("Data_Download_Save.xls", mExcelBOList);
     }
 
     private class URLListBO {
@@ -2411,7 +2415,7 @@ SynchronizationHelper {
                 db.executeQ("CREATE INDEX index_productlevel ON ProductLevel(LevelId)");
                 db.executeQ("CREATE INDEX index_producttagmaster ON ProductTaggingMaster(TaggingTypelovID)");
                 db.executeQ("CREATE INDEX index_producttaggrpmaster ON ProductTaggingGroupMapping(Groupid)");
-                db.executeQ("CREATE INDEX index_producttaggingmap ON ProductTaggingCriteriaMapping(locid)");
+                db.executeQ("CREATE INDEX index_producttaggingmap ON ProductTaggingCriteriaMapping(Groupid)");
                 db.executeQ("CREATE INDEX index_productmasterpid ON ProductMaster(ParentId)");
                 db.executeQ("CREATE INDEX index_productmasterplid ON ProductMaster(PLid)");
                 db.executeQ("CREATE INDEX index_productmasterpidh ON ProductMaster(ParentHierarchy)");
@@ -2431,7 +2435,6 @@ SynchronizationHelper {
             } catch (Exception e) {
                 Commons.printException(e);
             }
-
 
         } else if (tableName.equalsIgnoreCase("temp_priceMaster")) {
 

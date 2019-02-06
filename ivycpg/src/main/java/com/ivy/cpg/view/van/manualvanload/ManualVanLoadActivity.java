@@ -39,6 +39,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.ViewFlipper;
 
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.cpg.view.van.manualvanload.manualvanloadbatchentrydialog.ManualVanLoadBatchEntryDialog;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LoadManagementBO;
@@ -293,18 +294,19 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                 LinearLayout subDepotLayout =  findViewById(R.id.ll_depot);
                 subDepotLayout.setVisibility(View.VISIBLE);
                 final MaterialSpinner spnSubDepot =  findViewById(R.id.sp_subdepot);
+                LoadManagementHelper loadManagementHelper = LoadManagementHelper.getInstance(this);
                 if (bmodel.configurationMasterHelper.VANLOAD_TYPE == 0) {
                     txtLbl.setText(R.string.subdepot);
                     subDepotAdapter = new ArrayAdapter<>(
                             ManualVanLoadActivity.this,
                             R.layout.spinner_blacktext_layout,
-                            bmodel.loadManagementHelper.getSubDepotList());
+                            loadManagementHelper.getSubDepotList());
                 } else {
                     txtLbl.setText(R.string.distributor);
                     subDepotAdapter = new ArrayAdapter<>(
                             ManualVanLoadActivity.this,
                             android.R.layout.simple_spinner_item,
-                            bmodel.loadManagementHelper.getDistributorList());
+                            loadManagementHelper.getDistributorList());
                 }
                 subDepotAdapter
                         .setDropDownViewResource(R.layout.spinner_blacktext_list_item);

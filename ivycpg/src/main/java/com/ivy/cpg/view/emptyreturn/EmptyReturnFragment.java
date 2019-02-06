@@ -55,6 +55,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
     View view;
     private ActionBar actionBar;
     private Context context;
+    private EmptyReturnHelper emptyReturnHelper;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -78,6 +79,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
         this.context = context;
         bmodel = (BusinessModel) context.getApplicationContext();
         bmodel.setContext(getActivity());
+        emptyReturnHelper = EmptyReturnHelper.getInstance(getActivity());
         setHasOptionsMenu(true);
     }
 
@@ -120,9 +122,9 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
                 startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                ((Activity)context).finish();
+                ((Activity) context).finish();
             }
-            ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            ((Activity) context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
         } else if (i == R.id.menu_next) {
             nextButtonClick();
@@ -145,7 +147,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
         if (getActivity() != null)
-        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+            actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
         if (actionBar != null) {
             actionBar.setTitle(null);
@@ -193,7 +195,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
         Vector<ProductMasterBO> items;
 
         if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
-            items = bmodel.mEmptyReturnHelper.getProductType();
+            items = emptyReturnHelper.getProductType();
         else
             items = bmodel.productHelper.getProductMaster();
 
@@ -209,8 +211,8 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
             if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
                 continue;
             if (sku.getIsReturnable() == 1) {
-                if (bmodel.mEmptyReturnHelper.mSelectedFilter == sku.getParentid()
-                        || bmodel.mEmptyReturnHelper.mSelectedFilter == -1) {
+                if (emptyReturnHelper.mSelectedFilter == sku.getParentid()
+                        || emptyReturnHelper.mSelectedFilter == -1) {
                     mylist.add(sku);
                 }
             }
@@ -323,7 +325,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
 
     private void nextButtonClick() {
         try {
-            if (bmodel.mEmptyReturnHelper.hasDataTosave())
+            if (emptyReturnHelper.hasDataTosave())
                 new SaveAsyncTask().execute();
             else
                 Toast.makeText(
@@ -345,7 +347,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                bmodel.mEmptyReturnHelper.saveEmptyReturn();
+                emptyReturnHelper.saveEmptyReturn();
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
                         .now(SDUtil.TIME));
                 bmodel.saveModuleCompletion("MENU_EMPTY_RETURN");
@@ -410,15 +412,15 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
                 if (QUANTITY.getId() == 1) {
                     String s = QUANTITY.getText().toString();
 
-                        if (!s.isEmpty()) {
-                            s = s.substring(0, s.length() - 1);
+                    if (!s.isEmpty()) {
+                        s = s.substring(0, s.length() - 1);
 
-                            if (s.length() == 0) {
-                                s = "0.0";
-                            }
+                        if (s.length() == 0) {
+                            s = "0.0";
                         }
+                    }
 
-                        QUANTITY.setText(s);
+                    QUANTITY.setText(s);
                 } else {
 
                     int s = SDUtil.convertToInt(QUANTITY.getText()
@@ -429,7 +431,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
 
 
             } else {
-                Button ed = ((Activity)context).findViewById(vw.getId());
+                Button ed = ((Activity) context).findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
             }
@@ -446,7 +448,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        bmodel.mEmptyReturnHelper.mSelectedFilter = id;
+        emptyReturnHelper.mSelectedFilter = id;
         mDrawerLayout.closeDrawers();
         onLoadModule();
 

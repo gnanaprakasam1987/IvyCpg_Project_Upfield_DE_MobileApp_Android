@@ -1283,7 +1283,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
         protected Boolean doInBackground(Integer... params) {
             try {
 
-                bmodel.stockProposalModuleHelper
+                StockProposalModuleHelper.getInstance(getActivity())
                         .saveStockProposal(stockPropVector);
             } catch (Exception e) {
                 Log.i("e", e.getMessage());
@@ -1576,7 +1576,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
     private void onNextButtonClick() {
         if (hasStockProposalDone()) {
             if (bmodel.configurationMasterHelper.IS_MUST_STOCK
-                    && !bmodel.stockProposalModuleHelper
+                    && !StockProposalModuleHelper.getInstance(getActivity())
                     .isMustStockFilled(stockPropVector)) {
                 onCreateDialog(1);
 
