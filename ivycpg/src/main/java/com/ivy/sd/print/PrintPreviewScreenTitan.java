@@ -31,6 +31,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
@@ -320,8 +321,8 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                 }
             }
 
-                bmodel.productHelper.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
-                bmodel.productHelper.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
+            bmodel.productHelper.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
+            bmodel.productHelper.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
 
             ArrayList<TaxBO> groupIdList = bmodel.productHelper.taxHelper.getGroupIdList();
 
@@ -336,7 +337,7 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
             }
 
 
-            ArrayList<SubDepotBo> distributorList = bmodel.loadManagementHelper.getSubDepotList();
+            ArrayList<SubDepotBo> distributorList = LoadManagementHelper.getInstance(this).getSubDepotList();
             String distributorAddress1 = "";
             String distributorAddress2 = "";
             String distributorContactNo = "";
@@ -839,7 +840,7 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                 }
 
 
-                ArrayList<SubDepotBo> distributorList = bmodel.loadManagementHelper.getSubDepotList();
+                ArrayList<SubDepotBo> distributorList = LoadManagementHelper.getInstance(this).getSubDepotList();
                 String distributorAddress1 = "";
                 String distributorAddress2 = "";
                 String distributorContactNo = "";
@@ -1531,13 +1532,13 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                 isPrinterLanguageDetected = false;
             } /*
              * catch (ZebraPrinterLanguageUnknownException e) {
-			 * setStatus("Unknown Printer Language", Color.RED);
-			 * Commons.printException(e);
-			 * 
-			 * isPrinterLanguageDetected = false;
-			 * 
-			 * // printer = null; // DemoSleeper.sleep(1000); // disconnect(); }
-			 */
+             * setStatus("Unknown Printer Language", Color.RED);
+             * Commons.printException(e);
+             *
+             * isPrinterLanguageDetected = false;
+             *
+             * // printer = null; // DemoSleeper.sleep(1000); // disconnect(); }
+             */
         }
 
         return printer;

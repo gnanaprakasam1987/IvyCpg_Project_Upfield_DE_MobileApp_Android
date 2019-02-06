@@ -55,9 +55,9 @@ public class LoadManagementHelper {
     private static final String TAG = "LoadManagementHelper";
     private RequestQueue mRequestQueue;
 
-    public LoadManagementHelper(Context context) {
+    private LoadManagementHelper(Context context) {
         this.context = context;
-        this.bmodel = (BusinessModel) context;
+        this.bmodel = (BusinessModel) context.getApplicationContext();
 
     }
 

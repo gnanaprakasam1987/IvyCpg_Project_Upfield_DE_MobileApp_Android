@@ -26,7 +26,7 @@ public class OrderStatusReportHelper {
 
     private OrderStatusReportHelper(Context context) {
         this.context = context;
-        this.bmodel = (BusinessModel) context;
+        this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     public static OrderStatusReportHelper getInstance(Context context) {

@@ -13,6 +13,7 @@ import android.widget.ListView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 
 import org.jetbrains.annotations.NotNull;
@@ -78,7 +79,7 @@ public class EODStockReportFragmentRe extends Fragment implements IEodStockView 
 
         btnPrint.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                bmodel.mCommonPrintHelper.xmlRead("eod", false, null, null, null, bmodel.reportHelper.getEODStockReport(), null);
+                bmodel.mCommonPrintHelper.xmlRead("eod", false, null, null, null, ReportHelper.getInstance(getActivity()).getEODStockReport(),null);
 
                 Intent intent = new Intent(getActivity(),
                         CommonPrintPreviewActivity.class);

@@ -42,6 +42,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.AppUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -1522,86 +1523,37 @@ public class ProductHelper {
      */
     public String getTaggingDetails(String taggingType) {
         try {
-            String mappingId = "0", moduletypeid = "0", locationId = "0";
             ProductTaggingBO taggingBO;
             productTaggingList = new ArrayList<>();
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-            );
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
 
             db.openDataBase();
 
-            Cursor c1 = db
-                    .selectSQL("SELECT criteriatype, TaggingTypelovID,criteriaid,locid,ifnull (RM.RetailerID,0) as rid FROM ProductTaggingCriteriaMapping PCM " +
-                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid " +
-                            "LEFT JOIN RetailerMaster RM on RM.accountid=CriteriaId and RM.RetailerID =" + bmodel.getRetailerMasterBO().getRetailerID() +
-                            " AND CriteriaType='ACCOUNT' WHERE PM.TaggingTypelovID = "
-                            + " (SELECT ListId FROM StandardListMaster WHERE ListCode = '"
-                            + taggingType + "' AND ListType = 'PRODUCT_TAGGING') AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")" +
-                            " AND (CriteriaType !='ACCOUNT' or rid !=0)" +
-                            " ORDER BY" +
-                            "  (CASE criteriatype" +
-                            "    WHEN 'RETAILER' THEN 0" +
-                            "    WHEN 'ACCOUNT' THEN 1" +
-                            "    WHEN 'CHANNEL' THEN 2" +
-                            "    WHEN 'DISTRIBUTOR' THEN 3" +
-                            "    WHEN 'LOCATION' THEN 4" +
-                            "    WHEN 'USER' THEN 5" +
-                            "    WHEN 'CLASS' THEN 6 END)");
-
-            if (c1 != null) {
-                if (c1.moveToNext()) {
-
-                    if (c1.getString(0).equals("RETAILER"))
-                        mappingId = bmodel.getRetailerMasterBO().getRetailerID() + "";
-
-                    else if (c1.getString(0).equals("ACCOUNT"))
-                        mappingId = bmodel.getRetailerMasterBO().getAccountid() + "";
-
-                    else if (c1.getString(0).equals("CHANNEL")) {
-                        mappingId = bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(), mContext) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
-
-                        if (c1.getInt(3) != 0)
-                            locationId = bmodel.channelMasterHelper.getLocationHierarchy(mContext) + "," + bmodel.getRetailerMasterBO().getLocationId();
-
-                    } else if (c1.getString(0).equals("DISTRIBUTOR"))
-                        mappingId = bmodel.getRetailerMasterBO().getDistributorId() + "";
-                    else if (c1.getString(0).equals("LOCATION")) {
-                        locationId = bmodel.channelMasterHelper.getLocationHierarchy(mContext) + "," + bmodel.getRetailerMasterBO().getLocationId();
-                    } else if (c1.getString(0).equals("USER"))
-                        mappingId = bmodel.userMasterHelper.getUserMasterBO().getUserid() + "";
-                    else if (c1.getString(0).equals("CLASS"))
-                        mappingId = bmodel.getRetailerMasterBO().getClassid() + "";
-
-                    moduletypeid = c1.getString(1);
-                }
-                c1.close();
-            }
-
+            String groupIds = getMappedGroupId(db, taggingType);
             StringBuilder productIds = new StringBuilder();
-            Cursor c2 = db
+            Cursor c = db
                     .selectSQL("SELECT pid,PCM.GroupID,FromNorm,ToNorm,Weightage FROM ProductTaggingCriteriaMapping PCM " +
-                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid and PGM.isOwn = 1" +
-                            " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid " +
-                            "WHERE PM.TaggingTypelovID = " + moduletypeid +
-                            " AND PCM.criteriaid IN(" + mappingId + ") AND locid IN(" + locationId + ") AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
+                            " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid " +
+                            " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid and PGM.isOwn = 1" +
+                            " WHERE PCM.groupid IN(" + groupIds + ")");
 
-            if (c2 != null) {
-                while (c2.moveToNext()) {
+            if (c != null) {
+                while (c.moveToNext()) {
                     if (!productIds.toString().equals(""))
                         productIds.append(",");
-                    productIds.append(c2.getInt(0));
+                    productIds.append(c.getInt(0));
                     if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED || bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
                         taggingBO = new ProductTaggingBO();
-                        taggingBO.setHeaderID(c2.getString(1));
-                        taggingBO.setPid(c2.getString(0));
-                        taggingBO.setFromNorm(c2.getInt(2));
-                        taggingBO.setToNorm(c2.getInt(3));
-                        taggingBO.setWeightage(c2.getInt(4));
+                        taggingBO.setHeaderID(c.getString(1));
+                        taggingBO.setPid(c.getString(0));
+                        taggingBO.setFromNorm(c.getInt(2));
+                        taggingBO.setToNorm(c.getInt(3));
+                        taggingBO.setWeightage(c.getInt(4));
                         productTaggingList.add(taggingBO);
                     }
                 }
-                c2.close();
+                c.close();
             }
             db.closeDB();
             setProductTaggingList(productTaggingList);
@@ -1619,8 +1571,7 @@ public class ProductHelper {
      */
     public void loadInitiativeProducts() {
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-            );
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             Vector<Integer> productIds = new Vector<Integer>();
@@ -4012,7 +3963,7 @@ public class ProductHelper {
             } else {
 
                 Cursor cur = db
-                        .selectSQL("SELECT CP.CPID, CP.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,CPCode,PM.pid,CP.CompanyID,ifnull(CP.Barcode,'') "
+                        .selectSQL("SELECT CP.CPID, CP.CPName, PM.parentId,PM.duomid,PM.dOuomid,PM.piece_uomid,CPCode,PM.pid,CP.CompanyID,ifnull(CP.Barcode,''),PM.ParentHierarchy"
                                 + " FROM CompetitorProductMaster CP"
                                 + " INNER JOIN CompetitorMappingMaster CPM ON CPM.CPId = CP.CPID"
                                 + " INNER JOIN ProductMaster PM ON PM.PID = CPM.PID AND PM.isSalable=1"
@@ -4038,6 +3989,7 @@ public class ProductHelper {
                         product.setProductCode(cur.getString(6));
                         product.setOwnPID(cur.getString(7));
                         product.setCompanyId(cur.getInt(8));
+                        product.setParentHierarchy(cur.getString(10));
 
                         // for level skiping
                         ProductMasterBO ownprodbo = productMasterById.get(product.getOwnPID());
@@ -5220,56 +5172,25 @@ public class ProductHelper {
      */
     public String getCompetitorTaggingDetails(String taggingType) {
         try {
-            String mappingId = "0", moduletypeid = "0", locationId = "0";
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-            );
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
 
             db.openDataBase();
-
-            Cursor c1 = db
-                    .selectSQL("SELECT criteriatype, TaggingTypelovID,criteriaid,locid FROM ProductTaggingCriteriaMapping PCM " +
-                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid WHERE PM.TaggingTypelovID = "
-                            + " (SELECT ListId FROM StandardListMaster WHERE ListCode = '"
-                            + taggingType + "' AND ListType = 'PRODUCT_TAGGING') AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
-
-            if (c1 != null) {
-                if (c1.moveToNext()) {
-
-
-                    if (c1.getString(0).equals("CHANNEL")) {
-                        mappingId = bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(), mContext) + "," + bmodel.getRetailerMasterBO().getSubchannelid();
-
-                        if (c1.getInt(3) != 0)
-                            locationId = bmodel.channelMasterHelper.getLocationHierarchy(mContext) + "," + bmodel.getRetailerMasterBO().getLocationId();
-
-                    } else if (c1.getString(0).equals("DISTRIBUTOR"))
-                        mappingId = bmodel.getRetailerMasterBO().getDistributorId() + "";
-                    else if (c1.getString(0).equals("LOCATION")) {
-                        locationId = bmodel.channelMasterHelper.getLocationHierarchy(mContext) + "," + bmodel.getRetailerMasterBO().getLocationId();
-                    } else if (c1.getString(0).equals("USER"))
-                        mappingId = bmodel.userMasterHelper.getUserMasterBO().getUserid() + "";
-
-                    moduletypeid = c1.getString(1);
-                }
-                c1.close();
-            }
-
+            String groupIds = getMappedGroupId(db, taggingType);
             StringBuilder productIds = new StringBuilder();
-            Cursor c2 = db
+            Cursor c = db
                     .selectSQL("SELECT distinct pid FROM ProductTaggingCriteriaMapping PCM " +
-                            "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid and PGM.isOwn = 0" +
-                            " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid " +
-                            "WHERE PM.TaggingTypelovID = " + moduletypeid +
-                            " AND PCM.criteriaid IN(" + mappingId + ") AND locid IN(" + locationId + ") AND (PCM.distributorid=0 OR PCM.distributorid=" + bmodel.getRetailerMasterBO().getDistributorId() + ")");
+                            " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid " +
+                            " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid and PGM.isOwn = 0" +
+                            " WHERE PCM.groupid IN(" + groupIds + ")");
 
-            if (c2 != null) {
-                while (c2.moveToNext()) {
+            if (c != null) {
+                while (c.moveToNext()) {
                     if (!productIds.toString().equals(""))
                         productIds.append(",");
-                    productIds.append(c2.getInt(0));
+                    productIds.append(c.getInt(0));
                 }
-                c2.close();
+                c.close();
             }
             db.closeDB();
 
@@ -5554,6 +5475,69 @@ public class ProductHelper {
 
             c.close();
         }
+
+    }
+
+    //new producttagging mapping
+    //Mansoor
+    private String getMappedGroupId(DBUtil db, String taggingType) {
+        StringBuilder groupIds = new StringBuilder();
+        ArrayList<String> attrmappingsetId = new ArrayList<>();
+        String mappedGrpIds = "";
+
+        String attrQuery = "Select distinct PTAM.Groupid from ProductTaggingAttributesMapping PTAM" +
+                " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PTAM.groupid" +
+                " inner join RetailerAttribute RA on RA.AttributeId = PTAM.RetailerAttibuteId and RA.RetailerId =" + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()) +
+                " WHERE PM.TaggingTypelovID = " + "(SELECT ListId FROM StandardListMaster WHERE ListCode = '" + taggingType + "' AND ListType = 'PRODUCT_TAGGING')";
+
+        Cursor c1 = db.selectSQL(attrQuery);
+
+        if (c1.getCount() > 0) {
+            while (c1.moveToNext()) {
+                attrmappingsetId.add("/" + c1.getInt(0) + "/");
+            }
+        }
+
+        Cursor c = db
+                .selectSQL("SELECT DISTINCT PCM.GroupID,PCM.RetailerId,PCM.LocationId,PCM.ChannelId,PCM.AccountId," +
+                        " PCM.DistributorId,PCM.UserId,PCM.ClassId,IFNULL(PTAM.groupid,0) FROM ProductTaggingCriteriaMapping PCM " +
+                        " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
+                        " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid" +
+                        " Left Join ProductTaggingAttributesMapping PTAM on PTAM.groupid = PCM.GroupID " +
+                        " WHERE PM.TaggingTypelovID = " +
+                        " (SELECT ListId FROM StandardListMaster WHERE ListCode = '" + taggingType + "' AND ListType = 'PRODUCT_TAGGING')" +
+                        " AND PCM.RetailerId IN(0," + bmodel.getRetailerMasterBO().getRetailerID() + ") " +
+                        " AND PCM.LocationId IN(0," + bmodel.channelMasterHelper.getLocationHierarchy(mContext) + "," + bmodel.getRetailerMasterBO().getLocationId() + ") " +
+                        " AND PCM.ChannelId IN(0," + bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(), mContext) + "," + bmodel.getRetailerMasterBO().getSubchannelid() + ") " +
+                        " AND PCM.AccountId IN(0," + bmodel.getRetailerMasterBO().getAccountid() + ") " +
+                        " AND PCM.DistributorId IN(0," + bmodel.getRetailerMasterBO().getDistributorId() + ") " +
+                        " AND PCM.UserId IN(0," + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ") " +
+                        " AND PCM.ClassId IN(0," + bmodel.getRetailerMasterBO().getClassid() + ") ");
+
+        if (c.getCount() > 0) {
+            while (c.moveToNext()) {
+                // only mapped through attribute
+                if (c.getInt(1) == 0 && c.getInt(2) == 0 && c.getInt(3) == 0
+                        && c.getInt(4) == 0 && c.getInt(5) == 0 && c.getInt(6) == 0 && c.getInt(7) == 0) {
+                    if (attrmappingsetId.contains("/" + c.getInt(0) + "/"))
+                        groupIds.append(c.getString(0));
+                } // only criteria mapped
+                else if (c.getInt(8) == 0) {
+                    groupIds.append(c.getString(0));
+                } // both criteria and attr mapped AND condition
+                else if (c.getInt(8) > 0 && attrmappingsetId.contains("/" + c.getInt(0) + "/")) {
+                    groupIds.append(c.getString(0));
+                }
+                if (groupIds.length() > 0)
+                    groupIds.append(",");
+            }
+            if (groupIds.toString().endsWith(","))
+                mappedGrpIds = groupIds.toString().substring(0, groupIds.length() - 1);
+            mappedGrpIds = mappedGrpIds.trim();
+        }
+
+        c.close();
+        return mappedGrpIds;
 
     }
 }

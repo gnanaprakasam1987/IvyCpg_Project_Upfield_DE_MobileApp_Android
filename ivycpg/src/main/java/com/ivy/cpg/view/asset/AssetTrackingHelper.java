@@ -2323,7 +2323,6 @@ public class AssetTrackingHelper {
     private ArrayList<String> getPosmId(DBUtil db, Context mContext) {
         ArrayList<String> mappingsetId = new ArrayList<>();
         ArrayList<String> attrmappingsetId = new ArrayList<>();
-        ArrayList<String> tempmappingsetId = new ArrayList<>(); // used for checking attr mapped
 
 
         String attrQuery = "Select distinct Id,MappingSetId from POSMCriteriaAttributesMappingV2 PCA"
@@ -2346,26 +2345,23 @@ public class AssetTrackingHelper {
                 + " ChannelId in(0," + mBusinessModel.getRetailerMasterBO().getSubchannelid() + ") OR "
                 + " ChannelId in (0," + AppUtils.QT(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext)) + ")";
 
-        //TODO Mansoor to Verify
         c = db.selectSQL(criteriaQuery);
         if (c.getCount() > 0) {
             while (c.moveToNext()) {
 
                 // only mapped through attribute
                 if (c.getInt(2) == 0 && c.getInt(3) == 0 && c.getInt(4) == 0 && c.getInt(5) == 0) {
-                    tempmappingsetId.add("/" + c.getInt(0) + "" + c.getInt(1) + "/");
-                } else {
+                    if (attrmappingsetId.contains("/" + c.getInt(0) + "" + c.getInt(1) + "/"))
+                        mappingsetId.add("/" + c.getInt(0) + "" + c.getInt(1) + "/");
+                } // only Channel mapped
+                else if (c.getInt(6) == 0) {
+                    mappingsetId.add("/" + c.getInt(0) + "" + c.getInt(1) + "/");
+                } // both channel and attr mapped AND condition
+                else if (c.getInt(6) > 0 && attrmappingsetId.contains("/" + c.getInt(0) + "" + c.getInt(1) + "/")) {
                     mappingsetId.add("/" + c.getInt(0) + "" + c.getInt(1) + "/");
                 }
             }
         }
-
-        //to remove mappingID if it doesnt match through retailer Attributes
-        for (String attrmappingID : tempmappingsetId)
-            if (attrmappingsetId.contains(attrmappingID))//matched add
-                mappingsetId.add(attrmappingID);
-            else // not matched need to remove that mappingId if it is present in list (AND logic)
-                mappingsetId.remove(attrmappingID);
 
 
         c.close();

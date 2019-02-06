@@ -16,6 +16,7 @@ import com.ivy.sd.png.bo.ReportBrandPerformanceBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ReportHelper;
 
 import java.util.ArrayList;
 
@@ -74,7 +75,7 @@ public class BrandwisePerformance extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mylist = bmodel.reportHelper.downloadBrandPerformanceReport(SDUtil.now(SDUtil.DATE_GLOBAL));
+        mylist = ReportHelper.getInstance(getActivity()).downloadBrandPerformanceReport(SDUtil.now(SDUtil.DATE_GLOBAL));
 
         // Show alert if error loading data.
         if (mylist == null) {

@@ -55,6 +55,7 @@ import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.sync.catalogdownload.Util;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -3315,7 +3316,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             printer = InitializeZebraPrinter();
 
             if (printer != null) {
-                bModel.loadManagementHelper.downloadSubDepots();
+                LoadManagementHelper.getInstance(this).downloadSubDepots();
                 projectSpecificPrinterCall(printerName);
             } else {
                 bModel.productHelper.clearOrderTable();

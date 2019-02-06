@@ -56,7 +56,7 @@ public class ReportHelper {
 
     public ReportHelper(Context context) {
         this.mContext = context;
-        this.bmodel = (BusinessModel) context;
+        this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     public static ReportHelper getInstance(Context context) {
@@ -1579,13 +1579,13 @@ public class ReportHelper {
 
     private void initializeUOMmapping(int reportType) {
         if (reportType == 1) {
-            for (StockReportBO bo : bmodel.reportHelper.getEODStockReport()) {
+            for (StockReportBO bo : getEODStockReport()) {
                 bo.setBaseUomCaseWise(false);
                 bo.setBaseUomOuterWise(false);
                 bo.setBaseUomPieceWise(false);
             }
         } else if (reportType == 2) {
-            for (StockReportBO bo : bmodel.reportHelper.getCurrentStock()) {
+            for (StockReportBO bo : getCurrentStock()) {
                 bo.setBaseUomCaseWise(false);
                 bo.setBaseUomOuterWise(false);
                 bo.setBaseUomPieceWise(false);
@@ -1601,13 +1601,13 @@ public class ReportHelper {
 
     private void enableUOMForAllProducts(int reportType) {
         if (reportType == 1) {
-            for (StockReportBO bo : bmodel.reportHelper.getEODStockReport()) {
+            for (StockReportBO bo : getEODStockReport()) {
                 bo.setBaseUomCaseWise(true);
                 bo.setBaseUomOuterWise(true);
                 bo.setBaseUomPieceWise(true);
             }
         } else if (reportType == 2) {
-            for (StockReportBO bo : bmodel.reportHelper.getCurrentStock()) {
+            for (StockReportBO bo : getCurrentStock()) {
                 bo.setBaseUomCaseWise(true);
                 bo.setBaseUomOuterWise(true);
                 bo.setBaseUomPieceWise(true);
@@ -1631,7 +1631,7 @@ public class ReportHelper {
 
             if (contentLevelId == pLevelId) {
                 if (reportType == 1) {
-                    for (StockReportBO bo : bmodel.reportHelper.getEODStockReport()) {
+                    for (StockReportBO bo : getEODStockReport()) {
                         if (bo.getProductID().equals(productId)) {
                             if (bo.getPiece_uomid() == uomId)
                                 bo.setBaseUomPieceWise(true);
@@ -1642,7 +1642,7 @@ public class ReportHelper {
                         }
                     }
                 } else if (reportType == 2) {
-                    for (StockReportBO bo : bmodel.reportHelper.getCurrentStock()) {
+                    for (StockReportBO bo : getCurrentStock()) {
                         if (bo.getProductID().equals(productId)) {
                             if (bo.getPiece_uomid() == uomId)
                                 bo.setBaseUomPieceWise(true);
@@ -1690,7 +1690,7 @@ public class ReportHelper {
                     while (c.moveToNext()) {
 
                         if (reportType == 1) {
-                            for (StockReportBO bo : bmodel.reportHelper.getEODStockReport()) {
+                            for (StockReportBO bo : getEODStockReport()) {
                                 if (bo.getProductID().equals(c.getString(0))) {
                                     if (bo.getPiece_uomid() == uomId)
                                         bo.setBaseUomPieceWise(true);
@@ -1701,7 +1701,7 @@ public class ReportHelper {
                                 }
                             }
                         } else if (reportType == 2) {
-                            for (StockReportBO bo : bmodel.reportHelper.getCurrentStock()) {
+                            for (StockReportBO bo : getCurrentStock()) {
                                 if (bo.getProductID().equals(c.getString(0))) {
                                     if (bo.getPiece_uomid() == uomId)
                                         bo.setBaseUomPieceWise(true);

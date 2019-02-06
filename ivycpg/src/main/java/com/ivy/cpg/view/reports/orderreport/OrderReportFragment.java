@@ -67,6 +67,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
     private Unbinder unbinder;
 
     private BusinessModel businessModel;
+    private JExcelHelper jExcelHelper;
 
     @BindView(R.id.txttotal)
     TextView text_totalOrderValue;
@@ -113,6 +114,7 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
         businessModel.setContext(getActivity());
         ReportComponent reportComponent = DaggerReportComponent.builder().reportModule(new ReportModule((BusinessModel) getActivity().getApplicationContext())).build();
         reportHelper = reportComponent.provideOrderReportHelper();
+        jExcelHelper = JExcelHelper.getInstance(getActivity());
     }
 
 
@@ -552,12 +554,12 @@ public class OrderReportFragment extends IvyBaseFragment implements IOrderReport
                 for (String distributorName : mOrderDetailsByDistributorName.keySet()) {
 
                     ArrayList<JExcelHelper.ExcelBO> mExcelBOList = new ArrayList<>();
-                    JExcelHelper.ExcelBO excel = businessModel.mJExcelHelper.new ExcelBO();
+                    JExcelHelper.ExcelBO excel = jExcelHelper.new ExcelBO();
                     excel.setSheetName(distributorName);
                     excel.setColumnNames(columnNames);
                     excel.setColumnValues(mOrderDetailsByDistributorName.get(distributorName));
                     mExcelBOList.add(excel);
-                    businessModel.mJExcelHelper.createExcel("OrderReport_" + distributorName + ".xls", mExcelBOList);
+                    jExcelHelper.createExcel("OrderReport_" + distributorName + ".xls", mExcelBOList);
                 }
 
                 if (businessModel.configurationMasterHelper.IS_ORDER_REPORT_EXPORT_AND_EMAIL)
