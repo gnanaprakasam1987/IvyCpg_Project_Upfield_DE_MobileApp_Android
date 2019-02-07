@@ -17,7 +17,7 @@ public interface TimeTrackDataManager extends AppDataManagerContract {
 
     Observable<ArrayList<NonFieldTwoBo>> getTimeTrackList();
 
-    boolean isWorkingStatus(int reasonId);
+    Single<Boolean> isWorkingStatus(int reasonId);
 
     Single<Boolean> updateTimeTrackDetailsDb(NonFieldTwoBo nonFieldTwoBo);
 

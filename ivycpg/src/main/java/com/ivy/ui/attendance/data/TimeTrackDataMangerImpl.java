@@ -87,7 +87,7 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
     }
 
     private String getReasonName(String id) {
-        String reasonName ="";
+        String reasonName = "";
         try {
 
 
@@ -114,23 +114,26 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
      * @param id StandardListMaster ListId
      * @return returns boolean
      */
-    public boolean isWorkingStatus(int id) {
+    @Override
+    public Single<Boolean> isWorkingStatus(int id) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+                boolean isIdWorking = false;
+                try {
+                    Cursor c = mDbUtil.selectSQL("select Listid from StandardListMaster where ListCode='WORKING' and ListId = '" + id + "'");
+                    if (c != null && c.getCount() > 0) {
+                        c.close();
+                        isIdWorking = true;
+                    }
 
-        boolean isIdWorking = false;
-        try {
-            initDb();
-
-            Cursor c = mDbUtil.selectSQL("select Listid from StandardListMaster where ListCode='WORKING' and ListId = '" + id + "'");
-            if (c != null && c.getCount() > 0) {
-                c.close();
-                isIdWorking = true;
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                shutDownDb();
+                return isIdWorking;
             }
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-        shutDownDb();
-        return isIdWorking;
+        });
     }
 
     @Override

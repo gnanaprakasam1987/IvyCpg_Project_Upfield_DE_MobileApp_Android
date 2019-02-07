@@ -2,6 +2,7 @@ package com.ivy.sd.png.commons;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -137,6 +138,19 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         mScreenTitleTV = (TextView) findViewById(R.id.tv_toolbar_title);
        // mScreenTitleTV.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         mScreenTitleTV.setText(title);
+    }
+
+    public void setUpToolbar(String title){
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getSupportActionBar().setElevation(0);
+        }
+
+        if (title != null)
+            setScreenTitle(title);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     public String getScreenTitle() {
@@ -281,6 +295,18 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+    }
+
+    public void startActivity(Class activity) {
+        Intent intent = new Intent(this, activity);
+        startActivity(intent);
+
+    }
+
+    public void startActivityAndFinish(Class activity) {
+        startActivity(activity);
+        finish();
+
     }
 
 

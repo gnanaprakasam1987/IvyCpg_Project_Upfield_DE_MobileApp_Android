@@ -24,7 +24,6 @@ import io.reactivex.functions.Consumer;
 public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingView> extends BasePresenter<V> implements TimeTrackingContract.TimeTrackingPresenter<V> {
     private TimeTrackDataManager timeTrackDataManager;
     private ConfigurationMasterHelper configurationMasterHelper;
-    private LocationUtil locationUtil;
     private ArrayList<NonFieldTwoBo> nonFieldTwoBoList;
 
     @Inject
@@ -33,21 +32,16 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
                                   CompositeDisposable compositeDisposable,
                                   ConfigurationMasterHelper configurationMasterHelper,
                                   V view,
-                                  TimeTrackDataManager timeTrackDataManager,
-                                  LocationUtil locationUtil) {
+                                  TimeTrackDataManager timeTrackDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
         this.timeTrackDataManager = timeTrackDataManager;
         this.configurationMasterHelper = configurationMasterHelper;
-        this.locationUtil = locationUtil;
-
-
     }
 
     @Override
     public void fetchData() {
         nonFieldTwoBoList = new ArrayList<>();
         getIvyView().showLoading();
-
         getCompositeDisposable().add(timeTrackDataManager.getTimeTrackList()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<ArrayList<NonFieldTwoBo>>() {
@@ -58,38 +52,61 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
                         getIvyView().hideLoading();
                     }
                 }));
-
     }
 
     @Override
-    public boolean checkConfigandWorkStatus(int reasonId) {
-        return configurationMasterHelper.IS_UPLOAD_ATTENDANCE
-                && timeTrackDataManager.isWorkingStatus(reasonId);
+    public void checkConfigandWorkStatus(int reasonId, String inOrOut) {
+        getIvyView().showLoading();
+        getCompositeDisposable().add(timeTrackDataManager.isWorkingStatus(reasonId)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean isWorkingStatus) {
+                        if (isWorkingStatus && configurationMasterHelper.IS_UPLOAD_ATTENDANCE)
+                            getIvyView().uploadAttendance(inOrOut);
+                        getIvyView().hideLoading();
+
+                    }
+                }));
     }
+
+    private boolean success = false;
 
     @Override
     public boolean startLocationService(String reasonId) {
+        getIvyView().showLoading();
+        getCompositeDisposable().add(timeTrackDataManager.isWorkingStatus(Integer.parseInt(reasonId))
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean isWorkingStatus) {
 
-        boolean success;
-        if (configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE
-                && timeTrackDataManager.isWorkingStatus(Integer.parseInt(reasonId)))
+                        if (isWorkingStatus && configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE)
+                            success = getIvyView().updateRealTimeIn();
+                        else
+                            success = true;
 
-            success = getIvyView().updateRealTimeIn();
-        else
-            success = true;
-
-        getIvyView().uploadAttendance("IN", reasonId);
+                        getIvyView().shouldUploadAttendance("IN", reasonId);
+                        getIvyView().hideLoading();
+                    }
+                }));
         return success;
     }
 
     @Override
     public void stopLocationService(String reasonId) {
-        if (configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE
-                && timeTrackDataManager.isWorkingStatus(Integer.parseInt(reasonId)))
-            getIvyView().updateRealTimeOut();
-
-        getIvyView().uploadAttendance("OUT", reasonId);
-
+        getIvyView().showLoading();
+        getCompositeDisposable().add(timeTrackDataManager.isWorkingStatus(Integer.parseInt(reasonId))
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean isWorkingStatus) {
+                        if (isWorkingStatus && configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE)
+                            getIvyView().updateRealTimeOut();
+                        getIvyView().shouldUploadAttendance("OUT", reasonId);
+                        getIvyView().hideLoading();
+                    }
+                }));
     }
 
 
@@ -118,11 +135,6 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
     }
 
     @Override
-    public LocationUtil getLocationUtil() {
-        return locationUtil;
-    }
-
-    @Override
     public boolean isPreviousInOutCompeleted() {
         boolean status = false;
 
@@ -133,8 +145,6 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
             status = (nonFieldTwoBo.getInTime() != null && !nonFieldTwoBo.getInTime().trim().equalsIgnoreCase(""))
                     && (nonFieldTwoBo.getOutTime() != null && !nonFieldTwoBo.getOutTime().trim().equalsIgnoreCase(""));
         }
-
-
         return status;
     }
 
@@ -144,7 +154,7 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
     }
 
     @Override
-    public void fetchReasonAndShowDialog() {
+    public void fetchInOutReason() {
         getIvyView().showLoading();
         getCompositeDisposable().add(timeTrackDataManager.getInOutReasonList()
                 .subscribeOn(getSchedulerProvider().io())
@@ -195,7 +205,6 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
                     }
                 }));
     }
-
 
     @Override
     public void onDetach() {

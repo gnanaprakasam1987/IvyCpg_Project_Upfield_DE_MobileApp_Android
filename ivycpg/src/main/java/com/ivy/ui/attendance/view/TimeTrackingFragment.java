@@ -4,21 +4,23 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.ivy.core.base.presenter.BasePresenter;
+import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.locationservice.LocationConstants;
 import com.ivy.cpg.locationservice.realtime.FireBaseRealtimeLocationUpload;
@@ -26,8 +28,10 @@ import com.ivy.cpg.locationservice.realtime.RealTimeLocation;
 import com.ivy.cpg.locationservice.realtime.RealTimeLocationTracking;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
+import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
@@ -63,8 +67,11 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
     @Inject
     TimeTrackingContract.TimeTrackingPresenter<TimeTrackingContract.TimeTrackingView> presenter;
 
-    @BindView(R.id.listview)
-    ListView lvTimeTrack;
+    @Inject
+    LocationUtil locationUtil;
+
+    @BindView(R.id.rv_inout)
+    RecyclerView rvTimeTrack;
 
     @BindView(R.id.no_data_txt)
     TextView tvNoData;
@@ -103,15 +110,23 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
     @Override
     protected void setUpViews() {
         setHasOptionsMenu(true);
-        setUpToolBar();
+        setUpToolbar(screenTitle);
+        rvTimeTrack.setHasFixedSize(false);
+        rvTimeTrack.setNestedScrollingEnabled(false);
+        rvTimeTrack.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvTimeTrack.addItemDecoration(new DividerItemDecoration(rvTimeTrack.getContext(), DividerItemDecoration.HORIZONTAL));
+
         presenter.fetchData();
         if (presenter.isRealTimeLocationOn()) {
             checkAndRequestPermissionAtRunTime(LOCATION_PERMISSION);
-            if (!presenter.getLocationUtil().isGPSProviderEnabled()) {
+            if (!locationUtil.isGPSProviderEnabled()) {
                 GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
                 int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(getActivity().getApplicationContext());
                 if (resultCode == ConnectionResult.SUCCESS) {
-                    ((BusinessModel) getActivity().getApplicationContext()).requestLocation(getActivity());
+                    if (getActivity() instanceof BaseActivity)
+                        requestLocation(getActivity());
+                    else if (getActivity() instanceof IvyBaseActivityNoActionBar)
+                        ((BusinessModel) getActivity().getApplicationContext()).requestLocation(getActivity());
                 } else {
                     showLocationEnableDialog();
                 }
@@ -127,7 +142,7 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
             int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-                presenter.getLocationUtil().startLocationListener();
+                locationUtil.startLocationListener();
             }
         }
     }
@@ -140,27 +155,9 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
             int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionStatus == PackageManager.PERMISSION_GRANTED)
-                presenter.getLocationUtil().stopLocationListener();
+                locationUtil.stopLocationListener();
         }
     }
-
-    private void setUpToolBar() {
-        getActionBar().setDisplayShowTitleEnabled(false);
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getActionBar().setElevation(0);
-        }
-
-        if (screenTitle != null)
-            setScreenTitle(screenTitle);
-
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        getActionBar().setDisplayShowHomeEnabled(true);
-    }
-
-    private ActionBar getActionBar() {
-        return ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
-    }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -181,13 +178,11 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
     public boolean onOptionsItemSelected(MenuItem item) {
         int i1 = item.getItemId();
         if (i1 == android.R.id.home) {
-            Intent i = new Intent(getActivity(), HomeScreenActivity.class);
-            startActivity(i);
-            getActivity().finish();
+            startActivityAndFinish(HomeScreenActivity.class);
             return true;
         } else if (i1 == R.id.menu_add) {
             if (presenter.isPreviousInOutCompeleted())
-                presenter.fetchReasonAndShowDialog();
+                presenter.fetchInOutReason();
 
             else {
                 try {
@@ -217,12 +212,12 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
                     timeTrackBo.setStatus(getResources().getString(R.string.in_partial));
                 }
             }
-            lvTimeTrack.setVisibility(View.VISIBLE);
+            rvTimeTrack.setVisibility(View.VISIBLE);
             tvNoData.setVisibility(View.GONE);
             TimeTrackingAdapter timeTrackingAdapter = new TimeTrackingAdapter(getActivity(), this.timeTrackList, this);
-            lvTimeTrack.setAdapter(timeTrackingAdapter);
+            rvTimeTrack.setAdapter(timeTrackingAdapter);
         } else {
-            lvTimeTrack.setVisibility(View.GONE);
+            rvTimeTrack.setVisibility(View.GONE);
             tvNoData.setVisibility(View.VISIBLE);
         }
     }
@@ -266,15 +261,9 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
      * Upload Attendance status - IN/OUT with Time in Firebase
      */
     @Override
-    public void uploadAttendance(String IN_OUT, String reasonId) {
-        if (presenter.checkConfigandWorkStatus(Integer.parseInt(reasonId))) {
-            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
-            if (IN_OUT.equalsIgnoreCase("IN")) {
-                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH, null, "AttendanceIn");
-            } else {
-                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH, null, "AttendanceOut");
-            }
-        }
+    public void shouldUploadAttendance(String inOrOut, String reasonId) {
+        presenter.checkConfigandWorkStatus(Integer.parseInt(reasonId), inOrOut);
+
     }
 
     @Override
@@ -290,6 +279,16 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
             }
         });
         dialog.show();
+    }
+
+    @Override
+    public void uploadAttendance(String inOrOut) {
+            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
+            if (inOrOut.equalsIgnoreCase("IN")) {
+                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH, null, "AttendanceIn");
+            } else {
+                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH, null, "AttendanceOut");
+            }
     }
 
     public void showLocationEnableDialog() {
@@ -310,12 +309,10 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
             timeTrackList.get(position).setOutTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
             presenter.updateTimeTrackDetails(timeTrackList.get(position));
         }
-
     }
 
     @Override
     public void onOutTimeClick(int position) {
-
         timeTrackList.get(position).setOutTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
         presenter.updateTimeTrackDetails(timeTrackList.get(position));
         presenter.stopLocationService(timeTrackList.get(position).getReason());

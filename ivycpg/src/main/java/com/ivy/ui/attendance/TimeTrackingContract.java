@@ -24,16 +24,18 @@ public interface TimeTrackingContract {
 
         void updateRealTimeOut();
 
-        void uploadAttendance(String IN_OUT, String reasonId );
+        void shouldUploadAttendance(String inOrOut, String reasonId );
 
         void showInOutDialog(ArrayList<ReasonMaster> reasonList);
+
+        void uploadAttendance(String inOrOut);
     }
 
     @PerActivity
     interface  TimeTrackingPresenter<V extends TimeTrackingView> extends BaseIvyPresenter<V>{
         void fetchData();
 
-        boolean checkConfigandWorkStatus(int reasonId);
+        void checkConfigandWorkStatus(int reasonId, String inOrOut);
 
         boolean startLocationService(String reasonId);
 
@@ -45,13 +47,11 @@ public interface TimeTrackingContract {
 
         boolean isShowCapturedLocation();
 
-        LocationUtil getLocationUtil();
-
         boolean isPreviousInOutCompeleted();
 
         boolean isAttendanceRemark();
 
-        void fetchReasonAndShowDialog();
+        void fetchInOutReason();
 
         void saveInOutDetails(String reasonId, String remarks);
 

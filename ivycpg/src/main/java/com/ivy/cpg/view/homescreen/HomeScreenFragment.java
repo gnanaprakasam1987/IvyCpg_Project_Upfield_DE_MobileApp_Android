@@ -1704,7 +1704,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_PRESENCE);
         NonFieldHomeFragment mNonFieldFragment = (NonFieldHomeFragment) fm
                 .findFragmentByTag(MENU_ATTENDANCE);
-        TimeTrackingFragment mNonFieldTwoFragment = (TimeTrackingFragment) fm
+        TimeTrackingFragment timeTrackingFragment = (TimeTrackingFragment) fm
                 .findFragmentByTag(MENU_IN_OUT);
 
 
@@ -1810,8 +1810,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (mNonFieldFragment != null && (fragmentName.equals(MENU_ATTENDANCE))
                 && mNonFieldFragment.isVisible()) {
             return;
-        } else if (mNonFieldTwoFragment != null && (fragmentName.equals(MENU_IN_OUT))
-                && mNonFieldTwoFragment.isVisible()) {
+        } else if (timeTrackingFragment != null && (fragmentName.equals(MENU_IN_OUT))
+                && timeTrackingFragment.isVisible()) {
             return;
         } else if (mPlanningMapFragment != null && (fragmentName.equals(MENU_PLANE_MAP))
                 && mPlanningMapFragment.isVisible()) {
@@ -1909,8 +1909,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(mAttendFragment);
         if (mNonFieldFragment != null)
             ft.remove(mNonFieldFragment);
-        if (mNonFieldTwoFragment != null)
-            ft.remove(mNonFieldTwoFragment);
+        if (timeTrackingFragment != null)
+            ft.remove(timeTrackingFragment);
         if (mPlanningMapFragment != null)
             ft.remove(mPlanningMapFragment);
         if (mLoadMgtFragment != null)
