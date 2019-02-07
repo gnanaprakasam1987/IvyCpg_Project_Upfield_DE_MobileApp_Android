@@ -48,6 +48,7 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -435,13 +436,14 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
     }
 
     private void onLoadModule() {
-        if (bmodel.competitorTrackingHelper.getCompanyList().size() > 0) {
+        CompetitorTrackingHelper competitorTrackingHelper = CompetitorTrackingHelper.getInstance(getActivity());
+        if (competitorTrackingHelper.getCompanyList().size() > 0) {
             CompanyBO companyBO = new CompanyBO();
             companyBO.setCompetitorid(0);
             companyBO.setCompetitorName(getResources().getString(R.string.all));
             ArrayList<CompanyBO> companyList = new ArrayList<>();
             companyList.add(companyBO);
-            companyList.addAll(bmodel.competitorTrackingHelper.getCompanyList());
+            companyList.addAll(competitorTrackingHelper.getCompanyList());
             companyAdapter = new CompanyAdapter(companyList);
             rvCompanyList.setAdapter(companyAdapter);
 

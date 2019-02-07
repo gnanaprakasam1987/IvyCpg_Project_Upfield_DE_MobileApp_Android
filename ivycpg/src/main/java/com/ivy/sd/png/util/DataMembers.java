@@ -381,7 +381,7 @@ public class DataMembers {
     private static final String tbl_delivery_detail = "DeliveryDetail";
     private static final String tbl_delivery_detail_cols = "OrderId,PId,OrderedQty,DeliveredQty,UOMId,Price";
 
-    private static final String tbl_orderHeader_cols = "OrderID,RetailerID,RouteId,OrderValue,LinesPerCall,OrderDate,DeliveryDate,IsToday,po,remark,discount,is_splitted_order,is_processed,latitude,longitude,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,stype,timestampid,JFlag,totalTaxValue,invoicestatus,imagename,SalesType,totalweight,isApproval,PrintFilePath,RField1,RField2,ordertime,SParentID,RemarksType,RField3,orderImagePath,ParentHierarchy,AddressId,ridSF,VisitId";
+    private static final String tbl_orderHeader_cols = "OrderID,RetailerID,RouteId,OrderValue,LinesPerCall,OrderDate,DeliveryDate,IsToday,po,remark,discount,is_splitted_order,is_processed,latitude,longitude,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,stype,timestampid,JFlag,totalTaxValue,invoicestatus,imagename,SalesType,totalweight,isApproval,PrintFilePath,RField1,RField2,ordertime,SParentID,RemarksType,RField3,orderImagePath,ParentHierarchy,AddressId,ridSF,VisitId,LevelCode";
     private static final String tbl_orderDetails_cols = "OrderID,ProductID,Qty,uomid,Rate,uomcount,msqqty,pieceqty,caseqty,d1,d2,d3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,casePrice,outerPrice,pcsUOMId,totalamount,batchid,PriceOffId,PriceOffValue,isFreeProduct,weight,ReasonId,HsnCode,RField1,NetAmount,UpsellingQty";
     private static final String tbl_orderReturnDetails_cols = "OrderID,Pid,UomID,TypeID,Qty,Price,LineValue,LiableQty,ReturnQty";
     private static final String tbl_closingStockHeader_cols = "StockID,Date,RetailerID,remark,latitude,longitude,DistributorID,Weightage,Score,AvailabilityShare,ridSF,VisitId";
@@ -410,7 +410,7 @@ public class DataMembers {
 
     private static final String tbl_vanload_cols = "pid,uid,qty,date,outerQty,caseQty,pcsQty,duomQty,duomid,dOuomQty,dOuomId,BatchId,batchno,SubDepotId";
     private static final String tbl_odameter_cols = "uid,start,end,starttime,endtime,startlatitude,startlongitude,endlatitude,endlongitude,date";
-    private static final String tbl_AssetHeader_Cols = "uid,Date,RetailerId,remark,TypeLovId,tgtTotal,achTotal,Weightage,Score,distributorid,ridSF,VisitId";
+    private static final String tbl_AssetHeader_Cols = "uid,Date,RetailerId,remark,TypeLovId,tgtTotal,achTotal,Weightage,Score,distributorid,ridSF,VisitId,refid";
     private static final String tbl_AssetDetail_Cols = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,Mappingid,Productid,installdate,servicedate,conditionId,CompQty,locid,PosmGroupLovId,isExecuted,Score,TgtLocId";
     private static final String tbl_AssetImgInfo_Cols = "uid,AssetID,ImageName,Mappingid,PId,locid";
 
@@ -442,7 +442,7 @@ public class DataMembers {
     private static final String tbl_MonthlyPlanDetail_cols = "RetailerId,InitId,Target";
 
     private static final String tbl_SOD_Tracking_Detail_cols = "Uid,pid,Norm,Actual,Required,Gap,ParentTotal,ReasonId,ImageName,RetailerId,IsOwn,Parentid,MappingId,LocId";
-    private static final String tbl_SOD_Tracking_Header_cols = "Uid,RetailerId,Date,Remark,ridSF,VisitId";
+    private static final String tbl_SOD_Tracking_Header_cols = "Uid,RetailerId,Date,Remark,ridSF,VisitId,refID";
 
     private static final String tbl_SOD_Asset_Tracking_Detail_cols = "Uid,pid,Norm,Actual,Required,Gap,ParentTotal,ReasonId,ImageName,RetailerId,IsOwn,Parentid,MappingId,LocId";
     private static final String tbl_SOD_Asset_Tracking_Header_cols = "Uid,RetailerId,Date,Remark";
@@ -452,7 +452,7 @@ public class DataMembers {
     private static final String tbl_SOSKU_Tracking_Detail_cols = "Uid,pid,Norm,Actual,Required,Gap,ParentTotal,ReasonId,ImageName,RetailerId,IsOwn,Parentid,MappingId";
 
     private static final String tbl_SOS_Tracking_Detail_cols = "Uid,pid,Norm,Actual,Required,Gap,ParentTotal,ReasonId,ImageName,RetailerId,IsOwn,Parentid,MappingId,locid,remarks,Flex1";
-    private static final String tbl_SOS_Tracking_Header_cols = "Uid,RetailerId,Date,Remark,ridSF,VisitId";
+    private static final String tbl_SOS_Tracking_Header_cols = "Uid,RetailerId,Date,Remark,ridSF,VisitId,refID";
     private static final String tbl_SOS_Tracking_Parent_Detail_cols = "Uid,pid,blockcount,shelfcount,shelflength,extrashelf,total,locid";
     private static final String tbl_SOS_Block_Tracking_Detail_cols = "Uid,pid,ChildPid,SubCellId,CellId,locid";
 

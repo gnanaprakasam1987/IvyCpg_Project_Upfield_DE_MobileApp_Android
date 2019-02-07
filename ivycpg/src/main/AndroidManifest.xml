@@ -170,10 +170,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ivy.sd.png.view.ScreenActivationActivity"
-            android:exported="false"
-            android:screenOrientation="portrait" />
-        <activity
             android:name="com.ivy.cpg.view.login.LoginScreen"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
@@ -414,7 +410,7 @@
             android:name="com.ivy.cpg.view.van.stockproposal.StockProposalScreen"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.DeviceStatusActivity"
+            android:name="com.ivy.cpg.view.homescreen.deviceStatus.DeviceStatusActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.OrderDiscount"
@@ -534,7 +530,7 @@
             android:name="com.ivy.cpg.view.reports.distorderreport.DistOrderreportdetail"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.UserFeedbackActivity"
+            android:name="com.ivy.cpg.view.homescreen.userFeedback.UserFeedbackActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.profile.ProfileActivity"
@@ -850,12 +846,6 @@
         <activity
             android:name="com.ivy.cpg.view.van.manualvanload.VanLoadReturnProductActivity"
             android:screenOrientation="portrait" />
-
-        <service
-            android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"
-            android:enabled="true"
-            android:exported="false" />
-
         <activity
             android:name="com.ivy.cpg.view.initiative.InitiativeEditActivity"
             android:screenOrientation="portrait" />

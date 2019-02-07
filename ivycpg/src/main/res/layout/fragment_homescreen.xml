@@ -69,7 +69,6 @@
             android:layout_width="@dimen/list_view_width"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dimen_6dp"
-            android:layout_marginLeft="@dimen/dimen_6dp"
             android:layout_marginTop="@dimen/dimen_6dp"
             android:orientation="horizontal">
 

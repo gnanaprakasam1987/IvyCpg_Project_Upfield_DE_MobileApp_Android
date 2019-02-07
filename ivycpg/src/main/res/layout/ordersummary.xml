@@ -58,8 +58,9 @@
 
 
         <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="@dimen/footer_height"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/footer_height"
             android:background="?attr/customFooterBackgroundColor"
             android:orientation="horizontal"
             android:padding="@dimen/footer_padding">

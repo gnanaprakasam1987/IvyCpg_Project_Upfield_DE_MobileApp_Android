@@ -16,6 +16,7 @@ import com.ivy.sd.png.bo.OrderTakenTimeBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ReportHelper;
 
 import java.util.ArrayList;
 
@@ -79,7 +80,7 @@ public class OrderTakenTimeReport extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mylist = bmodel.reportHelper.downloadDayProcesssReport(SDUtil.now(SDUtil.DATE_GLOBAL));
+        mylist = ReportHelper.getInstance(getActivity()).downloadDayProcesssReport(SDUtil.now(SDUtil.DATE_GLOBAL));
 
         // Show alert if error loading data.
         if (mylist == null) {

@@ -29,6 +29,7 @@ import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.AppUtils;
 
 import java.io.File;
 
@@ -140,11 +141,11 @@ public class ReasonPhotoDialog extends DialogFragment {
 
                                                          boolean nFilesThere = bmodel
                                                                  .checkForNFilesInFolder(
-                                                                         HomeScreenFragment.photoPath, 1,
+                                                                         AppUtils.photoFolderPath, 1,
                                                                          fnameStarts);
 
                                                          if (nFilesThere) {
-                                                             bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                                                             bmodel.deleteFiles(AppUtils.photoFolderPath,
                                                                      fnameStarts);
                                                          }
 
@@ -202,17 +203,17 @@ public class ReasonPhotoDialog extends DialogFragment {
 
                                                         boolean nFilesThere = bmodel
                                                                 .checkForNFilesInFolder(
-                                                                        HomeScreenFragment.photoPath, 1,
+                                                                        AppUtils.photoFolderPath, 1,
                                                                         fnameStarts);
                                                         if (nFilesThere) {
                                                             showFileDeleteAlert(fnameStarts);
                                                         } else {
                                                             Intent intent = new Intent(getActivity(),
                                                                     CameraActivity.class);
-                                                            intent.putExtra("quality", 40);
-                                                            String path = HomeScreenFragment.photoPath + "/"
+                                                            intent.putExtra(CameraActivity.QUALITY, 40);
+                                                            String path = AppUtils.photoFolderPath + "/"
                                                                     + mImageName;
-                                                            intent.putExtra("path", path);
+                                                            intent.putExtra(CameraActivity.PATH, path);
                                                             startActivityForResult(intent,
                                                                     bmodel.CAMERA_REQUEST_CODE);
                                                         }
@@ -253,15 +254,15 @@ public class ReasonPhotoDialog extends DialogFragment {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                        bmodel.deleteFiles(AppUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         isPhotoTaken = false;
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
-                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
+                        String path = AppUtils.photoFolderPath + "/" + mImageName;
+                        intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);
                     }
@@ -322,7 +323,7 @@ public class ReasonPhotoDialog extends DialogFragment {
     }
 
     private void setImage(String imagepath) {
-        File imgFile = new File(HomeScreenFragment.photoPath + "/" + imagepath);
+        File imgFile = new File(AppUtils.photoFolderPath + "/" + imagepath);
         Glide.with(getActivity())
                 .load(imgFile)
                 .error(ContextCompat.getDrawable(getActivity(), R.drawable.no_image_available))

@@ -37,6 +37,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -326,7 +327,7 @@ public class AssetAdapter extends BaseAdapter {
                         mAssetPresenter.mSelectedImageName = imageName;
                         mAssetPresenter.mSelectedSerial = holder.assetBO.getSerialNo();
 
-                        String _path = HomeScreenFragment.photoPath + "/" + mAssetPresenter.mSelectedImageName;
+                        String _path = AppUtils.photoFolderPath + "/" + mAssetPresenter.mSelectedImageName;
                         mBModel.getPhotosTakeninCurrentAssetTracking().put(mAssetPresenter.mSelectedAssetID +"", _path);
 
                         boolean nFilesThere = mBModel.checkForNFilesInFolder(photoPath, 1,
@@ -338,9 +339,9 @@ public class AssetAdapter extends BaseAdapter {
                         } else {
                             Intent intent = new Intent(mContext,
                                     CameraActivity.class);
-                            intent.putExtra("quality", 40);
+                            intent.putExtra(CameraActivity.QUALITY, 40);
                             String path = photoPath + "/" + imageName;
-                            intent.putExtra("path", path);
+                            intent.putExtra(CameraActivity.PATH, path);
                             mFragment.startActivityForResult(intent, CAMERA_REQUEST_CODE);
                             holder.photoBTN.requestFocus();
                         }
@@ -634,9 +635,9 @@ public class AssetAdapter extends BaseAdapter {
 
                         Intent intent = new Intent(mContext,
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
                         String path = photoPath + "/" + imageName;
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.PATH, path);
                         mFragment.startActivityForResult(intent, CAMERA_REQUEST_CODE);
                     }
                 }, new CommonDialog.negativeOnClickListener() {

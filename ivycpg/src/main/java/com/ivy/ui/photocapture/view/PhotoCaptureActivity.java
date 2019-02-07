@@ -443,7 +443,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         Intent intent = new Intent(
                 PhotoCaptureActivity.this,
                 CameraActivity.class);
-        String _path = HomeScreenFragment.folder.getPath() + "/" + imageName;
+        String _path = AppUtils.photoFolderPath + "/" + imageName;
         //  intent.putExtra("quality", 40);
         intent.putExtra("path", _path);
         startActivityForResult(intent,

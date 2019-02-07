@@ -22,7 +22,7 @@ public class StockProposalModuleHelper {
 
 	protected StockProposalModuleHelper(Context context) {
 		this.context = context;
-		this.bmodel = (BusinessModel) context;
+		this.bmodel = (BusinessModel) context.getApplicationContext();
 	}
 
 	public static StockProposalModuleHelper getInstance(Context context) {

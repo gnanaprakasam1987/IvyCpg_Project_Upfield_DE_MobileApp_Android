@@ -26,7 +26,7 @@ public class EmptyReturnHelper {
 
 	private EmptyReturnHelper(Context context) {
 		this.context = context;
-		this.bmodel = (BusinessModel) context;
+		this.bmodel = (BusinessModel) context.getApplicationContext();
 	}
 
 	public static EmptyReturnHelper getInstance(Context context) {

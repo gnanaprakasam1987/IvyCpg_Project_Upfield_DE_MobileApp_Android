@@ -1578,17 +1578,17 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
                 boolean nFilesThere = bmodel
                         .checkForNFilesInFolder(
-                                HomeScreenFragment.photoPath, 1,
+                                AppUtils.photoFolderPath, 1,
                                 fnameStarts);
                 if (nFilesThere) {
                     showFileDeleteAlert(fnameStarts);
                 } else {
                     Intent intent = new Intent(this,
                             CameraActivity.class);
-                    intent.putExtra("quality", 40);
-                    String path = HomeScreenFragment.photoPath + "/"
+                    intent.putExtra(CameraActivity.QUALITY, 40);
+                    String path = AppUtils.photoFolderPath + "/"
                             + mImageName;
-                    intent.putExtra("path", path);
+                    intent.putExtra(CameraActivity.PATH, path);
                     startActivityForResult(intent,
                             bmodel.CAMERA_REQUEST_CODE);
                 }
@@ -1611,15 +1611,15 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                        bmodel.deleteFiles(AppUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         isPhotoTaken = false;
                         Intent intent = new Intent(CallAnalysisActivity.this,
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
-                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
+                        String path = AppUtils.photoFolderPath + "/" + mImageName;
+                        intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);
                     }

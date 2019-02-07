@@ -12,6 +12,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.AppUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -161,7 +162,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                 && mAllAssetTrackingList.size() > 0) {
 
             for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                if (assetBO.getProductId() > 0 && mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
                     continue;
                 if (ALL.equals(mCapturedBarcode)) {
 
@@ -199,7 +200,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                     && mAssetTrackingList.size() > 0) {
                 if (mAttributeProducts != null && mProductId != 0) {//Both Product and attribute filter selected
                     for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                        if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                        if (assetBO.getProductId() > 0 && mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
                             continue;
                         if (assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
 
@@ -222,7 +223,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                         mAssetList.addAll(mAssetTrackingList);
                     } else {
                         for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                            if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            if (assetBO.getProductId() > 0 && mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
                                 continue;
                             if (assetBO.getParentHierarchy() != null && assetBO.getParentHierarchy().contains("/" + mProductId + "/")) {
 
@@ -243,7 +244,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                 } else if (mAttributeProducts != null && mProductId != 0) {// Attribute filter alone selected
                     for (int pid : mAttributeProducts) {
                         for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                            if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            if (assetBO.getProductId() > 0 && mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
                                 continue;
                             if (pid == assetBO.getProductId()) {
 
@@ -264,7 +265,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
 
                     if (mFilterText.equals("")) {
                         for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                            if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                            if (assetBO.getProductId() > 0 && mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetBO.getParentHierarchy().contains("/" + mBModel.productHelper.getmSelectedGlobalProductId() + "/"))
                                 continue;
                             if (ALL.equals(mCapturedBarcode)) {
                                 if ("".equals(mCapturedNFCTag)) {
@@ -331,7 +332,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
      */
     private void deleteFiles(String filename) {
 
-        File folder = new File(HomeScreenFragment.photoPath + "/");
+        File folder = new File(AppUtils.photoFolderPath + "/");
         File[] files = folder.listFiles();
         for (File tempFile : files) {
             if (tempFile != null && tempFile.getName().equals(filename)) {
@@ -360,8 +361,8 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
 
         if (!hasAssetPhotoTaken() || !hasAssetReasonTaken()) {
             mAssetView.showError(errorMsg);
-        } else if (hasAssetTaken() ||hasAssetPhotoTaken() || hasAssetReasonTaken() ) {
-           mAssetView.save();
+        } else if (hasAssetTaken() || hasAssetPhotoTaken() || hasAssetReasonTaken()) {
+            mAssetView.save();
         }
 
     }

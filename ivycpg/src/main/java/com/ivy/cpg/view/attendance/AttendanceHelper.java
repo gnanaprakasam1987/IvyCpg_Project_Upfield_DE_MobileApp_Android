@@ -88,10 +88,12 @@ public class AttendanceHelper {
         try {
             String sessionType = "";
             String currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
-            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
-            );
+
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
             db.openDataBase();
+
             int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
+
             if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE) {
                 Cursor c = db
                         .selectSQL("SELECT * FROM AttendanceTimeDetails where userid = " + userid + " AND date = " + bmodel.QT(currentDate) +

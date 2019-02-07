@@ -63,6 +63,7 @@ import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -564,15 +565,15 @@ public class SODFragment extends IvyBaseFragment implements
         builder.setPositiveButton(getResources().getString(R.string.yes),
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        mBModel.deleteFiles(HomeScreenFragment.photoPath,
+                        mBModel.deleteFiles(AppUtils.photoFolderPath,
                                 imageNameStarts);
                         if (dialog != null)
                             dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
-                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
+                        String path = AppUtils.photoFolderPath + "/" + mImageName;
+                        intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 CAMERA_REQUEST_CODE);
 
@@ -917,7 +918,7 @@ public class SODFragment extends IvyBaseFragment implements
 
                             boolean nfiles_there = mBModel
                                     .checkForNFilesInFolder(
-                                            HomeScreenFragment.photoPath,
+                                            AppUtils.photoFolderPath,
                                             1, fnameStarts);
                             if (nfiles_there) {
 
@@ -925,10 +926,10 @@ public class SODFragment extends IvyBaseFragment implements
                             } else {
                                 Intent intent = new Intent(getActivity(),
                                         CameraActivity.class);
-                                intent.putExtra("quality", 40);
-                                String _path = HomeScreenFragment.photoPath + "/"
+                                intent.putExtra(CameraActivity.QUALITY, 40);
+                                String _path = AppUtils.photoFolderPath + "/"
                                         + mImageName;
-                                intent.putExtra("path", _path);
+                                intent.putExtra(CameraActivity.PATH, _path);
                                 startActivityForResult(intent,
                                         CAMERA_REQUEST_CODE);
                                 holder.btnPhoto.requestFocus();
@@ -1005,7 +1006,7 @@ public class SODFragment extends IvyBaseFragment implements
                     && (!"".equals(holder.mSOD.getLocations().get(mSelectedLocationIndex).getImageName()))
                     && (!"null".equals(holder.mSOD.getLocations().get(mSelectedLocationIndex).getImageName()))) {
                 Glide.with(getActivity())
-                        .load(HomeScreenFragment.photoPath + "/" + holder.mSOD.getLocations().get(mSelectedLocationIndex).getImgName())
+                        .load(AppUtils.photoFolderPath + "/" + holder.mSOD.getLocations().get(mSelectedLocationIndex).getImgName())
                         .asBitmap()
                         .centerCrop()
                         .placeholder(R.drawable.ic_photo_camera)

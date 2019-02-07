@@ -72,11 +72,13 @@ public class OrderHelper {
     private ArrayList<String> mValidAccumulationSchemes;
 
     public boolean isQuickCall = false;
+    private Context context;
 
 
     private OrderHelper(Context context) {
 
         this.businessModel = (BusinessModel) context;
+        this.context = context;
     }
 
 
@@ -224,6 +226,16 @@ public class OrderHelper {
             businessModel.setInvoiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL),
                     ConfigurationMasterHelper.outDateFormat));
 
+            Vector<ProductMasterBO> finalProductList = new Vector<>();
+            if (businessModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
+                finalProductList.addAll(mSortedOrderedProducts);
+            else
+                finalProductList.addAll(businessModel.productHelper.getProductMaster());
+
+            String orderedPid = "";
+            if (finalProductList != null && finalProductList.size() > 0)
+                orderedPid = finalProductList.get(0).getProductID();
+
             // Order Header Entry
             String columns = "orderid,orderdate,retailerid,ordervalue,RouteId,linespercall,"
                     + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po," +
@@ -232,7 +244,7 @@ public class OrderHelper {
                     "stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime," +
                     "FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath," +
                     "RField1,RField2,ordertime,RemarksType,RField3,orderImage,orderImagePath," +
-                    "totalamount,AddressId,ridSF,VisitId";
+                    "totalamount,AddressId,ridSF,VisitId,LevelCode";
 
             String printFilePath = "";
             if (businessModel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
@@ -325,7 +337,8 @@ public class OrderHelper {
                     + "," + (businessModel.getOrderHeaderBO().getAddressID() == -1
                     ? 0 : businessModel.getOrderHeaderBO().getAddressID())
                     + "," + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRidSF())
-                    + "," + businessModel.getAppDataProvider().getUniqueId();
+                    + "," + businessModel.getAppDataProvider().getUniqueId()
+                    + "," + AppUtils.QT(getOrderedProductLevelCode(orderedPid));
 
 
             db.insertSQL(DataMembers.tbl_orderHeader, columns, values);
@@ -341,13 +354,7 @@ public class OrderHelper {
 
 
             // Save order details
-            Vector<ProductMasterBO> finalProductList;
             columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP,UpSellingQty";
-
-            if (businessModel.configurationMasterHelper.IS_SHOW_ORDERING_SEQUENCE)
-                finalProductList = mSortedOrderedProducts;
-            else
-                finalProductList = businessModel.productHelper.getProductMaster();
 
             Set<String> parentHierarchyIds = new HashSet<>();
             //get entry level discount value
@@ -666,6 +673,7 @@ public class OrderHelper {
                 Vector<ProductMasterBO> mOrderedProductList = new Vector<>();
                 double totalWeight = 0;
                 double mOrderValue = 0; // for Order Header
+                String orderedPid = "";
                 for (int i = 0; i < finalProductList.size(); ++i) {
                     product = finalProductList.elementAt(i);
 
@@ -851,8 +859,11 @@ public class OrderHelper {
                     }
                 }
 
+                if (mOrderedProductList.size() > 0)
+                    orderedPid = mOrderedProductList.get(0).getProductID();
+
                 columns = "orderid,orderdate,retailerid,ordervalue,RouteId,linespercall,"
-                        + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3,orderImage,orderImagePath,AddressId,ridSF,VisitId";
+                        + "deliveryDate,isToday,retailerCode,retailerName,downloadDate,po,remark,freeProductsAmount,latitude,longitude,is_processed,timestampid,Jflag,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,SParentID,stype,is_vansales,imagename,totalWeight,SalesType,orderTakenTime,FocusPackLines,MSPLines,MSPValues,FocusPackValues,imgName,PrintFilePath,RField1,RField2,ordertime,RemarksType,RField3,orderImage,orderImagePath,AddressId,ridSF,VisitId,LevelCode";
                 values = uid
                         + ","
                         + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
@@ -923,7 +934,8 @@ public class OrderHelper {
                         + "," + (businessModel.getOrderHeaderBO().getAddressID() == -1
                         ? 0 : businessModel.getOrderHeaderBO().getAddressID())
                         + "," + AppUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRidSF())
-                        + "," + businessModel.getAppDataProvider().getUniqueId();
+                        + "," + businessModel.getAppDataProvider().getUniqueId()
+                        + "," + AppUtils.QT(getOrderedProductLevelCode(orderedPid));
 
 
                 db.insertSQL(DataMembers.tbl_orderHeader, columns, values);
@@ -1757,7 +1769,7 @@ public class OrderHelper {
                         product.setSelectedUomId(product.getCaseUomId());
                     } else if (outerQty > 0) {
                         product.setDefaultUomId(product.getOuUomid());
-                        product.setSelectedUomId(product.getCaseUomId());
+                        product.setSelectedUomId(product.getOuUomid());
                     }
                 }
 
@@ -3749,5 +3761,28 @@ public class OrderHelper {
     public int getTotalOrderedQty(ProductMasterBO productBO) {
         return (businessModel.configurationMasterHelper.SHOW_ORDER_PCS) ? -1 :
                 ((businessModel.configurationMasterHelper.SHOW_OUTER_CASE) ? productBO.getOrderedOuterQty() : productBO.getOrderedCaseQty());
+    }
+
+    private String getOrderedProductLevelCode(String pid){
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
+            db.createDataBase();
+            db.openDataBase();
+            Cursor cursor = db.selectSQL("select plid,(select levelid from ProductLevel " +
+                    "where sequence = (select MAX(sequence) from productlevel)) as orderlevel from ProductMaster " +
+                    "where pid =" + AppUtils.QT(pid));
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    if (cursor.getString(0).equals(cursor.getString(1))) {
+                        return "SKU";
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+
+        return "";
     }
 }

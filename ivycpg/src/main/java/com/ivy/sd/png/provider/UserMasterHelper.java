@@ -548,13 +548,14 @@ public class UserMasterHelper {
         return userList;
     }
 
-    public boolean hasProfileImagePath(UserMasterBO userMasterBO) {
+    public boolean hasProfileImageSetLocally(UserMasterBO userMasterBO) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
             );
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("SELECT Value FROM UserEditDetail  where Code='ProfileImagePath' AND UserID=" + userMasterBO.getUserid());
+                    .selectSQL("SELECT Value FROM UserEditDetail  where Code='ProfileImagePath' AND " +
+                            "UserID=" + userMasterBO.getUserid());
             if (c != null) {
                 if (c.getCount() > 0) {
                     if (c.moveToNext()) {

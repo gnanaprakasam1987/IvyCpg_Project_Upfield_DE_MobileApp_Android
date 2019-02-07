@@ -136,9 +136,13 @@ public class DeliveryManagementHelper {
             if (c.getCount() > 0) {
                 ProductMasterBO invoiceProductBO;
                 int productid;
+                int pcsQty =0 ,csQtyinPieces = 0, ouQtyinPieces = 0;
                 while (c.moveToNext()) {
                     productid = c.getInt(c.getColumnIndex("productid"));
                     if (invoicedProducts.get(productid) == null) {
+                        pcsQty = 0;
+                        csQtyinPieces = 0;
+                        ouQtyinPieces = 0;
                         invoiceProductBO = new ProductMasterBO();
                         invoiceProductBO.setProductID(productid + "");
                         invoiceProductBO.setProductShortName(c.getString(c.getColumnIndex("psname")));
@@ -147,18 +151,18 @@ public class DeliveryManagementHelper {
                     } else {
                         invoiceProductBO = invoicedProducts.get(productid);
                     }
-                    int pcsQty =0 ,csQtyinPieces = 0, ouQtyinPieces = 0;
-
                     if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("pieceUomID"))) {
-                        pcsQty = c.getInt(1);
+                        pcsQty = (invoicedProducts.get(productid) == null) ? c.getInt(1) : (pcsQty + c.getInt(1));
                         invoiceProductBO.setPcUomid(c.getInt(2));
                         invoiceProductBO.setLocalOrderPieceqty(c.getInt(1));
                     } else if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("caseUomId"))) {
-                        csQtyinPieces = c.getInt(1) * invoiceProductBO.getCaseSize();
+                        csQtyinPieces = (invoicedProducts.get(productid) == null) ? (c.getInt(1) * invoiceProductBO.getCaseSize()) :
+                                (csQtyinPieces + (c.getInt(1) * invoiceProductBO.getCaseSize()));
                         invoiceProductBO.setCaseUomId(c.getInt(2));
                         invoiceProductBO.setLocalOrderCaseqty(c.getInt(1));
                     } else if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("outerUomId"))) {
-                        ouQtyinPieces = c.getInt(1) * invoiceProductBO.getOutersize();
+                        ouQtyinPieces = (invoicedProducts.get(productid) == null) ? (c.getInt(1) * invoiceProductBO.getOutersize()) :
+                                (ouQtyinPieces + (c.getInt(1) * invoiceProductBO.getOutersize()));
                         invoiceProductBO.setOuUomid(c.getInt(2));
                         invoiceProductBO.setLocalOrderOuterQty(c.getInt(1));
                     }
@@ -167,9 +171,16 @@ public class DeliveryManagementHelper {
                     invoiceProductBO.setOutersize(c.getInt(c.getColumnIndex("outerSize")));
 
                     int totalqty = pcsQty + csQtyinPieces + ouQtyinPieces;
-                    int caseQty = invoiceProductBO.getCaseSize() != 0 ? totalqty / invoiceProductBO.getCaseSize() : totalqty;
+                    int caseQty = 0;
+                    if(bmodel.configurationMasterHelper.SHOW_DELIVERY_CA) {
+                        caseQty = invoiceProductBO.getCaseSize() != 0 ? totalqty / invoiceProductBO.getCaseSize() : totalqty;
+                    }
                     int QtyRemaining = totalqty - (caseQty * invoiceProductBO.getCaseSize());
-                    int outerQty = invoiceProductBO.getOutersize() != 0 ? QtyRemaining / invoiceProductBO.getOutersize() : QtyRemaining;
+
+                    int outerQty = 0;
+                    if(bmodel.configurationMasterHelper.SHOW_DELIVERY_OU) {
+                        outerQty = invoiceProductBO.getOutersize() != 0 ? QtyRemaining / invoiceProductBO.getOutersize() : QtyRemaining;
+                    }
                     int pieceQty = QtyRemaining - (outerQty * invoiceProductBO.getOutersize());
 
                     invoiceProductBO.setOrderedPcsQty(pieceQty);
@@ -443,9 +454,9 @@ public class DeliveryManagementHelper {
                         + ","
                         + DatabaseUtils.sqlEscapeString(productMasterBO.getProductID())
                         + ","
-                        + pieceQty
+                        + totalQty
                         + ","
-                        + caseQty
+                        + 0
                         + ","
                         + 0
                         + ","
@@ -457,7 +468,7 @@ public class DeliveryManagementHelper {
                         + ","
                         + AppUtils.QT("")
                         + ","
-                        + outerQty
+                        + 0
                         + ","
                         + productMasterBO.getOutersize()
                         + ","

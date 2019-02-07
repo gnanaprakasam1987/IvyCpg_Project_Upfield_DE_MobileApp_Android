@@ -3501,10 +3501,10 @@ public class DashBoardHelper {
 
 
     /**
-     * @deprecated
-     * @See {@link SellerDashboardDataManagerImpl#fetchMslCount()}
      * @param flag
      * @return
+     * @See {@link SellerDashboardDataManagerImpl#fetchMslCount()}
+     * @deprecated
      */
     public int getMSLDetail(String flag) {
         DBUtil db;
@@ -3533,7 +3533,7 @@ public class DashBoardHelper {
                 sb.append("inner join ProductTaggingGroupMapping PTGM on PTGM.groupid = PTCM.groupid ");
                 sb.append("inner join  ProductTaggingCriteriaMapping PTCM on PTM.groupid = PTCM.groupid ");
                 sb.append("AND PTM.TaggingTypelovID in (select listid from standardlistmaster where listcode='MSL' and listtype='PRODUCT_TAGGING') ");
-                sb.append("where criteriatype = 'CHANNEL' and Criteriaid in (" + chIDs + ")");
+                sb.append("where PTCM.ChannelId in (" + chIDs + ")");
 
                 Cursor c = db.selectSQL(sb.toString());
                 if (c.getCount() > 0) {
@@ -4188,8 +4188,8 @@ public class DashBoardHelper {
         return totalWeight;
     }
 
-    public String getLastDownloadDate(){
-        String downloadDate ="";
+    public String getLastDownloadDate() {
+        String downloadDate = "";
 
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
@@ -4204,15 +4204,15 @@ public class DashBoardHelper {
 
             db.closeDB();
 
-            if (downloadDate != null && !downloadDate.equals("")){
+            if (downloadDate != null && !downloadDate.equals("")) {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss",
                         Locale.ENGLISH);
                 Date date = sdf.parse(downloadDate);
-                sdf = new SimpleDateFormat(ConfigurationMasterHelper.outDateFormat +" HH:mm:ss", Locale.ENGLISH);
+                sdf = new SimpleDateFormat(ConfigurationMasterHelper.outDateFormat + " HH:mm:ss", Locale.ENGLISH);
 
                 downloadDate = mContext.getResources().getString(R.string.last_download_on)
-                        +" "+sdf.format(date);
+                        + " " + sdf.format(date);
 
             }
 
