@@ -79,12 +79,12 @@ public class PlanoramaHelper {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
-            String planorama_column = "uid,date,retailerId,comments,NoOfPhotos,visitId";
+            String planorama_column = "uid,date,retailerId,comments,NoOfPhotos,ReferenceNo";
             StringBuilder stringBuilder = new StringBuilder();
             String id = AppUtils.QT(mBusinessModel.getAppDataProvider().getUser().getUserid()
                     + SDUtil.now(SDUtil.DATE_TIME_ID));
 
-            stringBuilder.append(AppUtils.QT(id));
+            stringBuilder.append(id);
             stringBuilder.append(",");
             stringBuilder.append(AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
             stringBuilder.append(",");
@@ -97,6 +97,7 @@ public class PlanoramaHelper {
             stringBuilder.append(AppUtils.QT(visitId));
 
 
+
             db.insertSQL("Planorama",
                     planorama_column,
                     stringBuilder.toString());
@@ -106,7 +107,7 @@ public class PlanoramaHelper {
             StringBuilder imageValues;
             for (String imageName : imageNameList) {
                 imageValues = new StringBuilder();
-                imageValues.append(AppUtils.QT(id));
+                imageValues.append(id);
                 imageValues.append(",");
                 imageValues.append(AppUtils.QT(imageName));
 
@@ -136,7 +137,7 @@ public class PlanoramaHelper {
             db.openDataBase();
 
 
-            String query = "select uid,imageName from PlanoramaImages order by uid";
+            String query = "select PM.ReferenceNo,imageName from PlanoramaImages PI LEFT JOIN Planorama PM ON PM.uid=PI.uid order by PI.uid";
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -230,7 +231,7 @@ public class PlanoramaHelper {
                         for(PlanoramaProductBO productBO:getmProductList()){
                             if(productBO.getProductId().equals(json.getString("ean"))){
                                 productBO.setAvailable(true);
-                                productBO.setNumberOfFacings(json.getInt("nb_facing"));
+                                productBO.setNumberOfFacings((productBO.getNumberOfFacings()+json.getInt("nb_facing")));
                             }
                         }
                     }
@@ -792,5 +793,48 @@ public class PlanoramaHelper {
             Commons.printException(ex);
         }
     }
+
+    public void saveAnalysisResult(Context context, String result,String visitID){
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        db.openDataBase();
+        try {
+            db.updateSQL("update planorama set analysisResult="+AppUtils.QT(result)+" where referenceNo="+AppUtils.QT(visitID));
+            db.closeDB();
+
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+            db.closeDB();
+        }
+    }
+
+
+    public String fetchLocalAnalysisResult(Context context, String visitId){
+
+        String result="";
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        db.openDataBase();
+        try {
+
+            String query = "select analysisResult from planorama where referenceNo="+AppUtils.QT(visitId);
+
+            Cursor cursor = db.selectSQL(query);
+
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    result = cursor.getString(0);
+                }
+            }
+            cursor.close();
+
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+            db.closeDB();
+        }
+        return result;
+    }
+
 
 }

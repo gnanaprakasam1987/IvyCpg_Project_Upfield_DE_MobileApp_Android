@@ -180,7 +180,6 @@ public class PlanoramaActivity extends IvyBaseActivityNoActionBar {
         @Override
         protected void onPostExecute(String result) {
             super.onPostExecute(result);
-            Toast.makeText(PlanoramaActivity.this,"Done",Toast.LENGTH_LONG).show();
 
             if(list_visits!=null){
                 RecyclerViewAdapter mAdapter = new RecyclerViewAdapter(list_visits);

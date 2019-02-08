@@ -7,8 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -17,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.sf.SalesFundamentalHelper;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapViewPresenter;
 import com.ivy.sd.png.asean.view.R;
@@ -28,7 +25,6 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.NetworkUtils;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -40,7 +36,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 
 public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
@@ -141,9 +136,17 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
             @Override
             public void onClick(View view) {
 
-                if(NetworkUtils.isNetworkConnected(PlanoramaDetailActivity.this.getApplicationContext()))
-                new LoadVisitAnalysis().execute();
-                else Toast.makeText(PlanoramaDetailActivity.this,getResources().getString(R.string.please_connect_to_internet),Toast.LENGTH_LONG).show();
+                String result =planoramaHelper.fetchLocalAnalysisResult(PlanoramaDetailActivity.this,visitId);
+
+                if(!result.equals("")){
+                   new LoadLOcalAnalysisResult().execute();
+                }
+                else {
+                    if (NetworkUtils.isNetworkConnected(PlanoramaDetailActivity.this.getApplicationContext()))
+                        new LoadVisitAnalysis().execute();
+                    else
+                        Toast.makeText(PlanoramaDetailActivity.this, getResources().getString(R.string.please_connect_to_internet), Toast.LENGTH_LONG).show();
+                }
             }
         });
 
@@ -363,6 +366,8 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
                 planoramaHelper.prepareProductList(this,responseOutput.toString());
                 planoramaHelper.updateProductAvailability(responseOutput.toString());
                 planoramaHelper.preparePlanoramaSOSList(this,responseOutput.toString());
+
+                planoramaHelper.saveAnalysisResult(this,responseOutput.toString(),visitId);
             }
             else{
                 planoramaHelper.getmProductList().clear();
@@ -450,6 +455,74 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
             else if(result.equals("3"))
                 Toast.makeText(PlanoramaDetailActivity.this,"Error in fetching analysis result",Toast.LENGTH_LONG).show();
             else  startActivity(new Intent(PlanoramaDetailActivity.this,PlanoramaAnalysisActivty.class));
+
+
+
+
+
+
+
+        }
+    }
+
+    private class LoadLOcalAnalysisResult extends AsyncTask<String, Void, String> {
+
+        private AlertDialog.Builder builder;
+        private AlertDialog alertDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            builder = new AlertDialog.Builder(PlanoramaDetailActivity.this);
+
+            customProgressDialog(builder, getResources().getString(R.string.loading));
+            alertDialog = builder.create();
+            alertDialog.show();
+        }
+
+        @Override
+        protected String doInBackground(String... url) {
+
+            try {
+
+                String result =planoramaHelper.fetchLocalAnalysisResult(PlanoramaDetailActivity.this,visitId);
+
+                if(!result.equals("")) {
+                    planoramaHelper.prepareProductList(PlanoramaDetailActivity.this, result);
+                    planoramaHelper.updateProductAvailability(result);
+                    planoramaHelper.preparePlanoramaSOSList(PlanoramaDetailActivity.this, result);
+
+                    return "0";
+                }
+
+
+            }
+            catch (Exception ex){
+                Commons.printException(ex);
+            }
+
+            return "1";
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+
+            if(alertDialog!=null)
+                alertDialog.dismiss();
+
+            if(result.equals("0")) {
+                if (mBModel.hasAlreadyStockChecked(mBModel.getRetailerMasterBO()
+                        .getRetailerID())) {
+                    mBModel.setEditStockCheck(true);
+                    planoramaHelper.loadStockCheckedProducts(PlanoramaDetailActivity.this, mBModel
+                            .getRetailerMasterBO().getRetailerID());
+
+                }
+                startActivity(new Intent(PlanoramaDetailActivity.this, PlanoramaAnalysisActivty.class));
+            }
+            else Toast.makeText(PlanoramaDetailActivity.this,"Error in fetching analysis result",Toast.LENGTH_LONG).show();
 
 
 

@@ -396,7 +396,7 @@ public class NewVisitActivity extends IvyBaseActivityNoActionBar {
                     File file;
                     for(int i=0;i<imageNameList.size();i++){
                         file=new File(photoPath+"/"+imageNameList.get(i));
-                        isImageUploaded=uploadImage(serverUrl,authenticationToken,visitId,file);
+                        isImageUploaded=uploadImage(i,serverUrl,authenticationToken,visitId,file);
                     }
 
             }
@@ -448,7 +448,7 @@ public class NewVisitActivity extends IvyBaseActivityNoActionBar {
     }
 
 
-    private boolean uploadImage(String serverUrl,String authenticationToken,String visitId,File imageFile){
+    private boolean uploadImage(int rank,String serverUrl,String authenticationToken,String visitId,File imageFile){
 
             String createPhotoApi="/public/v3/photos";
 
@@ -497,6 +497,7 @@ public class NewVisitActivity extends IvyBaseActivityNoActionBar {
 
                 JSONObject jsonObject =new JSONObject();
                 jsonObject.put("visit",visitId);
+                jsonObject.put("rank",rank);
                 JSONArray jsonArray=new JSONArray();
                 jsonArray.put("tag1");
                 jsonArray.put("tag2");
