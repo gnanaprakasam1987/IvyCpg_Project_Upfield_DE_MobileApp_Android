@@ -51,7 +51,9 @@ public class TaskDataManagerImpl implements TaskDataManager {
             @Override
             public ArrayList<TaskDataBO> call() {
                 try {
-                    initDb();
+                    if (mDbUtil.isDbNullOrClosed())
+                        initDb();
+
                     ArrayList<TaskDataBO> taskDataBOS = new ArrayList<>();
                     String query = "select distinct A.taskid,B.taskcode,B.taskDesc,A.retailerId,A.upload,(CASE WHEN ifnull(TD.TaskId,0) >0 THEN 1 ELSE 0 END) as isDone,"
                             + "B.usercreated , B.taskowner , B.date, A.upload,channelid,A.userid  from TaskConfigurationMaster A inner join TaskMaster B on "
@@ -97,7 +99,9 @@ public class TaskDataManagerImpl implements TaskDataManager {
             @Override
             public ArrayList<TaskDataBO> call() {
                 try {
-                    initDb();
+                    if (mDbUtil.isDbNullOrClosed())
+                        initDb();
+
                     ArrayList<TaskDataBO> pendingTaskDataBOS = new ArrayList<>();
                     String pndTskQuery = "Select distinct TM.* from TaskMaster TM inner join TaskConfigurationMaster TCM on TM.taskid=TCM.taskid where ("
                             + "TCM.channelid=" + appDataProvider.getRetailMaster().getSubchannelid() + ")and TM.taskid not in(select TEC.taskid from TaskExecutionDetails TEC where TEC.retailerId='" + appDataProvider.getRetailMaster().getRetailerID() + "')";
@@ -132,6 +136,8 @@ public class TaskDataManagerImpl implements TaskDataManager {
             @Override
             public Integer call() throws Exception {
                 try {
+                    if (mDbUtil.isDbNullOrClosed())
+                        initDb();
                     int i = 0;
                     String tskCntQuery = "select count(distinct A.taskid) from TaskConfigurationMaster  A inner join TaskMaster B on A.taskid=B.taskid where A.retailerid=0 and  A.channelid=0";
 
@@ -159,6 +165,8 @@ public class TaskDataManagerImpl implements TaskDataManager {
             @Override
             public Boolean call() throws Exception {
                 try {
+                    if (mDbUtil.isDbNullOrClosed())
+                        initDb();
                     mDbUtil.deleteSQL("TaskExecutionDetails", "TaskId=" + taskDataBO.getTaskId() + " and RetailerId = " + retailerId, false);
 
                     return true;
@@ -173,14 +181,21 @@ public class TaskDataManagerImpl implements TaskDataManager {
                 return Single.fromCallable(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
-                        String UID = AppUtils.QT(appDataProvider.getRetailMaster().getRetailerID()
-                                + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                        String uID;
+                        if (retailerId.equals("0"))
+                            uID = AppUtils.QT(appDataProvider.getUser().getUserid()
+                                    + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                        else
+                            uID = AppUtils.QT(appDataProvider.getRetailMaster().getRetailerID()
+                                    + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+
+
                         String columns = "TaskId,RetailerId,Date,UId,Upload";
                         String values;
 
                         try {
                             if (taskDataBO.isChecked()) {
-                                values = taskDataBO.getTaskId() + "," + AppUtils.QT(retailerId) + "," + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + UID + ",'N'";
+                                values = taskDataBO.getTaskId() + "," + AppUtils.QT(retailerId) + "," + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + uID + ",'N'";
                                 mDbUtil.insertSQL("TaskExecutionDetails", columns, values);
                                 //bmodel.saveModuleCompletion("MENU_TASK");
                             } else {
@@ -224,12 +239,15 @@ public class TaskDataManagerImpl implements TaskDataManager {
                 String date = AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
                 Commons.print("date :: ," + date + "");
 
+
                 String columns = "taskid,retailerid,usercreated,upload,date,uid,userid";
-                String uID = AppUtils.QT(appDataProvider.getRetailMaster().getRetailerID()
+                String uID = AppUtils.QT(channelId
                         + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
                 String values;
 
                 try {
+                    if (mDbUtil.isDbNullOrClosed())
+                        initDb();
                     // Insert Task into TaskMaster
                     String columns_new = "taskid,taskcode,taskdesc,upload ,taskowner,date,usercreated";
 

@@ -87,7 +87,6 @@ import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.task.Task;
-import com.ivy.cpg.view.task.TaskFragment;
 import com.ivy.cpg.view.task.TaskHelper;
 import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.cpg.view.van.stockproposal.StockProposalFragment;
@@ -122,6 +121,7 @@ import com.ivy.sd.png.view.UserFeedbackActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
 import com.ivy.cpg.view.tradeCoverage.VisitFragment;
 import com.ivy.sd.png.view.profile.RetailerContactBo;
+import com.ivy.ui.task.view.TaskFragment;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -239,7 +239,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private String imageFileName;
     private ListView listView;
     private ChannelSelectionDialog dialogFragment;
-    private ImageButton chatBtn, divStatusBtn, feedBackBtn,firebaseChat;
+    private ImageButton chatBtn, divStatusBtn, feedBackBtn, firebaseChat;
 
 
     @Nullable
@@ -638,8 +638,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         Activity activity = getActivity();
-                                        if(activity != null && isAdded())
-                                        getActivity().finish();
+                                        if (activity != null && isAdded())
+                                            getActivity().finish();
                                         try {
                                             bmodel.synchronizationHelper.backUpDB();
                                             ActivityCompat.finishAffinity(getActivity());
@@ -936,11 +936,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             } else {
                 switchFragment(MENU_LOAD_MANAGEMENT, menuItem.getMenuName());
             }
-        } else if (menuItem.getConfigCode().equals(MENU_PLANNING_SUB)){
+        } else if (menuItem.getConfigCode().equals(MENU_PLANNING_SUB)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
                     (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
-                    "yyyy/MM/dd") > 0)) {
+                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                            "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
@@ -1213,7 +1213,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                         bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(MENU_SURVEY_SW));
                         bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(
-                                bmodel.productHelper.getRetailerModuleSequenceValues(),false));
+                                bmodel.productHelper.getRetailerModuleSequenceValues(), false));
 
                     }
 
@@ -1271,7 +1271,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             .downloadFiveLevelFilterNonProducts("MENU_SURVEY01_SW");*/
                     bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel("MENU_SURVEY01_SW"));
                     bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(
-                            bmodel.productHelper.getRetailerModuleSequenceValues(),false));
+                            bmodel.productHelper.getRetailerModuleSequenceValues(), false));
                 }
 
                 if (surveyHelperNew.getSurvey() != null
@@ -1328,7 +1328,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             .downloadFiveLevelFilterNonProducts(MENU_SURVEY_BA_CS);*/
                     bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel(MENU_SURVEY_BA_CS));
                     bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(
-                            bmodel.productHelper.getRetailerModuleSequenceValues(),false));
+                            bmodel.productHelper.getRetailerModuleSequenceValues(), false));
                 }
 
                 if (surveyHelperNew.getSurvey() != null
@@ -1521,7 +1521,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 i.putExtra("screentitle", menuItem.getMenuName());
                 i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
-               // getActivity().finish();
+                // getActivity().finish();
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
@@ -1543,7 +1543,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 i.putExtra("screentitle", menuItem.getMenuName());
                 i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
-               // getActivity().finish();
+                // getActivity().finish();
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
@@ -1553,7 +1553,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 i.putExtra("screentitle", menuItem.getMenuName());
                 i.putExtra("menucode", menuItem.getConfigCode());
                 startActivity(i);
-               // getActivity().finish();
+                // getActivity().finish();
             } else
                 Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
 
@@ -1832,7 +1832,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 && stockProposalFragment.isVisible()) {
             return;
         } else if
-                (newOutletEditFragment != null && (fragmentName.equals(MENU_NEWRET_EDT))
+        (newOutletEditFragment != null && (fragmentName.equals(MENU_NEWRET_EDT))
                         && newOutletEditFragment.isVisible()) {
             return;
         } else if (acknowledgementFragment != null && fragmentName.equals(MENU_JOINT_ACK)
@@ -1842,7 +1842,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 && planDeviationFragment.isVisible()) {
             return;
         } else if
-                (expenseFragment != null && (fragmentName.equals(MENU_EXPENSE))
+        (expenseFragment != null && (fragmentName.equals(MENU_EXPENSE))
                         && expenseFragment.isVisible()) {
             return;
         } else if (taskFragment != null && fragmentName.equals(MENU_TASK_NEW)
@@ -1855,7 +1855,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 && supervisorMapCFragment.isVisible()) {
             return;
         } else if (mQuickCallFragment != null && (fragmentName.equals(MENU_Q_CALL))
-                &&  mQuickCallFragment.isVisible()) {
+                && mQuickCallFragment.isVisible()) {
             return;
         } else if (denominationFragment != null && (fragmentName.equals(MENU_DENOMINATION))
                 && denominationFragment.isVisible()) {
@@ -1961,7 +1961,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     }
 
                     bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
-                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(bmodel.productHelper.getFilterProductLevels(),true));
+                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(bmodel.productHelper.getFilterProductLevels(), true));
                 }
                 //clear distributor id and group id
                 bmodel.getRetailerMasterBO().setDistributorId(0);
@@ -2021,7 +2021,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putString("retid", "0");
                 bndl.putString("type", "MONTH");
                 fragment = new SellerDashboardFragment();
-               // fragment = new SellerDashboardFragment();
+                // fragment = new SellerDashboardFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_DASH_KPI);
@@ -2300,7 +2300,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putString("screentitle", menuName);
                 bndl.putString("retid", "0");
                 bndl.putString("type", "ROUTE");
-               // fragment = new SellerDashboardFragment();
+                // fragment = new SellerDashboardFragment();
 
                 fragment = new SellerDashboardFragment();
                 fragment.setArguments(bndl);
@@ -2481,7 +2481,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 Toast.makeText(getActivity(), R.string.not_registered, Toast.LENGTH_LONG).show();
             }
             return true;
-        }else if (i1 == R.id.menu_firebase_chat){
+        } else if (i1 == R.id.menu_firebase_chat) {
 
             Intent intent = new Intent(getContext(), StartChatActivity.class);
             startActivity(intent);
@@ -2735,7 +2735,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         protected void onPostExecute(Integer result) {
             try {
                 if (getFragmentManager() != null)
-                getFragmentManager().executePendingTransactions();
+                    getFragmentManager().executePendingTransactions();
                 Activity activity = getActivity();
                 if (activity != null && isAdded()) {
                     Toast.makeText(activity,

@@ -3,6 +3,7 @@ package com.ivy.ui.task;
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
+import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -24,7 +25,7 @@ public interface TaskContract {
 
         void showUpdatedDialog();
 
-        void updateListData();
+        void updateListData(ArrayList<TaskDataBO> updatedList);
     }
 
 
@@ -33,9 +34,13 @@ public interface TaskContract {
 
         void fetchData();
 
-        void updateTask(int taskType);
+        void updateTaskList(int taskType,String retailerID,boolean isRetailerwise,boolean isSurveywise);
+
+        String[] getChannelIdsForSurvey();
 
         void onSaveButtonClick(int channelId, String taskTitleDesc, String taskDetailDesc);
+
+        void updateTask(String retailerID,TaskDataBO taskDataBO);
 
         String getSelectedRetailerId();
 
@@ -64,5 +69,7 @@ public interface TaskContract {
         boolean isValidate(String taskTitle, String taskView);
 
         void saveModuleCompletion(String menuCode);
+
+        boolean isNPPhotoReasonAvailable(String retailerID,String moduleName);
     }
 }

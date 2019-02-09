@@ -1,6 +1,9 @@
 package com.ivy.ui.task.di;
 
+import android.content.Context;
+
 import com.ivy.core.di.scope.PerActivity;
+import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.data.TaskDataManager;
 import com.ivy.ui.task.data.TaskDataManagerImpl;
@@ -16,9 +19,11 @@ import io.reactivex.disposables.CompositeDisposable;
 public class TaskModule {
 
     private TaskContract.TaskView mView;
+    private Context mcContex;
 
-    public TaskModule(TaskContract.TaskView mView) {
+    public TaskModule(TaskContract.TaskView mView, Context mcContex) {
         this.mView = mView;
+        this.mcContex = mcContex;
     }
 
     @Provides
@@ -47,6 +52,10 @@ public class TaskModule {
         return taskPresenter;
     }
 
+    @Provides
+    SurveyHelperNew provideSurveyHelperNew(){
+        return SurveyHelperNew.getInstance(mcContex);
+    }
 
 }
 

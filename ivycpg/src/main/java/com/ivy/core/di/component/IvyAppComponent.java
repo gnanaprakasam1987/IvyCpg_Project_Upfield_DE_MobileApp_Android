@@ -11,6 +11,7 @@ import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.distributor.DistributorDataManager;
 import com.ivy.core.data.label.LabelsDataManager;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
+import com.ivy.core.data.reason.ReasonDataManager;
 import com.ivy.core.data.retailer.RetailerDataManager;
 import com.ivy.core.data.user.UserDataManager;
 import com.ivy.core.di.module.IvyAppModule;
@@ -21,6 +22,7 @@ import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.core.di.scope.DistributorInfo;
 import com.ivy.core.di.scope.LabelMasterInfo;
 import com.ivy.core.di.scope.OutletTimeStampInfo;
+import com.ivy.core.di.scope.ReasonInfo;
 import com.ivy.core.di.scope.RetailerInfo;
 import com.ivy.core.di.scope.UserInfo;
 import com.ivy.lib.existing.DBUtil;
@@ -102,6 +104,9 @@ public interface IvyAppComponent {
 
     @BeatInfo
     BeatDataManager beatDataManager();
+
+    @ReasonInfo
+    ReasonDataManager reasonDataManager();
 
     void inject(BusinessModel businessModel);
 

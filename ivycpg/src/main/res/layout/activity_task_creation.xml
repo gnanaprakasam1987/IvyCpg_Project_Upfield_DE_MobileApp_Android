@@ -94,7 +94,7 @@
                         android:textSize="@dimen/text_size_primary" />
 
                     <RadioGroup
-                        android:id="@+id/rg"
+                        android:id="@+id/rg_selection"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"
@@ -131,7 +131,7 @@
                     </RadioGroup>
 
                     <LinearLayout
-                        android:id="@+id/spinner_layouts"
+                        android:id="@+id/task_spinner_layouts"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_margin="5dp"

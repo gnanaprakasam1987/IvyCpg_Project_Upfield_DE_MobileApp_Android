@@ -6,11 +6,19 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.OnLifecycleEvent;
 
 import com.ivy.core.base.presenter.BasePresenter;
+import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.channel.ChannelDataManager;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
+import com.ivy.core.data.reason.ReasonDataManager;
 import com.ivy.core.data.user.UserDataManager;
+import com.ivy.core.di.scope.ChannelInfo;
+import com.ivy.core.di.scope.OutletTimeStampInfo;
+import com.ivy.core.di.scope.ReasonInfo;
+import com.ivy.core.di.scope.UserInfo;
+import com.ivy.cpg.view.survey.SurveyHelperNew;
+import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -23,6 +31,8 @@ import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
 import java.util.Vector;
+
+import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
@@ -38,17 +48,25 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     private TaskDataManager mTaskDataManager;
     private AppDataProvider appDataProvider;
     private OutletTimeStampDataManager mOutletTimeStampDataManager;
+    private SurveyHelperNew mSurveyHelperNew;
+    private ReasonDataManager mReasonDataManager;
     private ArrayList<UserMasterBO> mUserListBos = new ArrayList<>();
     private Vector<ChannelBO> mChannelListBos = new Vector<>();
     private ArrayList<RetailerMasterBO> mRetailerListBos = new ArrayList<>();
 
+    @Inject
     public TaskPresenterImpl(DataManager dataManager,
                              SchedulerProvider schedulerProvider,
                              CompositeDisposable compositeDisposable,
                              ConfigurationMasterHelper configurationMasterHelper,
-                             V view, UserDataManager userDataManager,
-                             ChannelDataManager channelDataManager,
-                             TaskDataManager taskDataManager, AppDataProvider appDataProvider, OutletTimeStampDataManager mOutletTimeStampDataManager) {
+                             V view,
+                             @UserInfo UserDataManager userDataManager,
+                             @ChannelInfo ChannelDataManager channelDataManager,
+                             TaskDataManager taskDataManager,
+                             AppDataProvider appDataProvider,
+                             @OutletTimeStampInfo OutletTimeStampDataManager mOutletTimeStampDataManager,
+                             SurveyHelperNew mSurveyHelperNew,
+                             @ReasonInfo ReasonDataManager mReasonDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
         this.mConfigurationMasterHelper = configurationMasterHelper;
         this.mUserDataManager = userDataManager;
@@ -56,15 +74,19 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
         this.mTaskDataManager = taskDataManager;
         this.appDataProvider = appDataProvider;
         this.mOutletTimeStampDataManager = mOutletTimeStampDataManager;
+        this.mSurveyHelperNew = mSurveyHelperNew;
+        this.mReasonDataManager = mReasonDataManager;
 
-        if (view instanceof LifecycleOwner) {
+        /*if (view instanceof LifecycleOwner) {
             ((LifecycleOwner) view).getLifecycle().addObserver(this);
-        }
+        }*/
 
     }
 
+
+
     @Override
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
+   // @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     public void fetchData() {
         getIvyView().showLoading();
 
@@ -74,6 +96,12 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                     @Override
                     public Boolean apply(ArrayList<UserMasterBO> userMasterBOS, Vector<ChannelBO> channelBOS, ArrayList<RetailerMasterBO> retailerMasterBOS) throws Exception {
                         mUserListBos.clear();
+
+                        for(UserMasterBO userBo:userMasterBOS){
+                            if(userBo.getUserid()==appDataProvider.getUser().getUserid())
+                                userBo.setUserName("Self");
+                        }
+
                         mUserListBos.addAll(userMasterBOS);
 
                         mChannelListBos.clear();
@@ -115,8 +143,101 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
     @Override
-    public void updateTask(int taskType) {
+    public void updateTaskList(int taskType, String retailerID, boolean isRetailerwise, boolean isSurveywise) {
 
+        getIvyView().showLoading();
+        ArrayList<TaskDataBO> taskPreparedList = new ArrayList<>();
+        String[] channelIds = getChannelIdsForSurvey();
+        getCompositeDisposable().add(mTaskDataManager.fetchTaskData(retailerID)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui()).subscribeWith(new DisposableObserver<ArrayList<TaskDataBO>>() {
+                    @Override
+                    public void onNext(ArrayList<TaskDataBO> taskDataBOS) {
+                        for (TaskDataBO dataBO : taskDataBOS) {
+
+                            if (isRetailerwise) {
+                                if (String.valueOf(dataBO.getRid()).equals(retailerID)) {
+                                    if (taskType == 1) { // server
+                                        if (dataBO.getUsercreated().toUpperCase()
+                                                .equals("0")) {
+                                            taskPreparedList.add(dataBO);
+                                        }
+                                    } else if (taskType == 2) { // user
+                                        if (dataBO.getUsercreated().toUpperCase()
+                                                .equals("1")) {
+                                            taskPreparedList.add(dataBO);
+                                        }
+                                    } else {
+                                        taskPreparedList.add(dataBO);
+                                    }
+                                } else if (isSurveywise) {
+                                    for (String chId : channelIds) {
+                                        if (chId.equals(String.valueOf(dataBO.getChannelId()))) {
+                                            if (taskType == 1) { // server
+                                                if (dataBO.getUsercreated().toUpperCase()
+                                                        .equals("0")) {
+                                                    taskPreparedList.add(dataBO);
+                                                }
+                                            } else if (taskType == 2) { // user
+                                                if (dataBO.getUsercreated().toUpperCase()
+                                                        .equals("1")) {
+                                                    taskPreparedList.add(dataBO);
+                                                }
+                                            } else {
+                                                taskPreparedList.add(dataBO);
+                                            }
+                                        }
+                                    }
+                                }
+                            } else {
+                                if (dataBO.getRid() == 0
+                                        && dataBO.getChannelId() == 0
+                                        && (dataBO.getUserId() == getUserID()
+                                        || dataBO.getUserId() == 0)) {
+
+                                    if (taskType == 1) { // server
+                                        if (dataBO.getUsercreated().toUpperCase()
+                                                .equals("0")) {
+                                            taskPreparedList.add(dataBO);
+                                        }
+                                    } else if (taskType == 2) { // user
+                                        if (dataBO.getUsercreated().toUpperCase()
+                                                .equals("1")) {
+                                            taskPreparedList.add(dataBO);
+                                        }
+
+                                    } else {
+                                        taskPreparedList.add(dataBO);
+                                    }
+                                }
+                            }
+                        }
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getIvyView().onError("Something went wrong");
+                        getIvyView().hideLoading();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        getIvyView().updateListData(taskPreparedList);
+                        getIvyView().hideLoading();
+                    }
+                }));
+
+    }
+
+
+    @Override
+    public String[] getChannelIdsForSurvey() {
+        String channelIds = mSurveyHelperNew.getChannelidForSurvey();
+        if (channelIds != null && channelIds.length() > 0)
+            return channelIds.split(",");
+
+        return new String[]{""};
     }
 
 
@@ -133,6 +254,22 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                             getIvyView().showUpdatedDialog();
                         }
                         getIvyView().hideLoading();
+                    }
+                }));
+    }
+
+    @Override
+    public void updateTask(String retailerID, TaskDataBO taskDataBO) {
+
+        getCompositeDisposable().add(mTaskDataManager.updateTask(taskDataBO, retailerID)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean isUpdated) throws Exception {
+                        if (isUpdated) {
+                            getIvyView().showUpdatedDialog();
+                        }
                     }
                 }));
     }
@@ -226,4 +363,29 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                 }));
     }
 
+    private boolean isAvailable = false;
+
+    @Override
+    public boolean isNPPhotoReasonAvailable(String retailerID, String moduleName) {
+        getCompositeDisposable().add(mReasonDataManager.isNpReasonPhotoAvailable(retailerID, moduleName)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean aBoolean) throws Exception {
+                        isAvailable = aBoolean;
+                    }
+                }));
+        return isAvailable;
+    }
+
+    @Override
+    public void onDetach() {
+        mUserDataManager.tearDown();
+        mChannelDataManager.tearDown();
+        mTaskDataManager.tearDown();
+        mOutletTimeStampDataManager.tearDown();
+        mReasonDataManager.tearDown();
+        super.onDetach();
+    }
 }

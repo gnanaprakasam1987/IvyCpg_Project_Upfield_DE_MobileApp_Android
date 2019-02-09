@@ -3,6 +3,7 @@ package com.ivy.ui.task.view;
 import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
@@ -24,6 +25,7 @@ import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.task.Task;
+import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -32,6 +34,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.di.DaggerTaskComponent;
+import com.ivy.ui.task.di.TaskModule;
 import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
@@ -51,7 +54,6 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     TaskContract.TaskPresenter<TaskContract.TaskView> taskPresenter;
 
     private int channelId, retailerid;
-
     private boolean fromHomeScreen = false;
     private boolean isRetailerTask = false;
     private String screenTitle = "";
@@ -73,7 +75,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @BindView(R.id.retailer)
     Spinner retailerSpinner;
 
-    @BindView(R.id.rg)
+    @BindView(R.id.rg_selection)
     RadioGroup radioGroup;
 
     @BindView(R.id.seller)
@@ -94,7 +96,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @BindView(R.id.applicable_tv)
     TextView applicableTV;
 
-    @BindView(R.id.spinner_layout)
+    @BindView(R.id.task_spinner_layouts)
     LinearLayout spinnerLayout;
 
     private ArrayAdapter<UserMasterBO> userMasterArrayAdapter;
@@ -118,8 +120,9 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     public void initializeDi() {
         DaggerTaskComponent.builder()
                 .ivyAppComponent(((BusinessModel) getApplication()).getComponent())
+                .taskModule(new TaskModule(this, TaskCreationActivity.this))
                 .build()
-                .inject(this);
+                .inject(TaskCreationActivity.this);
 
         setBasePresenter((BasePresenter) taskPresenter);
     }
@@ -136,6 +139,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             isRetailerTask = getIntent().getExtras().getBoolean("IsRetailerwisetask", false);
             screenTitle = getIntent().getExtras().getString("screentitle", getString(R.string.task_creation));
         }
+        taskPresenter.fetchData();
     }
 
     @Override
@@ -143,13 +147,13 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         setUnBinder(ButterKnife.bind(this));
         setUpToolBar();
         //allow only create task only for retailer if not from seller Task
-        if (!isRetailerTask) {
+        if (isRetailerTask) {
 
             radioGroup.setVisibility(View.GONE);
             spinnerLayout.setVisibility(View.GONE);
             applicableTV.setVisibility(View.GONE);
             mode = "retailer";
-
+        } else {
             setUpUserAdapter();
             setUpChannelAdapter();
             setUpRetailerAdapter();
@@ -158,7 +162,6 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     @Override
     public void setTaskChannelListData(Vector<ChannelBO> channelList) {
-
         channelArrayAdapter.clear();
         channelArrayAdapter.add(new ChannelBO(0, getString(R.string.all_channel)));
         channelArrayAdapter.addAll(channelList);
@@ -187,18 +190,18 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         return mode;
     }
 
-    TypedArray typearr = this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+    /*TypedArray typearr = this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
     final int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
-    final int secondary_color = typearr.getColor(R.styleable.MyTextView_textColorSecondary, 0);
+    final int secondary_color = typearr.getColor(R.styleable.MyTextView_textColorSecondary, 0);*/
 
-    @OnCheckedChanged(R.id.rg)
-    public void onTaskCheckChangedListener(CompoundButton radioBtn, boolean isChecked) {
+    @OnClick({R.id.seller, R.id.Channelwise, R.id.Retailerwise})
+    public void onTaskCheckChangedListener(RadioButton radioBtn) {
 
         switch (radioBtn.getId()) {
             case R.id.seller:
-                seller_rb.setTextColor(color);
-                channelwise_rb.setTextColor(secondary_color);
-                retailerwise_rb.setTextColor(secondary_color);
+                seller_rb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+                channelwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
+                retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
                 channelSpinner.setSelection(0);
                 channelSpinner.setEnabled(false);
                 retailerSpinner.setSelection(0);
@@ -207,9 +210,9 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 mode = "seller";
                 break;
             case R.id.Channelwise:
-                seller_rb.setTextColor(secondary_color);
-                channelwise_rb.setTextColor(color);
-                retailerwise_rb.setTextColor(secondary_color);
+                seller_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
+                channelwise_rb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+                retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
                 channelSpinner.setEnabled(true);
                 retailerSpinner.setSelection(0);
                 retailerSpinner.setEnabled(false);
@@ -218,9 +221,9 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 mode = "channel";
                 break;
             case R.id.Retailerwise:
-                seller_rb.setTextColor(secondary_color);
-                channelwise_rb.setTextColor(secondary_color);
-                retailerwise_rb.setTextColor(color);
+                seller_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
+                channelwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
+                retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
                 channelSpinner.setSelection(0);
                 channelSpinner.setEnabled(false);
                 retailerSpinner.setEnabled(true);
@@ -238,9 +241,9 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     }
 
     @OnItemSelected(R.id.channel)
-    public void onChannelSpinnerSelected(AdapterView<?> parent, Spinner spinner) {
+    public void onChannelSpinnerSelected(Spinner spinner,int position) {
         ((TextView) spinner.getSelectedView().findViewById(android.R.id.text1)).setGravity(Gravity.START);
-        ChannelBO chBo = (ChannelBO) parent.getSelectedItem();
+        ChannelBO chBo = (ChannelBO) spinner.getSelectedItem();
         if (chBo.getChannelName().equalsIgnoreCase(getResources().getString(R.string.all_channel))) {
             channelId = -1;
         } else {
@@ -280,7 +283,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     }
 
     @Override
-    public void updateListData() {
+    public void updateListData(ArrayList<TaskDataBO> updatedList) {
 
     }
 
@@ -291,7 +294,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         String taskTitleDec = AppUtils.validateInput(taskTitle.getText().toString());
         int taskChannelId;
 
-        if (!taskPresenter.isValidate(taskTitle.getText().toString(),taskView.getText().toString()))
+        if (!taskPresenter.isValidate(taskTitle.getText().toString(), taskView.getText().toString()))
             return;
 
         switch (mode) {
