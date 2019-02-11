@@ -20,11 +20,9 @@ public interface TimeTrackingContract {
     interface  TimeTrackingView extends BaseIvyView{
         void populateDataToList(ArrayList<NonFieldTwoBo> timeTrackList);
 
-        boolean updateRealTimeIn();
+        boolean isUpdateRealTimeIn();
 
         void updateRealTimeOut();
-
-        void shouldUploadAttendance(String inOrOut, String reasonId );
 
         void showInOutDialog(ArrayList<ReasonMaster> reasonList);
 
@@ -34,8 +32,6 @@ public interface TimeTrackingContract {
     @PerActivity
     interface  TimeTrackingPresenter<V extends TimeTrackingView> extends BaseIvyPresenter<V>{
         void fetchData();
-
-        void checkConfigandWorkStatus(int reasonId, String inOrOut);
 
         boolean startLocationService(String reasonId);
 

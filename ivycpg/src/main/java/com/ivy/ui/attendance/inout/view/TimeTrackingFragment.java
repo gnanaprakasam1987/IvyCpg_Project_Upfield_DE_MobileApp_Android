@@ -26,6 +26,7 @@ import com.ivy.cpg.locationservice.realtime.RealTimeLocation;
 import com.ivy.cpg.locationservice.realtime.RealTimeLocationTracking;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
+import com.ivy.lib.Utils;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
@@ -39,6 +40,7 @@ import com.ivy.ui.attendance.inout.adapter.TimeTrackListClickListener;
 import com.ivy.ui.attendance.inout.adapter.TimeTrackingAdapter;
 import com.ivy.ui.attendance.inout.di.DaggerTimeTrackComponent;
 import com.ivy.ui.attendance.inout.di.TimeTrackModule;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -99,10 +101,8 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
 
     @Override
     protected void getMessageFromAliens() {
-        if (getArguments() != null) {
-            Bundle bundle = getArguments();
-            screenTitle = bundle.getString("screentitle");
-        }
+        if (getArguments() != null)
+            screenTitle = getArguments().getString("screentitle");
     }
 
     @Override
@@ -120,14 +120,11 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
             if (!locationUtil.isGPSProviderEnabled()) {
                 GoogleApiAvailability googleApiAvailability = GoogleApiAvailability.getInstance();
                 int resultCode = googleApiAvailability.isGooglePlayServicesAvailable(getActivity().getApplicationContext());
-                if (resultCode == ConnectionResult.SUCCESS) {
-                    if (getActivity() instanceof BaseActivity)
-                        requestLocation(getActivity());
-                    else if (getActivity() instanceof IvyBaseActivityNoActionBar)
-                        ((BusinessModel) getActivity().getApplicationContext()).requestLocation(getActivity());
-                } else {
+                if (resultCode == ConnectionResult.SUCCESS)
+                    requestLocation(getActivity());
+                else
                     showLocationEnableDialog();
-                }
+
             }
         }
     }
@@ -184,7 +181,7 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
 
             else {
                 try {
-                    ((BusinessModel) getActivity().getApplicationContext()).showAlert(getResources().getString(R.string.out_time_error), 0);
+                    showAlert("", getResources().getString(R.string.out_time_error));
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
@@ -203,8 +200,8 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
 
         if (this.timeTrackList.size() > 0) {
             for (NonFieldTwoBo timeTrackBo : timeTrackList) {
-                if ((timeTrackBo.getInTime() != null && !timeTrackBo.getInTime().trim().equalsIgnoreCase(""))
-                        && (timeTrackBo.getOutTime() != null && !timeTrackBo.getOutTime().trim().equalsIgnoreCase(""))) {
+                if ((!AppUtils.isNullOrEmpty(timeTrackBo.getInTime())) &&
+                        (!AppUtils.isNullOrEmpty(timeTrackBo.getOutTime()))) {
                     timeTrackBo.setStatus(getResources().getString(R.string.in_complete));
                 } else {
                     timeTrackBo.setStatus(getResources().getString(R.string.in_partial));
@@ -235,7 +232,7 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
      */
 
     @Override
-    public boolean updateRealTimeIn() {
+    public boolean isUpdateRealTimeIn() {
         boolean success = false;
         RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
         realTimeLocation.validateLoginAndUpdate(getContext(), REALTIME_LOCATION_PATH, null, "AttendanceIn");
@@ -251,16 +248,6 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
         RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
         RealTimeLocationTracking.stopLocationTracking(getContext());
         realTimeLocation.validateLoginAndUpdate(getContext(), REALTIME_LOCATION_PATH, null, "AttendanceOut");
-
-    }
-
-
-    /**
-     * Upload Attendance status - IN/OUT with Time in Firebase
-     */
-    @Override
-    public void shouldUploadAttendance(String inOrOut, String reasonId) {
-        presenter.checkConfigandWorkStatus(Integer.parseInt(reasonId), inOrOut);
 
     }
 
@@ -281,16 +268,16 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
 
     @Override
     public void uploadAttendance(String inOrOut) {
-            RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
-            if (inOrOut.equalsIgnoreCase("IN")) {
-                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH, null, "AttendanceIn");
-            } else {
-                realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH, null, "AttendanceOut");
-            }
+        RealTimeLocation realTimeLocation = new FireBaseRealtimeLocationUpload();
+        if (inOrOut.equalsIgnoreCase("IN")) {
+            realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH, null, "AttendanceIn");
+        } else {
+            realTimeLocation.validateLoginAndUpdate(getContext(), ATTENDANCE_PATH, null, "AttendanceOut");
+        }
     }
 
     public void showLocationEnableDialog() {
-        new CommonDialog(getContext().getApplicationContext(), getContext(), "", getResources().getString(R.string.enable_gps), false, getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+        new CommonDialog(getContext(), "", getResources().getString(R.string.enable_gps), getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
                 Intent myIntent = new Intent(

@@ -14,9 +14,12 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
+
+import static com.ivy.core.IvyConstants.DEFAULT_DATE_FORMAT;
 
 /**
  * Created by mansoor on 27/12/2018
@@ -56,38 +59,34 @@ public class TimeTrackingAdapter extends RecyclerView.Adapter<TimeTrackingAdapte
         String time;
         StringTokenizer tokenizer;
 
-
-        if (holder.nonFieldTwoBO.getOutTime() != null && !holder.nonFieldTwoBO.getOutTime().trim().equalsIgnoreCase("")) {
+        if (!AppUtils.isNullOrEmpty(holder.nonFieldTwoBO.getOutTime())) {
             holder.btOutTime.setVisibility(View.GONE);
             holder.tvOutTime.setVisibility(View.VISIBLE);
             tokenizer = new StringTokenizer(outTime);
             date = tokenizer.nextToken();
             time = tokenizer.nextToken();
             holder.tvOutTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
-                    ConfigurationMasterHelper.outDateFormat) + "\n" + time);
+                    DEFAULT_DATE_FORMAT) + "\n" + time);
         } else {
             holder.tvOutTime.setVisibility(View.GONE);
             holder.btOutTime.setVisibility(View.VISIBLE);
             holder.btOutTime.setText(context.getResources().getString(R.string.endC));
         }
 
+        tokenizer = new StringTokenizer(inTime);
+        date = tokenizer.nextToken();
+        time = tokenizer.nextToken();
 
-        if (holder.nonFieldTwoBO.getInTime() != null && !holder.nonFieldTwoBO.getInTime().trim().equalsIgnoreCase("")) {
+        if (!AppUtils.isNullOrEmpty(holder.nonFieldTwoBO.getInTime())) {
             holder.btInTime.setVisibility(View.GONE);
             holder.tvInTime.setVisibility(View.VISIBLE);
-            tokenizer = new StringTokenizer(inTime);
-            date = tokenizer.nextToken();
-            time = tokenizer.nextToken();
             holder.tvInTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
-                    ConfigurationMasterHelper.outDateFormat) + "\n" + time);
+                    DEFAULT_DATE_FORMAT) + "\n" + time);
         } else {
             holder.tvInTime.setVisibility(View.GONE);
             holder.btInTime.setVisibility(View.VISIBLE);
-            tokenizer = new StringTokenizer(inTime);
-            date = tokenizer.nextToken();
-            time = tokenizer.nextToken();
             holder.btInTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
-                    ConfigurationMasterHelper.outDateFormat) + "\n" + time);
+                    DEFAULT_DATE_FORMAT) + "\n" + time);
         }
 
         holder.btInTime.setOnClickListener(new View.OnClickListener() {
@@ -109,7 +108,8 @@ public class TimeTrackingAdapter extends RecyclerView.Adapter<TimeTrackingAdapte
 
         holder.tvReason.setText(holder.nonFieldTwoBO.getReasonText());
 
-        holder.tvRemarks.setText(context.getResources().getString(R.string.remark_hint) + ":" + holder.nonFieldTwoBO.getRemarks());
+        if (configurationMasterHelper.IS_ATTENDANCE_REMARK)
+            holder.tvRemarks.setText(context.getResources().getString(R.string.remark_hint) + ":" + holder.nonFieldTwoBO.getRemarks());
     }
 
     @Override

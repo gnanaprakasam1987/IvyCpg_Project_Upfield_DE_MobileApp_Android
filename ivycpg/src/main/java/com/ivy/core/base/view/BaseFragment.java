@@ -300,8 +300,11 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     }
 
-    public void requestLocation(final Activity ctxt){
-        ((BaseActivity) getActivity()).requestLocation(ctxt);
+    public void requestLocation(final Activity ctxt) {
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).requestLocation(ctxt);
+        else if (getActivity() instanceof IvyBaseActivityNoActionBar)
+            ((IvyBaseActivityNoActionBar) getActivity()).requestLocation(ctxt);
     }
 
     @Override

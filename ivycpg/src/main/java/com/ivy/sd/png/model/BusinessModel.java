@@ -424,7 +424,6 @@ public class BusinessModel extends Application {
     }
 
 
-
     private void loadActivity(Activity ctxx, String act) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             if (ctxx.isDestroyed()) { // or call isFinishing() if min sdk version < 17
@@ -3314,6 +3313,10 @@ public class BusinessModel extends Application {
 
     }
 
+    /**
+     * @See {@link com.ivy.core.base.view.BaseActivity#showAlert(String, String)}
+     * @deprecated
+     */
     public void showAlert(String msg, int id) {
         showAlertWithImage("", msg, id, false);
     }
@@ -4908,7 +4911,6 @@ public class BusinessModel extends Application {
     }
 
 
-
     public int getTotalLines() {
         try {
             boolean isVansales;
@@ -5660,8 +5662,12 @@ public class BusinessModel extends Application {
     protected static final int REQUEST_CHECK_SETTINGS = 1000;
     GoogleApiClient googleApiClient;
     private static final int UPDATE_INTERVAL = 1000 * 2;
-    private static final int FASTEST_INTERVAL = 1000 * 1;
+    private static final int FASTEST_INTERVAL = 1000;
 
+    /**
+     * @deprecated
+     * @see {@link com.ivy.core.base.view.BaseActivity#requestLocation(Activity)}
+     */
     public void requestLocation(final Activity ctxt) {
 
         if (googleApiClient == null) {
@@ -7449,6 +7455,7 @@ public class BusinessModel extends Application {
 
         return "";
     }
+
     public void updateRetailersTotWgt() {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
@@ -7495,6 +7502,7 @@ public class BusinessModel extends Application {
             Commons.printException(e);
         }
     }
+
     String newlyaddedRetailer = "";
 
     public String getNewlyaddedRetailer() {

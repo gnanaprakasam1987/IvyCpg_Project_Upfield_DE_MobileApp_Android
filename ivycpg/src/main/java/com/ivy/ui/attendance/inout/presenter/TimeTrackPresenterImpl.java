@@ -54,23 +54,7 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
                 }));
     }
 
-    @Override
-    public void checkConfigandWorkStatus(int reasonId, String inOrOut) {
-        getIvyView().showLoading();
-        getCompositeDisposable().add(timeTrackDataManager.isWorkingStatus(reasonId)
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean isWorkingStatus) {
-                        if (isWorkingStatus && configurationMasterHelper.IS_UPLOAD_ATTENDANCE)
-                            getIvyView().uploadAttendance(inOrOut);
-                        getIvyView().hideLoading();
-
-                    }
-                }));
-    }
-
-    private boolean success = false;
+    private boolean success;
 
     @Override
     public boolean startLocationService(String reasonId) {
@@ -80,13 +64,13 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
                 .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean isWorkingStatus) {
-
-                        if (isWorkingStatus && configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE)
-                            success = getIvyView().updateRealTimeIn();
-                        else
-                            success = true;
-
-                        getIvyView().shouldUploadAttendance("IN", reasonId);
+                        success = true;
+                        if (isWorkingStatus) {
+                            if (configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE)
+                                success = getIvyView().isUpdateRealTimeIn();
+                            if (configurationMasterHelper.IS_UPLOAD_ATTENDANCE)
+                                getIvyView().uploadAttendance("IN");
+                        }
                         getIvyView().hideLoading();
                     }
                 }));
@@ -101,9 +85,12 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
                 .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean isWorkingStatus) {
-                        if (isWorkingStatus && configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE)
-                            getIvyView().updateRealTimeOut();
-                        getIvyView().shouldUploadAttendance("OUT", reasonId);
+                        if (isWorkingStatus) {
+                            if (configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE)
+                                getIvyView().updateRealTimeOut();
+                            if (configurationMasterHelper.IS_UPLOAD_ATTENDANCE)
+                                getIvyView().uploadAttendance("OUT");
+                        }
                         getIvyView().hideLoading();
                     }
                 }));
