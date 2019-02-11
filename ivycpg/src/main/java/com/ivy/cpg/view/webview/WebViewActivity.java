@@ -20,6 +20,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 
 import java.util.HashMap;
@@ -35,6 +36,7 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
     HashMap<String, String> reqHeader;
     HashMap<String, String> listMap;
     String mMenuCode = "";
+    private ReportHelper reportHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,8 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
+
+        reportHelper = ReportHelper.getInstance(this);
 
         try {
             if (bmodel.configurationMasterHelper.MVPTheme == 0) {
@@ -95,8 +99,8 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
         listMap.put("MENU_WVW_PLAN_REQ", "WEBVIEW_PLN_REQ");
 
         mMenuCode = getIntent().getStringExtra("menucode");
-        bmodel.reportHelper.downloadWebViewPlanAuthUrl(listMap.get(mMenuCode));
-        if (!bmodel.reportHelper.getWebViewAuthUrl().equals(""))
+        reportHelper.downloadWebViewPlanAuthUrl(listMap.get(mMenuCode));
+        if (!reportHelper.getWebViewAuthUrl().equals(""))
             new DownloadToken().execute();
         else
             Toast.makeText(WebViewActivity.this, getResources().getString(R.string.error_message_bad_url), Toast.LENGTH_LONG).show();
@@ -136,7 +140,7 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
 
         @Override
         protected String doInBackground(String... params) {
-            return bmodel.synchronizationHelper.downloadSOVisitPlanToken(bmodel.reportHelper.getWebViewAuthUrl());
+            return bmodel.synchronizationHelper.downloadSOVisitPlanToken(reportHelper.getWebViewAuthUrl());
 
         }
 
@@ -150,8 +154,8 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
             }
 
             if (!token.equals("")) {
-                bmodel.reportHelper.downloadWebViewPlanUrl(listMap.get(mMenuCode));
-                if (!bmodel.reportHelper.getWebViewPlanUrl().equals("")) {
+                reportHelper.downloadWebViewPlanUrl(listMap.get(mMenuCode));
+                if (!reportHelper.getWebViewPlanUrl().equals("")) {
                     reqHeader = new HashMap<>();
                     reqHeader.put("SECURITY_TOKEN_KEY", token);
 
@@ -159,7 +163,7 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
                     webView.getSettings().setDomStorageEnabled(true);
                     webView.getSettings().setAllowUniversalAccessFromFileURLs(true);
                     webView.setWebChromeClient(new WebChromeClient());
-                    webView.loadUrl(bmodel.reportHelper.getWebViewPlanUrl(), reqHeader);
+                    webView.loadUrl(reportHelper.getWebViewPlanUrl(), reqHeader);
                     webView.setWebViewClient(new WebViewClient());
                 } else {
                     Toast.makeText(WebViewActivity.this, getResources().getString(R.string.error_message_bad_url), Toast.LENGTH_LONG).show();

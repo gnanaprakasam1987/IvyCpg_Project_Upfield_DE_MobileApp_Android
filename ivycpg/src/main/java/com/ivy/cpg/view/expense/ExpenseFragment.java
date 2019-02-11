@@ -28,6 +28,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
@@ -107,7 +108,7 @@ public class ExpenseFragment extends IvyBaseFragment {
         TextView tvClear = view.findViewById(R.id.tv_clear);
 
         imagesList = new ArrayList<>();
-        photoNamePath = HomeScreenFragment.photoPath + "/";
+        photoNamePath = AppUtils.photoFolderPath + "/";
         Commons.print("Photo Path, " + "" + photoNamePath);
 
         appSchedulerProvider = new AppSchedulerProvider();
@@ -351,8 +352,8 @@ public class ExpenseFragment extends IvyBaseFragment {
             String path = photoNamePath + "/" + imageFileName;
             try {
                 Intent intent = new Intent(mContext, CameraActivity.class);
-                intent.putExtra(getResources().getString(R.string.quality), 40);
-                intent.putExtra(getResources().getString(R.string.path), path);
+                intent.putExtra(CameraActivity.QUALITY, 40);
+                intent.putExtra(CameraActivity.PATH, path);
                 startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
             } catch (Exception e) {

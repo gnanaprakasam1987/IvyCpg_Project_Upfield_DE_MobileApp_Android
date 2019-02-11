@@ -1,12 +1,12 @@
 package com.ivy.cpg.view.van.damagestock;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
@@ -28,7 +28,6 @@ import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.commons.MaterialSpinner;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -48,7 +47,7 @@ public class DamageStockFragment extends Fragment {
     private String text;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         tempView = inflater.inflate(R.layout.damage_stock_frag_layout,
                 container, false);
@@ -76,13 +75,6 @@ public class DamageStockFragment extends Fragment {
         productName = tempView.findViewById(R.id.productName);
         lvwplist = tempView.findViewById(R.id.list);
         reasonSpinner = tempView.findViewById(R.id.reasonSpinner);
-
-        productName.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) tempView.findViewById(R.id.product_txt)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) tempView.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) tempView.findViewById(R.id.outerTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) tempView.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-        ((TextView) tempView.findViewById(R.id.reasonTitle)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
         try {
             if (bmodel.labelsMasterHelper.applyLabels(tempView.findViewById(
@@ -167,7 +159,7 @@ public class DamageStockFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         try {
             outState.putString("SpinnerTxt", ((SpinnerBO) reasonSpinner
                     .getSelectedItem()).getSpinnerTxt());
@@ -269,6 +261,7 @@ public class DamageStockFragment extends Fragment {
             return items.size();
         }
 
+        @SuppressLint("SetTextI18n")
         @NonNull
         public View getView(int position, View convertView, @NonNull ViewGroup parent) {
 
@@ -289,13 +282,6 @@ public class DamageStockFragment extends Fragment {
                 holder.outerqty = row.findViewById(R.id.outerqty);
                 holder.reason = row.findViewById(R.id.reason);
                 holder.batchnum = row.findViewById(R.id.batchnum);
-
-                holder.productname.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                holder.caseqty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                holder.pcsqty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                holder.outerqty.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                holder.reason.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-                holder.batchnum.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
                 holder.productname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
@@ -326,12 +312,6 @@ public class DamageStockFragment extends Fragment {
             holder.reason.setText(tv);
             tv = product.getBatchNumber() + "";
             holder.batchnum.setText(text + tv);
-
-            if (position % 2 == 0) {
-                row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.list_even_item_bg));
-            } else {
-                row.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.list_odd_item_bg));
-            }
 
             return row;
         }

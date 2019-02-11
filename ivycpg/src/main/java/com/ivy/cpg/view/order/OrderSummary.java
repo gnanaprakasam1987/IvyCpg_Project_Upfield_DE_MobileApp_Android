@@ -55,6 +55,7 @@ import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.sync.catalogdownload.Util;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -85,6 +86,7 @@ import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.sd.print.DemoSleeper;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 import com.ivy.sd.print.SettingsHelper;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 import com.tremol.zfplibj.ZFPLib;
 import com.zebra.sdk.comm.BluetoothConnection;
@@ -1122,7 +1124,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 boolean nFilesThere = bModel
                         .checkForNFilesInFolder(
-                                HomeScreenFragment.photoPath,
+                                AppUtils.photoFolderPath,
                                 1, mFirstName);
                 if (nFilesThere) {
 
@@ -1131,7 +1133,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 } else {
                     Intent intent = new Intent(OrderSummary.this,
                             CameraActivity.class);
-                    String path = HomeScreenFragment.photoPath + "/"
+                    String path = AppUtils.photoFolderPath + "/"
                             + mImageName;
                     intent.putExtra("path", path);
                     startActivityForResult(intent,
@@ -1158,12 +1160,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             boolean nFilesThere = bModel
                     .checkForNFilesInFolder(
-                            HomeScreenFragment.photoPath,
+                            AppUtils.photoFolderPath,
                             1, mFirstName);
             if (nFilesThere) {
                 openPdfDeleteDialog(mFirstName);
             } else {
-                String path = HomeScreenFragment.photoPath + "/"
+                String path = AppUtils.photoFolderPath + "/"
                         + attachedFilePath;
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("application/pdf");
@@ -3314,7 +3316,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             printer = InitializeZebraPrinter();
 
             if (printer != null) {
-                bModel.loadManagementHelper.downloadSubDepots();
+                LoadManagementHelper.getInstance(this).downloadSubDepots();
                 projectSpecificPrinterCall(printerName);
             } else {
                 bModel.productHelper.clearOrderTable();
@@ -3510,7 +3512,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     invalidateOptionsMenu();
                     String realPath = Util.getPath(this, data.getData());
-                    Util.copyFile(new File(realPath), HomeScreenFragment.photoPath, attachedFilePath);
+                    Util.copyFile(new File(realPath), AppUtils.photoFolderPath, attachedFilePath);
                     if (bModel.getOrderHeaderBO() != null)
                         bModel.getOrderHeaderBO().setOrderImageName(attachedFilePath);
                 }
@@ -3634,13 +3636,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     @Override
                     public void onPositiveButtonClick() {
 
-                        bModel.deleteFiles(HomeScreenFragment.photoPath,
+                        bModel.deleteFiles(AppUtils.photoFolderPath,
                                 imageNameStarts);
                         bModel.getOrderHeaderBO().setOrderImageName("");
 
                         Intent intent = new Intent(OrderSummary.this,
                                 CameraActivity.class);
-                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
+                        String path = AppUtils.photoFolderPath + "/" + mImageName;
                         intent.putExtra("path", path);
                         startActivityForResult(intent,
                                 CAMERA_REQUEST_CODE);
@@ -3700,11 +3702,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     public void onPositiveButtonClick() {
                         invalidateOptionsMenu();
 
-                        bModel.deleteFiles(HomeScreenFragment.photoPath,
+                        bModel.deleteFiles(AppUtils.photoFolderPath,
                                 imageNameStarts);
                         bModel.getOrderHeaderBO().setOrderImageName("");
 
-                        String path = HomeScreenFragment.photoPath + "/"
+                        String path = AppUtils.photoFolderPath + "/"
                                 + attachedFilePath;
                         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                         intent.setType("application/pdf");

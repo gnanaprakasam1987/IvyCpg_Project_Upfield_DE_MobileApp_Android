@@ -9,9 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-import com.itextpdf.text.pdf.PRIndirectReference;
 import com.ivy.cpg.nfc.NFCManager;
-import com.ivy.cpg.view.asset.AssetTrackingFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -129,8 +127,8 @@ SerializedAssetActivity extends IvyBaseActivityNoActionBar implements
     @Override
     public void updateBrandText(String mFilterText, int id) {
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        AssetTrackingFragment asf = (AssetTrackingFragment) fm
-                .findFragmentById(R.id.asset_tracking_fragment);
+        SerializedAssetFragment asf = (SerializedAssetFragment) fm
+                .findFragmentById(R.id.serialized_asset_fragment);
         asf.updateBrandText(mFilterText, id);
     }
 

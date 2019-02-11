@@ -85,7 +85,7 @@
     <string name="retailername">门店名称</string>
     <string name="version">版本:</string>
     <string name="all">所有</string>
-    <string name="quality">质量</string>
+
     <string name="mrp">最高零售价</string>
     <string name="gallery">图库</string>
     <string name="enter_activation_key">输入激活密钥</string>
@@ -445,7 +445,7 @@
     <string name="opencalendar">打开日历</string>
     <string name="pc">PC</string>
     <string name="invaliddate">无效的日期</string>
-    <string name="saverequired">是否需保存</string>
+
     <string name="cant_skip_go_by_sequence">不能跳过，按顺序进行</string>
     <string name="no_damaged_stock_to_unload">没有损坏的库存可卸载</string>
     <string name="do_you_want_to_save_stock">你想保存库存吗</string>

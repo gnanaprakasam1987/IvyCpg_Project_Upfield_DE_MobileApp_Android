@@ -16,7 +16,6 @@ import com.ivy.sd.png.util.Commons;
 
 public class DamageStockFragmentActivity extends IvyBaseActivityNoActionBar {
     private Bundle instate;
-    private Toolbar toolbar;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,7 +26,7 @@ public class DamageStockFragmentActivity extends IvyBaseActivityNoActionBar {
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setTitle(

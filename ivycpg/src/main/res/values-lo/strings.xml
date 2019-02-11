@@ -84,7 +84,7 @@
     <string name="retailername">ຊື່ຮ້ານ</string>
     <string name="version">ເວີຊັ້ນ:</string>
     <string name="all">ທັງຫມົດ</string>
-    <string name="quality">ຄຸນ​ນະ​ພາບ</string>
+
     <string name="mrp">ລາຄາ</string>
     <string name="gallery">ຄັງຮູບພາບ</string>
     <string name="enter_activation_key">ໃສ່ລະຫັດເປິດໃຊ້ງານ</string>
@@ -448,7 +448,7 @@
     <string name="opencalendar">ເປິດປະຕິທິນ</string>
     <string name="pc">ອັນ</string>
     <string name="invaliddate">ວັນທີບໍ່ຖຶກ</string>
-    <string name="saverequired">ຕ້ອງການບັນທືກ</string>
+
     <string name="cant_skip_go_by_sequence">ບໍ່ສາມາດຂ້າມ. ຕ້ອງໄປຕາມລຳດັບ</string>
     <string name="no_damaged_stock_to_unload">ບໍ່ມີສະຕ໋ອກແຕ່ກເສຍຫາຍເພື່ອອັບໂຫລດ</string>
     <string name="do_you_want_to_save_stock">Do you want to save stock</string>

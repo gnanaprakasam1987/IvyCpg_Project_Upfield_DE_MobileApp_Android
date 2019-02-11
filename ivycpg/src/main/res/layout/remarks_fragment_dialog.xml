@@ -113,7 +113,7 @@
             <Spinner
                 android:id="@+id/spnrField1"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/list_item_date_picker_height"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:background="@android:color/transparent"
@@ -181,7 +181,7 @@
             <Spinner
                 android:id="@+id/spinner_remark_type"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/list_item_date_picker_height"
                 android:background="@android:color/transparent"
                 android:overlapAnchor="false" />
         </LinearLayout>

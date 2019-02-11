@@ -15,6 +15,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailersReportBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ReportHelper;
 
 import java.util.ArrayList;
 
@@ -58,7 +59,7 @@ public class TopOpportunities extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mylist = bmodel.reportHelper.downloadOppRetailersReport();
+        mylist = ReportHelper.getInstance(getActivity()).downloadOppRetailersReport();
 
         // Show alert if error loading data.
         if (mylist == null) {

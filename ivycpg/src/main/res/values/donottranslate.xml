@@ -11,7 +11,7 @@
     <string name="dummy_txt">text</string>
     <string name="da">DA</string>
     <string name="nan">NaN</string>
-    <string name="path">path</string>
+
 
     <string-array name="languageList">
         <item name="en">English</item>
@@ -141,6 +141,10 @@
 
     <string name="asset_image">Asset Image</string>
     <string name="error_e100">Access Denied. Contact Your System Administrator.</string>
+
+    <string name="amount_mismatch">Amount mismatch</string>
+    <string name="privacy_policy">Privacy Policy</string>
+    <string name="ivy_mobility_privacy">Ivy Mobility Privacy Policy</string>
 
     <string name="load_analysis">Load Analysis</string>
     <string name="visit_created_successfully">Visit created Successfully</string>

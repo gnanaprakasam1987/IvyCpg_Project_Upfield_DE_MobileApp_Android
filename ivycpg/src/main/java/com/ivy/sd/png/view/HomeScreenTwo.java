@@ -68,6 +68,7 @@ import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
 import com.ivy.cpg.view.displayscheme.DisplaySchemeActivity;
 import com.ivy.cpg.view.displayscheme.DisplaySchemeTrackingActivity;
 import com.ivy.cpg.view.emptyreturn.EmptyReturnActivity;
+import com.ivy.cpg.view.emptyreturn.EmptyReturnHelper;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.cpg.view.loyality.LoyalityHelper;
 import com.ivy.cpg.view.loyality.LoyaltyPointsFragmentActivity;
@@ -122,11 +123,14 @@ import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.DownloadProductsAndPrice;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.profile.ProfileActivity;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import java.io.File;
@@ -3010,7 +3014,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 priceTrackingHelper.clearPriceCheck();
                 priceTrackingHelper.loadPriceTransaction(getApplicationContext());
-                bmodel.competitorTrackingHelper.downloadPriceCompanyMaster(MENU_PRICE_COMP);
+                CompetitorTrackingHelper.getInstance(this).downloadPriceCompanyMaster(MENU_PRICE_COMP);
 
                 if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !priceTrackingHelper.isPriceCheckDone(getApplicationContext())) {
                     priceTrackingHelper.updateLastVisitPriceAndMRP();
@@ -3045,7 +3049,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
                 if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
-                    bmodel.mEmptyReturnHelper.downloadProductType();
+                    EmptyReturnHelper.getInstance(this).downloadProductType();
                 bmodel.mSelectedActivityName = menu.getMenuName();
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                         SDUtil.now(SDUtil.DATE_GLOBAL),
@@ -3361,13 +3365,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
                     ) {
-                bmodel.competitorTrackingHelper.downloadCompanyMaster(MENU_COMPETITOR);
-                bmodel.competitorTrackingHelper.downloadTrackingList();
-                bmodel.competitorTrackingHelper
+                CompetitorTrackingHelper competitorTrackingHelper = CompetitorTrackingHelper.getInstance(this);
+                competitorTrackingHelper.downloadCompanyMaster(MENU_COMPETITOR);
+                competitorTrackingHelper.downloadTrackingList();
+                competitorTrackingHelper
                         .downloadCompetitors(MENU_COMPETITOR);
-                bmodel.competitorTrackingHelper.loadcompetitors();
-                int companySize = bmodel.competitorTrackingHelper
-                        .getCompanyList().size();
+                competitorTrackingHelper.loadcompetitors();
+                int companySize = competitorTrackingHelper.getCompanyList().size();
                 if (companySize > 0) {
                     bmodel.mSelectedActivityName = menu.getMenuName();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
@@ -4055,22 +4059,19 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                             bmodel.configurationMasterHelper.
                                                     updateConfigurationSelectedSellerType(false);
                                             updateRetailerwiseSellertype(1); // Vansales
-                                            bmodel.getRetailerMasterBO()
+                                            bmodel.getAppDataProvider().getRetailMaster()
                                                     .setIsVansales(1);
 
                                         } else {
                                             bmodel.configurationMasterHelper.
                                                     updateConfigurationSelectedSellerType(true);
                                             updateRetailerwiseSellertype(0); // Presales
-                                            bmodel.getRetailerMasterBO()
+                                            bmodel.getAppDataProvider().getRetailMaster()
                                                     .setIsVansales(0);
                                         }
                                         if (bmodel.configurationMasterHelper.IS_SWITCH_SELLER_CONFIG_LEVEL) {
-                                            GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
-                                            if (genericObjectPair != null) {
-                                                bmodel.productHelper.setProductMaster(genericObjectPair.object1);
-                                                bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
-                                            }
+                                            new DownloadProductsAndPrice(HomeScreenTwo.this, "", "",
+                                                    "", "", false).execute();
                                         }
                                         dialog.dismiss();
 
@@ -4704,7 +4705,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         try {
             String[] imgPaths = retailerObj.getProfileImagePath().split("/");
             String path = imgPaths[imgPaths.length - 1];
-            Uri uri = bmodel.profilehelper.getUriFromFile(HomeScreenFragment.photoPath + "/" + path);
+            Uri uri = bmodel.profilehelper.getUriFromFile(AppUtils.photoFolderPath + "/" + path);
             retProfileImage.invalidate();
             retProfileImage.setImageURI(uri);
         } catch (Exception e) {

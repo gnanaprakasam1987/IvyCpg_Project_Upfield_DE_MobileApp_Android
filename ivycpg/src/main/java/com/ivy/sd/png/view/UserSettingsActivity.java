@@ -10,7 +10,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.StateListDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Message;
@@ -32,8 +34,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.deviceStatus.DeviceStatusActivity;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.login.password.ChangePasswordActivity;
+import com.ivy.cpg.view.webview.PrivacyPolicyActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -46,7 +50,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-//import android.support.v7.widget.Toolbar;
 
 public class UserSettingsActivity extends PreferenceActivity {
 
@@ -54,14 +57,12 @@ public class UserSettingsActivity extends PreferenceActivity {
     private SharedPreferences settings;
     private static ProgressDialog progressDialog;
     private static Context context;
-    Preference mpmac;
+    private Preference mpmac;
     private boolean isFromHomeScreen;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        //super.onCreate(savedInstanceState);
         try {
-
             super.onCreate(savedInstanceState);
             setContentView(R.layout.settings_layout);
 
@@ -69,22 +70,22 @@ public class UserSettingsActivity extends PreferenceActivity {
 
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
             bmodel = (BusinessModel) getApplicationContext();
             bmodel.setContext(this);
+
             context = this;
 
             settings = getSharedPreferences(bmodel.PREFS_NAME, MODE_PRIVATE);
 
-
+            getListView().setCacheColorHint(Color.TRANSPARENT);
+            getListView().setSelector(new StateListDrawable());
             getActionBar().setIcon(android.R.color.transparent);
             getActionBar().setDisplayHomeAsUpEnabled(true);
-
             getActionBar().setDisplayShowHomeEnabled(false);
-
             getActionBar().setTitle(getResources().getString(R.string.settings));
-
-
             getActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.colorPrimary)));
+
 
             if (getIntent().getExtras() != null) {
                 isFromHomeScreen = getIntent().getExtras().getBoolean("fromHomeScreen", false);
@@ -249,6 +250,17 @@ public class UserSettingsActivity extends PreferenceActivity {
         } catch (Exception e) {
             Commons.printException(e);
         }
+
+        // To show company privacy policy
+        Preference privacyPref = findPreference("privacy_policy");
+        privacyPref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Intent i = new Intent(context, PrivacyPolicyActivity.class);
+                startActivity(i);
+                return true;
+            }
+        });
 
     }
 

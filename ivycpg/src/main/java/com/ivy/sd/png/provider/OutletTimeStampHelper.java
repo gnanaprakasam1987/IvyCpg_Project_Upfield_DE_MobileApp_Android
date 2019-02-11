@@ -16,6 +16,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DeviceUtils;
 
 import java.io.File;
@@ -209,7 +210,7 @@ public class OutletTimeStampHelper {
         if (fileArry.length > 0) {
             filename = fileArry[fileArry.length - 1];
         }
-        File folder = new File(HomeScreenFragment.photoPath + "/");
+        File folder = new File(AppUtils.photoFolderPath + "/");
 
         File[] files = folder.listFiles();
         for (File tempFile : files) {

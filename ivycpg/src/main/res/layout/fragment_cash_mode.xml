@@ -117,7 +117,8 @@
     <RelativeLayout
         android:id="@+id/ll_footer"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/footer_height"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/footer_height"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center"
         android:background="?attr/customFooterBackgroundColor"

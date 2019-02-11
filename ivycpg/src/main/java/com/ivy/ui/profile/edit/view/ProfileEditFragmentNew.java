@@ -295,7 +295,7 @@ public class ProfileEditFragmentNew extends BaseFragment
         String filePath = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + path;
         if (AppUtils.checkImagePresent(filePath)) {
             try {
-                Uri uri = AppUtils.getUriFromFile(getActivity(), HomeScreenFragment.photoPath + "/" + path);
+                Uri uri = AppUtils.getUriFromFile(getActivity(), AppUtils.photoFolderPath + "/" + path);
                 mProfileImageView.invalidate();
                 mProfileImageView.setImageURI(uri);
             } catch (Exception e) {
@@ -349,8 +349,8 @@ public class ProfileEditFragmentNew extends BaseFragment
         if (AppUtils.isExternalStorageAvailable()) {
             try {
                 Intent intent = new Intent(getActivity(), CameraActivity.class);
-                intent.putExtra(getResources().getString(R.string.quality), 40);
-                intent.putExtra(getResources().getString(R.string.path), HomeScreenFragment.photoPath + "/" + ((!isForLatLong) ? imageFileName : AppUtils.latlongImageFileName));
+                intent.putExtra(CameraActivity.QUALITY, 40);
+                intent.putExtra(CameraActivity.PATH, AppUtils.photoFolderPath + "/" + ((!isForLatLong) ? imageFileName : AppUtils.latlongImageFileName));
                 startActivityForResult(intent, (!isForLatLong) ? CAMERA_REQUEST_CODE : LATLONG_CAMERA_REQUEST_CODE);
 
             } catch (Exception e) {
@@ -367,9 +367,9 @@ public class ProfileEditFragmentNew extends BaseFragment
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
                 profileEditPresenter.getCameraReqestCode();
-                String path = HomeScreenFragment.photoPath + "/" + imageFileName;
+                String path = AppUtils.photoFolderPath + "/" + imageFileName;
                 Uri uri = AppUtils.getUriFromFile(getActivity(), path);
-                cameraFilePath = HomeScreenFragment.photoPath + "/" + imageFileName;
+                cameraFilePath = AppUtils.photoFolderPath + "/" + imageFileName;
                 mProfileImageView.setImageDrawable(null);
                 mProfileImageView.invalidate();
                 mProfileImageView.setImageURI(uri);

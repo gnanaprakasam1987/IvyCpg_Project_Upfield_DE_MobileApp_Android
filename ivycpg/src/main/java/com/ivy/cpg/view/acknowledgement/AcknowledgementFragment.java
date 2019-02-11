@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.serializedAsset.AddSerializedAssetActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
@@ -78,8 +79,9 @@ public class AcknowledgementFragment extends IvyBaseFragment {
         dashBoardList.setHasFixedSize(false);
         dashBoardList.setNestedScrollingEnabled(false);
         dashBoardList.setLayoutManager(new LinearLayoutManager(getActivity()));
-        bmodel.acknowledgeHelper.loadJointCallAcknowledgementCount();
-        ArrayList<JointCallAcknowledgementCountBO> joinCallAcknowledgementCountList = bmodel.acknowledgeHelper.getAcknowledgementCountList();
+        AcknowledgementHelper acknowledgementHelper = AcknowledgementHelper.getInstance(getActivity());
+        acknowledgementHelper.loadJointCallAcknowledgementCount();
+        ArrayList<JointCallAcknowledgementCountBO> joinCallAcknowledgementCountList = acknowledgementHelper.getAcknowledgementCountList();
 
         dashBoardListViewAdapter = new DashBoardListViewAdapter(joinCallAcknowledgementCountList);
         dashBoardList.setAdapter(dashBoardListViewAdapter);

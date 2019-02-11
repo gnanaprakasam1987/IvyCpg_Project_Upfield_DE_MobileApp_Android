@@ -56,6 +56,7 @@ import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 
 import java.math.BigDecimal;
@@ -954,7 +955,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
 
 
                         nfiles_there = bmodel.checkForNFilesInFolder(
-                                HomeScreenFragment.photoPath, mImageCount, fnameStarts);
+                                AppUtils.photoFolderPath, mImageCount, fnameStarts);
                         if (nfiles_there) {
                             showFileDeleteAlert(fnameStarts);
                             return;
@@ -964,17 +965,16 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
                                 ChequeImgname = mImageName;
                             }
                             Intent intent = new Intent(CollectionBeforeInvoiceActivity.this, CameraActivity.class);
-                            intent.putExtra("quality", 40);
+                            intent.putExtra(CameraActivity.QUALITY, 40);
                             mImagePath = "Collection" + "/" + bmodel.userMasterHelper.getUserMasterBO
                                     ().getDownloadDate().replace("/", "")
                                     + "/"
                                     + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                                     + "/";
                             mImageName = mImagePath + mImageName;
-                            String path = HomeScreenFragment.photoPath + "/" + mImageName;
+                            String path = AppUtils.photoFolderPath + "/" + mImageName;
 
-                            Commons.print("photoPath : " + mImagePath);
-                            intent.putExtra("path", path);
+                            intent.putExtra(CameraActivity.PATH, path);
                             startActivityForResult(intent,
                                     bmodel.CAMERA_REQUEST_CODE);
                             return;
@@ -1006,15 +1006,14 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                        bmodel.deleteFiles(AppUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(CollectionBeforeInvoiceActivity.this,
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
-                        String _path = HomeScreenFragment.photoPath + "/" + mImageName;
-                        Commons.print("PhotoPAth:  -      " + _path);
-                        intent.putExtra("path", _path);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
+                        String _path = AppUtils.photoFolderPath + "/" + mImageName;
+                        intent.putExtra(CameraActivity.PATH, _path);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);
                         return;

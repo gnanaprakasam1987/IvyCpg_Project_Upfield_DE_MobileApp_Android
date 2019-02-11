@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.homescreen.userFeedback;
 
 
 import android.os.Bundle;
@@ -17,8 +17,6 @@ import android.widget.TextView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.UserFeedBackHelper;
 
 import java.util.ArrayList;
 
@@ -51,7 +49,7 @@ public class UserFeedbackActivity extends IvyBaseActivityNoActionBar implements 
             getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
 
-        userFeedBackHelper = UserFeedBackHelper.getInstance(this);
+        userFeedBackHelper = new UserFeedBackHelper(getApplicationContext());
         userFeedBackHelper.downloadFeedBackType();
 
         ArrayList<ReasonMaster> reason = userFeedBackHelper.getFeedBackType();

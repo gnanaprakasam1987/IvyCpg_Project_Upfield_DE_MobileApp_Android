@@ -16,6 +16,7 @@ import com.ivy.sd.png.bo.ProductivityReportBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ReportHelper;
 
 import java.util.ArrayList;
 
@@ -67,7 +68,7 @@ public class ProductivityReport extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mylist = bmodel.reportHelper.downloadProductivitysReport(SDUtil.now(SDUtil.DATE_GLOBAL));
+        mylist = ReportHelper.getInstance(getActivity()).downloadProductivitysReport(SDUtil.now(SDUtil.DATE_GLOBAL));
 
         // Show alert if error loading data.
         if (mylist == null) {

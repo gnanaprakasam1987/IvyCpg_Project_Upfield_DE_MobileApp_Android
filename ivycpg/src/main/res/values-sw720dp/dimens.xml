@@ -21,6 +21,77 @@
 
 
 
+
+    <!-- Generic Text size *********************** Don't change the values -->
+
+
+    <dimen name="actionbar_title_text_size">28sp</dimen>
+    <dimen name="actionbar_subtitle_text_size">22sp</dimen>
+    <dimen name="trade_coverage_text_size">15sp</dimen>
+    <dimen name="banner_text_size">15sp</dimen>
+    <dimen name="text_size_primary">18sp</dimen>
+    <dimen name="text_size_secondary">16sp</dimen>
+    <dimen name="text_size_caption">16sp</dimen>
+    <dimen name="date_picker_text_size">17sp</dimen>
+
+    <!-- List header text size -->
+    <dimen name="list_header_text_size">16sp</dimen>
+    <dimen name="list_header_secondary_text_size">15sp</dimen>
+
+    <!-- Button text size -->
+    <dimen name="btn_small_round_corner_text_size">18sp</dimen>
+    <dimen name="btn_round_corner_text_size">20sp</dimen>
+
+    <!-- Footer text size -->
+    <dimen name="footer_label_size">16sp</dimen>
+    <dimen name="footer_label_value">22sp</dimen>
+
+    <!-- Five level filter text size -->
+    <dimen name="filter_level_text_size">20sp</dimen>
+    <dimen name="filter_list_secondary_text_size">22sp</dimen>
+
+    <!-- new retailer, survey, non-productive reason collection,Dashaboard, deviation -->
+    <dimen name="spinner_normal">17sp</dimen>
+
+
+    <!-- ALL test size -->
+    <dimen name="font_small">21sp</dimen>
+    <dimen name="font_large">23sp</dimen>
+
+
+    <!-- user name in home menu, retailer name in profile and activity menu etc -->
+    <dimen name="highlight_small">28sp</dimen>
+    <!-- stores in trade coverage etc -->
+    <dimen name="highlight_normal">30sp</dimen>
+    <!-- Beat name in trade coverage etc -->
+    <dimen name="highlight_large">36sp</dimen>
+
+    <dimen name="menu_name_text_size">26sp</dimen>
+    <dimen name="drop_down_text_font_size">19sp</dimen>
+
+    <!--Dashboard-->
+    <dimen name="kpi_spinner_title_size">18sp</dimen>
+    <dimen name="value_text_size">20sp</dimen>
+    <dimen name="factor_title_size">19sp</dimen>
+    <dimen name="total_title_size">28sp</dimen>
+    <dimen name="incentive_value_size">22sp</dimen>
+    <dimen name="percent_value_size">19sp</dimen>
+
+    <!-- Login - clear it later -->
+    <dimen name="version_text_size">14sp</dimen>
+    <dimen name="forgot_text_size">20sp</dimen>
+    <dimen name="login_edittext_text_size">22sp</dimen>
+
+
+    <!-- Activity screen title text -->
+    <dimen name="activity_name_text_size">28sp</dimen>
+    <dimen name="sub_activity_name_text_size">24sp</dimen>
+    <dimen name="activation_edittext_text_size">20sp</dimen>
+
+    <!--*************************END OF Generic Text size***************************-->
+
+
+
     <!-- UI Elements -->
     <dimen name="list_title_height">30dp</dimen>
     <dimen name="list_item_width">150dp</dimen>

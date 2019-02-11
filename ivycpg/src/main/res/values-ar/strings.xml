@@ -84,7 +84,7 @@
     <string name="retailername">اسم الخزن </string>
     <string name="version">الإصدار : </string>
     <string name="all">الجميع </string>
-    <string name="quality">الجودة </string>
+
     <string name="mrp">MRP</string>
     <string name="gallery">مجلد الصور </string>
     <string name="enter_activation_key">ادخل مفتاح التنشيط.</string>
@@ -442,7 +442,7 @@
     <string name="opencalendar">التقويم المفتوح.</string>
     <string name="pc">جهاز كمبيوتر شخصي.</string>
     <string name="invaliddate">التاريخ غير ساري المفعول.</string>
-    <string name="saverequired">حفظ البيانات مطلوب.</string>
+
     <string name="cant_skip_go_by_sequence">لا يمكن تخطي الخطوة اتبع التسلسل.</string>
     <string name="no_damaged_stock_to_unload">لا يوجد مخزون تالف لتفريغه.</string>
     <string name="do_you_want_to_save_stock">هل ترغب في حفظ المخزون.</string>

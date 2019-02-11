@@ -32,6 +32,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.sd.png.util.DataMembers;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -42,15 +43,32 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class AppUtils {
 
+    public static String photoFolderPath;
 
     private AppUtils() {
 
     }
 
+    public static boolean createPhotoPathAndFolder(Context context) {
+        boolean bool=true;
+        try {
+            photoFolderPath = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
+                    + DataMembers.photoFolderName;
+
+            File photoFolder = new File(photoFolderPath);
+            if (!photoFolder.exists()) {
+                bool = photoFolder.mkdir();
+            }
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+        return bool;
+    }
+
     public static void checkFileExist(String imageName, String retailerID, boolean isLatLongImage) {
         try {
             String fName = (!isLatLongImage) ? "PRO_" : "LATLONG_" + retailerID;
-            File sourceDir = new File(HomeScreenFragment.photoPath);
+            File sourceDir = new File(photoFolderPath);
             File[] files = sourceDir.listFiles();
             for (File file : files) {
                 if (file.getName().startsWith(fName) &&

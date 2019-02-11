@@ -84,7 +84,7 @@
     <string name="retailername">Nama Toko</string>
     <string name="version">Versi :</string>
     <string name="all">Semua</string>
-    <string name="quality">Kualitas</string>
+
     <string name="mrp">Harga Retail Maksimum</string>
     <string name="gallery">Galeri</string>
     <string name="enter_activation_key">Memasukkan Kunci Aktivasi</string>
@@ -448,7 +448,7 @@
     <string name="opencalendar">Buka Kalendar</string>
     <string name="pc">Komputer Pc</string>
     <string name="invaliddate">Tanggal Salah</string>
-    <string name="saverequired">Apakah Save Diperlukan?</string>
+
     <string name="cant_skip_go_by_sequence">Tidak Bisa Dilewati, Harus Sesuai Urutan</string>
     <string name="no_damaged_stock_to_unload">Tidak Ada Stok Rusak Untuk Dibongkar</string>
     <string name="do_you_want_to_save_stock">Apa Anda Ingin Menyimpan Stok?</string>

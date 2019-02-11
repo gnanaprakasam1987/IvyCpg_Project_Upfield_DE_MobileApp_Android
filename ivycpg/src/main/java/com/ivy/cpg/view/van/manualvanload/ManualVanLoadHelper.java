@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BomBO;
 import com.ivy.sd.png.bo.BomMasterBO;
@@ -51,7 +52,7 @@ public class ManualVanLoadHelper {
     public void loadManuvalVanLoadData(String menuCode) {
 
         if (bmodel.configurationMasterHelper.SHOW_SUBDEPOT) {
-            bmodel.loadManagementHelper.downloadSubDepots();
+            LoadManagementHelper.getInstance(context).downloadSubDepots();
         }
 
         bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(

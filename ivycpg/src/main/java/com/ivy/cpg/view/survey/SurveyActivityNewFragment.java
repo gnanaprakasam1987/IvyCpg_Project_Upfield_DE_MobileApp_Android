@@ -77,15 +77,18 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.SlantView;
+import com.ivy.utils.AppUtils;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -820,6 +823,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     break;
                 case "PH_NO":
                     showEditText(1, holder.answerLayout, holder.questionBO, holder.subQuestLayout);
+                    break;
+                case "DECIMAL":
+                    showEditText(5, holder.answerLayout, holder.questionBO, holder.subQuestLayout);
                     break;
                 default:
                     showEditText(0, holder.answerLayout, holder.questionBO, holder.subQuestLayout);
@@ -1560,6 +1566,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     case "PH_NO":
                         showEditText(1, answerLayout, questBO, subQuestLayout);
                         break;
+                    case "DECIMAL":
+                        showEditText(5, answerLayout, questBO, subQuestLayout);
+                        break;
                     default:
                         showEditText(0, answerLayout, questBO, subQuestLayout);
                         break;
@@ -1607,8 +1616,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                 Intent intent = new Intent(
                                         getActivity(),
                                         CameraActivity.class);
-                                String path = HomeScreenFragment.folder
-                                        .getPath() + "/" + imageName;
+                                String path =AppUtils.photoFolderPath + "/" + imageName;
                                 if (i == 0) {
                                     questBO.setImage1Path(path);
                                     questBO.setImage1Captured(true);
@@ -1617,8 +1625,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                     questBO.setImage2Captured(true);
                                 }
                                 Log.e("TakenPath", path);
-                                intent.putExtra("quality", 40);
-                                intent.putExtra("path", path);
+                                intent.putExtra(CameraActivity.QUALITY, 40);
+                                intent.putExtra(CameraActivity.PATH, path);
                                 startActivityForResult(intent,
                                         CAMERA_REQUEST_CODE);
                             } catch (Exception e) {
@@ -1808,12 +1816,11 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     DatePickerDialog datePicker = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                            /*String date = String.valueOf(dayOfMonth) + "/" + String.valueOf(monthOfYear+1)
-                                    + "/" + String.valueOf(year);*/
-                            String date = String.valueOf(year) + "/" + ((monthOfYear + 1) < 10 ? "0" + (monthOfYear + 1) : (monthOfYear + 1))
-                                    + "/" + ((dayOfMonth) < 10 ? "0" + (dayOfMonth) : (dayOfMonth));
-
-                            et.setText(date);
+                            Calendar selectedDate = new GregorianCalendar(year, monthOfYear,
+                                    dayOfMonth);
+                            et.setText(DateUtil.convertDateObjectToRequestedFormat(
+                                    selectedDate.getTime(),
+                                    ConfigurationMasterHelper.outDateFormat));
                         }
                     }, yy, mm, dd);
                     DatePicker datePicker1 = datePicker.getDatePicker();
@@ -1840,6 +1847,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     datePicker.show();
                 }
             });
+        }
+        if (i == 5) {
+            et.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            et.setFilters(new InputFilter[]{new DecimalDigitsInputFilter()});
         }
         et.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence s, int start, int before,
@@ -2417,6 +2428,15 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             this.rangeCheckStartAt = rangeCheckStartAt;
             this.c = c;
             this.endChar = end;
+        }
+
+        private DecimalDigitsInputFilter() {
+            mPattern = Pattern.compile(String.format("[0-9]+(\\.[0-9]{0,%d})?", bmodel.configurationMasterHelper.VALUE_PRECISION_COUNT));
+            this.min = 0;
+            this.max = 0;
+            this.rangeCheckStartAt = 0;
+            this.c = "";
+            this.endChar = "";
         }
 
         @Override

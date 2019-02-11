@@ -40,6 +40,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -49,6 +50,7 @@ import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.print.DemoSleeper;
 import com.ivy.sd.print.SettingsHelper;
+import com.ivy.utils.AppUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -442,14 +444,14 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
 
 
                         nfiles_there = bmodel.checkForNFilesInFolder(
-                                HomeScreenFragment.photoPath, mImageCount, fnameStarts);
+                                AppUtils.photoFolderPath, mImageCount, fnameStarts);
                         if (nfiles_there) {
                             showFileDeleteAlert(fnameStarts);
                         } else {
                             Intent intent = new Intent(getActivity(), CameraActivity.class);
-                            intent.putExtra("quality", 40);
-                            String path = HomeScreenFragment.photoPath + "/" + mImageName;
-                            intent.putExtra("path", path);
+                            intent.putExtra(CameraActivity.QUALITY, 40);
+                            String path = AppUtils.photoFolderPath + "/" + mImageName;
+                            intent.putExtra(CameraActivity.PATH, path);
                             startActivityForResult(intent,
                                     bmodel.CAMERA_REQUEST_CODE);
                         }
@@ -738,15 +740,15 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                        bmodel.deleteFiles(AppUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
-                        String _path = HomeScreenFragment.photoPath + "/" + mImageName;
+                        intent.putExtra(CameraActivity.QUALITY, 40);
+                        String _path = AppUtils.photoFolderPath + "/" + mImageName;
                         Commons.print("PhotoPAth:  -      " + _path);
-                        intent.putExtra("path", _path);
+                        intent.putExtra(CameraActivity.PATH, _path);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);
                     }
@@ -900,7 +902,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
 
     private void printInvoice() {
         try {
-            int printDoneCount = bmodel.reportHelper.getPaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""));
+            int printDoneCount = ReportHelper.getInstance(getActivity()).getPaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""));
             for (int i = 0; i <= mSelectedPrintCount; i++) {
                 if (i == 0 && printDoneCount == 0)
                     zebraPrinterConnection.write(bmodel.printHelper.printAdvancePayment(true));
@@ -908,7 +910,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                     zebraPrinterConnection.write(bmodel.printHelper.printAdvancePayment(false));
             }
 
-            bmodel.reportHelper.updatePaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""), ((mSelectedPrintCount + 1) + printDoneCount));
+            ReportHelper.getInstance(getActivity()).updatePaymentPrintCount(collectionHelper.collectionGroupId.replace("'", ""), ((mSelectedPrintCount + 1) + printDoneCount));
 
             DemoSleeper.sleep(1500);
             if (zebraPrinterConnection instanceof BluetoothConnection) {

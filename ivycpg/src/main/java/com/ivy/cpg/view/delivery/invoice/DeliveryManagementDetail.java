@@ -42,6 +42,7 @@ import com.ivy.sd.png.view.CaptureSignatureActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.Properties;
@@ -521,8 +522,8 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
         int i1 = item.getItemId();
         if (i1 == android.R.id.home) {
 
-            if (bmodel.checkForNFilesInFolder(HomeScreenFragment.photoPath, 1, signName))
-                bmodel.deleteFiles(HomeScreenFragment.photoPath,
+            if (bmodel.checkForNFilesInFolder(AppUtils.photoFolderPath, 1, signName))
+                bmodel.deleteFiles(AppUtils.photoFolderPath,
                         signName);
 
             ArrayList<InvoiceHeaderBO> invoiceList = deliveryManagementHelper.getInvoiceList();
@@ -549,7 +550,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
         } else if (i1 == R.id.menu_save) {
             saveReject();
         } else if (i1 == R.id.menu_signature) {
-            if (bmodel.checkForNFilesInFolder(HomeScreenFragment.photoPath, 1, signName)) {
+            if (bmodel.checkForNFilesInFolder(AppUtils.photoFolderPath, 1, signName)) {
                 final CommonDialog commonDialog = new CommonDialog(getApplicationContext(),
                         this,
                         "",
@@ -562,7 +563,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                         new CommonDialog.PositiveClickListener() {
                             @Override
                             public void onPositiveButtonClick() {
-                                bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                                bmodel.deleteFiles(AppUtils.photoFolderPath,
                                         signName);
                                 Intent i = new Intent(DeliveryManagementDetail.this,
                                         CaptureSignatureActivity.class);
@@ -897,7 +898,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 multiPart.addBodyPart(bodyPart);
 
                 boolean isImageAvailable = false;
-                if (bmodel.checkForNFilesInFolder(HomeScreenFragment.photoPath, 1, signName))
+                if (bmodel.checkForNFilesInFolder(AppUtils.photoFolderPath, 1, signName))
                     isImageAvailable = true;
 
                 if (isImageAvailable) {

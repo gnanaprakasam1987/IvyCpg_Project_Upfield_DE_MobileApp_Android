@@ -27,6 +27,7 @@ import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.cpg.view.subd.SubDStockOrderActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
+import com.ivy.utils.AppUtils;
 
 import java.util.Locale;
 import java.util.Vector;
@@ -438,7 +439,7 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
             //delete captured image form folder
             if (bmodel.getOrderHeaderBO().getOrderImageName().length() > 0)
-                bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                bmodel.deleteFiles(AppUtils.photoFolderPath,
                         bmodel.getOrderHeaderBO().getOrderImageName());
 
             orderHelper.deleteOrder(ctx, bmodel.getRetailerMasterBO().getRetailerID());
@@ -501,7 +502,7 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
             //delete captured image form folder
             if (bmodel.getOrderHeaderBO().getOrderImageName().length() > 0)
-                bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                bmodel.deleteFiles(AppUtils.photoFolderPath,
                         bmodel.getOrderHeaderBO().getOrderImageName());
 
             orderHelper.deleteStockAndOrder(ctx);

@@ -14,6 +14,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.AppUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,7 +30,7 @@ public class CompetitorTrackingHelper {
 
     protected CompetitorTrackingHelper(Context context) {
         this.mContext = context;
-        this.bmodel = (BusinessModel) context;
+        this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     public static CompetitorTrackingHelper getInstance(Context context) {
@@ -252,12 +253,11 @@ public class CompetitorTrackingHelper {
 
             orderDetailCursor.close();
 
-            int siz = bmodel.competitorTrackingHelper.getCompetitorMaster()
+            int siz = getCompetitorMaster()
                     .size();
             for (int i = 0; i < siz; ++i) {
 
-                competitor = bmodel.competitorTrackingHelper
-                        .getCompetitorMaster().get(i);
+                competitor = getCompetitorMaster().get(i);
 
                 ArrayList<CompetetorPOSMBO> checktrackinglist = competitor
                         .getCompetitoreason();
@@ -548,7 +548,7 @@ public class CompetitorTrackingHelper {
     public boolean getNoOfImages() {
         try {
 
-            File f = new File(HomeScreenFragment.photoPath);
+            File f = new File(AppUtils.photoFolderPath);
             int count = 0;
             if (f.listFiles() != null) {
                 String fnames[] = f.list();
