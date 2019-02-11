@@ -1,8 +1,7 @@
-package com.ivy.ui.attendance.view;
+package com.ivy.ui.attendance.inout.view;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.support.design.widget.TextInputLayout;
@@ -13,11 +12,9 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;

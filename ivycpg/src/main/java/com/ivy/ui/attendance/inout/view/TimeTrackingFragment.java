@@ -1,4 +1,4 @@
-package com.ivy.ui.attendance.view;
+package com.ivy.ui.attendance.inout.view;
 
 import android.Manifest;
 import android.app.Activity;
@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -36,11 +34,11 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.ui.attendance.TimeTrackingContract;
-import com.ivy.ui.attendance.adapter.TimeTrackListClickListener;
-import com.ivy.ui.attendance.adapter.TimeTrackingAdapter;
-import com.ivy.ui.attendance.di.DaggerTimeTrackComponent;
-import com.ivy.ui.attendance.di.TimeTrackModule;
+import com.ivy.ui.attendance.inout.TimeTrackingContract;
+import com.ivy.ui.attendance.inout.adapter.TimeTrackListClickListener;
+import com.ivy.ui.attendance.inout.adapter.TimeTrackingAdapter;
+import com.ivy.ui.attendance.inout.di.DaggerTimeTrackComponent;
+import com.ivy.ui.attendance.inout.di.TimeTrackModule;
 
 import java.util.ArrayList;
 import java.util.Objects;

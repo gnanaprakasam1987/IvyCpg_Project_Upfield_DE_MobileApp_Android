@@ -1,4 +1,4 @@
-package com.ivy.ui.attendance.presenter;
+package com.ivy.ui.attendance.inout.presenter;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
@@ -7,8 +7,8 @@ import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.ui.attendance.TimeTrackingContract;
-import com.ivy.ui.attendance.data.TimeTrackDataManager;
+import com.ivy.ui.attendance.inout.TimeTrackingContract;
+import com.ivy.ui.attendance.inout.data.TimeTrackDataManager;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;

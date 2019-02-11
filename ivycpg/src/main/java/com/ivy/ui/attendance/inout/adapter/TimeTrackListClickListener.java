@@ -1,4 +1,4 @@
-package com.ivy.ui.attendance.adapter;
+package com.ivy.ui.attendance.inout.adapter;
 
 /**
  * Created by mansoor on 28/12/2018

@@ -1,13 +1,13 @@
-package com.ivy.ui.attendance.di;
+package com.ivy.ui.attendance.inout.di;
 
 import android.content.Context;
 
 import com.ivy.core.di.scope.PerActivity;
 import com.ivy.location.LocationUtil;
-import com.ivy.ui.attendance.TimeTrackingContract;
-import com.ivy.ui.attendance.data.TimeTrackDataManager;
-import com.ivy.ui.attendance.data.TimeTrackDataMangerImpl;
-import com.ivy.ui.attendance.presenter.TimeTrackPresenterImpl;
+import com.ivy.ui.attendance.inout.TimeTrackingContract;
+import com.ivy.ui.attendance.inout.data.TimeTrackDataManager;
+import com.ivy.ui.attendance.inout.data.TimeTrackDataMangerImpl;
+import com.ivy.ui.attendance.inout.presenter.TimeTrackPresenterImpl;
 import com.ivy.utils.rx.AppSchedulerProvider;
 import com.ivy.utils.rx.SchedulerProvider;
 

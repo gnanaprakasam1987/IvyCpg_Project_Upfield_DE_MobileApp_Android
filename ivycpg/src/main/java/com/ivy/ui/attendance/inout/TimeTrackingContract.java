@@ -1,4 +1,4 @@
-package com.ivy.ui.attendance;
+package com.ivy.ui.attendance.inout;
 
 import android.app.Activity;
 import android.content.Context;
@@ -54,6 +54,5 @@ public interface TimeTrackingContract {
         void fetchInOutReason();
 
         void saveInOutDetails(String reasonId, String remarks);
-
     }
 }

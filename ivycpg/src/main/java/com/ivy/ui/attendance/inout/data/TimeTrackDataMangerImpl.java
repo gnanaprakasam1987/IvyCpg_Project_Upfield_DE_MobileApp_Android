@@ -1,4 +1,4 @@
-package com.ivy.ui.attendance.data;
+package com.ivy.ui.attendance.inout.data;
 
 import android.database.Cursor;
 
@@ -7,10 +7,8 @@ import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;

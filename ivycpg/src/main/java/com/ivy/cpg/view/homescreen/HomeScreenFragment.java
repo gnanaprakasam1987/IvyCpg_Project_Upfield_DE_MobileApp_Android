@@ -75,7 +75,6 @@ import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.task.TaskFragment;
-import com.ivy.cpg.view.task.TaskHelper;
 import com.ivy.cpg.view.tradeCoverage.VisitFragment;
 import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.cpg.view.van.stockproposal.StockProposalFragment;
@@ -107,7 +106,7 @@ import com.ivy.cpg.view.homescreen.userFeedback.UserFeedbackActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
 import com.ivy.sd.png.view.profile.RetailerContactBo;
 import com.ivy.utils.AppUtils;
-import com.ivy.ui.attendance.view.TimeTrackingFragment;
+import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
