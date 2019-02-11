@@ -98,18 +98,18 @@ public class BatchAllocationHelper {
             sb.append(" inner join  ProductMaster PM on (BM.Pid= PM.pid) inner join stockinhandmaster SHM on BM.batchid =SHM.batchid and SHM.pid=BM.pid ");
             sb.append("left join PriceMaster Price1 on PM.Pid = Price1.pid AND Price1.scid=0 ");
             sb.append("left join PriceMaster Price on PM.Pid = Price.pid  ");
-            sb.append("AND Price.scid = " + bmodel.getRetailerMasterBO().getGroupId() + " where ");
+            sb.append("AND Price.scid = " + bmodel.getAppDataProvider().getRetailMaster().getGroupId() + " where ");
             if (!bmodel.configurationMasterHelper.IS_APPLY_BATCH_PRICE_FROM_PRODUCT)
                 sb.append("BM.batchid=Price.batchid AND ");
 
-            sb.append(" BM.pid = PM.pid order by PM.pid,BM.MfgDate asc");
+            sb.append(" BM.pid = PM.pid group by BM.batchid order by PM.pid,BM.MfgDate asc");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 String productid = "";
 
-                ArrayList<ProductMasterBO> batchList = new ArrayList<ProductMasterBO>();
-                ArrayList<ProductMasterBO> freeProductList = new ArrayList<ProductMasterBO>();
+                ArrayList<ProductMasterBO> batchList = new ArrayList<>();
+                ArrayList<ProductMasterBO> freeProductList = new ArrayList<>();
                 while (c.moveToNext()) {
                     productBO = new ProductMasterBO();
                     productBO.setProductID(c.getString(0));

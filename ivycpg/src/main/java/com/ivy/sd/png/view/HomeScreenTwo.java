@@ -124,6 +124,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.DownloadProductsAndPrice;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -4043,22 +4044,19 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                             bmodel.configurationMasterHelper.
                                                     updateConfigurationSelectedSellerType(false);
                                             updateRetailerwiseSellertype(1); // Vansales
-                                            bmodel.getRetailerMasterBO()
+                                            bmodel.getAppDataProvider().getRetailMaster()
                                                     .setIsVansales(1);
 
                                         } else {
                                             bmodel.configurationMasterHelper.
                                                     updateConfigurationSelectedSellerType(true);
                                             updateRetailerwiseSellertype(0); // Presales
-                                            bmodel.getRetailerMasterBO()
+                                            bmodel.getAppDataProvider().getRetailMaster()
                                                     .setIsVansales(0);
                                         }
                                         if (bmodel.configurationMasterHelper.IS_SWITCH_SELLER_CONFIG_LEVEL) {
-                                            GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
-                                            if (genericObjectPair != null) {
-                                                bmodel.productHelper.setProductMaster(genericObjectPair.object1);
-                                                bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
-                                            }
+                                            new DownloadProductsAndPrice(HomeScreenTwo.this, "", "",
+                                                    "", "", false).execute();
                                         }
                                         dialog.dismiss();
 

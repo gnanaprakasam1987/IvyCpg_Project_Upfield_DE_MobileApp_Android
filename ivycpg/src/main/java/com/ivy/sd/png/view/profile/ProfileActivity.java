@@ -69,8 +69,6 @@ import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.cpg.nfc.NFCReadDialogActivity;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
-import com.ivy.cpg.view.order.scheme.RetailerInfo;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.retailercontact.RetailerContactFragment;
@@ -78,8 +76,6 @@ import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.GenericObjectPair;
-import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -90,7 +86,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.UserDialogInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.SBDHelper;
+import com.ivy.sd.png.provider.DownloadProductsAndPrice;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -98,7 +94,6 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.TimerCount;
 import com.ivy.sd.png.view.profile.assetHistory.AssetHistoryFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.profile.mslUnsold.MSLUnsoldFragment;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
@@ -118,7 +113,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -130,12 +124,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         implements NearByRetailerDialog.NearByRetailerInterface,
         MapWrapperLayout.OnDragListener,
         CommonReasonDialog.AddNonVisitListener,
-        View.OnClickListener, RetailerInfo {
+        View.OnClickListener {
 
     private static final String MENU_VISIT = "Trade Coverage";
     private static final String MENU_PLANNING = "Day Planning";
     private static final String MENU_PLANNING_SUB = "Day Planning Sub";
-    private static final String MENU_STK_ORD = "MENU_STK_ORD";
 
     private static final int CAMERA_REQUEST_CODE = 100;
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -1834,7 +1827,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             // Set the select retailer Obj in bmodel
             bmodel.setRetailerMasterBO(ret);
 
-            downloadProductsAndPrice = new DownloadProductsAndPrice();
+            downloadProductsAndPrice = new DownloadProductsAndPrice(ProfileActivity.this, getPhotoPath(), fnameStarts,
+                    mVisitMode, mNFCReasonId, true);
             if (downloadProductsAndPrice.getStatus() != AsyncTask.Status.RUNNING)
                 downloadProductsAndPrice.execute();
 
@@ -1858,7 +1852,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         // new DownloadProductsAndPrice().execute();
-                                        downloadProductsAndPrice = new DownloadProductsAndPrice();
+                                        downloadProductsAndPrice = new DownloadProductsAndPrice(ProfileActivity.this, getPhotoPath(), fnameStarts,
+                                                mVisitMode, mNFCReasonId, true);
                                         downloadProductsAndPrice.execute();
 
                                     }
@@ -2114,149 +2109,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         callOTPDialog(ret, strTitle, OTPValidationDialog.ValidationType.LOCATION);
     }
 
-
-    @SuppressLint("StaticFieldLeak")
-    private class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolean> {
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            try {
-                if (!isCancelled()) {
-
-                    if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
-                        bmodel.getRetailerWiseSellerType();
-                        bmodel.configurationMasterHelper.updateConfigurationSelectedSellerType(bmodel.getRetailerMasterBO().getIsVansales() != 1);
-                    }
-
-                    GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
-                    if (genericObjectPair != null) {
-                        bmodel.productHelper.setProductMaster(genericObjectPair.object1);
-                        bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
-                    }
-                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
-                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
-                            bmodel.productHelper.getFilterProductLevels(), true));
-
-                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                        //to reload product filter if diffrent retailer selected
-                        bmodel.productHelper.setmLoadedGlobalProductId(0);
-                    }
-
-                    bmodel.configurationMasterHelper
-                            .loadOrderAndStockConfiguration(bmodel.retailerMasterBO
-                                    .getSubchannelid());
-
-                    if (bmodel.productHelper.isSBDFilterAvaiable())
-                        SBDHelper.getInstance(ProfileActivity.this).loadSBDFocusData(getApplicationContext());
-
-                    if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                        bmodel.batchAllocationHelper.downloadBatchDetails(bmodel
-                                .getRetailerMasterBO().getGroupId());
-                        bmodel.batchAllocationHelper.downloadProductBatchCount();
-                    }
-
-                    bmodel.productHelper.downloadBomMaster();
-
-                    if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN
-                            && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                        bmodel.productHelper.downlaodReturnableProducts(MENU_STK_ORD);
-                        if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN) {
-                            bmodel.productHelper.downloadTypeProducts();
-                            bmodel.productHelper.downloadGenericProductID();
-                        }
-                    }
-
-
-                    if (!bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE
-                            || (bmodel.getRetailerMasterBO().getIsDeviated() != null && !"Y".equals(bmodel.getRetailerMasterBO().getIsDeviated()))) {
-
-                        SchemeDetailsMasterHelper.getInstance(getApplicationContext()).initializeScheme(ProfileActivity.this,
-                                bmodel.userMasterHelper.getUserMasterBO().getUserid(), bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION);
-
-                    }
-
-                    if (bmodel.configurationMasterHelper.SHOW_DISCOUNT) {
-                        bmodel.productHelper.downloadProductDiscountDetails();
-                        bmodel.productHelper.downloadDiscountIdListByTypeId();
-                    }
-
-                    if (bmodel.configurationMasterHelper.IS_DISCOUNT_FOR_UNPRICED_PRODUCTS) {
-                        bmodel.productHelper.downloadDocketPricing();
-                    }
-
-                    //Getting Attributes mapped for the retailer
-                    bmodel.getAttributeHierarchyForRetailer();
-
-                    bmodel.reasonHelper.downloadReasons();
-
-                }
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
-            return Boolean.TRUE;
-        }
-
-        protected void onPreExecute() {
-            if (!isCancelled()) {
-                builder = new AlertDialog.Builder(ProfileActivity.this);
-                customProgressDialog(builder, getResources().getString(R.string.loading));
-                alertDialog = builder.create();
-                alertDialog.show();
-            }
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-        }
-
-        protected void onPostExecute(Boolean result) {
-            if (!isCancelled()) {
-
-                float distance = 0.0f;
-                try {
-                    // to get last user visited retailer sequence and location to calculate distance..
-                    bmodel.outletTimeStampHelper.getlastRetailerDatas();
-                    distance = calculateDistanceBetweenRetailers();
-                } catch (Exception e) {
-                    Commons.printException(e);
-                }
-
-                String date = SDUtil.now(SDUtil.DATE_GLOBAL);
-                String time = SDUtil.now(SDUtil.TIME);
-                dateTimeStampForId = SDUtil.now(SDUtil.DATE_TIME_ID);
-
-                bmodel.outletTimeStampHelper.setTimeIn(date + " " + time);
-                bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + dateTimeStampForId));
-
-
-                boolean outletTimeStampSaved = bmodel.outletTimeStampHelper.saveTimeStamp(
-                        SDUtil.now(SDUtil.DATE_GLOBAL), time
-                        , distance, getPhotoPath(), fnameStarts, mVisitMode, mNFCReasonId);
-
-                if (alertDialog != null && alertDialog.isShowing()) {
-                    alertDialog.dismiss();
-                }
-                //set selected retailer location and its used on retailer modules
-                bmodel.mSelectedRetailerLatitude = LocationUtil.latitude;
-                bmodel.mSelectedRetailerLongitude = LocationUtil.longitude;
-
-                Commons.print("Attribute<><><><><><<<><><><><<" + bmodel.getRetailerAttributeList());
-
-                if (outletTimeStampSaved) {
-                    Intent i = new Intent(ProfileActivity.this, HomeScreenTwo.class);
-                    i.putExtra("isLocDialog", true);
-                    i.putExtra("isMandatoryDialog", true);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(i);
-                    finish();
-                } else {
-                    Toast.makeText(getApplicationContext(), getString(R.string.not_able_to_register_visit), Toast.LENGTH_LONG).show();
-                }
-            }
-        }
-    }
-
     class DownloadSupervisorData extends AsyncTask<Integer, Integer, Boolean> {
         private AlertDialog.Builder builder;
 
@@ -2441,7 +2293,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 isClicked = false;
 
                 bmodel.updateUserAudit(1);
-                downloadProductsAndPrice = new DownloadProductsAndPrice();
+                downloadProductsAndPrice = new DownloadProductsAndPrice(ProfileActivity.this, getPhotoPath(), fnameStarts,
+                        mVisitMode, mNFCReasonId, true);
                 downloadProductsAndPrice.execute();
                 // new DownloadProductsAndPrice().execute();
                 break;
@@ -2508,35 +2361,5 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             });
         }
 
-    }
-
-    @Override
-    public String getRetailerId() {
-        return bmodel.getRetailerMasterBO().getRetailerID();
-    }
-
-    @Override
-    public int getDistributorId() {
-        return bmodel.getRetailerMasterBO().getDistributorId();
-    }
-
-    @Override
-    public int getSubChannelId() {
-        return bmodel.getRetailerMasterBO().getSubchannelid();
-    }
-
-    @Override
-    public int getLocationId() {
-        return bmodel.getRetailerMasterBO().getLocationId();
-    }
-
-    @Override
-    public int getAccountId() {
-        return bmodel.getRetailerMasterBO().getAccountid();
-    }
-
-    @Override
-    public int getPriorityProductId() {
-        return bmodel.getRetailerMasterBO().getPrioriryProductId();
     }
 }

@@ -159,13 +159,12 @@ public class SchemeDetailsMasterHelper {
 
             loadSchemeConfigs(mContext);
 
-            RetailerInfo retailerInfo = (RetailerInfo) mContext;
-            int distributorId = retailerInfo.getDistributorId();
-            String retailerId = retailerInfo.getRetailerId();
-            int channelId = retailerInfo.getSubChannelId();
-            int locationId = retailerInfo.getLocationId();
-            int accountId = retailerInfo.getAccountId();
-            int priorityProductId = retailerInfo.getPriorityProductId();
+            int distributorId = bModel.getAppDataProvider().getRetailMaster().getDistributorId();
+            String retailerId = bModel.getAppDataProvider().getRetailMaster().getRetailerID();
+            int channelId = bModel.getAppDataProvider().getRetailMaster().getSubchannelid();
+            int locationId = bModel.getAppDataProvider().getRetailMaster().getLocationId();
+            int accountId = bModel.getAppDataProvider().getRetailMaster().getAccountid();
+            int priorityProductId = bModel.getAppDataProvider().getRetailMaster().getPrioriryProductId();
 
             //  loading valid scheme groups based on retailer attributes
             ArrayList<String> mGroupIdList = downloadValidSchemeGroups(db, retailerId);
