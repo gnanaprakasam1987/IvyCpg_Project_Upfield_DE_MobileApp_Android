@@ -355,6 +355,38 @@ public class StockCheckHelper {
         return true;
     }
 
+    boolean isReasonSelectedForAllProducts(boolean isCombinedStock) {
+
+        int siz = 0;
+        if (isCombinedStock)
+            siz = bmodel.productHelper.getTaggedProducts().size();
+        else
+            siz = bmodel.productHelper.getProductMaster().size();
+
+        if (siz == 0)
+            return false;
+
+        for (int i = 0; i < siz; ++i) {
+            ProductMasterBO product;
+            if (isCombinedStock)
+                product = bmodel.productHelper.getTaggedProducts().get(i);
+            else
+                product = bmodel.productHelper
+                        .getProductMaster().get(i);
+
+            int siz1 = product.getLocations().size();
+            for (int j = 0; j < siz1; j++) {
+                if ((SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() == 0)
+                        && (SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() == 0)
+                        && (SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() == 0)
+                        && (SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() == 0)
+                        && product.getLocations().get(j).getReasonId() == 0)
+                    return false;
+            }
+        }
+        return true;
+    }
+
     public void saveNearExpiry(Context context) {
         SimpleDateFormat df = new SimpleDateFormat("dd/MMM/yyyy",
                 Locale.ENGLISH);

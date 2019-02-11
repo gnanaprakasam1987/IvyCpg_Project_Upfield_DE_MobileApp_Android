@@ -145,4 +145,6 @@
     <string name="amount_mismatch">Amount mismatch</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="ivy_mobility_privacy">Ivy Mobility Privacy Policy</string>
+
+    <string name="non_stock_products"> Non Stock Products</string>
 </resources>

@@ -866,12 +866,12 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                     holder.tvProductCode.setText(prodCode);
                 }
 
-                if(!AppUtils.isEmptyString(holder.productObj.getBarCode())){
+                if (!AppUtils.isEmptyString(holder.productObj.getBarCode())) {
                     holder.tvbarcode.setVisibility(View.VISIBLE);
-                    String parCode =" "+getResources().getString(R.string.barcode) + ": " +
+                    String parCode = " " + getResources().getString(R.string.barcode) + ": " +
                             holder.productObj.getBarCode() + " ";
                     holder.tvbarcode.setText(parCode);
-                }else{
+                } else {
                     holder.tvbarcode.setText(View.GONE);
                 }
 
@@ -1207,7 +1207,11 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
     private void onNextButtonClick() {
         if (bmodel.hasCombinedStkChecked()) {
-            new SaveAsyncTask().execute();
+            if (!bmodel.configurationMasterHelper.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS || stockCheckHelper.isReasonSelectedForAllProducts(true))
+                new SaveAsyncTask().execute();
+            else
+                mDialog1(2);
+
         } else {
             mDialog1(1);
         }
@@ -1249,7 +1253,6 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                             }
                         });
 
-                AlertDialog alertDialog1 = alertDialogBuilder1.create();
                 bmodel.applyAlertDialogTheme(alertDialogBuilder1);
                 break;
             case 1:
@@ -1267,8 +1270,24 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                                     }
                                 });
 
-                AlertDialog alertDialog2 = alertDialogBuilder2.create();
                 bmodel.applyAlertDialogTheme(alertDialogBuilder2);
+                break;
+            case 2:
+                AlertDialog.Builder alertDialogBuilder3 = new AlertDialog.Builder(
+                        getActivity());
+                alertDialogBuilder3
+                        .setIcon(null)
+                        .setCancelable(false)
+                        .setTitle(getResources().getString(R.string.reason_required_for) + getResources().getString(R.string.non_stock_products))
+                        .setPositiveButton(getResources().getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+
+                                    }
+                                });
+
+                bmodel.applyAlertDialogTheme(alertDialogBuilder3);
                 break;
 
         }
