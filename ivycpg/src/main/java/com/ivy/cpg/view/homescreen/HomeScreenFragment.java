@@ -50,6 +50,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.locationservice.movementtracking.MovementTracking;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
+import com.ivy.cpg.view.acknowledgement.AcknowledgementActivity;
+import com.ivy.cpg.view.acknowledgement.AcknowledgementFragment;
 import com.ivy.cpg.view.attendance.AttendanceFragment;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.attendance.inout.TimeTrackingFragment;
@@ -64,9 +66,8 @@ import com.ivy.cpg.view.denomination.DenominationFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationFragment;
+import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.cpg.view.expense.ExpenseFragment;
-import com.ivy.cpg.view.acknowledgement.AcknowledgementActivity;
-import com.ivy.cpg.view.acknowledgement.AcknowledgementFragment;
 import com.ivy.cpg.view.jointcall.JoinCallFragment;
 import com.ivy.cpg.view.leaveapproval.LeaveApprovalFragment;
 import com.ivy.cpg.view.login.LoginHelper;
@@ -86,8 +87,8 @@ import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
-import com.ivy.cpg.view.task.Task;
 import com.ivy.cpg.view.task.TaskHelper;
+import com.ivy.cpg.view.tradeCoverage.VisitFragment;
 import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.cpg.view.van.stockproposal.StockProposalFragment;
 import com.ivy.cpg.view.webview.WebViewActivity;
@@ -106,7 +107,6 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChatApplicationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.About;
@@ -119,8 +119,8 @@ import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.sd.png.view.TLAttendanceActivity;
 import com.ivy.sd.png.view.UserFeedbackActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
-import com.ivy.cpg.view.tradeCoverage.VisitFragment;
 import com.ivy.sd.png.view.profile.RetailerContactBo;
+import com.ivy.ui.task.view.TaskActivity;
 import com.ivy.ui.task.view.TaskFragment;
 import com.ivy.utils.FontUtils;
 
@@ -2400,7 +2400,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getActivity(), Task.class);
+                Intent intent = new Intent(getActivity(), TaskActivity.class);
                 intent.putExtra("IsRetailerwisetask", false);
                 startActivity(intent);
             }

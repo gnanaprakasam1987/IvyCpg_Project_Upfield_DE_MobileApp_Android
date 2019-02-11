@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -99,7 +100,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         TextView taskTaskOwner;
         TextView taskCreatedDate;
         RelativeLayout layoutCB;
-        RelativeLayout layoutrow;
+        LinearLayout layoutrow;
 
         public TaskListViewHolder(View itemView) {
             super(itemView);

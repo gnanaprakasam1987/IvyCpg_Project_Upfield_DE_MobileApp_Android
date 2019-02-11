@@ -1,7 +1,6 @@
 package com.ivy.ui.task.view;
 
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.Toolbar;
@@ -9,22 +8,18 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.cpg.view.task.Task;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
@@ -44,7 +39,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
 
@@ -139,7 +133,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             isRetailerTask = getIntent().getExtras().getBoolean("IsRetailerwisetask", false);
             screenTitle = getIntent().getExtras().getString("screentitle", getString(R.string.task_creation));
         }
-        taskPresenter.fetchData();
+        if (!isRetailerTask)
+            taskPresenter.fetchData();
     }
 
     @Override
@@ -241,7 +236,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     }
 
     @OnItemSelected(R.id.channel)
-    public void onChannelSpinnerSelected(Spinner spinner,int position) {
+    public void onChannelSpinnerSelected(Spinner spinner, int position) {
         ((TextView) spinner.getSelectedView().findViewById(android.R.id.text1)).setGravity(Gravity.START);
         ChannelBO chBo = (ChannelBO) spinner.getSelectedItem();
         if (chBo.getChannelName().equalsIgnoreCase(getResources().getString(R.string.all_channel))) {
@@ -274,7 +269,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_TASK_NEW"));
                 else
                     startActivity(new Intent(TaskCreationActivity.this,
-                            Task.class).putExtra("IsRetailerwisetask", isRetailerTask)
+                            TaskActivity.class).putExtra("IsRetailerwisetask", isRetailerTask)
                             .putExtra("screentitle", screenTitle));
                 finish();
             }
@@ -396,7 +391,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                         HomeScreenActivity.class).putExtra("menuCode", "MENU_TASK_NEW"));
             else
                 startActivity(new Intent(TaskCreationActivity.this,
-                        Task.class).putExtra("IsRetailerwisetask", isRetailerTask)
+                        TaskActivity.class).putExtra("IsRetailerwisetask", isRetailerTask)
                         .putExtra("screentitle", screenTitle));
             finish();
             return true;
