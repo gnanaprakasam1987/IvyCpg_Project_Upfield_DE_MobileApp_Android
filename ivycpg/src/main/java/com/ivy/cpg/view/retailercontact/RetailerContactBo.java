@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.profile;
+package com.ivy.cpg.view.retailercontact;
 
 /**
  * Created by mansoor.k on 30-07-2018.

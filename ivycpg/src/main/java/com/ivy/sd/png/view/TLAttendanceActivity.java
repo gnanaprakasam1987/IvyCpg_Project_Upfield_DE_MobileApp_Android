@@ -36,21 +36,13 @@ import java.util.ArrayList;
 
 
 public class TLAttendanceActivity extends IvyBaseActivityNoActionBar {
-    private static final String TAG = "TLAttendance Activity";
 
-    private int SAVE_OR_UPLOAD = 0;
     private BusinessModel bmodel;
-
-
     private ListView mUserLV;
-
-
     private ArrayList<TeamLeadBO> mUserNameList;
 
     TeamLeadReceiver receiver;
-    private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
-    private Toolbar toolbar;
 
 
     @Override
@@ -61,8 +53,8 @@ public class TLAttendanceActivity extends IvyBaseActivityNoActionBar {
 
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        mUserLV = (ListView) findViewById(R.id.lv_attendance);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        mUserLV = findViewById(R.id.lv_attendance);
+        Toolbar toolbar = findViewById(R.id.toolbar);
 
         if (toolbar != null) {
 
@@ -121,11 +113,11 @@ public class TLAttendanceActivity extends IvyBaseActivityNoActionBar {
                 convertView = inflater.inflate(R.layout.list_attendance,
                         parent, false);
 
-                holder.userTV = (TextView) convertView
+                holder.userTV = convertView
                         .findViewById(R.id.tv_user_name);
-                holder.previousAttendanceCBOX = (CheckBox) convertView
+                holder.previousAttendanceCBOX = convertView
                         .findViewById(R.id.cb_previous_status);
-                holder.currentAttendanceCBOX = (CheckBox) convertView.findViewById(R.id.cb_current_status);
+                holder.currentAttendanceCBOX = convertView.findViewById(R.id.cb_current_status);
                 holder.currentAttendanceCBOX.setOnCheckedChangeListener(new OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -167,13 +159,12 @@ public class TLAttendanceActivity extends IvyBaseActivityNoActionBar {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if(id == android.R.id.home) {
+        if (id == android.R.id.home) {
             Intent i = new Intent(TLAttendanceActivity.this, HomeScreenActivity.class);
             startActivity(i);
             finish();
             return true;
-        }
-        else if(id == R.id.menu_next) {
+        } else if (id == R.id.menu_next) {
             nextButtonClick();
             return true;
         }
@@ -199,7 +190,7 @@ public class TLAttendanceActivity extends IvyBaseActivityNoActionBar {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            builder = new AlertDialog.Builder(TLAttendanceActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(TLAttendanceActivity.this);
 
             customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
@@ -249,8 +240,8 @@ public class TLAttendanceActivity extends IvyBaseActivityNoActionBar {
 
         switch (method) {
             case SynchronizationHelper.VOLLEY_TL_ABSENTEES_RETAILER_DOWNLOAD:
-                if (!errorCode
-                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (!SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE
+                        .equals(errorCode)) {
 
                     alertDialog.dismiss();
                     String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(errorCode);
@@ -262,7 +253,7 @@ public class TLAttendanceActivity extends IvyBaseActivityNoActionBar {
 
                 } else {
 
-                        bmodel.synchronizationHelper.downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.TL_ALLOCATION, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE);
+                    bmodel.synchronizationHelper.downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.TL_ALLOCATION, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE);
 
 
                 }

@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo.asset;
+package com.ivy.cpg.view.asset.bo;
 
 import java.util.ArrayList;
 

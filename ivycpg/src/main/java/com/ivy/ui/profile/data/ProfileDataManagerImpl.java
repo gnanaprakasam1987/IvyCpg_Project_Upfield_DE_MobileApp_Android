@@ -15,7 +15,7 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.profile.RetailerContactBo;
+import com.ivy.cpg.view.retailercontact.RetailerContactBo;
 import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;

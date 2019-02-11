@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view.profile;
+package com.ivy.cpg.view.retailercontact;
 
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -24,7 +24,6 @@ import java.util.HashMap;
 import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableObserver;
 
 /**

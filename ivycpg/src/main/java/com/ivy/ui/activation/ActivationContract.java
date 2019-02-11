@@ -3,7 +3,7 @@ package com.ivy.ui.activation;
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
-import com.ivy.sd.png.bo.ActivationBO;
+import com.ivy.ui.activation.bo.ActivationBO;
 
 import java.util.List;
 

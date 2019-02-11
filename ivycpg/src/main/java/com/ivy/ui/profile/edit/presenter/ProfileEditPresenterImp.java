@@ -31,7 +31,7 @@ import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.profile.RetailerContactBo;
+import com.ivy.cpg.view.retailercontact.RetailerContactBo;
 import com.ivy.ui.profile.ProfileConstant;
 import com.ivy.ui.profile.data.ChannelWiseAttributeList;
 import com.ivy.ui.profile.data.IProfileDataManager;
@@ -46,8 +46,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.Callable;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 

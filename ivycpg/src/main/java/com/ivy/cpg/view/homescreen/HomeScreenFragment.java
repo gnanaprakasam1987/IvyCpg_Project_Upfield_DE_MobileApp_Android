@@ -105,7 +105,7 @@ import com.ivy.sd.png.view.TLAttendanceActivity;
 import com.ivy.cpg.view.homescreen.userFeedback.UserFeedbackActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
 import com.ivy.cpg.view.tradeCoverage.VisitFragment;
-import com.ivy.sd.png.view.profile.RetailerContactBo;
+import com.ivy.cpg.view.retailercontact.RetailerContactBo;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 

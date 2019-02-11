@@ -18,15 +18,14 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.OrderHistoryBO;
 import com.ivy.sd.png.bo.PlanningOutletBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.asset.AssetHistoryBO;
+import com.ivy.cpg.view.asset.bo.AssetHistoryBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
-import com.ivy.sd.png.view.profile.RetailerContactBo;
+import com.ivy.cpg.view.retailercontact.RetailerContactBo;
 import com.ivy.utils.AppUtils;
 
 import java.io.File;

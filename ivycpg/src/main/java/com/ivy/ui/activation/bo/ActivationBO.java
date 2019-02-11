@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.ui.activation.bo;
 
 public class ActivationBO {
 	private String url;

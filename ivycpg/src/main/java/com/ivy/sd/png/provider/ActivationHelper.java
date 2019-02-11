@@ -8,7 +8,7 @@ import android.telephony.TelephonyManager;
 
 import com.ivy.lib.rest.MyKsoapConnection;
 import com.ivy.lib.rest.MyKsoapConnection.ResponseListener;
-import com.ivy.sd.png.bo.ActivationBO;
+import com.ivy.ui.activation.bo.ActivationBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;

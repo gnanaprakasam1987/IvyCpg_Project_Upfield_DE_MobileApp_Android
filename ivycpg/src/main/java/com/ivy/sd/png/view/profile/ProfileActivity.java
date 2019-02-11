@@ -73,6 +73,7 @@ import com.ivy.cpg.view.order.scheme.RetailerInfo;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
+import com.ivy.cpg.view.retailercontact.RetailerContactFragment;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;

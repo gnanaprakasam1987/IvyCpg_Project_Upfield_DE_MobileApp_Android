@@ -7,7 +7,7 @@ import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.RetailerFlexBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.view.profile.RetailerContactBo;
+import com.ivy.cpg.view.retailercontact.RetailerContactBo;
 
 import java.util.ArrayList;
 import java.util.HashMap;

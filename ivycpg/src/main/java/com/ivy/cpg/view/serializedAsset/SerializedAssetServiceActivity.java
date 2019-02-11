@@ -22,15 +22,10 @@ import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.base.view.BaseIvyView;
-import com.ivy.cpg.view.asset.AssetServiceContract;
-import com.ivy.cpg.view.asset.AssetTrackingHelper;
-import com.ivy.cpg.view.asset.assetservicedi.AssetServiceModule;
-import com.ivy.cpg.view.asset.assetservicedi.DaggerAssetServiceComponent;
 import com.ivy.cpg.view.serializedAsset.assetservicedi.DaggerSerializedAssetServiceComponent;
 import com.ivy.cpg.view.serializedAsset.assetservicedi.SerializedAssetServiceModule;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 
