@@ -865,6 +865,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name="com.ivy.cpg.view.webview.PrivacyPolicyActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.login.TermsAndConditionsActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
