@@ -280,44 +280,58 @@ public class TaxGstHelper implements TaxInterface {
     @Override
     public HashMap<String, Double> prepareProductTaxForPrint(Context context, String orderId, boolean isFromInvoice) {
         DBUtil db = null;
-        HashMap<String, Double> mTaxesApplied = new HashMap<>();
+        HashMap<String,Double> mTaxesApplied=new HashMap<>();
         try {
+            String tableName="OrderTaxDetails";
+            if(isFromInvoice)
+                tableName="InvoiceTaxDetails";
+
             db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select taxType,taxRate,taxName,parentType,taxValue,pid from OrderTaxDetails IT" +
-                    " where orderid=" + orderId + "  order by taxType,taxRate,taxName desc");
+            sb.append("select taxType,taxRate,taxName,parentType,taxValue,pid from "+tableName+" IT" +
+                    " where orderid="+mBusinessModel.QT(orderId)+"  order by taxType,taxRate,taxName desc");
             Cursor c = db.selectSQL(sb.toString());
-            String lastTaxType = "", lastTaxRate = "", lastTaxName = "";
-            double totalTaxByType = 0, totalTaxableAmountByType = 0;
-            while (c.moveToNext()) {
+            String lastTaxType="",lastTaxRate="",lastTaxName="";
+            double totalTaxByType=0,totalTaxableAmountByType=0;
+            ArrayList<String> uniqueTaxTypeWithRate=new ArrayList<>();
+            if(c.getCount()>0) {
+                while (c.moveToNext()) {
 
-                String taxType = c.getString(0);
-                String taxRate = c.getString(1);
-                String taxName = c.getString(2);
-                double taxAmount = c.getDouble(4);
-                double taxableAmount = mBusinessModel.productHelper.getProductMasterBOById(c.getString(5)).getTaxableAmount();
+                    String taxType = c.getString(0);
+                    String taxRate = c.getString(1);
+                    String taxName = c.getString(2);
+                    double taxAmount = c.getDouble(4);
+                    double taxableAmount = mBusinessModel.productHelper.getProductMasterBOById(c.getString(5)).getTaxableAmount();
 
-                if (!lastTaxType.equals("") && !lastTaxType.equals(taxType) && !lastTaxRate.equals(taxRate)) {
+                    if (!lastTaxType.equals("") && (!lastTaxType.equals(taxType) || !lastTaxRate.equals(taxRate))) {
 
-                    mTaxesApplied.put(lastTaxName + " " + lastTaxRate + "% " + context.getResources().getString(R.string.tax_on) + " " + totalTaxableAmountByType, totalTaxByType);
+                        if (!uniqueTaxTypeWithRate.contains(lastTaxType + lastTaxRate)) {
+                            mTaxesApplied.put(lastTaxName + " " + lastTaxRate + "% " + context.getResources().getString(R.string.tax_on) + " " + SDUtil.format(totalTaxableAmountByType, mBusinessModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0), totalTaxByType);
+                            uniqueTaxTypeWithRate.add(lastTaxType + lastTaxRate);
+                        }
 
-                    totalTaxByType = taxAmount;
-                    totalTaxableAmountByType = taxableAmount;
+                        totalTaxByType = taxAmount;
+                        totalTaxableAmountByType = taxableAmount;
 
-                } else {
-                    totalTaxByType += taxAmount;
-                    totalTaxableAmountByType += taxableAmount;
+                    } else {
+                        totalTaxByType += taxAmount;
+                        totalTaxableAmountByType += taxableAmount;
+                    }
+
+                    //
+                    lastTaxName = taxName;
+                    lastTaxRate = taxRate;
+                    lastTaxType = taxType;
+
                 }
-
-                //
-                lastTaxName = taxName;
-                lastTaxRate = taxRate;
-                lastTaxType = taxType;
-
+                if (!uniqueTaxTypeWithRate.contains(lastTaxType + lastTaxRate)) {
+                    mTaxesApplied.put(lastTaxName + " " + lastTaxRate + "% " + context.getResources().getString(R.string.tax_on) + " " + SDUtil.format(totalTaxableAmountByType, mBusinessModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0), totalTaxByType);
+                }
             }
-        } catch (Exception ex) {
+        }
+        catch (Exception ex){
             Commons.printException(ex);
         }
         return mTaxesApplied;
