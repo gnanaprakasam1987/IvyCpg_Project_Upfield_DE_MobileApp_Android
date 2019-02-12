@@ -75,7 +75,7 @@
             android:layout_marginRight="@dimen/dimen_10dp"
             android:layout_weight="1"
             android:cursorVisible="true"
-            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/._"
             android:hint="@string/zero"
             android:maxLength="50"
             android:paddingBottom="10dp" />
@@ -128,7 +128,7 @@
             android:layout_gravity="bottom"
             android:layout_weight="2"
             android:cursorVisible="true"
-            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/._"
             android:hint="@string/zero"
             android:maxLength="50"
             android:paddingBottom="10dp" />
