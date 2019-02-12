@@ -128,7 +128,7 @@ import com.ivy.sd.png.provider.DownloadProductsAndPrice;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.profile.ProfileActivity;
+import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 

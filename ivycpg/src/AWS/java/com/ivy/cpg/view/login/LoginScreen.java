@@ -36,11 +36,11 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.About;
+import com.ivy.cpg.view.settings.About;
 import com.ivy.cpg.view.login.password.ChangePasswordActivity;
 import com.ivy.sd.png.view.PasswordLockDialogFragment;
 import com.ivy.cpg.view.login.password.ResetPasswordDialog;
-import com.ivy.sd.png.view.UserSettingsActivity;
+import com.ivy.cpg.view.settings.UserSettingsActivity;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 
