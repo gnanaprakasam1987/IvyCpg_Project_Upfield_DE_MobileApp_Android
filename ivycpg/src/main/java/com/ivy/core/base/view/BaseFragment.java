@@ -251,7 +251,10 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     @Override
     public void showAlert(String title, String msg) {
-
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).showAlert(title,msg);
+        else if (getActivity() instanceof IvyBaseActivityNoActionBar)
+            ((IvyBaseActivityNoActionBar) getActivity()).showAlert(title,msg,null);
     }
 
     @Override

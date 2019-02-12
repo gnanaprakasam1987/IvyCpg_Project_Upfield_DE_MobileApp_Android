@@ -22,7 +22,7 @@ public interface TimeTrackDataManager extends AppDataManagerContract {
 
     Observable<ArrayList<ReasonMaster>> getInOutReasonList();
 
-    Single<Boolean> saveTimeTrackDetailsDb(String reasonId, String remarks,double latitude , double longitude);
+    Single<Boolean> saveTimeTrackDetailsDb(NonFieldTwoBo reasonId,double latitude , double longitude);
 
     Single<Boolean> checkIsLeave();
 }

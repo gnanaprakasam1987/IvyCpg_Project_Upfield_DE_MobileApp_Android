@@ -36,6 +36,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.FilterFiveFragment;
@@ -372,5 +373,9 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
             }
         });
     }
-
+    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener) {
+        CommonDialog dialog = new CommonDialog(this, title, msg, getResources().getString(R.string.ok), positiveClickListener);
+        dialog.setCancelable(false);
+        dialog.show();
+    }
 }

@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.ivy.core.base.presenter.BasePresenter;
-import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.locationservice.LocationConstants;
 import com.ivy.cpg.locationservice.realtime.FireBaseRealtimeLocationUpload;
@@ -26,11 +24,9 @@ import com.ivy.cpg.locationservice.realtime.RealTimeLocation;
 import com.ivy.cpg.locationservice.realtime.RealTimeLocationTracking;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
-import com.ivy.lib.Utils;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
@@ -176,7 +172,7 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
             startActivityAndFinish(HomeScreenActivity.class);
             return true;
         } else if (i1 == R.id.menu_add) {
-            if (presenter.isPreviousInOutCompeleted())
+            if (presenter.isPreviousInOutCompleted())
                 presenter.fetchInOutReason();
 
             else {
@@ -290,10 +286,7 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
 
     @Override
     public void onInTimeClick(int position) {
-        if (presenter.startLocationService(timeTrackList.get(position).getReason())) {
-            timeTrackList.get(position).setOutTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
-            presenter.updateTimeTrackDetails(timeTrackList.get(position));
-        }
+        presenter.startLocationService(position);
     }
 
     @Override

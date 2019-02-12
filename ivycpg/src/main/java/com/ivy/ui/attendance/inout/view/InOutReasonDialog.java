@@ -10,22 +10,20 @@ import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Created by nivetha.s on 06-04-2016.
  */
-public class InOutReasonDialog extends Dialog {
+class InOutReasonDialog extends Dialog {
 
     private Spinner reason_spnr;
-    private ArrayAdapter<ReasonMaster> dataAdapter;
     private OnMyDialogResult Result;
     private TextInputLayout remarksInputLayout;
 
@@ -33,7 +31,7 @@ public class InOutReasonDialog extends Dialog {
         super(context);
         this.Result = mDialogResult;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Objects.requireNonNull(getWindow()).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         setContentView(R.layout.in_out_reason_dialog);
 
         reason_spnr = findViewById(R.id.reason_spnr);
@@ -41,14 +39,12 @@ public class InOutReasonDialog extends Dialog {
 
         remarksInputLayout = findViewById(R.id.remarkWrapper);
         remarksInputLayout.setHint(context.getResources().getString(R.string.remark_hint));
-        remarksInputLayout.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-        remarksInputLayout.getEditText().setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
-        remarksInputLayout.getEditText().setText("");
+        Objects.requireNonNull(remarksInputLayout.getEditText()).setText("");
 
         if (!isRemarks)
             remarksInputLayout.setVisibility(View.GONE);
 
-        dataAdapter = new ArrayAdapter<>(context,
+        ArrayAdapter<ReasonMaster> dataAdapter = new ArrayAdapter<>(context,
                 R.layout.spinner_bluetext_layout);
         dataAdapter.add(new ReasonMaster(0 + "", context.getResources().getString(R.string.select_reason)));
         if (reasonList.size() > 0)
@@ -58,8 +54,6 @@ public class InOutReasonDialog extends Dialog {
 
         reason_spnr.setAdapter(dataAdapter);
         Button btn_ok = findViewById(R.id.btn_ok);
-        TextView titleBar = findViewById(R.id.titleBar);
-        TextView must_sell_message_tv = findViewById(R.id.must_sell_message_tv);
 
         btn_ok.setOnClickListener(new View.OnClickListener() {
 
@@ -79,9 +73,6 @@ public class InOutReasonDialog extends Dialog {
             }
         });
 
-        btn_ok.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
-        titleBar.setTypeface(FontUtils.getFontBalooHai(context, FontUtils.FontType.REGULAR));
-        must_sell_message_tv.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
     }
 
     public interface OnMyDialogResult {

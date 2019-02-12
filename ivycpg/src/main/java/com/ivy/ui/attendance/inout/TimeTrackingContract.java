@@ -27,13 +27,14 @@ public interface TimeTrackingContract {
         void showInOutDialog(ArrayList<ReasonMaster> reasonList);
 
         void uploadAttendance(String inOrOut);
+
     }
 
     @PerActivity
     interface  TimeTrackingPresenter<V extends TimeTrackingView> extends BaseIvyPresenter<V>{
         void fetchData();
 
-        boolean startLocationService(String reasonId);
+        void startLocationService(int position);
 
         void stopLocationService(String reasonId);
 
@@ -43,7 +44,7 @@ public interface TimeTrackingContract {
 
         boolean isShowCapturedLocation();
 
-        boolean isPreviousInOutCompeleted();
+        boolean isPreviousInOutCompleted();
 
         boolean isAttendanceRemark();
 

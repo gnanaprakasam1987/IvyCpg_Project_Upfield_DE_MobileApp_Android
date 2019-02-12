@@ -88,7 +88,6 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
         String reasonName = "";
         try {
 
-
             initDb();
             Cursor c = mDbUtil.selectSQL("SELECT ListName FROM StandardListMaster"
                     + " WHERE ListId = " + id);
@@ -119,6 +118,7 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
             public Boolean call() {
                 boolean isIdWorking = false;
                 try {
+                    initDb();
                     Cursor c = mDbUtil.selectSQL("select Listid from StandardListMaster where ListCode='WORKING' and ListId = '" + id + "'");
                     if (c != null && c.getCount() > 0) {
                         c.close();
@@ -193,43 +193,29 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
     }
 
     @Override
-    public Single<Boolean> saveTimeTrackDetailsDb(String reasonId, String remarks, double latitude, double longitude) {
+    public Single<Boolean> saveTimeTrackDetailsDb(NonFieldTwoBo addNonFieldTwoBo, double latitude, double longitude) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() {
-                NonFieldTwoBo addNonFieldTwoBo = new NonFieldTwoBo();
-                addNonFieldTwoBo.setId(appDataProvider.getUser().getUserid()
-                        + SDUtil.now(SDUtil.DATE_TIME_ID) + "");
-                addNonFieldTwoBo.setFromDate(SDUtil.now(SDUtil.DATE_GLOBAL));
-                addNonFieldTwoBo.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
-                addNonFieldTwoBo.setOutTime(null);
-                addNonFieldTwoBo.setRemarks(remarks);
-                addNonFieldTwoBo.setReason(reasonId);
+                try {
+                    initDb();
+                    String inTime = addNonFieldTwoBo.getInTime() != null ? addNonFieldTwoBo.getInTime() : " ";
+                    String columns = "uid,date,intime,reasonid,userid,latitude,longitude,counterid,Remarks,upload";
+                    String value = AppUtils.QT(addNonFieldTwoBo.getId()) + ","
+                            + AppUtils.QT(addNonFieldTwoBo.getFromDate()) + ","
+                            + AppUtils.QT(inTime) + ","
+                            + addNonFieldTwoBo.getReason() + "," + appDataProvider.getUser().getUserid() + ","
+                            + AppUtils.QT(latitude + "") + "," + AppUtils.QT(longitude + "") + ","
+                            + 0 + "," + AppUtils.QT(addNonFieldTwoBo.getRemarks()) + "," + AppUtils.QT("N");
 
-                if (addNonFieldTwoBo.getId() != null) {
-                    try {
+                    mDbUtil.insertSQL("AttendanceTimeDetails", columns, value);
 
-                        initDb();
-
-                        String inTime = addNonFieldTwoBo.getInTime() != null ? addNonFieldTwoBo.getInTime() : " ";
-                        String columns = "uid,date,intime,reasonid,userid,latitude,longitude,counterid,Remarks,upload";
-                        String value = AppUtils.QT(addNonFieldTwoBo.getId()) + ","
-                                + AppUtils.QT(addNonFieldTwoBo.getFromDate()) + ","
-                                + AppUtils.QT(inTime) + ","
-                                + addNonFieldTwoBo.getReason() + "," + appDataProvider.getUser().getUserid() + ","
-                                + AppUtils.QT(latitude + "") + "," + AppUtils.QT(longitude + "") + ","
-                                + 0 + "," + AppUtils.QT(addNonFieldTwoBo.getRemarks()) + "," + AppUtils.QT("N");
-
-                        mDbUtil.insertSQL("AttendanceTimeDetails", columns, value);
-
-                        shutDownDb();
-                        return true;
-                    } catch (Exception e) {
-                        Commons.printException(e);
-                    }
                     shutDownDb();
-                    return false;
+                    return true;
+                } catch (Exception e) {
+                    Commons.printException(e);
                 }
+                shutDownDb();
                 return false;
             }
         });
