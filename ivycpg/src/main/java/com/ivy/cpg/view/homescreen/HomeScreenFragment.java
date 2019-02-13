@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -59,6 +60,8 @@ import com.ivy.cpg.view.acknowledgement.AcknowledgementActivity;
 import com.ivy.cpg.view.acknowledgement.AcknowledgementFragment;
 import com.ivy.cpg.view.jointcall.JoinCallFragment;
 import com.ivy.cpg.view.leaveapproval.LeaveApprovalFragment;
+import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.login.TermsAndConditionsActivity;
 import com.ivy.cpg.view.mvp.MVPFragment;
 import com.ivy.cpg.view.nonfield.NonFieldHelper;
 import com.ivy.cpg.view.nonfield.NonFieldHomeFragment;
@@ -144,6 +147,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     private ImageView profileImageView;
     private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int TERMS_COND_REQ_CODE = 2;
     private String imageFileName;
 
     // Map retailed variables
@@ -155,7 +159,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private ArrayList<ChannelBO> mChannelList;
     private ChannelSelectionDialog dialogFragment;
 
-    private HomeScreenHelper homeScreenHelper;
 
 
     @Nullable
@@ -168,7 +171,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        homeScreenHelper = new HomeScreenHelper(getContext());
+        HomeScreenHelper homeScreenHelper = new HomeScreenHelper(getContext());
 
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
@@ -415,6 +418,15 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             setImageFromInternalStorage();
         else
             setProfileImage();
+
+        LoginHelper loginHelper = LoginHelper.getInstance(getActivity());
+        loginHelper.downloadTermsAndConditions(getActivity());
+        if (!loginHelper.isTermsAccepted() && !showDefaultScreen) {
+            Intent intent = new Intent(getActivity(), TermsAndConditionsActivity.class);
+            intent.putExtra("fromScreen", "homescreen");
+            ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(getActivity(), R.anim.zoom_enter, R.anim.hold);
+            ActivityCompat.startActivityForResult(getActivity(), intent, TERMS_COND_REQ_CODE, opts.toBundle());
+        }
     }
 
     @Override
@@ -496,14 +508,22 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == CAMERA_REQUEST_CODE) {
-            if (resultCode == 1) {
-                Uri uri = bmodel.getUriFromFile(AppUtils.photoFolderPath + "/" + imageFileName);
-                bmodel.userMasterHelper.getUserMasterBO().setImagePath(imageFileName);
-                bmodel.userMasterHelper.saveUserProfile(bmodel.userMasterHelper.getUserMasterBO());
-                profileImageView.invalidate();
-                profileImageView.setImageURI(uri);
-            }
+        switch (requestCode) {
+            case CAMERA_REQUEST_CODE:
+                if (resultCode == 1) {
+                    Uri uri = bmodel.getUriFromFile(AppUtils.photoFolderPath + "/" + imageFileName);
+                    bmodel.userMasterHelper.getUserMasterBO().setImagePath(imageFileName);
+                    bmodel.userMasterHelper.saveUserProfile(bmodel.userMasterHelper.getUserMasterBO());
+                    profileImageView.invalidate();
+                    profileImageView.setImageURI(uri);
+                }
+                break;
+            case TERMS_COND_REQ_CODE:
+                if (getActivity() != null)
+                getActivity().overridePendingTransition(0, R.anim.zoom_exit);
+                break;
+            default:
+                break;
         }
     }
 

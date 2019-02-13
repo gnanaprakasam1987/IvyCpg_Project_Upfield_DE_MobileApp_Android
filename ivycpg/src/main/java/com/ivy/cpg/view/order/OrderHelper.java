@@ -192,12 +192,14 @@ public class OrderHelper {
                     businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
 
                 businessModel.insertSeqNumber("ORD");
-                uid = AppUtils.QT(businessModel.downloadSequenceNo("ORD"));
+                uid = businessModel.downloadSequenceNo("ORD");
 
                 if(uid.length()>16) {
                     //Toast.makeText(mContext, mContext.getResources().getString(R.string.not_able_to_generate_invoice), Toast.LENGTH_LONG).show();
                     return false;
                 }
+
+                uid=AppUtils.QT(uid);
 
             }
 

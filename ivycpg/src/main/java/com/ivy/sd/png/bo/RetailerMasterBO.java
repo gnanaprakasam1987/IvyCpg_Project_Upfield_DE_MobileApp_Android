@@ -1044,6 +1044,8 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     }
 
     public SupplierMasterBO getSupplierBO() {
+        if(supplierBO==null)
+            supplierBO=new SupplierMasterBO();
         return supplierBO;
     }
 
