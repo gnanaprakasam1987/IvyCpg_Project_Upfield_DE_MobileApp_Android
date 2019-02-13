@@ -1,566 +1,530 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer_layout"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/root"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_explist"
+        android:gravity="center_horizontal"
+        android:scrollbars="none">
 
-        <HorizontalScrollView
+        <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/ll_explist"
-            android:gravity="center_horizontal"
-            android:scrollbars="none">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:background="@color/list_title_bg_color"
+                android:orientation="horizontal">
+
+                <TextView
+                    style="@style/TextViewListTitle"
+                    android:layout_width="@dimen/price_product_name"
+                    android:layout_height="match_parent"
+                    android:text="@string/product_name" />
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/ll_loadingStock"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:background="@color/list_title_bg_color">
+                    android:orientation="vertical">
 
                     <TextView
                         style="@style/TextViewListTitle"
-                        android:layout_width="@dimen/price_product_name"
-                        android:layout_height="match_parent"
-                        android:text="@string/product_name" />
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/screen_title_height"
+                        android:text="@string/loading_stock" />
 
                     <LinearLayout
-                        android:id="@+id/ll_loadingStock"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:orientation="horizontal">
 
                         <TextView
-                            style="@style/TextViewListTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/screen_title_height"
-                            android:text="@string/loading_stock" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:id="@+id/loading_stock_cs_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/loading_stock_cs_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="CS"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/loading_stock_ou_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="OU"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/loading_stock_pc_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="PC"
-                                android:textSize="@dimen/text_size_primary" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_loadedFreeStock"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:visibility="gone"
-                        android:orientation="vertical">
+                            android:text="@string/item_case" />
 
                         <TextView
-                            style="@style/TextViewListTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/screen_title_height"
-                            android:text="@string/loaded_free_stock" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:id="@+id/loading_stock_ou_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/loading_free_stock_cs_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="CS"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/loading_free_stock_ou_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="OU"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/loading_free_stock_pc_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="PC"
-                                android:textSize="@dimen/text_size_primary" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:id="@+id/ll_returnQty"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                       android:visibility="gone"
-                        android:orientation="vertical">
+                            android:text="@string/item_outer" />
 
                         <TextView
-                            android:id="@+id/tv_return"
-                            style="@style/TextViewListTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/screen_title_height"
-                            android:text="@string/returnqty" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
+                            android:id="@+id/loading_stock_pc_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
                             android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/tv_return_cs_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="CS"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_return_ou_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="OU"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_return_pc_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="PC"
-                                android:textSize="@dimen/text_size_primary" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_sold_stock"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="@style/TextViewListTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/screen_title_height"
-                            android:text="@string/sold_stock" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/tv_sold_stock_cs_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="CS"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_sold_stock_ou_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="OU"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_sold_stock_pc_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="PC"
-                                android:textSize="@dimen/text_size_primary" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_free_issued"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:id="@+id/tv_free_issued"
-                            style="@style/TextViewListTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/screen_title_height"
-                            android:text="@string/free_issued" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/tv_free_issued_cs_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="CS"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_free_issued_ou_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="OU"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_free_issued_pc_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="PC"
-                                android:textSize="@dimen/text_size_primary" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_replacement"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:id="@+id/tv_replacement"
-                            style="@style/TextViewListTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/screen_title_height"
-                            android:text="@string/replacement" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/tv_replacement_cs_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="CS"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_replacement_ou_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="OU"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_replacement_pc_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="PC"
-                                android:textSize="@dimen/text_size_primary" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:id="@+id/ll_unload"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
-                        <TextView
-                            style="@style/TextViewListTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/screen_title_height"
-                            android:text="@string/ul" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/tv_unload_cs_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="@string/item_case"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_unload_ou_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="@string/item_outer"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_unload_pc_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="@string/item_piece"
-                                android:textSize="@dimen/text_size_primary" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_sih"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="@style/TextViewListTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/screen_title_height"
-                            android:text="@string/sih" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/tv_sih_cs_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="CS"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_sih_ou_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="OU"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_sih_pc_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="PC"
-                                android:textSize="@dimen/text_size_primary" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_freeSIH"
-                        android:layout_width="wrap_content"
-                        android:visibility="gone"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            style="@style/TextViewListTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/screen_title_height"
-                            android:text="@string/free_sih" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/tv_free_sih_cs_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="CS"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_free_sih_ou_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="OU"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_free_sih_pc_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="PC"
-                                android:textSize="@dimen/text_size_primary" />
-                        </LinearLayout>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_empty"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
-                        <TextView
-                            android:id="@+id/tv_empty"
-                            style="@style/TextViewListTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/screen_title_height"
-                            android:text="@string/empty" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/tv_empty_cs_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="CS"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_empty_ou_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="OU"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_empty_pc_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="PC"
-                                android:textSize="@dimen/text_size_primary" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/ll_nonsalable"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical"
-                        android:visibility="gone">
-
-                        <TextView
-                            style="@style/TextViewListTitle"
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/screen_title_height"
-                            android:text="@string/ns" />
-
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal">
-
-                            <TextView
-                                android:id="@+id/tv_nonsalable_cs_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="@string/item_case"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_nonsalable_ou_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="@string/item_outer"
-                                android:textSize="@dimen/text_size_primary" />
-
-                            <TextView
-                                android:id="@+id/tv_nonsalable_pc_title"
-                                style="@style/TextViewListTitle"
-                                android:layout_width="@dimen/price_value"
-                                android:layout_height="wrap_content"
-                                android:text="@string/item_piece"
-                                android:textSize="@dimen/text_size_primary" />
-                        </LinearLayout>
+                            android:text="@string/item_piece" />
                     </LinearLayout>
 
                 </LinearLayout>
 
-                <ListView
-                    android:id="@+id/list"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:cacheColorHint="@null"
-                    android:divider="@android:color/white"
-                    android:dividerHeight="1dp"
-                    android:fitsSystemWindows="true"
-                    android:scrollbarAlwaysDrawHorizontalTrack="true"
-                    android:scrollbarAlwaysDrawVerticalTrack="true"/>
+                <LinearLayout
+                    android:id="@+id/ll_loadedFreeStock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        style="@style/TextViewListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/screen_title_height"
+                        android:text="@string/loaded_free_stock" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/loading_free_stock_cs_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_case" />
+
+                        <TextView
+                            android:id="@+id/loading_free_stock_ou_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_outer" />
+
+                        <TextView
+                            android:id="@+id/loading_free_stock_pc_title"
+                            style="@style/TextViewListTitle"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_piece" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/ll_returnQty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_return"
+                        style="@style/TextViewListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/screen_title_height"
+                        android:text="@string/returnqty" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_return_cs_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_case" />
+
+                        <TextView
+                            android:id="@+id/tv_return_ou_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_outer" />
+
+                        <TextView
+                            android:id="@+id/tv_return_pc_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_piece" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_sold_stock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TextViewListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/screen_title_height"
+                        android:text="@string/sold_stock" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_sold_stock_cs_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_case" />
+
+                        <TextView
+                            android:id="@+id/tv_sold_stock_ou_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_outer" />
+
+                        <TextView
+                            android:id="@+id/tv_sold_stock_pc_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_piece" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_free_issued"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_free_issued"
+                        style="@style/TextViewListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/screen_title_height"
+                        android:text="@string/free_issued" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_free_issued_cs_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_case" />
+
+                        <TextView
+                            android:id="@+id/tv_free_issued_ou_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_outer" />
+
+                        <TextView
+                            android:id="@+id/tv_free_issued_pc_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_piece" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_replacement"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_replacement"
+                        style="@style/TextViewListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/screen_title_height"
+                        android:text="@string/replacement" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_replacement_cs_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_case" />
+
+                        <TextView
+                            android:id="@+id/tv_replacement_ou_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_outer" />
+
+                        <TextView
+                            android:id="@+id/tv_replacement_pc_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_piece" />
+                    </LinearLayout>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/ll_unload"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        style="@style/TextViewListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/screen_title_height"
+                        android:text="@string/ul" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_unload_cs_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_case" />
+
+                        <TextView
+                            android:id="@+id/tv_unload_ou_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_outer" />
+
+                        <TextView
+                            android:id="@+id/tv_unload_pc_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_piece" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_sih"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        style="@style/TextViewListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/screen_title_height"
+                        android:text="@string/sih" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_sih_cs_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_case" />
+
+                        <TextView
+                            android:id="@+id/tv_sih_ou_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_outer" />
+
+                        <TextView
+                            android:id="@+id/tv_sih_pc_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_piece" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_freeSIH"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        style="@style/TextViewListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/screen_title_height"
+                        android:text="@string/free_sih" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_free_sih_cs_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_case" />
+
+                        <TextView
+                            android:id="@+id/tv_free_sih_ou_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_outer" />
+
+                        <TextView
+                            android:id="@+id/tv_free_sih_pc_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_piece" />
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_empty"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/tv_empty"
+                        style="@style/TextViewListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/screen_title_height"
+                        android:text="@string/empty" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_empty_cs_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_case" />
+
+                        <TextView
+                            android:id="@+id/tv_empty_ou_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_outer" />
+
+                        <TextView
+                            android:id="@+id/tv_empty_pc_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_piece" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_nonsalable"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <TextView
+                        style="@style/TextViewListTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/screen_title_height"
+                        android:text="@string/ns" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tv_nonsalable_cs_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_case"
+                            />
+
+                        <TextView
+                            android:id="@+id/tv_nonsalable_ou_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_outer"
+                            />
+
+                        <TextView
+                            android:id="@+id/tv_nonsalable_pc_title"
+                            style="@style/TextViewListTitleSecondary"
+                            android:layout_width="@dimen/price_value"
+                            android:layout_height="wrap_content"
+                            android:text="@string/item_piece"
+                            />
+                    </LinearLayout>
+                </LinearLayout>
+
             </LinearLayout>
-        </HorizontalScrollView>
 
-        <LinearLayout
-            android:id="@+id/ll_explist"
-            android:layout_width="fill_parent"
-            android:layout_height="@dimen/dimens_80dp"
-            android:layout_alignParentBottom="true"
-            android:background="@color/footer_bg_color"
-            android:gravity="center|end"
-            android:layout_alignParentEnd="@dimen/dimens_2dp"
-            android:visibility="gone"
-            android:layout_alignParentRight="@dimen/dimens_2dp">
-
-            <Button
-                style="?attr/roundedCustomButtonNormal"
-                android:id="@+id/print"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dimens_50dp"
-                android:layout_gravity="center"
-                android:layout_marginStart="2dp"
-                android:gravity="center"
-                android:text="@string/print"
-                android:visibility="visible"
-                android:layout_marginLeft="2dp" />
+            <ListView
+                android:id="@+id/list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cacheColorHint="@null"
+                android:divider="@color/light_gray"
+                android:dividerHeight="0.5dp"
+                android:fitsSystemWindows="true"
+                android:scrollbarAlwaysDrawHorizontalTrack="true"
+                android:scrollbarAlwaysDrawVerticalTrack="true" />
         </LinearLayout>
-    </RelativeLayout>
+    </HorizontalScrollView>
 
-</android.support.v4.widget.DrawerLayout>
+    <LinearLayout
+        android:id="@+id/ll_explist"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimens_80dp"
+        android:layout_alignParentEnd="@dimen/dimens_2dp"
+        android:layout_alignParentRight="@dimen/dimens_2dp"
+        android:layout_alignParentBottom="true"
+        android:background="@color/footer_bg_color"
+        android:gravity="center|end"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/print"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dimens_50dp"
+            android:layout_gravity="center"
+            android:layout_marginStart="2dp"
+            android:layout_marginLeft="2dp"
+            android:gravity="center"
+            android:text="@string/print"
+            android:visibility="visible" />
+    </LinearLayout>
+</RelativeLayout>

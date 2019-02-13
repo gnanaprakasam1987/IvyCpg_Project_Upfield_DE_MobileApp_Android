@@ -55,7 +55,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-
 import com.ivy.core.CodeCleanUpUtil;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.app.AppDataProviderImpl;
@@ -68,10 +67,13 @@ import com.ivy.core.di.module.IvyAppModule;
 import com.ivy.cpg.primarysale.provider.DisInvoiceDetailsHelper;
 import com.ivy.cpg.primarysale.provider.DistTimeStampHeaderHelper;
 import com.ivy.cpg.primarysale.provider.DistributorMasterHelper;
+import com.ivy.cpg.view.acknowledgement.AcknowledgementActivity;
 import com.ivy.cpg.view.callanalysis.CallAnalysisActivity;
 import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.collection.CollectionScreen;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
+import com.ivy.cpg.view.emptyreturn.EmptyReturnHelper;
+import com.ivy.cpg.view.initiative.InitiativeHelper;
 import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
@@ -79,14 +81,13 @@ import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
-import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
+import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.supervisor.chat.BaseInterfaceAdapter;
 import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
-import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.cpg.view.van.stockproposal.StockProposalModuleHelper;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.lib.Utils;
@@ -113,25 +114,19 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.cpg.view.acknowledgement.AcknowledgementHelper;
 import com.ivy.sd.png.provider.ActivationHelper;
 import com.ivy.sd.png.provider.BatchAllocationHelper;
 import com.ivy.sd.png.provider.BeatMasterHelper;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
 import com.ivy.sd.png.provider.CloseCallHelper;
 import com.ivy.sd.png.provider.CommonPrintHelper;
-import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.emptyreturn.EmptyReturnHelper;
 import com.ivy.sd.png.provider.FitScoreHelper;
-import com.ivy.cpg.view.initiative.InitiativeHelper;
-import com.ivy.sd.png.provider.JExcelHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.ModuleTimeStampHelper;
 import com.ivy.sd.png.provider.NewOutletAttributeHelper;
 import com.ivy.sd.png.provider.NewOutletHelper;
 import com.ivy.sd.png.provider.OrderAndInvoiceHelper;
-import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportHelper;
 import com.ivy.sd.png.provider.OutletTimeStampHelper;
 import com.ivy.sd.png.provider.PrintHelper;
 import com.ivy.sd.png.provider.ProductHelper;
@@ -149,7 +144,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.TimerCount;
-import com.ivy.cpg.view.acknowledgement.AcknowledgementActivity;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CircleTransform;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
@@ -157,7 +151,6 @@ import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.NewOutlet;
 import com.ivy.sd.png.view.ReAllocationActivity;
-import com.ivy.sd.png.view.ScreenActivationActivity;
 import com.ivy.sd.print.CollectionPreviewScreen;
 import com.ivy.sd.print.CreditNotePrintPreviewScreen;
 import com.ivy.sd.print.EODStockReportPreviewScreen;
@@ -251,9 +244,6 @@ public class BusinessModel extends Application {
     public ActivationHelper activationHelper;
 
     public SynchronizationHelper synchronizationHelper;
-    public ReportHelper reportHelper;
-    public LoadManagementHelper loadManagementHelper;
-    public StockProposalModuleHelper stockProposalModuleHelper;
     public VanLoadStockApplyHelper stockreportmasterhelper;
     public LabelsMasterHelper labelsMasterHelper;
     public LocationUtil locationUtil;
@@ -264,24 +254,18 @@ public class BusinessModel extends Application {
     public NewOutletHelper newOutletHelper;
     public OrderAndInvoiceHelper orderAndInvoiceHelper;
     public CloseCallHelper closecallhelper;
-    public CompetitorTrackingHelper competitorTrackingHelper;
-    public EmptyReturnHelper mEmptyReturnHelper;
     public RetailerHelper mRetailerHelper;
     public DistributorMasterHelper distributorMasterHelper;
     public DisInvoiceDetailsHelper disInvoiceDetailsHelper;
     public DistTimeStampHeaderHelper distTimeStampHeaderHelper;
     public PrintHelper printHelper;
     public ProfileHelper profilehelper;
-    public JExcelHelper mJExcelHelper;
     public CommonPrintHelper mCommonPrintHelper;
-    public DynamicReportHelper dynamicReportHelper;
     public TeamLeaderMasterHelper teamLeadermasterHelper;
     private static BusinessModel mInstance;
     public NewOutletAttributeHelper newOutletAttributeHelper;
     public ModuleTimeStampHelper moduleTimeStampHelper;
-    public AcknowledgementHelper acknowledgeHelper;
     public FitScoreHelper fitscoreHelper;
-    public OrderStatusReportHelper orderStatusReportHelper;
     //Glide - Circle Image Transform
     public CircleTransform circleTransform;
     /* ******* Invoice Number To Print ******* */
@@ -383,7 +367,7 @@ public class BusinessModel extends Application {
     private ArrayList<String> totalFocusBrandList = new ArrayList<>();
 
 
-    private HashMap<Integer,DigitalContentModel> digitalContentLargeFileURLS;
+    private HashMap<Integer, DigitalContentModel> digitalContentLargeFileURLS;
 
     public BusinessModel() {
 
@@ -398,9 +382,6 @@ public class BusinessModel extends Application {
         userMasterHelper = UserMasterHelper.getInstance(this);
         activationHelper = ActivationHelper.getInstance(this);
         synchronizationHelper = SynchronizationHelper.getInstance(this);
-        reportHelper = ReportHelper.getInstance(this);
-        loadManagementHelper = LoadManagementHelper.getInstance(this);
-        stockProposalModuleHelper = StockProposalModuleHelper.getInstance(this);
         stockreportmasterhelper = VanLoadStockApplyHelper.getInstance(this);
         labelsMasterHelper = LabelsMasterHelper.getInstance(this);
         locationUtil = LocationUtil.getInstance(this);
@@ -419,8 +400,6 @@ public class BusinessModel extends Application {
         setRetailerMaster(new Vector<RetailerMasterBO>());
 
         newOutletHelper = NewOutletHelper.getInstance(this);
-        competitorTrackingHelper = CompetitorTrackingHelper.getInstance(this);
-        mEmptyReturnHelper = EmptyReturnHelper.getInstance(this);
 
         // Shelf Share Helper
         mRetailerHelper = RetailerHelper.getInstance(this);
@@ -428,17 +407,13 @@ public class BusinessModel extends Application {
         disInvoiceDetailsHelper = DisInvoiceDetailsHelper.getInstance(this);
         distTimeStampHeaderHelper = DistTimeStampHeaderHelper.getInstance(this);
         profilehelper = ProfileHelper.getInstance(this);
-        mJExcelHelper = JExcelHelper.getInstance(this);
         mCommonPrintHelper = CommonPrintHelper.getInstance(this);
-        dynamicReportHelper = DynamicReportHelper.getInstance(this);
         teamLeadermasterHelper = TeamLeaderMasterHelper.getInstance(this);
 
         newOutletAttributeHelper = NewOutletAttributeHelper.getInstance(this);
 
         moduleTimeStampHelper = ModuleTimeStampHelper.getInstance(this);
-        acknowledgeHelper = AcknowledgementHelper.getInstance(this);
         fitscoreHelper = FitScoreHelper.getInstance(this);
-        orderStatusReportHelper = OrderStatusReportHelper.getInstance(this);
     }
 
 
@@ -1304,8 +1279,6 @@ public class BusinessModel extends Application {
 
         return i;
     }
-
-
 
 
     //Anand Asir V
@@ -2698,9 +2671,6 @@ public class BusinessModel extends Application {
     }
 
 
-
-
-
     //Applying currency value config or normal format(2)
     public String formatBasedOnCurrency(double value) {
         String formattedValue = "0";
@@ -3261,10 +3231,6 @@ public class BusinessModel extends Application {
                     frm.finish();
                     loadActivity(ctx,
                             DataMembers.actHomeScreenTwo);
-                } else if (idd == 1000) {
-                    ScreenActivationActivity frm = (ScreenActivationActivity) ctx;
-                    frm.finish();
-                    loadActivity(ctx, DataMembers.actLoginScreen);
                 } else if (idd == DataMembers.NOTIFY_ORDER_SAVED) {
                     OrderSummary frm = (OrderSummary) ctx;
                     Intent returnIntent = new Intent();
@@ -3274,8 +3240,10 @@ public class BusinessModel extends Application {
                             DataMembers.actHomeScreenTwo);
                 } else if (idd == DataMembers.NOTIFY_CLOSE_HOME) {
                     HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) ctx).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
-                    if (currentFragment != null)
+                    if (currentFragment != null) {
+                        currentFragment.loadHomeMenuConfiguration();
                         currentFragment.refreshList(false);
+                    }
                 } else if (idd == DataMembers.NOTIFY_SALES_RETURN_SAVED) {
                     SalesReturnSummery frm = (SalesReturnSummery) ctx;
                     Intent intent = new Intent();
@@ -3303,12 +3271,6 @@ public class BusinessModel extends Application {
                     NewOutlet frm = (NewOutlet) ctx;
                     frm.finish();
                     loadActivity(ctx, DataMembers.actHomeScreen);
-                } else if (idd == DataMembers.NOTIFY_ACTIVATION_TO_LOGIN) {
-                    ScreenActivationActivity frm = (ScreenActivationActivity) ctx;
-                    // ScreenActivationActivity frm = (ScreenActivationActivity)
-                    // ctx;
-                    frm.finish();
-                    loadActivity(ctx, DataMembers.actLoginScreen);
                 } else if (idd == -881) {
                     // do nothing
                 } else if (idd == 5000) {
@@ -3509,9 +3471,9 @@ public class BusinessModel extends Application {
                         digitalContentBO.setContentFrom(DataMembers.DIGITALCONTENT);
                         digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
 
-                        digitalContentLargeFileURLS.put(digitalContentBO.getImageID(),digitalContentBO);
+                        digitalContentLargeFileURLS.put(digitalContentBO.getImageID(), digitalContentBO);
 
-                    }else {
+                    } else {
 
                         getDigitalContentURLS().put(
                                 DataMembers.IMG_DOWN_URL + "" + c.getString(0),
@@ -4721,7 +4683,6 @@ public class BusinessModel extends Application {
     }
 
 
-
     /**
      * @See {@link  com.ivy.utils.AppUtils;}
      * @since CPG131 replaced by {@link com.ivy.utils.AppUtils#isExternalStorageAvailable}
@@ -5285,8 +5246,8 @@ public class BusinessModel extends Application {
 
                     supplierMasterBO.setSupplierTaxLocId(c.getInt(6));
 
-                    if(c.getInt(7)==1)
-                    supplierMasterBO.setCompositeRetailer(true);
+                    if (c.getInt(7) == 1)
+                        supplierMasterBO.setCompositeRetailer(true);
                     else supplierMasterBO.setCompositeRetailer(false);
 
                     mSupplierList.add(supplierMasterBO);
@@ -6614,8 +6575,8 @@ public class BusinessModel extends Application {
     }
 
     /**
-     * @deprecated
      * @See {@link com.ivy.core.data.db.AppDataManagerImpl#fetchNewActivityMenu(String)}
+     * @deprecated
      */
     public void getAttributeHierarchyForRetailer() {
         retailerAttributeList = "";
@@ -7578,7 +7539,7 @@ public class BusinessModel extends Application {
             return digitalContentLargeFileURLS.get(imageId);
     }
 
-    public void setDigitalContentLargeFileURLS(HashMap<Integer,DigitalContentModel> digitalContentLargeFileURLS) {
+    public void setDigitalContentLargeFileURLS(HashMap<Integer, DigitalContentModel> digitalContentLargeFileURLS) {
         this.digitalContentLargeFileURLS = digitalContentLargeFileURLS;
     }
 

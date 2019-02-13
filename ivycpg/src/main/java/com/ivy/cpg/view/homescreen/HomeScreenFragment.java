@@ -112,7 +112,6 @@ import com.ivy.utils.FontUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
@@ -131,7 +130,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private boolean isInandOutModuleEnabled = false;
     private boolean isVisit;
 
-    private static final HashMap<String, Integer> menuIcons = new HashMap<>();
     private Vector<ConfigureBO> leftmenuDB = new Vector<>();
 
     //Chat
@@ -139,7 +137,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private String CHAT_AUTHENTICATION_SECRET_KEY = "rQkkQgYJss9UCOA";
 
     private HomeScreenItemClickedListener mHomeScreenItemClickedListener;
-
     private Handler handler;
 
     // Profile related variables
@@ -149,14 +146,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final int CAMERA_REQUEST_CODE = 1;
     private String imageFileName;
 
-
     // Map retailed variables
     private List<MarkerOptions> markerList;
     private List<com.baidu.mapapi.map.MarkerOptions> baiduMarkerList;
 
 
     private ListView listView;
-
     private ArrayList<ChannelBO> mChannelList;
     private ChannelSelectionDialog dialogFragment;
 
@@ -193,49 +188,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             new DeleteTables().execute();
         }
 
-        menuIcons.put(MENU_PLANNING, R.drawable.ic_vector_planning);
-        menuIcons.put(MENU_MVP, R.drawable.ic_mvp_icon);
-        menuIcons.put(MENU_VISIT, R.drawable.ic_vector_tradecoverage);
-        menuIcons.put(MENU_SUBD, R.drawable.ic_vector_gallery);
-        menuIcons.put(MENU_Q_CALL, R.drawable.ic_vector_tradecoverage);
-        menuIcons.put(MENU_LOAD_MANAGEMENT, R.drawable.ic_load_mgmt_icon);
-        menuIcons.put(MENU_PLANNING_SUB, R.drawable.ic_action_icon_reports);
-        menuIcons.put(MENU_NEW_RETAILER, R.drawable.ic_new_retailer_icon);
-        menuIcons.put(MENU_LOAD_REQUEST, R.drawable.ic_stock_proposal_icon);
-        menuIcons.put(MENU_REPORT, R.drawable.ic_vector_reports);
-        menuIcons.put(MENU_SYNC, R.drawable.ic_vector_sync);
-        menuIcons.put(MENU_DASH_KPI, R.drawable.ic_vector_dashboard);
-        menuIcons.put(MENU_DASH, R.drawable.ic_vector_dashboard);
-        menuIcons.put(MENU_DASH_DAY, R.drawable.ic_vector_dashboard);
-        menuIcons.put(MENU_DASH_INC, R.drawable.ic_vector_dashboard);
-        menuIcons.put(MENU_SKUWISESTGT, R.drawable.ic_vector_dashboard);
-        menuIcons.put(MENU_JOINT_CALL, R.drawable.ic_vector_jointcall);
-        menuIcons.put(MENU_EMPTY_RECONCILIATION, R.drawable.ic_empty_reconcilation_icon);
-        menuIcons.put(MENU_ATTENDANCE, R.drawable.ic_vector_out_of_trade);
-        menuIcons.put(MENU_REALLOCATION, R.drawable.ic_reallocation_icon);
-        menuIcons.put(MENU_DIGITIAL_SELLER, R.drawable.ic_vector_gallery);
-        menuIcons.put(MENU_ROAD_ACTIVITY, R.drawable.icon_reports);
-        menuIcons.put(MENU_PRESENCE, R.drawable.ic_vector_out_of_trade);
-        menuIcons.put(MENU_IN_OUT, R.drawable.ic_vector_out_of_trade);
-        menuIcons.put(MENU_LEAVE_APR, R.drawable.ic_vector_out_of_trade);
-        menuIcons.put(MENU_EXPENSE, R.drawable.ic_expense_icon);
-        menuIcons.put(MENU_NEWRET_EDT, R.drawable.ic_new_retailer_icon);
-        menuIcons.put(MENU_TASK_NEW, R.drawable.task);
-        menuIcons.put(MENU_SURVEY_SW, R.drawable.ic_survey_icon);
-        menuIcons.put(MENU_SURVEY01_SW, R.drawable.ic_survey_icon);
-        menuIcons.put(MENU_SURVEY_BA_CS, R.drawable.ic_survey_icon);
-        menuIcons.put(MENU_JOINT_ACK, R.drawable.ic_survey_icon);
-        menuIcons.put(MENU_OFLNE_PLAN, R.drawable.ic_expense_icon);
-        menuIcons.put(MENU_NON_FIELD, R.drawable.ic_vector_planning);
-        menuIcons.put(MENU_BACKUP_SELLER, R.drawable.ic_reallocation_icon);
-        menuIcons.put(MENU_SUPERVISOR_REALTIME, R.drawable.ic_new_retailer_icon);
-        menuIcons.put(MENU_SUPERVISOR_MOVEMENT, R.drawable.ic_new_retailer_icon);
-        menuIcons.put(MENU_SUPERVISOR_CALLANALYSIS, R.drawable.ic_new_retailer_icon);
-        menuIcons.put(MENU_ROUTE_KPI, R.drawable.ic_vector_dashboard);
-        menuIcons.put(MENU_DENOMINATION, R.drawable.ic_vector_dashboard);
-
         // Load the HHTMenuTable
-        bmodel.configurationMasterHelper.downloadMainMenu();
+        loadHomeMenuConfiguration();
 
         // Load lables master if navigating from settings screen
         if (getActivity().getIntent().getBooleanExtra("fromSettingScreen", false))
@@ -396,26 +350,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             Toast.makeText(getContext(),"Photo storage folder not created..",Toast.LENGTH_LONG).show();
         }
 
-        for (ConfigureBO con : bmodel.configurationMasterHelper.getConfig()) {
-
-            leftmenuDB.add(con);
-
-            if (con.getConfigCode().equalsIgnoreCase(MENU_DASH)) {
-                con.setConfigCode(MENU_DASH_KPI);
-                con.setMenuName("Seller Kpi");
-                leftmenuDB.add(con);
-            }
-
-            if (con.getConfigCode().equals(MENU_IN_OUT)) {
-                isInandOutModuleEnabled = true;
-            }
-        }
-
-        ListView listView = view.findViewById(R.id.listView1);
-        listView.setCacheColorHint(0);
-        listView.setAdapter(new LeftMenuBaseAdapter(leftmenuDB));
-
-
         /** Initialising map view **/
         markerList = new ArrayList<>();
         baiduMarkerList = new ArrayList<>();
@@ -428,7 +362,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } catch (Exception e) {
             Commons.printException(e);
         }
-        //showDefaultScreen();
+
         refreshList(true);
 
         if (bmodel.configurationMasterHelper.ISUPLOADUSERLOC) {
@@ -444,10 +378,49 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     }
 
+    public void loadHomeMenuConfiguration(){
+        leftmenuDB = new Vector<>();
+        bmodel.configurationMasterHelper.downloadMainMenu();
+        for (ConfigureBO con : bmodel.configurationMasterHelper.getConfig()) {
 
+            leftmenuDB.add(con);
 
-    public Handler getHandler() {
-        return handler;
+            if (con.getConfigCode().equalsIgnoreCase(MENU_DASH)) {
+                con.setConfigCode(MENU_DASH_KPI);
+                con.setMenuName("Seller Kpi");
+                leftmenuDB.add(con);
+            }
+
+            if (con.getConfigCode().equals(MENU_IN_OUT)) {
+                isInandOutModuleEnabled = true;
+            }
+        }
+    }
+
+    public void refreshList(boolean showDefaultScreen) {
+
+        listView.setCacheColorHint(0);
+        listView.setAdapter(new LeftMenuBaseAdapter(leftmenuDB));
+
+        if (showDefaultScreen) {
+            showDefaultScreen();
+        }
+
+        userNameTv.setText(bmodel.userMasterHelper.getUserMasterBO().getUserName());
+        userNameTv.setTypeface(FontUtils.getFontBalooHai(getContext(), FontUtils.FontType.REGULAR));
+        designation.setText(bmodel.userMasterHelper.getUserMasterBO().getUserType());
+        designation.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
+
+        if (bmodel.userMasterHelper.hasProfileImageSetLocally(bmodel.userMasterHelper.getUserMasterBO()))
+            setImageFromInternalStorage();
+        else
+            setProfileImage();
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
     }
 
 
@@ -457,6 +430,30 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         // showDefaultScreen();
 
     }
+
+    public Handler getHandler() {
+        return handler;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
+
+        bmodel.configurationMasterHelper.getPrinterConfig();
+
+        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+            Toast.makeText(getActivity(),
+                    getResources().getString(R.string.sessionout_loginagain),
+                    Toast.LENGTH_SHORT).show();
+            getActivity().finish();
+        }
+
+        getActivity().supportInvalidateOptionsMenu();
+    }
+
 
     private void showDefaultScreen() {
 
@@ -495,18 +492,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
     }
 
-    @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-        //  showDefaultScreen();
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-    }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -521,27 +506,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         }
     }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
-
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
-
-        bmodel.configurationMasterHelper.getPrinterConfig();
-
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-            Toast.makeText(getActivity(),
-                    getResources().getString(R.string.sessionout_loginagain),
-                    Toast.LENGTH_SHORT).show();
-            getActivity().finish();
-        }
-
-        getActivity().supportInvalidateOptionsMenu();
-    }
-
 
     private void showDialog(int id) {
         switch (id) {
@@ -635,6 +599,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
             }
         } else if (menuItem.getConfigCode().equals(MENU_VISIT)) {
+
             if (bmodel.configurationMasterHelper.SHOW_GPS_ENABLE_DIALOG) {
                 boolean bool = bmodel.locationUtil.isGPSProviderEnabled();
                 if (!bool) {
@@ -2326,33 +2291,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
     }
 
-    public void refreshList(boolean showDefaultScreen) {
-        leftmenuDB = new Vector<>();
-        // Load the HHTMenuTable
-        bmodel.configurationMasterHelper.downloadMainMenu();
-        for (ConfigureBO con : bmodel.configurationMasterHelper.getConfig()) {
-
-            leftmenuDB.add(con);
-
-
-        }
-        listView.setCacheColorHint(0);
-        listView.setAdapter(new LeftMenuBaseAdapter(leftmenuDB));
-        if (showDefaultScreen) {
-            showDefaultScreen();
-        }
-
-        userNameTv.setText(bmodel.userMasterHelper.getUserMasterBO().getUserName());
-        userNameTv.setTypeface(FontUtils.getFontBalooHai(getContext(), FontUtils.FontType.REGULAR));
-        designation.setText(bmodel.userMasterHelper.getUserMasterBO().getUserType());
-        designation.setTypeface(FontUtils.getFontRoboto(getContext(), FontUtils.FontType.MEDIUM));
-
-        if (bmodel.userMasterHelper.hasProfileImageSetLocally(bmodel.userMasterHelper.getUserMasterBO()))
-            setImageFromCamera();
-        else
-            setProfileImage();
-    }
-
     @Override
     public void loadNewOutLet(int position, String menuName) {
         ChannelBO channelBO = mChannelList.get(position);
@@ -2607,22 +2545,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
     }
 
-    /*//For Collection Print
-    public String readPrintFile() {
-        try {
-            String path = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/";
-            File f = new File(path + "IP_169505262017131306.txt");
-            FileInputStream is = new FileInputStream(f);
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            return new String(buffer);
-        } catch (IOException e) {
-            Commons.printException(e);
-        }
-        return "";
-    }*/
+
     private void setProfileImage() {
         if (bmodel.userMasterHelper.getUserMasterBO().getImagePath() != null
                 && !"".equals(bmodel.userMasterHelper.getUserMasterBO().getImagePath())) {
@@ -2661,7 +2584,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
     }
 
-    private void setImageFromCamera() {
+    private void setImageFromInternalStorage() {
         try {
             if (bmodel.userMasterHelper.getUserMasterBO().getImagePath() != null &&
                     !"".equals(bmodel.userMasterHelper.getUserMasterBO().getImagePath())) {
@@ -2742,26 +2665,4 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     Toast.LENGTH_SHORT).show();
         }
     }
-
-//    private Bitmap getCircularBitmapFrom(Bitmap source) {
-//        if (source == null || source.isRecycled()) {
-//            return null;
-//        }
-//        float radius = source.getWidth() > source.getHeight() ? ((float) source
-//                .getHeight()) / 2f : ((float) source.getWidth()) / 2f;
-//        Bitmap bitmap = Bitmap.createBitmap(source.getWidth(),
-//                source.getHeight(), Bitmap.Config.ARGB_8888);
-//
-//        Paint paint = new Paint();
-//        BitmapShader shader = new BitmapShader(source, Shader.TileMode.CLAMP,
-//                Shader.TileMode.CLAMP);
-//        paint.setShader(shader);
-//        paint.setAntiAlias(true);
-//
-//        Canvas canvas = new Canvas(bitmap);
-//        canvas.drawCircle(source.getWidth() / 2, source.getHeight() / 2,
-//                radius, paint);
-//
-//        return bitmap;
-//    }
 }

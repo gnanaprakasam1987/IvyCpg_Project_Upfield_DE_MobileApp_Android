@@ -31,7 +31,7 @@ public class DynamicReportHelper {
 
     protected DynamicReportHelper(Context context) {
         this.context = context;
-        bmodel = (BusinessModel) context;
+        bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     public static DynamicReportHelper getInstance(Context context) {

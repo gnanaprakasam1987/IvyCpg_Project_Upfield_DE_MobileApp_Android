@@ -21,16 +21,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
+import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
@@ -58,6 +59,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
     private boolean isClicked;
     private OrderHelper orderHelper;
     private float mTotalWeight;
+    private ReportHelper reportHelper;
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -94,12 +96,12 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
         lbl_tot_wgt.setTypeface(businessModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
-        listView = (ListView) view.findViewById(R.id.list);
+        listView = view.findViewById(R.id.list);
         listView.setCacheColorHint(0);
         listView.setOnItemClickListener(this);
 
 
-        list = businessModel.reportHelper.downloadInvoicereport();
+        list = reportHelper.downloadInvoicereport();
         updateOrderGrid();
 
         double averageLines = 0;
@@ -109,7 +111,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                 averageLines = averageLines
                         + ret.getLinespercall();
             }
-            double totalOutlets = businessModel.reportHelper
+            double totalOutlets = reportHelper
                     .getorderbookingCount("InvoiceMaster");
             double result = averageLines / totalOutlets;
             Commons.print("average lines," + result + " " + totalOutlets + " "
@@ -196,7 +198,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
             if (!isClicked) {
 
                 InvoiceReportBO inv = list.get(arg2);
-                if (businessModel.reportHelper.hasInvoiceDetails(inv.getInvoiceNumber())) {
+                if (reportHelper.hasInvoiceDetails(inv.getInvoiceNumber())) {
                     isClicked = true;
                     mRetailerId = SDUtil.convertToInt(inv.getRetailerId());
                     new LoadInvoiceDetailAsyncTask().execute(arg2);
@@ -298,9 +300,9 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
             @Override
             public void onPositiveButtonClick() {
 
-                businessModel.reportHelper
+                reportHelper
                         .deleteInvoiceDetail(mSelectedInvoiceReportBO);
-                list = businessModel.reportHelper
+                list = reportHelper
                         .downloadInvoicereport();
                 if (list.size() > 0) {
                     updateOrderGrid();
@@ -482,7 +484,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
                     orderHelper.setOrderId(inv.getOrderID());
                     mInvoiceId = inv.getInvoiceNumber();
                 } else {
-                    businessModel.reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(), mRetailerId);
+                    reportHelper.downloadRetailerMaster(getActivity().getApplicationContext(), mRetailerId);
                     GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = businessModel.productHelper.downloadProducts("MENU_STK_ORD");
                     if (genericObjectPair != null) {
                         businessModel.productHelper.setProductMaster(genericObjectPair.object1);
