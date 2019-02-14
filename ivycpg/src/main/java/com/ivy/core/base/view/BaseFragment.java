@@ -1,9 +1,15 @@
 package com.ivy.core.base.view;
 
+import android.Manifest;
+import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.Dialog;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,8 +24,15 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.DataMembers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
+
+import static com.ivy.core.base.view.BaseActivity.CAMERA_AND_WRITE_PERMISSION;
+import static com.ivy.core.base.view.BaseActivity.LOCATION_PERMISSION;
+import static com.ivy.core.base.view.BaseActivity.PHONE_STATE_AND_WRITE_PERMISSON;
 
 public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
@@ -27,6 +40,7 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     private Unbinder mUnBinder;
     private Dialog dialog;
     private TextView progressMsgTxt;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -72,7 +86,6 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     protected abstract void setUpViews();
 
 
-
     @Override
     public void showLoading(int strinRes) {
         ((BaseActivity) getActivity()).showLoading(strinRes);
@@ -85,8 +98,8 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     @Override
     public void showLoading() {
-        if(getActivity() instanceof BaseActivity)
-        ((BaseActivity) getActivity()).showLoading();
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).showLoading();
         else
             showDialog(getString(R.string.loading));
 
@@ -117,8 +130,8 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     @Override
     public void hideLoading() {
-        if(getActivity() instanceof BaseActivity)
-        ((BaseActivity) getActivity()).hideLoading();
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).hideLoading();
         else
             hideLoadingCustom();
     }
@@ -141,18 +154,18 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     @Override
     public void showMessage(int resId) {
 
-        if(getActivity() instanceof BaseActivity){
+        if (getActivity() instanceof BaseActivity) {
             ((BaseActivity) getActivity()).showMessage(resId);
-        }else{
+        } else {
             Toast.makeText(getActivity(), getString(resId), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void showMessage(String message) {
-        if(getActivity() instanceof BaseActivity){
+        if (getActivity() instanceof BaseActivity) {
             ((BaseActivity) getActivity()).showMessage(message);
-        }else{
+        } else {
             if (message != null) {
                 Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
             } else {
@@ -165,7 +178,6 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     public boolean isNetworkConnected() {
         return ((BaseActivity) getActivity()).isNetworkConnected();
     }
-
 
 
     /**
@@ -239,7 +251,10 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     @Override
     public void showAlert(String title, String msg) {
-
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).showAlert(title,msg);
+        else if (getActivity() instanceof IvyBaseActivityNoActionBar)
+            ((IvyBaseActivityNoActionBar) getActivity()).showAlert(title,msg,null);
     }
 
     @Override
@@ -247,7 +262,7 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     }
 
-    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener,boolean isCancelable){
+    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, boolean isCancelable) {
 
 
     }
@@ -272,20 +287,106 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     }
 
-    public void startActivity(Class activity){
-        ((BaseActivity)getActivity()).startActivity(activity);
+    public void startActivity(Class activity) {
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).startActivity(activity);
+        else if (getActivity() instanceof IvyBaseActivityNoActionBar)
+            ((IvyBaseActivityNoActionBar) getActivity()).startActivity(activity);
+
     }
 
-    public void startActivityAndFinish(Class activity){
-        ((BaseActivity)getActivity()).startActivityAndFinish(activity);
+    public void startActivityAndFinish(Class activity) {
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).startActivityAndFinish(activity);
+        else if (getActivity() instanceof IvyBaseActivityNoActionBar)
+            ((IvyBaseActivityNoActionBar) getActivity()).startActivity(activity);
+
+    }
+
+    public void requestLocation(final Activity ctxt) {
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).requestLocation(ctxt);
+        else if (getActivity() instanceof IvyBaseActivityNoActionBar)
+            ((IvyBaseActivityNoActionBar) getActivity()).requestLocation(ctxt);
     }
 
     @Override
     public void setScreenTitle(String title) {
-        if(getActivity() instanceof BaseActivity)
+        if (getActivity() instanceof BaseActivity)
             ((BaseActivity) getActivity()).setScreenTitle(title);
-        else if(getActivity() instanceof IvyBaseActivityNoActionBar)
+        else if (getActivity() instanceof IvyBaseActivityNoActionBar)
             ((IvyBaseActivityNoActionBar) getActivity()).setScreenTitle(title);
+    }
+
+    @Override
+    public void setUpToolbar(String title) {
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).setUpToolbar(title);
+        else if (getActivity() instanceof IvyBaseActivityNoActionBar)
+            ((IvyBaseActivityNoActionBar) getActivity()).setUpToolbar(title);
+    }
+
+    // Todo to be removed
+    public boolean checkAndRequestPermissionAtRunTime(int mGroup) {
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        int permissionStatus;
+        if (mGroup == PHONE_STATE_AND_WRITE_PERMISSON) {
+            permissionStatus = ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.READ_PHONE_STATE);
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.READ_PHONE_STATE);
+            }
+
+            permissionStatus = ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
+
+
+            if (!listPermissionsNeeded.isEmpty()) {
+                requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), PHONE_STATE_AND_WRITE_PERMISSON);
+                return false;
+            }
+        } else if (mGroup == CAMERA_AND_WRITE_PERMISSION) {
+            permissionStatus = ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.CAMERA);
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.CAMERA);
+            }
+
+            permissionStatus = ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            }
+
+            if (!listPermissionsNeeded.isEmpty()) {
+                requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), CAMERA_AND_WRITE_PERMISSION);
+                return false;
+            }
+        } else if (mGroup == LOCATION_PERMISSION) {
+            permissionStatus = ContextCompat.checkSelfPermission(getContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION);
+            if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+                if (mBasePresenter.isLocationConfigurationEnabled()) {
+                    listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+                }
+            }
+
+            if (!listPermissionsNeeded.isEmpty()) {
+                requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), LOCATION_PERMISSION);
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    public void requestPermissionsSafely(String[] permissions, int requestCode) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(permissions, requestCode);
+        }
     }
 
 }

@@ -41,9 +41,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.locationservice.movementtracking.MovementTracking;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
+import com.ivy.cpg.view.acknowledgement.AcknowledgementActivity;
+import com.ivy.cpg.view.acknowledgement.AcknowledgementFragment;
 import com.ivy.cpg.view.attendance.AttendanceFragment;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
-import com.ivy.cpg.view.attendance.inout.TimeTrackingFragment;
 import com.ivy.cpg.view.backupseller.BackUpSellerFragment;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.IncentiveDashboardFragment;
@@ -55,9 +56,8 @@ import com.ivy.cpg.view.denomination.DenominationFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationFragment;
+import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.cpg.view.expense.ExpenseFragment;
-import com.ivy.cpg.view.acknowledgement.AcknowledgementActivity;
-import com.ivy.cpg.view.acknowledgement.AcknowledgementFragment;
 import com.ivy.cpg.view.jointcall.JoinCallFragment;
 import com.ivy.cpg.view.leaveapproval.LeaveApprovalFragment;
 import com.ivy.cpg.view.login.LoginHelper;
@@ -78,6 +78,7 @@ import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.task.TaskFragment;
+import com.ivy.cpg.view.tradeCoverage.VisitFragment;
 import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.cpg.view.van.stockproposal.StockProposalFragment;
 import com.ivy.cpg.view.webview.WebViewActivity;
@@ -94,7 +95,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChatApplicationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.About;
@@ -107,9 +107,9 @@ import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.sd.png.view.TLAttendanceActivity;
 import com.ivy.cpg.view.homescreen.userFeedback.UserFeedbackActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
-import com.ivy.cpg.view.tradeCoverage.VisitFragment;
 import com.ivy.sd.png.view.profile.RetailerContactBo;
 import com.ivy.utils.AppUtils;
+import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -1604,7 +1604,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_PRESENCE);
         NonFieldHomeFragment mNonFieldFragment = (NonFieldHomeFragment) fm
                 .findFragmentByTag(MENU_ATTENDANCE);
-        TimeTrackingFragment mNonFieldTwoFragment = (TimeTrackingFragment) fm
+        TimeTrackingFragment timeTrackingFragment = (TimeTrackingFragment) fm
                 .findFragmentByTag(MENU_IN_OUT);
 
 
@@ -1710,8 +1710,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (mNonFieldFragment != null && (fragmentName.equals(MENU_ATTENDANCE))
                 && mNonFieldFragment.isVisible()) {
             return;
-        } else if (mNonFieldTwoFragment != null && (fragmentName.equals(MENU_IN_OUT))
-                && mNonFieldTwoFragment.isVisible()) {
+        } else if (timeTrackingFragment != null && (fragmentName.equals(MENU_IN_OUT))
+                && timeTrackingFragment.isVisible()) {
             return;
         } else if (mPlanningMapFragment != null && (fragmentName.equals(MENU_PLANE_MAP))
                 && mPlanningMapFragment.isVisible()) {
@@ -1809,8 +1809,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(mAttendFragment);
         if (mNonFieldFragment != null)
             ft.remove(mNonFieldFragment);
-        if (mNonFieldTwoFragment != null)
-            ft.remove(mNonFieldTwoFragment);
+        if (timeTrackingFragment != null)
+            ft.remove(timeTrackingFragment);
         if (mPlanningMapFragment != null)
             ft.remove(mPlanningMapFragment);
         if (mLoadMgtFragment != null)
