@@ -110,7 +110,7 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
         rvTimeTrack.setLayoutManager(new LinearLayoutManager(getActivity()));
         rvTimeTrack.addItemDecoration(new DividerItemDecoration(rvTimeTrack.getContext(), DividerItemDecoration.HORIZONTAL));
 
-        presenter.fetchData();
+        presenter.fetchData(false);
         if (presenter.isRealTimeLocationOn()) {
             checkAndRequestPermissionAtRunTime(LOCATION_PERMISSION);
             if (!locationUtil.isGPSProviderEnabled()) {
@@ -172,7 +172,7 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
             startActivityAndFinish(HomeScreenActivity.class);
             return true;
         } else if (i1 == R.id.menu_add) {
-            if (presenter.isPreviousInOutCompleted())
+            if (presenter.isPreviousInOutCompleted(timeTrackList))
                 presenter.fetchInOutReason();
 
             else {
@@ -284,10 +284,6 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
         }).show();
     }
 
-    @Override
-    public void onInTimeClick(int position) {
-        presenter.startLocationService(position);
-    }
 
     @Override
     public void onOutTimeClick(int position) {
@@ -300,7 +296,7 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == addDialogrequestCode) {
             if (resultCode == Activity.RESULT_OK) {
-                presenter.fetchData();
+                presenter.fetchData(false);
             }
         }
 

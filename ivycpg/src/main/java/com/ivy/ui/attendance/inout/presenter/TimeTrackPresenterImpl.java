@@ -26,7 +26,6 @@ import io.reactivex.functions.Consumer;
 public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingView> extends BasePresenter<V> implements TimeTrackingContract.TimeTrackingPresenter<V> {
     private TimeTrackDataManager timeTrackDataManager;
     private ConfigurationMasterHelper configurationMasterHelper;
-    private ArrayList<NonFieldTwoBo> nonFieldTwoBoList;
 
     @Inject
     TimeTrackPresenterImpl(DataManager dataManager,
@@ -41,41 +40,15 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
     }
 
     @Override
-    public void fetchData() {
-        nonFieldTwoBoList = new ArrayList<>();
-        getIvyView().showLoading();
+    public void fetchData(boolean isLoading) {
+        if (!isLoading)
+            getIvyView().showLoading();
         getCompositeDisposable().add(timeTrackDataManager.getTimeTrackList()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<ArrayList<NonFieldTwoBo>>() {
                     @Override
                     public void accept(ArrayList<NonFieldTwoBo> inoutList) {
-                        nonFieldTwoBoList.addAll(inoutList);
                         getIvyView().populateDataToList(inoutList);
-                        getIvyView().hideLoading();
-                    }
-                }));
-    }
-
-
-    @Override
-    public void startLocationService(int position) {
-        getIvyView().showLoading();
-        getCompositeDisposable().add(timeTrackDataManager.isWorkingStatus(Integer.parseInt(nonFieldTwoBoList.get(position).getReason()))
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<Boolean>() {
-                    @Override
-                    public void accept(Boolean isWorkingStatus) {
-                        boolean success = true;
-                        if (isWorkingStatus) {
-                            if (configurationMasterHelper.IS_REALTIME_LOCATION_CAPTURE)
-                                success = getIvyView().isUpdateRealTimeIn();
-                            if (configurationMasterHelper.IS_UPLOAD_ATTENDANCE)
-                                getIvyView().uploadAttendance("IN");
-                        }
-                        if (success) {
-                            nonFieldTwoBoList.get(position).setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
-                            updateTimeTrackDetails(nonFieldTwoBoList.get(position));
-                        }
                         getIvyView().hideLoading();
                     }
                 }));
@@ -86,7 +59,8 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
         getIvyView().showLoading();
         getCompositeDisposable().add(timeTrackDataManager.isWorkingStatus(Integer.parseInt(reasonId))
                 .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<Boolean>() {
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean isWorkingStatus) {
                         if (isWorkingStatus) {
@@ -109,8 +83,7 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
                 .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean isUpdated) {
-                        getIvyView().hideLoading();
-                        fetchData();
+                        fetchData(true);
                     }
                 }));
     }
@@ -126,14 +99,14 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
     }
 
     @Override
-    public boolean isPreviousInOutCompleted() {
+    public boolean isPreviousInOutCompleted(ArrayList<NonFieldTwoBo> timeTrackList) {
         boolean status;
 
-        if (nonFieldTwoBoList.size() == 0)
+        if (timeTrackList.isEmpty())
             return true;
 
-        status = (!AppUtils.isNullOrEmpty(nonFieldTwoBoList.get(nonFieldTwoBoList.size() - 1).getInTime()) &&
-                !AppUtils.isNullOrEmpty(nonFieldTwoBoList.get(nonFieldTwoBoList.size() - 1).getOutTime()));
+        status = (!AppUtils.isNullOrEmpty(timeTrackList.get(timeTrackList.size() - 1).getInTime()) &&
+                !AppUtils.isNullOrEmpty(timeTrackList.get(timeTrackList.size() - 1).getOutTime()));
 
         return status;
     }
@@ -161,17 +134,7 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
     public void saveInOutDetails(String reasonId, String remarks) {
 
         getIvyView().showLoading();
-        NonFieldTwoBo addNonFieldTwoBo = new NonFieldTwoBo();
-        addNonFieldTwoBo.setId(getDataManager().getUser().getUserid()
-                + SDUtil.now(SDUtil.DATE_TIME_ID) + "");
-        addNonFieldTwoBo.setFromDate(SDUtil.now(SDUtil.DATE_GLOBAL));
-        addNonFieldTwoBo.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
-        addNonFieldTwoBo.setOutTime(null);
-        addNonFieldTwoBo.setRemarks(remarks);
-        addNonFieldTwoBo.setReason(reasonId);
-
-
-        getCompositeDisposable().add(timeTrackDataManager.isWorkingStatus(Integer.parseInt(addNonFieldTwoBo.getReason()))
+        getCompositeDisposable().add(timeTrackDataManager.isWorkingStatus(Integer.parseInt(reasonId))
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<Boolean>() {
                     @Override
@@ -184,25 +147,24 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
                                 getIvyView().uploadAttendance("IN");
                         }
                         if (success)
-                            saveTimeTrackDetailsDb(addNonFieldTwoBo);
+                            saveTimeTrackDetailsDb(reasonId,remarks);
                         else
                             getIvyView().hideLoading();
                     }
                 }));
     }
 
-    private void saveTimeTrackDetailsDb(NonFieldTwoBo nonFieldTwoBo) {
-        getCompositeDisposable().add(timeTrackDataManager.saveTimeTrackDetailsDb(nonFieldTwoBo, LocationUtil.latitude, LocationUtil.longitude)
+    private void saveTimeTrackDetailsDb(String reasonId, String remarks) {
+        getCompositeDisposable().add(timeTrackDataManager.saveTimeTrackDetailsDb(reasonId,remarks, LocationUtil.latitude, LocationUtil.longitude)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean isSaved) {
-                        getIvyView().hideLoading();
                         if (isSaved) {
                             if (configurationMasterHelper.IS_IN_OUT_MANDATE) {
                                 checkIsLeaveToday();
                             }
-                            fetchData();
+                            fetchData(true);
                         }
 
                     }
@@ -210,15 +172,12 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
     }
 
     private void checkIsLeaveToday() {
-        getIvyView().showLoading();
         getCompositeDisposable().add(timeTrackDataManager.checkIsLeave()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui()).subscribe(new Consumer<Boolean>() {
                     @Override
                     public void accept(Boolean isLeave) {
-                        getIvyView().hideLoading();
                         HomeScreenFragment.isLeave_today = isLeave;
-
                     }
                 }));
     }

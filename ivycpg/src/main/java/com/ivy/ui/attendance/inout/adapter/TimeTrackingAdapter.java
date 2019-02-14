@@ -78,24 +78,9 @@ public class TimeTrackingAdapter extends RecyclerView.Adapter<TimeTrackingAdapte
         time = tokenizer.nextToken();
 
         if (!AppUtils.isNullOrEmpty(holder.nonFieldTwoBO.getInTime())) {
-            holder.btInTime.setVisibility(View.GONE);
-            holder.tvInTime.setVisibility(View.VISIBLE);
             holder.tvInTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
                     DEFAULT_DATE_FORMAT) + "\n" + time);
-        } else {
-            holder.tvInTime.setVisibility(View.GONE);
-            holder.btInTime.setVisibility(View.VISIBLE);
-            holder.btInTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
-                    DEFAULT_DATE_FORMAT) + "\n" + time);
         }
-
-        holder.btInTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                timeTrackListClickListener.onInTimeClick(position);
-            }
-        });
 
         holder.btOutTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,7 +105,7 @@ public class TimeTrackingAdapter extends RecyclerView.Adapter<TimeTrackingAdapte
     public class ViewHolder extends RecyclerView.ViewHolder {
         NonFieldTwoBo nonFieldTwoBO;
         private TextView tvOutTime, tvReason, tvInTime, tvStatus, tvRemarks;
-        private Button btInTime, btOutTime;
+        private Button btOutTime;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -129,8 +114,6 @@ public class TimeTrackingAdapter extends RecyclerView.Adapter<TimeTrackingAdapte
                     .findViewById(R.id.txt_fromTime);
             btOutTime = itemView
                     .findViewById(R.id.btn_fromTime);
-            btInTime = itemView
-                    .findViewById(R.id.btn_toTime);
             tvInTime = itemView
                     .findViewById(R.id.txt_toTime);
             tvReason = itemView

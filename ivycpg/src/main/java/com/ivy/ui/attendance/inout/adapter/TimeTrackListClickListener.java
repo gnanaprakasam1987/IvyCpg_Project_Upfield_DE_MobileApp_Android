@@ -5,7 +5,5 @@ package com.ivy.ui.attendance.inout.adapter;
  */
 public interface TimeTrackListClickListener {
 
-    void onInTimeClick(int position);
-
     void onOutTimeClick(int position);
 }

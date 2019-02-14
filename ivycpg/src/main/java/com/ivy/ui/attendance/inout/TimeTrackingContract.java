@@ -32,9 +32,7 @@ public interface TimeTrackingContract {
 
     @PerActivity
     interface  TimeTrackingPresenter<V extends TimeTrackingView> extends BaseIvyPresenter<V>{
-        void fetchData();
-
-        void startLocationService(int position);
+        void fetchData(boolean isLoading);
 
         void stopLocationService(String reasonId);
 
@@ -44,7 +42,7 @@ public interface TimeTrackingContract {
 
         boolean isShowCapturedLocation();
 
-        boolean isPreviousInOutCompleted();
+        boolean isPreviousInOutCompleted(ArrayList<NonFieldTwoBo> timeTrackList);
 
         boolean isAttendanceRemark();
 

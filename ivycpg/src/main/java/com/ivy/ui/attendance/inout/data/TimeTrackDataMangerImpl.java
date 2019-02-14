@@ -193,11 +193,20 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
     }
 
     @Override
-    public Single<Boolean> saveTimeTrackDetailsDb(NonFieldTwoBo addNonFieldTwoBo, double latitude, double longitude) {
+    public Single<Boolean> saveTimeTrackDetailsDb(String reasonId, String remarks, double latitude, double longitude) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() {
                 try {
+                    NonFieldTwoBo addNonFieldTwoBo = new NonFieldTwoBo();
+                    addNonFieldTwoBo.setId(appDataProvider.getUser().getUserid()
+                            + SDUtil.now(SDUtil.DATE_TIME_ID) + "");
+                    addNonFieldTwoBo.setFromDate(SDUtil.now(SDUtil.DATE_GLOBAL));
+                    addNonFieldTwoBo.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
+                    addNonFieldTwoBo.setOutTime(null);
+                    addNonFieldTwoBo.setRemarks(remarks);
+                    addNonFieldTwoBo.setReason(reasonId);
+
                     initDb();
                     String inTime = addNonFieldTwoBo.getInTime() != null ? addNonFieldTwoBo.getInTime() : " ";
                     String columns = "uid,date,intime,reasonid,userid,latitude,longitude,counterid,Remarks,upload";
