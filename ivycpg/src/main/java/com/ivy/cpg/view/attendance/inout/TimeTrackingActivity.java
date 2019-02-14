@@ -12,6 +12,10 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 
+
+/**
+ * @deprecated
+ */
 public class TimeTrackingActivity extends IvyBaseActivityNoActionBar {
 
     @Override

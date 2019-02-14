@@ -205,9 +205,6 @@ public class TimeTrackPresenterTest {
     @Test
     public void testSaveInOutDetails(){
 
-        boolean isWorking = true;
-        boolean isSaved = true;
-        boolean isLeave = true;
         ArrayList<NonFieldTwoBo> timeTrackList = TimeTrackTestDataFactory.getTimeTrackList();
 
         mockConfigurationHelper.IS_REALTIME_LOCATION_CAPTURE = true;
@@ -219,21 +216,21 @@ public class TimeTrackPresenterTest {
         given(timeTrackDataManager.isWorkingStatus(Integer.parseInt("0"))).willReturn(Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return isWorking;
+                return true;
             }
         }));
 
         given(timeTrackDataManager.saveTimeTrackDetailsDb("0","5",0.0,0.0)).willReturn(Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return isSaved;
+                return true;
             }
         }));
 
         given(timeTrackDataManager.checkIsLeave()).willReturn(Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                return isLeave;
+                return true;
             }
         }));
         given(timeTrackDataManager.getTimeTrackList()).willReturn(Observable.fromCallable(new Callable<ArrayList<NonFieldTwoBo>>() {

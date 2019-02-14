@@ -51,6 +51,10 @@ import java.util.StringTokenizer;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOCATION_PATH;
 
+
+/**
+ * @deprecated
+ */
 public class TimeTrackingFragment extends IvyBaseFragment {
 
     private BusinessModel bmodel;
@@ -212,8 +216,8 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                         .findViewById(R.id.txt_fromTime);
                 holder.btOutTime = convertView
                         .findViewById(R.id.btn_fromTime);
-             //   holder.btInTime = convertView
-                    //    .findViewById(R.id.btn_toTime);
+                holder.btInTime = convertView
+                        .findViewById(R.id.btn_toTime);
                 holder.tvInTime = convertView
                         .findViewById(R.id.txt_toTime);
                 holder.tvReason = convertView
@@ -233,7 +237,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 ((TextView) convertView.findViewById(R.id.txt_Tit_Status)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 ((TextView) convertView.findViewById(R.id.txt_Tit_Reason)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
                 holder.btOutTime.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
-              //  holder.btInTime.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
+                holder.btInTime.setTypeface(FontUtils.getFontBalooHai(getActivity(), FontUtils.FontType.REGULAR));
 
                 if (!bmodel.configurationMasterHelper.IS_ATTENDANCE_REMARK)
                     holder.tvRemarks.setVisibility(View.GONE);
@@ -271,7 +275,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
 
             if (holder.nonFieldTwoBO.getInTime() != null && !holder.nonFieldTwoBO.getInTime().trim().equalsIgnoreCase("")) {
-               // holder.btInTime.setVisibility(View.GONE);
+                holder.btInTime.setVisibility(View.GONE);
                 holder.tvInTime.setVisibility(View.VISIBLE);
                 tokenizer = new StringTokenizer(inTime);
                 date = tokenizer.nextToken();
@@ -280,15 +284,15 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                         ConfigurationMasterHelper.outDateFormat) + "\n" + time);
             } else {
                 holder.tvInTime.setVisibility(View.GONE);
-               // holder.btInTime.setVisibility(View.VISIBLE);
+                holder.btInTime.setVisibility(View.VISIBLE);
                 tokenizer = new StringTokenizer(inTime);
                 date = tokenizer.nextToken();
                 time = tokenizer.nextToken();
-              //  holder.btInTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
-                      //  ConfigurationMasterHelper.outDateFormat) + "\n" + time);
+                holder.btInTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
+                        ConfigurationMasterHelper.outDateFormat) + "\n" + time);
             }
 
-       /*     holder.btInTime.setOnClickListener(new OnClickListener() {
+            holder.btInTime.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     if (startLocationService(holder.nonFieldTwoBO.getReason())) {
@@ -298,7 +302,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                         loadNonFieldTwoDetails();
                     }
                 }
-            });*/
+            });
 
             holder.btOutTime.setOnClickListener(new OnClickListener() {
                 @Override
@@ -327,7 +331,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
     class ViewHolder {
         NonFieldTwoBo nonFieldTwoBO;
         TextView tvOutTime, tvReason, tvInTime, tvStatus, tvRemarks;
-        Button btOutTime;
+        Button btInTime, btOutTime;
 
     }
 
