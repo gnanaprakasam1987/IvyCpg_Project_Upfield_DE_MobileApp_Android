@@ -60,12 +60,12 @@ import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.sd.png.util.ScreenOrientation;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.SyncRetailerSelectActivity;
 import com.ivy.sd.png.view.SyncVisitedRetailer;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.StringUtils;
@@ -293,7 +293,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 }
             }
 
-            if (ScreenOrientation.isTabletDevice(this)) {
+            if (DeviceUtils.isTabletDevice(this)) {
                 if (configlist.size() > 0) {
 
                     GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);

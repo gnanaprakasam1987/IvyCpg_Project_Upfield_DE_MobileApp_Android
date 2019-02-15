@@ -81,7 +81,7 @@ public class PendingInvoiceHelper {
                             invocieHeaderBO.setAppliedDiscountAmount(c.getDouble(8));
                             invocieHeaderBO.setRetailerName(c.getString(c.getColumnIndex("RetailerName")));
 
-                            int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
+                            int count = DateTimeUtils.getDateCount(invocieHeaderBO.getInvoiceDate(),
                                     DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd");
                             final double discountpercentage = CollectionHelper.getInstance(context).getDiscountSlabPercent(count + 1);
 

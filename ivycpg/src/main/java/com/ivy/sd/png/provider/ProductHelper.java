@@ -2022,7 +2022,7 @@ public class ProductHelper {
 
                 String invoiceDay = invoiceHeaderBo.getInvoiceDate();
                 String currentDay = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
-                int dayCount = DateUtil.getDateCount(invoiceDay, currentDay,
+                int dayCount = DateTimeUtils.getDateCount(invoiceDay, currentDay,
                         "yyyy/MM/dd");
                 Commons.print("product Helper," + "dayCount " + dayCount);
                 if (bmodel.getRetailerMasterBO().getCreditDays() == 0) {

@@ -531,11 +531,11 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 int count = 0;
                 if (bmodel.retailerMasterBO.getCreditDays() != 0) {
                     if (holder.invoiceHeaderBO.getDueDate() != null)
-                        count = DateUtil.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        count = DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 holder.invoiceHeaderBO.getDueDate(), "yyyy/MM/dd");
                 } else {
                     if (holder.invoiceHeaderBO.getInvoiceDate() != null)
-                        count = DateUtil.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        count = DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 holder.invoiceHeaderBO.getInvoiceDate(), "yyyy/MM/dd");
                 }
                 if (count < 0)

@@ -80,7 +80,6 @@ import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.ScreenOrientation;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CustomKeyBoardCatalog;
 import com.ivy.sd.png.view.FilterFiveFragment;
@@ -91,6 +90,7 @@ import com.ivy.sd.png.view.PauseOnFling;
 import com.ivy.sd.png.view.SlantView;
 import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
 
@@ -414,7 +414,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         });
 
         GridLayoutManager gridLayoutManager;
-        if (ScreenOrientation.isCatalogDevice(CatalogOrder.this)) {
+        if (DeviceUtils.isCatalogDevice(CatalogOrder.this)) {
             gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
         } else {
             gridLayoutManager = new GridLayoutManager(getApplicationContext(), 1);

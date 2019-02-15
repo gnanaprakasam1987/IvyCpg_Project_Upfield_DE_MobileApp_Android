@@ -6,6 +6,7 @@ import com.ivy.sd.png.util.DataMembers;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -131,6 +132,58 @@ public class DateTimeUtils {
             e.printStackTrace();
         }
         return result;
+
+    }
+
+    //Get First Day of the month
+    public static String getFirstDayOfCurrentMonth() {
+        Calendar cal = Calendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH,
+                Calendar.getInstance().getActualMinimum(Calendar.DAY_OF_MONTH));
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd",
+                Locale.ENGLISH);
+        return sdf.format(cal.getTime());
+    }
+
+    public static int getCurrentMonth() {
+        Calendar cal = Calendar.getInstance();
+        return cal.get(Calendar.MONTH) + 1;
+    }
+
+    /**
+     * Add days to the Date provided
+     *
+     * @param dateInput Given Date
+     * @param noofDays   No of Days to be added
+     * @return date
+     */
+    public static Date addDaystoDate(Date dateInput, int noofDays){
+        Calendar c = Calendar.getInstance();
+        c.setTime(dateInput);
+        // manipulate date
+        c.add(Calendar.DATE, noofDays); //same with c.add(Calendar.DAY_OF_MONTH, 1);
+        // convert calendar to date
+        return c.getTime();
+    }
+
+    /**
+     * getDateCount between fromDate and toDate
+     *
+     * @param fromDate starting date
+     * @param toDate   ending date
+     * @param format   which format of date
+     * @return dateCount
+     */
+    public static int getDateCount(String fromDate, String toDate, String format) {
+        Date d1, d2;
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat(format, Locale.US);
+            d1 = dateFormat.parse(fromDate);
+            d2 = dateFormat.parse(toDate);
+            return (int) ((d2.getTime() - d1.getTime()) / (1000 * 60 * 60 * 24));
+        } catch (ParseException e) {
+            return -1;
+        }
 
     }
 }

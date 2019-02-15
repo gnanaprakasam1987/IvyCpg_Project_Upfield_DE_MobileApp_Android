@@ -949,7 +949,7 @@ public class BusinessModel extends Application {
                     invocieHeaderBO.setAppliedDiscountAmount(c.getDouble(8));
                     invocieHeaderBO.setDocRefNo(c.getString(9));
 
-                    int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
+                    int count = DateTimeUtils.getDateCount(invocieHeaderBO.getInvoiceDate(),
                             DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd");
                     final double discountpercentage = CollectionHelper.getInstance(ctx).getDiscountSlabPercent(count + 1);
 
@@ -1948,7 +1948,7 @@ public class BusinessModel extends Application {
 
             sql = "SELECT sum(ifnull(score,0)),rm.retailerid FROM retailermaster rm "
                     + " left  join SurveyScoreHistory s on rm.retailerid =s.retailerid and  s.Date >="
-                    + QT(Commons.getFirstDayOfCurrentMonth())
+                    + QT(DateTimeUtils.getFirstDayOfCurrentMonth())
                     + " group by rm.retailerid";
 
             c = db.selectSQL(sql);
@@ -6972,7 +6972,7 @@ public class BusinessModel extends Application {
                     invocieHeaderBO.setAppliedDiscountAmount(c.getDouble(8));
                     invocieHeaderBO.setRetailerName(c.getString(c.getColumnIndex("RetailerName")));
 
-                    int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
+                    int count = DateTimeUtils.getDateCount(invocieHeaderBO.getInvoiceDate(),
                             DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd");
                     final double discountpercentage = CollectionHelper.getInstance(ctx).getDiscountSlabPercent(count + 1);
 

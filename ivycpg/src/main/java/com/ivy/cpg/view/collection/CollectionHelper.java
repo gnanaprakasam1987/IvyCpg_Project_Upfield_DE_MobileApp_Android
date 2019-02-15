@@ -601,7 +601,7 @@ public class CollectionHelper {
         if (invoiceList != null && !invoiceList.isEmpty()) {
             for (InvoiceHeaderBO invoiceHeaderBO : invoiceList) {
 
-                int count = DateUtil.getDateCount(invoiceHeaderBO.getInvoiceDate(),
+                int count = DateTimeUtils.getDateCount(invoiceHeaderBO.getInvoiceDate(),
                         date, "yyyy/MM/dd");
                 invoiceAmount = invoiceHeaderBO.getInvoiceAmount();
                 double discountpercentage = getDiscountSlabPercent(count + 1);
@@ -669,7 +669,7 @@ public class CollectionHelper {
         for (InvoiceHeaderBO invoiceHeaderBO : invoiceList) {
             add = add + 1;
 
-            int count = DateUtil.getDateCount(invoiceHeaderBO.getInvoiceDate(),
+            int count = DateTimeUtils.getDateCount(invoiceHeaderBO.getInvoiceDate(),
                     DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd");
             double chequeDiscPer = 0;
             double otherModeDisPer = getDiscountSlabPercent(count + 1);
@@ -799,7 +799,7 @@ public class CollectionHelper {
                         paymentBO.setDiscountedAmount(0);
                     }
                     if (paymentBO.getChequeDate() != null && !"".equals(paymentBO.getChequeDate())) {
-                        count = DateUtil.getDateCount(invoiceHeaderBO.getInvoiceDate(),
+                        count = DateTimeUtils.getDateCount(invoiceHeaderBO.getInvoiceDate(),
                                 paymentBO.getChequeDate(), "yyyy/MM/dd");
                     } else {
                         count = 0;
@@ -1093,7 +1093,7 @@ public class CollectionHelper {
                     } else {
                         date = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
                     }
-                    final int count = DateUtil.getDateCount(invoiceHeaderBO.getInvoiceDate(),
+                    final int count = DateTimeUtils.getDateCount(invoiceHeaderBO.getInvoiceDate(),
                             date, "yyyy/MM/dd");
 
                     final double discountpercentage = getDiscountSlabPercent(count + 1);
@@ -1220,7 +1220,7 @@ public class CollectionHelper {
             } else {
                 date = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
             }
-            final int count = DateUtil.getDateCount(invoiceHeaderBO.getInvoiceDate(),
+            final int count = DateTimeUtils.getDateCount(invoiceHeaderBO.getInvoiceDate(),
                     date, "yyyy/MM/dd");
 
             if (!isDisNotApplyForCreditNote) {
@@ -1535,7 +1535,7 @@ public class CollectionHelper {
                 if (bmodel.configurationMasterHelper.ROUND_OF_CONFIG_ENABLED) {
                     precison = 0;
                 }
-                int count = DateUtil.getDateCount(invoiceHeaderBO.getInvoiceDate(),
+                int count = DateTimeUtils.getDateCount(invoiceHeaderBO.getInvoiceDate(),
                         DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd");
 
                 double discountpercentage = getDiscountSlabPercent(count + 1);

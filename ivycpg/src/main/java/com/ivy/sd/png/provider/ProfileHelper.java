@@ -525,10 +525,10 @@ public class ProfileHelper {
                         }
                         int due_count = 0;
                         if (bmodel.retailerMasterBO.getCreditDays() != 0) {
-                            due_count = DateUtil.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            due_count = DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                     invoiceHistory.getDueDate(), "yyyy/MM/dd");
                         } else {
-                            due_count = DateUtil.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            due_count = DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                     invoiceHistory.getOrderdate(), "yyyy/MM/dd");
                         }
                         if (due_count < 0)

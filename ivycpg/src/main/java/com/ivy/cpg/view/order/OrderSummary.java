@@ -1841,7 +1841,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                             bModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(),
                                     ConfigurationMasterHelper.outDateFormat));
                         } else {
-                            bModel.getOrderHeaderBO().setDeliveryDate(SDUtil.now(SDUtil.DATE_GLOBAL));
+                            bModel.getOrderHeaderBO().setDeliveryDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
                         }
                         signatureName = bModel.getOrderHeaderBO().getSignatureName();
                     }
@@ -1977,7 +1977,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     bModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(),
                             ConfigurationMasterHelper.outDateFormat));
                 } else {
-                    bModel.getOrderHeaderBO().setDeliveryDate(SDUtil.now(SDUtil.DATE_GLOBAL));
+                    bModel.getOrderHeaderBO().setDeliveryDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
                 }
                 signatureName = bModel.getOrderHeaderBO().getSignatureName();
             }

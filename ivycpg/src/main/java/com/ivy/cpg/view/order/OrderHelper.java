@@ -3312,7 +3312,7 @@ public class OrderHelper {
             if (c != null && c.getCount() > 0) {
                 while (c.moveToNext()) {
 
-                    Date dueDate = DateUtil.addDaystoDate(DateUtil.convertStringToDateObject(c.getString(0), "yyyy/MM/dd"), businessModel.retailerMasterBO.getCreditDays());
+                    Date dueDate = DateTimeUtils.addDaystoDate(DateUtil.convertStringToDateObject(c.getString(0), "yyyy/MM/dd"), businessModel.retailerMasterBO.getCreditDays());
                     Date currDate = DateUtil.convertStringToDateObject(DateTimeUtils.now(4), "yyyy/MM/dd");
                     Commons.print("Order Helper," + "dueDate " + dueDate + " -- currDate " + currDate);
 
