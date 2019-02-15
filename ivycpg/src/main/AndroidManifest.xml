@@ -828,11 +828,6 @@
             android:name="com.ivy.cpg.view.serializedAsset.AddSerializedAssetActivity"
             android:screenOrientation="portrait" />
 
-        <service
-            android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"
-            android:enabled="true"
-            android:exported="false" />
-
         <activity
             android:name="com.ivy.cpg.view.order.moq.MOQHighlightActivity"
             android:screenOrientation="portrait" />
@@ -864,6 +859,8 @@
         <activity android:name="com.ivy.cpg.view.order.scheme.SchemeDetailsActivity"
             android:screenOrientation="portrait"/>
         <activity android:name="com.ivy.cpg.view.webview.PrivacyPolicyActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.login.TermsAndConditionsActivity"
             android:screenOrientation="portrait"/>
     </application>
 

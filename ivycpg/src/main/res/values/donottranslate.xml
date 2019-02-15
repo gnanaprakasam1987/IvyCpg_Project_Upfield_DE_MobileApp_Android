@@ -147,4 +147,6 @@
     <string name="ivy_mobility_privacy">Ivy Mobility Privacy Policy</string>
 
     <string name="non_stock_products"> Non Stock Products</string>
+    <string name="terms_conditions">Terms &amp; Conditions</string>
+    <string name="accept">Accept</string>
 </resources>

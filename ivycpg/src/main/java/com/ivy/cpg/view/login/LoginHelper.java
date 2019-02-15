@@ -75,6 +75,8 @@ public class LoginHelper {
     private static final String CODE_MAXIMUM_ATTEMPT_COUNT = "Max_Login_Attempt_count";
     public boolean IS_PASSWORD_LOCK;
     public int MAXIMUM_ATTEMPT_COUNT = 0;
+    private String termsContent = "";
+    private boolean isTermsAccepted = false;
 
     private LoginHelper(Context context) {
         this.businessModel = (BusinessModel) context.getApplicationContext();
@@ -685,5 +687,48 @@ public class LoginHelper {
         }
         return formatter.format(today.getTime());
 
+    }
+
+    /**
+     * To download Terms and Conditions from AppVariables Table
+     */
+    public void downloadTermsAndConditions(Context context) {
+
+        try {
+
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+            db.openDataBase();
+
+            Cursor c = db.selectSQL("select TermsContent,isTermsAccepted from AppVariables");
+
+            if (c != null) {
+                while (c.moveToNext()) {
+                    termsContent = c.getString(0);
+                    isTermsAccepted = c.getInt(1) == 1;
+                    setTermsAccepted(isTermsAccepted);
+                    setTermsContent(termsContent);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    public String getTermsContent() {
+        return termsContent;
+    }
+
+    private void setTermsContent(String termsContent) {
+        this.termsContent = termsContent;
+    }
+
+    public boolean isTermsAccepted() {
+        return isTermsAccepted;
+    }
+
+    private void setTermsAccepted(boolean termsAccepted) {
+        isTermsAccepted = termsAccepted;
     }
 }

@@ -306,12 +306,12 @@ public class SODFragment extends IvyBaseFragment implements
                 Commons.print(mSFHelper.mSelectedActivityName
                         + "Camera Activity : Canceled");
             }
-        }else if (requestCode == SOD_RESULT_CODE){
+        } else if (requestCode == SOD_RESULT_CODE) {
 
             if (getActivity() != null)
                 getActivity().overridePendingTransition(0, R.anim.zoom_exit);
 
-            if (resultCode == 112){
+            if (resultCode == 112) {
 
                 mCategoryForDialog.clear();
                 mCategoryForDialog.addAll(mSFHelper.getmCategoryForDialogSODBO());
@@ -637,7 +637,7 @@ public class SODFragment extends IvyBaseFragment implements
             }
         }
 
-        ListView listView =  dialog.findViewById(R.id.lv);
+        ListView listView = dialog.findViewById(R.id.lv);
         ViewGroup.LayoutParams params = listView.getLayoutParams();
         params.height = displayMetrics.heightPixels / 3;
         listView.setLayoutParams(params);
@@ -679,6 +679,30 @@ public class SODFragment extends IvyBaseFragment implements
                                 if (sodbo.getLocations() != null && sodbo.getLocations().size() > 0) {
                                     sodbo.getLocations().get(mSelectedLocationIndex).setParentTotal(mParentTotal.getText().toString());
                                     sodbo.setGap(Integer.toString(0));
+                                }
+
+                                if (SDUtil.convertToFloat(sodbo.getLocations().get(mSelectedLocationIndex).getParentTotal()) > 0) {
+
+                                    float parentTotal = SDUtil
+                                            .convertToFloat(sodbo.getLocations().get(mSelectedLocationIndex).getParentTotal());
+                                    float mNorm = sodbo.getNorm();
+                                    float actual = SDUtil.convertToFloat(sodbo.getLocations().get(mSelectedLocationIndex)
+                                            .getActual());
+
+                                    float target = (parentTotal * mNorm) / 100;
+                                    float gap = target - actual;
+                                    float percentage = 0;
+                                    if (parentTotal > 0)
+                                        percentage = (actual / parentTotal) * 100;
+
+                                    sodbo.getLocations().get(mSelectedLocationIndex).setTarget(mBModel.formatValue(target));
+                                    sodbo.getLocations().get(mSelectedLocationIndex).setPercentage(mBModel
+                                            .formatPercent(percentage));
+                                    sodbo.getLocations().get(mSelectedLocationIndex).setGap(mBModel.formatValue(-gap));
+                                } else {
+                                    sodbo.getLocations().get(mSelectedLocationIndex).setTarget(Integer.toString(0));
+                                    sodbo.getLocations().get(mSelectedLocationIndex).setPercentage(Integer.toString(0));
+                                    sodbo.getLocations().get(mSelectedLocationIndex).setGap(Integer.toString(0));
                                 }
                             }
                         }
@@ -854,7 +878,7 @@ public class SODFragment extends IvyBaseFragment implements
                                 mSelectedHolder = (ViewHolder) v.getTag();
                                 getTotalValue(mSelectedHolder.mSOD.getParentID());
                             }
-                        } else  {
+                        } else {
                             mSelectedHolder = (ViewHolder) v.getTag();
                             Bundle bundle = new Bundle();
 
@@ -868,11 +892,11 @@ public class SODFragment extends IvyBaseFragment implements
                             bundle.putInt("flag", ShelfShareHelper.SOD);
                             bundle.putInt("selectedlocation", mSelectedLocationIndex);
 
-                            Intent intent = new Intent(getActivity(),SODMeasureActivity.class);
+                            Intent intent = new Intent(getActivity(), SODMeasureActivity.class);
                             intent.putExtras(bundle);
 
                             startActivityForResult(intent, SOD_RESULT_CODE);
-                            getActivity().overridePendingTransition(R.anim.zoom_enter,R.anim.hold);
+                            getActivity().overridePendingTransition(R.anim.zoom_enter, R.anim.hold);
                         }
 
                     }

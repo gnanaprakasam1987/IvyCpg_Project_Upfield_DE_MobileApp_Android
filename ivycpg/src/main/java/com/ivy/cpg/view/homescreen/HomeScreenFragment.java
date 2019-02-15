@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -40,9 +41,10 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.locationservice.movementtracking.MovementTracking;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
+import com.ivy.cpg.view.acknowledgement.AcknowledgementActivity;
+import com.ivy.cpg.view.acknowledgement.AcknowledgementFragment;
 import com.ivy.cpg.view.attendance.AttendanceFragment;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
-import com.ivy.cpg.view.attendance.inout.TimeTrackingFragment;
 import com.ivy.cpg.view.backupseller.BackUpSellerFragment;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.IncentiveDashboardFragment;
@@ -54,11 +56,12 @@ import com.ivy.cpg.view.denomination.DenominationFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentFragment;
 import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationFragment;
+import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.cpg.view.expense.ExpenseFragment;
-import com.ivy.cpg.view.acknowledgement.AcknowledgementActivity;
-import com.ivy.cpg.view.acknowledgement.AcknowledgementFragment;
 import com.ivy.cpg.view.jointcall.JoinCallFragment;
 import com.ivy.cpg.view.leaveapproval.LeaveApprovalFragment;
+import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.login.TermsAndConditionsActivity;
 import com.ivy.cpg.view.mvp.MVPFragment;
 import com.ivy.cpg.view.nonfield.NonFieldHelper;
 import com.ivy.cpg.view.nonfield.NonFieldHomeFragment;
@@ -75,6 +78,7 @@ import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.task.TaskFragment;
+import com.ivy.cpg.view.tradeCoverage.VisitFragment;
 import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.cpg.view.van.stockproposal.StockProposalFragment;
 import com.ivy.cpg.view.webview.WebViewActivity;
@@ -91,22 +95,21 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChatApplicationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.cpg.view.settings.About;
+import com.ivy.sd.png.view.About;
 import com.ivy.sd.png.view.ChannelSelectionDialog;
 import com.ivy.cpg.view.homescreen.deviceStatus.DeviceStatusActivity;
 import com.ivy.sd.png.view.NewOutletEditFragment;
 import com.ivy.sd.png.view.NewoutletContainerFragment;
 import com.ivy.sd.png.view.PlanDeviationFragment;
 import com.ivy.sd.png.view.SynchronizationFragment;
-import com.ivy.cpg.view.attendance.TLAttendanceActivity;
+import com.ivy.sd.png.view.TLAttendanceActivity;
 import com.ivy.cpg.view.homescreen.userFeedback.UserFeedbackActivity;
-import com.ivy.cpg.view.settings.UserSettingsActivity;
-import com.ivy.cpg.view.tradeCoverage.VisitFragment;
-import com.ivy.cpg.view.retailercontact.RetailerContactBo;
+import com.ivy.sd.png.view.UserSettingsActivity;
+import com.ivy.sd.png.view.profile.RetailerContactBo;
 import com.ivy.utils.AppUtils;
+import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -144,6 +147,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     private ImageView profileImageView;
     private static final int CAMERA_REQUEST_CODE = 1;
+    private static final int TERMS_COND_REQ_CODE = 2;
     private String imageFileName;
 
     // Map retailed variables
@@ -155,7 +159,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private ArrayList<ChannelBO> mChannelList;
     private ChannelSelectionDialog dialogFragment;
 
-    private HomeScreenHelper homeScreenHelper;
 
 
     @Nullable
@@ -168,7 +171,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        homeScreenHelper = new HomeScreenHelper(getContext());
+        HomeScreenHelper homeScreenHelper = new HomeScreenHelper(getContext());
 
         ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
@@ -415,6 +418,15 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             setImageFromInternalStorage();
         else
             setProfileImage();
+
+        LoginHelper loginHelper = LoginHelper.getInstance(getActivity());
+        loginHelper.downloadTermsAndConditions(getActivity());
+        if (!loginHelper.isTermsAccepted() && !showDefaultScreen) {
+            Intent intent = new Intent(getActivity(), TermsAndConditionsActivity.class);
+            intent.putExtra("fromScreen", "homescreen");
+            ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(getActivity(), R.anim.zoom_enter, R.anim.hold);
+            ActivityCompat.startActivityForResult(getActivity(), intent, TERMS_COND_REQ_CODE, opts.toBundle());
+        }
     }
 
     @Override
@@ -496,14 +508,22 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == CAMERA_REQUEST_CODE) {
-            if (resultCode == 1) {
-                Uri uri = bmodel.getUriFromFile(AppUtils.photoFolderPath + "/" + imageFileName);
-                bmodel.userMasterHelper.getUserMasterBO().setImagePath(imageFileName);
-                bmodel.userMasterHelper.saveUserProfile(bmodel.userMasterHelper.getUserMasterBO());
-                profileImageView.invalidate();
-                profileImageView.setImageURI(uri);
-            }
+        switch (requestCode) {
+            case CAMERA_REQUEST_CODE:
+                if (resultCode == 1) {
+                    Uri uri = bmodel.getUriFromFile(AppUtils.photoFolderPath + "/" + imageFileName);
+                    bmodel.userMasterHelper.getUserMasterBO().setImagePath(imageFileName);
+                    bmodel.userMasterHelper.saveUserProfile(bmodel.userMasterHelper.getUserMasterBO());
+                    profileImageView.invalidate();
+                    profileImageView.setImageURI(uri);
+                }
+                break;
+            case TERMS_COND_REQ_CODE:
+                if (getActivity() != null)
+                getActivity().overridePendingTransition(0, R.anim.zoom_exit);
+                break;
+            default:
+                break;
         }
     }
 
@@ -1584,7 +1604,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_PRESENCE);
         NonFieldHomeFragment mNonFieldFragment = (NonFieldHomeFragment) fm
                 .findFragmentByTag(MENU_ATTENDANCE);
-        TimeTrackingFragment mNonFieldTwoFragment = (TimeTrackingFragment) fm
+        TimeTrackingFragment timeTrackingFragment = (TimeTrackingFragment) fm
                 .findFragmentByTag(MENU_IN_OUT);
 
 
@@ -1690,8 +1710,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (mNonFieldFragment != null && (fragmentName.equals(MENU_ATTENDANCE))
                 && mNonFieldFragment.isVisible()) {
             return;
-        } else if (mNonFieldTwoFragment != null && (fragmentName.equals(MENU_IN_OUT))
-                && mNonFieldTwoFragment.isVisible()) {
+        } else if (timeTrackingFragment != null && (fragmentName.equals(MENU_IN_OUT))
+                && timeTrackingFragment.isVisible()) {
             return;
         } else if (mPlanningMapFragment != null && (fragmentName.equals(MENU_PLANE_MAP))
                 && mPlanningMapFragment.isVisible()) {
@@ -1789,8 +1809,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(mAttendFragment);
         if (mNonFieldFragment != null)
             ft.remove(mNonFieldFragment);
-        if (mNonFieldTwoFragment != null)
-            ft.remove(mNonFieldTwoFragment);
+        if (timeTrackingFragment != null)
+            ft.remove(timeTrackingFragment);
         if (mPlanningMapFragment != null)
             ft.remove(mPlanningMapFragment);
         if (mLoadMgtFragment != null)

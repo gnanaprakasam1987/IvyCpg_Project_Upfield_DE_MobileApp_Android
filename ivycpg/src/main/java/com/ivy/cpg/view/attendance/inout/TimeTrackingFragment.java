@@ -51,6 +51,10 @@ import java.util.StringTokenizer;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOCATION_PATH;
 
+
+/**
+ * @deprecated
+ */
 public class TimeTrackingFragment extends IvyBaseFragment {
 
     private BusinessModel bmodel;

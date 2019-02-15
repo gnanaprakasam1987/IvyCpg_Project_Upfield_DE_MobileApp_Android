@@ -62,6 +62,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
+import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -704,7 +705,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 boolean isGSTEnabled = bModel.configurationMasterHelper.IS_GST || bModel.configurationMasterHelper.IS_GST_HSN;
 
-                if (!isGSTEnabled || !bModel.getRetailerMasterBO().getSupplierBO().isCompositeRetailer()) {
+                if (!isGSTEnabled || bModel.getRetailerMasterBO().getSupplierBO() != null && !bModel.getRetailerMasterBO().getSupplierBO().isCompositeRetailer() ) {
 
                     if (!isGSTEnabled
                             || (!bModel.getRetailerMasterBO().getGSTNumber().equals("-") || totalOrderValue > 5000)) {
