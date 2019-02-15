@@ -14,11 +14,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.UserMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -151,7 +151,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
 
         db.collection(rootPath)
                 .document(ATTENDANCE_PATH)
-                .collection(SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN))
+                .collection(DateTimeUtils.now(DateTimeUtils.DATE_DOB_FORMAT_PLAIN))
                 .document(userId+"")
                 .set(attendanceObj);
 
@@ -180,7 +180,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
 
         db.collection(rootPath)
                 .document(ATTENDANCE_PATH)
-                .collection(SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN))
+                .collection(DateTimeUtils.now(DateTimeUtils.DATE_DOB_FORMAT_PLAIN))
                 .document(userId)
                 .update(attendanceObj);
     }
@@ -225,7 +225,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
 
         db.collection(rootPath)
                 .document(REALTIME_LOCATION_PATH)
-                .collection(SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN))
+                .collection(DateTimeUtils.now(DateTimeUtils.DATE_DOB_FORMAT_PLAIN))
                 .document(userId+"")
                 .set(locationObj);
     }

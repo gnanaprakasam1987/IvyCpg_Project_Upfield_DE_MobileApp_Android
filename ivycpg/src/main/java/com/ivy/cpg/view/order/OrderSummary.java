@@ -62,7 +62,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
-import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -77,7 +76,6 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.AmountSplitUpDialog;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.OrderRemarkDialog;
 import com.ivy.sd.png.view.OrderSummaryDialogFragment;
@@ -87,7 +85,8 @@ import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.sd.print.DemoSleeper;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 import com.ivy.sd.print.SettingsHelper;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 import com.tremol.zfplibj.ZFPLib;
 import com.zebra.sdk.comm.BluetoothConnection;
@@ -1125,7 +1124,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 boolean nFilesThere = bModel
                         .checkForNFilesInFolder(
-                                AppUtils.photoFolderPath,
+                                FileUtils.photoFolderPath,
                                 1, mFirstName);
                 if (nFilesThere) {
 
@@ -1134,7 +1133,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 } else {
                     Intent intent = new Intent(OrderSummary.this,
                             CameraActivity.class);
-                    String path = AppUtils.photoFolderPath + "/"
+                    String path = FileUtils.photoFolderPath + "/"
                             + mImageName;
                     intent.putExtra("path", path);
                     startActivityForResult(intent,
@@ -1161,12 +1160,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             boolean nFilesThere = bModel
                     .checkForNFilesInFolder(
-                            AppUtils.photoFolderPath,
+                            FileUtils.photoFolderPath,
                             1, mFirstName);
             if (nFilesThere) {
                 openPdfDeleteDialog(mFirstName);
             } else {
-                String path = AppUtils.photoFolderPath + "/"
+                String path = FileUtils.photoFolderPath + "/"
                         + attachedFilePath;
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("application/pdf");
@@ -1273,8 +1272,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         bModel.setDoubleEdit_temp(false);
 
 
-        bModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME));
+        bModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                .now(DateTimeUtils.TIME));
 
         Intent i;
         if (screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER)) {
@@ -3035,7 +3034,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 try {
 
                     alertDialog.dismiss();
-                    bModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                    bModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
 
                     if (bModel.configurationMasterHelper.SHOW_PRINT_ORDER && !orderHelper.isQuickCall) {
                         showDialog(DIALOG_ORDER_SAVED_WITH_PRINT_OPTION);
@@ -3513,7 +3512,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     invalidateOptionsMenu();
                     String realPath = Util.getPath(this, data.getData());
-                    Util.copyFile(new File(realPath), AppUtils.photoFolderPath, attachedFilePath);
+                    Util.copyFile(new File(realPath), FileUtils.photoFolderPath, attachedFilePath);
                     if (bModel.getOrderHeaderBO() != null)
                         bModel.getOrderHeaderBO().setOrderImageName(attachedFilePath);
                 }
@@ -3637,13 +3636,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     @Override
                     public void onPositiveButtonClick() {
 
-                        bModel.deleteFiles(AppUtils.photoFolderPath,
+                        bModel.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
                         bModel.getOrderHeaderBO().setOrderImageName("");
 
                         Intent intent = new Intent(OrderSummary.this,
                                 CameraActivity.class);
-                        String path = AppUtils.photoFolderPath + "/" + mImageName;
+                        String path = FileUtils.photoFolderPath + "/" + mImageName;
                         intent.putExtra("path", path);
                         startActivityForResult(intent,
                                 CAMERA_REQUEST_CODE);
@@ -3703,11 +3702,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     public void onPositiveButtonClick() {
                         invalidateOptionsMenu();
 
-                        bModel.deleteFiles(AppUtils.photoFolderPath,
+                        bModel.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
                         bModel.getOrderHeaderBO().setOrderImageName("");
 
-                        String path = AppUtils.photoFolderPath + "/"
+                        String path = FileUtils.photoFolderPath + "/"
                                 + attachedFilePath;
                         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                         intent.setType("application/pdf");

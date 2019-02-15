@@ -10,6 +10,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -81,7 +82,7 @@ public class PendingInvoiceHelper {
                             invocieHeaderBO.setRetailerName(c.getString(c.getColumnIndex("RetailerName")));
 
                             int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
-                                    SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
+                                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd");
                             final double discountpercentage = CollectionHelper.getInstance(context).getDiscountSlabPercent(count + 1);
 
                             double remaingAmount = (invocieHeaderBO.getInvoiceAmount() - (invocieHeaderBO.getAppliedDiscountAmount() + invocieHeaderBO.getPaidAmount())) * discountpercentage / 100;

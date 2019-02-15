@@ -18,7 +18,8 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -431,12 +432,12 @@ public class SalesReturnHelper {
 
             setSalesReturnID(QT("SR"
                     + bmodel.getAppDataProvider().getUser().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID)));
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)));
 
             if (isSplitOrder)
                 setSalesReturnID(QT("SR"
                         + bmodel.getAppDataProvider().getUser().getUserid()
-                        + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS)));
+                        + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)));
 
             // To generate Seqno based Sales Return Id
             if (bmodel.configurationMasterHelper.SHOW_SR_SEQUENCE_NO) {
@@ -458,7 +459,7 @@ public class SalesReturnHelper {
             // transaction before saving new one.
             if (!bmodel.configurationMasterHelper.IS_INVOICE) {
                 String sb = "select uid from SalesReturnHeader where RetailerID=" +
-                        AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) +
+                        StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) +
                         " and upload='N' and distributorid=" + bmodel.retailerMasterBO.getDistributorId() +
                         " and RefModule != 'ORDER'";
                 Cursor c = db.selectSQL(sb);
@@ -536,14 +537,14 @@ public class SalesReturnHelper {
                                 + DatabaseUtils
                                 .sqlEscapeString(SHOW_SAL_RET_MFG_DATE ?
                                         (bo.getMfgDate() == null || bo.getMfgDate().length() == 0) ?
-                                                SDUtil.now(SDUtil.DATE_GLOBAL)
+                                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)
                                                 : DateUtil.convertToServerDateFormat(bo.getMfgDate(), ConfigurationMasterHelper.outDateFormat)
                                         : "")
                                 + ","
                                 + DatabaseUtils
                                 .sqlEscapeString(SHOW_SAL_RET_EXP_DATE ?
                                         (bo.getExpDate() == null || bo.getExpDate().length() == 0) ?
-                                                SDUtil.now(SDUtil.DATE_GLOBAL)
+                                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)
                                                 : DateUtil.convertToServerDateFormat(bo.getExpDate(), ConfigurationMasterHelper.outDateFormat)
                                         : "")
                                 + ","
@@ -677,7 +678,7 @@ public class SalesReturnHelper {
                     columns = columns + ",invoiceid";
 
                 values = getSalesReturnID() + ","
-                        + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                        + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                         + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
                         + bmodel.retailerMasterBO.getBeatID() + ","
                         + bmodel.getAppDataProvider().getUser().getUserid()
@@ -716,8 +717,8 @@ public class SalesReturnHelper {
             if (bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION || bmodel.configurationMasterHelper.TAX_SHOW_INVOICE)
                 saveSalesReturnTaxAndCreditNoteDetail(mContext, db, getSalesReturnID(), module, bmodel.retailerMasterBO.getRpTypeCode(), isInvoice);
 
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
 
             db.closeDB();
             bmodel.setSaleReturnNote("");
@@ -1043,8 +1044,8 @@ public class SalesReturnHelper {
             );
             db.openDataBase();
             String sb = "select sum(SRH.Returnvalue) from SalesReturnHeader SRH inner join OrderHeader OH on OH.OrderID = SRH.RefModuleTId where SRH.RetailerId=" +
-                    AppUtils.QT(bmodel.retailerMasterBO.getRetailerID()) + " and SRH.upload='N' and SRH.distributorid=" + bmodel.retailerMasterBO.getDistributorId() +
-                    " and date = " + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                    StringUtils.QT(bmodel.retailerMasterBO.getRetailerID()) + " and SRH.upload='N' and SRH.distributorid=" + bmodel.retailerMasterBO.getDistributorId() +
+                    " and date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
             if (isVansales) {
                 sb += " and OH.invoicestatus = 1";
@@ -1371,7 +1372,7 @@ public class SalesReturnHelper {
 
                 setCreditNoteId(QT("CR"
                         + bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                        + SDUtil.now(SDUtil.DATE_TIME_ID)));
+                        + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)));
 
                 if (bmodel.configurationMasterHelper.SHOW_CN_SEQUENCE_NO) {
                     String seqNo;
@@ -1386,7 +1387,7 @@ public class SalesReturnHelper {
 
                 creditNoteBuffer.append(getCreditNoteId() + "," + uid + ",");
                 creditNoteBuffer.append((getTotalValue() + totalTaxValue) + "," + bmodel.getRetailerMasterBO().getRetailerID());
-                creditNoteBuffer.append("," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",'N'");
+                creditNoteBuffer.append("," + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ",'N'");
                 creditNoteBuffer.append("," + (getTotalValue() + totalTaxValue) + "," + QT(modeID));
                 db.insertSQL(DataMembers.tbl_credit_note,
                         creditNoteColumns,

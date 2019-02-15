@@ -67,7 +67,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.RetailerOTPDialog;
@@ -78,7 +77,9 @@ import com.ivy.ui.profile.edit.IProfileEditContract;
 import com.ivy.ui.profile.edit.di.DaggerProfileEditComponent;
 import com.ivy.ui.profile.edit.di.ProfileEditModule;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.StringUtils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -293,9 +294,9 @@ public class ProfileEditFragmentNew extends BaseFragment
     public void createImageView(String path) {
         getmRootLinearLayout().addView(getImageView());
         String filePath = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + path;
-        if (AppUtils.checkImagePresent(filePath)) {
+        if (FileUtils.isFileExisting(filePath)) {
             try {
-                Uri uri = AppUtils.getUriFromFile(getActivity(), AppUtils.photoFolderPath + "/" + path);
+                Uri uri = FileUtils.getUriFromFile(getActivity(), FileUtils.photoFolderPath + "/" + path);
                 mProfileImageView.invalidate();
                 mProfileImageView.setImageURI(uri);
             } catch (Exception e) {
@@ -311,7 +312,7 @@ public class ProfileEditFragmentNew extends BaseFragment
         File imgFile = new File(getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
                 + userId + DataMembers.DIGITAL_CONTENT + "/" + DataMembers.PROFILE + "/" + path);
         if (imgFile.exists()) {
-            Bitmap myBitmap = AppUtils.decodeFile(imgFile);
+            Bitmap myBitmap = FileUtils.decodeFile(imgFile);
             mProfileImageView.setScaleType(ImageView.ScaleType.FIT_XY);
             mProfileImageView.setAdjustViewBounds(true);
             mProfileImageView.setImageBitmap(myBitmap);
@@ -320,7 +321,7 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     @Override
     public void imageViewOnClick(int userId, String path, boolean hasProfileImagePath) {
-        if (!AppUtils.isEmptyString(cameraFilePath)) {
+        if (!StringUtils.isEmptyString(cameraFilePath)) {
             if (new File(cameraFilePath).exists())
                 openImage(new File(cameraFilePath));
             else
@@ -346,11 +347,11 @@ public class ProfileEditFragmentNew extends BaseFragment
     @Override
     public void takePhoto(String imageFileName, boolean isForLatLong) {
         this.imageFileName = imageFileName;
-        if (AppUtils.isExternalStorageAvailable()) {
+        if (FileUtils.isExternalStorageAvailable()) {
             try {
                 Intent intent = new Intent(getActivity(), CameraActivity.class);
                 intent.putExtra(CameraActivity.QUALITY, 40);
-                intent.putExtra(CameraActivity.PATH, AppUtils.photoFolderPath + "/" + ((!isForLatLong) ? imageFileName : AppUtils.latlongImageFileName));
+                intent.putExtra(CameraActivity.PATH, FileUtils.photoFolderPath + "/" + ((!isForLatLong) ? imageFileName : AppUtils.latlongImageFileName));
                 startActivityForResult(intent, (!isForLatLong) ? CAMERA_REQUEST_CODE : LATLONG_CAMERA_REQUEST_CODE);
 
             } catch (Exception e) {
@@ -367,9 +368,9 @@ public class ProfileEditFragmentNew extends BaseFragment
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
                 profileEditPresenter.getCameraReqestCode();
-                String path = AppUtils.photoFolderPath + "/" + imageFileName;
-                Uri uri = AppUtils.getUriFromFile(getActivity(), path);
-                cameraFilePath = AppUtils.photoFolderPath + "/" + imageFileName;
+                String path = FileUtils.photoFolderPath + "/" + imageFileName;
+                Uri uri = FileUtils.getUriFromFile(getActivity(), path);
+                cameraFilePath = FileUtils.photoFolderPath + "/" + imageFileName;
                 mProfileImageView.setImageDrawable(null);
                 mProfileImageView.invalidate();
                 mProfileImageView.setImageURI(uri);
@@ -2296,7 +2297,7 @@ public class ProfileEditFragmentNew extends BaseFragment
             in = new Intent(getActivity(), MapDialogue.class);
 
         String latLag = latlongtextview.getText().toString();
-        if (!AppUtils.isEmptyString(latLag)) {
+        if (!StringUtils.isEmptyString(latLag)) {
             String[] latLagList = latLag.split(",");
             double latdoub = Double.valueOf(latLagList[0]);
             double longdoub = Double.valueOf(latLagList[1]);
@@ -2377,7 +2378,7 @@ public class ProfileEditFragmentNew extends BaseFragment
             int position = 0, setPos = 0;
             int subChannelID = getSubchannelid();
             String mPreviousProfileChanges = profileEditPresenter.getPreviousProfileChangesList(ProfileConstant.SUBCHANNEL);
-            if (!AppUtils.isEmptyString(mPreviousProfileChanges))
+            if (!StringUtils.isEmptyString(mPreviousProfileChanges))
                 if (!mPreviousProfileChanges.equals(subChannelID + ""))
                     subChannelID = SDUtil.convertToInt(mPreviousProfileChanges);
             for (int i = 0; i < siz; ++i) {

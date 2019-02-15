@@ -7,10 +7,10 @@ import android.database.Cursor;
 import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.Vector;
 
@@ -91,7 +91,7 @@ public class EmptyReturnHelper {
 			String returncolumns = "OrderID,Pid,ReturnQty,Price,UomID,TypeID,LineValue,RetailerID,LiableQty,Qty";
 
 			tid = QT(bmodel.getAppDataProvider().getUser().getUserid()
-					+ SDUtil.now(SDUtil.DATE_TIME_ID));
+					+ DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
 			// save detail
 			if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN) {
@@ -162,7 +162,7 @@ public class EmptyReturnHelper {
 			}
 
 			// save header with total line value
-			values = tid + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+			values = tid + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
 					+ QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) + ","
 					+ QT(returnValue + "") + "," + 0 + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
 					+ bmodel.getAppDataProvider().getUniqueId();

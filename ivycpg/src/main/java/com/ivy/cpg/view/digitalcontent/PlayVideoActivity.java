@@ -11,8 +11,8 @@ import android.widget.VideoView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.DateTimeUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -79,7 +79,7 @@ public class PlayVideoActivity extends IvyBaseActivityNoActionBar{
 
                 myVideoView.seekTo(position);
                 if (position == 0) {
-                    vStart_Time = "" + SDUtil.now(SDUtil.DATE) + " " + SDUtil.now(SDUtil.TIME);
+                    vStart_Time = "" + DateTimeUtils.now(DateTimeUtils.DATE) + " " + DateTimeUtils.now(DateTimeUtils.TIME);
                     myVideoView.start();
                 } else {
                     myVideoView.pause();
@@ -190,7 +190,7 @@ public class PlayVideoActivity extends IvyBaseActivityNoActionBar{
 
             String newTime = df.format(cal.getTime());
 
-            vEnd_Time = "" + SDUtil.now(SDUtil.DATE) + " " + newTime;
+            vEnd_Time = "" + DateTimeUtils.now(DateTimeUtils.DATE) + " " + newTime;
 
         } catch (Exception e) {
             Commons.printException(e);

@@ -51,6 +51,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -521,7 +522,7 @@ public class ProfileFragment extends IvyBaseFragment {
             holder.menuText.setText(holder.projectObj.getmName());
             holder.valueText.setText(holder.projectObj.getValueText());
             holder.itemView.setTag(holder.projectObj);
-            Commons.print("view constructtime " + SDUtil.now(SDUtil.TIME));
+            Commons.print("view constructtime " + DateTimeUtils.now(DateTimeUtils.TIME));
         }
 
         @Override

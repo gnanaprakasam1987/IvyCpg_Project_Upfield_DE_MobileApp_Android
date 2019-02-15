@@ -25,9 +25,9 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 
 public class CloseCallActivity extends IvyBaseActivityNoActionBar {
     private BusinessModel bmodel;
@@ -199,10 +199,10 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
 
                 save();
 
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
-                bmodel.outletTimeStampHelper.updateTimeStamp(SDUtil
-                        .now(SDUtil.TIME), "");
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStamp(DateTimeUtils
+                        .now(DateTimeUtils.TIME), "");
                 bmodel.productHelper.clearProductHelper();
 
                 finish();
@@ -277,8 +277,8 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
     }
 
     public void onBack() {
-        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME));
+        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                .now(DateTimeUtils.TIME));
 
         Intent myIntent = new Intent(this, HomeScreenTwo.class);
         startActivityForResult(myIntent, 0);

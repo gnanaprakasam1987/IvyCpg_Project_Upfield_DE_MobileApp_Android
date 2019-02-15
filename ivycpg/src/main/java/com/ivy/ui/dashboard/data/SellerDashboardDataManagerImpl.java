@@ -14,6 +14,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.rx.Optional;
 
 import org.reactivestreams.Publisher;
@@ -43,7 +44,7 @@ import static com.ivy.ui.dashboard.SellerDashboardConstants.PRD_ORD;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.PRD_STK;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.PRODUCTVIE_CALLS;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.WEEK;
-import static com.ivy.utils.AppUtils.QT;
+import static com.ivy.utils.StringUtils.QT;
 
 public class SellerDashboardDataManagerImpl implements SellerDashboardDataManager {
 
@@ -295,7 +296,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                             + " and interval= "
                             + QT(interval)
                             + " AND "
-                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                             + " between SK.fromdate and SK.todate "
                             + (userId.equals("0") ? " and SK.isSummary=1" : "")
                             + " group by SLM.Listid order by DisplaySeq asc";
@@ -447,7 +448,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                             + " inner join BeatMaster on RouteID = BeatID "
                             + " where interval= '" + interval + "' "
                             + " AND "
-                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                             + " between RK.fromdate and RK.todate group by SLM.Listid,RKD.KPiid order by DisplaySeq,RKD.KPiid asc";
                     Cursor c = mDbUtil.selectSQL(sql);
                     if (c != null) {
@@ -510,7 +511,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                                     + " and interval= "
                                     + QT(interval)
                                     + " AND "
-                                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                                     + " between SK.fromdate and SK.todate "
                                     + (userId.equals("0") ? " and SK.isSummary=1" : "")
                                     + " group by SLM.Listid order by DisplaySeq asc";
@@ -686,7 +687,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                     String sb = "SELECT Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt," +
                             " Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os " +
                             " FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo" +
-                            " Where Inv.InvoiceDate = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                            " Where Inv.InvoiceDate = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
                     Cursor c = mDbUtil
                             .selectSQL(sb);
@@ -810,7 +811,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                 try {
                     initDb();
 
-                    String sb = "Select IntervalDesc from SellerKPI where " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " between fromdate and todate and Interval = " + QT(WEEK);
+                    String sb = "Select IntervalDesc from SellerKPI where " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " between fromdate and todate and Interval = " + QT(WEEK);
                     Cursor c = mDbUtil.selectSQL(sb);
                     if (c.getCount() > 0) {
                         while (c.moveToNext()) {
@@ -843,7 +844,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
                     if (!configurationMasterHelper.IS_INVOICE) {
                         sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
-                        sb.append("where upload!='X' and OrderDate=").append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                        sb.append("where upload!='X' and OrderDate=").append(QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
                         c = mDbUtil
                                 .selectSQL(sb.toString());
                         if (c != null) {
@@ -857,7 +858,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                         }
                     } else {
                         sb.append("select  count(distinct retailerid),sum(linespercall),sum(invoiceAmount) from Invoicemaster ");
-                        sb.append("where InvoiceDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                        sb.append("where InvoiceDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
                         c = mDbUtil
                                 .selectSQL(sb.toString());
                         if (c != null) {
@@ -871,7 +872,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                     }
                     sb = new StringBuffer();
                     sb.append("select  sum(mspvalues),count(distinct orderid) from OrderHeader ");
-                    sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                    sb.append("where upload!='X' and OrderDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
                     c = mDbUtil
                             .selectSQL(sb.toString());
                     if (c != null) {

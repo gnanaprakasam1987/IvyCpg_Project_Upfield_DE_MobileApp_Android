@@ -2,17 +2,15 @@ package com.ivy.cpg.view.sync.catalogdownload;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.StatFs;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -139,7 +137,7 @@ public class CatalogImageDownloadService extends IntentService {
             sendBroadcast(broadCIntent);
         }
         // store time in SDCard
-        catalogImageDownloadProvider.setCatalogImageDownloadFinishTime("1", SDUtil.now(SDUtil.DATE_TIME));
+        catalogImageDownloadProvider.setCatalogImageDownloadFinishTime("1", DateTimeUtils.now(DateTimeUtils.DATE_TIME));
 
 
         return true;

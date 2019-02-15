@@ -19,8 +19,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 
 
@@ -283,7 +282,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
 
         if (businessModel.configurationMasterHelper.IS_SHOW_ORDER_PHOTO_CAPTURE) {
             if (holder.reportBO.getUpload().equalsIgnoreCase("Y")
-                    && !businessModel.checkForNFilesInFolder(AppUtils.photoFolderPath,
+                    && !businessModel.checkForNFilesInFolder(FileUtils.photoFolderPath,
                     1, holder.reportBO.getOrderedImage())) {
 
                 holder.orderImage.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.no_image_available));
@@ -291,7 +290,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
             } else {
 
                 Glide.with(mContext)
-                        .load(AppUtils.photoFolderPath + "/" + holder.reportBO.getOrderedImage())
+                        .load(FileUtils.photoFolderPath + "/" + holder.reportBO.getOrderedImage())
                         .diskCacheStrategy(DiskCacheStrategy.NONE)
                         .skipMemoryCache(true)
                         .centerCrop()
@@ -306,7 +305,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
             @Override
             public void onClick(View v) {
                 if (holder.reportBO.getOrderedImage() != null) {
-                    File imgFile = new File(AppUtils.photoFolderPath + "/" + holder.reportBO.getOrderedImage());
+                    File imgFile = new File(FileUtils.photoFolderPath + "/" + holder.reportBO.getOrderedImage());
                     if (imgFile.exists() && !"".equals(holder.reportBO.getOrderedImage())) {
                         try {
                             iOrderReportImageView.openImageView(imgFile.getAbsolutePath());

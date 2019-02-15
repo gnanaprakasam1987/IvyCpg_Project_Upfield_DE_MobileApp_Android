@@ -27,12 +27,12 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.print.DemoSleeper;
+import com.ivy.utils.DateTimeUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -603,7 +603,7 @@ public class VanLoadStockViewFragment extends IvyBaseFragment {
         try {
 
             mSalesdate = DateUtil.convertFromServerDateToRequestedFormat(
-                    SDUtil.now(SDUtil.DATE_GLOBAL),
+                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                     bmodel.configurationMasterHelper.outDateFormat);
 
 

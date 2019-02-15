@@ -42,8 +42,8 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -223,7 +223,7 @@ public class CheckModeFragment extends IvyBaseFragment
             mChequeDateBTN.setText(DateUtil.convertFromServerDateToRequestedFormat(
                     mPaymentBO.getChequeDate(), ConfigurationMasterHelper.outDateFormat));
         else {
-            String todayDate = SDUtil.now(SDUtil.DATE_GLOBAL);
+            String todayDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
             mChequeDateBTN.setText(DateUtil.convertFromServerDateToRequestedFormat(
                     todayDate, ConfigurationMasterHelper.outDateFormat));
             mPaymentBO.setChequeDate(todayDate);
@@ -250,7 +250,7 @@ public class CheckModeFragment extends IvyBaseFragment
             @Override
             public void onClick(View v) {
                 if (!"".equals(mChequeNoET.getText().toString()) && mPaymentBO.getAmount() > 0) {
-                    if (AppUtils.isExternalStorageAvailable()) {
+                    if (FileUtils.isExternalStorageAvailable()) {
 
                         mImageName = "COL_CHQ_"
                                 + bmodel.userMasterHelper.getUserMasterBO().getUserid()
@@ -266,7 +266,7 @@ public class CheckModeFragment extends IvyBaseFragment
                                 + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                                 + "/";
                         mImagePath = mImagePath + mImageName;
-                        String path = AppUtils.photoFolderPath + "/" + mImageName;
+                        String path = FileUtils.photoFolderPath + "/" + mImageName;
 
                         mPaymentBO.setImageName(mImagePath);
 
@@ -485,7 +485,7 @@ public class CheckModeFragment extends IvyBaseFragment
                 date, "yyyy/MM/dd");
         if (!bmodel.configurationMasterHelper.IS_POST_DATE_ALLOW) {
             if (!bmodel.configurationMasterHelper.IS_ENABLE_MIN_MAX_DATE_CHQ) {
-                if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(paidDate)) {
+                if (!DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equals(paidDate)) {
                     Toast.makeText(getActivity(), getResources().getString(
                             R.string.post_dated_cheque_notallow),
                             Toast.LENGTH_SHORT).show();
@@ -494,7 +494,7 @@ public class CheckModeFragment extends IvyBaseFragment
             }
 
             if (mPaymentBO.getCashMode().equalsIgnoreCase(StandardListMasterConstants.DEMAND_DRAFT)) {
-                if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(paidDate)) {
+                if (!DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equals(paidDate)) {
                     Toast.makeText(getActivity(), getResources().getString(
                             R.string.post_dated_demand_draft_notallow),
                             Toast.LENGTH_SHORT).show();
@@ -502,7 +502,7 @@ public class CheckModeFragment extends IvyBaseFragment
                 }
             }
             if (mPaymentBO.getCashMode().equalsIgnoreCase(StandardListMasterConstants.RTGS)) {
-                if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(paidDate)) {
+                if (!DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equals(paidDate)) {
                     Toast.makeText(getActivity(), getResources().getString(
                             R.string.post_dated_rtgs_notallow),
                             Toast.LENGTH_SHORT).show();

@@ -32,7 +32,6 @@ import com.ivy.cpg.view.van.stockview.StockViewActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.ReportHelper;
@@ -40,6 +39,7 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.DateTimeUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -448,7 +448,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
                                     .getDefaultSharedPreferences(getActivity())
                                     .edit();
                             editor.putString("rpt_dwntime",
-                                    SDUtil.now(SDUtil.DATE_TIME_NEW));
+                                    DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
                             editor.apply();
 
                         }

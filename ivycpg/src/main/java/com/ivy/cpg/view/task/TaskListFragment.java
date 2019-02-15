@@ -26,6 +26,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.Vector;
 
@@ -268,7 +269,7 @@ public class TaskListFragment extends Fragment {
                             public void onCheckedChanged(
                                     CompoundButton buttonView, boolean isChecked) {
                                 holder.taskBO.setChecked(isChecked);
-                                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                                 if (IsRetailerwisetask) {
                                     taskHelper.saveTask(bmodel
                                             .getRetailerMasterBO()

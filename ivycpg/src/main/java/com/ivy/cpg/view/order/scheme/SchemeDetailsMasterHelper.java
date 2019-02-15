@@ -19,6 +19,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -858,7 +859,7 @@ public class SchemeDetailsMasterHelper {
      * @param retailerId Retailer Id
      */
     private void downloadPeriodWiseScheme(DBUtil db, String retailerId) {
-        final String currentDate = SDUtil.now(SDUtil.DATE_GLOBAL_EIPHEN);
+        final String currentDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_HYPHEN);
         StringBuffer sb = new StringBuffer();
         sb.append("select distinct SM.schemeid,SB.productid,");
         sb.append("(julianday(" + bModel.QT(currentDate) + ")-julianday(replace(date,'/','-') )) as daycount from Schememaster SM ");
@@ -4853,14 +4854,14 @@ public class SchemeDetailsMasterHelper {
             String columns = "Tid,Date,UserId,DistributorId,RetailerId,SchemeId,SlabId";
             StringBuffer sb;
             String id = bModel.userMasterHelper.getUserMasterBO().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             for (SchemeBO schemeBO : getDisplaySchemeSlabs()) {
                 if (schemeBO.isSchemeSelected()) {
 
                     sb = new StringBuffer();
                     sb.append(id + ",");
-                    sb.append(bModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
+                    sb.append(bModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ",");
                     sb.append(bModel.userMasterHelper.getUserMasterBO().getUserid() + ",");
                     sb.append(bModel.userMasterHelper.getUserMasterBO().getDistributorid() + ",");
                     sb.append(bModel.getRetailerMasterBO().getRetailerID() + ",");
@@ -4960,12 +4961,12 @@ public class SchemeDetailsMasterHelper {
             String columns = "Tid,Date,UserId,DistributorId,RetailerId,SchemeId,SlabId,IsAvailable";
             StringBuffer sb;
             String id = bModel.userMasterHelper.getUserMasterBO().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             for (SchemeBO schemeBO : getDisplaySchemeTrackingList()) {
                 sb = new StringBuffer();
                 sb.append(id + ",");
-                sb.append(bModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",");
+                sb.append(bModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ",");
                 sb.append(bModel.userMasterHelper.getUserMasterBO().getUserid() + ",");
                 sb.append(bModel.userMasterHelper.getUserMasterBO().getDistributorid() + ",");
                 sb.append(bModel.getRetailerMasterBO().getRetailerID() + ",");

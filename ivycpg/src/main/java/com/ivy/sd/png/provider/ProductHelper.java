@@ -42,7 +42,8 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -2020,7 +2021,7 @@ public class ProductHelper {
             for (InvoiceHeaderBO invoiceHeaderBo : items) {
 
                 String invoiceDay = invoiceHeaderBo.getInvoiceDate();
-                String currentDay = SDUtil.now(SDUtil.DATE_GLOBAL);
+                String currentDay = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
                 int dayCount = DateUtil.getDateCount(invoiceDay, currentDay,
                         "yyyy/MM/dd");
                 Commons.print("product Helper," + "dayCount " + dayCount);
@@ -2275,7 +2276,7 @@ public class ProductHelper {
             db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             String uid = QT(bmodel.userMasterHelper.getUserMasterBO()
-                    .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID));
+                    .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
             cursor = db
                     .selectSQL("select OrderID from OrderHeader where RetailerID="
@@ -5326,7 +5327,7 @@ public class ProductHelper {
         String expiryDate = DateUtil.convertFromServerDateToRequestedFormat(
                 bmodel.getRetailerMasterBO().getDLNoExpDate(), "yyyy/MM/dd");
         try {
-            if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(expiryDate))//this for checking today date since before method not woking for today date
+            if (!DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equals(expiryDate))//this for checking today date since before method not woking for today date
                 if (DateUtil.convertStringToDateObject(
                         bmodel.getRetailerMasterBO().getDLNoExpDate(), "yyyy/MM/dd").before(new Date())) {
                     return true;
@@ -5487,7 +5488,7 @@ public class ProductHelper {
 
         String attrQuery = "Select distinct PTAM.Groupid from ProductTaggingAttributesMapping PTAM" +
                 " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PTAM.groupid" +
-                " inner join RetailerAttribute RA on RA.AttributeId = PTAM.RetailerAttibuteId and RA.RetailerId =" + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()) +
+                " inner join RetailerAttribute RA on RA.AttributeId = PTAM.RetailerAttibuteId and RA.RetailerId =" + StringUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()) +
                 " WHERE PM.TaggingTypelovID = " + "(SELECT ListId FROM StandardListMaster WHERE ListCode = '" + taggingType + "' AND ListType = 'PRODUCT_TAGGING')";
 
         Cursor c1 = db.selectSQL(attrQuery);

@@ -16,10 +16,10 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -104,8 +104,8 @@ public class DeliveryManagement extends IvyBaseActivityNoActionBar {
         int i1 = item.getItemId();
         if (i1 == android.R.id.home) {
             if (getIntent().getStringExtra("From") == null) {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
 
                 Intent myIntent = new Intent(this, HomeScreenTwo.class);
                 startActivityForResult(myIntent, 0);

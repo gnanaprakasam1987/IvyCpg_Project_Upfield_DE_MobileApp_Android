@@ -33,20 +33,20 @@ import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
 import com.ivy.ui.photocapture.di.DaggerPhotoCaptureComponent;
 import com.ivy.ui.photocapture.di.PhotoCaptureModule;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.ClickGuard;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ import butterknife.OnClick;
 import butterknife.OnItemSelected;
 
 import static com.ivy.core.IvyConstants.DEFAULT_DATE_FORMAT;
-import static com.ivy.utils.AppUtils.isNullOrEmpty;
+import static com.ivy.utils.StringUtils.isNullOrEmpty;
 
 public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureContract.PhotoCaptureView, DataPickerDialogFragment.UpdateDateInterface {
 
@@ -407,7 +407,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
     @OnClick(R.id.capture_img)
     public void onCaptureImageClick() {
-        if (!AppUtils.isExternalStorageAvailable())
+        if (!FileUtils.isExternalStorageAvailable())
             showMessage(R.string.please_select_atleast_one_type);
         else if (mSelectedProductId == 0)
             showMessage(R.string.select_prod);
@@ -421,7 +421,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
     private void preparePhotoCapture() {
 
         imageName = photoCapturePresenter.getRetailerId() + "_" + mSelectedTypeId + "_"
-                + mSelectedProductId + "_" + mSelectedLocationId + "_" + SDUtil.now(SDUtil.DATE_GLOBAL_PLAIN)
+                + mSelectedProductId + "_" + mSelectedLocationId + "_" + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_PLAIN)
                 + ".jpg";
 
 
@@ -429,7 +429,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                 + mSelectedProductId + "_" + mSelectedLocationId + "_"
                 + Commons.now(Commons.DATE);
 
-        boolean mIsFileAvailable = AppUtils.checkForNFilesInFolder(folderPath, 1, mFirstNameStarts);
+        boolean mIsFileAvailable = FileUtils.checkForNFilesInFolder(folderPath, 1, mFirstNameStarts);
 
         if (mIsFileAvailable)
             showFileDeleteAlert(mFirstNameStarts);
@@ -443,7 +443,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         Intent intent = new Intent(
                 PhotoCaptureActivity.this,
                 CameraActivity.class);
-        String _path = AppUtils.photoFolderPath + "/" + imageName;
+        String _path = FileUtils.photoFolderPath + "/" + imageName;
         //  intent.putExtra("quality", 40);
         intent.putExtra("path", _path);
         startActivityForResult(intent,
@@ -599,8 +599,8 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
     private void setImageToView(String imageName) {
         String path = folderPath + "/" + imageName;
 
-        if (AppUtils.isFileExisting(path)) {
-            Uri uri = AppUtils
+        if (FileUtils.isFileExisting(path)) {
+            Uri uri = FileUtils
                     .getUriFromFile(getApplicationContext(), path);
             imgViewImage.setImageURI(uri);
 
@@ -760,7 +760,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        AppUtils.deleteFiles(folderPath,
+                        FileUtils.deleteFiles(folderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         navigateToCameraActivity();
@@ -829,7 +829,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
                 if (totalImgList.size() > 0) {
                     for (String image : totalImgList)
-                        AppUtils.deleteFiles(folderPath, image);
+                        FileUtils.deleteFiles(folderPath, image);
                 }
 
                 if (!isFromMenuClick) {

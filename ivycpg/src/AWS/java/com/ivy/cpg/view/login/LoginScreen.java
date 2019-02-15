@@ -28,7 +28,6 @@ import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApkDownloaderThread;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
@@ -42,6 +41,7 @@ import com.ivy.sd.png.view.PasswordLockDialogFragment;
 import com.ivy.cpg.view.login.password.ResetPasswordDialog;
 import com.ivy.sd.png.view.UserSettingsActivity;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -76,8 +76,8 @@ public class LoginScreen extends LoginBaseActivity
 
         /* Check the date if expiry is enabled.*/
         if (ApplicationConfigs.expiryEnable) {
-            if ((SDUtil.compareDate(ApplicationConfigs.expiryDate,
-                    SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd") < 0))
+            if ((DateTimeUtils.compareDate(ApplicationConfigs.expiryDate,
+                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd") < 0))
                 finish();
         }
 

@@ -37,6 +37,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -167,7 +168,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         });
 
         String todayDate = DateUtil.convertFromServerDateToRequestedFormat(
-                SDUtil.now(SDUtil.DATE_GLOBAL),
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
 
 

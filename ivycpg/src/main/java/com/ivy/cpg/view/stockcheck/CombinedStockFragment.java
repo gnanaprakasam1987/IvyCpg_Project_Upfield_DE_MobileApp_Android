@@ -77,7 +77,8 @@ import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SchemeDialog;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -870,7 +871,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                     holder.tvProductCode.setText(prodCode);
                 }
 
-                if(!AppUtils.isEmptyString(holder.productObj.getBarCode())){
+                if(!StringUtils.isEmptyString(holder.productObj.getBarCode())){
                     holder.tvbarcode.setVisibility(View.VISIBLE);
                     String parCode =" "+getResources().getString(R.string.barcode) + ": " +
                             holder.productObj.getBarCode() + " ";
@@ -1041,8 +1042,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         if (bmodel.hasCombinedStkChecked()) {
             mDialog1(0);
         } else {
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
             if (isFromChild)
                 startActivity(new Intent(getActivity(), HomeScreenTwo.class)
                         .putExtra("isStoreMenu", true));
@@ -1235,8 +1236,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
                                         bmodel.productHelper.clearCombindStockCheckedTable();
 
-                                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                                                .now(SDUtil.TIME));
+                                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                                                .now(DateTimeUtils.TIME));
                                         if (isFromChild)
                                             startActivity(new Intent(getActivity(), HomeScreenTwo.class)
                                                     .putExtra("isStoreMenu", true));
@@ -1488,8 +1489,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             // result is the value returned from doInBackground
             alertDialog.dismiss();
             if (result == Boolean.TRUE) {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
 
                 new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                         "", getResources().getString(R.string.saved_successfully),

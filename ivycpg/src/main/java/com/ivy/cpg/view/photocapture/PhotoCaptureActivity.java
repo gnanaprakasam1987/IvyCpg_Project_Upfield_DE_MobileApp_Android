@@ -28,16 +28,15 @@ import android.widget.Toast;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -426,7 +425,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                     if (t.getInStoreLocations().get(mSelectedItem).getProductID() == productID) {
                         if (t.getInStoreLocations().get(mSelectedItem).getImageName() != null
                                 && !t.getInStoreLocations().get(mSelectedItem).getImageName().equals("")) {
-                            String path = AppUtils.photoFolderPath + "/"
+                            String path = FileUtils.photoFolderPath + "/"
                                     + t.getInStoreLocations().get(mSelectedItem).getImageName();
                             if (mPhotoCaptureHelper.isImagePresent(path)) {
                                 Uri uri = mPhotoCaptureHelper
@@ -533,8 +532,8 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         } else if (i == R.id.menu_capture) {
             captureImage();
         } else if (i == R.id.menu_gallery) {
-            mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+            mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
             Intent mIntent = new Intent(PhotoCaptureActivity.this,
                     Gallery.class);
             mIntent.putExtra("from", "photo_cap");
@@ -567,11 +566,11 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                             public void onClick(DialogInterface dialog,
                                                 int whichButton) {
                                 mBModel.outletTimeStampHelper
-                                        .updateTimeStampModuleWise(SDUtil
-                                                .now(SDUtil.TIME));
+                                        .updateTimeStampModuleWise(DateTimeUtils
+                                                .now(DateTimeUtils.TIME));
                                 mBModel.outletTimeStampHelper
-                                        .updateTimeStampModuleWise(SDUtil
-                                                .now(SDUtil.TIME));
+                                        .updateTimeStampModuleWise(DateTimeUtils
+                                                .now(DateTimeUtils.TIME));
 
                                 if (totalImgList != null)
                                     deleteUnsavedImageFromFolder();
@@ -701,12 +700,12 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        mBModel.deleteFiles(AppUtils.photoFolderPath,
+                        mBModel.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(PhotoCaptureActivity.this,
                                 CameraActivity.class);
-                        String _path = AppUtils.photoFolderPath + "/"
+                        String _path = FileUtils.photoFolderPath + "/"
                                 + mImageName;
                         intent.putExtra(CameraActivity.QUALITY, 40);
                         intent.putExtra(CameraActivity.PATH, _path);
@@ -742,8 +741,8 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
             try {
                 mPhotoCaptureHelper.savePhotoCaptureDetails(getApplicationContext(), mRetailerId);
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_PHOTO);
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException(e);
@@ -917,7 +916,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                         isClicked = false;
 
                         mImageName = mRetailerId + "_" + mTypeID + "_"
-                                + mProductID + "_" + mLocationId + "_" + SDUtil.now(SDUtil.DATE_GLOBAL_PLAIN)
+                                + mProductID + "_" + mLocationId + "_" + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_PLAIN)
                                 + ".jpg";
 
 
@@ -946,7 +945,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
 
                         boolean mIsFileAvailable = mBModel
                                 .checkForNFilesInFolder(
-                                        AppUtils.photoFolderPath, 1,
+                                        FileUtils.photoFolderPath, 1,
                                         mFirstNameStarts);
 
                         if (mIsFileAvailable) {
@@ -958,7 +957,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                                 Intent intent = new Intent(
                                         PhotoCaptureActivity.this,
                                         CameraActivity.class);
-                                String _path = AppUtils.photoFolderPath
+                                String _path = FileUtils.photoFolderPath
                                         + "/" + mImageName;
                                 //  intent.putExtra("quality", 40);
                                 intent.putExtra("path", _path);
@@ -1105,7 +1104,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
      */
     private void deleteUnsavedImageFromFolder() {
         for (String imgList : totalImgList) {
-            mBModel.deleteFiles(AppUtils.photoFolderPath,
+            mBModel.deleteFiles(FileUtils.photoFolderPath,
                     imgList);
         }
     }

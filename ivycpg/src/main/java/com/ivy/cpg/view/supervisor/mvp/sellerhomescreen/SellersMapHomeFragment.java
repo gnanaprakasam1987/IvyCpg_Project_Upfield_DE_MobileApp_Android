@@ -51,6 +51,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.text.SimpleDateFormat;
@@ -115,7 +116,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             Commons.printException(e);
         }
 
-        selectedDate = SDUtil.now(SDUtil.DATE_DOB_FORMAT_PLAIN);
+        selectedDate = DateTimeUtils.now(DateTimeUtils.DATE_DOB_FORMAT_PLAIN);
 
         sellerMapHomePresenter = new SellerMapHomePresenter();
         sellerMapHomePresenter.setView(this, getContext());
@@ -519,7 +520,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             }
         });
 
-        sellerMapHomePresenter.getSellerListAWS(SDUtil.now(SDUtil.DATE_GLOBAL));
+        sellerMapHomePresenter.getSellerListAWS(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
         sellerMapHomePresenter.loginToFirebase(getContext().getApplicationContext(), loginUserId);
     }

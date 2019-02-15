@@ -60,10 +60,10 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -425,8 +425,8 @@ public class SODFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 if (isFromChild)
                     startActivity(new Intent(getActivity(), HomeScreenTwo.class)
                             .putExtra("isStoreMenu", true));
@@ -565,14 +565,14 @@ public class SODFragment extends IvyBaseFragment implements
         builder.setPositiveButton(getResources().getString(R.string.yes),
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        mBModel.deleteFiles(AppUtils.photoFolderPath,
+                        mBModel.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
                         if (dialog != null)
                             dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra(CameraActivity.QUALITY, 40);
-                        String path = AppUtils.photoFolderPath + "/" + mImageName;
+                        String path = FileUtils.photoFolderPath + "/" + mImageName;
                         intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 CAMERA_REQUEST_CODE);
@@ -942,7 +942,7 @@ public class SODFragment extends IvyBaseFragment implements
 
                             boolean nfiles_there = mBModel
                                     .checkForNFilesInFolder(
-                                            AppUtils.photoFolderPath,
+                                            FileUtils.photoFolderPath,
                                             1, fnameStarts);
                             if (nfiles_there) {
 
@@ -951,7 +951,7 @@ public class SODFragment extends IvyBaseFragment implements
                                 Intent intent = new Intent(getActivity(),
                                         CameraActivity.class);
                                 intent.putExtra(CameraActivity.QUALITY, 40);
-                                String _path = AppUtils.photoFolderPath + "/"
+                                String _path = FileUtils.photoFolderPath + "/"
                                         + mImageName;
                                 intent.putExtra(CameraActivity.PATH, _path);
                                 startActivityForResult(intent,
@@ -1030,7 +1030,7 @@ public class SODFragment extends IvyBaseFragment implements
                     && (!"".equals(holder.mSOD.getLocations().get(mSelectedLocationIndex).getImageName()))
                     && (!"null".equals(holder.mSOD.getLocations().get(mSelectedLocationIndex).getImageName()))) {
                 Glide.with(getActivity())
-                        .load(AppUtils.photoFolderPath + "/" + holder.mSOD.getLocations().get(mSelectedLocationIndex).getImgName())
+                        .load(FileUtils.photoFolderPath + "/" + holder.mSOD.getLocations().get(mSelectedLocationIndex).getImgName())
                         .asBitmap()
                         .centerCrop()
                         .placeholder(R.drawable.ic_photo_camera)
@@ -1080,8 +1080,8 @@ public class SODFragment extends IvyBaseFragment implements
                 mSFHelper
                         .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOD);
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOD);
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException("" + e);

@@ -34,6 +34,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -452,7 +453,7 @@ public class TravelOnMap extends IvyBaseFragment implements OnMapReadyCallback{
     public void downloadRouteMapReport() {
 
         try {
-            String today = SDUtil.now(SDUtil.DATE_GLOBAL);
+            String today = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
             DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME
             );
             db.openDataBase();

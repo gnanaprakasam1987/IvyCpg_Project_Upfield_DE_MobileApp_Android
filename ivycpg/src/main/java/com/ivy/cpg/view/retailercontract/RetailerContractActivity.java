@@ -14,9 +14,9 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 /**
@@ -136,8 +136,8 @@ public class RetailerContractActivity extends IvyBaseActivityNoActionBar {
 
 
     public void onBack() {
-        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME));
+        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                .now(DateTimeUtils.TIME));
 
         Intent myIntent = new Intent(this, HomeScreenTwo.class);
         startActivityForResult(myIntent, 0);

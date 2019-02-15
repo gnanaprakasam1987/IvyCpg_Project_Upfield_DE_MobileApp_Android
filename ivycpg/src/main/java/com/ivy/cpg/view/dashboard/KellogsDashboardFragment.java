@@ -34,11 +34,11 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SKUWiseTargetBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -172,8 +172,8 @@ public class KellogsDashboardFragment extends IvyBaseFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
             bmodel.saveModuleCompletion("MENU_DASH_KELGS_ACT");
             Intent j = new Intent(getActivity(), HomeScreenTwo.class);
             startActivity(j);

@@ -31,7 +31,6 @@ import android.widget.Toast;
 
 import com.aem.api.AEMPrinter;
 import com.aem.api.AEMScrybeDevice;
-import com.baidu.platform.comapi.map.C;
 import com.bixolon.printer.BixolonPrinter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CreditNoteListBO;
@@ -52,6 +51,7 @@ import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.print.DemoSleeper;
 import com.ivy.sd.print.ScribePrinter;
 import com.ivy.sd.print.SettingsHelper;
+import com.ivy.utils.DateTimeUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -313,8 +313,8 @@ public class CollectionFragmentNew extends IvyBaseFragment
         int i = item.getItemId();
         if (i == android.R.id.home) {
             collectionHelper.setCollectionView(false);
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
             getActivity().finish();
 
             Intent myIntent = new Intent(getActivity(), HomeScreenTwo.class);
@@ -531,11 +531,11 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 int count = 0;
                 if (bmodel.retailerMasterBO.getCreditDays() != 0) {
                     if (holder.invoiceHeaderBO.getDueDate() != null)
-                        count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
+                        count = DateUtil.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 holder.invoiceHeaderBO.getDueDate(), "yyyy/MM/dd");
                 } else {
                     if (holder.invoiceHeaderBO.getInvoiceDate() != null)
-                        count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
+                        count = DateUtil.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 holder.invoiceHeaderBO.getInvoiceDate(), "yyyy/MM/dd");
                 }
                 if (count < 0)

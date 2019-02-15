@@ -25,9 +25,9 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.profile.RetailerContactBo;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -525,10 +525,10 @@ public class ProfileHelper {
                         }
                         int due_count = 0;
                         if (bmodel.retailerMasterBO.getCreditDays() != 0) {
-                            due_count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
+                            due_count = DateUtil.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                     invoiceHistory.getDueDate(), "yyyy/MM/dd");
                         } else {
-                            due_count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
+                            due_count = DateUtil.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                     invoiceHistory.getOrderdate(), "yyyy/MM/dd");
                         }
                         if (due_count < 0)
@@ -799,12 +799,12 @@ public class ProfileHelper {
             db.openDataBase();
             String tid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + bmodel.getRetailerMasterBO().getRetailerID()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             String insertHeader = "insert into RetailerEditHeader (tid,RetailerId,date)" +
                     "values (" + bmodel.QT(tid)
                     + "," + bmodel.getRetailerMasterBO().getRetailerID()
-                    + "," + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ")";
+                    + "," + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ")";
             db.executeQ(insertHeader);
             String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)" +
                     "values (" + bmodel.QT(tid)
@@ -878,14 +878,14 @@ public class ProfileHelper {
 
     /**
      * @See {@link  com.ivy.utils.AppUtils}
-     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils#checkFileExist}
+     * @since CPG131 replaced by {@link FileUtils#checkFileExist}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
     public void checkFileExist(String imageName, String retailerID, boolean isLatLongImage) {
         try {
             String fName = (!isLatLongImage) ? "PRO_" : "LATLONG_" + retailerID;
-            File sourceDir = new File(AppUtils.photoFolderPath);
+            File sourceDir = new File(FileUtils.photoFolderPath);
             File[] files = sourceDir.listFiles();
             for (File file : files) {
                 if (file.getName().startsWith(fName) &&

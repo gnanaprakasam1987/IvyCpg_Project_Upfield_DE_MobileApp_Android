@@ -4,9 +4,9 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -112,7 +112,7 @@ public class AcknowledgementHelper {
         try {
             db.openDataBase();
             db.updateSQL("Update " + DataMembers.tbl_jointcallacknowledgement + " set upload = " + QT(status) + " , Ack_Date ="
-                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " where UserID = " + QT(userID) + " and RefID = " + QT(refID));
+                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " where UserID = " + QT(userID) + " and RefID = " + QT(refID));
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);

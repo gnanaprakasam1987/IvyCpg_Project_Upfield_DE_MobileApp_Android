@@ -9,7 +9,6 @@ import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,12 +18,12 @@ import android.widget.Toast;
 import com.ivy.cpg.view.van.manualvanload.ManualVanLoadHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LoadManagementBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -77,12 +76,12 @@ public class ManualVanLoadBatchEntryDialog extends Dialog implements
         close.setOnClickListener(this);
         mfg_date =  findViewById(R.id.mfg_date);
         mfg_date.setText((DateUtil.convertFromServerDateToRequestedFormat(
-                SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat)));
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat)));
         product.setMfgDate(mfg_date.getText().toString());
         mfg_date.setOnClickListener(this);
         exp_date =  findViewById(R.id.exp_date);
         exp_date.setText((DateUtil.convertFromServerDateToRequestedFormat(
-                SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat)));
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat)));
         product.setExpDate(exp_date.getText().toString());
         exp_date.setOnClickListener(this);
 

@@ -20,6 +20,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.ui.dashboard.data.SellerDashboardDataManagerImpl;
+import com.ivy.utils.DateTimeUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -300,7 +301,7 @@ public class DashBoardHelper {
         try {
             db.createDataBase();
             db.openDataBase();
-            String sb = "Select IntervalDesc from SellerKPI where " + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " between fromdate and todate and Interval = " + bmodel.QT(WEEK);
+            String sb = "Select IntervalDesc from SellerKPI where " + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " between fromdate and todate and Interval = " + bmodel.QT(WEEK);
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -622,7 +623,7 @@ public class DashBoardHelper {
                     + " inner join BeatMaster on RouteID = BeatID "
                     + " where interval= '" + interval + "' "
                     + " AND "
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " between RK.fromdate and RK.todate group by SLM.Listid,RKD.KPiid order by DisplaySeq,RKD.KPiid asc";
             Cursor c = db.selectSQL(sql);
             if (c != null) {
@@ -1276,7 +1277,7 @@ public class DashBoardHelper {
                     + " and interval= "
                     + bmodel.QT(interval)
                     + " AND "
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " between SK.fromdate and SK.todate "
                     + (userid.equals("0") ? " and SK.isSummary=1" : "")
                     + " group by SLM.Listid order by DisplaySeq asc";
@@ -2877,7 +2878,7 @@ public class DashBoardHelper {
                             + " and interval= "
                             + bmodel.QT(interval)
                             + " AND "
-                            + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                            + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                             + " between SK.fromdate and SK.todate "
                             + (userid.equals("0") ? " and SK.isSummary=1" : "")
                             + " group by SLM.Listid order by DisplaySeq asc");
@@ -3605,7 +3606,7 @@ public class DashBoardHelper {
 
         if (!bmodel.configurationMasterHelper.IS_INVOICE) {
             sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
-            sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sb.append("where upload!='X' and OrderDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             c = db
                     .selectSQL(sb.toString());
             if (c != null) {
@@ -3619,7 +3620,7 @@ public class DashBoardHelper {
             }
         } else {
             sb.append("select  count(distinct retailerid),sum(linespercall),sum(invoiceAmount) from Invoicemaster ");
-            sb.append("where InvoiceDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sb.append("where InvoiceDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             c = db
                     .selectSQL(sb.toString());
             if (c != null) {
@@ -3633,7 +3634,7 @@ public class DashBoardHelper {
         }
         sb = new StringBuffer();
         sb.append("select  sum(mspvalues),count(distinct orderid) from OrderHeader ");
-        sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        sb.append("where upload!='X' and OrderDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
@@ -4169,7 +4170,7 @@ public class DashBoardHelper {
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select sum(totalweight) from orderheader where OrderDate=");
-            sb.append(bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sb.append(bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             if (!retailerid.equals("")) {
                 sb.append("and upload!='X' and retailerid=" + bmodel.QT(retailerid));
             }

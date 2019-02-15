@@ -70,10 +70,10 @@ import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -373,8 +373,8 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             else {
 
                 mBModel.outletTimeStampHelper
-                        .updateTimeStampModuleWise(SDUtil
-                                .now(SDUtil.TIME));
+                        .updateTimeStampModuleWise(DateTimeUtils
+                                .now(DateTimeUtils.TIME));
 
                 if (screenCode.equalsIgnoreCase(MENU_POSM_CS)) {
                     startActivity(new Intent(getActivity(),
@@ -706,10 +706,10 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                                 holder.mConditionSpin.setSelection(0);
                                 holder.mInstallDate.setEnabled(false);
                                 holder.mServiceDate.setEnabled(false);
-                                holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                                holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                                holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                                holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                                holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                                holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                                holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                                holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
 
                             }
                         }
@@ -980,10 +980,10 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                             holder.mConditionSpin.setSelection(0);
                             holder.mInstallDate.setEnabled(false);
                             holder.mServiceDate.setEnabled(false);
-                            holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                            holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                            holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                            holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                            holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                            holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                            holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                            holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
 
                         }
                     }
@@ -1020,13 +1020,13 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             holder.mInstallDate
                     .setText((holder.assetBO.getInstallDate() == null) ? DateUtil
                             .convertFromServerDateToRequestedFormat(
-                                    SDUtil.now(SDUtil.DATE_GLOBAL),
+                                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                     outPutDateFormat) : holder.assetBO
                             .getInstallDate());
             holder.mServiceDate
                     .setText((holder.assetBO.getServiceDate() == null) ? DateUtil
                             .convertFromServerDateToRequestedFormat(
-                                    SDUtil.now(SDUtil.DATE_GLOBAL),
+                                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                     outPutDateFormat) : holder.assetBO
                             .getServiceDate());
             holder.grpTV.setText(holder.assetBO.getGroupLevelName());
@@ -1060,10 +1060,10 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 holder.mServiceDate.setEnabled(false);
                 holder.assetBO.setImageName("");
                 holder.assetBO.setImgName("");
-                holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
             }
 
             holder.reason1Spin.setSelection(assetTrackingHelper
@@ -1350,7 +1350,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
      * @param filename File Name
      */
     private void deleteFiles(String filename) {
-        File folder = new File(AppUtils.photoFolderPath + "/");
+        File folder = new File(FileUtils.photoFolderPath + "/");
 
         File[] files = folder.listFiles();
         for (File tempFile : files) {
@@ -1388,8 +1388,8 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             super.onPostExecute(result);
 
             alertDialog.dismiss();
-            mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+            mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
 
             new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                     "", getResources().getString(R.string.saved_successfully),

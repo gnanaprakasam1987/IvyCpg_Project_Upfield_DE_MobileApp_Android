@@ -8,13 +8,13 @@ import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.asset.AssetAddDetailBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -332,7 +332,7 @@ public class SerializedAssetHelper {
             String allMasterSb = sb.toString();
 
             sb.append("Where Retailerid in(0,");
-            sb.append(AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
+            sb.append(StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
 
             sb.append(" GROUP BY RetailerId,B.AssetId,B.SerialNumber ORDER BY RetailerId");
 
@@ -368,7 +368,7 @@ public class SerializedAssetHelper {
             sb.append("left join SerializedAssetProductMapping C on C.AssetId=A.AssetId ");
             sb.append("left join ProductMaster PM on PM.PID=C.Productid ");
             sb.append("Where Retailerid in(0,");
-            sb.append(AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
+            sb.append(StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
             sb.append(" GROUP BY B.AssetId,B.SerialNumber ORDER BY RetailerId");
             Cursor c2 = db.selectSQL(sb.toString());
             if (c2.getCount() > 0) {
@@ -518,7 +518,7 @@ public class SerializedAssetHelper {
         try {
             db.openDataBase();
 
-            String sb = "select uid, IFNULL(remarks,'') from SerializedAssetHeader where retailerid=" + AppUtils.QT(mRetailerId) +
+            String sb = "select uid, IFNULL(remarks,'') from SerializedAssetHeader where retailerid=" + StringUtils.QT(mRetailerId) +
                     " and upload='N'";
 
             Cursor c = db.selectSQL(sb);
@@ -533,7 +533,7 @@ public class SerializedAssetHelper {
             }
 
             String sb2 = "select assetid,isAvailable,reasonId,conditionId,serialNumber,NFCNumber,installDate,lastServiceDate  from SerializedAssetDetail where uid=" +
-                    AppUtils.QT(uid);
+                    StringUtils.QT(uid);
 
 
             Cursor detailCursor = db.selectSQL(sb2);
@@ -632,8 +632,8 @@ public class SerializedAssetHelper {
             Cursor c;
 
             sql = "select ImageName,imgName from SerializedAssetImageDetails "
-                    + " where AssetID = " + assetId + " and serialNumber = " + AppUtils.QT(serialNo)
-                    + " AND Upload = " + AppUtils.QT("N");
+                    + " where AssetID = " + assetId + " and serialNumber = " + StringUtils.QT(serialNo)
+                    + " AND Upload = " + StringUtils.QT("N");
             c = db.selectSQL(sql);
 
             if (c != null) {
@@ -704,7 +704,7 @@ public class SerializedAssetHelper {
             db.openDataBase();
 
             db.deleteSQL(DataMembers.tbl_AssetImgInfo, "ImageName LIKE"
-                    + AppUtils.QT(ImageName + "%"), false);
+                    + StringUtils.QT(ImageName + "%"), false);
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -726,33 +726,33 @@ public class SerializedAssetHelper {
 
 
             String query = "select uid from SerializedAssetHeader where retailerid ="
-                    + AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
+                    + StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
             query += " and upload='N'";
 
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
                 c.moveToNext();
                 db.deleteSQL(DataMembers.tbl_SerializedAssetHeader,
-                        "uid=" + AppUtils.QT(c.getString(0)), false);
+                        "uid=" + StringUtils.QT(c.getString(0)), false);
                 db.deleteSQL(DataMembers.tbl_SerializedAssetDetail,
-                        "uid=" + AppUtils.QT(c.getString(0)), false);
+                        "uid=" + StringUtils.QT(c.getString(0)), false);
                 db.deleteSQL(DataMembers.tbl_SerializedAssetImageDetail,
-                        "uid=" + AppUtils.QT(c.getString(0)), false);
+                        "uid=" + StringUtils.QT(c.getString(0)), false);
             }
 
 
             String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             String assetHeaderColumns = "uid,DateTime,RetailerId,remarks";
             StringBuilder assetHeaderValues = new StringBuilder();
             assetHeaderValues.append(id);
             assetHeaderValues.append(",");
-            assetHeaderValues.append(AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            assetHeaderValues.append(StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             assetHeaderValues.append(",");
-            assetHeaderValues.append(AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
+            assetHeaderValues.append(StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()));
             assetHeaderValues.append(",");
-            assetHeaderValues.append(AppUtils.QT(mBusinessModel.getAssetRemark()));
+            assetHeaderValues.append(StringUtils.QT(mBusinessModel.getAssetRemark()));
 
             db.insertSQL(DataMembers.tbl_SerializedAssetHeader, assetHeaderColumns,
                     assetHeaderValues.toString());
@@ -775,23 +775,23 @@ public class SerializedAssetHelper {
                     assetDetailValues.append(",");
                     assetDetailValues.append(assetBo.getReason1ID());
                     assetDetailValues.append(",");
-                    assetDetailValues.append(AppUtils.QT(assetBo.getSerialNo()));
+                    assetDetailValues.append(StringUtils.QT(assetBo.getSerialNo()));
                     if (assetBo.getConditionID() != null && !"null".equals(assetBo.getConditionID())) {
                         assetDetailValues.append(",");
-                        assetDetailValues.append(AppUtils.QT(assetBo.getConditionID()));
+                        assetDetailValues.append(StringUtils.QT(assetBo.getConditionID()));
                     } else {
                         assetDetailValues.append(",");
-                        assetDetailValues.append(AppUtils.QT(""));
+                        assetDetailValues.append(StringUtils.QT(""));
                     }
                     assetDetailValues.append(",");
-                    assetDetailValues.append(AppUtils.QT(assetBo.getNFCTagId()));
+                    assetDetailValues.append(StringUtils.QT(assetBo.getNFCTagId()));
                     assetDetailValues.append(",");
                     assetDetailValues.append(DatabaseUtils
                             .sqlEscapeString(SHOW_ASSET_INSTALL_DATE ? ((assetBo
                                     .getInstallDate() == null || assetBo
                                     .getInstallDate()
-                                    .length() == 0) ? SDUtil
-                                    .now(SDUtil.DATE_GLOBAL)
+                                    .length() == 0) ? DateTimeUtils
+                                    .now(DateTimeUtils.DATE_GLOBAL)
                                     : (DateUtil
                                     .convertToServerDateFormat(
                                             assetBo.getInstallDate(),
@@ -802,8 +802,8 @@ public class SerializedAssetHelper {
                             .sqlEscapeString(SHOW_ASSET_SERVICE_DATE ? ((assetBo
                                     .getServiceDate() == null || assetBo
                                     .getServiceDate()
-                                    .length() == 0) ? SDUtil
-                                    .now(SDUtil.DATE_GLOBAL)
+                                    .length() == 0) ? DateTimeUtils
+                                    .now(DateTimeUtils.DATE_GLOBAL)
                                     : (DateUtil
                                     .convertToServerDateFormat(
                                             assetBo.getServiceDate(),
@@ -822,11 +822,11 @@ public class SerializedAssetHelper {
                             assetImgInofValues.append(",");
                             assetImgInofValues.append(assetBo.getAssetID());
                             assetImgInofValues.append(",");
-                            assetImgInofValues.append(AppUtils.QT(imageName));
+                            assetImgInofValues.append(StringUtils.QT(imageName));
                             assetImgInofValues.append(",");
-                            assetImgInofValues.append(AppUtils.QT(assetBo.getNFCTagId()));
+                            assetImgInofValues.append(StringUtils.QT(assetBo.getNFCTagId()));
                             assetImgInofValues.append(",");
-                            assetImgInofValues.append(AppUtils.QT(assetBo.getImgName()));
+                            assetImgInofValues.append(StringUtils.QT(assetBo.getImgName()));
 
                             db.insertSQL(DataMembers.tbl_SerializedAssetImageDetail,
                                     AssetImageInfoColumns,
@@ -872,19 +872,19 @@ public class SerializedAssetHelper {
             db.openDataBase();
 
             String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
             SerializedAssetBO assets = getAssetTrackingBO();
             String addAssetColumns = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId";
 
             String assetAddAndDeleteValues = id + ","
-                    + AppUtils.QT(assets.getPOSM()) + ","
-                    + AppUtils.QT(assets.getSNO()) + ","
-                    + AppUtils.QT(assets.getNFCTagId()) + ","
-                    + AppUtils.QT(DateUtil.convertToServerDateFormat(assets.getNewInstallDate(), ConfigurationMasterHelper.outDateFormat)) + ","
-                    + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                    + StringUtils.QT(assets.getPOSM()) + ","
+                    + StringUtils.QT(assets.getSNO()) + ","
+                    + StringUtils.QT(assets.getNFCTagId()) + ","
+                    + StringUtils.QT(DateUtil.convertToServerDateFormat(assets.getNewInstallDate(), ConfigurationMasterHelper.outDateFormat)) + ","
+                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                     + "'I'" + ","
-                    + AppUtils.QT(assets.getReasonId()) + ","
-                    + AppUtils.QT(assets.getRemarks()) + ","
+                    + StringUtils.QT(assets.getReasonId()) + ","
+                    + StringUtils.QT(assets.getRemarks()) + ","
                     + mBusinessModel.getRetailerMasterBO().getRetailerID() + ","
                     + "0" + ","
                     + "'WH_RTR'" + ","
@@ -900,8 +900,8 @@ public class SerializedAssetHelper {
                 String assetImageColumns = "Uid,ImageName,ImgName";
 
                 String values = id + ","
-                        + AppUtils.QT(assets.getImageName()) + ","
-                        + AppUtils.QT(assets.getImgName());
+                        + StringUtils.QT(assets.getImageName()) + ","
+                        + StringUtils.QT(assets.getImgName());
 
                 db.insertSQL(DataMembers.tbl_SerializedAssetTransferImages, assetImageColumns,
                         values);
@@ -994,7 +994,7 @@ public class SerializedAssetHelper {
         try {
 
             db.openDataBase();
-            String sb = "SELECT PM.pid,PM.PName FROM ProductMaster PM INNER JOIN SerializedAssetProductMapping PO ON PM.Pid = PO.Productid WHERE PO.AssetId =" + AppUtils.QT(brandPosm);
+            String sb = "SELECT PM.pid,PM.PName FROM ProductMaster PM INNER JOIN SerializedAssetProductMapping PO ON PM.Pid = PO.Productid WHERE PO.AssetId =" + StringUtils.QT(brandPosm);
 
             Cursor c = db.selectSQL(sb);
 
@@ -1159,7 +1159,7 @@ public class SerializedAssetHelper {
                 }
             }
             String sb1 = "select distinct  P.AssetId,P.AssetName,serialNumber,installdate  from SerializedAssetMaster P  inner  join SerializedAssetTransfer AAD on P.AssetId=AAD.AssetId where Transfer_Type!='RTR_WH'  and retailerid=" +
-                    AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
+                    StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
 
             Cursor c1 = db.selectSQL(sb1);
             if (c1.getCount() > 0) {
@@ -1216,15 +1216,15 @@ public class SerializedAssetHelper {
             db.openDataBase();
 
             String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
 
             String columns = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId";
 
             String values = id + ","
-                    + AppUtils.QT(posmId) + "," + AppUtils.QT(mSno) + "," + AppUtils.QT(NFCId) + "," + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                    + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + AppUtils.QT("T") + ","
-                    + AppUtils.QT(reasonId) + "," + AppUtils.QT("") + "," + mBusinessModel.getRetailerMasterBO().getRetailerID() + "," + 0 + "," + AppUtils.QT("RTR_WH") + "," + refId;
+                    + StringUtils.QT(posmId) + "," + StringUtils.QT(mSno) + "," + StringUtils.QT(NFCId) + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + StringUtils.QT("T") + ","
+                    + StringUtils.QT(reasonId) + "," + StringUtils.QT("") + "," + mBusinessModel.getRetailerMasterBO().getRetailerID() + "," + 0 + "," + StringUtils.QT("RTR_WH") + "," + refId;
 
             db.insertSQL(DataMembers.tbl_SerializedAssetTransfer, columns,
                     values);
@@ -1249,7 +1249,7 @@ public class SerializedAssetHelper {
 
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_SerializedAssetTransfer, "serialNumber ="
-                    + AppUtils.QT(mSno), false);
+                    + StringUtils.QT(mSno), false);
 
             db.closeDB();
 
@@ -1291,15 +1291,15 @@ public class SerializedAssetHelper {
             db.openDataBase();
 
             String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
             SerializedAssetBO assets = getAssetTrackingBO();
             String columns = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId";
 
 
-            String values = id + "," + AppUtils.QT(assets.getPOSM()) + "," + AppUtils.QT(assets.getSNO()) + ","
-                    + AppUtils.QT(assets.getNFCTagId()) + "," + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                    + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + AppUtils.QT("T") + "," +
-                    AppUtils.QT(assets.getReasonId()) + "," + AppUtils.QT(assets.getRemarks()) + "," + mBusinessModel.getRetailerMasterBO().getRetailerID() + "," + AppUtils.QT(assets.getToRetailerId()) + "," + AppUtils.QT(movementType) + "," + referenceId;
+            String values = id + "," + StringUtils.QT(assets.getPOSM()) + "," + StringUtils.QT(assets.getSNO()) + ","
+                    + StringUtils.QT(assets.getNFCTagId()) + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + StringUtils.QT("T") + "," +
+                    StringUtils.QT(assets.getReasonId()) + "," + StringUtils.QT(assets.getRemarks()) + "," + mBusinessModel.getRetailerMasterBO().getRetailerID() + "," + StringUtils.QT(assets.getToRetailerId()) + "," + StringUtils.QT(movementType) + "," + referenceId;
 
 
             db.insertSQL(DataMembers.tbl_SerializedAssetTransfer, columns,
@@ -1333,7 +1333,7 @@ public class SerializedAssetHelper {
             sb.append(") or SAM.SerialNumber not in (select distinct SerialNumber from SerializedAssetTransfer AAD1");
             sb.append("))");
             sb.append(" and Retailerid in(0,");
-            sb.append(AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
+            sb.append(StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
 
 
             Cursor c = db.selectSQL(sb.toString());
@@ -1356,7 +1356,7 @@ public class SerializedAssetHelper {
                 }
             }
             String sb1 = "select distinct  P.AssetId,P.AssetName,serialNumber,installdate  from SerializedAssetMaster P  inner  join SerializedAssetTransfer AAD on P.AssetId=AAD.AssetId where Transfer_Type!='RTR_WH'  and retailerid=" +
-                    AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
+                    StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
 
             Cursor c1 = db.selectSQL(sb1);
             if (c1.getCount() > 0) {
@@ -1381,7 +1381,7 @@ public class SerializedAssetHelper {
 
 
             String query = "select distinct  P.AssetId,P.AssetName,serialNumber,reasonid  from SerializedAssetMaster P  inner  join SerializedAssetServiceRequest AAD on P.AssetId=AAD.AssetId Where retailerid=" +
-                    AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
+                    StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
 
 
             Cursor c2 = db.selectSQL(query);
@@ -1427,7 +1427,7 @@ public class SerializedAssetHelper {
         try {
 
             db.openDataBase();
-            db.deleteSQL("SerializedAssetServiceRequest", "retailerid=" + AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()), false);
+            db.deleteSQL("SerializedAssetServiceRequest", "retailerid=" + StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()), false);
         } catch (Exception e) {
             db.closeDB();
             e.printStackTrace();
@@ -1446,15 +1446,15 @@ public class SerializedAssetHelper {
 
             db.openDataBase();
             String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             String addAssetColumns = "Uid,date,AssetId,serialNumber,reasonid,retailerid";
 
             String assetAddAndDeleteValues = id + ","
-                    + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                    + AppUtils.QT(assetId) + "," + AppUtils.QT(serialNo) + ","
-                    + AppUtils.QT(mReasonID) + ","
-                    + AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
+                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                    + StringUtils.QT(assetId) + "," + StringUtils.QT(serialNo) + ","
+                    + StringUtils.QT(mReasonID) + ","
+                    + StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
 
             db.insertSQL(DataMembers.tbl_SerializedAssetServiceRequest, addAssetColumns,
                     assetAddAndDeleteValues);

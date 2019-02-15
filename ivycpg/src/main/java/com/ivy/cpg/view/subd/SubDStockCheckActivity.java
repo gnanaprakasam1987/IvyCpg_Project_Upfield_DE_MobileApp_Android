@@ -84,6 +84,7 @@ import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SpecialFilterFragment;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -2051,7 +2052,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                 bmodel.productHelper.clearOrderTable();
 
                 bmodel.outletTimeStampHelper
-                        .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                        .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                 startActivity(new Intent(SubDStockCheckActivity.this,
                         SubDHomeActivity.class));
                 finish();
@@ -2147,7 +2148,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
             // result is the value returned from doInBackground
             alertDialog.dismiss();
             if (result == Boolean.TRUE) {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                 startActivity(new Intent(
                         SubDStockCheckActivity.this,
                         SubDHomeActivity.class));
@@ -3045,7 +3046,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                     if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), OrderedFlag)) {
                         bmodel.saveModuleCompletion("MENU_SUBD_STOCK");
                         bmodel.outletTimeStampHelper
-                                .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                                .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                         startActivity(new Intent(SubDStockCheckActivity.this,
                                 SubDHomeActivity.class));
                         finish();

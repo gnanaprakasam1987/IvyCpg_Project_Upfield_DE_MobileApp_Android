@@ -61,6 +61,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -899,8 +900,8 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
         int i = item.getItemId();
         if (i == android.R.id.home) {
             if (isFromHomeScreenTwo) {//update time stamp if previous screen is homescreentwo
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 bmodel.saveModuleCompletion(menuCode);
             }
             getActivity().finish();

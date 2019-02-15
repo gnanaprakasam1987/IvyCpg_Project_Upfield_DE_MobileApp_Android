@@ -27,6 +27,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 
 import com.ivy.sd.png.view.profile.RetailerContactBo;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -306,13 +307,13 @@ public class NewOutletHelper {
 
             boolean isData;
             String tid;
-            String currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
+            String currentDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
             Cursor headerCursor;
 
 
             tid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + bmodel.getRetailerMasterBO().getRetailerID()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             // delete Header if exist
             headerCursor = db.selectSQL("SELECT Tid FROM RetailerEditHeader"
@@ -1375,7 +1376,7 @@ public class NewOutletHelper {
 
             String tid = "";
             String currentDate;
-            currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
+            currentDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
 
             headerCursor = db
                     .selectSQL("SELECT Tid FROM RetailerEditHeader"
@@ -2376,7 +2377,7 @@ public class NewOutletHelper {
 
             if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER && getOrderedProductList().size() > 0) {
                 String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                        + SDUtil.now(SDUtil.DATE_TIME_ID);
+                        + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
                 String uid = QT(id);
 
                 if (bmodel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
@@ -2386,14 +2387,14 @@ public class NewOutletHelper {
 
                 column = "OrderID, OrderDate, RetailerID, DistributorId, OrderValue,LinesPerCall,TotalWeight,Remarks,OrderTime";
                 value = uid
-                        + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                         + "," + QT(getId())
                         + "," + bmodel.userMasterHelper.getUserMasterBO().getDistributorid()
                         + "," + bmodel.getOrderHeaderBO().getOrderValue()
                         + "," + bmodel.getOrderHeaderBO().getLinesPerCall()
                         + "," + bmodel.getOrderHeaderBO().getTotalWeight()
                         + "," + QT(bmodel.getOrderHeaderNote())
-                        + "," + QT(SDUtil.now(SDUtil.TIME));
+                        + "," + QT(DateTimeUtils.now(DateTimeUtils.TIME));
                 db.insertSQL("OrderHeaderRequest", column, value);
 
                 column = "OrderID, ProductID, Qty,uomid,Price,LineValue, Weight,uomcount,HsnCode";

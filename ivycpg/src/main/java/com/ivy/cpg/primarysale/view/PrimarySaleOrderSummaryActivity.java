@@ -32,6 +32,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.MyDatePickerDialog;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -429,7 +430,7 @@ public class PrimarySaleOrderSummaryActivity extends IvyBaseActivityNoActionBar 
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        bmodel.distTimeStampHeaderHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                                        bmodel.distTimeStampHeaderHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                                         bmodel.productHelper.clearOrderTable();
                                         PrimarySaleOrderSummaryActivity.this.setResult(PrimarySaleOrderSummaryActivity.this.RESULT_OK);
                                         finish();

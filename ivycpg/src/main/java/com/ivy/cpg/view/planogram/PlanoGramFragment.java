@@ -60,11 +60,11 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -136,7 +136,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             calledBy = i.getStringExtra("from");
             menuCode = i.getStringExtra("CurrentActivityCode");
             isDialogPopup = false;
-            photoNamePath = AppUtils.photoFolderPath + "/";
+            photoNamePath = FileUtils.photoFolderPath + "/";
 
             loadReason();
             //mSelectedLocationId = Integer.parseInt(mPlanoGramHelper.getInStoreLocation().get(0).getListID());
@@ -617,7 +617,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 }
                 if ("2".equals(calledBy)) {
                     mBModel.outletTimeStampHelper
-                            .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                            .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                     startActivity(new Intent(getActivity(), HomeScreenTwo.class));
                     getActivity().finish();
                 }
@@ -735,8 +735,8 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         }
                         if ("2".equals(calledBy)) {
                             mBModel.outletTimeStampHelper
-                                    .updateTimeStampModuleWise(SDUtil
-                                            .now(SDUtil.TIME));
+                                    .updateTimeStampModuleWise(DateTimeUtils
+                                            .now(DateTimeUtils.TIME));
                             Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
                             Bundle extras = getActivity().getIntent().getExtras();
                             if (extras != null) {
@@ -922,7 +922,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         planoAdapter.notifyDataSetChanged();
 
                         Intent intent = new Intent(getActivity(),CameraActivity.class);
-                        String _path = AppUtils.photoFolderPath + "/" + imageName;
+                        String _path = FileUtils.photoFolderPath + "/" + imageName;
                         intent.putExtra(CameraActivity.QUALITY, 40);
                         intent.putExtra(CameraActivity.PATH, _path);
                         intent.putExtra(CameraActivity.ISSAVEREQUIRED,
@@ -969,7 +969,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            photoNamePath = AppUtils.photoFolderPath + "/";
+            photoNamePath = FileUtils.photoFolderPath + "/";
             holder.planoObj = items.get(position);
             holder.productName.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
             holder.tvAdherence.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -1071,7 +1071,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             holder.layout_cameraImage.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    photoNamePath = AppUtils.photoFolderPath + "/";
+                    photoNamePath = FileUtils.photoFolderPath + "/";
                     if ("1".equals(calledBy)) {
                         imageFileName = "VPL_" + "0" + "_" + selectedCategory + "_"
                                 + mSelectedLocationId + "_" + Commons.now(Commons.DATE) + "_img.jpg";

@@ -8,12 +8,12 @@ import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
 import com.ivy.ui.photocapture.PhotoCaptureTestDataFactory;
 import com.ivy.ui.photocapture.data.PhotoCaptureDataManager;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.rx.TestSchedulerProvider;
 
 import org.junit.After;
@@ -306,7 +306,7 @@ public class PhotoCapturePresenterTest {
 
         HashMap<String, PhotoCaptureLocationBO> mockMap = new HashMap<>();
         given(photoCaptureDataManager.updatePhotoCaptureDetails(mockMap)).willReturn(Single.just(true));
-        given(outletTimeStampDataManager.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME))).willReturn(Single.just(true));
+        given(outletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME))).willReturn(Single.just(true));
         given(mDataManager.updateModuleTime(HomeScreenTwo.MENU_PHOTO)).willReturn(Single.just(true));
 
         mPresenter.onSaveButtonClick();
@@ -324,7 +324,7 @@ public class PhotoCapturePresenterTest {
 
         HashMap<String, PhotoCaptureLocationBO> mockMap = new HashMap<>();
         given(photoCaptureDataManager.updatePhotoCaptureDetails(mockMap)).willReturn(Single.just(false));
-        given(outletTimeStampDataManager.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME))).willReturn(Single.just(true));
+        given(outletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME))).willReturn(Single.just(true));
         given(mDataManager.updateModuleTime(HomeScreenTwo.MENU_PHOTO)).willReturn(Single.just(true));
 
         mPresenter.onSaveButtonClick();
@@ -342,7 +342,7 @@ public class PhotoCapturePresenterTest {
 
         HashMap<String, PhotoCaptureLocationBO> mockMap = new HashMap<>();
         given(photoCaptureDataManager.updatePhotoCaptureDetails(mockMap)).willReturn(Single.just(true));
-        given(outletTimeStampDataManager.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME))).willReturn(Single.just(false));
+        given(outletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME))).willReturn(Single.just(false));
         given(mDataManager.updateModuleTime(HomeScreenTwo.MENU_PHOTO)).willReturn(Single.just(true));
 
         mPresenter.onSaveButtonClick();
@@ -359,7 +359,7 @@ public class PhotoCapturePresenterTest {
 
         HashMap<String, PhotoCaptureLocationBO> mockMap = new HashMap<>();
         given(photoCaptureDataManager.updatePhotoCaptureDetails(mockMap)).willReturn(Single.just(true));
-        given(outletTimeStampDataManager.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME))).willReturn(Single.just(true));
+        given(outletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME))).willReturn(Single.just(true));
         given(mDataManager.updateModuleTime(HomeScreenTwo.MENU_PHOTO)).willReturn(Single.just(false));
 
         mPresenter.onSaveButtonClick();
@@ -374,7 +374,7 @@ public class PhotoCapturePresenterTest {
     @Test
     public void testUpdateModuleTime() {
 
-        given(outletTimeStampDataManager.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME))).willReturn(Single.just(true));
+        given(outletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME))).willReturn(Single.just(true));
 
         mPresenter.updateModuleTime();
         testScheduler.triggerActions();

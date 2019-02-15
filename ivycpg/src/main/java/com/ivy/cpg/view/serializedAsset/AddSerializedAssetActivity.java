@@ -39,6 +39,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -208,7 +209,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         });
 
         String todayDate = DateUtil.convertFromServerDateToRequestedFormat(
-                SDUtil.now(SDUtil.DATE_GLOBAL),
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
 
 

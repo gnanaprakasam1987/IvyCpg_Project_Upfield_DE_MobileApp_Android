@@ -83,7 +83,8 @@ import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.SlantView;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -1604,7 +1605,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                     ? 0 : bmodel.retailerMasterBO.getRetailerID()) + "_"
                                     + questBO.getSurveyid() + "_"
                                     + questBO.getQuestionID() + "_"
-                                    + SDUtil.now(SDUtil.DATE_TIME_ID)
+                                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)
                                     + ".jpg";
                             try {
                                 if (i == 0) {
@@ -1616,7 +1617,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                 Intent intent = new Intent(
                                         getActivity(),
                                         CameraActivity.class);
-                                String path =AppUtils.photoFolderPath + "/" + imageName;
+                                String path =FileUtils.photoFolderPath + "/" + imageName;
                                 if (i == 0) {
                                     questBO.setImage1Path(path);
                                     questBO.setImage1Captured(true);
@@ -2220,7 +2221,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
         protected void onPostExecute(Boolean result) {
 
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
             alertDialog.dismiss();
             surveyHelperNew.remarkDone = "N";
             checkClicked = false;

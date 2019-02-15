@@ -28,11 +28,11 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -247,10 +247,10 @@ public class DeviceStatusActivity extends IvyBaseActivityNoActionBar {
 		// if (bmodel.configurationMasterHelper.SHOW_DS_CURRENT_DATE)
 		status.add(new RowItem(R.drawable.ic_time, getResources().getString(
 				R.string.current_date), DateUtil.convertFromServerDateToRequestedFormat(
-				SDUtil.now(SDUtil.DATE_GLOBAL),
+				DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
 				ConfigurationMasterHelper.outDateFormat)
 				+ " "
-				+ SDUtil.now(SDUtil.TIME)));
+				+ DateTimeUtils.now(DateTimeUtils.TIME)));
 		// if (bmodel.configurationMasterHelper.SHOW_DS_BATTERY_STATUS)
 		status.add(new RowItem(R.drawable.ic_battery, getResources().getString(
 				R.string.battery_status), currentStatus + "%"));

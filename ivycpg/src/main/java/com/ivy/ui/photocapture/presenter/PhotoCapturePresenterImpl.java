@@ -15,11 +15,11 @@ import com.ivy.core.di.scope.OutletTimeStampInfo;
 import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
 import com.ivy.ui.photocapture.data.PhotoCaptureDataManager;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
@@ -168,8 +168,8 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
     @Override
     public void updateModuleTime() {
 
-        getCompositeDisposable().add(mOutletTimeStampDataManager.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME))
+        getCompositeDisposable().add(mOutletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils
+                .now(DateTimeUtils.TIME))
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {
@@ -231,7 +231,7 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
     public void onSaveButtonClick() {
         getIvyView().showLoading();
         getCompositeDisposable().add(Single.zip(photoCaptureDataManager.updatePhotoCaptureDetails(editedData),
-                mOutletTimeStampDataManager.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME)),
+                mOutletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME)),
                 getDataManager().updateModuleTime(HomeScreenTwo.MENU_PHOTO),
                 new Function3<Boolean, Boolean, Boolean, Boolean>() {
                     @Override

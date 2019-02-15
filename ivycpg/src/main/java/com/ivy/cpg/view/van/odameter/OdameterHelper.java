@@ -6,11 +6,11 @@ import android.database.Cursor;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.bo.VanLoadMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 public class OdameterHelper {
 
@@ -43,8 +43,8 @@ public class OdameterHelper {
             if (!bmodel.configurationMasterHelper.SHOW_PHOTO_ODAMETER) {
                 String columns = "uid,start,end,isstarted,startlatitude,startlongitude,starttime,date";
 
-                String values = AppUtils.QT(bmodel.userMasterHelper.getUserMasterBO()
-                        .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID))
+                String values = StringUtils.QT(bmodel.userMasterHelper.getUserMasterBO()
+                        .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID))
                         + ","
                         + mylist.getOdameterstart()
                         + ","
@@ -56,7 +56,7 @@ public class OdameterHelper {
                         + ","
                         + LocationUtil.longitude
                         + ","
-                        + AppUtils.QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
+                        + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
                         + ","
                         + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
                         .getDownloadDate());
@@ -69,8 +69,8 @@ public class OdameterHelper {
 
                 String columns = "uid,start,end,isstarted,startlatitude,startlongitude,starttime,date,startImage";
 
-                String values = AppUtils.QT(bmodel.userMasterHelper.getUserMasterBO()
-                        .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID))
+                String values = StringUtils.QT(bmodel.userMasterHelper.getUserMasterBO()
+                        .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID))
                         + ","
                         + mylist.getOdameterstart()
                         + ","
@@ -82,12 +82,12 @@ public class OdameterHelper {
                         + ","
                         + LocationUtil.longitude
                         + ","
-                        + AppUtils.QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
+                        + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
                         + ","
                         + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
                         .getDownloadDate())
                         + ","
-                        + AppUtils.QT(mylist.getStartTripImg());
+                        + StringUtils.QT(mylist.getStartTripImg());
                 String sql = "insert into " + "Odameter" + "(" + columns
                         + ") values(" + values + ")";
                 db.executeQ(sql);
@@ -116,7 +116,7 @@ public class OdameterHelper {
                             sql1 = "insert into odameter(end,endtime,endlatitude,endlongitude,isended,upload) values("
                                     + mylist.getOdameterend()
                                     + ","
-                                    + AppUtils.QT(SDUtil.now(SDUtil.TIME))
+                                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.TIME))
                                     + ","
                                     + LocationUtil.latitude
                                     + ","
@@ -130,7 +130,7 @@ public class OdameterHelper {
                             sql = "update Odameter set end="
                                     + mylist.getOdameterend()
                                     + ",endtime="
-                                    + AppUtils.QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
+                                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
                                     + ",endlatitude=" + LocationUtil.latitude
                                     + ",endlongitude=" + LocationUtil.longitude
                                     + ",isended=" + 1 + ",upload='N'";
@@ -144,7 +144,7 @@ public class OdameterHelper {
                             sql1 = "insert into odameter(end,endtime,endlatitude,endlongitude,endImage,isended,upload) values("
                                     + mylist.getOdameterend()
                                     + ","
-                                    + AppUtils.QT(SDUtil.now(SDUtil.TIME))
+                                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.TIME))
                                     + ","
                                     + LocationUtil.latitude
                                     + ","
@@ -160,10 +160,10 @@ public class OdameterHelper {
                             sql = "update Odameter set end="
                                     + mylist.getOdameterend()
                                     + ",endtime="
-                                    + AppUtils.QT(SDUtil.now(SDUtil.DATE_TIME_NEW))
+                                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
                                     + ",endlatitude=" + LocationUtil.latitude
                                     + ",endlongitude=" + LocationUtil.longitude
-                                    + ",endImage=" + AppUtils.QT(mylist.getEndTripImg())
+                                    + ",endImage=" + StringUtils.QT(mylist.getEndTripImg())
                                     + ",isended=" + 1 + ",upload='N'";
                             db.executeQ(sql);
                         }

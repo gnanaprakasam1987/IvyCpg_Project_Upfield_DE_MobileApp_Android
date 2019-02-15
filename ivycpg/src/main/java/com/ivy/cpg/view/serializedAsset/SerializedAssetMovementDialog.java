@@ -3,7 +3,6 @@ package com.ivy.cpg.view.serializedAsset;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -22,22 +21,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.lib.DialogFragment;
-import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.MyDialogCloseListener;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -233,7 +226,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
     private void setAddAssetDetails() {
 
         String todayDate = DateUtil.convertFromServerDateToRequestedFormat(
-                SDUtil.now(SDUtil.DATE_GLOBAL),
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
         String remarks=ETDesc.getText().toString().trim();
 

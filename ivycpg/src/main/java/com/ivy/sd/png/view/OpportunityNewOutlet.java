@@ -75,6 +75,7 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1135,7 +1136,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
                 showDialog(0);
             } else {
                 bmodel.outletTimeStampHelper
-                        .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                        .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                 finish();
             }
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);

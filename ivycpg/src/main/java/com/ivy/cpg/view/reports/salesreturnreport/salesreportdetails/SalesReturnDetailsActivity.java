@@ -19,7 +19,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.Vector;
 
@@ -202,7 +202,7 @@ public class SalesReturnDetailsActivity extends IvyBaseActivityNoActionBar {
             dbUtil.openDataBase();
             Cursor cursor = dbUtil
                     .selectSQL("SELECT totalQty,srpedited from SalesReturnDetails "
-                            + "where uid=" + AppUtils.QT(uId));
+                            + "where uid=" + StringUtils.QT(uId));
             int total = 0;
 
             int totalLine = 0;

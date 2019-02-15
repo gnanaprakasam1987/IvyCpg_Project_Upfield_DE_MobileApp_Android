@@ -42,6 +42,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.DateTimeUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -932,7 +933,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                         + getResources().getString(R.string.date)
                         + ":"
                         + DateUtil.convertFromServerDateToRequestedFormat(
-                        SDUtil.now(SDUtil.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                         bmodel.configurationMasterHelper.outDateFormat)
                         + "\r\n";
 

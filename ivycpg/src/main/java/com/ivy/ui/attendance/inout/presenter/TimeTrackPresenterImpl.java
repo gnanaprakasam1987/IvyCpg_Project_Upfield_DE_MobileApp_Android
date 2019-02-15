@@ -6,11 +6,10 @@ import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.ui.attendance.inout.TimeTrackingContract;
 import com.ivy.ui.attendance.inout.data.TimeTrackDataManager;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.StringUtils;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
@@ -105,8 +104,8 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
         if (timeTrackList.isEmpty())
             return true;
 
-        status = (!AppUtils.isNullOrEmpty(timeTrackList.get(timeTrackList.size() - 1).getInTime()) &&
-                !AppUtils.isNullOrEmpty(timeTrackList.get(timeTrackList.size() - 1).getOutTime()));
+        status = (!StringUtils.isNullOrEmpty(timeTrackList.get(timeTrackList.size() - 1).getInTime()) &&
+                !StringUtils.isNullOrEmpty(timeTrackList.get(timeTrackList.size() - 1).getOutTime()));
 
         return status;
     }

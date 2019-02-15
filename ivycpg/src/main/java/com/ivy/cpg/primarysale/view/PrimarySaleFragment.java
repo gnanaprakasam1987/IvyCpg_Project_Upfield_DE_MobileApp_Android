@@ -20,11 +20,11 @@ import android.widget.Toast;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -199,11 +199,11 @@ public class PrimarySaleFragment extends IvyBaseFragment {
 
         protected void onPostExecute(Boolean result) {
             alertDialog.dismiss();
-            String time = SDUtil.now(SDUtil.TIME);
-            bmodel.distTimeStampHeaderHelper.setTimeIn(SDUtil
-                    .now(SDUtil.DATE_GLOBAL) + " " + time);
+            String time = DateTimeUtils.now(DateTimeUtils.TIME);
+            bmodel.distTimeStampHeaderHelper.setTimeIn(DateTimeUtils
+                    .now(DateTimeUtils.DATE_GLOBAL) + " " + time);
             bmodel.distTimeStampHeaderHelper.saveTimeStamp(
-                    SDUtil.now(SDUtil.DATE_GLOBAL), time);
+                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), time);
             startActivity(i);
         }
     }

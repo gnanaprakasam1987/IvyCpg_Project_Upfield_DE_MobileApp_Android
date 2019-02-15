@@ -23,7 +23,6 @@ import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -31,6 +30,7 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 
 import org.json.JSONArray;
@@ -154,9 +154,9 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
     public void applyLastSyncPref() {
         SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
         edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
-                SDUtil.now(SDUtil.DATE_GLOBAL),
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat));
-        edt.putString("time", SDUtil.now(SDUtil.TIME));
+        edt.putString("time", DateTimeUtils.now(DateTimeUtils.TIME));
         edt.apply();
 
 
@@ -168,8 +168,8 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
         SharedPreferences mLastUploadAndDownloadPref = context.getApplicationContext().getSharedPreferences("lastUploadAndDownload", MODE_PRIVATE);
         SharedPreferences.Editor edt = mLastUploadAndDownloadPref.edit();
         edt.putString("downloadDate",
-                SDUtil.now(SDUtil.DATE_GLOBAL));
-        edt.putString("downloadTime", SDUtil.now(SDUtil.TIME));
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+        edt.putString("downloadTime", DateTimeUtils.now(DateTimeUtils.TIME));
         edt.apply();
 
     }
@@ -283,7 +283,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
         if (loginHelper.SHOW_CHANGE_PASSWORD) {
             String createdDate = loginHelper.getPasswordCreatedDate(context.getApplicationContext());
             if (createdDate != null && !createdDate.equals("")) {
-                int result = SDUtil.compareDate(loginHelper.getPasswordExpiryDate(createdDate),
+                int result = DateTimeUtils.compareDate(loginHelper.getPasswordExpiryDate(createdDate),
                         businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
                 if (result == -1) {
                     ((LoginContract.LoginView) loginView).goToChangePwd();
@@ -446,7 +446,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
                 jsonObj.put(SynchronizationHelper.VERSION_NAME, businessModel.getApplicationVersionName());
                 if (!DataMembers.backDate.isEmpty())
                     jsonObj.put(SynchronizationHelper.REQUEST_MOBILE_DATE_TIME,
-                            SDUtil.now(SDUtil.DATE_TIME_NEW));
+                            DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
                 this.jsonObject = jsonObj;
             } catch (JSONException jsonException) {
                 Commons.print(jsonException.getMessage());
@@ -1233,7 +1233,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
                     .getDefaultSharedPreferences(context.getApplicationContext())
                     .edit();
             editor.putString("rpt_dwntime",
-                    SDUtil.now(SDUtil.DATE_TIME_NEW));
+                    DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
             editor.apply();
         }
     }

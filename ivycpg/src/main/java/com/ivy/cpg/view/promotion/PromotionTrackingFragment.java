@@ -61,10 +61,11 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
+import com.ivy.utils.StringUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -483,8 +484,8 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 if (getActivity().getIntent().getBooleanExtra("isFromChild", false))
                     startActivity(new Intent(getActivity(), HomeScreenTwo.class)
                             .putExtra("isStoreMenu", true));
@@ -611,13 +612,13 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                                 promoBO.setImageName("");
                             }
                         }
-                        businessModel.deleteFiles(AppUtils.photoFolderPath,
+                        businessModel.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra(CameraActivity.QUALITY, 40);
-                        String path = AppUtils.photoFolderPath + "/" + mImageName;
+                        String path = FileUtils.photoFolderPath + "/" + mImageName;
                         intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 businessModel.CAMERA_REQUEST_CODE);
@@ -966,7 +967,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
                             boolean nFilesThere = businessModel
                                     .checkForNFilesInFolder(
-                                            AppUtils.photoFolderPath, 1,
+                                            FileUtils.photoFolderPath, 1,
                                             fNameStarts);
                             if (nFilesThere) {
                                 showFileDeleteAlert(
@@ -976,7 +977,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                                 Intent intent = new Intent(getActivity(),
                                         CameraActivity.class);
                                 intent.putExtra(CameraActivity.QUALITY, 40);
-                                String path = AppUtils.photoFolderPath + "/"
+                                String path = FileUtils.photoFolderPath + "/"
                                         + mImageName;
                                 intent.putExtra(CameraActivity.PATH, path);
                                 startActivityForResult(intent,
@@ -1045,7 +1046,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                     && (!"".equals(holder.mPromotionMasterBO.getImageName()))
                     && (!"null"
                     .equals(holder.mPromotionMasterBO.getImageName()))) {
-                File imgFile = new File(AppUtils.photoFolderPath + "/" + holder.mPromotionMasterBO.getImageName());
+                File imgFile = new File(FileUtils.photoFolderPath + "/" + holder.mPromotionMasterBO.getImageName());
                 Glide.with(getActivity())
                         .load(imgFile.getAbsoluteFile())
                         .asBitmap()
@@ -1123,7 +1124,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 }
             });
 
-            if (!AppUtils.isNullOrEmpty(holder.mPromotionMasterBO.getRemarks()))
+            if (!StringUtils.isNullOrEmpty(holder.mPromotionMasterBO.getRemarks()))
                 holder.img_remarks.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.feedback_promo, null));
             else
                 holder.img_remarks.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.feedback_no_promo, null));
@@ -1153,8 +1154,8 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 promotionHelper.savePromotionDetails(getContext().getApplicationContext());
                 promotionHelper.deleteUnusedImages();
                 businessModel.saveModuleCompletion(HomeScreenTwo.MENU_PROMO);
-                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException("" + e);

@@ -21,12 +21,12 @@ import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
@@ -86,7 +86,7 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
             public void onClick(View v) {
 
                 if (!mPasswordCreatedDated.equals("")) {
-                    int result = SDUtil.compareDate(LoginHelper.getInstance(getApplicationContext()).getPasswordExpiryDate(mPasswordCreatedDated), bmodel.getAppDataProvider().getUser().getDownloadDate(), "yyyy/MM/dd");
+                    int result = DateTimeUtils.compareDate(LoginHelper.getInstance(getApplicationContext()).getPasswordExpiryDate(mPasswordCreatedDated), bmodel.getAppDataProvider().getUser().getDownloadDate(), "yyyy/MM/dd");
                     if (result == -1) {
                         startActivity(new Intent(ChangePasswordActivity.this,
                                 LoginScreen.class));
@@ -185,7 +185,7 @@ public class ChangePasswordActivity extends IvyBaseActivityNoActionBar {
 
         mPasswordCreatedDated = LoginHelper.getInstance(this).getPasswordCreatedDate(getApplicationContext());
         if (!mPasswordCreatedDated.equals("")) {
-            int result = SDUtil.compareDate(LoginHelper.getInstance(this).getPasswordExpiryDate(mPasswordCreatedDated), bmodel.getAppDataProvider().getUser().getDownloadDate(), "yyyy/MM/dd");
+            int result = DateTimeUtils.compareDate(LoginHelper.getInstance(this).getPasswordExpiryDate(mPasswordCreatedDated), bmodel.getAppDataProvider().getUser().getDownloadDate(), "yyyy/MM/dd");
             if (result == -1) {
                 TextView passwordExpiryTV = findViewById(R.id.tv_password_expired);
                 passwordExpiryTV.setVisibility(View.VISIBLE);
