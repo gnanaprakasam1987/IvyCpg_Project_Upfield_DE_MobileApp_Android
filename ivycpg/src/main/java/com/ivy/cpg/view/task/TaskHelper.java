@@ -5,10 +5,10 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.Vector;
 
@@ -68,9 +68,9 @@ public class TaskHelper {
 
             // Generate Unique ID
             String id = QT(bmodel.userMasterHelper.getUserMasterBO()
-                    .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID));
+                    .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
-            String date = QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+            String date = QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Commons.print("date :: ," + date + "");
 
             // Insert Task into TaskMaster
@@ -81,7 +81,7 @@ public class TaskHelper {
 
             String columns = "taskid,retailerid,usercreated,upload,date,uid,userid";
             String UID = QT(bmodel.getRetailerMasterBO().getRetailerID()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
 
             if (channelId == -1) {// for all channel
                 String[] chrid = this.getChannelRetailerId(0);
@@ -302,14 +302,14 @@ public class TaskHelper {
         db.openDataBase();
 
         String UID = QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
-                + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
         String columns = "TaskId,RetailerId,Date,UId,Upload,ridSF";
         String values;
 
         db.deleteSQL("TaskExecutionDetails", "TaskId=" + QT(taskBO.getTaskId()) + " and RetailerId = " + QT(retailerid), false);
 
         if (taskBO.isChecked()) {
-            values = QT(taskBO.getTaskId()) + "," + QT(retailerid) + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + UID + ",'N'" + ","
+            values = QT(taskBO.getTaskId()) + "," + QT(retailerid) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + UID + ",'N'" + ","
                      + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
             db.insertSQL("TaskExecutionDetails", columns, values);
             bmodel.saveModuleCompletion("MENU_TASK");

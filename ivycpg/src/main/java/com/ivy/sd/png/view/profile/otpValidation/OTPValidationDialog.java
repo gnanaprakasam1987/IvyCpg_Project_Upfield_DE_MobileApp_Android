@@ -23,13 +23,13 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SpinnerBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 public class OTPValidationDialog extends Dialog implements OnClickListener {
 
@@ -228,12 +228,12 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
             switch (result) {
                 case "1":
                     if (flag == ValidationType.LOCATION)
-                        mRetailerBO.setOtpActivatedDate(SDUtil
-                                .now(SDUtil.DATE_GLOBAL));
+                        mRetailerBO.setOtpActivatedDate(DateTimeUtils
+                                .now(DateTimeUtils.DATE_GLOBAL));
                     else if (bmodel.configurationMasterHelper.ret_skip_flag == 2
                             || flag == ValidationType.WALKING_SEQ) {
-                        mRetailerBO.setSkipActivatedDate(SDUtil
-                                .now(SDUtil.DATE_GLOBAL));
+                        mRetailerBO.setSkipActivatedDate(DateTimeUtils
+                                .now(DateTimeUtils.DATE_GLOBAL));
                         mRetailerBO.setSkip(true);
                     }
                     otpValidationHelper.saveOTPActivatedDate(mRetailerBO.getRetailerID(), flag.value);
@@ -303,39 +303,39 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
 
                 String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID,ridSF";
 
-                id = AppUtils.QT(bmodel.getAppDataProvider().getUser()
+                id = StringUtils.QT(bmodel.getAppDataProvider().getUser()
                         .getDistributorid()
                         + ""
                         + bmodel.getAppDataProvider().getUser().getUserid()
-                        + "" + SDUtil.now(SDUtil.DATE_TIME_ID));
+                        + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
                 values = id
                         + ","
-                        + AppUtils.QT(mRetailerBO.getRetailerID())
+                        + StringUtils.QT(mRetailerBO.getRetailerID())
                         + ","
                         + mRetailerBO.getBeatID()
                         + ","
-                        + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                         + ","
                         + ((SpinnerBO) reason.getSelectedItem()).getId()
                         + ","
-                        + AppUtils.QT(bmodel
+                        + StringUtils.QT(bmodel
                         .getStandardListId(StandardListMasterConstants.OTP_REASON_TYPE))
-                        + "," + AppUtils.QT("N")
+                        + "," + StringUtils.QT("N")
                         + "," + mRetailerBO.getDistributorId()
-                        + "," + AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
+                        + "," + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
 
                 db.deleteSQL(
                         "Nonproductivereasonmaster",
                         "RetailerID="
-                                + AppUtils.QT(mRetailerBO.getRetailerID())
+                                + StringUtils.QT(mRetailerBO.getRetailerID())
                                 + " and DistributorId="
                                 + mRetailerBO.getDistributorId()
                                 + " and ReasonTypes="
-                                + AppUtils.QT(bmodel
+                                + StringUtils.QT(bmodel
                                 .getStandardListId(StandardListMasterConstants.OTP_REASON_TYPE))
                                 + " and Date="
-                                + AppUtils.QT(SDUtil.now(SDUtil.DATE)), false);
+                                + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE)), false);
 
                 db.insertSQL("Nonproductivereasonmaster", columns, values);
 

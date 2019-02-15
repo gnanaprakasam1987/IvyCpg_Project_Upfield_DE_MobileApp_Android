@@ -28,7 +28,6 @@ import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
@@ -36,8 +35,8 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -327,7 +326,7 @@ public class AssetAdapter extends BaseAdapter {
                         mAssetPresenter.mSelectedImageName = imageName;
                         mAssetPresenter.mSelectedSerial = holder.assetBO.getSerialNo();
 
-                        String _path = AppUtils.photoFolderPath + "/" + mAssetPresenter.mSelectedImageName;
+                        String _path = FileUtils.photoFolderPath + "/" + mAssetPresenter.mSelectedImageName;
                         mBModel.getPhotosTakeninCurrentAssetTracking().put(mAssetPresenter.mSelectedAssetID +"", _path);
 
                         boolean nFilesThere = mBModel.checkForNFilesInFolder(photoPath, 1,
@@ -392,10 +391,10 @@ public class AssetAdapter extends BaseAdapter {
                         holder.mConditionSpin.setSelection(0);
                         holder.mInstallDate.setEnabled(false);
                         holder.mServiceDate.setEnabled(false);
-                        holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                        holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                        holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                        holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                        holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                        holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                        holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                        holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
 
                     }
 
@@ -442,13 +441,13 @@ public class AssetAdapter extends BaseAdapter {
         holder.mInstallDate
                 .setText((holder.assetBO.getInstallDate() == null) ? DateUtil
                         .convertFromServerDateToRequestedFormat(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 outPutDateFormat) : holder.assetBO
                         .getInstallDate());
         holder.mServiceDate
                 .setText((holder.assetBO.getServiceDate() == null) ? DateUtil
                         .convertFromServerDateToRequestedFormat(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 outPutDateFormat) : holder.assetBO
                         .getServiceDate());
         holder.grpTV.setText(holder.assetBO.getGroupLevelName());
@@ -484,10 +483,10 @@ public class AssetAdapter extends BaseAdapter {
             holder.mServiceDate.setEnabled(false);
             holder.assetBO.setImageName("");
             holder.assetBO.setImgName("");
-            holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-            holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-            holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-            holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+            holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+            holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+            holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+            holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
 
         }
 

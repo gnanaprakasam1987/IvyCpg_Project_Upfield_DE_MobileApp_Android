@@ -35,6 +35,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.UpdatePaymentByDateInterface;
 import com.ivy.sd.png.model.UpdatePaymentsInterface;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -124,7 +125,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
             numKeyLayout.setVisibility(View.GONE);
             cardViewLayout.setVisibility(View.GONE);
         }
-        mUpdatePaymentInterface.updatePaymentDetails(SDUtil.now(SDUtil.DATE_GLOBAL));
+        mUpdatePaymentInterface.updatePaymentDetails(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
         tempCreditNoteValue = mPaymentBO.getAmount();
         String modeID = bmodel.getStandardListIdAndType(
                 "CNAP",
@@ -238,7 +239,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
     public void onClick(View v) {
         Button btn = (Button) v;
         if (btn == applyBtn) {
-            mUpdatePaymentInterface.updatePaymentDetails(SDUtil.now(SDUtil.DATE_GLOBAL));
+            mUpdatePaymentInterface.updatePaymentDetails(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             mPaymentBO.setAmount(currentCollectionValue);
 
             checkFromCollectionScreen();

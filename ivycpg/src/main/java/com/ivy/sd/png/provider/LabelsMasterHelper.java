@@ -9,7 +9,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -52,7 +52,7 @@ public class LabelsMasterHelper {
 
             Cursor c = db
                     .selectSQL("SELECT key,value from LabelsMaster where lang = "
-                            + AppUtils.QT(PreferenceManager
+                            + StringUtils.QT(PreferenceManager
                             .getDefaultSharedPreferences(mContext)
                             .getString("languagePref",
                                     ApplicationConfigs.LANGUAGE)));
@@ -134,7 +134,7 @@ public class LabelsMasterHelper {
 
             Cursor c = db
                     .selectSQL("SELECT value from LabelsMaster where lang = "
-                            + AppUtils.QT(PreferenceManager
+                            + StringUtils.QT(PreferenceManager
                             .getDefaultSharedPreferences(mContext)
                             .getString("languagePref",
                                     ApplicationConfigs.LANGUAGE)) + " and key = 'SYNC_CONTENT'");

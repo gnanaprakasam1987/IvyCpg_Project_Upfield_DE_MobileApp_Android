@@ -3,7 +3,6 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.os.Environment;
 import android.text.TextPaint;
-import android.util.SparseArray;
 
 import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.order.OrderHelper;
@@ -20,15 +19,14 @@ import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.StockReportBO;
-import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.sd.png.commons.NumberToWord;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.DateTimeUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -700,10 +698,10 @@ public class CommonPrintHelper {
                 value = label;
             }
         } else if (tag.equalsIgnoreCase(TAG_DATE)) {
-            value = label + DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL),
+            value = label + DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                     bmodel.configurationMasterHelper.outDateFormat);
         } else if (tag.equalsIgnoreCase(TAG_TIME)) {
-            value = label + SDUtil.now(SDUtil.TIME);
+            value = label + DateTimeUtils.now(DateTimeUtils.TIME);
         } else if (tag.equalsIgnoreCase(TAG_DELIVERY_DATE)) {
             String deliveryDate = bmodel.getDeliveryDate(OrderHelper.getInstance(context).selectedOrderId, bmodel.getRetailerMasterBO().getRetailerID());
             if (!deliveryDate.equals("")) {

@@ -24,12 +24,12 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.Vector;
@@ -274,8 +274,8 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
                                                         int whichButton) {
                                         resetRemarksBO();
                                         bmodel.outletTimeStampHelper
-                                                .updateTimeStampModuleWise(SDUtil
-                                                        .now(SDUtil.TIME));
+                                                .updateTimeStampModuleWise(DateTimeUtils
+                                                        .now(DateTimeUtils.TIME));
                                      /*   BusinessModel.loadActivity(
                                                 CallAnalysisActivityKlgs.this,
                                                 DataMembers.actHomeScreenTwo);*/
@@ -307,11 +307,11 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
             bmodel.outletTimeStampHelper.deleteTimeStampImages();
         }
         resetRemarksBO();
-        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME));
+        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                .now(DateTimeUtils.TIME));
 
-        bmodel.outletTimeStampHelper.updateTimeStamp(SDUtil
-                .now(SDUtil.TIME), "");
+        bmodel.outletTimeStampHelper.updateTimeStamp(DateTimeUtils
+                .now(DateTimeUtils.TIME), "");
         bmodel.saveModuleCompletion("MENU_CALL_ANALYS_KELGS");
         bmodel.productHelper.clearProductHelper();
 //        BusinessModel.loadActivity(CallAnalysisActivityKlgs.this,
@@ -384,8 +384,8 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i1 = item.getItemId();
         if (i1 == android.R.id.home) {
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
             resetRemarksBO();
            /* BusinessModel.loadActivity(CallAnalysisActivityKlgs.this,
                     DataMembers.actHomeScreenTwo);*/

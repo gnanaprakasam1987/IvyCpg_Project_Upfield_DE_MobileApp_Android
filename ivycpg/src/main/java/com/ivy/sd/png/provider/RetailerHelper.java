@@ -11,10 +11,10 @@ import com.ivy.sd.png.bo.RetailerMissedVisitBO;
 import com.ivy.sd.png.bo.RtrWiseDeadProductsBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.VisitConfiguration;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -250,7 +250,7 @@ public class RetailerHelper {
             HashSet<DateWisePlanBO> plannedRetailerList = retailerBO.getPlannedDates();
             if (plannedRetailerList != null) {
                 for (DateWisePlanBO dateWisePlanBO : plannedRetailerList) {
-                    int isToday = SDUtil.compareDate(dateWisePlanBO.getDate(),
+                    int isToday = DateTimeUtils.compareDate(dateWisePlanBO.getDate(),
                             bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(), "yyyy/MM/dd");
                     if (isToday == 0) {
                         retailerBO.setWalkingSequence(dateWisePlanBO.getWalkingSequence());

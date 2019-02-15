@@ -1,6 +1,8 @@
 package com.ivy.sd.png.model;
 
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -37,7 +39,7 @@ public class SDUtilTest {
 
         given(Calendar.getInstance()).willReturn(endOfMarch);
 
-        Assert.assertEquals("Thursday",SDUtil.today());
+        Assert.assertEquals("Thursday",DateTimeUtils.today());
     }
 
     @Test
@@ -108,8 +110,5 @@ public class SDUtilTest {
     }
 
 
-    @Test
-    public void testRemoveQuotes(){
-        Assert.assertEquals("a b c d e f",SDUtil.removeQuotes("a'b'c'd'e'f"));
-    }
+
 }

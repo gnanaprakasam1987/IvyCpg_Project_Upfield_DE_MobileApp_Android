@@ -6,10 +6,10 @@ import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -127,7 +127,7 @@ public class NearExpiryTrackingHelper {
             String sql = "select tid from "
                     + mTrackingHeader + " where RetailerID="
                     + mBModel.getRetailerMasterBO().getRetailerID();
-            sql += " AND date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+            sql += " AND date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             sql += " and upload= 'N'";
             Cursor orderHeaderCursor = db.selectSQL(sql);
             if (orderHeaderCursor.getCount() > 0) {
@@ -296,7 +296,7 @@ public class NearExpiryTrackingHelper {
                     + ""
                     + mBModel.getRetailerMasterBO().getRetailerID()
                     + ""
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             // delete transaction if exist
             sql = "SELECT Tid, RefId FROM "
@@ -455,7 +455,7 @@ public class NearExpiryTrackingHelper {
                         + ","
                         + mBModel.getRetailerMasterBO().getRetailerID()
                         + ","
-                        + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                        + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                         + QT(mBModel.getTimeZone()) + "," + QT(refId);
 
                 db.insertSQL(mTrackingHeader, headerColumns, values);

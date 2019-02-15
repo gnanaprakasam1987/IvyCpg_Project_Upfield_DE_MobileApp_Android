@@ -72,7 +72,6 @@ import com.ivy.cpg.view.callanalysis.CallAnalysisActivity;
 import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.collection.CollectionScreen;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
-import com.ivy.cpg.view.emptyreturn.EmptyReturnHelper;
 import com.ivy.cpg.view.initiative.InitiativeHelper;
 import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.order.OrderHelper;
@@ -82,13 +81,11 @@ import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.cpg.view.photocapture.Gallery;
 import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
-import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.supervisor.chat.BaseInterfaceAdapter;
 import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
-import com.ivy.cpg.view.van.stockproposal.StockProposalModuleHelper;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -133,7 +130,6 @@ import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.provider.ProfileHelper;
 import com.ivy.sd.png.provider.ReasonHelper;
 import com.ivy.sd.png.provider.RemarksHelper;
-import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
@@ -159,6 +155,9 @@ import com.ivy.ui.activation.view.ActivationActivity;
 import com.ivy.ui.dashboard.data.SellerDashboardDataManagerImpl;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
+import com.ivy.utils.StringUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -951,7 +950,7 @@ public class BusinessModel extends Application {
                     invocieHeaderBO.setDocRefNo(c.getString(9));
 
                     int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
-                            SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd");
                     final double discountpercentage = CollectionHelper.getInstance(ctx).getDiscountSlabPercent(count + 1);
 
                     double remaingAmount = (invocieHeaderBO.getInvoiceAmount() - (invocieHeaderBO.getAppliedDiscountAmount() + invocieHeaderBO.getPaidAmount())) * discountpercentage / 100;
@@ -1005,7 +1004,7 @@ public class BusinessModel extends Application {
     /**
      * @param data
      * @return
-     * @See {@link AppUtils#QT(String)}
+     * @See {@link StringUtils#QT(String)}
      * @deprecated
      */
     public String QT(String data) {
@@ -1230,7 +1229,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select sum(invNetamount) from InvoiceMaster where retailerid="
-                            + QT(retailerMasterBO.getRetailerID()) + " and InvoiceDate = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                            + QT(retailerMasterBO.getRetailerID()) + " and InvoiceDate = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             if (c != null) {
                 if (c.moveToNext()) {
                     double i = c.getFloat(0);
@@ -1409,7 +1408,7 @@ public class BusinessModel extends Application {
 
                             + " LEFT JOIN RetailerClientMappingMaster RC " + (configurationMasterHelper.IS_BEAT_WISE_RETAILER_MAPPING ? " on RC.beatID=RBM.beatId" : " on RC.Rid = A.RetailerId")
 
-                            + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) : "")
+                            + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) : "")
 
                             + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID AND RA.IsPrimary=1"
 
@@ -1968,7 +1967,7 @@ public class BusinessModel extends Application {
             sql = "SELECT sum(AH.achscore),rm.retailerid  FROM  retailermaster rm"
                     + " join answerheader AH on rm.retailerid = ah.retailerid "
                     + " Left Join SurveyScoreHistory SSH on SSH.SurveyId=AH.SurveyId and ah.retailerid=ssh.retailerid and AH.Date = "
-                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " group by rm.retailerid";
             c = db.selectSQL(sql);
             if (c != null) {
@@ -2499,20 +2498,20 @@ public class BusinessModel extends Application {
             String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID,ridSF";
 
             for (int i = 0; i < retailers.size(); i++) {
-                id = AppUtils.QT(getAppDataProvider().getUser().getDistributorid()
+                id = StringUtils.QT(getAppDataProvider().getUser().getDistributorid()
                         + "" + getAppDataProvider().getUser().getUserid()
-                        + "" + SDUtil.now(SDUtil.DATE_TIME_ID) + i);
+                        + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID) + i);
 
                 NonproductivereasonBO outlet = retailers.get(i);
 
                 if (!outlet.getReasonid().equals("0")) {
                     bool = true;
-                    values = id + "," + AppUtils.QT(outlet.getRetailerid()) + ","
-                            + outlet.getBeatId() + "," + AppUtils.QT(outlet.getDate())
-                            + "," + AppUtils.QT(outlet.getReasonid()) + ","
-                            + AppUtils.QT(getStandardListId(outlet.getReasontype()))
-                            + "," + AppUtils.QT("N") + "," + outlet.getDistributorID()
-                            + "," + AppUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
+                    values = id + "," + StringUtils.QT(outlet.getRetailerid()) + ","
+                            + outlet.getBeatId() + "," + StringUtils.QT(outlet.getDate())
+                            + "," + StringUtils.QT(outlet.getReasonid()) + ","
+                            + StringUtils.QT(getStandardListId(outlet.getReasontype()))
+                            + "," + StringUtils.QT("N") + "," + outlet.getDistributorID()
+                            + "," + StringUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
 
                     db.insertSQL("Nonproductivereasonmaster", columns, values);
                 }
@@ -2546,54 +2545,54 @@ public class BusinessModel extends Application {
                     + ""
                     + userMasterHelper.getUserMasterBO().getUserid()
                     + ""
-                    + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
 
             db.deleteSQL(
                     "Nonproductivereasonmaster",
-                    "RetailerID=" + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
+                    "RetailerID=" + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
                             + " and ReasonTypes="
-                            + AppUtils.QT(getStandardListId(outlet.getReasontype()))
+                            + StringUtils.QT(getStandardListId(outlet.getReasontype()))
                             + " and RouteID="
                             + getAppDataProvider().getRetailMaster().getBeatID(), false);
             db.deleteSQL(
                     "Nonproductivereasonmaster",
                     "RetailerID="
-                            + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
+                            + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
                             + " and ReasonTypes="
-                            + AppUtils.QT(getStandardListId(outlet
+                            + StringUtils.QT(getStandardListId(outlet
                             .getCollectionReasonType()))
                             + " and RouteID="
                             + getAppDataProvider().getRetailMaster().getBeatID(), false);
 
             String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,distributorID,imagepath,remarks,ridSF";
 
-            values = id + "," + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID()) + ","
+            values = id + "," + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID()) + ","
                     + getAppDataProvider().getRetailMaster().getBeatID() + ","
-                    + AppUtils.QT(outlet.getDate()) + "," + AppUtils.QT(outlet.getReasonid())
-                    + "," + AppUtils.QT(getStandardListId(outlet.getReasontype())) + ","
-                    + AppUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + AppUtils.QT(outlet.getImagePath()) + "," + AppUtils.QT(remarks);
+                    + StringUtils.QT(outlet.getDate()) + "," + StringUtils.QT(outlet.getReasonid())
+                    + "," + StringUtils.QT(getStandardListId(outlet.getReasontype())) + ","
+                    + StringUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + StringUtils.QT(outlet.getImagePath()) + "," + StringUtils.QT(remarks);
 
             db.insertSQL("Nonproductivereasonmaster", columns, values);
             if (!outlet.getCollectionReasonID().equals("0")) {
-                String uid = AppUtils.QT(getAppDataProvider().getUser()
+                String uid = StringUtils.QT(getAppDataProvider().getUser()
                         .getDistributorid()
                         + ""
                         + getAppDataProvider().getUser().getUserid()
                         + ""
-                        + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                        + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
                 values = uid
                         + ","
-                        + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
+                        + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
                         + ","
                         + getAppDataProvider().getRetailMaster().getBeatID()
                         + ","
-                        + AppUtils.QT(outlet.getDate())
+                        + StringUtils.QT(outlet.getDate())
                         + ","
-                        + AppUtils.QT(outlet.getCollectionReasonID())
+                        + StringUtils.QT(outlet.getCollectionReasonID())
                         + ","
-                        + AppUtils.QT(getStandardListId(outlet.getCollectionReasonType()))
-                        + "," + AppUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + AppUtils.QT(outlet.getImagePath()) + "," + AppUtils.QT(remarks)
-                        + "," + AppUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
+                        + StringUtils.QT(getStandardListId(outlet.getCollectionReasonType()))
+                        + "," + StringUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + StringUtils.QT(outlet.getImagePath()) + "," + StringUtils.QT(remarks)
+                        + "," + StringUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
                 db.insertSQL("Nonproductivereasonmaster", columns, values);
             }
 
@@ -2750,7 +2749,7 @@ public class BusinessModel extends Application {
             String sql = "select StockID from "
                     + DataMembers.tbl_closingstockheader + " where RetailerID="
                     + QT(retailerId) + " and DistributorID=" + getRetailerMasterBO().getDistributorId();
-            sql += " AND date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+            sql += " AND date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             sql += " and upload= 'N'";
             Cursor orderHeaderCursor = db.selectSQL(sql);
             if (orderHeaderCursor.getCount() > 0) {
@@ -2894,7 +2893,7 @@ public class BusinessModel extends Application {
             sb.append(DataMembers.tbl_closingstockheader + " where RetailerID=");
             sb.append(QT(retailerId));
             sb.append(" AND DistributorID=" + getRetailerMasterBO().getDistributorId());
-            sb.append(" AND date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sb.append(" AND date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             sb.append(" and upload= 'N'");
 
 
@@ -3823,7 +3822,7 @@ public class BusinessModel extends Application {
         float total = 0;
         Cursor c = db
                 .selectSQL("select ifnull(sum(Amount),0) from Payment where retailerid="
-                        + AppUtils.QT(getRetailerMasterBO().getRetailerID()) + " and Date = " + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                        + StringUtils.QT(getRetailerMasterBO().getRetailerID()) + " and Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         if (c != null) {
             if (c.getCount() > 0) {
                 c.moveToNext();
@@ -3851,7 +3850,7 @@ public class BusinessModel extends Application {
             );
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_RoadActivityDetail, "imgname ="
-                    + QT("RoadActivity" + "/" + SDUtil.now(SDUtil.DATE_GLOBAL_PLAIN)
+                    + QT("RoadActivity" + "/" + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_PLAIN)
                     + "/" + userMasterHelper.getUserMasterBO().getUserid()
                     + "/" + ImageName), false); // QT(ImageName));
 
@@ -3999,7 +3998,7 @@ public class BusinessModel extends Application {
 
         try {
             Cursor closingStockCursor = db
-                    .selectSQL("select Tid from RetailerScoreHeader where RetailerID=" + getRetailerMasterBO().getRetailerID() + " and Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                    .selectSQL("select Tid from RetailerScoreHeader where RetailerID=" + getRetailerMasterBO().getRetailerID() + " and Date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
             if (closingStockCursor.getCount() > 0) {
                 closingStockCursor.moveToNext();
@@ -4010,7 +4009,7 @@ public class BusinessModel extends Application {
             }
             closingStockCursor.close();
 
-            String tid = (headerID.trim().length() == 0) ? QT(userMasterHelper.getUserMasterBO().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID)) : headerID;
+            String tid = (headerID.trim().length() == 0) ? QT(userMasterHelper.getUserMasterBO().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)) : headerID;
             int moduleWeightage = fitscoreHelper.getModuleWeightage(module);
             double achieved = (((double) sum / (double) 100) * moduleWeightage);
             fitscoreDetailValues = (tid) + ", " + QT(module) + ", " + moduleWeightage + ", " + achieved + ", " + QT("N");
@@ -4018,13 +4017,13 @@ public class BusinessModel extends Application {
 
             if (headerID.trim().length() == 0) {
                 String retailerID = getRetailerMasterBO().getRetailerID();
-                String date = QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                String date = QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
                 fitscoreHeaderValues = (tid) + ", " + QT(retailerID) + ", " + date + ", " + achieved + ", " + QT("N");
                 db.insertSQL(DataMembers.tbl_retailerscoreheader, fitscoreHeaderColumns, fitscoreHeaderValues);
             } else {
                 Cursor achievedCursor = db
                         .selectSQL("select sum(0+ifnull(B.Score,0)) from RetailerScoreHeader A inner join RetailerScoreDetails B on A.Tid = B.Tid where A.RetailerID="
-                                + getRetailerMasterBO().getRetailerID() + " and A.Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                                + getRetailerMasterBO().getRetailerID() + " and A.Date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
                 if (achievedCursor.getCount() > 0) {
                     achievedCursor.moveToNext();
@@ -4032,7 +4031,7 @@ public class BusinessModel extends Application {
                 }
                 achievedCursor.close();
                 db.updateSQL("Update " + DataMembers.tbl_retailerscoreheader + " set Score = " + headerScore + " where " +
-                        " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
+                        " Date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "" +
                         " and RetailerID = " + QT(getRetailerMasterBO().getRetailerID()));
             }
         } catch (Exception e) {
@@ -4203,7 +4202,7 @@ public class BusinessModel extends Application {
             TransferUtility tm = new TransferUtility(ec2, getApplicationContext
                     ());
 
-            folder = new File(AppUtils.photoFolderPath + "/");
+            folder = new File(FileUtils.photoFolderPath + "/");
 
             sfFiles = folder.listFiles();
 
@@ -4688,7 +4687,7 @@ public class BusinessModel extends Application {
 
     /**
      * @See {@link  com.ivy.utils.AppUtils;}
-     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils#isExternalStorageAvailable}
+     * @since CPG131 replaced by {@link FileUtils#isExternalStorageAvailable}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
@@ -4736,7 +4735,7 @@ public class BusinessModel extends Application {
      * @param n
      * @param fNameStarts
      * @return
-     * @See {@link AppUtils#checkForNFilesInFolder(String, int, String)}
+     * @See {@link FileUtils#checkForNFilesInFolder(String, int, String)}
      * @deprecated
      */
     public boolean checkForNFilesInFolder(String folderPath, int n,
@@ -4784,7 +4783,7 @@ public class BusinessModel extends Application {
     /**
      * @param folderPath
      * @param fnamesStarts
-     * @See {@link AppUtils#deleteFiles(String, String)}
+     * @See {@link FileUtils#deleteFiles(String, String)}
      * @deprecated
      */
     public void deleteFiles(String folderPath, String fnamesStarts) {
@@ -4935,10 +4934,10 @@ public class BusinessModel extends Application {
             Cursor c;
             if (isVansales) {
                 c = db.selectSQL("select ifnull(sum(LinesPerCall),0) from invoicemaster where retailerid="
-                        + AppUtils.QT(getRetailerMasterBO().getRetailerID()) + " and InvoiceDate = " + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                        + StringUtils.QT(getRetailerMasterBO().getRetailerID()) + " and InvoiceDate = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             } else {
                 c = db.selectSQL("select ifnull(sum(LinesPerCall),0) from orderHeader where retailerid="
-                        + AppUtils.QT(getRetailerMasterBO().getRetailerID())
+                        + StringUtils.QT(getRetailerMasterBO().getRetailerID())
                         + " and upload='N' and is_vansales = 0");
             }
             if (c.getCount() > 0) {
@@ -5482,7 +5481,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             String columns = "Message, Imageurl, TimeStamp, Type";
 
-            values = QT(msg) + "," + url + QT(SDUtil.now(SDUtil.DATE_TIME)) + QT(type);
+            values = QT(msg) + "," + url + QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME)) + QT(type);
 
             db.insertSQL("Notification", columns, values);
 
@@ -5526,7 +5525,7 @@ public class BusinessModel extends Application {
                 .selectSQL("select RetailerID from OutletTimestamp where RetailerID="
                         + rid.getRetailerID()
                         + " and VisitDate="
-                        + this.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                        + this.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         if (c.getCount() > 0)
             while (c.moveToNext()) {
                 return 1;
@@ -5628,7 +5627,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Calendar calendar = Calendar.getInstance();
             Cursor c = db
-                    .selectSQL("select distinct SL.ListCode from AttendanceDetail AD INNER JOIN StandardListMaster SL ON SL.Listid=AD.session where AD.upload='X' and " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " between AD.fromdate and AD.todate");
+                    .selectSQL("select distinct SL.ListCode from AttendanceDetail AD INNER JOIN StandardListMaster SL ON SL.Listid=AD.session where AD.upload='X' and " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " between AD.fromdate and AD.todate");
             if (c != null) {
                 while (c.moveToNext()) {
                     session = c.getString(0);
@@ -6076,11 +6075,11 @@ public class BusinessModel extends Application {
                 if (type.equals("SR"))
                     mComputeID.append("SR"
                             + userMasterHelper.getUserMasterBO().getUserid()
-                            + SDUtil.now(SDUtil.DATE_TIME_ID));
+                            + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
                 else if (type.equals("CN"))
                     mComputeID.append("CR"
                             + userMasterHelper.getUserMasterBO().getUserid()
-                            + SDUtil.now(SDUtil.DATE_TIME_ID));
+                            + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
                 if (type.equals("ORD") || type.equals("INV") || type.equals("COL")) {
                     seqNo = 0L;
@@ -6974,7 +6973,7 @@ public class BusinessModel extends Application {
                     invocieHeaderBO.setRetailerName(c.getString(c.getColumnIndex("RetailerName")));
 
                     int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
-                            SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd");
                     final double discountpercentage = CollectionHelper.getInstance(ctx).getDiscountSlabPercent(count + 1);
 
                     double remaingAmount = (invocieHeaderBO.getInvoiceAmount() - (invocieHeaderBO.getAppliedDiscountAmount() + invocieHeaderBO.getPaidAmount())) * discountpercentage / 100;
@@ -7132,7 +7131,7 @@ public class BusinessModel extends Application {
                     + ""
                     + userMasterHelper.getUserMasterBO().getUserid()
                     + ""
-                    + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
 
 
             String columns = "UID,UserId,Date,ReasonID,Remarks,DistributorID";
@@ -7333,7 +7332,7 @@ public class BusinessModel extends Application {
             sb.append("SELECT Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt,");
             sb.append(" Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os ");
             sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
-            sb.append(" Where Inv.InvoiceDate = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sb.append(" Where Inv.InvoiceDate = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             Cursor c = db
                     .selectSQL(sb.toString());
 
@@ -7487,7 +7486,7 @@ public class BusinessModel extends Application {
             );
             db.openDataBase();
             Cursor c = db.selectSQL("select pieceqty,caseQty,outerQty,uomcount,dOuomQty,weight from OrderDetail " +
-                    "where retailerid =" + AppUtils.QT(bo.getRetailerID()));
+                    "where retailerid =" + StringUtils.QT(bo.getRetailerID()));
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     int qty = c.getInt(0) +

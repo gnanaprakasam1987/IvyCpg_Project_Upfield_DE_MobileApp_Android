@@ -120,6 +120,7 @@ import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SlantView;
 import com.ivy.sd.png.view.SpecialFilterFragment;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
@@ -4540,7 +4541,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private void moveToNextScreen() {
 
 
-        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
 
         SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
@@ -4621,7 +4622,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                 if (!orderHelper.isQuickCall) {
                     bmodel.outletTimeStampHelper
-                            .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                            .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                     startActivity(new Intent(StockAndOrder.this,
                             HomeScreenTwo.class));
                 }
@@ -5745,7 +5746,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         if (!orderHelper.isQuickCall) {
                             bmodel.saveModuleCompletion(OrderedFlag);
                             bmodel.outletTimeStampHelper
-                                    .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                                    .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                             startActivity(new Intent(StockAndOrder.this,
                                     HomeScreenTwo.class));
                         }

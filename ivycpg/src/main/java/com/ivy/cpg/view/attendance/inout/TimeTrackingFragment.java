@@ -35,7 +35,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
@@ -43,6 +42,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -296,7 +296,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 @Override
                 public void onClick(View v) {
                     if (startLocationService(holder.nonFieldTwoBO.getReason())) {
-                        holder.nonFieldTwoBO.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
+                        holder.nonFieldTwoBO.setInTime(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
                         attendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO, getActivity());
 
                         loadNonFieldTwoDetails();
@@ -308,7 +308,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 @Override
                 public void onClick(View v) {
 
-                    holder.nonFieldTwoBO.setOutTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
+                    holder.nonFieldTwoBO.setOutTime(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
                     attendanceHelper.updateNonFieldWorkTwoDetail(holder.nonFieldTwoBO, getActivity());
                     loadNonFieldTwoDetails();
 
@@ -370,9 +370,9 @@ public class TimeTrackingFragment extends IvyBaseFragment {
 
                         NonFieldTwoBo addNonFieldTwoBo = new NonFieldTwoBo();
                         addNonFieldTwoBo.setId(bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                                + SDUtil.now(SDUtil.DATE_TIME_ID) + "");
-                        addNonFieldTwoBo.setFromDate(SDUtil.now(SDUtil.DATE_GLOBAL));
-                        addNonFieldTwoBo.setInTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
+                                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID) + "");
+                        addNonFieldTwoBo.setFromDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+                        addNonFieldTwoBo.setInTime(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
                         addNonFieldTwoBo.setOutTime(null);
                         addNonFieldTwoBo.setRemarks(remarks);
                         addNonFieldTwoBo.setReason(reasonid);

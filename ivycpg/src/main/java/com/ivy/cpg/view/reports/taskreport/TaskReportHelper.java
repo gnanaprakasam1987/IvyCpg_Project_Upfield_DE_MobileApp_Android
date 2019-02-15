@@ -5,9 +5,9 @@ import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.cpg.view.task.TaskDataBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -147,7 +147,7 @@ public class TaskReportHelper {
         String condtionStr = "";
 
         if(bmodel.configurationMasterHelper.TASK_PLANNED == 1) {
-            String date = SDUtil.now(SDUtil.DATE_GLOBAL);
+            String date = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
             condtionStr = " where Date = "+QT(date);
         }
 
@@ -240,7 +240,7 @@ public class TaskReportHelper {
         db.createDataBase();
         db.openDataBase();
 
-        String condtionStr = " where userid!=0 and Date = "+QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+        String condtionStr = " where userid!=0 and Date = "+QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
         Cursor c = db
                 .selectSQL("SELECT UserId, Date FROM RetailerClientMappingMaster "+condtionStr+" ORDER BY UserId");

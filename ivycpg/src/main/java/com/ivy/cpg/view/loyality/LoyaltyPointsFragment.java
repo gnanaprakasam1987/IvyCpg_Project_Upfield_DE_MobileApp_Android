@@ -50,6 +50,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -665,8 +666,8 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
             //progressDialogue.dismiss();
             if (result == Boolean.TRUE) {
 
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.saved_successfully),
                         Toast.LENGTH_SHORT).show();

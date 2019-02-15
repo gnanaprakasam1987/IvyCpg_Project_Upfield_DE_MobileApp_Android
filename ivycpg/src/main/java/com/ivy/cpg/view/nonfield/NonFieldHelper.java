@@ -9,11 +9,11 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LeaveRuleBO;
 import com.ivy.sd.png.bo.LeaveSpinnerBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -254,13 +254,13 @@ public class NonFieldHelper {
             int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
 
             String tid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID) + "";
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID) + "";
 
             for (int i = 0; i < nonFieldList.size(); i++) {
 
                 String values = bmodel.QT(tid)
                         + ","
-                        + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                         + ","
                         + nonFieldList.get(i).getReasonID()
                         + ","
@@ -721,7 +721,7 @@ public class NonFieldHelper {
             int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
 
             String tid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID) + "";
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID) + "";
 
             for (int i = 0; i < nonFieldList.size(); i++) {
                 String status = "R";
@@ -730,7 +730,7 @@ public class NonFieldHelper {
 
                 String values = bmodel.QT(tid)
                         + ","
-                        + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                         + ","
                         + nonFieldList.get(i).getReasonID()
                         + ","
@@ -788,13 +788,13 @@ public class NonFieldHelper {
 
 
             Cursor c1;
-            String currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
+            String currentDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
             String condition, query;
             switch (sesCode) {
                 case "FN":
 
                     if (currentDate.equals(fromDate) || currentDate.equals(toDate))
-                        condition = " AND " + bmodel.QT(SDUtil.now(SDUtil.TIME)) + "<=" + bmodel.QT(bmodel.getStandardListNameByCode("ATTENDANCE_CUTOFF"));
+                        condition = " AND " + bmodel.QT(DateTimeUtils.now(DateTimeUtils.TIME)) + "<=" + bmodel.QT(bmodel.getStandardListNameByCode("ATTENDANCE_CUTOFF"));
                     else
                         condition = " AND Session=" + sessionId;
 
@@ -817,7 +817,7 @@ public class NonFieldHelper {
                 case "AN":
 
                     if (currentDate.equals(fromDate) || currentDate.equals(toDate))
-                        condition = " AND " + bmodel.QT(SDUtil.now(SDUtil.TIME)) + ">" + bmodel.QT(bmodel.getStandardListNameByCode("ATTENDANCE_CUTOFF"));
+                        condition = " AND " + bmodel.QT(DateTimeUtils.now(DateTimeUtils.TIME)) + ">" + bmodel.QT(bmodel.getStandardListNameByCode("ATTENDANCE_CUTOFF"));
                     else
                         condition = " AND Session=" + sessionId;
 

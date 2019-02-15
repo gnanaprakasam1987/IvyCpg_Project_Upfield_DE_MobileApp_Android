@@ -31,10 +31,10 @@ import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -326,8 +326,8 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
             //progressDialogue.dismiss();
             if (result == Boolean.TRUE) {
 
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.deleted_sucessfully),
                         Toast.LENGTH_SHORT).show();
@@ -362,8 +362,8 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
             return true;
         } else if (i == R.id.menu_add) {
 
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+            if ((DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                            .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                     "yyyy/MM/dd") != 0)
                     && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
                 Toast.makeText(getActivity(),

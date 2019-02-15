@@ -28,6 +28,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -110,7 +111,7 @@ public class DigitalContentAudioFragment extends IvyBaseFragment {
             if (audioList.size() > 0) {
                 Collections.sort(audioList, DigitalContentBO.dateCompartor);
 
-                String today = SDUtil.now(SDUtil.DATE_GLOBAL);
+                String today = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
                 String mCurrentDay = today.split("/")[2];
                 String current_month_year = today.split(mCurrentDay)[0];
                 String current_month = today.split("/")[1];
@@ -340,7 +341,7 @@ public class DigitalContentAudioFragment extends IvyBaseFragment {
             try {
                 startActivity(intent);
 
-                String vStart_Time = "" + SDUtil.now(SDUtil.DATE) + " " + SDUtil.now(SDUtil.TIME);
+                String vStart_Time = "" + DateTimeUtils.now(DateTimeUtils.DATE) + " " + DateTimeUtils.now(DateTimeUtils.TIME);
 
                 DigitalContentHelper.getInstance(getContext()).
                         saveDigitalContentDetails(getContext(),String.valueOf(digitalContentBO.getImageID()),

@@ -17,11 +17,11 @@ import android.widget.TextView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -188,7 +188,7 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
                 // If Config value is 1 then it will load only todays date
                 // otherwise all the planned date with date higher than the downloadDate(UserMaster) will be loaded with Limit 7
                 if (bmodel.configurationMasterHelper.TASK_PLANNED == 1) {
-                    stringVal.add(SDUtil.now(SDUtil.DATE_GLOBAL));
+                    stringVal.add(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
                 } else {
                     stringVal.addAll(bmodel.mRetailerHelper.getMaxDaysInRouteSelection());
                 }

@@ -101,6 +101,7 @@ import com.ivy.sd.png.view.profile.userSelection.UserSelectionDialogue;
 import com.ivy.sd.png.view.profile.orderandinvoicehistory.InvoiceHistoryFragment;
 import com.ivy.sd.png.view.profile.orderandinvoicehistory.OrderHistoryFragment;
 import com.ivy.sd.png.view.profile.otpValidation.OTPValidationDialog;
+import com.ivy.utils.DateTimeUtils;
 
 import org.json.JSONObject;
 
@@ -1579,8 +1580,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private void validationToStartVisit() {
 
         // Downloaded date vs Mobile Date validation.
-        if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd") > 0)
+        if ((DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd") > 0)
                 && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
             Toast.makeText(this,
                     getResources().getString(R.string.next_day_coverage),
@@ -1934,7 +1935,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
 
     private void takePhotoForRetailer() {
-        dateTimeStampForId = SDUtil.now(SDUtil.DATE_TIME_ID);
+        dateTimeStampForId = DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
         bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + dateTimeStampForId));
 
         if (bmodel.synchronizationHelper
@@ -1986,7 +1987,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private boolean validateSequenceSkip(RetailerMasterBO ret) {
         if (!getPreviousRetailerVisitedStatus(ret)) {
             if (ret.getSkipActivatedDate() == null
-                    || !ret.getSkipActivatedDate().equals(SDUtil.now(SDUtil.DATE_GLOBAL))) {
+                    || !ret.getSkipActivatedDate().equals(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))) {
                 if (bmodel.configurationMasterHelper.ret_skip_flag == 1
                         || bmodel.configurationMasterHelper.ret_skip_flag == 2) {
                     callOTPDialog(
@@ -2060,7 +2061,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         try {
             if (ret.getOtpActivatedDate() == null
                     || !ret.getOtpActivatedDate().equals(
-                    SDUtil.now(SDUtil.DATE_GLOBAL))) {
+                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))) {
                 if (ret.getLatitude() == 0 && ret.getLongitude() == 0) {
                     showToastMessage(ret, -1);
                     return false;

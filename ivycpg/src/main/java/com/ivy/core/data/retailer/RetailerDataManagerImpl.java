@@ -12,6 +12,7 @@ import com.ivy.sd.png.bo.RetailerMissedVisitBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.DateTimeUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,7 +23,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -34,7 +34,7 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 
 import static com.ivy.sd.png.provider.ConfigurationMasterHelper.CODE_SHOW_ALL_ROUTE_FILTER;
-import static com.ivy.utils.AppUtils.QT;
+import static com.ivy.utils.StringUtils.QT;
 
 public class RetailerDataManagerImpl implements RetailerDataManager {
 
@@ -130,7 +130,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
                                                     + " LEFT JOIN RetailerClientMappingMaster RC " + (configurationMasterHelper.IS_BEAT_WISE_RETAILER_MAPPING ? " on RC.beatID=RBM.beatId" : " on RC.Rid = A.RetailerId")
 
-                                                    + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) : "")
+                                                    + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) : "")
 
                                                     + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID AND RA.IsPrimary=1"
 
@@ -521,7 +521,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                             HashSet<DateWisePlanBO> plannedRetailerList = retailerBO.getPlannedDates();
                             if (plannedRetailerList != null) {
                                 for (DateWisePlanBO dateWisePlanBO : plannedRetailerList) {
-                                    int isToday = SDUtil.compareDate(dateWisePlanBO.getDate(),
+                                    int isToday = DateTimeUtils.compareDate(dateWisePlanBO.getDate(),
                                             appDataProvider.getUser().getDownloadDate(), "yyyy/MM/dd");
                                     if (isToday == 0) {
                                         retailerBO.setWalkingSequence(dateWisePlanBO.getWalkingSequence());
@@ -620,7 +620,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         initDb();
 
                     Cursor c = mDbUtil
-                            .selectSQL("select distinct SL.ListCode from AttendanceDetail AD INNER JOIN StandardListMaster SL ON SL.Listid=AD.session where AD.upload='X' and " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " between AD.fromdate and AD.todate");
+                            .selectSQL("select distinct SL.ListCode from AttendanceDetail AD INNER JOIN StandardListMaster SL ON SL.Listid=AD.session where AD.upload='X' and " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " between AD.fromdate and AD.todate");
                     if (c != null) {
                         while (c.moveToNext()) {
                             session = c.getString(0);

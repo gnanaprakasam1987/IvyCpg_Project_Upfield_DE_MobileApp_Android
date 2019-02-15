@@ -8,11 +8,11 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -87,7 +87,7 @@ public class AttendanceHelper {
     public boolean checkLeaveAttendance(Context context) {
         try {
             String sessionType = "";
-            String currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
+            String currentDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
 
             DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME);
             db.openDataBase();
@@ -121,10 +121,10 @@ public class AttendanceHelper {
                 String query;
 
                 if (sessionType.equals("FN")) {
-                    condition = " AND " + bmodel.QT(SDUtil.now(SDUtil.TIME)) + "<=" +
+                    condition = " AND " + bmodel.QT(DateTimeUtils.now(DateTimeUtils.TIME)) + "<=" +
                             bmodel.QT(bmodel.getStandardListNameByCode("ATTENDANCE_CUTOFF"));
                 } else if (sessionType.equals("AN")) {
-                    condition = " AND " + bmodel.QT(SDUtil.now(SDUtil.TIME)) + ">" +
+                    condition = " AND " + bmodel.QT(DateTimeUtils.now(DateTimeUtils.TIME)) + ">" +
                             bmodel.QT(bmodel.getStandardListNameByCode("ATTENDANCE_CUTOFF"));
                 }
                 query = "SELECT * FROM StandardListMaster where Listcode = 'LEAVE'  and listid in (select Atd_ID from AttendanceDetail where " +
@@ -155,7 +155,7 @@ public class AttendanceHelper {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT * from AttendanceDetail where DateIn ="
-                            + bmodel.QT((SDUtil.now(SDUtil.DATE_GLOBAL))));
+                            + bmodel.QT((DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))));
             if (c != null) {
                 if (c.getCount() > 0) {
                     c.close();
@@ -183,14 +183,14 @@ public class AttendanceHelper {
             db.createDataBase();
             db.openDataBase();
             String tid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID) + "";
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID) + "";
 
             String columns = "Tid,DateIn,Atd_ID,ReasonID,Timezone,FromDate,ToDate,TimeIn,timespent,status,userid";
             String values = bmodel.QT(tid) + "," + bmodel.QT(date) + ","
                     + atdID + ", " + reasonid + ","
                     + bmodel.QT(bmodel.getTimeZone()) + ","
                     + bmodel.QT(fromDate) + "," + bmodel.QT(toDate) + ","
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_TIME)) + ",'0:0'," + (atdCode != null && atdCode.equals("LEAVE") ? "'S'" : "'R'" + "," + bmodel.userMasterHelper.getUserMasterBO().getUserid());
+                    + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME)) + ",'0:0'," + (atdCode != null && atdCode.equals("LEAVE") ? "'S'" : "'R'" + "," + bmodel.userMasterHelper.getUserMasterBO().getUserid());
 
             db.insertSQL("AttendanceDetail", columns, values);
             db.closeDB();
@@ -257,7 +257,7 @@ public class AttendanceHelper {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT uid , date , intime , outtime , ifnull(remarks,'') , rowid,reasonid from AttendanceTimeDetails where date ="
-                            + bmodel.QT((SDUtil.now(SDUtil.DATE_GLOBAL))) + " or outtime IS NULL and userid=" + userid);
+                            + bmodel.QT((DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))) + " or outtime IS NULL and userid=" + userid);
             if (c != null) {
                 while (c.moveToNext()) {
                     NonFieldTwoBo nonFieldTwoBo = new NonFieldTwoBo();
@@ -299,12 +299,12 @@ public class AttendanceHelper {
                 String inTime = nonFieldTwoBo.getInTime() != null ? nonFieldTwoBo.getInTime() : " ";
 
                 String columns = "uid,date,intime,reasonid,userid,latitude,longitude,counterid,Remarks,upload";
-                String value = AppUtils.QT(nonFieldTwoBo.getId()) + ","
-                        + AppUtils.QT(nonFieldTwoBo.getFromDate()) + ","
-                        + AppUtils.QT(inTime) + ","
+                String value = StringUtils.QT(nonFieldTwoBo.getId()) + ","
+                        + StringUtils.QT(nonFieldTwoBo.getFromDate()) + ","
+                        + StringUtils.QT(inTime) + ","
                         + nonFieldTwoBo.getReason() + "," + userid + ","
-                        + AppUtils.QT(LocationUtil.latitude + "") + "," + AppUtils.QT(LocationUtil.longitude + "") + ","
-                        + bmodel.getCounterId() + "," + AppUtils.QT(nonFieldTwoBo.getRemarks()) + "," + AppUtils.QT("N");
+                        + StringUtils.QT(LocationUtil.latitude + "") + "," + StringUtils.QT(LocationUtil.longitude + "") + ","
+                        + bmodel.getCounterId() + "," + StringUtils.QT(nonFieldTwoBo.getRemarks()) + "," + StringUtils.QT("N");
 
                 db.insertSQL("AttendanceTimeDetails", columns, value);
 
@@ -376,7 +376,7 @@ public class AttendanceHelper {
         db.openDataBase();
 
         String updateSql = "update AttendanceTimeDetails " +
-                "SET intime= " + bmodel.QT(SDUtil.now(SDUtil.TIME)) +
+                "SET intime= " + bmodel.QT(DateTimeUtils.now(DateTimeUtils.TIME)) +
                 " WHERE uid='" + uid + "'";
 
         db.updateSQL(updateSql);

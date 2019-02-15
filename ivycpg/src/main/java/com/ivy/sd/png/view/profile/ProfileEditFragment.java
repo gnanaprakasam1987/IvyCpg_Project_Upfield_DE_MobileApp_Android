@@ -80,12 +80,12 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.RetailerOTPDialog;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.StringUtils;
 
 
 import java.io.File;
@@ -3330,8 +3330,8 @@ public class ProfileEditFragment extends IvyBaseFragment
                     }
                 }
 
-                Uri uri = bmodel.profilehelper.getUriFromFile(AppUtils.photoFolderPath + "/" + imageFileName);
-                cameraFilePath = AppUtils.photoFolderPath + "/" + imageFileName;
+                Uri uri = bmodel.profilehelper.getUriFromFile(FileUtils.photoFolderPath + "/" + imageFileName);
+                cameraFilePath = FileUtils.photoFolderPath + "/" + imageFileName;
                 imageView.setImageDrawable(null);
                 imageView.invalidate();
                 imageView.setImageURI(uri);
@@ -3577,13 +3577,13 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(bmodel.validateInput(editText[i].getText().toString())));
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(bmodel.validateInput(editText[i].getText().toString())));
                     }
                 } else if (configCode.equals(PROFILE_03) && profileConfig.get(i).getModule_Order() == 1) {
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -3591,7 +3591,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -3599,7 +3599,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -3607,7 +3607,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -3656,7 +3656,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString())));
                     }
                 } else if (configCode.equals(PROFILE_41) && profileConfig.get(i).getModule_Order() == 1) {
@@ -3672,7 +3672,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                         if (TextUtils.isEmpty(editText[other1_editText_index].getText().toString()))
                             profileConfig.get(i).setMenuNumber("0");
                         else
-                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                            profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                     editText[other1_editText_index].getText().toString()));
                     } else
                         profileConfig.get(i).setMenuNumber("0");
@@ -3681,14 +3681,14 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(editText[lName1_editText_index].getText().toString())) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 editText[lName1_editText_index].getText().toString()));
                     }
                 } else if (configCode.equals(PROFILE_10) && profileConfig.get(i).getModule_Order() == 1) {
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -3696,7 +3696,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -3704,7 +3704,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -3721,7 +3721,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                         if (TextUtils.isEmpty(editText[other2_editText_index].getText().toString()))
                             profileConfig.get(i).setMenuNumber("0");
                         else
-                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                            profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                     editText[other2_editText_index].getText().toString()));
                     } else
                         profileConfig.get(i).setMenuNumber("0");
@@ -3729,7 +3729,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(editText[lName2_editText_index].getText().toString())) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 editText[lName2_editText_index].getText().toString()));
                     }
                 } else if (configCode.equals(PROFILE_13) && profileConfig.get(i).getModule_Order() == 1) {
@@ -3770,14 +3770,14 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(editText[i].getText().toString())) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 editText[i].getText().toString()));
                     }
                 } else if (configCode.equals(PROFILE_40) && profileConfig.get(i).getModule_Order() == 1) {
                     if (TextUtils.isEmpty(editText[i].getText().toString())) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 editText[i].getText().toString()));
                     }
                 } else if (configCode.equals(PROFILE_25) && profileConfig.get(i).getModule_Order() == 1) {
@@ -3791,21 +3791,21 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(editText[i].getText().toString())) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 editText[i].getText().toString()));
                     }
                 } else if (configCode.equals(PROFILE_26) && profileConfig.get(i).getModule_Order() == 1) {
                     if (TextUtils.isEmpty(editText[i].getText().toString())) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 editText[i].getText().toString()));
                     }
                 } else if (configCode.equals(PROFILE_27) && profileConfig.get(i).getModule_Order() == 1) {
                     if (TextUtils.isEmpty(editText[i].getText().toString())) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 editText[i].getText().toString()));
                     }
                 } else if (configCode.equals(PROFILE_28) && profileConfig.get(i).getModule_Order() == 1) {
@@ -3813,7 +3813,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                         if (TextUtils.isEmpty(editText[i].getText().toString())) {
                             profileConfig.get(i).setMenuNumber("");
                         } else {
-                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                            profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                     editText[i].getText().toString()));
                         }
                     } else {
@@ -3828,7 +3828,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                         if (TextUtils.isEmpty(editText[i].getText().toString())) {
                             profileConfig.get(i).setMenuNumber("");
                         } else {
-                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                            profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                     editText[i].getText().toString()));
                         }
                     } else {
@@ -3843,7 +3843,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                         if (TextUtils.isEmpty(editText[i].getText().toString())) {
                             profileConfig.get(i).setMenuNumber("");
                         } else {
-                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                            profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                     editText[i].getText().toString()));
                         }
                     } else {
@@ -3858,7 +3858,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                         if (TextUtils.isEmpty(editText[i].getText().toString())) {
                             profileConfig.get(i).setMenuNumber("");
                         } else {
-                            profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                            profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                     editText[i].getText().toString()));
                         }
                     } else {
@@ -3878,7 +3878,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(editText[i].getText().toString())) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 editText[i].getText().toString()));
                     }
                 } else if (configCode.equals(PROFILE_62) && profileConfig.get(i).getModule_Order() == 1) {
@@ -3891,7 +3891,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -3899,7 +3899,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -3907,7 +3907,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -3916,7 +3916,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                             flExpDateTextView.getText().toString().equalsIgnoreCase("Select Date")) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(flExpDateTextView.getText().toString()))
                         );
                     }
@@ -3925,7 +3925,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                             dlExpDateTextView.getText().toString().equalsIgnoreCase("Select Date")) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(dlExpDateTextView.getText().toString()))
                         );
                     }
@@ -3933,7 +3933,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -3941,7 +3941,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -3949,7 +3949,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -3957,7 +3957,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -3965,7 +3965,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {
-                        profileConfig.get(i).setMenuNumber(SDUtil.removeQuotes(
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -4178,7 +4178,7 @@ public class ProfileEditFragment extends IvyBaseFragment
             try {
                 Intent intent = new Intent(getActivity(), CameraActivity.class);
                 intent.putExtra(CameraActivity.QUALITY, 40);
-                intent.putExtra(CameraActivity.PATH, AppUtils.photoFolderPath + "/" + ((!isForLatLong) ? imageFileName : bmodel.latlongImageFileName));
+                intent.putExtra(CameraActivity.PATH, FileUtils.photoFolderPath + "/" + ((!isForLatLong) ? imageFileName : bmodel.latlongImageFileName));
                 startActivityForResult(intent, (!isForLatLong) ? CAMERA_REQUEST_CODE : LATLONG_CAMERA_REQUEST_CODE);
 
             } catch (Exception e) {
@@ -4211,7 +4211,7 @@ public class ProfileEditFragment extends IvyBaseFragment
         try {
             String[] imgPaths = retailerObj.getProfileImagePath().split("/");
             String path = imgPaths[imgPaths.length - 1];
-            Uri uri = bmodel.profilehelper.getUriFromFile(AppUtils.photoFolderPath + "/" + path);
+            Uri uri = bmodel.profilehelper.getUriFromFile(FileUtils.photoFolderPath + "/" + path);
             imageView.invalidate();
             imageView.setImageURI(uri);
         } catch (Exception e) {

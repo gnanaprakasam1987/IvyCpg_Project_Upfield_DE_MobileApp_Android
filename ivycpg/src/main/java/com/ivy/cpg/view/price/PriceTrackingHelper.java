@@ -6,10 +6,10 @@ import android.database.Cursor;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +108,7 @@ public class PriceTrackingHelper {
             sb.append(" AND distributorid=" + bmodel.getRetailerMasterBO().getDistributorId());
             if (!bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN) {
                 sb.append(" AND date = ");
-                sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                sb.append(QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
                 sb.append(" and upload= 'N'");
             }
 
@@ -238,13 +238,13 @@ public class PriceTrackingHelper {
 
             tid = bmodel.getAppDataProvider().getUser().getUserid() + ""
                     + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + ""
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             // delete transaction if exist
             sql = "SELECT Tid FROM " + mPriceChangeHeader
                     + " WHERE RetailerId = "
                     + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
-                    + " AND Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                    + " AND Date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
                     //+ " AND upload='N'";
 
 
@@ -269,7 +269,7 @@ public class PriceTrackingHelper {
 
             values = QT(tid) + ","
                     + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + ","
-                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                     + QT(bmodel.getTimeZone()) + ","
                     + bmodel.retailerMasterBO.getDistributorId() + ","
                     + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","

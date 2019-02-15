@@ -30,12 +30,12 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CompanyBO;
 import com.ivy.sd.png.bo.CompetitorBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -258,8 +258,8 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
 //                startActivity(new Intent(getActivity(), CSHomeScreen.class));
                 getActivity().finish();
             } else {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 if (isFromChild)
                     startActivity(new Intent(getActivity(), HomeScreenTwo.class)
                             .putExtra("isStoreMenu", true));
@@ -289,8 +289,8 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
                 competitorTrackingHelper.saveCompetitor();
                 if (!calledBy.equals("3"))
                     bmodel.saveModuleCompletion(HomeScreenTwo.MENU_COMPETITOR);
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException(e);

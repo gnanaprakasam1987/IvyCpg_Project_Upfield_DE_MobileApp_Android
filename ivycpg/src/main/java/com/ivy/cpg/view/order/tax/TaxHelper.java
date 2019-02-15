@@ -12,7 +12,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -252,10 +252,10 @@ public class TaxHelper implements TaxInterface {
         if (mBillTaxList != null) {
             String columns = "RetailerId,invoiceid,taxRate,taxType,taxValue";
             for (TaxBO taxBO : mBillTaxList) {
-                String sb = (AppUtils.QT(mBusinessModel.getRetailerMasterBO()
+                String sb = (StringUtils.QT(mBusinessModel.getRetailerMasterBO()
                         .getRetailerID()) + ",") +
-                        AppUtils.QT(invoiceid) + "," + taxBO.getTaxRate() + "," +
-                        AppUtils.QT(taxBO.getTaxType()) + ","
+                        StringUtils.QT(invoiceid) + "," + taxBO.getTaxRate() + "," +
+                        StringUtils.QT(taxBO.getTaxType()) + ","
                         + taxBO.getTotalTaxAmount();
                 db.insertSQL("InvoiceTaxDetails", columns, sb);
 
@@ -277,10 +277,10 @@ public class TaxHelper implements TaxInterface {
         if (mBillTaxList != null) {
             String columns = "RetailerId,orderid,taxRate,taxType,taxValue,pid,taxName,parentType,groupId";
             for (TaxBO taxBO : mBillTaxList) {
-                String sb = (AppUtils.QT(mBusinessModel.getRetailerMasterBO()
+                String sb = (StringUtils.QT(mBusinessModel.getRetailerMasterBO()
                         .getRetailerID()) + ",") +
                         orderId + "," + taxBO.getTaxRate() + "," +
-                        AppUtils.QT(taxBO.getTaxType()) + ","
+                        StringUtils.QT(taxBO.getTaxType()) + ","
                         + taxBO.getTotalTaxAmount();
                 db.insertSQL("OrderTaxDetails", columns, sb);
 
@@ -366,7 +366,7 @@ public class TaxHelper implements TaxInterface {
             String sb = "select distinct IT.taxType,IT.taxRate,slm.flex1,TM.ParentType from OrderTaxDetails IT" +
                     " inner join taxmaster TM on IT.groupid=TM.Groupid and IT.TaxType=TM.taxtype " +
                     " left join standardlistmaster slm on TM.taxtype=slm.listid " +
-                    " where orderid=" + AppUtils.QT(invoiceid) + " order by IT.taxType,IT.taxRate,slm.flex1 desc";
+                    " where orderid=" + StringUtils.QT(invoiceid) + " order by IT.taxType,IT.taxRate,slm.flex1 desc";
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 int groupid = 0;
@@ -446,7 +446,7 @@ public class TaxHelper implements TaxInterface {
             String sb = "select distinct IT.taxType,pid,IT.taxRate,IT.isFreeProduct from OrderTaxDetails IT" +
                     " left join taxmaster TM on IT.groupid=TM.Groupid" +
                     " left join standardlistmaster slm on TM.taxtype=slm.listid " +
-                    " where orderid=" + AppUtils.QT(invoiceid) + " and IT.isFreeProduct=0 order by IT.taxType,IT.taxRate";
+                    " where orderid=" + StringUtils.QT(invoiceid) + " and IT.isFreeProduct=0 order by IT.taxType,IT.taxRate";
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 String groupid = "";
@@ -504,7 +504,7 @@ public class TaxHelper implements TaxInterface {
             String sb = "select distinct IT.taxType,pid,IT.taxRate,IT.isFreeProduct from invoicetaxdetails IT" +
                     " left join taxmaster TM on IT.groupid=TM.Groupid" +
                     " left join standardlistmaster slm on TM.taxtype=slm.listid " +
-                    " where invoiceid=" + AppUtils.QT(invoiceid) + "and IT.isFreeProduct=1 order by IT.taxType,IT.taxRate";
+                    " where invoiceid=" + StringUtils.QT(invoiceid) + "and IT.isFreeProduct=1 order by IT.taxType,IT.taxRate";
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 String groupid = "";
@@ -717,7 +717,7 @@ public class TaxHelper implements TaxInterface {
 
     public void updateInvoiceIdInProductLevelTax(DBUtil db, String invid,
                                                  String orderId) {
-        String query = "update InvoiceTaxDetails set InvoiceId=" + AppUtils.QT(invid)
+        String query = "update InvoiceTaxDetails set InvoiceId=" + StringUtils.QT(invid)
                 + " where OrderId=" + orderId;
         db.updateSQL(query);
 
@@ -787,7 +787,7 @@ public class TaxHelper implements TaxInterface {
                 sb.append("where orderid=").append(OrderHelper.getInstance(mContext).getOrderId());
             } else {
                 sb.append("select sum(taxValue) from InvoiceTaxDetails ");
-                sb.append("where invoiceid=").append(AppUtils.QT(mBusinessModel.invoiceNumber));
+                sb.append("where invoiceid=").append(StringUtils.QT(mBusinessModel.invoiceNumber));
             }
             Cursor c = db.selectSQL(sb.toString());
             if (c.moveToFirst()) {

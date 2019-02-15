@@ -4,11 +4,11 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -125,7 +125,7 @@ public class VanLoadStockApplyHelper {
             StringBuffer sb = new StringBuffer();
             sb.append("select distinct A.pid,A.caseQty,A.pcsQty,B.pname,B.psname,B.mrp,B.dUomQty,A.uid,A.outerQty,B.dOuomQty,");
             sb.append("A.BatchId,o.isstarted,A.isFree from VanLoad A inner join productmaster B on A.pid=B.pid  ");
-            sb.append(" left join Odameter o where A.uid=" + AppUtils.QT(uid)
+            sb.append(" left join Odameter o where A.uid=" + StringUtils.QT(uid)
                     + " and A.upload='N'");
 
             Cursor c = db.selectSQL(sb.toString());
@@ -137,7 +137,7 @@ public class VanLoadStockApplyHelper {
                         if (isAlreadyStockAvailable(c.getString(0), c.getString(10), db)) {
                             String sql = "update StockInHandMaster set upload='N',qty=qty+"
                                     + totalQty + " where pid=" + c.getString(0)
-                                    + " and batchid=" + AppUtils.QT(c.getString(10));
+                                    + " and batchid=" + StringUtils.QT(c.getString(10));
                             db.executeQ(sql);
                         } else {
                             String columns = "pid,batchid,qty";
@@ -154,7 +154,7 @@ public class VanLoadStockApplyHelper {
                         if (isAlreadyFreeStockAvailable(c.getString(0), c.getString(10), db)) {
                             String sql = "update FreeStockInHandMaster set upload='N',qty=qty+"
                                     + totalQty + " where pid=" + c.getString(0)
-                                    + " and batchid=" + AppUtils.QT(c.getString(10));
+                                    + " and batchid=" + StringUtils.QT(c.getString(10));
                             db.executeQ(sql);
                         } else {
                             String columns = "pid,batchid,qty";
@@ -224,8 +224,8 @@ public class VanLoadStockApplyHelper {
             String sql1 = "insert into StockApply(uid,date,status,upload) values("
                     + uid
                     + ","
-                    + AppUtils.QT(SDUtil.now(SDUtil.DATE_TIME))
-                    + ",'A'," + AppUtils.QT(upload) + ")";
+                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME))
+                    + ",'A'," + StringUtils.QT(upload) + ")";
             db.executeQ(sql1);
 
             db.closeDB();
@@ -245,7 +245,7 @@ public class VanLoadStockApplyHelper {
             );
             db.createDataBase();
             db.openDataBase();
-            db.updateSQL("update vanload set upload='N' where uid=" + AppUtils.QT(uid));
+            db.updateSQL("update vanload set upload='N' where uid=" + StringUtils.QT(uid));
             db.close();
         } catch (Exception e) {
 
@@ -346,7 +346,7 @@ public class VanLoadStockApplyHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select count(distinct pid) from VanLoad" +
-                    " where uid =" + AppUtils.QT(uid));
+                    " where uid =" + StringUtils.QT(uid));
 
             if (c != null) {
                 if (c.moveToNext()) {
@@ -383,8 +383,8 @@ public class VanLoadStockApplyHelper {
             String sql1 = "insert into StockApply(uid,date,status,upload) values("
                     + uid
                     + ","
-                    + AppUtils.QT(SDUtil.now(SDUtil.DATE_TIME))
-                    + ",'C'," + AppUtils.QT(upload) + ")";
+                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME))
+                    + ",'C'," + StringUtils.QT(upload) + ")";
             db.executeQ(sql1);
             db.closeDB();
         } catch (Exception e) {

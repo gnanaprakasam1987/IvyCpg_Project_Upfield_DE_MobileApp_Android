@@ -63,10 +63,10 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -379,7 +379,7 @@ public class SOSFragment extends IvyBaseFragment implements
      */
     private void deleteUnsavedImageFromFolder() {
         for (String imgList : totalImgList) {
-            mBModel.deleteFiles(AppUtils.photoFolderPath,
+            mBModel.deleteFiles(FileUtils.photoFolderPath,
                     imgList);
         }
     }
@@ -496,8 +496,8 @@ public class SOSFragment extends IvyBaseFragment implements
                 if (mSFHelper.getLstSOS_PRJSpecific() != null || totalImgList.size() > 0)
                     showAlertOnBackClick();
                 else {
-                    mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                            .now(SDUtil.TIME));
+                    mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                            .now(DateTimeUtils.TIME));
                     if (isFromChild)
                         startActivity(new Intent(getActivity(), HomeScreenTwo.class)
                                 .putExtra("isStoreMenu", true));
@@ -632,8 +632,8 @@ public class SOSFragment extends IvyBaseFragment implements
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                                .now(SDUtil.TIME));
+                        mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                                .now(DateTimeUtils.TIME));
 
                         if (totalImgList != null)
                             deleteUnsavedImageFromFolder();
@@ -681,14 +681,14 @@ public class SOSFragment extends IvyBaseFragment implements
                     @Override
                     public void onPositiveButtonClick() {
 
-                        mBModel.deleteFiles(AppUtils.photoFolderPath,
+                        mBModel.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
                         if (dialog != null)
                             dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra(CameraActivity.QUALITY, 40);
-                        String path = AppUtils.photoFolderPath + "/" + mImageName;
+                        String path = FileUtils.photoFolderPath + "/" + mImageName;
                         intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 CAMERA_REQUEST_CODE);
@@ -1203,7 +1203,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
                             boolean nFilesThere = mBModel
                                     .checkForNFilesInFolder(
-                                            AppUtils.photoFolderPath,
+                                            FileUtils.photoFolderPath,
                                             1, mFirstName);
                             if (nFilesThere) {
 
@@ -1212,7 +1212,7 @@ public class SOSFragment extends IvyBaseFragment implements
                                 Intent intent = new Intent(getActivity(),
                                         CameraActivity.class);
                                 intent.putExtra(CameraActivity.QUALITY, 40);
-                                String path = AppUtils.photoFolderPath + "/"
+                                String path = FileUtils.photoFolderPath + "/"
                                         + mImageName;
                                 intent.putExtra(CameraActivity.PATH, path);
                                 startActivityForResult(intent,
@@ -1326,7 +1326,7 @@ public class SOSFragment extends IvyBaseFragment implements
                     && (!"null".equals(holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName()))) {
 
                 Glide.with(getActivity())
-                        .load(AppUtils.photoFolderPath + "/" + holder.mSOS.getLocations().get(mSelectedLocationIndex).getImgName())
+                        .load(FileUtils.photoFolderPath + "/" + holder.mSOS.getLocations().get(mSelectedLocationIndex).getImgName())
                         .asBitmap()
                         .centerCrop()
                         .placeholder(R.drawable.ic_photo_camera)
@@ -1377,8 +1377,8 @@ public class SOSFragment extends IvyBaseFragment implements
                 mSFHelper
                         .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOS);
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOS);
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException("" + e);

@@ -9,6 +9,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -220,7 +221,7 @@ public class CollectionReportHelper {
                             " inner join Payment PM on PM.uid=CN.refno" +
                             " left join StandardListMaster SM on PM.cashMode=SM.listid" +
                             " left join RetailerMaster RM on RM.retailerid=CN.retailerID" +
-                            " where id like 'AP%' and CN.date=" + bModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                            " where id like 'AP%' and CN.date=" + bModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             if (c != null) {
                 PaymentBO bo;
                 lstAdvancePayment = new ArrayList<>();

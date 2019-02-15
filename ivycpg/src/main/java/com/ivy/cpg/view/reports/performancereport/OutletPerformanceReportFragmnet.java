@@ -22,12 +22,12 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -275,7 +275,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
         SharedPreferences sharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(getActivity());
         String rptDownload = sharedPrefs.getString("rpt_dwntime", "");
-        if (TimeUnit.MILLISECONDS.toMinutes(getDiffDurationMenu(rptDownload, SDUtil.now(SDUtil.DATE_TIME_NEW))) > bmodel.configurationMasterHelper.refreshMin)
+        if (TimeUnit.MILLISECONDS.toMinutes(getDiffDurationMenu(rptDownload, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))) > bmodel.configurationMasterHelper.refreshMin)
             menu.findItem(R.id.menu_refresh).setVisible(true);
         else
             menu.findItem(R.id.menu_refresh).setVisible(false);
@@ -345,7 +345,7 @@ public class OutletPerformanceReportFragmnet extends IvyBaseFragment implements 
                                     .getDefaultSharedPreferences(getActivity())
                                     .edit();
                             editor.putString("rpt_dwntime",
-                                    SDUtil.now(SDUtil.DATE_TIME_NEW));
+                                    DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
                             editor.commit();
 
                         }

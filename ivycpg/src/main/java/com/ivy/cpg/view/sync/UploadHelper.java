@@ -26,11 +26,11 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.network.TLSSocketFactory;
 
@@ -298,7 +298,7 @@ public class UploadHelper {
 
 
             if (businessModel.configurationMasterHelper.SHOW_DATA_UPLOAD_STATUS) {
-                String id = SDUtil.now(SDUtil.DATE_TIME);
+                String id = DateTimeUtils.now(DateTimeUtils.DATE_TIME);
                 Iterator<String> keyItr = jsonObjData.keys();
                 while (keyItr.hasNext()) {
                     String key = keyItr.next();
@@ -342,7 +342,7 @@ public class UploadHelper {
                         .getUserMasterBO().getOrganizationId());
                 jsonFormatter.addParameter("ParentPositionIds", businessModel.getUserParentPosition());
                 if (businessModel.synchronizationHelper.isDayClosed()) {
-                    int varianceDwnDate = SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),
+                    int varianceDwnDate = DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(),
                             "yyyy/MM/dd");
                     if (varianceDwnDate == 0) {
@@ -533,7 +533,7 @@ public class UploadHelper {
         MyjsonarrayPostRequest jsonObjectRequest;
 
         uniqueTransactionID = businessModel.userMasterHelper.getUserMasterBO().getUserid()
-                + SDUtil.now(SDUtil.DATE_TIME_ID);
+                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
 
         try {
@@ -580,7 +580,7 @@ public class UploadHelper {
                     headers.put("Authorization", "OAuth " + access_token);
                     headers.put("Content_Type", "application/json");
                     if (businessModel.synchronizationHelper.isDayClosed()) {
-                        int varianceDwnDate = SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),
+                        int varianceDwnDate = DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(),
                                 "yyyy/MM/dd");
                         if (varianceDwnDate == 0) {

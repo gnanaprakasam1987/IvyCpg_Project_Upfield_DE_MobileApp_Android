@@ -41,6 +41,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -993,21 +994,21 @@ public class ReturnFragment extends IvyBaseFragment {
                     && holder.reasonBO.getOuterQty() == 0) {
 
                 holder.mfgDate.setText(DateUtil.convertFromServerDateToRequestedFormat(
-                        SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
                 holder.expDate.setText(DateUtil.convertFromServerDateToRequestedFormat(
-                        SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
             } else {
                 holder.mfgDate
                         .setText((holder.reasonBO.getMfgDate() == null) ? DateUtil
                                 .convertFromServerDateToRequestedFormat(
-                                        SDUtil.now(SDUtil.DATE_GLOBAL),
+                                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                         outPutDateFormat) : DateUtil.convertFromServerDateToRequestedFormat(
                                 holder.reasonBO.getMfgDate(),
                                 ConfigurationMasterHelper.outDateFormat));
                 holder.expDate
                         .setText((holder.reasonBO.getExpDate() == null) ? DateUtil
                                 .convertFromServerDateToRequestedFormat(
-                                        SDUtil.now(SDUtil.DATE_GLOBAL),
+                                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                         outPutDateFormat) : DateUtil.convertFromServerDateToRequestedFormat(
                                 holder.reasonBO.getExpDate(),
                                 ConfigurationMasterHelper.outDateFormat));

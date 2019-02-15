@@ -13,12 +13,11 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import io.reactivex.Completable;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 
-import static com.ivy.sd.png.commons.SDUtil.DATE_GLOBAL;
-import static com.ivy.sd.png.commons.SDUtil.now;
-import static com.ivy.utils.AppUtils.QT;
+import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
+import static com.ivy.utils.DateTimeUtils.now;
+import static com.ivy.utils.StringUtils.QT;
 
 public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManager {
 

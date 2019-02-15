@@ -3,9 +3,9 @@ package com.ivy.sd.png.view.profile.otpValidation;
 import android.content.Context;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 public class OTPValidationHelper {
 
@@ -25,11 +25,11 @@ public class OTPValidationHelper {
 
             if (mType == 1)
                 query = "UPDATE RetailerMaster SET StoreOTPActivated = '"
-                        + SDUtil.now(SDUtil.DATE_GLOBAL)
+                        + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)
                         + "'  WHERE RetailerID = '" + mRetailerId + "'";
             else if (mType == 2)
                 query = "UPDATE RetailerMaster SET SkipOTPActivated = '"
-                        + SDUtil.now(SDUtil.DATE_GLOBAL)
+                        + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)
                         + "'  WHERE RetailerID = '" + mRetailerId + "'";
 
             if (!query.equals(""))

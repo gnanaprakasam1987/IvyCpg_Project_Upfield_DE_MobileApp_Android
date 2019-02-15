@@ -12,12 +12,12 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SyncRetailerBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.MyThread;
 import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.List;
 import java.util.Vector;
@@ -94,7 +94,7 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
                     retailerIds.append(retailerMasterBO.getRetailerID());
                 }
             }
-            if (retailerIds.length() > 0 && mBModel.hasPendingInvoice(SDUtil.now(SDUtil.DATE_GLOBAL), retailerIds.toString())) {
+            if (retailerIds.length() > 0 && mBModel.hasPendingInvoice(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), retailerIds.toString())) {
 
                 Toast.makeText(mContext, mContext.getResources().getString(R.string.collection_mandatory), Toast.LENGTH_SHORT).show();
                 return;

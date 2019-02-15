@@ -12,6 +12,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -148,7 +149,7 @@ public class DistributorMasterHelper {
             db.openDataBase();
 
             String id = bmodel.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID));
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
             if (isEditDistributorStockCheck()) {
                 Cursor closingStockCursor = db
                         .selectSQL("select UId from DistStockCheckHeader where DistId='"
@@ -166,7 +167,7 @@ public class DistributorMasterHelper {
 
             String columns = "UId,DistId,Date,DownloadedDate,Upload";
 
-            String values = (id) + ", " + getDistributor().getDId() + ", " + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+            String values = (id) + ", " + getDistributor().getDId() + ", " + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + ", " + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()) + ", "
                     + bmodel.QT("N");
 
@@ -218,7 +219,7 @@ public class DistributorMasterHelper {
             db.openDataBase();
 
             String id = bmodel.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID));
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
             if (isEditDistributorOrder()) {
                 Cursor orderCursor = db
                         .selectSQL("select UId from " + DataMembers.tbl_distributor_order_header + " where DistId='"
@@ -235,7 +236,7 @@ public class DistributorMasterHelper {
 
             String columns = "UId,DistId,Date,DownloadedDate,Upload,TotalValue,LPC,DeliveryDate";
 
-            String values = (id) + ", " + getDistributor().getDId() + ", " + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+            String values = (id) + ", " + getDistributor().getDId() + ", " + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + ", " + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()) + ", "
                     + bmodel.QT("N") + ", " + bmodel.QT(SDUtil.format(bmodel.getOrderHeaderBO().getOrderValue(), 2, 0) + "") + ", " + bmodel.getOrderHeaderBO().getLinesPerCall()
                     + ", " + bmodel.QT(bmodel.getOrderHeaderBO().getDeliveryDate());

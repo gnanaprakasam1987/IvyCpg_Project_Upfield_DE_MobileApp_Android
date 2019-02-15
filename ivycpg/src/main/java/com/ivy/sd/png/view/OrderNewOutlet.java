@@ -78,6 +78,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -1532,7 +1533,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                 showDialog(0);
             } else {
                 bmodel.outletTimeStampHelper
-                        .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                        .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                 finish();
             }
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
@@ -2251,7 +2252,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                     if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), OrderedFlag)) {
                         bmodel.saveModuleCompletion(OrderedFlag);
                         bmodel.outletTimeStampHelper
-                                .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                                .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                         /*startActivity(new Intent(OrderNewOutlet.this,
                                 HomeScreenTwo.class));*/
                         finish();

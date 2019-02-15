@@ -14,8 +14,8 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 
@@ -178,7 +178,7 @@ public class DamageReturnDetail extends IvyBaseFragment {
             holder.deliveryStkBO = items.get(position);
 
             holder.tvwpsname.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-            if (AppUtils.isEmptyString(holder.deliveryStkBO.getProductShortName()))
+            if (StringUtils.isEmptyString(holder.deliveryStkBO.getProductShortName()))
                 holder.tvwpsname.setText(holder.deliveryStkBO.getProductName());
 
             holder.tvwpsname.setText(holder.deliveryStkBO.getProductShortName());

@@ -20,8 +20,8 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.cpg.view.order.catalog.CatalogOrder;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6218,7 +6218,7 @@ public class ConfigurationMasterHelper {
             db.openDataBase();
 
             Cursor c = db.selectSQL("select RField from " + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + AppUtils.QT(ConfigurationMasterHelper.CODE_CHECK_DIGITAL_SIZE));
+                    + " where hhtCode=" + StringUtils.QT(ConfigurationMasterHelper.CODE_CHECK_DIGITAL_SIZE));
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     this.DIGITAL_CONTENT_SIZE = c.getLong(0);

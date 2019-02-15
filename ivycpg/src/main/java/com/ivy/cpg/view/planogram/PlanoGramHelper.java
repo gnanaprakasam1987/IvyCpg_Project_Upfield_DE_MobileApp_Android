@@ -9,10 +9,10 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.ParentLevelBo;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -151,7 +151,7 @@ public class PlanoGramHelper {
                         + str
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " AND "
-                        + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                         + " BETWEEN P.StartDate AND P.EndDate"
                         + " WHERE PM1.PLid IN (SELECT ProductFilter1 FROM ConfigActivityFilter"
                         + " WHERE ActivityCode ='" + moduleName + "')";
@@ -190,7 +190,7 @@ public class PlanoGramHelper {
                         + str
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " AND "
-                        + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                         + " BETWEEN P.StartDate AND P.EndDate"
                         + " WHERE PM1.PLid IN (SELECT ProductFilter1 FROM ConfigActivityFilter"
                         + " WHERE ActivityCode='" + moduleName + "')";
@@ -219,7 +219,7 @@ public class PlanoGramHelper {
                         + str
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " AND "
-                        + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                         + " BETWEEN P.StartDate AND P.EndDate"
                         + " WHERE PM1.PLid IN (SELECT ProductFilter1 FROM ConfigActivityFilter"
                         + " WHERE ActivityCode= '" + moduleName + "')";
@@ -295,7 +295,7 @@ public class PlanoGramHelper {
                         + " LEFT JOIN StandardListMaster STM  on STM.Listid = MP.StoreLocId"
                         + " LEFT JOIN ProductMaster PM ON PM.PID=MP.PID"
                         + " WHERE" + query1 + " AND "
-                        + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                         + " BETWEEN P.startdate AND P.enddate";
             } else {
                 query = "SELECT ifnull(PM.Pid,0) ,MP.MappingId as PlanogramID, P.PLDesc, PI.ImgName,0,0, PM.PName,PI.ImgId,PM.ParentHierarchy"
@@ -306,7 +306,7 @@ public class PlanoGramHelper {
                         + " WHERE"
                         + " MP.RID ='0'"
                         + " AND "
-                        + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                         + " BETWEEN P.startdate AND P.enddate";
             }
 
@@ -352,7 +352,7 @@ public class PlanoGramHelper {
             String tid = "";
             String sql = "SELECT Tid FROM PlanogramHeader WHERE RetailerId = "
                     + retailerId + " AND Date = "
-                    + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                    + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
             Cursor orderHeaderCursor = db.selectSQL(sql);
             if (orderHeaderCursor != null) {
@@ -496,7 +496,7 @@ public class PlanoGramHelper {
 
             tid = mBModel.getAppDataProvider().getUser().getUserid() + ""
                     + mBModel.getAppDataProvider().getRetailMaster().getRetailerID() + ""
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             // delete transaction if exist
             headerCursor = db
@@ -507,7 +507,7 @@ public class PlanoGramHelper {
                             + mBModel.getAppDataProvider().getRetailMaster().getDistributorId()
                             + " AND CounterId = 0"
                             + " AND Date = "
-                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
             if (headerCursor.getCount() > 0) {
                 headerCursor.moveToNext();
@@ -553,7 +553,7 @@ public class PlanoGramHelper {
             if (isData) {
                 values = QT(tid) + ","
                         + mBModel.getAppDataProvider().getRetailMaster().getRetailerID() + ","
-                        + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                        + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                         + QT(mBModel.getTimeZone()) + ","
                         + mBModel.getAppDataProvider().getUser().getUserid()
                         + "," + QT(refId) + ","

@@ -28,6 +28,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.UpdatePaymentByDateInterface;
 import com.ivy.sd.png.model.UpdatePaymentsInterface;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -117,7 +118,7 @@ public class CashModeFragment extends IvyBaseFragment implements UpdatePaymentsI
             mPaymentNoET.setText(mPaymentBO.getChequeNumber());
         }
 
-        mUpdatePaymentInterface.updatePaymentDetails(SDUtil.now(SDUtil.DATE_GLOBAL));
+        mUpdatePaymentInterface.updatePaymentDetails(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
         mPaymentNoET.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {

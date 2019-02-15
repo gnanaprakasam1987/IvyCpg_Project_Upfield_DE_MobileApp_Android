@@ -4,10 +4,10 @@ import android.content.Context;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 /**
  * Created by dharmapriya.k on 25-09-2015.
@@ -60,7 +60,7 @@ public class DistTimeStampHeaderHelper {
             db.createDataBase();
             db.openDataBase();
             String columns = " UId , DistId , Date , TimeIn , TimeOut ,Latitude,Longitude,DownloadedDate,Upload";
-            setUid(QT("DTS" + SDUtil.now(SDUtil.DATE_TIME_ID)));
+            setUid(QT("DTS" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)));
 
 
             String values = getUid() + ","
@@ -92,7 +92,7 @@ public class DistTimeStampHeaderHelper {
             );
             db.createDataBase();
             db.openDataBase();
-            String dateTime = SDUtil.now(SDUtil.DATE_GLOBAL) + " " + timeOut;
+            String dateTime = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL) + " " + timeOut;
             String query = "UPDATE " + DataMembers.tbl_DistTimeStampHeader + " SET TimeOut = '" + dateTime
                     + "' WHERE DistId = '"
                     + bmodel.distributorMasterHelper.getDistributor().getDId()
@@ -152,7 +152,7 @@ public class DistTimeStampHeaderHelper {
             );
             db.createDataBase();
             db.openDataBase();
-            String dateTime = SDUtil.now(SDUtil.DATE_GLOBAL) + " " + timeOut;
+            String dateTime = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL) + " " + timeOut;
             String query = "UPDATE " + DataMembers.tbl_DistTimeStampDetails + " SET TimeOut = '" + dateTime
                     + "'  WHERE TimeIn = " + timeInModuleWise + " AND UID = " + getUid();
             db.updateSQL(query);

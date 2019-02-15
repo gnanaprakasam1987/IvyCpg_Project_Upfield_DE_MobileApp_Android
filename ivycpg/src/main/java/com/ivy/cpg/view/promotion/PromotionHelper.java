@@ -6,13 +6,12 @@ import android.database.Cursor;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -149,7 +148,7 @@ public class PromotionHelper {
 
             c = db.selectSQL("select DISTINCT PPM.PromoId,PPM.PId,PPM.PromoName,PM.MappingId,SLM.listname,P.PName,PMM.StartDate,PMM.EndDate,P.ParentHierarchy"
                     + "  from PromotionMapping PM"
-                    + " inner join PromotionMaster PMM on PM.HId = PMM.HId and " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + " inner join PromotionMaster PMM on PM.HId = PMM.HId and " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " between PMM.StartDate and PMM.EndDate inner join PromotionProductMapping PPM on PPM.PromoId=PM.PromoId"
                     + " left join standardlistmaster SLM on SLM.listid=PPm.PromoTypeLovId "
                     + " left join ProductMaster P on PPM.PId =  P.PID "
@@ -205,14 +204,14 @@ public class PromotionHelper {
         String detailColumns = "Uid,PromotionId,BrandId,IsExecuted,RetailerId,ImageName,reasonid,flag,MappingId,Locid,ExecRatingLovId,PromoQty,imgName,HasAnnouncer,fromDate,toDate,remarks";
         try {
             db.openDataBase();
-            String uid = businessModel.getAppDataProvider().getUser().getUserid() + SDUtil
-                    .now(SDUtil.DATE_TIME_ID);
+            String uid = businessModel.getAppDataProvider().getUser().getUserid() + DateTimeUtils
+                    .now(DateTimeUtils.DATE_TIME_ID);
 
             Cursor cursor = db
                     .selectSQL("select Uid from PromotionHeader  Where RetailerId="
                             + QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID())
                             + " and Date= "
-                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                             + " and upload='N'");
 
             if (cursor.getCount() > 0) {
@@ -229,7 +228,7 @@ public class PromotionHelper {
 
             sbuffer.append(QT(uid));
             sbuffer.append(",");
-            sbuffer.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sbuffer.append(QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             sbuffer.append(",");
             sbuffer.append(businessModel.getAppDataProvider().getRetailMaster().getRetailerID());
             sbuffer.append(",");
@@ -312,7 +311,7 @@ public class PromotionHelper {
             String sql = "SELECT Uid,Remark FROM PromotionHeader WHERE RetailerId = "
                     + businessModel.getRetailerMasterBO().getRetailerID()
                     + " AND Date = "
-                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " and upload='N'";
 
             Cursor cursor = db.selectSQL(sql);
@@ -548,7 +547,7 @@ public class PromotionHelper {
 
     /* Delete unused images from storage */
     private void deleteFiles(String filename) {
-        File folder = new File(AppUtils.photoFolderPath + "/");
+        File folder = new File(FileUtils.photoFolderPath + "/");
 
         File[] files = folder.listFiles();
         for (File tempFile : files) {

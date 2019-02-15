@@ -91,7 +91,6 @@ import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChatApplicationHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -108,8 +107,9 @@ import com.ivy.sd.png.view.TLAttendanceActivity;
 import com.ivy.cpg.view.homescreen.userFeedback.UserFeedbackActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
 import com.ivy.sd.png.view.profile.RetailerContactBo;
-import com.ivy.utils.AppUtils;
 import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -349,7 +349,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         });
 
         // Initilize photo filder path and create directory if not exisit.
-        if(!AppUtils.createPhotoPathAndFolder(getContext())) {
+        if(!FileUtils.createFilePathAndFolder(getContext())) {
             Toast.makeText(getContext(),"Photo storage folder not created..",Toast.LENGTH_LONG).show();
         }
 
@@ -511,7 +511,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         switch (requestCode) {
             case CAMERA_REQUEST_CODE:
                 if (resultCode == 1) {
-                    Uri uri = bmodel.getUriFromFile(AppUtils.photoFolderPath + "/" + imageFileName);
+                    Uri uri = bmodel.getUriFromFile(FileUtils.photoFolderPath + "/" + imageFileName);
                     bmodel.userMasterHelper.getUserMasterBO().setImagePath(imageFileName);
                     bmodel.userMasterHelper.saveUserProfile(bmodel.userMasterHelper.getUserMasterBO());
                     profileImageView.invalidate();
@@ -584,8 +584,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         if (menuItem.getConfigCode().equals(MENU_PLANNING)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED
-                    && (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    && (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                            .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                     "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -633,8 +633,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
 
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -687,8 +687,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
 
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -747,8 +747,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             getActivity().finish();
         } else if (menuItem.getConfigCode().equals(MENU_NEW_RETAILER)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -790,8 +790,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         } else if (menuItem.getConfigCode().equals(MENU_REPORT)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -813,8 +813,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (menuItem.getConfigCode().equals(MENU_LOAD_MANAGEMENT)) {
 
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -838,8 +838,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         } else if (menuItem.getConfigCode().equals(MENU_PLANNING_SUB)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -861,8 +861,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             switchFragment(MENU_SYNC, menuItem.getMenuName());
         } else if (menuItem.getConfigCode().equals(MENU_SKUWISESTGT)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -882,8 +882,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         } else if (menuItem.getConfigCode().equals(MENU_LOAD_REQUEST)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -904,8 +904,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         } else if (menuItem.getConfigCode().equals(MENU_DASH_KPI)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -930,8 +930,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         } else if (menuItem.getConfigCode().equals(MENU_ROUTE_KPI)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -954,8 +954,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         } else if (menuItem.getConfigCode().equals(MENU_DASH)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -975,8 +975,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         } else if (menuItem.getConfigCode().equals(MENU_DASH_DAY)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -997,8 +997,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         } else if (menuItem.getConfigCode().equals(MENU_DASH_INC)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -1019,8 +1019,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         } else if (menuItem.getConfigCode().equals(MENU_OFLNE_PLAN)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -1064,8 +1064,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         } else if (menuItem.getConfigCode().equals(MENU_SURVEY_SW)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -1139,8 +1139,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         } else if (menuItem.getConfigCode().equals(MENU_SURVEY01_SW)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -1190,8 +1190,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         } else if (menuItem.getConfigCode().equals(MENU_SURVEY_BA_CS)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -1247,8 +1247,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         } else if (menuItem.getConfigCode().equals(MENU_EMPTY_RECONCILIATION)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -1281,8 +1281,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         } else if (menuItem.getConfigCode().equals(MENU_DIGITIAL_SELLER)) {
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -1314,8 +1314,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (menuItem.getConfigCode().equals(MENU_ROAD_ACTIVITY)) {
             String roadTitle = (menuItem.getMenuName() == null) ? "" : menuItem.getMenuName();
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -1497,8 +1497,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
 
             if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
-                    (SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                                    .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+                    (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                                    .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
@@ -2185,7 +2185,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case MENU_SUPERVISOR_CALLANALYSIS:
 
                 SupervisorActivityHelper.getInstance().loginToFirebase(getContext());
-                SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext(), SDUtil.now(SDUtil.DATE_GLOBAL));
+                SupervisorActivityHelper.getInstance().downloadOutletListAws(getContext(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
@@ -2610,7 +2610,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     !"".equals(bmodel.userMasterHelper.getUserMasterBO().getImagePath())) {
                 String[] imgPaths = bmodel.userMasterHelper.getUserMasterBO().getImagePath().split("/");
                 String path = imgPaths[imgPaths.length - 1];
-                File file = new File(AppUtils.photoFolderPath + "/" + path);
+                File file = new File(FileUtils.photoFolderPath + "/" + path);
 
                 profileImageView.setScaleType(ImageView.ScaleType.FIT_XY);
                 profileImageView.setAdjustViewBounds(true);
@@ -2635,14 +2635,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
      * Open camera to capture profile picture.
      */
     private void captureUserProfilePicture() {
-        if (AppUtils.isExternalStorageAvailable()) {
+        if (FileUtils.isExternalStorageAvailable()) {
             imageFileName = "USER_" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "_"
                     + Commons.now(Commons.DATE_TIME) + "_img.jpg";
 
             try {
                 Intent intent = new Intent(getActivity(), CameraActivity.class);
                 intent.putExtra(CameraActivity.QUALITY, 40);
-                intent.putExtra(CameraActivity.PATH, AppUtils.photoFolderPath + "/" + imageFileName);
+                intent.putExtra(CameraActivity.PATH, FileUtils.photoFolderPath + "/" + imageFileName);
                 startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
             } catch (Exception e) {

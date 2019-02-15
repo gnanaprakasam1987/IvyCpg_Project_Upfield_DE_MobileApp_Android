@@ -13,12 +13,12 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.profile.ProfileActivity;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.Map;
 import java.util.Vector;
@@ -157,15 +157,15 @@ public class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolea
             Commons.printException(e);
         }
 
-        String date = SDUtil.now(SDUtil.DATE_GLOBAL);
-        String time = SDUtil.now(SDUtil.TIME);
+        String date = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
+        String time = DateTimeUtils.now(DateTimeUtils.TIME);
 
         bmodel.outletTimeStampHelper.setTimeIn(date + " " + time);
-        bmodel.outletTimeStampHelper.setUid(AppUtils.QT("OTS" + SDUtil.now(SDUtil.DATE_TIME_ID)));
+        bmodel.outletTimeStampHelper.setUid(StringUtils.QT("OTS" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)));
 
 
         boolean outletTimeStampSaved = bmodel.outletTimeStampHelper.saveTimeStamp(
-                SDUtil.now(SDUtil.DATE_GLOBAL), time
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), time
                 , distance, photoPath, fnameStarts, mVisitMode, mNFCReasonId);
 
         //set selected retailer location and its used on retailer modules

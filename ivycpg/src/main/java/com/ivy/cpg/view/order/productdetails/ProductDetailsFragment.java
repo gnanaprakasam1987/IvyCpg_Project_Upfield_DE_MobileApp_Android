@@ -21,8 +21,8 @@ import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -148,7 +148,7 @@ public class ProductDetailsFragment extends IvyBaseFragment {
             holder.configureBO = productConfigs.get(position);
 
             holder.menuTV.setText(holder.configureBO.getMenuName());
-            if(!AppUtils.isEmptyString(setValue(holder.configureBO, productObj))){
+            if(!StringUtils.isEmptyString(setValue(holder.configureBO, productObj))){
                 holder.valueTV.setText(setValue(holder.configureBO, productObj));
             }
             if (holder.configureBO.getConfigCode().equalsIgnoreCase("PRODET14"))

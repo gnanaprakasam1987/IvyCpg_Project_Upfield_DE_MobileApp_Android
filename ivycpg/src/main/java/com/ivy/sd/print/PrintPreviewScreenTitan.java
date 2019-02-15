@@ -46,6 +46,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -140,7 +141,7 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
             distName = (TextView) findViewById(R.id.distname);
             distName2 = (TextView) findViewById(R.id.distname2);
             distaddress = (TextView) findViewById(R.id.distadd);
-            salesdate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.configurationMasterHelper.outDateFormat));
+            salesdate.setText(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), bmodel.configurationMasterHelper.outDateFormat));
             invoiceno.setText(mInvoiceno);
             if (bmodel.userMasterHelper.getUserMasterBO().getDistributorName().length() > 15) {
                 distName.setText(bmodel.userMasterHelper.getUserMasterBO()
@@ -755,8 +756,8 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
             if (IsFromReport) {
                 finish();
             } else {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 finish();
                 //BusinessModel.loadActivity(this, DataMembers.actHomeScreenTwo);
                 //  DataMembers.actHomeScreenTwo);
@@ -886,7 +887,7 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                     sb.append("Invoice No:" + bmodel.invoiceNumber + "\r\n");
 
                     sb.append("T 5 0 200 " + (80 + totalLength));
-                    sb.append("Date:" + DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.configurationMasterHelper.outDateFormat) + "\r\n");
+                    sb.append("Date:" + DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), bmodel.configurationMasterHelper.outDateFormat) + "\r\n");
 
 
                     sb.append("T 5 0 10 " + (130 + totalLength));

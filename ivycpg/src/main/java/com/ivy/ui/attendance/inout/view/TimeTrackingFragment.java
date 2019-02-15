@@ -27,7 +27,6 @@ import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -36,7 +35,8 @@ import com.ivy.ui.attendance.inout.adapter.TimeTrackListClickListener;
 import com.ivy.ui.attendance.inout.adapter.TimeTrackingAdapter;
 import com.ivy.ui.attendance.inout.di.DaggerTimeTrackComponent;
 import com.ivy.ui.attendance.inout.di.TimeTrackModule;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -196,8 +196,8 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
 
         if (this.timeTrackList.size() > 0) {
             for (NonFieldTwoBo timeTrackBo : timeTrackList) {
-                if ((!AppUtils.isNullOrEmpty(timeTrackBo.getInTime())) &&
-                        (!AppUtils.isNullOrEmpty(timeTrackBo.getOutTime()))) {
+                if ((!StringUtils.isNullOrEmpty(timeTrackBo.getInTime())) &&
+                        (!StringUtils.isNullOrEmpty(timeTrackBo.getOutTime()))) {
                     timeTrackBo.setStatus(getResources().getString(R.string.in_complete));
                 } else {
                     timeTrackBo.setStatus(getResources().getString(R.string.in_partial));
@@ -287,7 +287,7 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
 
     @Override
     public void onOutTimeClick(int position) {
-        timeTrackList.get(position).setOutTime(SDUtil.now(SDUtil.DATE_TIME_NEW));
+        timeTrackList.get(position).setOutTime(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
         presenter.updateTimeTrackDetails(timeTrackList.get(position));
         presenter.stopLocationService(timeTrackList.get(position).getReason());
     }

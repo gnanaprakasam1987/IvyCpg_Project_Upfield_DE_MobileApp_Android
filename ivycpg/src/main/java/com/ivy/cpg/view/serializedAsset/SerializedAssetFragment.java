@@ -36,7 +36,6 @@ import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
@@ -47,6 +46,7 @@ import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -459,7 +459,7 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
                         if (mBModel.reasonHelper.isNpReasonPhotoAvaiable(mBModel.retailerMasterBO.getRetailerID(), MENU_SERIALIZED_ASSET)) {
                             mBModel.saveModuleCompletion(MENU_SERIALIZED_ASSET);
                             mBModel.outletTimeStampHelper
-                                    .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                                    .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                             startActivity(new Intent(getActivity(),
                                     HomeScreenTwo.class));
                             getActivity().finish();

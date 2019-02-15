@@ -6,10 +6,10 @@ import android.database.Cursor;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -235,10 +235,10 @@ public class EmptyReconciliationHelper {
 			String values;
 
 			tid = bmodel.userMasterHelper.getUserMasterBO().getUserid() + ""
-					+ SDUtil.now(SDUtil.DATE_TIME_ID);
+					+ DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 			// delete transaction if exist
 			sql = "SELECT Tid FROM " + mTransactionHeader + " WHERE Date = "
-					+ QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+					+ QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
 			headerCursor = db.selectSQL(sql);
 			// delete transaction if exist
@@ -250,7 +250,7 @@ public class EmptyReconciliationHelper {
 			}
 
 			// save header
-			values = QT(tid) + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+			values = QT(tid) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
 					+ QT(bmodel.getTimeZone()) + "," + 0;
 
 			db.insertSQL(mTransactionHeader, headerColumns, values);
@@ -337,11 +337,11 @@ public class EmptyReconciliationHelper {
 			String detailColumns = "Tid, PId, Qty, Price, UomId, UomCount, LineValue,Upload";
 			String values;
 			tid = bmodel.userMasterHelper.getUserMasterBO().getUserid() + ""
-					+ SDUtil.now(SDUtil.DATE_TIME_ID);
+					+ DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
 			// delete transaction if exist
 			sql = "SELECT Tid FROM " + mTransactionHeader + " WHERE Date = "
-					+ QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+					+ QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
 			headerCursor = db.selectSQL(sql);
 			// delete transaction if exist
@@ -430,7 +430,7 @@ public class EmptyReconciliationHelper {
 			// Saving Transaction Header if There is Any Detail
 			if (isData) {
 				// save header
-				values = QT(tid) + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+				values = QT(tid) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
 						+ "," + QT(bmodel.getTimeZone()) + "," + 0 + ","
 						+ "'X'";
 
@@ -513,7 +513,7 @@ public class EmptyReconciliationHelper {
 			db.openDataBase();
 			// delete transaction if exist
 			String sql = "SELECT Tid FROM " + mTransactionHeader
-					+ " WHERE Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+					+ " WHERE Date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
 					+ " And Upload='X' ";
 
 			Cursor cursor = db.selectSQL(sql);

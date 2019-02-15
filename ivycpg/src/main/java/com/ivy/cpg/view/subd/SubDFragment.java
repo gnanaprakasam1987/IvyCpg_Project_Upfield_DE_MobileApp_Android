@@ -22,11 +22,11 @@ import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.Map;
 import java.util.Vector;
@@ -146,8 +146,8 @@ public class SubDFragment extends IvyBaseFragment {
     private void loadHomeScreenTwo() {
 
         // Time count Starts for the retailer
-        if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd") > 0)
+        if ((DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd") > 0)
                 && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.next_day_coverage),
@@ -207,15 +207,15 @@ public class SubDFragment extends IvyBaseFragment {
         protected void onPostExecute(Boolean result) {
             if (!isCancelled()) {
 
-                String date = SDUtil.now(SDUtil.DATE_GLOBAL);
-                String time = SDUtil.now(SDUtil.TIME);
-                String temp = SDUtil.now(SDUtil.DATE_TIME_ID);
+                String date = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
+                String time = DateTimeUtils.now(DateTimeUtils.TIME);
+                String temp = DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
                 bmodel.outletTimeStampHelper.setTimeIn(date + " " + time);
-                bmodel.outletTimeStampHelper.setUid(AppUtils.QT("OTS" + temp));
+                bmodel.outletTimeStampHelper.setUid(StringUtils.QT("OTS" + temp));
 
                 bmodel.outletTimeStampHelper.saveTimeStamp(
-                        SDUtil.now(SDUtil.DATE_GLOBAL), time
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), time
                         , 0, "", "", "", "0");
 
                 if (alertDialog != null && alertDialog.isShowing()) {

@@ -21,8 +21,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
@@ -58,7 +57,7 @@ public class DailyExpenseFragment extends IvyBaseFragment {
         bmodel.setContext(getActivity());
         expenseSheetHelper = ExpenseSheetHelper.getInstance(getActivity());
 
-        photoNamePath = AppUtils.photoFolderPath + "/";
+        photoNamePath = FileUtils.photoFolderPath + "/";
 
 
         tvTotalAmount = view.findViewById(R.id.tvTotalAmount);
