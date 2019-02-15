@@ -1837,8 +1837,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         bModel.getOrderHeaderBO().setDiscountId(0);
                         bModel.getOrderHeaderBO().setIsCompanyGiven(0);
                         bModel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt((String) text_LPC.getText()));
-                        bModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(),
-                                ConfigurationMasterHelper.outDateFormat));
+                        if (!button_deliveryDate.getText().toString().trim().equals("")) {
+                            bModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(),
+                                    ConfigurationMasterHelper.outDateFormat));
+                        } else {
+                            bModel.getOrderHeaderBO().setDeliveryDate(SDUtil.now(SDUtil.DATE_GLOBAL));
+                        }
                         signatureName = bModel.getOrderHeaderBO().getSignatureName();
                     }
 
@@ -1969,7 +1973,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 bModel.getOrderHeaderBO().setDiscountId(0);
                 bModel.getOrderHeaderBO().setIsCompanyGiven(0);
                 bModel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt((String) text_LPC.getText()));
-                bModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(), ConfigurationMasterHelper.outDateFormat));
+                if (!button_deliveryDate.getText().toString().trim().equals("")) {
+                    bModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(),
+                            ConfigurationMasterHelper.outDateFormat));
+                } else {
+                    bModel.getOrderHeaderBO().setDeliveryDate(SDUtil.now(SDUtil.DATE_GLOBAL));
+                }
                 signatureName = bModel.getOrderHeaderBO().getSignatureName();
             }
 
