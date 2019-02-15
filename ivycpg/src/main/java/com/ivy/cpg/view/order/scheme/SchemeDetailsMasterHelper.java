@@ -859,7 +859,7 @@ public class SchemeDetailsMasterHelper {
      * @param retailerId Retailer Id
      */
     private void downloadPeriodWiseScheme(DBUtil db, String retailerId) {
-        final String currentDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_EIPHEN);
+        final String currentDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_HYPHEN);
         StringBuffer sb = new StringBuffer();
         sb.append("select distinct SM.schemeid,SB.productid,");
         sb.append("(julianday(" + bModel.QT(currentDate) + ")-julianday(replace(date,'/','-') )) as daycount from Schememaster SM ");

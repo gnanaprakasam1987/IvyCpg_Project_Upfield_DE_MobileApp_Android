@@ -7,6 +7,7 @@ import com.ivy.utils.StringUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
@@ -20,7 +21,7 @@ import static org.powermock.api.mockito.PowerMockito.mockStatic;
  * On
  */
 
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @PrepareForTest({SDUtil.class})
 public class SDUtilTest {
 
@@ -28,18 +29,6 @@ public class SDUtilTest {
     public void checkFormat(){
         String str = SDUtil.format(12.345,2,0);
         Assert.assertEquals("12.35", str);
-    }
-
-    @Test
-    public void testGetToday(){
-
-        Calendar endOfMarch = Calendar.getInstance();
-        endOfMarch.set(2019, Calendar.FEBRUARY, 14);
-        mockStatic(Calendar.class);
-
-        given(Calendar.getInstance()).willReturn(endOfMarch);
-
-        Assert.assertEquals("Thursday",DateTimeUtils.today());
     }
 
     @Test

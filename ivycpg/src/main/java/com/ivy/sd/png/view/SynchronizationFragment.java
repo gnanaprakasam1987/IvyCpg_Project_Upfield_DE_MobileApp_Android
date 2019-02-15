@@ -565,7 +565,7 @@ public class SynchronizationFragment extends IvyBaseFragment
             backDateSelection.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
                     .getInstance().getTime(), ConfigurationMasterHelper.outDateFormat));
         } else {
-            backDateSelection.setText(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_EIPHEN));
+            backDateSelection.setText(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_HYPHEN));
         }
         backDateSelection.setOnClickListener(new View.OnClickListener() {
 

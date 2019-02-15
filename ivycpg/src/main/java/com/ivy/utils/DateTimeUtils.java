@@ -17,7 +17,7 @@ public class DateTimeUtils {
     public static final int DATE_TIME_NEW = 6;
     public static final int GMT_DATE_TIME = 7;
     public static final int DATE_GLOBAL_PLAIN = 8;
-    public static final int DATE_GLOBAL_EIPHEN = 9;
+    public static final int DATE_GLOBAL_HYPHEN = 9;
     public static final int DATE_DOB_FORMAT_PLAIN = 10;
     public static final int TIME = 0;
     public static final int DATE = 1;
@@ -99,7 +99,7 @@ public class DateTimeUtils {
         } else if (DATE_GLOBAL_PLAIN == dateFormat) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd", Locale.ENGLISH);
             return sdf.format(cal.getTime());
-        } else if (DATE_GLOBAL_EIPHEN == dateFormat) {
+        } else if (DATE_GLOBAL_HYPHEN == dateFormat) {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
             return sdf.format(cal.getTime());
         } else if (DATE_DOB_FORMAT_PLAIN == dateFormat) {
