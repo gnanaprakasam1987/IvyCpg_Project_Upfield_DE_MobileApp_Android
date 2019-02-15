@@ -60,6 +60,5 @@ public interface BaseIvyView {
 
     void setScreenTitle(String title);
 
-
-
+    void setUpToolbar(String title);
 }

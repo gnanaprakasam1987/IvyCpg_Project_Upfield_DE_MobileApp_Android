@@ -13,13 +13,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:fontFamily="@font/baloobhai_regular"
         android:adjustViewBounds="true"
         android:padding="6dp"
         android:text="@string/in_out" />
 
     <TextView
-        android:id="@+id/must_sell_message_tv"
-        style="?attr/textFieldStyle"
+        android:id="@+id/tv_select_reason"
+        style="@style/TextViewListItemCaption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="5dp"
@@ -37,14 +38,15 @@
     <android.support.design.widget.TextInputLayout
         android:id="@+id/remarkWrapper"
         android:layout_width="match_parent"
+        android:fontFamily="@font/roboto_regular"
         android:layout_height="wrap_content">
 
         <EditText
             android:id="@+id/etRemarks"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:fontFamily="@font/roboto_regular"
             android:inputType="text"
-            android:textSize="@dimen/text_size_primary"
             android:maxLines="1" />
 
     </android.support.design.widget.TextInputLayout>

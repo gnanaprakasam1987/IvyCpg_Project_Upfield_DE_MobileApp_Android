@@ -32,7 +32,7 @@ ext {
     //Test dependencies
     junitVersion = '4.12'
     espressoVersion = '2.2.2'
-    mockitoVersion = '2.8.9'
+    mockitoVersion = '2.8.0'
 
     dagger2Version = '2.13'
 

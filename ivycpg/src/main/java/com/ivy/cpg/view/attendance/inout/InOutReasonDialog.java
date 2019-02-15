@@ -23,6 +23,10 @@ import com.ivy.utils.FontUtils;
 /**
  * Created by nivetha.s on 06-04-2016.
  */
+
+/**
+ * @deprecated
+ */
 public class InOutReasonDialog extends Dialog {
 
     private Spinner reason_spnr;
