@@ -244,6 +244,24 @@
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/fab4_bottom_margin"
+        android:layout_marginEnd="@dimen/profile_23dp"
+        android:layout_marginRight="@dimen/profile_23dp"
+        android:clickable="true"
+        android:src="@drawable/ic_gps"
+        android:tint="@color/light_gray"
+        android:visibility="visible"
+        app:backgroundTint="@color/white"
+        app:fabSize="mini"
+        app:pressedTranslationZ="12dp" />
+
+    <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -1324,6 +1324,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     holder.productCode.setVisibility(View.VISIBLE);
                     String prodCode = getResources().getString(R.string.prod_code) + ": " +
                             holder.productObj.getProductCode() + " ";
+                    if (businessModel.labelsMasterHelper.applyLabels(holder.productCode.getTag()) != null)
+                        prodCode = businessModel.labelsMasterHelper
+                                .applyLabels(holder.productCode.getTag()) + ": " +
+                                holder.productObj.getProductCode() + " ";
                     holder.productCode.setText(prodCode);
                 }
 

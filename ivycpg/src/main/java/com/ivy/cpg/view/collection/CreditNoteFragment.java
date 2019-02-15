@@ -275,6 +275,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
                 row = inflater.inflate(R.layout.row_credit_note, parent, false);
                 holder = new ViewHolder();
 
+                holder.creditNoteIDTxt = (TextView) row.findViewById(R.id.creditNoteIDTxt);
                 holder.refNoTxt = row.findViewById(R.id.refNoTxt);
                 holder.crdNoteAmtTxt = row
                         .findViewById(R.id.crdNoteAmtTxt);
@@ -328,6 +329,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
             }
 
             holder.creditNoteListBO = mCreditNoteList.get(position);
+            holder.creditNoteIDTxt.setText(holder.creditNoteListBO.getId());
             holder.refNoTxt.setText(holder.creditNoteListBO.getRefno());
             String strCreditAmt = bmodel.formatValue(holder.creditNoteListBO
                     .getAmount()) + "";
@@ -347,12 +349,13 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
     }
 
     class ViewHolder {
+        private TextView creditNoteIDTxt;
         private TextView refNoTxt;
         private TextView crdNoteAmtTxt;
         private TextView totCrdNoteAmtTxt;
         private CheckBox creditNoteCheckBox;
         private CreditNoteListBO creditNoteListBO;
-        private FrameLayout parentLayout;
+        private LinearLayout parentLayout;
     }
 
     private void updateCreditNotePayment() {

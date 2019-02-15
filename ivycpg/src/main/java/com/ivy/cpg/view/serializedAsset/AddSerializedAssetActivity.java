@@ -38,6 +38,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.FontUtils;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -76,6 +77,8 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
     private String photoPath;
     private String imageName;
 
+    private TextView txtNFCLabel, txtSerialNo;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +96,23 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(getResources().getString(R.string.addnewasset));
         }
+
+        txtNFCLabel = (TextView) findViewById(R.id.txtNFCLabel);
+        ((TextView) findViewById(R.id.txtNFCLabel)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                R.id.txtNFCLabel).getTag()) != null)
+            ((TextView) findViewById(R.id.txtNFCLabel))
+                    .setText(mBModel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.txtNFCLabel).getTag()));
+        txtSerialNo = findViewById(R.id.label_scan);
+        ((TextView) findViewById(R.id.label_scan)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                R.id.label_scan).getTag()) != null)
+            ((TextView) findViewById(R.id.label_scan))
+                    .setText(mBModel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.label_scan).getTag()));
 
         mAsset = (Spinner) findViewById(R.id.spinner_asset);
         mBrand = (Spinner) findViewById(R.id.spinner_brand);

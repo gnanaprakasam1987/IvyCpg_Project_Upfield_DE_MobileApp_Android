@@ -1923,6 +1923,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
                 String prodCode = getResources().getString(R.string.prod_code)
                         + ": " + holder.productObj.getProductCode() + " ";
+                if (bmodel.labelsMasterHelper.applyLabels(holder.productCode.getTag()) != null)
+                    prodCode = bmodel.labelsMasterHelper
+                            .applyLabels(holder.productCode.getTag()) + ": " +
+                            holder.productObj.getProductCode() + " ";
                 holder.productCode.setText(prodCode);
             }
             if (holder.ppq != null) {

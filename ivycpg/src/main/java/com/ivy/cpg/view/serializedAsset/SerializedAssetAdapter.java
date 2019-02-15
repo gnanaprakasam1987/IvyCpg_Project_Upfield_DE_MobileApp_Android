@@ -426,6 +426,11 @@ public class SerializedAssetAdapter extends BaseAdapter {
 
         String serialNo = mContext.getResources().getString(R.string.serial_no)
                 + ": " + holder.assetBO.getSerialNo();
+        if (mBModel.labelsMasterHelper.applyLabels(row.findViewById(
+                R.id.tv_serialNo).getTag()) != null)
+            serialNo = mBModel.labelsMasterHelper
+                    .applyLabels(row.findViewById(
+                            R.id.tv_serialNo).getTag());
         holder.serialNoTV.setText(serialNo);
 
         holder.mInstallDate
@@ -540,8 +545,9 @@ public class SerializedAssetAdapter extends BaseAdapter {
                 holder.availQtyRB.setChecked(false);
             }
 
-            if((assetTrackingHelper.SHOW_ASSET_BARCODE&&holder.assetBO.getSerialNo().equals(""))
-                    ||holder.assetBO.getNFCTagId().isEmpty()){
+            if ((assetTrackingHelper.SHOW_ASSET_BARCODE &&
+                    (holder.assetBO.getSerialNo() == null || holder.assetBO.getSerialNo().trim().isEmpty())) ||
+                    (holder.assetBO.getNFCTagId() == null || holder.assetBO.getNFCTagId().trim().isEmpty())) {
                 holder.availQtyRB.setEnabled(true);
             }
 

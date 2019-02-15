@@ -23,7 +23,7 @@
                 android:layout_marginTop="@dimen/divder_margin"
                 android:padding="@dimen/dimen_2dp"
                 android:text="@string/product_name"
-
+                android:ellipsize="end"
                 android:textColor="@color/black_bg1"
                 android:textSize="@dimen/text_size_primary" />
 
@@ -37,7 +37,8 @@
                 android:gravity="center"
                 android:maxLines="1"
                 android:padding="@dimen/dimen_2dp"
-                android:text="@string/prod_code" />
+                android:text="@string/prod_code"
+                android:tag="pcode"/>
 
             <TextView
                 android:id="@+id/prdbatchid"

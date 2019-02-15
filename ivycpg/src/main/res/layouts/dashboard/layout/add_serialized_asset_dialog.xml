@@ -36,12 +36,14 @@
             android:text="@string/addasset" />
 
         <TextView
+            android:id="@+id/txtNFCLabel"
             style="@style/TextViewListItemCaption"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/dimen_10dp"
             android:layout_marginRight="@dimen/dimen_10dp"
             android:layout_weight="1"
+            android:tag="asset_nfcno"
             android:text="@string/enter_nfc_number" />
     </LinearLayout>
 
@@ -98,6 +100,7 @@
             android:layout_marginEnd="@dimen/dimen_10dp"
             android:layout_marginRight="@dimen/dimen_10dp"
             android:layout_weight="1"
+            android:tag="asset_serialno"
             android:text="@string/addassetsno" />
 
         <TextView

@@ -1876,7 +1876,7 @@ public class DashBoardHelper {
                     sb.append(kpiID);
                     sb.append(" and SKSD.KPIParamLovId=");
                     sb.append(kpiTypeLovID);
-                    sb.append(" left join OrderDetail OD on OD.ProductID = SKSD.PiD inner join  ProductLevel pl on pl.levelid = p1.plid " +
+                    sb.append(" left join OrderDetail OD on OD.ProductID = (Select ProductId  from OrderDetail inner join ProductMaster on Pid = ProductID and parenthierarchy like '%/' || SKSD .pid || '/%') inner join  ProductLevel pl on pl.levelid = p1.plid " +
                             "GROUP BY P1.PID, P1.pname, P1.psname, P1.pcode, P1.parentId, p1.plid ");
                     for (int i = 2; i <= loopEnd; i++) {
                         Commons.print("Loop I," + "" + i);
@@ -1895,7 +1895,7 @@ public class DashBoardHelper {
                         sb.append(i);
                         sb.append(".plid,IFNULL(SKSD .kpiid,0),SUM(IFNULL(SKSD .Target,0))");
                         sb.append(",IFNULL(sum(0+OD.totalamount),0),ROUND(CASE WHEN (100-((SUM(OD.totalamount)*100)/((SUM(SKSD .Target))*1.0))) < ");
-                        sb.append("0 THEN 100 ELSE ((SUM(OD.totalamount*100))/((SUM(SKSD .Target))*1.0)) END ,2) AS acheived,pl.sequence from SellerKPISKUDetail SKSD left join OrderDetail OD on OD.ProductID = SKSD.PiD ");
+                        sb.append("0 THEN 100 ELSE ((SUM(OD.totalamount*100))/((SUM(SKSD .Target))*1.0)) END ,2) AS acheived,pl.sequence from SellerKPISKUDetail SKSD left join OrderDetail OD on OD.ProductID = (Select ProductId  from OrderDetail inner join ProductMaster on Pid = ProductID and parenthierarchy like '%/' || SKSD .pid || '/%') ");
                         sb.append("INNER JOIN ProductMaster p1 ON SKSD .pid = p1.pid and SKSD.kpiid=");
                         sb.append(kpiID);
                         sb.append(" and SKSD.KPIParamLovId=");

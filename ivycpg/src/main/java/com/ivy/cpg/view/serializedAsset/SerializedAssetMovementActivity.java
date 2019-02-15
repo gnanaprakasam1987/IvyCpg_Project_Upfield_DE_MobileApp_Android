@@ -24,6 +24,7 @@ import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.view.MyDialogCloseListener;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -34,6 +35,7 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
     protected ArrayList<SerializedAssetBO> mAssetTrackingList = new ArrayList<>();
     protected RecyclerAdapter recyclerAdapter;
     protected SerializedAssetMovementDialog movementAssetDialog;
+    protected TextView txtSerialNo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +51,15 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(getResources().getString(R.string.moveAsset));
         }
+
+        txtSerialNo = findViewById(R.id.txt_move_serialNumber);
+        ((TextView) findViewById(R.id.txt_move_serialNumber)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                R.id.txt_move_serialNumber).getTag()) != null)
+            ((TextView) findViewById(R.id.txt_move_serialNumber))
+                    .setText(mBModel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.txt_move_serialNumber).getTag()));
 
         recyclerView = (RecyclerView) findViewById(R.id.recyclerview_move_asset);
         if (recyclerView != null) {
@@ -85,6 +96,7 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
             recyclerView.setAdapter(recyclerAdapter);
         }
         else {
+            recyclerView.setAdapter(null);
             Toast.makeText(SerializedAssetMovementActivity.this, getResources().getString(R.string.no_assets_exists),
                     Toast.LENGTH_SHORT).show();
         }

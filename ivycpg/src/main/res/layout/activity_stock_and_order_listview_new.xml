@@ -83,6 +83,7 @@
                 android:gravity="start|center"
                 android:maxLines="1"
                 android:text="@string/prod_code"
+                android:tag="pcode"
                 android:textSize="@dimen/text_size_secondary"
                 android:visibility="visible" />
 

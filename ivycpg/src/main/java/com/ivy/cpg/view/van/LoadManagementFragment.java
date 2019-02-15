@@ -704,6 +704,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
      */
     private void vanLoadSubRoutine() {
         bmodel.configurationMasterHelper.downloadSIHAppliedById();
+        bmodel.configurationMasterHelper.loadVanStockUOMConfiguration();
         bmodel.stockreportmasterhelper.downloadStockReportMaster();
         bmodel.stockreportmasterhelper.downloadBatchwiseVanlod();
     }

@@ -714,6 +714,10 @@ public class VanLoadStockViewFragment extends IvyBaseFragment {
             if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
                 String prodCode = getResources().getString(R.string.prod_code)
                         + ": " + product.getProductCode() + " ";
+                if (bmodel.labelsMasterHelper.applyLabels(holder.productCode.getTag()) != null)
+                    prodCode = bmodel.labelsMasterHelper
+                            .applyLabels(holder.productCode.getTag()) + ": " +
+                            product.getProductCode() + " ";
                 holder.productCode.setText(prodCode);
             }
             return row;
