@@ -271,6 +271,7 @@
     <dimen name="fab1_bottom_margin">72dp</dimen>
     <dimen name="fab2_bottom_margin">120dp</dimen>
     <dimen name="fab3_bottom_margin">160dp</dimen>
+    <dimen name="fab4_bottom_margin">200dp</dimen>
     <dimen name="retailer_map_button_hegight">24.8dp</dimen>
     <dimen name="retailer_map_button_width">44.8dp</dimen>
     <dimen name="ratiler_map_bottomview_height">48dp</dimen>

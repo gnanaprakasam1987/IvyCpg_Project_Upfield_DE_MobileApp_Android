@@ -260,19 +260,22 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
     private void addFragments() {
 
         mFragmentList = new ArrayList<>();
-        Fragment mSelectFragment = new SchemeDetailsFragment();
-        Bundle bundle =new Bundle();
-        bundle.putString("productId",productId);
-        if(getIntent()!=null&&getIntent().getStringExtra("slabId")!=null)
-          bundle.putString("slabId",getIntent().getStringExtra("slabId"));
 
-        mSelectFragment.setArguments(bundle);
-        mFragmentList.add(mSelectFragment);
+        if (!isFromUpSelling && (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG
+                || bmodel.configurationMasterHelper.IS_SCHEME_DIALOG)) {
+            Fragment mSelectFragment = new SchemeDetailsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("productId", productId);
+            if (getIntent() != null && getIntent().getStringExtra("slabId") != null)
+                bundle.putString("slabId", getIntent().getStringExtra("slabId"));
 
+            mSelectFragment.setArguments(bundle);
+            mFragmentList.add(mSelectFragment);
+        }
 
-
-        if (!isFromUpSelling&&bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
-            mSelectFragment = new ProductDetailsFragment();
+        if (!isFromUpSelling && (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG
+                || bmodel.configurationMasterHelper.IS_PRODUCT_DIALOG)) {
+            Fragment mSelectFragment = new ProductDetailsFragment();
             mFragmentList.add(mSelectFragment);
         }
     }

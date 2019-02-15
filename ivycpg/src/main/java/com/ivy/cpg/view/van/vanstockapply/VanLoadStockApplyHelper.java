@@ -77,6 +77,28 @@ public class VanLoadStockApplyHelper {
                     stock.setDate(c.getString(17));
                     stock.setProductCode(c.getString(18));
                     stock.setIsFree(c.getInt(19));
+
+                    int pcsQty = stock.getPieceQuantity();
+                    int csQtyinPieces = stock.getCaseQuantity() * stock.getCaseSize();
+                    int ouQtyinPieces = stock.getOuterQty() * stock.getOuterSize();
+                    int totalqty = pcsQty + csQtyinPieces + ouQtyinPieces;
+
+                    int caseQty = 0;
+                    if(bmodel.configurationMasterHelper.SHOW_VAN_STK_CS) {
+                        caseQty = stock.getCaseSize() != 0 ? totalqty / stock.getCaseSize() : totalqty;
+                    }
+                    int QtyRemaining = totalqty - (caseQty * stock.getCaseSize());
+
+                    int outerQty = 0;
+                    if(bmodel.configurationMasterHelper.SHOW_VAN_STK_OU) {
+                        outerQty = stock.getOuterSize() != 0 ? QtyRemaining / stock.getOuterSize() : QtyRemaining;
+                    }
+                    int pieceQty = QtyRemaining - (outerQty * stock.getOuterSize());
+
+                    stock.setPieceQuantity(pieceQty);
+                    stock.setCaseQuantity(stock.getCaseSize() != 0 ? caseQty : 0);
+                    stock.setOuterQty(stock.getOuterSize() != 0 ? outerQty : 0);
+
                     stockReportMaster.add(stock);
                     if (c.getInt(11) == 1)
                         bmodel.startjourneyclicked = true;

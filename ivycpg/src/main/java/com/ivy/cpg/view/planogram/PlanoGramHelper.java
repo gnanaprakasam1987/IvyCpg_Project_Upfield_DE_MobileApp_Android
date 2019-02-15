@@ -315,7 +315,7 @@ public class PlanoGramHelper {
             Cursor c = db.selectSQL(query);
 
             if (c != null) {
-                setPlanogramMaster(new Vector<PlanoGramBO>());
+                mPlanoGramMaster = new Vector<PlanoGramBO>();
                 while (c.moveToNext()) {
                     planogram = new PlanoGramBO();
                     planogram.setPid(c.getInt(0));
@@ -325,10 +325,11 @@ public class PlanoGramHelper {
                     planogram.setProductName(c.getString(6));
                     planogram.setImageId(c.getInt(7));
                     planogram.setParentHierarchy(c.getString(8));
-                    getPlanogramMaster().add(planogram);
+                    mPlanoGramMaster.add(planogram);
                 }
                 c.close();
             }
+            setPlanogramMaster(mPlanoGramMaster);
             db.closeDB();
 
             if (("MENU_PLANOGRAM".equals(moduleName) || "MENU_PLANOGRAM_CS".equals(moduleName)))

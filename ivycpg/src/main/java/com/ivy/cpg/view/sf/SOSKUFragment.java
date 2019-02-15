@@ -881,6 +881,12 @@ public class SOSKUFragment extends IvyBaseFragment implements
         }
 
         mParentTotal = dialog.findViewById(R.id.et_total);
+        if (mBModel.labelsMasterHelper.applyLabels(dialog.findViewById(
+                R.id.dialog_title).getTag()) != null)
+            ((TextView) dialog.findViewById(R.id.dialog_title))
+                    .setText(mBModel.labelsMasterHelper
+                            .applyLabels(dialog.findViewById(
+                                    R.id.dialog_title).getTag()));
 
         mCategoryForDialog.clear();
 

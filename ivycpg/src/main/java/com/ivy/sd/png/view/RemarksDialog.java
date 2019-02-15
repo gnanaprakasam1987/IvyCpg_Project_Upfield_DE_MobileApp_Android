@@ -189,7 +189,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                             int count = 0, selectedPos = -1;
                             for (ReasonMaster temp : bmodel.reasonHelper
                                     .getRemarksReasonMaster()) {
-                                if (temp.getReasonDesc().equals(bmodel.getRField1()))
+                                if (temp.getReasonID().equals(bmodel.getRField1()))
                                     selectedPos = count + 1;
                                 spinnerAdapter.add(temp);
                                 count++;

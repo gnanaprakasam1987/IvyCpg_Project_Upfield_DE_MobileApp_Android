@@ -3458,6 +3458,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
                 String prodCode = getResources().getString(R.string.prod_code) + ": " +
                         holder.productObj.getProductCode() + " ";
+                if (bmodel.labelsMasterHelper.applyLabels(holder.tvProductCode.getTag()) != null)
+                    prodCode = bmodel.labelsMasterHelper
+                            .applyLabels(holder.tvProductCode.getTag()) + ": " +
+                            holder.productObj.getProductCode() + " ";
                 holder.tvProductCode.setText(prodCode);
             }
 

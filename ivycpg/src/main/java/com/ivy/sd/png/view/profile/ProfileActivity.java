@@ -178,6 +178,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private Drawable upArrow;
     private ImageView profileEditBtn;
     private ImageView drawRouteBtn;
+    private ImageView mapSwitchBtn;
     private ProgressBar mapProgressBar;
     private TextView retailerNameTxt, retailerCodeTxt;
     private LinearLayout iconLinearLayout;
@@ -351,6 +352,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         profileEditBtn.setOnClickListener(this);
         drawRouteBtn = findViewById(R.id.draw_routeimg_btn);
         drawRouteBtn.setOnClickListener(this);
+        mapSwitchBtn = findViewById(R.id.profile_mapswitch);
+        mapSwitchBtn.setOnClickListener(this);
     }
 
     private void initilizeToolBar() {
@@ -718,6 +721,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 startActivity(i);
                 break;
             }
+            case R.id.profile_mapswitch:
+                mMap.setMapType((mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL) ? GoogleMap.MAP_TYPE_SATELLITE :
+                        GoogleMap.MAP_TYPE_NORMAL);
+                break;
             default:
                 break;
         }
@@ -2140,6 +2147,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     bmodel.synchronizationHelper.downloadUserRetailerTranFromUrl(bmodel
                             .getRetailerMasterBO()
                             .getRetailerID());
+                } else {
+                    alertDialog.dismiss();
+                    Toast.makeText(ProfileActivity.this, getResources().getString(R.string.retailer_trans_not_exist), Toast.LENGTH_SHORT).show();
+                    downloadProductsAndPrice = new DownloadProductsAndPrice(ProfileActivity.this, getPhotoPath(), fnameStarts,
+                            mVisitMode, mNFCReasonId, true);
+                    if (downloadProductsAndPrice.getStatus() != AsyncTask.Status.RUNNING)
+                        downloadProductsAndPrice.execute();
                 }
             } else {
                 String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());

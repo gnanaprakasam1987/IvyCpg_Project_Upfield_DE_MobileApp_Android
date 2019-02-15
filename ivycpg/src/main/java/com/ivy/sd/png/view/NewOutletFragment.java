@@ -3613,21 +3613,23 @@ public class NewOutletFragment extends IvyBaseFragment
         public void onDateSet(DatePicker view, int year, int month, int day) {
 
             Calendar selectedDate = new GregorianCalendar(year, month, day);
-            if (selectedDate.after(Calendar.getInstance())) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
-                if (code.equalsIgnoreCase("TINEXPDATE"))
-                    tinExpDateTextView.setText(sdf.format(selectedDate.getTime()));
-                else if (code.equalsIgnoreCase("DLEXPDATE"))
-                    dlExpDateTextView.setText(sdf.format(selectedDate.getTime()));
-                else if (code.equalsIgnoreCase("FLEXPDATE"))
-                    flExpDateTextView.setText(sdf.format(selectedDate.getTime()));
-                this.year = year;
-                this.day = day;
-                this.month = month;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+            if (code.equalsIgnoreCase("TINEXPDATE")) {
+                tinExpDateTextView.setText(sdf.format(selectedDate.getTime()));
             } else {
-                Toast.makeText(getActivity(),
-                        "Select future date",
-                        Toast.LENGTH_SHORT).show();
+                if (selectedDate.after(Calendar.getInstance())) {
+                    if (code.equalsIgnoreCase("DLEXPDATE"))
+                        dlExpDateTextView.setText(sdf.format(selectedDate.getTime()));
+                    else if (code.equalsIgnoreCase("FLEXPDATE"))
+                        flExpDateTextView.setText(sdf.format(selectedDate.getTime()));
+                    this.year = year;
+                    this.day = day;
+                    this.month = month;
+                } else {
+                    Toast.makeText(getActivity(),
+                            "Select future date",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }

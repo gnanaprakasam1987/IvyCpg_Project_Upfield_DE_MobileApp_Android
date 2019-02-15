@@ -18,6 +18,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -844,6 +845,10 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             if (businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
                 String prodCode = getResources().getString(R.string.prod_code)
                         + ": " + productBO.getProductCode() + " ";
+                if (businessModel.labelsMasterHelper.applyLabels(holder.productCode.getTag()) != null)
+                    prodCode = businessModel.labelsMasterHelper
+                            .applyLabels(holder.productCode.getTag()) + ": " +
+                            productBO.getProductCode() + " ";
                 holder.productCode.setText(prodCode);
             }
 
@@ -954,9 +959,11 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
                 holder.outerQty = (TextView) row
                         .findViewById(R.id.outerCaseQty);
                 holder.tvWeight = (TextView) row.findViewById(R.id.prdweight);
-                row.setOnClickListener(new OnClickListener() {
-                    public void onClick(View v) {
-                        // productName.setText(holder.productName);
+                holder.productShortName.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View view, MotionEvent motionEvent) {
+                        //productName.setText(((TextView) view).getText().toString());
+                        return false;
                     }
                 });
 
@@ -999,6 +1006,10 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
             if (businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
                 String prodCode = getResources().getString(R.string.prod_code)
                         + ": " + holder.productBO.getProductCode() + " ";
+                if (businessModel.labelsMasterHelper.applyLabels(holder.productCode.getTag()) != null)
+                    prodCode = businessModel.labelsMasterHelper
+                            .applyLabels(holder.productCode.getTag()) + ": " +
+                            holder.productBO.getProductCode() + " ";
                 holder.productCode.setText(prodCode);
             }
 

@@ -49,7 +49,7 @@
                         android:layout_marginEnd="@dimen/dimen_10dp"
                         android:text="@string/serial_no"
                         android:textSize="@dimen/dimens_16dp"
-
+                        android:tag="asset_serialno"
                         android:layout_weight="1"/>
 
                     <Spinner

@@ -742,7 +742,7 @@
                         android:maxLines="1"
                         android:text="@string/prod_code"
                         android:textSize="@dimen/text_size_secondary"
-                        android:visibility="visible" />
+                        android:visibility="visible" android:tag="pcode"/>
 
                     <LinearLayout
                         android:id="@+id/llShelfOuter"

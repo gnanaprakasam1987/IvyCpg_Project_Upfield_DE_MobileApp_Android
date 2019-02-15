@@ -386,7 +386,7 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
                 mDrawerLayout.closeDrawers();
             } else {
-                if (adapter.isEmpty()) {
+                if (assetTrackingHelper.getAssetTrackingList().size() == 0 && adapter.isEmpty()) {
                     save();
                 } else {
                     assetPresenter.updateTimeStamp();
