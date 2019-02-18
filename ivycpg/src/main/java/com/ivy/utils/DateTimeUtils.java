@@ -26,7 +26,7 @@ public class DateTimeUtils {
     public static final int DATE_DOB_FORMAT_PLAIN = 10;
     public static final int TIME = 0;
     public static final int DATE = 1;
-    private static final String defaultDateFormat = "MM/dd/yyyy";
+    public static  String defaultDateFormat = "MM/dd/yyyy";
     private static final String serverDateFormat = "yyyy/MM/dd";
     public static int DATE_TIME_ID = 3;
 
@@ -120,6 +120,8 @@ public class DateTimeUtils {
     }
 
     /**
+     * @deprecated
+     * @see {@link #getDateCount(String, String, String)}
      * an int < 0 if second Date is greater than the first Date, 0 if they are
      * equal, and an int > 0 if this Date is greater.
      *
@@ -167,7 +169,7 @@ public class DateTimeUtils {
         Calendar c = Calendar.getInstance();
         c.setTime(dateInput);
         // manipulate date
-        c.add(Calendar.DATE, noofDays); //same with c.add(Calendar.DAY_OF_MONTH, 1);
+        c.add(Calendar.DATE, noofDays);
         // convert calendar to date
         return c.getTime();
     }

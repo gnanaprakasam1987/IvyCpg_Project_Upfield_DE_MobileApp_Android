@@ -1,6 +1,11 @@
 package com.ivy.utils;
 
 
+import android.text.format.DateUtils;
+
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,6 +13,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.Calendar;
+import java.util.Date;
 
 import static org.mockito.BDDMockito.given;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
@@ -256,4 +262,128 @@ public class DateTimeUtilsTest {
 
         Assert.assertEquals("02142019154033",DateTimeUtils.now(-1));
     }
+
+    @Test
+    public void testGetFirstDayOfCurrentMonth(){
+        Calendar valentinesDay = Calendar.getInstance();
+        valentinesDay.set(2019, Calendar.FEBRUARY, 14,15,40,33);
+        mockStatic(Calendar.class);
+
+        given(Calendar.getInstance()).willReturn(valentinesDay);
+
+        Assert.assertEquals("2019/02/01",DateTimeUtils.getFirstDayOfCurrentMonth());
+    }
+
+    @Test
+    public void testGetDateDifferenceNegative(){
+        Assert.assertEquals(-10,DateTimeUtils.getDateCount("14, Feb 2019","04, Feb 2019","dd, MMM yyyy"));
+    }
+
+    @Test
+    public void testGetDateDifferencePositive(){
+        Assert.assertEquals(10,DateTimeUtils.getDateCount("14, Feb 2019","24, Feb 2019","dd, MMM yyyy"));
+    }
+
+
+    @Test
+    public void testGetDateDifferenceInvalidFormat(){
+        Assert.assertEquals(-1,DateTimeUtils.getDateCount("14, Feb 2019","24, Feb 2019","dd, MM yyyy"));
+    }
+
+    @Test
+    public void testGetCurrentMonth(){
+        Calendar valentinesDay = Calendar.getInstance();
+        valentinesDay.set(2019, Calendar.FEBRUARY, 14,15,40,33);
+        mockStatic(Calendar.class);
+
+        given(Calendar.getInstance()).willReturn(valentinesDay);
+
+        Assert.assertEquals(2,DateTimeUtils.getCurrentMonth());
+    }
+
+    @Test
+    public void testConvertFromServerDateToRequestedFormat(){
+        Calendar valentinesDay = Calendar.getInstance();
+        valentinesDay.set(2019, Calendar.FEBRUARY, 14,15,40,33);
+        mockStatic(Calendar.class);
+        given(Calendar.getInstance()).willReturn(valentinesDay);
+
+        Assert.assertEquals("14, Feb 2019",DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),"dd, MMM yyyy"));
+    }
+
+
+    @Test
+    public void testConvertToServerDateFormatToRequestedDateFormatEqual(){
+        Calendar valentinesDay = Calendar.getInstance();
+        valentinesDay.set(2019, Calendar.FEBRUARY, 14,15,40,33);
+        mockStatic(Calendar.class);
+        given(Calendar.getInstance()).willReturn(valentinesDay);
+
+        Assert.assertEquals("2019/02/14",DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),"yyyy/MM/dd"));
+    }
+
+
+
+    @Test
+    public void testConvertToServerDateInvalidDefaultFormat(){
+        Calendar valentinesDay = Calendar.getInstance();
+        valentinesDay.set(2019, Calendar.FEBRUARY, 14,15,40,33);
+        mockStatic(Calendar.class);
+
+        ConfigurationMasterHelper.outDateFormat ="yyy/MMMM/dd";
+
+        given(Calendar.getInstance()).willReturn(valentinesDay);
+
+
+        Assert.assertEquals("2019/02/14",DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),"abcdef"));
+    }
+
+    @Test
+    public void testConvertToServerDateFormat(){
+        Assert.assertEquals("2019/02/14",DateTimeUtils.convertToServerDateFormat("14, Feb 2019","dd, MMM yyyy"));
+
+    }
+
+    @Test
+    public void testConvertToServerDateFormatEqual(){
+        Assert.assertEquals("2019/02/14",DateTimeUtils.convertToServerDateFormat("2019/02/14","yyyy/MM/dd"));
+
+    }
+
+    @Test
+    public void testConvertToServerDateFormatException(){
+        Assert.assertEquals("2019/02/14",DateTimeUtils.convertToServerDateFormat("02/14/2019","yyyy/MM/ab"));
+    }
+
+    @Test
+    public void testConvertToServerDateFormatDefaultException(){
+
+        DateTimeUtils.defaultDateFormat = "yyyy/MM/ab";
+        Assert.assertEquals("02/14/2019",DateTimeUtils.convertToServerDateFormat("02/14/2019","yyyy/MM/ab"));
+    }
+
+    @Test
+    public void testConvertDateObjectToRequestedFormat(){
+        Calendar valentinesDay = Calendar.getInstance();
+        valentinesDay.set(2019, Calendar.FEBRUARY, 14,15,40,33);
+        mockStatic(Calendar.class);
+        Assert.assertEquals("14, Feb 2019",DateTimeUtils.convertDateObjectToRequestedFormat(valentinesDay.getTime(),"dd, MMM yyyy"));
+    }
+
+    @Test
+    public void testConvertDateObjectToRequestedFormatException(){
+        Calendar valentinesDay = Calendar.getInstance();
+        valentinesDay.set(2019, Calendar.FEBRUARY, 14,15,40,33);
+        mockStatic(Calendar.class);
+        Assert.assertEquals("02/14/2019",DateTimeUtils.convertDateObjectToRequestedFormat(valentinesDay.getTime(),"dd, MMM abcd"));
+    }
+
+
+    @After
+    public void tearDown() {
+        DateTimeUtils.defaultDateFormat = "MM/dd/yyyy";
+    }
+
+
 }
+
