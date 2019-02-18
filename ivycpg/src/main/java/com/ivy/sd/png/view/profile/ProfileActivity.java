@@ -211,6 +211,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     String dynamicReportTitle = "";
 
+    String selectedUserId = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -303,8 +305,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             Commons.printException(e);
         }
 
-        if (bmodel.configurationMasterHelper.IS_TEAMLEAD
-                && bmodel.configurationMasterHelper.IS_AUDIT_USER) {
+        if (bmodel.configurationMasterHelper.isAuditEnabled()) {
             mUserByRetailerID = bmodel.getUserByRetailerID();
             registerReceiver();
         }
@@ -1782,7 +1783,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private void loadHomeScreenTwo(RetailerMasterBO ret) {
 
         // Time count Starts for the retailer
-        if (bmodel.configurationMasterHelper.IS_TEAMLEAD && bmodel.configurationMasterHelper.IS_AUDIT_USER) {
+        if (bmodel.configurationMasterHelper.isAuditEnabled()) {
             bmodel.setRetailerMasterBO(ret);
 
             ArrayList<UserMasterBO> mUserList = mUserByRetailerID.get(ret
@@ -2122,7 +2123,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.synchronizationHelper.updateAuthenticateToken(false);
+
+                selectedUserId = bmodel.retailerMasterBO.getSelectedUserID()+"";
+
+                String loginId = bmodel.synchronizationHelper.
+                        getSelectedUserLoginId(bmodel.retailerMasterBO.getSelectedUserID()+"",ProfileActivity.this);
+                bmodel.synchronizationHelper.updateAuthenticateTokenWithoutPassword(loginId);
+
                 bmodel.synchronizationHelper.downloadUserRetailerTranUrl();
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -2255,8 +2262,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (bmodel.configurationMasterHelper.IS_TEAMLEAD
-                && bmodel.configurationMasterHelper.IS_AUDIT_USER) {
+        if (bmodel.configurationMasterHelper.isAuditEnabled()) {
             unregisterReceiver(receiver);
         }
 
@@ -2283,7 +2289,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             case SynchronizationHelper.USER_RETAILER_TRAN_DOWNLOAD_INSERT:
                 if (errorCode != null && errorCode
                         .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    bmodel.synchronizationHelper.downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.VISIT_SCREEN, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE);
+                    bmodel.synchronizationHelper
+                            .downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.VISIT_SCREEN, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE,selectedUserId);
+                    selectedUserId = "";
                 } else {
                     String errorDownlodCode = bundle
                             .getString(SynchronizationHelper.ERROR_CODE);

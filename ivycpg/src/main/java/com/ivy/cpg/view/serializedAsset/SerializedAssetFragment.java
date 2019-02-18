@@ -186,7 +186,7 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
         listview = view.findViewById(R.id.list);
         listview.setCacheColorHint(0);
 
-        if (mBModel.configurationMasterHelper.IS_TEAMLEAD) {
+        if (mBModel.configurationMasterHelper.isAuditEnabled()) {
             TextView tvAudit = view.findViewById(R.id.audit);
             tvAudit.setVisibility(View.VISIBLE);
 

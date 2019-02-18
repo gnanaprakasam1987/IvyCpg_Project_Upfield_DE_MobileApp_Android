@@ -6272,7 +6272,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 if (SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE
                         .equals(errorCode)) {
 
-                    bmodel.synchronizationHelper.downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.NEW_RETAILER, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE);
+                    bmodel.synchronizationHelper.downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.NEW_RETAILER, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE,"");
 
 
                 } else {
