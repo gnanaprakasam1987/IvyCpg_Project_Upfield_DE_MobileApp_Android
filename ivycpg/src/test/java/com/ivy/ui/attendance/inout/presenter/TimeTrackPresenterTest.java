@@ -3,18 +3,17 @@ package com.ivy.ui.attendance.inout.presenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.ui.attendance.inout.TimeTrackTestDataFactory;
 import com.ivy.ui.attendance.inout.TimeTrackingContract;
 import com.ivy.ui.attendance.inout.data.TimeTrackDataManager;
-import com.ivy.ui.photocapture.presenter.PhotoCapturePresenterImpl;
 import com.ivy.utils.rx.TestSchedulerProvider;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
@@ -27,12 +26,10 @@ import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.TestScheduler;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -171,22 +168,22 @@ public class TimeTrackPresenterTest {
     }
 
     @Test
-    public void testIsPreviousInOutCompeleted(){
+    public void testIsPreviousInOutCompeleted() {
         assertTrue(mPresenter.isPreviousInOutCompleted(TimeTrackTestDataFactory.getTimeTrackList()));
     }
 
     @Test
-    public void testIsPreviousInOutCompeletedFail(){
+    public void testIsPreviousInOutCompeletedFail() {
         assertFalse(mPresenter.isPreviousInOutCompleted(TimeTrackTestDataFactory.getTimeTrackListInTime()));
     }
 
     @Test
-    public void testIsPreviousInOutCompeletedEmpty(){
+    public void testIsPreviousInOutCompeletedEmpty() {
         assertTrue(mPresenter.isPreviousInOutCompleted(new ArrayList<>()));
     }
 
     @Test
-    public void testfetchInOutReason(){
+    public void testfetchInOutReason() {
         ArrayList<ReasonMaster> reasonMasterArrayList = TimeTrackTestDataFactory.getReasonList();
         given(timeTrackDataManager.getInOutReasonList()).willReturn(Observable.fromCallable(new Callable<ArrayList<ReasonMaster>>() {
             @Override
@@ -203,7 +200,7 @@ public class TimeTrackPresenterTest {
     }
 
     @Test
-    public void testSaveInOutDetails(){
+    public void testSaveInOutDetails() {
 
         ArrayList<NonFieldTwoBo> timeTrackList = TimeTrackTestDataFactory.getTimeTrackList();
 
@@ -220,7 +217,7 @@ public class TimeTrackPresenterTest {
             }
         }));
 
-        given(timeTrackDataManager.saveTimeTrackDetailsDb("0","5",0.0,0.0)).willReturn(Single.fromCallable(new Callable<Boolean>() {
+        given(timeTrackDataManager.saveTimeTrackDetailsDb("0", "5", 0.0, 0.0)).willReturn(Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 return true;
@@ -240,14 +237,46 @@ public class TimeTrackPresenterTest {
             }
         }));
 
-        mPresenter.saveInOutDetails("0","5");
+        mPresenter.saveInOutDetails("0", "5");
         testScheduler.triggerActions();
-        then(mView).should().showLoading();
-        then(mView).should().isUpdateRealTimeIn();
-        then(mView).should().uploadAttendance("IN");
-        then(mView).should().populateDataToList(timeTrackList);
-        then(mView).should().hideLoading();
+        InOrder inOrder = Mockito.inOrder(mView);
+        then(mView).should(inOrder).showLoading();
+        then(mView).should(inOrder).isUpdateRealTimeIn();
+        then(mView).should(inOrder).uploadAttendance("IN");
+        then(mView).should(inOrder).populateDataToList(timeTrackList);
+        then(mView).should(inOrder).hideLoading();
+        then(mView).shouldHaveNoMoreInteractions();
     }
+
+    @Test
+    public void testSaveInOutDetailsSuccessFalse() {
+
+        mockConfigurationHelper.IS_REALTIME_LOCATION_CAPTURE = true;
+        mockConfigurationHelper.IS_UPLOAD_ATTENDANCE = true;
+        mockConfigurationHelper.IS_IN_OUT_MANDATE = true;
+
+        when(mView.isUpdateRealTimeIn()).thenReturn(true);
+
+        given(timeTrackDataManager.isWorkingStatus(Integer.parseInt("0"))).willReturn(Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                return true;
+            }
+        }));
+
+        given(mView.isUpdateRealTimeIn()).willReturn(false);
+
+        mPresenter.saveInOutDetails("0", "5");
+        testScheduler.triggerActions();
+        InOrder inOrder = Mockito.inOrder(mView);
+        then(mView).should(inOrder).showLoading();
+        then(mView).should(inOrder).isUpdateRealTimeIn();
+        then(mView).should(inOrder).uploadAttendance("IN");
+        then(mView).should(inOrder).hideLoading();
+        then(mView).shouldHaveNoMoreInteractions();
+
+    }
+
 
     @After
     public void tearDown() {
