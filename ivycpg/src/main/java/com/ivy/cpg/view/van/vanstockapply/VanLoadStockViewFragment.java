@@ -30,7 +30,6 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.print.DemoSleeper;
 import com.ivy.utils.DateTimeUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
@@ -602,7 +601,7 @@ public class VanLoadStockViewFragment extends IvyBaseFragment {
     private void doInitialize() {
         try {
 
-            mSalesdate = DateUtil.convertFromServerDateToRequestedFormat(
+            mSalesdate = DateTimeUtils.convertFromServerDateToRequestedFormat(
                     DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                     bmodel.configurationMasterHelper.outDateFormat);
 

@@ -24,7 +24,6 @@ import com.ivy.sd.png.commons.NumberToWord;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.utils.DateTimeUtils;
 
@@ -698,14 +697,14 @@ public class CommonPrintHelper {
                 value = label;
             }
         } else if (tag.equalsIgnoreCase(TAG_DATE)) {
-            value = label + DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+            value = label + DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                     bmodel.configurationMasterHelper.outDateFormat);
         } else if (tag.equalsIgnoreCase(TAG_TIME)) {
             value = label + DateTimeUtils.now(DateTimeUtils.TIME);
         } else if (tag.equalsIgnoreCase(TAG_DELIVERY_DATE)) {
             String deliveryDate = bmodel.getDeliveryDate(OrderHelper.getInstance(context).selectedOrderId, bmodel.getRetailerMasterBO().getRetailerID());
             if (!deliveryDate.equals("")) {
-                String delDate = DateUtil.convertFromServerDateToRequestedFormat(deliveryDate, bmodel.configurationMasterHelper.outDateFormat);
+                String delDate = DateTimeUtils.convertFromServerDateToRequestedFormat(deliveryDate, bmodel.configurationMasterHelper.outDateFormat);
                 value = label + delDate;
             }
         } else if (tag.equalsIgnoreCase(TAG_INVOICE_NUMBER)) {

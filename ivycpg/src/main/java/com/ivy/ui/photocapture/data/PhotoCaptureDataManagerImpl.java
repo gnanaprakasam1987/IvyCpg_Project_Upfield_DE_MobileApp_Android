@@ -11,7 +11,6 @@ import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
@@ -105,10 +104,10 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                                     .getInt(0));
                             lbo.setProductID(cursor.getInt(1));
                             lbo.setImagePath(cursor.getString(2));
-                            lbo.setFromDate(DateUtil.convertFromServerDateToRequestedFormat(
+                            lbo.setFromDate(DateTimeUtils.convertFromServerDateToRequestedFormat(
                                     cursor.getString(3),
                                     ConfigurationMasterHelper.outDateFormat));
-                            lbo.setToDate(DateUtil.convertFromServerDateToRequestedFormat(
+                            lbo.setToDate(DateTimeUtils.convertFromServerDateToRequestedFormat(
                                     cursor.getString(4),
                                     ConfigurationMasterHelper.outDateFormat));
                             lbo.setLocationId(cursor.getInt(5));

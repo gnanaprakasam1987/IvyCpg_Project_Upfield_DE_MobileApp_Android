@@ -13,7 +13,7 @@ import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -65,7 +65,7 @@ public class TimeTrackingAdapter extends RecyclerView.Adapter<TimeTrackingAdapte
             tokenizer = new StringTokenizer(outTime);
             date = tokenizer.nextToken();
             time = tokenizer.nextToken();
-            holder.tvOutTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
+            holder.tvOutTime.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(date,
                     DEFAULT_DATE_FORMAT) + "\n" + time);
         } else {
             holder.tvOutTime.setVisibility(View.GONE);
@@ -78,7 +78,7 @@ public class TimeTrackingAdapter extends RecyclerView.Adapter<TimeTrackingAdapte
         time = tokenizer.nextToken();
 
         if (!StringUtils.isNullOrEmpty(holder.nonFieldTwoBO.getInTime())) {
-            holder.tvInTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
+            holder.tvInTime.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(date,
                     DEFAULT_DATE_FORMAT) + "\n" + time);
         }
 

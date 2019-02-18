@@ -16,7 +16,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
@@ -694,10 +693,10 @@ public class AssetTrackingHelper {
 
                             serialNo,
                             conditionId,
-                            DateUtil.convertFromServerDateToRequestedFormat(
+                            DateTimeUtils.convertFromServerDateToRequestedFormat(
                                     detailCursor.getString(6),
                                     ConfigurationMasterHelper.outDateFormat),
-                            DateUtil.convertFromServerDateToRequestedFormat(
+                            DateTimeUtils.convertFromServerDateToRequestedFormat(
                                     detailCursor.getString(7),
                                     ConfigurationMasterHelper.outDateFormat), audit, pid, compQty, locId, isExecuted,
                             detailCursor.getString(detailCursor.getColumnIndex("imgName")),
@@ -1244,7 +1243,7 @@ public class AssetTrackingHelper {
             String assetAddAndDeleteValues = id + "," + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ","
                     + QT(assets.getPOSM()) + "," + QT(assets.getSNO()) + ","
                     + QT(assets.getBrand()) + ","
-                    + QT(DateUtil.convertToServerDateFormat(
+                    + QT(DateTimeUtils.convertToServerDateFormat(
                     assets.getNewInstallDate(),
                     ConfigurationMasterHelper.outDateFormat))
                     + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + typeListId + "," +
@@ -1584,7 +1583,7 @@ public class AssetTrackingHelper {
                                                     .getInstallDate()
                                                     .length() == 0) ? DateTimeUtils
                                                     .now(DateTimeUtils.DATE_GLOBAL)
-                                                    : (DateUtil
+                                                    : (DateTimeUtils
                                                     .convertToServerDateFormat(
                                                             assetBo.getInstallDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
@@ -1596,7 +1595,7 @@ public class AssetTrackingHelper {
                                                     .getServiceDate()
                                                     .length() == 0) ? DateTimeUtils
                                                     .now(DateTimeUtils.DATE_GLOBAL)
-                                                    : (DateUtil
+                                                    : (DateTimeUtils
                                                     .convertToServerDateFormat(
                                                             assetBo.getServiceDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
@@ -1608,7 +1607,7 @@ public class AssetTrackingHelper {
                                                     .getInstallDate()
                                                     .length() == 0) ? DateTimeUtils
                                                     .now(DateTimeUtils.DATE_GLOBAL)
-                                                    : (DateUtil
+                                                    : (DateTimeUtils
                                                     .convertToServerDateFormat(
                                                             assetBo.getInstallDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
@@ -1620,7 +1619,7 @@ public class AssetTrackingHelper {
                                                     .getServiceDate()
                                                     .length() == 0) ? DateTimeUtils
                                                     .now(DateTimeUtils.DATE_GLOBAL)
-                                                    : (DateUtil
+                                                    : (DateTimeUtils
                                                     .convertToServerDateFormat(
                                                             assetBo.getServiceDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
@@ -1725,7 +1724,7 @@ public class AssetTrackingHelper {
                                                     .getInstallDate()
                                                     .length() == 0) ? DateTimeUtils
                                                     .now(DateTimeUtils.DATE_GLOBAL)
-                                                    : (DateUtil
+                                                    : (DateTimeUtils
                                                     .convertToServerDateFormat(
                                                             assetBo.getInstallDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
@@ -1737,7 +1736,7 @@ public class AssetTrackingHelper {
                                                     .getServiceDate()
                                                     .length() == 0) ? DateTimeUtils
                                                     .now(DateTimeUtils.DATE_GLOBAL)
-                                                    : (DateUtil
+                                                    : (DateTimeUtils
                                                     .convertToServerDateFormat(
                                                             assetBo.getServiceDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
@@ -1749,7 +1748,7 @@ public class AssetTrackingHelper {
                                                     .getInstallDate()
                                                     .length() == 0) ? DateTimeUtils
                                                     .now(DateTimeUtils.DATE_GLOBAL)
-                                                    : (DateUtil
+                                                    : (DateTimeUtils
                                                     .convertToServerDateFormat(
                                                             assetBo.getInstallDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
@@ -1761,7 +1760,7 @@ public class AssetTrackingHelper {
                                                     .getServiceDate()
                                                     .length() == 0) ? DateTimeUtils
                                                     .now(DateTimeUtils.DATE_GLOBAL)
-                                                    : (DateUtil
+                                                    : (DateTimeUtils
                                                     .convertToServerDateFormat(
                                                             assetBo.getServiceDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))

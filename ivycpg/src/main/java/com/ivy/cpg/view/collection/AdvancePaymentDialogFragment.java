@@ -42,7 +42,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.CustomKeyBoard;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
@@ -582,7 +581,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
 
     @Override
     public void updateDate(Date date, String tag) {
-        String paidDate = DateUtil.convertDateObjectToRequestedFormat(
+        String paidDate = DateTimeUtils.convertDateObjectToRequestedFormat(
                 date, "yyyy/MM/dd");
         try {
             if (!DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equals(paidDate))//this for checking today date since before method not woking for today date
@@ -608,7 +607,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
             return;
         }
 
-        mChequeDateBTN.setText(DateUtil.convertDateObjectToRequestedFormat(
+        mChequeDateBTN.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                 date, ConfigurationMasterHelper.outDateFormat));
         mSelectedPaymentBO.setChequeDate(paidDate);
     }

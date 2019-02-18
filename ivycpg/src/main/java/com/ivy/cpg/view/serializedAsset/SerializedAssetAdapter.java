@@ -32,7 +32,6 @@ import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.utils.DateTimeUtils;
 
@@ -381,10 +380,10 @@ public class SerializedAssetAdapter extends BaseAdapter {
                         holder.mConditionSpin.setSelection(0);
                         holder.mInstallDate.setEnabled(false);
                         holder.mServiceDate.setEnabled(false);
-                        holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-                        holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-                        holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-                        holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                        holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                        holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                        holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                        holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
 
                     }
 
@@ -434,13 +433,13 @@ public class SerializedAssetAdapter extends BaseAdapter {
         holder.serialNoTV.setText(serialNo);
 
         holder.mInstallDate
-                .setText((holder.assetBO.getInstallDate() == null) ? DateUtil
+                .setText((holder.assetBO.getInstallDate() == null) ? DateTimeUtils
                         .convertFromServerDateToRequestedFormat(
                                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 outPutDateFormat) : holder.assetBO
                         .getInstallDate());
         holder.mServiceDate
-                .setText((holder.assetBO.getServiceDate() == null) ? DateUtil
+                .setText((holder.assetBO.getServiceDate() == null) ? DateTimeUtils
                         .convertFromServerDateToRequestedFormat(
                                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 outPutDateFormat) : holder.assetBO
@@ -477,10 +476,10 @@ public class SerializedAssetAdapter extends BaseAdapter {
             holder.mServiceDate.setEnabled(false);
             holder.assetBO.setImageName("");
             holder.assetBO.setImgName("");
-            holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-            holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-            holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-            holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+            holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+            holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+            holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+            holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
 
         }
 
@@ -664,15 +663,15 @@ public class SerializedAssetAdapter extends BaseAdapter {
                 Toast.makeText(mContext,
                         R.string.future_date_not_allowed,
                         Toast.LENGTH_SHORT).show();
-                bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
+                bo.setInstallDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                         Calendar.getInstance().getTime(), outPutDateFormat));
-                dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                dateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                         .getInstance().getTime(), outPutDateFormat));
             } else {
 
-                bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
+                bo.setInstallDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                         selectedDate.getTime(), outPutDateFormat));
-                dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                dateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                         selectedDate.getTime(), outPutDateFormat));
             }
 
@@ -680,7 +679,7 @@ public class SerializedAssetAdapter extends BaseAdapter {
 
             if (bo.getInstallDate() != null
                     && bo.getInstallDate().length() > 0) {
-                Date mInstallDate = DateUtil.convertStringToDateObject(
+                Date mInstallDate = DateTimeUtils.convertStringToDateObject(
                         bo.getInstallDate(), outPutDateFormat);
                 if (mInstallDate != null && selectedDate.getTime() != null
                         && mInstallDate.after(selectedDate.getTime())) {
@@ -691,21 +690,21 @@ public class SerializedAssetAdapter extends BaseAdapter {
                     Toast.makeText(mContext,
                             R.string.future_date_not_allowed,
                             Toast.LENGTH_SHORT).show();
-                    bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
+                    bo.setServiceDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                             Calendar.getInstance().getTime(), outPutDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    dateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), outPutDateFormat));
                 } else {
-                    bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
+                    bo.setServiceDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    dateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                 }
             } else {
 
-                bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
+                bo.setServiceDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                         selectedDate.getTime(), outPutDateFormat));
-                dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                dateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                         selectedDate.getTime(), outPutDateFormat));
             }
         }

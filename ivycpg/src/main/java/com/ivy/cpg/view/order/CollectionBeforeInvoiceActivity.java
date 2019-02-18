@@ -52,7 +52,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.utils.DateTimeUtils;
@@ -128,7 +127,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
 
         bmodel = (BusinessModel) getApplicationContext();
 
-        todayDate = DateUtil.convertFromServerDateToRequestedFormat(
+        todayDate = DateTimeUtils.convertFromServerDateToRequestedFormat(
                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
 
@@ -459,7 +458,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
         @Override
         public void onDateSet(DatePicker view, int year, int month, int day) {
             Calendar selectedDate = new GregorianCalendar(year, month, day);
-            chequedate.setText(DateUtil.convertDateObjectToRequestedFormat(
+            chequedate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                     selectedDate.getTime(), bmodel.configurationMasterHelper.outDateFormat));
             chequeDate = chequedate.getText().toString();
             Calendar currentcal = Calendar.getInstance();
@@ -470,9 +469,9 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
                             getResources().getString(
                                     R.string.post_dated_cheque_notallow),
                             Toast.LENGTH_SHORT).show();
-                    chequedate.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    chequedate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             currentcal.getTime(), bmodel.configurationMasterHelper.outDateFormat));
-                    chequeDate = DateUtil.convertDateObjectToRequestedFormat(
+                    chequeDate = DateTimeUtils.convertDateObjectToRequestedFormat(
                             currentcal.getTime(), outPutDateFormat).toString();
 
                 }
@@ -587,7 +586,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
             if (collectionbo.getChequeamt() > 0) {
                 collectionamount.setText(payment.get(0).getAmount() + "");
                 chequenumber.setText(payment.get(0).getChequeNumber());
-                chequedate.setText(DateUtil.convertFromServerDateToRequestedFormat(payment
+                chequedate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(payment
                         .get(0).getChequeDate(), outPutDateFormat));
                 // Bank.setSelection(getBankIndex(payment.get(0).getBankID()));
                 Bank.setSelection(bankIndex);
@@ -749,7 +748,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
                     collectionbo.getChequeamt(),
                     collectionbo.getBankId(),
                     collectionbo.getBranchId(),
-                    DateUtil.convertToServerDateFormat(chequedate.getText()
+                    DateTimeUtils.convertToServerDateFormat(chequedate.getText()
                                     + "",
                             bmodel.configurationMasterHelper.outDateFormat)
                             + "", chequenumber.getText().toString(),

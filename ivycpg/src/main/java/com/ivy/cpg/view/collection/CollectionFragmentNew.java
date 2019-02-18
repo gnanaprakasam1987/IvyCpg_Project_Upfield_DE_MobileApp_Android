@@ -44,7 +44,6 @@ import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -522,7 +521,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
             holder.tvInvAmt.setText(bmodel.formatValue(holder.invoiceHeaderBO
                     .getInvoiceAmount()));
 
-            holder.tvInvDate.setText(DateUtil.convertFromServerDateToRequestedFormat(
+            holder.tvInvDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
                     holder.invoiceHeaderBO.getInvoiceDate(),
                     ConfigurationMasterHelper.outDateFormat));
 //            final int count = DateUtil.getDateCount(holder.invoiceHeaderBO.getInvoiceDate(),

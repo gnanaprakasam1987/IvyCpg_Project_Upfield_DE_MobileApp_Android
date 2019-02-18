@@ -27,7 +27,6 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.MyDialogCloseListener;
 import com.ivy.utils.DateTimeUtils;
@@ -225,7 +224,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
     }
     private void setAddAssetDetails() {
 
-        String todayDate = DateUtil.convertFromServerDateToRequestedFormat(
+        String todayDate = DateTimeUtils.convertFromServerDateToRequestedFormat(
                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
         String remarks=ETDesc.getText().toString().trim();

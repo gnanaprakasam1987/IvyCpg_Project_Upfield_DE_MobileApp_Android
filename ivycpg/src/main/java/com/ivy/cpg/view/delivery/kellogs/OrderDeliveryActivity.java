@@ -24,7 +24,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.util.view.OnSingleClickListener;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -151,7 +150,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
         public void onBindViewHolder(MyViewHolder holder, final int position) {
             holder.orderId.setText(orderHeaders.get(position).getOrderid());
             holder.orderValue.setText(String.valueOf(orderHeaders.get(position).getOrderValue()));
-            holder.orderDate.setText(DateUtil.convertFromServerDateToRequestedFormat(orderHeaders.get(position).getOrderDate()
+            holder.orderDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(orderHeaders.get(position).getOrderDate()
                     , ConfigurationMasterHelper.outDateFormat));
             holder.orderLine.setText(String.valueOf(orderHeaders.get(position).getLinesPerCall()));
 

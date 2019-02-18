@@ -58,7 +58,6 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -1094,10 +1093,10 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
             holder.tvProductName.setText(holder.mPromotionMasterBO.getpName() == null ? "" : holder.mPromotionMasterBO.getpName());
             holder.mFromDateBTN.setText(holder.mPromotionMasterBO.getFromDate() == null ? "" :
-                    DateUtil.convertFromServerDateToRequestedFormat(
+                    DateTimeUtils.convertFromServerDateToRequestedFormat(
                             holder.mPromotionMasterBO.getFromDate(), ConfigurationMasterHelper.outDateFormat));
             holder.mToDateBTN.setText(holder.mPromotionMasterBO.getToDate() == null ? "" :
-                    DateUtil.convertFromServerDateToRequestedFormat(
+                    DateTimeUtils.convertFromServerDateToRequestedFormat(
                             holder.mPromotionMasterBO.getToDate(), ConfigurationMasterHelper.outDateFormat));
 
             holder.mFromDateBTN.setOnClickListener(new View.OnClickListener() {
@@ -1286,7 +1285,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
     @Override
     public void updateDate(Date date, String tag) {
         try {
-            String paidDate = DateUtil.convertDateObjectToRequestedFormat(
+            String paidDate = DateTimeUtils.convertDateObjectToRequestedFormat(
                     date, "yyyy/MM/dd");
             if (selectedposition != -1) {
                 if (tag.equals("fromdatePicker")) {

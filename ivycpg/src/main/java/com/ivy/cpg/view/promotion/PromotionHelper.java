@@ -9,7 +9,6 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 
@@ -254,8 +253,8 @@ public class PromotionHelper {
                     for (PromotionBO promotion : promotionList) {
 
                         if (promotion.getIsExecuted() == 1 || !"0".equals(promotion.getReasonID()) || (promotion.getRatingId() != null && !"0".equals(promotion.getRatingId()))) {
-                            String fromDate = DateUtil.convertToServerDateFormat(promotion.getFromDate(), "yyyy/MM/dd");
-                            String toDate = DateUtil.convertToServerDateFormat(promotion.getToDate(), "yyyy/MM/dd");
+                            String fromDate = DateTimeUtils.convertToServerDateFormat(promotion.getFromDate(), "yyyy/MM/dd");
+                            String toDate = DateTimeUtils.convertToServerDateFormat(promotion.getToDate(), "yyyy/MM/dd");
                             String sbDetails = QT(uid) +
                                     "," + promotion.getPromoId() +
                                     "," + promotion.getProductId() +

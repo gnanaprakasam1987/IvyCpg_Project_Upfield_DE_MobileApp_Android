@@ -31,7 +31,6 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
@@ -246,7 +245,7 @@ public class DeviceStatusActivity extends IvyBaseActivityNoActionBar {
 		status = new ArrayList();
 		// if (bmodel.configurationMasterHelper.SHOW_DS_CURRENT_DATE)
 		status.add(new RowItem(R.drawable.ic_time, getResources().getString(
-				R.string.current_date), DateUtil.convertFromServerDateToRequestedFormat(
+				R.string.current_date), DateTimeUtils.convertFromServerDateToRequestedFormat(
 				DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
 				ConfigurationMasterHelper.outDateFormat)
 				+ " "

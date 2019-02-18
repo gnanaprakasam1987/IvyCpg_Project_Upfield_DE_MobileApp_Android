@@ -32,7 +32,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.utils.DateTimeUtils;
@@ -639,16 +638,16 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                             R.string.future_date_not_allowed,
                             Toast.LENGTH_SHORT).show();
                     mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem)
-                            .setFromDate(DateUtil.convertDateObjectToRequestedFormat(
+                            .setFromDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                                     Calendar.getInstance().getTime(),
                                     outPutDateFormat));
-                    btn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    btn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), outPutDateFormat));
                 } else {
                     if (mPhotoCaptureBO != null && mPhotoCaptureBO.getInStoreLocations() != null) {
-                        mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setFromDate(DateUtil.convertDateObjectToRequestedFormat(
+                        mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setFromDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), outPutDateFormat));
-                        btn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                        btn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), outPutDateFormat));
                     }
                 }
@@ -657,7 +656,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
             if (mPhotoCaptureBO != null && mPhotoCaptureBO.getInStoreLocations() != null) {
                 if (mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getFromDate() != null
                         && mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getFromDate().length() > 0) {
-                    Date dateMfg = DateUtil.convertStringToDateObject(
+                    Date dateMfg = DateTimeUtils.convertStringToDateObject(
                             mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).getFromDate(), outPutDateFormat);
                     if (dateMfg != null && selectedDate.getTime() != null
                             && dateMfg.after(selectedDate.getTime())) {
@@ -665,18 +664,18 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
                                 Toast.LENGTH_SHORT).show();
                     } else {
                         if (mPhotoCaptureBO != null && mPhotoCaptureBO.getInStoreLocations() != null) {
-                            mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setToDate(DateUtil.convertDateObjectToRequestedFormat(
+                            mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setToDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                                     selectedDate.getTime(), outPutDateFormat));
-                            btn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                            btn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                                     selectedDate.getTime(), outPutDateFormat));
                         }
                     }
                 }
             } else {
                 if (mPhotoCaptureBO != null && mPhotoCaptureBO.getInStoreLocations() != null) {
-                    mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setToDate(DateUtil.convertDateObjectToRequestedFormat(
+                    mPhotoCaptureBO.getInStoreLocations().get(mSelectedItem).setToDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
-                    btn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    btn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                 }
             }

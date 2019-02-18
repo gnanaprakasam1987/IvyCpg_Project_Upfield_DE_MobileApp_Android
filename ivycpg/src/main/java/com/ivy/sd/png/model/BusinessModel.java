@@ -138,7 +138,6 @@ import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.TimerCount;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CircleTransform;
@@ -973,7 +972,7 @@ public class BusinessModel extends Application {
                             calendar.add(Calendar.DAY_OF_YEAR, retailerMasterBO.getCreditDays());
                             Date dueDate = format.parse(format.format(calendar.getTime()));
 
-                            invocieHeaderBO.setDueDate(DateUtil.convertDateObjectToRequestedFormat(
+                            invocieHeaderBO.setDueDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                                     dueDate, configurationMasterHelper.outDateFormat));
 
                         }
@@ -6026,7 +6025,7 @@ public class BusinessModel extends Application {
                     if (mRules.get(i).contains("YYYY") || mRules.get(i).contains("yyyy")) {
                         String str = mRules.get(i).replace("{", "").replace("}", "");
                         str = str.replace("YYYY", "yyyy");
-                        mComputeID.append(DateUtil.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(), str));
+                        mComputeID.append(DateTimeUtils.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(), str));
                     }
                    /* else if (mRules.get(i).contains("yyyy")) {
                         mComputeID.append(DateUtil.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(),
@@ -6096,7 +6095,7 @@ public class BusinessModel extends Application {
 
 
                     // Download Date
-                    mComputeID.append(DateUtil.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(), "MMddyyyy"));
+                    mComputeID.append(DateTimeUtils.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(), "MMddyyyy"));
                 }
                 seqNo = 0L;
 
@@ -6996,7 +6995,7 @@ public class BusinessModel extends Application {
                             calendar.add(Calendar.DAY_OF_YEAR, crediiDays);
                             Date dueDate = format.parse(format.format(calendar.getTime()));
 
-                            invocieHeaderBO.setDueDate(DateUtil.convertDateObjectToRequestedFormat(
+                            invocieHeaderBO.setDueDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                                     dueDate, configurationMasterHelper.outDateFormat));
 
                         }

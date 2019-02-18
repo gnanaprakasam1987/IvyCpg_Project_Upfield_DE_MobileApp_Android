@@ -24,7 +24,6 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.profile.RetailerContactBo;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
@@ -519,7 +518,7 @@ public class ProfileHelper {
                             calendar.add(Calendar.DAY_OF_YEAR, bmodel.retailerMasterBO.getCreditDays());
                             Date dueDate = format.parse(format.format(calendar.getTime()));
 
-                            invoiceHistory.setDueDate(DateUtil.convertDateObjectToRequestedFormat(
+                            invoiceHistory.setDueDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                                     dueDate, ConfigurationMasterHelper.outDateFormat));
 
                         }

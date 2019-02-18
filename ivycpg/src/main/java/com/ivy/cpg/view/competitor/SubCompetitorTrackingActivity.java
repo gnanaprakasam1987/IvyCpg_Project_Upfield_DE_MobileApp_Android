@@ -54,7 +54,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.utils.DateTimeUtils;
@@ -560,12 +559,12 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
             holder.edtQty.setText(holder.mCompTrackBO.getQty() + "");
             holder.edtRemark.setText(holder.mCompTrackBO.getRemarks() + "");
             if (!holder.mCompTrackBO.isExecuted()) {
-                holder.btnFromDate.setText(DateUtil.convertFromServerDateToRequestedFormat(
+                holder.btnFromDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
                         DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
                 holder.mCompTrackBO.setFromDate(holder.btnFromDate.getText()
                         .toString());
 
-                holder.btnToDate.setText(DateUtil.convertFromServerDateToRequestedFormat(
+                holder.btnToDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
                         DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
                 holder.mCompTrackBO.setToDate(holder.btnToDate.getText()
                         .toString());
@@ -580,13 +579,13 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                 holder.spnReason.setEnabled(false);
             } else {
                 holder.btnFromDate
-                        .setText((holder.mCompTrackBO.getFromDate() == null) ? (DateUtil
+                        .setText((holder.mCompTrackBO.getFromDate() == null) ? (DateTimeUtils
                                 .convertFromServerDateToRequestedFormat(
                                         DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                         outPutDateFormat))
                                 : holder.mCompTrackBO.getFromDate());
                 holder.btnToDate
-                        .setText((holder.mCompTrackBO.getToDate() == null) ? (DateUtil
+                        .setText((holder.mCompTrackBO.getToDate() == null) ? (DateTimeUtils
                                 .convertFromServerDateToRequestedFormat(
                                         DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                         outPutDateFormat))
@@ -930,7 +929,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
              * default - Show current date in date picker dialog
              */
             if (!date.isEmpty())
-                selectionDate = DateUtil.convertStringToDateObject(
+                selectionDate = DateTimeUtils.convertStringToDateObject(
                         date, outPutDateFormat);
 
             Calendar c = Calendar.getInstance();
@@ -951,34 +950,34 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                     Toast.makeText(getActivity(),
                             R.string.future_date_not_allowed,
                             Toast.LENGTH_SHORT).show();
-                    bo.setFromDate(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    bo.setFromDate(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), outPutDateFormat));
-                    btn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    btn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), outPutDateFormat));
                 } else {
-                    bo.setFromDate(DateUtil.convertDateObjectToRequestedFormat(
+                    bo.setFromDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
-                    btn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    btn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                 }
             } else if (this.getTag().equals("datePicker2")) {
                 if (bo.getFromDate() != null && bo.getFromDate().length() > 0) {
-                    Date dateMfg = DateUtil.convertStringToDateObject(
+                    Date dateMfg = DateTimeUtils.convertStringToDateObject(
                             bo.getFromDate(), outPutDateFormat);
                     if (dateMfg != null && selectedDate.getTime() != null
                             && dateMfg.after(selectedDate.getTime())) {
                         Toast.makeText(getActivity(), R.string.competitor_date,
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        bo.setToDate(DateUtil.convertDateObjectToRequestedFormat(
+                        bo.setToDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), outPutDateFormat));
-                        btn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                        btn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), outPutDateFormat));
                     }
                 } else {
-                    bo.setToDate(DateUtil.convertDateObjectToRequestedFormat(
+                    bo.setToDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
-                    btn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    btn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                 }
             }

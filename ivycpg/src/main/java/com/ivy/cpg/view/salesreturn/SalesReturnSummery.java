@@ -33,7 +33,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
@@ -390,13 +389,13 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
             }
 
             holder.mfgDate
-                    .setText((holder.productBO.getMfgDate() == null) ? DateUtil
+                    .setText((holder.productBO.getMfgDate() == null) ? DateTimeUtils
                             .convertFromServerDateToRequestedFormat(
                                     DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                     outPutDateFormat) : holder.productBO
                             .getMfgDate());
             holder.expDate
-                    .setText((holder.productBO.getExpDate() == null) ? DateUtil
+                    .setText((holder.productBO.getExpDate() == null) ? DateTimeUtils
                             .convertFromServerDateToRequestedFormat(
                                     DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                     outPutDateFormat) : holder.productBO.getExpDate());

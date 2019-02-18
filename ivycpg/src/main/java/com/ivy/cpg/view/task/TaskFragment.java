@@ -35,7 +35,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
@@ -516,7 +515,7 @@ public class TaskFragment extends IvyBaseFragment {
 
                 holder.layoutCB.setVisibility(View.VISIBLE);
                 holder.taskTaskOwner.setText(" : " + task.getTaskOwner());
-                holder.taskCreatedDate.setText(DateUtil.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat) + ", ");
+                holder.taskCreatedDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat) + ", ");
 
                 holder.layoutrow.setOnClickListener(new View.OnClickListener() {
                     @Override

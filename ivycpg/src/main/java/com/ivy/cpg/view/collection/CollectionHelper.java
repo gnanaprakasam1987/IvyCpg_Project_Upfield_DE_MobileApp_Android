@@ -18,7 +18,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
@@ -1089,7 +1088,7 @@ public class CollectionHelper {
                     if (StandardListMasterConstants.CHEQUE.equalsIgnoreCase(paymentBO.getCashMode()) ||
                             StandardListMasterConstants.RTGS.equalsIgnoreCase(paymentBO.getCashMode()) ||
                             StandardListMasterConstants.DEMAND_DRAFT.equalsIgnoreCase(paymentBO.getCashMode())) {
-                        date = DateUtil.convertToServerDateFormat(paymentBO.getChequeDate(), "yyyy/MM/dd");
+                        date = DateTimeUtils.convertToServerDateFormat(paymentBO.getChequeDate(), "yyyy/MM/dd");
                     } else {
                         date = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
                     }
@@ -1216,7 +1215,7 @@ public class CollectionHelper {
             if (StandardListMasterConstants.CHEQUE.equalsIgnoreCase(paymentBO.getCashMode()) ||
                     StandardListMasterConstants.RTGS.equalsIgnoreCase(paymentBO.getCashMode()) ||
                     StandardListMasterConstants.DEMAND_DRAFT.equalsIgnoreCase(paymentBO.getCashMode())) {
-                date = DateUtil.convertToServerDateFormat(paymentBO.getChequeDate(), "yyyy/MM/dd");
+                date = DateTimeUtils.convertToServerDateFormat(paymentBO.getChequeDate(), "yyyy/MM/dd");
             } else {
                 date = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
             }

@@ -9,7 +9,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.DateTimeUtils;
 
 import java.text.SimpleDateFormat;
@@ -105,7 +104,7 @@ public class PendingInvoiceHelper {
                                     calendar.add(Calendar.DAY_OF_YEAR, crediiDays);
                                     Date dueDate = format.parse(format.format(calendar.getTime()));
 
-                                    invocieHeaderBO.setDueDate(DateUtil.convertDateObjectToRequestedFormat(
+                                    invocieHeaderBO.setDueDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                                             dueDate, businessModel.configurationMasterHelper.outDateFormat));
 
                                 }

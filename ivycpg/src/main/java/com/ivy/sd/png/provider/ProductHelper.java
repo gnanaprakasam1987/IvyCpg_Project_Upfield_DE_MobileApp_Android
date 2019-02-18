@@ -41,7 +41,6 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
@@ -5324,11 +5323,11 @@ public class ProductHelper {
 
     public boolean isDLDateExpired() {
 
-        String expiryDate = DateUtil.convertFromServerDateToRequestedFormat(
+        String expiryDate = DateTimeUtils.convertFromServerDateToRequestedFormat(
                 bmodel.getRetailerMasterBO().getDLNoExpDate(), "yyyy/MM/dd");
         try {
             if (!DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equals(expiryDate))//this for checking today date since before method not woking for today date
-                if (DateUtil.convertStringToDateObject(
+                if (DateTimeUtils.convertStringToDateObject(
                         bmodel.getRetailerMasterBO().getDLNoExpDate(), "yyyy/MM/dd").before(new Date())) {
                     return true;
                 }

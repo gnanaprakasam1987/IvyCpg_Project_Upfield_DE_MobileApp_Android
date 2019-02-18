@@ -29,7 +29,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 
@@ -153,7 +152,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
     @Override
     public void applyLastSyncPref() {
         SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
-        edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
+        edt.putString("date", DateTimeUtils.convertFromServerDateToRequestedFormat(
                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat));
         edt.putString("time", DateTimeUtils.now(DateTimeUtils.TIME));

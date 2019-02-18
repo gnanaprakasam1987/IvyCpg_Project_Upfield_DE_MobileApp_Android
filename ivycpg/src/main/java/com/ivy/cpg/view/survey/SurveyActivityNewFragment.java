@@ -77,7 +77,6 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -1819,7 +1818,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                             Calendar selectedDate = new GregorianCalendar(year, monthOfYear,
                                     dayOfMonth);
-                            et.setText(DateUtil.convertDateObjectToRequestedFormat(
+                            et.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                                     selectedDate.getTime(),
                                     ConfigurationMasterHelper.outDateFormat));
                         }

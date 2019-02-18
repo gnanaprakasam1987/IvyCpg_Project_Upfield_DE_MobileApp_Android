@@ -22,7 +22,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.Calendar;
@@ -75,12 +74,12 @@ public class ManualVanLoadBatchEntryDialog extends Dialog implements
         Button close =  findViewById(R.id.close);
         close.setOnClickListener(this);
         mfg_date =  findViewById(R.id.mfg_date);
-        mfg_date.setText((DateUtil.convertFromServerDateToRequestedFormat(
+        mfg_date.setText((DateTimeUtils.convertFromServerDateToRequestedFormat(
                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat)));
         product.setMfgDate(mfg_date.getText().toString());
         mfg_date.setOnClickListener(this);
         exp_date =  findViewById(R.id.exp_date);
-        exp_date.setText((DateUtil.convertFromServerDateToRequestedFormat(
+        exp_date.setText((DateTimeUtils.convertFromServerDateToRequestedFormat(
                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat)));
         product.setExpDate(exp_date.getText().toString());
         exp_date.setOnClickListener(this);
@@ -159,20 +158,20 @@ public class ManualVanLoadBatchEntryDialog extends Dialog implements
                     Toast.makeText(activity,
                             R.string.future_date_not_allowed,
                             Toast.LENGTH_SHORT).show();
-                    product.setMfgDate(DateUtil.convertDateObjectToRequestedFormat(
+                    product.setMfgDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                             Calendar.getInstance().getTime(), outPutDateFormat));
-                    mfg_date.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    mfg_date.setText(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), outPutDateFormat));
                 } else {
-                    product.setMfgDate(DateUtil.convertDateObjectToRequestedFormat(
+                    product.setMfgDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
-                    mfg_date.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    mfg_date.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                 }
             } else if (newFragment.getTag().equals("datePicker2")) {
                 if (product.getMfgDate() != null
                         && product.getMfgDate().length() > 0) {
-                    Date dateMfg = DateUtil.convertStringToDateObject(
+                    Date dateMfg = DateTimeUtils.convertStringToDateObject(
                             product.getMfgDate(), outPutDateFormat);
                     if (dateMfg != null && selectedDate.getTime() != null
                             && dateMfg.after(selectedDate.getTime())) {
@@ -180,15 +179,15 @@ public class ManualVanLoadBatchEntryDialog extends Dialog implements
                                 R.string.expdate_set_after_mfgdate,
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        product.setExpDate(DateUtil.convertDateObjectToRequestedFormat(
+                        product.setExpDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), outPutDateFormat));
-                        exp_date.setText(DateUtil.convertDateObjectToRequestedFormat(
+                        exp_date.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), outPutDateFormat));
                     }
                 } else {
-                    product.setExpDate(DateUtil.convertDateObjectToRequestedFormat(
+                    product.setExpDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
-                    exp_date.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    exp_date.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                 }
             }

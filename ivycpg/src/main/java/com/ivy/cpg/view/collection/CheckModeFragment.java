@@ -39,7 +39,6 @@ import com.ivy.sd.png.model.UpdatePaymentByDateInterface;
 import com.ivy.sd.png.model.UpdatePaymentsInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.utils.DateTimeUtils;
@@ -220,11 +219,11 @@ public class CheckModeFragment extends IvyBaseFragment
         ImageView cameraBTN = rootView.findViewById(R.id.btn_camera);
         mChequeDateBTN = rootView.findViewById(R.id.btn_datepicker);
         if (mPaymentBO.getChequeDate() != null && !"".equals(mPaymentBO.getChequeDate()))
-            mChequeDateBTN.setText(DateUtil.convertFromServerDateToRequestedFormat(
+            mChequeDateBTN.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
                     mPaymentBO.getChequeDate(), ConfigurationMasterHelper.outDateFormat));
         else {
             String todayDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
-            mChequeDateBTN.setText(DateUtil.convertFromServerDateToRequestedFormat(
+            mChequeDateBTN.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
                     todayDate, ConfigurationMasterHelper.outDateFormat));
             mPaymentBO.setChequeDate(todayDate);
         }
@@ -481,7 +480,7 @@ public class CheckModeFragment extends IvyBaseFragment
 
     @Override
     public void updateDate(Date date, String tag) {
-        String paidDate = DateUtil.convertDateObjectToRequestedFormat(
+        String paidDate = DateTimeUtils.convertDateObjectToRequestedFormat(
                 date, "yyyy/MM/dd");
         if (!bmodel.configurationMasterHelper.IS_POST_DATE_ALLOW) {
             if (!bmodel.configurationMasterHelper.IS_ENABLE_MIN_MAX_DATE_CHQ) {
@@ -510,7 +509,7 @@ public class CheckModeFragment extends IvyBaseFragment
                 }
             }
         }
-        mChequeDateBTN.setText(DateUtil.convertDateObjectToRequestedFormat(
+        mChequeDateBTN.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                 date, ConfigurationMasterHelper.outDateFormat));
         mPaymentBO.setChequeDate(paidDate);
         mUpdatePaymentDateInterface.updatePaymentDetails(paidDate);
@@ -551,7 +550,7 @@ public class CheckModeFragment extends IvyBaseFragment
         mCollectAmountET.setText(bmodel.formatValue(SDUtil.convertToDouble(SDUtil.getWithoutExponential(strAmt))));
         mCollectAmountET.setSelection(mCollectAmountET.getText().length());
 
-        mChequeDateBTN.setText(DateUtil.convertFromServerDateToRequestedFormat(
+        mChequeDateBTN.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
                 mPaymentBO.getChequeDate(), ConfigurationMasterHelper.outDateFormat));
         mChequeNoET.setText(mPaymentBO.getChequeNumber());
 

@@ -85,7 +85,6 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.LabelsKey;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
@@ -351,7 +350,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                                                     + bmodel.getDay(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                                                                     + " "
                                                                     + "("
-                                                                    + DateUtil
+                                                                    + DateTimeUtils
                                                                     .convertFromServerDateToRequestedFormat(
                                                                             DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                                                             ConfigurationMasterHelper.outDateFormat)
@@ -366,7 +365,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                                                 + bmodel.getDay(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                                                                 + " "
                                                                 + "("
-                                                                + DateUtil
+                                                                + DateTimeUtils
                                                                 .convertFromServerDateToRequestedFormat(
                                                                         DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                                                         ConfigurationMasterHelper.outDateFormat)
@@ -378,7 +377,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                                             R.string.you_are_closing)
                                                             + " today "
                                                             + "("
-                                                            + DateUtil
+                                                            + DateTimeUtils
                                                             .convertFromServerDateToRequestedFormat(
                                                                     DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                                                     ConfigurationMasterHelper.outDateFormat)
@@ -562,7 +561,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
         backDateSelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         if (DataMembers.backDate.isEmpty()) {
-            backDateSelection.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+            backDateSelection.setText(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                     .getInstance().getTime(), ConfigurationMasterHelper.outDateFormat));
         } else {
             backDateSelection.setText(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_HYPHEN));
@@ -593,7 +592,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
         TextView close_date = view.findViewById(R.id.closingDay);
         close_date.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        close_date.setText(DateUtil
+        close_date.setText(DateTimeUtils
                 .convertFromServerDateToRequestedFormat(
                         bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
                         ConfigurationMasterHelper.outDateFormat));//changed bcz close_date shows current date, replaced to show downloaded date
@@ -763,21 +762,21 @@ public class SynchronizationFragment extends IvyBaseFragment
                     Toast.makeText(getActivity(),
                             R.string.future_date_not_allowed,
                             Toast.LENGTH_SHORT).show();
-                    DataMembers.backDate = (DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    DataMembers.backDate = (DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), ConfigurationMasterHelper.outDateFormat));
-                    btn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    btn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), ConfigurationMasterHelper.outDateFormat));
                 } else {
-                    DataMembers.backDate = (DateUtil.convertDateObjectToRequestedFormat(
+                    DataMembers.backDate = (DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), ConfigurationMasterHelper.outDateFormat));
-                    btn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    btn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), ConfigurationMasterHelper.outDateFormat));
 
 
-                    if (DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), "MM/dd/yyyy").equals(Utils.getDate()))
+                    if (DateTimeUtils.convertDateObjectToRequestedFormat(selectedDate.getTime(), "MM/dd/yyyy").equals(Utils.getDate()))
                         DataMembers.backDate = "";
                     else
-                        DataMembers.backDate = DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), "MM/dd/yyyy");
+                        DataMembers.backDate = DateTimeUtils.convertDateObjectToRequestedFormat(selectedDate.getTime(), "MM/dd/yyyy");
 
                     SharedPreferences.Editor editor = PreferenceManager
                             .getDefaultSharedPreferences(getActivity()).edit();
@@ -1692,7 +1691,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
-                        edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
+                        edt.putString("date", DateTimeUtils.convertFromServerDateToRequestedFormat(
                                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 ConfigurationMasterHelper.outDateFormat));
                         edt.putString("time", DateTimeUtils.now(DateTimeUtils.TIME));
@@ -1724,7 +1723,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
-                        edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
+                        edt.putString("date", DateTimeUtils.convertFromServerDateToRequestedFormat(
                                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 ConfigurationMasterHelper.outDateFormat));
                         edt.putString("time", DateTimeUtils.now(DateTimeUtils.TIME));
@@ -1776,7 +1775,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
     private void updateLastSync() {
         SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
-        edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
+        edt.putString("date", DateTimeUtils.convertFromServerDateToRequestedFormat(
                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat));
         edt.putString("time", DateTimeUtils.now(DateTimeUtils.TIME));
@@ -2602,14 +2601,14 @@ public class SynchronizationFragment extends IvyBaseFragment
             if (!lastSyncTimeHelper.getLastDownloadTime().equals("")) {
 
                 String download = getResources().getString(R.string.last_download_on) +
-                        DateUtil.convertFromServerDateToRequestedFormat(lastSyncTimeHelper.getLastDownloadDate(),
+                        DateTimeUtils.convertFromServerDateToRequestedFormat(lastSyncTimeHelper.getLastDownloadDate(),
                                 ConfigurationMasterHelper.outDateFormat)
                         + " " + lastSyncTimeHelper.getLastDownloadTime();
 
                 String upload = "";
                 if (!lastSyncTimeHelper.getLastUploadTime().equals("")) {
                     upload = getResources().getString(R.string.last_upload_on) +
-                            DateUtil.convertFromServerDateToRequestedFormat(lastSyncTimeHelper.getLastUplaodDate(),
+                            DateTimeUtils.convertFromServerDateToRequestedFormat(lastSyncTimeHelper.getLastUplaodDate(),
                                     ConfigurationMasterHelper.outDateFormat)
                             + " " + lastSyncTimeHelper.getLastUploadTime();
 

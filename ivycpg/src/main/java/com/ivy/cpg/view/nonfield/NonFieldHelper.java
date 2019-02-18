@@ -12,7 +12,6 @@ import com.ivy.sd.png.bo.LeaveSpinnerBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.DateTimeUtils;
 
 import java.text.DateFormat;
@@ -336,8 +335,8 @@ public class NonFieldHelper {
         String date2 = getEndDate(context);
 
         dateList = new ArrayList<>();
-        DateFormat formater1 = DateUtil.getDateFormat("yyyy/MM/dd");
-        DateFormat formater = DateUtil.getDateFormat("MMM-yyyy");
+        DateFormat formater1 = DateTimeUtils.getDateFormat("yyyy/MM/dd");
+        DateFormat formater = DateTimeUtils.getDateFormat("MMM-yyyy");
 
         Calendar beginCalendar = Calendar.getInstance();
         Calendar finishCalendar = Calendar.getInstance();
@@ -429,8 +428,8 @@ public class NonFieldHelper {
         String monthName = "";
         for (int i = 0; i < dateList.size(); i++) {
             String name = dateList.get(i);
-            DateFormat formater1 = DateUtil.getDateFormat("yyyy/MM/dd");
-            DateFormat formater = DateUtil.getDateFormat("MMM-yyyy");
+            DateFormat formater1 = DateTimeUtils.getDateFormat("yyyy/MM/dd");
+            DateFormat formater = DateTimeUtils.getDateFormat("MMM-yyyy");
             try {
                 String date1 = formater.format(formater1.parse(date));
                 if (date1.equalsIgnoreCase(name)) {
@@ -544,10 +543,10 @@ public class NonFieldHelper {
 
 
         try {
-            SimpleDateFormat sdf = DateUtil.getDateFormat("yyyy/MM/dd");
+            SimpleDateFormat sdf = DateTimeUtils.getDateFormat("yyyy/MM/dd");
             Date selected_date = sdf.parse(date);
 
-            SimpleDateFormat simpleDateformat = DateUtil.getDateFormat("E");
+            SimpleDateFormat simpleDateformat = DateTimeUtils.getDateFormat("E");
             String selected_day = simpleDateformat.format(selected_date);
 
             if (weekOffDays.length > 0)
@@ -611,7 +610,7 @@ public class NonFieldHelper {
                     leaveRuleBO.setAutoApproval(c.getString(6));
 
                     ArrayList<String> dates = new ArrayList<>();
-                    DateFormat formatter = DateUtil.getDateFormat("yyyy/MM/dd");
+                    DateFormat formatter = DateTimeUtils.getDateFormat("yyyy/MM/dd");
 
                     if (c.getCount() > 1) {
                         if (c.isFirst()) {
@@ -858,7 +857,7 @@ public class NonFieldHelper {
         String monthName = date;
 
         Calendar cal = Calendar.getInstance();
-        SimpleDateFormat month_date = DateUtil.getDateFormat("MMM");
+        SimpleDateFormat month_date = DateTimeUtils.getDateFormat("MMM");
         String month_name = month_date.format(cal.getTime()).toUpperCase();
         if (date.contains(month_name)) {
             monthName = "THIS MONTH";
@@ -866,7 +865,7 @@ public class NonFieldHelper {
 
 
         cal.add(Calendar.MONTH, -1);
-        String previousMonth = DateUtil.getDateFormat("MMM").format(cal.getTime()).toUpperCase();
+        String previousMonth = DateTimeUtils.getDateFormat("MMM").format(cal.getTime()).toUpperCase();
         if (date.contains(previousMonth)) {
             monthName = "LAST MONTH";
         }

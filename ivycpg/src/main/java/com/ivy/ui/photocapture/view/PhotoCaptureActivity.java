@@ -37,7 +37,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.ui.photocapture.PhotoCaptureContract;
@@ -719,7 +718,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
             if (selectedDate.after(Calendar.getInstance()))
                 showMessage(R.string.future_date_not_allowed);
             else {
-                fromDateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                fromDateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                         selectedDate.getTime(), DEFAULT_DATE_FORMAT));
             }
         } else if (tag.equals(TAG_DATE_PICKER_TO)) {
@@ -727,14 +726,14 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                 Toast.makeText(this, R.string.competitor_date,
                         Toast.LENGTH_SHORT).show();
             } else {
-                Date dateMfg = DateUtil.convertStringToDateObject(
+                Date dateMfg = DateTimeUtils.convertStringToDateObject(
                         fromDateBtn.getText().toString(), DEFAULT_DATE_FORMAT);
 
                 assert dateMfg != null;
                 if (dateMfg.after(selectedDate.getTime())) {
                     showMessage(R.string.competitor_date);
                 } else {
-                    toDateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    toDateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), DEFAULT_DATE_FORMAT));
                 }
 

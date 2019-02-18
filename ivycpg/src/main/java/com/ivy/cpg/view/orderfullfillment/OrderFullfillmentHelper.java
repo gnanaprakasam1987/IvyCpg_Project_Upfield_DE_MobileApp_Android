@@ -11,7 +11,7 @@ import com.ivy.sd.png.bo.OrderFullfillmentBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -243,7 +243,7 @@ public class OrderFullfillmentHelper {
             for (int i = 0; i < list.size(); i++) {
                 ofbo = list.get(i);
                 if (ofbo != null && !ofbo.getStatus().equals("D")) {
-                    values = bmodel.QT(ofbo.getOrderId()) + "," + bmodel.QT(ofbo.getStatus()) + "," + ofbo.getRetailerid() + "," + bmodel.QT((ofbo.getDeliverydate() == null || ofbo.getDeliverydate().equalsIgnoreCase(bmodel.getResources().getString(R.string.select_date)) ? DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    values = bmodel.QT(ofbo.getOrderId()) + "," + bmodel.QT(ofbo.getStatus()) + "," + ofbo.getRetailerid() + "," + bmodel.QT((ofbo.getDeliverydate() == null || ofbo.getDeliverydate().equalsIgnoreCase(bmodel.getResources().getString(R.string.select_date)) ? DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), bmodel.configurationMasterHelper.outDateFormat) : ofbo.getDeliverydate())) + "," + ofbo.getReasonId();
                     db.insertSQL("DeliveryHeader", columns, values);
                 }

@@ -17,7 +17,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
@@ -538,14 +537,14 @@ public class SalesReturnHelper {
                                 .sqlEscapeString(SHOW_SAL_RET_MFG_DATE ?
                                         (bo.getMfgDate() == null || bo.getMfgDate().length() == 0) ?
                                                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)
-                                                : DateUtil.convertToServerDateFormat(bo.getMfgDate(), ConfigurationMasterHelper.outDateFormat)
+                                                : DateTimeUtils.convertToServerDateFormat(bo.getMfgDate(), ConfigurationMasterHelper.outDateFormat)
                                         : "")
                                 + ","
                                 + DatabaseUtils
                                 .sqlEscapeString(SHOW_SAL_RET_EXP_DATE ?
                                         (bo.getExpDate() == null || bo.getExpDate().length() == 0) ?
                                                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)
-                                                : DateUtil.convertToServerDateFormat(bo.getExpDate(), ConfigurationMasterHelper.outDateFormat)
+                                                : DateTimeUtils.convertToServerDateFormat(bo.getExpDate(), ConfigurationMasterHelper.outDateFormat)
                                         : "")
                                 + ","
                                 + bo.getOuterQty()

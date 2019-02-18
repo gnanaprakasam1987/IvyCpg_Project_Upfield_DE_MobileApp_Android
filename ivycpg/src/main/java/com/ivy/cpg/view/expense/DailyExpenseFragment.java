@@ -20,7 +20,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
@@ -175,7 +175,7 @@ public class DailyExpenseFragment extends IvyBaseFragment {
                 }
             });
             holder.expensesBO = items.get(position);
-            holder.tvDate.setText(DateUtil.convertFromServerDateToRequestedFormat(holder.expensesBO.getDate(),
+            holder.tvDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.expensesBO.getDate(),
                     ConfigurationMasterHelper.outDateFormat));
 
             holder.tvExpType.setText(holder.expensesBO.getTypeName());

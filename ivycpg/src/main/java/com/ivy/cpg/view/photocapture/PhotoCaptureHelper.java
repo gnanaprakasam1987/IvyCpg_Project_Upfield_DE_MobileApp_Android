@@ -14,7 +14,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 
@@ -227,11 +226,11 @@ public class PhotoCaptureHelper {
                             sBuffer.append("1");
                             sBuffer.append(",");
                             if (mBModel.configurationMasterHelper.SHOW_DATE_BTN) {
-                                sBuffer.append(QT(DateUtil.convertToServerDateFormat(
+                                sBuffer.append(QT(DateTimeUtils.convertToServerDateFormat(
                                         lbo.getFromDate(),
                                         ConfigurationMasterHelper.outDateFormat)));
                                 sBuffer.append(",");
-                                sBuffer.append(QT(DateUtil.convertToServerDateFormat(
+                                sBuffer.append(QT(DateTimeUtils.convertToServerDateFormat(
                                         lbo.getToDate(),
                                         ConfigurationMasterHelper.outDateFormat)));
                                 sBuffer.append(",");
@@ -327,10 +326,10 @@ public class PhotoCaptureHelper {
                                         && tempTypeBO.getPhotoTypeId() == cursor
                                         .getInt(0) && lbo.getLocationId() == cursor.getInt(5)) {
                                     lbo.setImagePath(cursor.getString(2));
-                                    lbo.setFromDate(DateUtil.convertFromServerDateToRequestedFormat(
+                                    lbo.setFromDate(DateTimeUtils.convertFromServerDateToRequestedFormat(
                                             cursor.getString(3),
                                             ConfigurationMasterHelper.outDateFormat));
-                                    lbo.setToDate(DateUtil.convertFromServerDateToRequestedFormat(
+                                    lbo.setToDate(DateTimeUtils.convertFromServerDateToRequestedFormat(
                                             cursor.getString(4),
                                             ConfigurationMasterHelper.outDateFormat));
                                     lbo.setSKUName(cursor.getString(6));

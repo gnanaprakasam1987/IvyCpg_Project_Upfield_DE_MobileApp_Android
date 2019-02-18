@@ -31,7 +31,6 @@ import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
@@ -226,7 +225,7 @@ public class OrderHelper {
 
             }
             businessModel.invoiceNumber = uid.replaceAll("\'", "");
-            businessModel.setInvoiceDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+            businessModel.setInvoiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                     ConfigurationMasterHelper.outDateFormat));
 
             Vector<ProductMasterBO> finalProductList = new Vector<>();
@@ -277,7 +276,7 @@ public class OrderHelper {
                     + businessModel.getOrderHeaderBO().getLinesPerCall()
 
                     + ","
-                    + StringUtils.QT(DateUtil.convertToServerDateFormat(businessModel.getOrderHeaderBO().getDeliveryDate(), "yyyy/MM/dd"))
+                    + StringUtils.QT(DateTimeUtils.convertToServerDateFormat(businessModel.getOrderHeaderBO().getDeliveryDate(), "yyyy/MM/dd"))
                     + ","
                     + (businessModel.getAppDataProvider().getRetailMaster().getIsToday())
                     + ","
@@ -644,7 +643,7 @@ public class OrderHelper {
 
                 }
                 businessModel.invoiceNumber = uid.replaceAll("\'", "");
-                businessModel.setInvoiceDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat));
+                businessModel.setInvoiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat));
 
 
                 String printFilePath = "";
@@ -880,7 +879,7 @@ public class OrderHelper {
                         + mOrderedProductList.size()
 
                         + ","
-                        + StringUtils.QT(DateUtil.convertToServerDateFormat(businessModel.getOrderHeaderBO().getDeliveryDate(), "yyyy/MM/dd"))
+                        + StringUtils.QT(DateTimeUtils.convertToServerDateFormat(businessModel.getOrderHeaderBO().getDeliveryDate(), "yyyy/MM/dd"))
                         + ","
                         + (businessModel.getAppDataProvider().getRetailMaster().getIsToday())
                         + ","
@@ -1858,7 +1857,7 @@ public class OrderHelper {
                         StandardListMasterConstants.PRINT_FILE_INVOICE + businessModel.invoiceNumber + ".txt";
 
             // Save invoice header
-            businessModel.setInvoiceDate(DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat));
+            businessModel.setInvoiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat));
             String invoiceHeaderColumns = "invoiceno,invoicedate,retailerId,invNetamount," +
                     "paidamount,orderid,ImageName,upload,beatid,discount,invoiceAmount," +
                     "discountedAmount,latitude,longitude,return_amt,discount_type,salesreturned," +
@@ -3312,8 +3311,8 @@ public class OrderHelper {
             if (c != null && c.getCount() > 0) {
                 while (c.moveToNext()) {
 
-                    Date dueDate = DateTimeUtils.addDaystoDate(DateUtil.convertStringToDateObject(c.getString(0), "yyyy/MM/dd"), businessModel.retailerMasterBO.getCreditDays());
-                    Date currDate = DateUtil.convertStringToDateObject(DateTimeUtils.now(4), "yyyy/MM/dd");
+                    Date dueDate = DateTimeUtils.addDaystoDate(DateTimeUtils.convertStringToDateObject(c.getString(0), "yyyy/MM/dd"), businessModel.retailerMasterBO.getCreditDays());
+                    Date currDate = DateTimeUtils.convertStringToDateObject(DateTimeUtils.now(4), "yyyy/MM/dd");
                     Commons.print("Order Helper," + "dueDate " + dueDate + " -- currDate " + currDate);
 
                     if (dueDate.compareTo(currDate) != 0 && currDate.after(dueDate)) {

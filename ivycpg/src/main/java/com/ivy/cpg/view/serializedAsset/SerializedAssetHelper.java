@@ -12,7 +12,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
@@ -554,10 +553,10 @@ public class SerializedAssetHelper {
                             reasonId,
                             serialNo,
                             conditionId,
-                            DateUtil.convertFromServerDateToRequestedFormat(
+                            DateTimeUtils.convertFromServerDateToRequestedFormat(
                                     detailCursor.getString(6),
                                     ConfigurationMasterHelper.outDateFormat),
-                            DateUtil.convertFromServerDateToRequestedFormat(
+                            DateTimeUtils.convertFromServerDateToRequestedFormat(
                                     detailCursor.getString(7),
                                     ConfigurationMasterHelper.outDateFormat), nfcTagID);
                 }
@@ -792,7 +791,7 @@ public class SerializedAssetHelper {
                                     .getInstallDate()
                                     .length() == 0) ? DateTimeUtils
                                     .now(DateTimeUtils.DATE_GLOBAL)
-                                    : (DateUtil
+                                    : (DateTimeUtils
                                     .convertToServerDateFormat(
                                             assetBo.getInstallDate(),
                                             ConfigurationMasterHelper.outDateFormat)))
@@ -804,7 +803,7 @@ public class SerializedAssetHelper {
                                     .getServiceDate()
                                     .length() == 0) ? DateTimeUtils
                                     .now(DateTimeUtils.DATE_GLOBAL)
-                                    : (DateUtil
+                                    : (DateTimeUtils
                                     .convertToServerDateFormat(
                                             assetBo.getServiceDate(),
                                             ConfigurationMasterHelper.outDateFormat)))
@@ -880,7 +879,7 @@ public class SerializedAssetHelper {
                     + StringUtils.QT(assets.getPOSM()) + ","
                     + StringUtils.QT(assets.getSNO()) + ","
                     + StringUtils.QT(assets.getNFCTagId()) + ","
-                    + StringUtils.QT(DateUtil.convertToServerDateFormat(assets.getNewInstallDate(), ConfigurationMasterHelper.outDateFormat)) + ","
+                    + StringUtils.QT(DateTimeUtils.convertToServerDateFormat(assets.getNewInstallDate(), ConfigurationMasterHelper.outDateFormat)) + ","
                     + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                     + "'I'" + ","
                     + StringUtils.QT(assets.getReasonId()) + ","

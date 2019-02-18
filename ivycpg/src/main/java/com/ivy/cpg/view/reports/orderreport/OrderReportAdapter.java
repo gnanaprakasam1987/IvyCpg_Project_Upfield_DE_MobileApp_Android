@@ -18,7 +18,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 
@@ -324,7 +324,7 @@ public class OrderReportAdapter extends ArrayAdapter<OrderReportBO> {
         try {
             String delivery_date;
 
-            delivery_date = DateUtil.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(holder.reportBO.getOrderID(),holder.reportBO.getRetailerId()), ConfigurationMasterHelper.outDateFormat);
+            delivery_date = DateTimeUtils.convertFromServerDateToRequestedFormat(businessModel.getDeliveryDate(holder.reportBO.getOrderID(),holder.reportBO.getRetailerId()), ConfigurationMasterHelper.outDateFormat);
 
             if (businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) != null) {
                 String value = businessModel.labelsMasterHelper.applyLabels(holder.text_delivery_date.getTag()) + " : " + delivery_date;

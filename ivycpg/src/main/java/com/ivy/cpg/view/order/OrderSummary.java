@@ -70,7 +70,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.AmountSplitUpDialog;
@@ -524,18 +523,18 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         try {
             if (bModel.isEdit()) {
 
-                String delDate = DateUtil.convertFromServerDateToRequestedFormat(bModel.getDeliveryDate(OrderHelper.getInstance(this).selectedOrderId, bModel.getRetailerMasterBO()
+                String delDate = DateTimeUtils.convertFromServerDateToRequestedFormat(bModel.getDeliveryDate(OrderHelper.getInstance(this).selectedOrderId, bModel.getRetailerMasterBO()
                                 .getRetailerID()),
                         ConfigurationMasterHelper.outDateFormat);
                 button_deliveryDate.setText(delDate);
-                Date selected = DateUtil.convertStringToDateObject(delDate, ConfigurationMasterHelper.outDateFormat);
+                Date selected = DateTimeUtils.convertStringToDateObject(delDate, ConfigurationMasterHelper.outDateFormat);
                 mCalendar.setTime(selected);
             } else {
                 NonFieldHelper.getInstance(this).downWeekOffs(OrderSummary.this);
                 mCalendar.add(Calendar.DAY_OF_YEAR, (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
 
                 mCalendar = dateValidation(mCalendar);
-                button_deliveryDate.setText(DateUtil.convertDateObjectToRequestedFormat(mCalendar.getTime(), ConfigurationMasterHelper.outDateFormat));
+                button_deliveryDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(mCalendar.getTime(), ConfigurationMasterHelper.outDateFormat));
 
             }
         } catch (Exception e) {
@@ -1838,7 +1837,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         bModel.getOrderHeaderBO().setIsCompanyGiven(0);
                         bModel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt((String) text_LPC.getText()));
                         if (!button_deliveryDate.getText().toString().trim().equals("")) {
-                            bModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(),
+                            bModel.getOrderHeaderBO().setDeliveryDate(DateTimeUtils.convertToServerDateFormat(button_deliveryDate.getText().toString(),
                                     ConfigurationMasterHelper.outDateFormat));
                         } else {
                             bModel.getOrderHeaderBO().setDeliveryDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
@@ -1974,7 +1973,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 bModel.getOrderHeaderBO().setIsCompanyGiven(0);
                 bModel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt((String) text_LPC.getText()));
                 if (!button_deliveryDate.getText().toString().trim().equals("")) {
-                    bModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(),
+                    bModel.getOrderHeaderBO().setDeliveryDate(DateTimeUtils.convertToServerDateFormat(button_deliveryDate.getText().toString(),
                             ConfigurationMasterHelper.outDateFormat));
                 } else {
                     bModel.getOrderHeaderBO().setDeliveryDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
@@ -2979,14 +2978,14 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             Calendar selectedDate = new GregorianCalendar(year, monthOfYear,
                     dayOfMonth);
 
-            String dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
+            String dbDateFormat = DateTimeUtils.convertDateObjectToRequestedFormat(
                     selectedDate.getTime(), "yyyy/MM/dd");
             if (NonFieldHelper.getInstance(OrderSummary.this).isHoliday(dbDateFormat, OrderSummary.this)
                     || NonFieldHelper.getInstance(OrderSummary.this).isWeekOff(dbDateFormat)) {
                 Toast.makeText(OrderSummary.this, "The Selected day is a holiday", Toast.LENGTH_SHORT).show();
             }
 
-            button_deliveryDate.setText(DateUtil.convertDateObjectToRequestedFormat(
+            button_deliveryDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                     selectedDate.getTime(),
                     ConfigurationMasterHelper.outDateFormat));
             Calendar currentCalendar = Calendar.getInstance();
@@ -3001,20 +3000,20 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 Calendar defaultCalendar = Calendar.getInstance();
                 defaultCalendar.add(Calendar.DAY_OF_YEAR, (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
-                button_deliveryDate.setText(DateUtil.convertDateObjectToRequestedFormat(defaultCalendar.getTime(), ConfigurationMasterHelper.outDateFormat));
+                button_deliveryDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(defaultCalendar.getTime(), ConfigurationMasterHelper.outDateFormat));
             }
             view.updateDate(year, monthOfYear, dayOfMonth);
         }
     };
 
     private Calendar dateValidation(Calendar selectedDate) {
-        String dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
+        String dbDateFormat = DateTimeUtils.convertDateObjectToRequestedFormat(
                 selectedDate.getTime(), "yyyy/MM/dd");
 
         while (NonFieldHelper.getInstance(OrderSummary.this).isHoliday(dbDateFormat, OrderSummary.this)
                 || NonFieldHelper.getInstance(OrderSummary.this).isWeekOff(dbDateFormat)) {
             selectedDate.add(Calendar.DAY_OF_MONTH, 1);
-            dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
+            dbDateFormat = DateTimeUtils.convertDateObjectToRequestedFormat(
                     selectedDate.getTime(), "yyyy/MM/dd");
         }
         return selectedDate;

@@ -11,7 +11,6 @@ import com.ivy.sd.png.bo.CompetitorBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 
@@ -319,12 +318,12 @@ public class CompetitorTrackingHelper {
                                 + QT(bmodel.getAppDataProvider().getRetailMaster()
                                 .getRetailerID())
                                 + ","
-                                + QT(DateUtil
+                                + QT(DateTimeUtils
                                 .convertToServerDateFormat(
                                         temp.getFromDate(),
                                         ConfigurationMasterHelper.outDateFormat))
                                 + ","
-                                + QT(DateUtil
+                                + QT(DateTimeUtils
                                 .convertToServerDateFormat(
                                         temp.getToDate(),
                                         ConfigurationMasterHelper.outDateFormat))
@@ -439,10 +438,10 @@ public class CompetitorTrackingHelper {
                 for (CompetetorPOSMBO temp : trackinglist) {
                     if (temp.getId() == trackingid) {
                         temp.setExecuted(true);
-                        temp.setFromDate(DateUtil.convertFromServerDateToRequestedFormat(
+                        temp.setFromDate(DateTimeUtils.convertFromServerDateToRequestedFormat(
                                 fromDate,
                                 bmodel.configurationMasterHelper.outDateFormat));
-                        temp.setToDate(DateUtil.convertFromServerDateToRequestedFormat(
+                        temp.setToDate(DateTimeUtils.convertFromServerDateToRequestedFormat(
                                 toDate,
                                 bmodel.configurationMasterHelper.outDateFormat));
                         temp.setFeedBack(feedback);

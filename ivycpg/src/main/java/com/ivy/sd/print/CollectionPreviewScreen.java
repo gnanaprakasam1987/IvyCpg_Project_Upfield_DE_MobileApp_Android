@@ -40,7 +40,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.utils.DateTimeUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
@@ -932,7 +931,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                 Printitem += "T 5 0 520 230 "
                         + getResources().getString(R.string.date)
                         + ":"
-                        + DateUtil.convertFromServerDateToRequestedFormat(
+                        + DateTimeUtils.convertFromServerDateToRequestedFormat(
                         DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                         bmodel.configurationMasterHelper.outDateFormat)
                         + "\r\n";

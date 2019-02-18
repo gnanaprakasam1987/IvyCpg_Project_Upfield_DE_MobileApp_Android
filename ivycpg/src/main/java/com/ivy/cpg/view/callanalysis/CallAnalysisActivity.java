@@ -59,7 +59,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.SyncRetailerSelectActivity;
@@ -1897,7 +1896,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
     private void updateLastSync() {
         SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
-        edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
+        edt.putString("date", DateTimeUtils.convertFromServerDateToRequestedFormat(
                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat));
         edt.putString("time", DateTimeUtils.now(DateTimeUtils.TIME));

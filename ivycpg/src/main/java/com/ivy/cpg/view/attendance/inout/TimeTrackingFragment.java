@@ -39,7 +39,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.utils.DateTimeUtils;
@@ -265,7 +264,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 tokenizer = new StringTokenizer(outTime);
                 date = tokenizer.nextToken();
                 time = tokenizer.nextToken();
-                holder.tvOutTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
+                holder.tvOutTime.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(date,
                         ConfigurationMasterHelper.outDateFormat) + "\n" + time);
             } else {
                 holder.tvOutTime.setVisibility(View.GONE);
@@ -280,7 +279,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 tokenizer = new StringTokenizer(inTime);
                 date = tokenizer.nextToken();
                 time = tokenizer.nextToken();
-                holder.tvInTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
+                holder.tvInTime.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(date,
                         ConfigurationMasterHelper.outDateFormat) + "\n" + time);
             } else {
                 holder.tvInTime.setVisibility(View.GONE);
@@ -288,7 +287,7 @@ public class TimeTrackingFragment extends IvyBaseFragment {
                 tokenizer = new StringTokenizer(inTime);
                 date = tokenizer.nextToken();
                 time = tokenizer.nextToken();
-                holder.btInTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
+                holder.btInTime.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(date,
                         ConfigurationMasterHelper.outDateFormat) + "\n" + time);
             }
 

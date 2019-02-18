@@ -36,7 +36,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.DateTimeUtils;
@@ -208,7 +207,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             }
         });
 
-        String todayDate = DateUtil.convertFromServerDateToRequestedFormat(
+        String todayDate = DateTimeUtils.convertFromServerDateToRequestedFormat(
                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
 
@@ -240,7 +239,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                                     mDay = dayOfMonth;
                                     Calendar selectedDate = new GregorianCalendar(
                                             year, monthOfYear, dayOfMonth);
-                                    btnAddInstallDate.setText(DateUtil
+                                    btnAddInstallDate.setText(DateTimeUtils
                                             .convertDateObjectToRequestedFormat(
                                                     selectedDate.getTime(),
                                                     ConfigurationMasterHelper.outDateFormat));
@@ -251,7 +250,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                                                 AddSerializedAssetActivity.this,
                                                 R.string.future_date_not_allowed,
                                                 Toast.LENGTH_SHORT).show();
-                                        btnAddInstallDate.setText(DateUtil
+                                        btnAddInstallDate.setText(DateTimeUtils
                                                 .convertDateObjectToRequestedFormat(
                                                         mCurrentCalendar.getTime(),
                                                         ConfigurationMasterHelper.outDateFormat));

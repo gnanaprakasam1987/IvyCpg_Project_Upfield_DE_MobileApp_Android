@@ -39,11 +39,11 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.cpg.view.order.catalog.CatalogOrder;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
@@ -1176,8 +1176,8 @@ public class QPSSchemeApply extends IvyBaseActivityNoActionBar {
             holder.parentSchemeBO = mSchemeDoneList.get(groupPosition).getParentScheme();
             holder.tv_scheme.setText(holder.parentSchemeBO.getSchemeDesc());
             //holder.tv_scheme_secondary_title.setText(holder.parentSchemeBO.getSchemeShortDesc());
-            String periodStart = DateUtil.convertFromServerDateToRequestedFormat(holder.parentSchemeBO.getFromDate(),"dd-MM-yyyy");
-            String periodEnd = DateUtil.convertFromServerDateToRequestedFormat(holder.parentSchemeBO.getToDate(),"dd-MM-yyyy");
+            String periodStart = DateTimeUtils.convertFromServerDateToRequestedFormat(holder.parentSchemeBO.getFromDate(),"dd-MM-yyyy");
+            String periodEnd = DateTimeUtils.convertFromServerDateToRequestedFormat(holder.parentSchemeBO.getToDate(),"dd-MM-yyyy");
             holder.tv_scheme_secondary_title.setText(periodStart + " to " + periodEnd);
             holder.tv_schemeType.setText(holder.parentSchemeBO.getBuyType());
 

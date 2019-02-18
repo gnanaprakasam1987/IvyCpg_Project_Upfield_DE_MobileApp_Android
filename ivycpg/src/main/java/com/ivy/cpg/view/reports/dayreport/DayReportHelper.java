@@ -13,7 +13,6 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
@@ -411,8 +410,8 @@ public class DayReportHelper {
         if (c != null) {
             long timespent = 0;
             while (c.moveToNext()) {
-                Date timein = DateUtil.convertStringToDateObject(c.getString(0), "yyyy/MM/dd HH:mm:ss");
-                Date timeout = DateUtil.convertStringToDateObject(c.getString(1), "yyyy/MM/dd HH:mm:ss");
+                Date timein = DateTimeUtils.convertStringToDateObject(c.getString(0), "yyyy/MM/dd HH:mm:ss");
+                Date timeout = DateTimeUtils.convertStringToDateObject(c.getString(1), "yyyy/MM/dd HH:mm:ss");
                 if (timein != null && timeout != null)
                 timespent += timeout.getTime() - timein.getTime();
             }

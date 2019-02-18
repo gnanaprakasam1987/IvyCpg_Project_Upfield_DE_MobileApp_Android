@@ -15,7 +15,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -116,7 +116,7 @@ public class CurrentMonthExpenseFragment extends IvyBaseFragment {
             }
 
             holder.expenseSheetBO = items.get(position);
-            holder.tvDate.setText(DateUtil.convertFromServerDateToRequestedFormat(holder.expenseSheetBO.getDate(),
+            holder.tvDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.expenseSheetBO.getDate(),
                     ConfigurationMasterHelper.outDateFormat));
             holder.tvExpType.setText(holder.expenseSheetBO.getTypeName());
             holder.tvAmount.setText(bmodel.formatValue(SDUtil.convertToDouble("" + holder.expenseSheetBO.getAmount())));

@@ -47,7 +47,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 
@@ -181,10 +180,10 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         }
 
 
-        datevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+        datevalue.setText("" + DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat));
         timevalue.setText("" + DateTimeUtils.now(DateTimeUtils.TIME));
-        enddatevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+        enddatevalue.setText("" + DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat));
         endtimevalue.setText("" + DateTimeUtils.now(DateTimeUtils.TIME));
         vannovalue.setText(" " + bmodel.userMasterHelper.getUserMasterBO().getVanno());
@@ -266,7 +265,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             String[] CurrentString = product.getStartdatetime().split(" ");
 
             timevaluestart.setText(CurrentString[1]);
-            datevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(CurrentString[0],
+            datevalue.setText("" + DateTimeUtils.convertFromServerDateToRequestedFormat(CurrentString[0],
                     ConfigurationMasterHelper.outDateFormat));
 
             timevaluestart.setVisibility(View.VISIBLE);
@@ -314,11 +313,11 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             String CurrentString1 = product.getEndtime();
             String[] separated = CurrentString.split(" ");
             timevaluestart.setText(separated[1]);
-            datevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(separated[0],
+            datevalue.setText("" + DateTimeUtils.convertFromServerDateToRequestedFormat(separated[0],
                     ConfigurationMasterHelper.outDateFormat));
             String[] separated1 = CurrentString1.split(" ");
             timeend.setText(separated1[1]);
-            enddatevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(separated[0],
+            enddatevalue.setText("" + DateTimeUtils.convertFromServerDateToRequestedFormat(separated[0],
                     ConfigurationMasterHelper.outDateFormat));
 
 

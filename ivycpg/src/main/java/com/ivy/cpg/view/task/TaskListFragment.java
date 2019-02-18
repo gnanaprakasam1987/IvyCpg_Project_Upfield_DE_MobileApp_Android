@@ -25,7 +25,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.Vector;
@@ -252,7 +251,7 @@ public class TaskListFragment extends Fragment {
                 } else
                     holder.layoutCB.setVisibility(View.VISIBLE);
                 holder.taskTaskOwner.setText(" : " + task.getTaskOwner());
-                holder.taskCreatedDate.setText(DateUtil.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat) + ", ");
+                holder.taskCreatedDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat) + ", ");
 
                 if (task.getIsdone().equals("1") && !holder.taskBO.isUpload()) {
                     holder.taskCB.setChecked(true);
