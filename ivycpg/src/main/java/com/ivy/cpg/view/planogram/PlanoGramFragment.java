@@ -44,6 +44,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
@@ -1123,10 +1124,53 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
             holder.indicator.setViewPager(holder.imageViewPager);
 
+            if (holder.planoObj.getAudit() == IvyConstants.AUDIT_DEFAULT)
+                holder.audit.setImageResource(R.drawable.ic_audit_none);
+            else if (holder.planoObj.getAudit() == IvyConstants.AUDIT_OK)
+                holder.audit.setImageResource(R.drawable.ic_audit_yes);
+            else if (holder.planoObj.getAudit() == IvyConstants.AUDIT_NOT_OK)
+                holder.audit.setImageResource(R.drawable.ic_audit_no);
+
+            holder.audit.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+
+                    if (holder.planoObj.getAudit() == IvyConstants.AUDIT_DEFAULT) {
+
+                        holder.planoObj.setAudit(IvyConstants.AUDIT_OK);
+                        holder.audit.setImageResource(R.drawable.ic_audit_yes);
+
+                    } else if (holder.planoObj.getAudit() == IvyConstants.AUDIT_OK) {
+
+                        holder.planoObj.setAudit(IvyConstants.AUDIT_NOT_OK);
+                        holder.audit.setImageResource(R.drawable.ic_audit_no);
+
+                    } else if (holder.planoObj.getAudit() == IvyConstants.AUDIT_NOT_OK) {
+
+                        holder.planoObj.setAudit(IvyConstants.AUDIT_DEFAULT);
+                        holder.audit.setImageResource(R.drawable.ic_audit_none);
+                    }
+
+                }
+            });
+
 //            if(holder.planoObj.getPlanoGramCameraImgList().size() < 2)
 //                holder.indicator.setVisibility(View.GONE);
 //            else
 //                holder.indicator.setVisibility(View.VISIBLE);
+
+            if (mBModel.configurationMasterHelper.isAuditEnabled()) {
+                holder.auditLayout.setVisibility(View.VISIBLE);
+                holder.imgFromCamera.setEnabled(false);
+                holder.layout_cameraImage.setEnabled(false);
+                holder.rdYes.setEnabled(false);
+                holder.rdNo.setEnabled(false);
+                holder.adherence_reason.setEnabled(false);
+            }
+            else
+                holder.auditLayout.setVisibility(View.GONE);
+
 
             adapter.registerDataSetObserver(holder.indicator.getDataSetObserver());
         }
@@ -1155,6 +1199,8 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             LinearLayout layout_cameraImage;
             android.support.v4.view.ViewPager imageViewPager;
             CircleIndicator indicator;
+            LinearLayout auditLayout;
+            ImageView audit;
 
             public ViewHolder(View v) {
                 super(v);
@@ -1170,6 +1216,8 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 layout_cameraImage =  v.findViewById(R.id.ll_cameraImage);
                 imageViewPager = v.findViewById(R.id.image_view_pager);
                 indicator = v.findViewById(R.id.indicator);
+                auditLayout = v.findViewById(R.id.audit_layout);
+                audit = v.findViewById(R.id.btn_audit);
             }
 
             private void setImageFromCamera() {

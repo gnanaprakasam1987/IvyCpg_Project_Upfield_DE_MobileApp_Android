@@ -668,7 +668,7 @@ public class StockCheckHelper {
             // ClosingStock Detail entry
 
             columns = "StockID,Date,ProductID,uomqty,retailerid,uomid,msqqty,Qty,ouomid,ouomqty,"
-                    + " Shelfpqty,Shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,isDone,Facing,IsOwn,PcsUOMId,RField1,RField2,RField3,isAvailable";
+                    + " Shelfpqty,Shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,isAuditDone,Facing,IsOwn,PcsUOMId,RField1,RField2,RField3,isAvailable";
 
             if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 columns = columns + ",Score";

@@ -2710,7 +2710,7 @@ SynchronizationHelper {
         if (isChangePassword)
             updateAuthenticateToken(false);
         else
-            updateAuthenticateTokenWithoutPassword();
+            updateAuthenticateTokenWithoutPassword("");
 
         StringBuffer url = new StringBuffer();
         url.append(DataMembers.SERVER_URL + appendurl);
@@ -2738,7 +2738,7 @@ SynchronizationHelper {
 
     }
 
-    public String updateAuthenticateTokenWithoutPassword() {
+    public String updateAuthenticateTokenWithoutPassword(String loginId) {
         mSecurityKey = "";
 
         try {
@@ -2746,7 +2746,10 @@ SynchronizationHelper {
             downloadUrl.append(DataMembers.SERVER_URL
                     + "/UserMaster/SecureAuthorizeUser");
             JSONObject jsonObj = new JSONObject();
-            jsonObj.put("LoginId", bmodel.userNameTemp);
+            if (loginId.equals(""))
+                jsonObj.put("LoginId", bmodel.userNameTemp);
+            else
+                jsonObj.put("LoginId", loginId);
             //jsonObj.put("Password", getPlainPwd());
             jsonObj.put("Platform", "Android");
             jsonObj.put("OSVersion", android.os.Build.VERSION.RELEASE);
@@ -3396,15 +3399,19 @@ SynchronizationHelper {
 
     }
 
-    public void downloadFinishUpdate(FROM_SCREEN fromWhere, int updateWhere) {
+    public void downloadFinishUpdate(FROM_SCREEN fromWhere, int updateWhere, String userId) {
         mJsonObjectResponseByTableName = new HashMap<>();
         StringBuilder sb = new StringBuilder();
         sb.append(DataMembers.SERVER_URL);
         sb.append("/IncrementalSync/Finish");
         try {
             JSONObject json = new JSONObject();
-            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
-                    .getUserid());
+
+            if (userId.equals(""))
+                json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                        .getUserid());
+            else
+                json.put("UserId", userId);
             json.put("VersionCode", bmodel.getApplicationVersionNumber());
             json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
 
@@ -4720,6 +4727,30 @@ SynchronizationHelper {
             Commons.printException(e);
         }
 
+    }
+
+    public String getSelectedUserLoginId(String userId,Context context){
+        String loginId = "";
+        try {
+
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select loginid from UserMaster where userid = '"+userId+"'");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    loginId = c.getString(0);
+                }
+                c.close();
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+
+            Commons.printException(e);
+        }
+
+        return loginId;
     }
 
 }

@@ -581,6 +581,9 @@ public class DownloadService extends IntentService {
                         downloadUserRetailerInsertIntent.putExtras(insertBundle);
                         sendBroadcast(downloadUserRetailerInsertIntent);
 
+                    }catch (NullPointerException e){
+
+                        Commons.printException(e);
                     }
 
                 } else if (response == SynchronizationHelper.VOLLEY_FAILURE_RESPONSE) {

@@ -1241,7 +1241,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
 
         @Override
         protected String doInBackground(String... params) {
-            return businessModel.synchronizationHelper.updateAuthenticateTokenWithoutPassword();
+            return businessModel.synchronizationHelper.updateAuthenticateTokenWithoutPassword("");
         }
 
         @Override
