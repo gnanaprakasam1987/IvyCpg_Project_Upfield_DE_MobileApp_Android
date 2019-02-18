@@ -1,10 +1,13 @@
 package com.ivy.cpg.view.collection;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
@@ -39,6 +42,7 @@ import com.ivy.sd.png.model.UpdatePaymentByDateInterface;
 import com.ivy.sd.png.model.UpdatePaymentsInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.utils.DateTimeUtils;
@@ -85,6 +89,10 @@ public class CheckModeFragment extends IvyBaseFragment
     private LinearLayout llAccountNo;
     String mName = "";
     private CollectionHelper collectionHelper;
+    private final int CAMERA_REQUEST_CODE = 1;
+    private final int CLEAR_OBJECTS = 0;
+    private final int PHOTO_DELETE = 1;
+    private static String folderPath;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -107,6 +115,8 @@ public class CheckModeFragment extends IvyBaseFragment
 
         chqMinDate = bmodel.configurationMasterHelper.CHQ_MIN_DATE;
         chqMaxDate = bmodel.configurationMasterHelper.CHQ_MAX_DATE;
+        folderPath = getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
+                + DataMembers.photoFolderName;
     }
 
     @Nullable
@@ -256,22 +266,38 @@ public class CheckModeFragment extends IvyBaseFragment
                                 + "_" + Commons.now(Commons.DATE_TIME)
                                 + "_img.jpg";
 
+                        boolean mIsFileAvailable = false;
+                        if (mPaymentBO.getImageName() != null
+                                && mPaymentBO.getImageName().length() > 0) {
+                            mIsFileAvailable = FileUtils
+                                    .checkForNFilesInFolder(
+                                            folderPath, 1,
+                                            mPaymentBO.getImageName().
+                                                    split(bmodel.userMasterHelper.
+                                                            getUserMasterBO().getUserid() + "/")[1]);
+                        }
 
-                        Intent intent = new Intent(getActivity(), CameraActivity.class);
-                        intent.putExtra(CameraActivity.QUALITY, 40);
-                        mImagePath = "Collection" + "/" + bmodel.userMasterHelper.getUserMasterBO
-                                ().getDownloadDate().replace("/", "")
-                                + "/"
-                                + bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                                + "/";
-                        mImagePath = mImagePath + mImageName;
-                        String path = FileUtils.photoFolderPath + "/" + mImageName;
+                        if (mIsFileAvailable) {
+                            showChequeAlertDialog(PHOTO_DELETE);
+                        } else {
 
-                        mPaymentBO.setImageName(mImagePath);
 
-                        intent.putExtra(CameraActivity.PATH, path);
-                        startActivityForResult(intent,
-                                bmodel.CAMERA_REQUEST_CODE);
+                            Intent intent = new Intent(getActivity(), CameraActivity.class);
+                            intent.putExtra(CameraActivity.QUALITY, 40);
+                            mImagePath = "Collection" + "/" + bmodel.userMasterHelper.getUserMasterBO
+                                    ().getDownloadDate().replace("/", "")
+                                    + "/"
+                                    + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                                    + "/";
+                            mImagePath = mImagePath + mImageName;
+                            String path = FileUtils.photoFolderPath + "/" + mImageName;
+
+                            mPaymentBO.setImageName(mImagePath);
+
+                            intent.putExtra(CameraActivity.PATH, path);
+                            startActivityForResult(intent,
+                                    bmodel.CAMERA_REQUEST_CODE);
+                        }
 
                     }
                 } else {
@@ -544,6 +570,74 @@ public class CheckModeFragment extends IvyBaseFragment
     }
 
 
+    public void showChequeAlertDialog(int flag) {
+        int mImageCount = 1;
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(getActivity());
+        alertDialogBuilder.setIcon(null);
+        alertDialogBuilder.setCancelable(false);
+
+        switch (flag) {
+            case CLEAR_OBJECTS:
+                alertDialogBuilder
+                        .setTitle(
+                                getResources().getString(
+                                        R.string.data_cleared_do_u_want_go_back))
+                        .setPositiveButton(getResources().getString(R.string.ok),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+                                        clearObjects();
+                                    }
+                                })
+                        .setNegativeButton(getResources().getString(R.string.cancel),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+                                    }
+                                });
+                break;
+            case PHOTO_DELETE:
+                alertDialogBuilder.setMessage(getResources().getString(R.string.word_already)
+                        + mImageCount
+                        + getResources().getString(
+                        R.string.word_photocaptured_delete_retake));
+
+                alertDialogBuilder.setPositiveButton(getResources().getString(R.string.yes),
+                        new android.content.DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+
+                                FileUtils.deleteFiles(folderPath,
+                                        mPaymentBO.getImageName().
+                                                split(bmodel.userMasterHelper.
+                                                        getUserMasterBO().getUserid() + "/")[1]);
+                                dialog.dismiss();
+                                Intent intent = new Intent(getActivity(),
+                                        CameraActivity.class);
+                                intent.putExtra("quality", 40);
+                                String _path = folderPath + "/" + mImageName;
+                                mPaymentBO.setImageName(mImageName);
+                                Commons.print("PhotoPAth:  -      " + _path);
+                                intent.putExtra("path", _path);
+                                startActivityForResult(intent,
+                                        bmodel.CAMERA_REQUEST_CODE);
+                            }
+                        });
+
+                alertDialogBuilder.setNegativeButton(getResources().getString(R.string.no),
+                        new android.content.DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                            }
+                        });
+                break;
+
+        }
+        bmodel = (BusinessModel) getActivity().getApplicationContext();
+        bmodel.setContext(getActivity());
+        bmodel.applyAlertDialogTheme(alertDialogBuilder);
+    }
+
+
     public void updateView(PaymentBO paymentBO) {
         mPaymentBO = paymentBO;
         String strAmt = mPaymentBO.getAmount() + "";
@@ -595,9 +689,11 @@ public class CheckModeFragment extends IvyBaseFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            mPaymentBO.setAmount(tempPaidAmt);
-            mPaymentBO.setUpdatePayableamt(tempPaidAmt);
-            getActivity().finish();
+            if (isValidate(mPaymentBO)) {
+                showChequeAlertDialog(CLEAR_OBJECTS);
+            } else {
+                getActivity().finish();
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -679,6 +775,23 @@ public class CheckModeFragment extends IvyBaseFragment
                 mPaymentBO.setUpdatePayableamt(0);
             }
         }
+
+    }
+
+    private void clearObjects() {
+        mPaymentBO.setAmount(0);
+        mPaymentBO.setUpdatePayableamt(0);
+
+        if (mPaymentBO.getImageName() != null
+                && mPaymentBO.getImageName().length() > 0) {
+            FileUtils.deleteFiles(folderPath,
+                    mPaymentBO.getImageName().
+                            split(bmodel.userMasterHelper.
+                                    getUserMasterBO().getUserid() + "/")[1]);
+            mPaymentBO.setImageName(null);
+        }
+
+        getActivity().finish();
 
     }
 
@@ -791,6 +904,17 @@ public class CheckModeFragment extends IvyBaseFragment
         }
 
         return true;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == 1) {
+            mPaymentBO.setImageName(mImagePath);
+        } else {
+            mPaymentBO.setImageName(null);
+        }
     }
 
 }

@@ -103,7 +103,13 @@ public class BatchAllocationHelper {
             if (!bmodel.configurationMasterHelper.IS_APPLY_BATCH_PRICE_FROM_PRODUCT)
                 sb.append("BM.batchid=Price.batchid AND ");
 
-            sb.append(" BM.pid = PM.pid group by BM.batchid order by PM.pid,BM.MfgDate asc");
+
+            sb.append(" BM.pid = PM.pid group by BM.batchid");
+
+            if (bmodel.configurationMasterHelper.IS_ORD_BY_BATCH_EXPIRY_DATE_WISE)
+                sb.append(" Order By PM.pid,BM.ExpDate asc");
+            else
+                sb.append(" Order By PM.pid,BM.MfgDate asc");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {

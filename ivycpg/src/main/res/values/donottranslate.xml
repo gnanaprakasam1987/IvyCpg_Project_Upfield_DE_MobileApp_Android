@@ -152,4 +152,5 @@
     <string name="map_satellite">Satellite View</string>
     <string name="map_normal">Normal View</string>
     <string name="retailer_trans_not_exist">Retailer Transaction not exist</string>
+    <string name="data_cleared_do_u_want_go_back">Data not saved. Do you want to go back…?</string>
 </resources>

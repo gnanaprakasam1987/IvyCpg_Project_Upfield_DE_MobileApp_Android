@@ -740,6 +740,7 @@ public class ConfigurationMasterHelper {
 
     public boolean SHOW_SAL_RET_REASON_DLG;
     public boolean SHOW_BATCH_ALLOCATION;// ORDB29
+    public boolean IS_ORD_BY_BATCH_EXPIRY_DATE_WISE;
     public boolean SHOW_VANGPS_VALIDATION;
     public boolean SHOW_RET_SKIP_VALIDATION;
     public boolean SHOW_SIGNATURE_SCREEN;// SIGN01
@@ -2691,6 +2692,9 @@ public class ConfigurationMasterHelper {
         this.IS_LOAD_STK_CHECK_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) : false;
 
         this.IS_SKIP_SCHEME_APPLY = hashMapHHTModuleConfig.get(CODE_SKIP_SCHEME_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_SKIP_SCHEME_APPLY) : false;
+        if (hashMapHHTModuleConfig.get(CODE_BATCH_ALLOCATION) != null) {
+            IS_ORD_BY_BATCH_EXPIRY_DATE_WISE = hashMapHHTModuleOrder.get(CODE_BATCH_ALLOCATION) == 1;
+        }
     }
 
     private boolean isInOutModule() {
