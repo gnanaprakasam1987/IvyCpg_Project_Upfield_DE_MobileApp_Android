@@ -6232,4 +6232,9 @@ public class ConfigurationMasterHelper {
         }
     }
 
+    public boolean isAuditEnabled(){
+
+        return IS_TEAMLEAD && IS_AUDIT_USER;
+    }
+
 }

@@ -48,6 +48,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.ivy.core.IvyConstants;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
@@ -180,6 +181,9 @@ public class SODFragment extends IvyBaseFragment implements
                 saveSOS();
             }
         });
+
+        if (mBModel.configurationMasterHelper.isAuditEnabled())
+            view.findViewById(R.id.audit).setVisibility(View.VISIBLE);
 
     }
 
@@ -777,7 +781,7 @@ public class SODFragment extends IvyBaseFragment implements
         Spinner spnReason;
         ImageView btnPhoto;
         ImageButton audit;
-        LinearLayout remark_layout;
+        LinearLayout remark_layout, auditLayout;
     }
 
     /**
@@ -832,28 +836,33 @@ public class SODFragment extends IvyBaseFragment implements
                 holder.audit = row
                         .findViewById(R.id.btn_audit);
 
+                holder.auditLayout = row.findViewById(R.id.ll_audit);
+
                 holder.audit.setOnClickListener(new OnClickListener() {
 
                     @Override
                     public void onClick(View view) {
 
-                        if (holder.mSOD.getLocations().get(mSelectedLocationIndex).getAudit() == 2) {
+                        if (holder.mSOD.getLocations().get(mSelectedLocationIndex).getAudit()
+                                == IvyConstants.AUDIT_DEFAULT) {
 
-                            holder.mSOD.getLocations().get(mSelectedLocationIndex).setAudit(1);
-                            holder.audit
-                                    .setImageResource(R.drawable.ic_audit_yes);
+                            holder.mSOD.getLocations().get(mSelectedLocationIndex)
+                                    .setAudit(IvyConstants.AUDIT_OK);
+                            holder.audit.setImageResource(R.drawable.ic_audit_yes);
 
-                        } else if (holder.mSOD.getLocations().get(mSelectedLocationIndex).getAudit() == 1) {
+                        } else if (holder.mSOD.getLocations().get(mSelectedLocationIndex).getAudit()
+                                == IvyConstants.AUDIT_OK) {
 
-                            holder.mSOD.getLocations().get(mSelectedLocationIndex).setAudit(0);
-                            holder.audit
-                                    .setImageResource(R.drawable.ic_audit_no);
+                            holder.mSOD.getLocations().get(mSelectedLocationIndex)
+                                    .setAudit(IvyConstants.AUDIT_NOT_OK);
+                            holder.audit.setImageResource(R.drawable.ic_audit_no);
 
-                        } else if (holder.mSOD.getLocations().get(mSelectedLocationIndex).getAudit() == 0) {
+                        } else if (holder.mSOD.getLocations().get(mSelectedLocationIndex).getAudit()
+                                == IvyConstants.AUDIT_NOT_OK) {
 
-                            holder.mSOD.getLocations().get(mSelectedLocationIndex).setAudit(2);
-                            holder.audit
-                                    .setImageResource(R.drawable.ic_audit_none);
+                            holder.mSOD.getLocations().get(mSelectedLocationIndex)
+                                    .setAudit(IvyConstants.AUDIT_DEFAULT);
+                            holder.audit.setImageResource(R.drawable.ic_audit_none);
                         }
 
                     }
@@ -968,8 +977,10 @@ public class SODFragment extends IvyBaseFragment implements
 
                     }
                 });
-                if (mBModel.configurationMasterHelper.IS_TEAMLEAD) {
+                if (mBModel.configurationMasterHelper.isAuditEnabled()) {
+
                     holder.audit.setVisibility(View.VISIBLE);
+                    holder.auditLayout.setVisibility(View.VISIBLE);
 
                     holder.spnReason.setEnabled(false);
                     holder.spnReason.setClickable(false);
@@ -988,11 +999,14 @@ public class SODFragment extends IvyBaseFragment implements
 
             holder.mSOD = items.get(position);
 
-            if (holder.mSOD.getLocations().get(mSelectedLocationIndex).getAudit() == 2)
+            if (holder.mSOD.getLocations().get(mSelectedLocationIndex).getAudit()
+                    == IvyConstants.AUDIT_DEFAULT)
                 holder.audit.setImageResource(R.drawable.ic_audit_none);
-            else if (holder.mSOD.getLocations().get(mSelectedLocationIndex).getAudit() == 1)
+            else if (holder.mSOD.getLocations().get(mSelectedLocationIndex).getAudit()
+                    == IvyConstants.AUDIT_OK)
                 holder.audit.setImageResource(R.drawable.ic_audit_yes);
-            else if (holder.mSOD.getLocations().get(mSelectedLocationIndex).getAudit() == 0)
+            else if (holder.mSOD.getLocations().get(mSelectedLocationIndex).getAudit()
+                    == IvyConstants.AUDIT_NOT_OK)
                 holder.audit.setImageResource(R.drawable.ic_audit_no);
 
             holder.tvBrandName.setText(holder.mSOD.getProductName());
@@ -1003,13 +1017,31 @@ public class SODFragment extends IvyBaseFragment implements
                 holder.etTotal.setText(holder.mSOD.getLocations().get(mSelectedLocationIndex).getParentTotal());
             }
 
-            String strActTarget = (holder.mSOD.getLocations().get(mSelectedLocationIndex).getActual() + "/"
-                    + holder.mSOD.getLocations().get(mSelectedLocationIndex).getTarget());
+            String actual = holder.mSOD.getLocations().get(mSelectedLocationIndex).getActual() != null
+                    ? holder.mSOD.getLocations().get(mSelectedLocationIndex).getActual() : "0";
+            String target = holder.mSOD.getLocations().get(mSelectedLocationIndex).getTarget() != null
+                    ? holder.mSOD.getLocations().get(mSelectedLocationIndex).getTarget() : "0";
+
+            if (mBModel.configurationMasterHelper.isAuditEnabled()) {
+                float parentTotal = Float.parseFloat(holder.mSOD.getLocations().get(mSelectedLocationIndex).getParentTotal() != null ?
+                        holder.mSOD.getLocations().get(mSelectedLocationIndex).getParentTotal() : "0");
+
+                float percentage = 0;
+                if (parentTotal > 0)
+                    percentage = (Float.parseFloat(actual) / parentTotal) * 100;
+
+                holder.mSOD.getLocations().get(mSelectedLocationIndex).setPercentage(percentage+"");
+            }
+
+            String percent = holder.mSOD.getLocations().get(mSelectedLocationIndex).getPercentage() != null
+                    ? holder.mSOD.getLocations().get(mSelectedLocationIndex).getPercentage() : "0";
+
+
+            String strActTarget = (actual + "/"+ target);
 
             holder.tvActual.setText(strActTarget);
 
-            String strPerNorm = (holder.mSOD.getLocations().get(mSelectedLocationIndex).getPercentage() + "/"
-                    + String.valueOf(holder.mSOD.getNorm()));
+            String strPerNorm = (percent + "/"+ String.valueOf(holder.mSOD.getNorm()));
 
             holder.tvPercentage.setText(strPerNorm);
 

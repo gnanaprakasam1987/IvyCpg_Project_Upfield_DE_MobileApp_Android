@@ -36,4 +36,8 @@ public class IvyConstants {
     public static String DEFAULT_DATE_FORMAT = "MM/dd/yyyy"; // Default Date Format
 
     public static final String PRIVACY_POLICY_URL = "http://ivymobility.com/index.php/privacy-policy/";
+
+    public static final int AUDIT_NOT_OK = 0;
+    public static final int AUDIT_OK = 1;
+    public static final int AUDIT_DEFAULT = 2;
 }

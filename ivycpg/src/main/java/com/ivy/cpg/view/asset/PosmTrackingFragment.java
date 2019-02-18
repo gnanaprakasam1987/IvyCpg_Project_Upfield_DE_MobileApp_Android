@@ -51,6 +51,7 @@ import android.widget.Toast;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -238,7 +239,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
         outPutDateFormat = ConfigurationMasterHelper.outDateFormat;
 
-        if (mBModel.configurationMasterHelper.IS_TEAMLEAD) {
+        if (mBModel.configurationMasterHelper.isAuditEnabled()) {
             TextView tvAudit = view.findViewById(R.id.audit);
             tvAudit.setVisibility(View.VISIBLE);
         }
@@ -624,23 +625,23 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                     @Override
                     public void onClick(View view) {
 
-                        if (holder.assetBO.getAudit() == 2) {
+                        if (holder.assetBO.getAudit() == IvyConstants.AUDIT_DEFAULT) {
 
-                            holder.assetBO.setAudit(1);
-                            holder.audit
-                                    .setImageResource(R.drawable.ic_audit_yes);
+                            holder.assetBO
+                                    .setAudit(IvyConstants.AUDIT_OK);
+                            holder.audit.setImageResource(R.drawable.ic_audit_yes);
 
-                        } else if (holder.assetBO.getAudit() == 1) {
+                        } else if (holder.assetBO.getAudit() == IvyConstants.AUDIT_OK) {
 
-                            holder.assetBO.setAudit(0);
-                            holder.audit
-                                    .setImageResource(R.drawable.ic_audit_no);
+                            holder.assetBO
+                                    .setAudit(IvyConstants.AUDIT_NOT_OK);
+                            holder.audit.setImageResource(R.drawable.ic_audit_no);
 
-                        } else if (holder.assetBO.getAudit() == 0) {
+                        } else if (holder.assetBO.getAudit() == IvyConstants.AUDIT_NOT_OK) {
 
-                            holder.assetBO.setAudit(2);
-                            holder.audit
-                                    .setImageResource(R.drawable.ic_audit_none);
+                            holder.assetBO
+                                    .setAudit(IvyConstants.AUDIT_DEFAULT);
+                            holder.audit.setImageResource(R.drawable.ic_audit_none);
                         }
 
                     }
@@ -995,11 +996,11 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
             holder.assetBO = items.get(position);
 
-            if (holder.assetBO.getAudit() == 2)
+            if (holder.assetBO.getAudit() == IvyConstants.AUDIT_DEFAULT)
                 holder.audit.setImageResource(R.drawable.ic_audit_none);
-            else if (holder.assetBO.getAudit() == 1)
+            else if (holder.assetBO.getAudit() == IvyConstants.AUDIT_OK)
                 holder.audit.setImageResource(R.drawable.ic_audit_yes);
-            else if (holder.assetBO.getAudit() == 0)
+            else if (holder.assetBO.getAudit() == IvyConstants.AUDIT_NOT_OK)
                 holder.audit.setImageResource(R.drawable.ic_audit_no);
 
             holder.assetNameTV.setText(holder.assetBO.getAssetName());
@@ -1124,7 +1125,8 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 holder.execQtyET.setVisibility(View.GONE);
             }
 
-            if (mBModel.configurationMasterHelper.IS_TEAMLEAD) {
+            if (mBModel.configurationMasterHelper.isAuditEnabled()){
+
                 holder.audit.setVisibility(View.VISIBLE);
                 holder.availQtyET.setEnabled(false);
                 holder.reason1Spin.setEnabled(false);

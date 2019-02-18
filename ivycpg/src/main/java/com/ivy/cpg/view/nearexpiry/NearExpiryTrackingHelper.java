@@ -128,7 +128,7 @@ public class NearExpiryTrackingHelper {
                     + mTrackingHeader + " where RetailerID="
                     + mBModel.getRetailerMasterBO().getRetailerID();
             sql += " AND date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
-            sql += " and upload= 'N'";
+            sql += " and (upload='N' OR refid!=0)";
             Cursor orderHeaderCursor = db.selectSQL(sql);
             if (orderHeaderCursor.getCount() > 0) {
                 orderHeaderCursor.close();
@@ -168,7 +168,7 @@ public class NearExpiryTrackingHelper {
                 orderHeaderCursor.close();
             }
 
-            String sql1 = "SELECT PId, LocId,expdate, UOMId, UOMQty,IFNULL(Audit,'2'),isOwn"
+            String sql1 = "SELECT PId, LocId,expdate, UOMId, UOMQty,IFNULL(isAuditDone,'2'),isOwn"
                     + " FROM "
                     + mTrackingDetail
                     + " WHERE Tid = "
@@ -195,22 +195,28 @@ public class NearExpiryTrackingHelper {
                     isLocChanged = false;
                     isDateChanged = false;
 
-					/*if (curLocId != locationId) {
+					if (curLocId != locationId || !lastPid.equals(pid)) {
                         curLocId = locationId;
+                        lastPid = pid;
 						isLocChanged = true;
 
 						curDateString = date;
 
+                        if (!curDateString.equals(date)) {
+                            curDateString = date;
+                            isDateChanged = true;
+                        }
+
 					} else if (!curDateString.equals(date)) {
 							curDateString = date;
 							isDateChanged = true;
-					}*/
+					}
 
-                    if (curLocId != locationId || !lastPid.equals(pid)) {
+                    /*if (curLocId != locationId || !lastPid.equals(pid)) {
                         curLocId = locationId;
                         lastPid = pid;
                         k = 0;
-                    }
+                    }*/
 
                     setSKUTrackingDetails(pid, locationId,
                             uomId, uomQty, date, isLocChanged,
@@ -249,6 +255,14 @@ public class NearExpiryTrackingHelper {
             for (int j = 0; j < productBO.getLocations().size(); j++) {
                 if (productBO.getLocations().get(j).getLocationId() == locationId) {
 
+                    if (isLocChanged) {
+                        k = 0;
+                    }
+
+                    if (isDateChanged) {
+                        k++;
+                    }
+
                     productBO.getLocations().get(j).getNearexpiryDate()
                             .get(k).setDate(changeMonthNoToName(date));
 
@@ -261,7 +275,7 @@ public class NearExpiryTrackingHelper {
                     if (productBO.getCaseUomId() == uomId)
                         productBO.getLocations().get(j).getNearexpiryDate()
                                 .get(k).setNearexpCA(uomQty);
-                    k++;
+                    //k++;
 
                     return;
                 }
@@ -285,7 +299,7 @@ public class NearExpiryTrackingHelper {
             String refId = "0";
 
             String headerColumns = "Tid, RetailerId, Date, TimeZone, RefId";
-            String detailColumns = "Tid, PId,LocId, UOMId, UOMQty,expdate,retailerid,audit,batchNumber";
+            String detailColumns = "Tid, PId,LocId, UOMId, UOMQty,expdate,retailerid,isAuditDone,batchNumber";
 
 
             String values;
@@ -474,7 +488,26 @@ public class NearExpiryTrackingHelper {
             for (int j = 0; j < skubo.getLocations().size(); j++) {
                 for (int k = 0; k < (skubo.getLocations().get(j)
                         .getNearexpiryDate().size()); k++) {
-                    if (!"0".equals(skubo.getLocations().get(j).getNearexpiryDate()
+
+                    if (mBModel.configurationMasterHelper.isAuditEnabled()){
+                        if (
+                                (
+                                (!"0".equals(skubo.getLocations().get(j).getNearexpiryDate()
+                                .get(k).getNearexpPC())
+                                || !"0".equals(skubo.getLocations().get(j).getNearexpiryDate()
+                                .get(k).getNearexpOU())
+                                || !"0".equals(skubo.getLocations().get(j).getNearexpiryDate()
+                                .get(k).getNearexpCA()))
+                                && skubo.getLocations()
+                                .get(mSelectedLocationIndex).getAudit() != 2
+                                )
+                                || skubo.getLocations()
+                                .get(mSelectedLocationIndex).getAudit() != 2){
+
+                            return true;
+
+                        }
+                    }else if (!"0".equals(skubo.getLocations().get(j).getNearexpiryDate()
                             .get(k).getNearexpPC())
                             || !"0".equals(skubo.getLocations().get(j).getNearexpiryDate()
                             .get(k).getNearexpOU())

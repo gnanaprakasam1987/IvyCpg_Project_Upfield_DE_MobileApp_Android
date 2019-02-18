@@ -2911,7 +2911,7 @@ public class BusinessModel extends Application {
             // if (remarksHelper.getRemarksBO().getModuleCode()
             // .equals(StandardListMasterConstants.MENU_STOCK))
             // remarksHelper.getRemarksBO().setTid(stockID);
-            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,isDone,IsOwn,Facing,RField1,RField2,isAvailable from "
+            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,isAuditDone,IsOwn,Facing,RField1,RField2,isAvailable from "
                     + DataMembers.tbl_closingstockdetail
                     + " where stockId="
                     + QT(stockID) + "";

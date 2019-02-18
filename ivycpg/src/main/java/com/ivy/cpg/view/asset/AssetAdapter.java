@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.ivy.core.IvyConstants;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
@@ -195,23 +196,20 @@ public class AssetAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View view) {
 
-                    if (holder.assetBO.getAudit() == 2) {
+                    if (holder.assetBO.getAudit() == IvyConstants.AUDIT_DEFAULT) {
 
-                        holder.assetBO.setAudit(1);
-                        holder.audit
-                                .setImageResource(R.drawable.ic_audit_yes);
+                        holder.assetBO.setAudit(IvyConstants.AUDIT_OK);
+                        holder.audit.setImageResource(R.drawable.ic_audit_yes);
 
-                    } else if (holder.assetBO.getAudit() == 1) {
+                    } else if (holder.assetBO.getAudit() == IvyConstants.AUDIT_OK) {
 
-                        holder.assetBO.setAudit(0);
-                        holder.audit
-                                .setImageResource(R.drawable.ic_audit_no);
+                        holder.assetBO.setAudit(IvyConstants.AUDIT_NOT_OK);
+                        holder.audit.setImageResource(R.drawable.ic_audit_no);
 
-                    } else if (holder.assetBO.getAudit() == 0) {
+                    } else if (holder.assetBO.getAudit() == IvyConstants.AUDIT_NOT_OK) {
 
-                        holder.assetBO.setAudit(2);
-                        holder.audit
-                                .setImageResource(R.drawable.ic_audit_none);
+                        holder.assetBO.setAudit(IvyConstants.AUDIT_DEFAULT);
+                        holder.audit.setImageResource(R.drawable.ic_audit_none);
                     }
 
                 }
@@ -415,17 +413,21 @@ public class AssetAdapter extends BaseAdapter {
                 }
             });
 
+            if (mBModel.configurationMasterHelper.isAuditEnabled()) {
+                holder.audit.setVisibility(View.VISIBLE);
+            }
+
         } else {
             holder = (ViewHolder) row.getTag();
         }
 
         holder.assetBO = items.get(position);
 
-        if (holder.assetBO.getAudit() == 2)
+        if (holder.assetBO.getAudit() == IvyConstants.AUDIT_DEFAULT)
             holder.audit.setImageResource(R.drawable.ic_audit_none);
-        else if (holder.assetBO.getAudit() == 1)
+        else if (holder.assetBO.getAudit() == IvyConstants.AUDIT_OK)
             holder.audit.setImageResource(R.drawable.ic_audit_yes);
-        else if (holder.assetBO.getAudit() == 0)
+        else if (holder.assetBO.getAudit() == IvyConstants.AUDIT_NOT_OK)
             holder.audit.setImageResource(R.drawable.ic_audit_no);
 
         holder.assetNameTV.setText(holder.assetBO.getAssetName());
@@ -567,6 +569,15 @@ public class AssetAdapter extends BaseAdapter {
 //                holder.assetBO.getAvailQty() == 1);
 //        holder.availQtyRB.setEnabled((assetTrackingHelper.SHOW_ASSET_BARCODE && holder.assetBO.getSerialNo().equals(""))
 //                || holder.assetBO.getNFCTagId().isEmpty());
+
+        if (mBModel.configurationMasterHelper.isAuditEnabled()){
+            holder.reason1Spin.setEnabled(false);
+            holder.photoBTN.setEnabled(false);
+            holder.mConditionSpin.setEnabled(false);
+            holder.mInstallDate.setEnabled(false);
+            holder.mServiceDate.setEnabled(false);
+            holder.availQtyRB.setEnabled(false);
+        }
 
         return row;
     }

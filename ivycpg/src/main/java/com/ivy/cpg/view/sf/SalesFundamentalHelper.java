@@ -439,7 +439,7 @@ public class SalesFundamentalHelper {
             String headerValues;
             String detailValues;
             String headerColumns = "Uid,RetailerId,Date,Remark,refid,ridSF,VisitId";
-            String detailColumns = "Uid,Pid,RetailerId,Norm,ParentTotal,Required,Actual,Percentage,Gap,ReasonId,ImageName,IsOwn,ParentID,Isdone,MappingId,LocId,imgName";
+            String detailColumns = "Uid,Pid,RetailerId,Norm,ParentTotal,Required,Actual,Percentage,Gap,ReasonId,ImageName,IsOwn,ParentID,IsAuditDone,MappingId,LocId,imgName";
 
             String mParentDetailColumns = "Uid, PId, BlockCount, ShelfCount,"
                     + " ShelfLength, ExtraShelf,total,RetailerId,LocId";
@@ -1478,7 +1478,7 @@ public class SalesFundamentalHelper {
                 DataMembers.uidSOD = uid;
                 StringBuffer sb = new StringBuffer();
 
-                sb.append("SELECT SF.Pid,SF.Norm,SF.ParentTotal,SF.Required,SF.Actual,SF.Percentage,SF.Gap,SF.ReasonId,SF.ImageName,SF.Isown,SF.Isdone");
+                sb.append("SELECT SF.Pid,SF.Norm,SF.ParentTotal,SF.Required,SF.Actual,SF.Percentage,SF.Gap,SF.ReasonId,SF.ImageName,SF.Isown,IFNULL(SF.IsAuditDone,'2')");
                 if (moduleName.equals("SOS") || moduleName.equals("SOD")) {
                     sb.append(", IFNULL(B.BlockCount,'0'), IFNULL(B.ShelfCount,'0'),IFNULL(B.ShelfLength,'0'), IFNULL(B.ExtraShelf,'0'),SF.Parentid,SF.locid");
                     if (moduleName.equals("SOS")) {
@@ -1579,6 +1579,7 @@ public class SalesFundamentalHelper {
                                             msod.getLocations().get(i).setReasonId(detailCursor.getInt(7));
                                             msod.getLocations().get(i).setImageName(detailCursor.getString(8));
                                             msod.getLocations().get(i).setImgName(detailCursor.getString(detailCursor.getColumnIndex("tempImageName")));
+                                            msod.getLocations().get(i).setAudit(detailCursor.getInt(10));
                                         }
                                     }
                                 }
@@ -1763,7 +1764,13 @@ public class SalesFundamentalHelper {
         if (module.equalsIgnoreCase(moduleSOS)) {
             for (SOSBO levelbo : getSOSList()) {
                 for (int i = 0; i < levelbo.getLocations().size(); i++) {
-                    if (!levelbo.getLocations().get(i).getParentTotal().equals("0") || levelbo.getLocations().get(i).getAudit() != 2) {
+                    if (mBModel.configurationMasterHelper.isAuditEnabled()) {
+                        if((!levelbo.getLocations().get(i).getParentTotal().equals("0")
+                                && levelbo.getLocations().get(i).getAudit() != 2)
+                                || levelbo.getLocations().get(i).getAudit() != 2)
+                            return true;
+                    }
+                    else if (!levelbo.getLocations().get(i).getParentTotal().equals("0") || levelbo.getLocations().get(i).getAudit() != 2) {
                         return true;
                     }
                 }
@@ -1771,7 +1778,13 @@ public class SalesFundamentalHelper {
         } else if (module.equalsIgnoreCase(moduleSOD)) {
             for (SODBO levelbo : getSODList()) {
                 for (int i = 0; i < levelbo.getLocations().size(); i++) {
-                    if (!levelbo.getLocations().get(i).getParentTotal().equals("0") || levelbo.getLocations().get(i).getAudit() != 2) {
+                    if (mBModel.configurationMasterHelper.isAuditEnabled()) {
+                        if((!levelbo.getLocations().get(i).getParentTotal().equals("0")
+                                && levelbo.getLocations().get(i).getAudit() != 2)
+                                || levelbo.getLocations().get(i).getAudit() != 2)
+                            return true;
+                    }
+                    else if (!levelbo.getLocations().get(i).getParentTotal().equals("0") || levelbo.getLocations().get(i).getAudit() != 2) {
                         return true;
                     }
                 }

@@ -663,7 +663,7 @@ public class AssetTrackingHelper {
                 mBusinessModel.setAssetRemark("");
             }
 
-            String sb2 = "select assetid,availqty,imagename,reasonid,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Locid,PosmGroupLovId,isExecuted,imgName,MappingId  from assetDetail where uid=" +
+            String sb2 = "select assetid,availqty,imagename,reasonid,SerialNumber,conditionId,installdate,servicedate,isAuditDone,Productid,CompQty,Locid,PosmGroupLovId,isExecuted,imgName,MappingId  from assetDetail where uid=" +
                     QT(uid);
 
 
@@ -1521,7 +1521,7 @@ public class AssetTrackingHelper {
             assetHeaderValues.append(typeListId);
 
 
-            String AssetDetailColumns = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Retailerid,LocId,PosmGroupLovId,isExecuted,imgName";
+            String AssetDetailColumns = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,conditionId,installdate,servicedate,isAuditDone,Productid,CompQty,Retailerid,LocId,PosmGroupLovId,isExecuted,imgName";
             String AssetImageInfoColumns = "uid,AssetID,ImageName,PId,LocId";
             if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 AssetDetailColumns = AssetDetailColumns + ",Score";
@@ -1943,8 +1943,16 @@ public class AssetTrackingHelper {
             mAssetTrackingList = standardListBO.getAssetTrackingList();
             if (mAssetTrackingList != null) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
-
-                    if (assetBO.getAvailQty() > 0 || assetBO.getAudit() != 2 || assetBO.getCompetitorQty() > 0 || assetBO.getExecutorQty() > 0) {
+                    if (mBusinessModel.configurationMasterHelper.isAuditEnabled()) {
+                        if (((assetBO.getAvailQty() > 0
+                                || assetBO.getCompetitorQty() > 0
+                                || assetBO.getExecutorQty() > 0)
+                                && assetBO.getAudit() != 2)
+                                 || assetBO.getAudit() != 2) {
+                            return true;
+                        }
+                    }
+                    else if (assetBO.getAvailQty() > 0 || assetBO.getAudit() != 2 || assetBO.getCompetitorQty() > 0 || assetBO.getExecutorQty() > 0) {
                         return true;
                     } else if (assetBO.getReason1ID() != null) {
                         if (!assetBO.getReason1ID().equals(Integer.toString(0))) {

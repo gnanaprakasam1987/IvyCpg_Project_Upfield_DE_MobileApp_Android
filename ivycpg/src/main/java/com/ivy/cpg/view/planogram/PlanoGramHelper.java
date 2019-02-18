@@ -293,7 +293,7 @@ public class PlanoGramHelper {
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " INNER JOIN PlanogramImageInfo PI on PI.ImgId=MP.ImageId"
                         + " LEFT JOIN StandardListMaster STM  on STM.Listid = MP.StoreLocId"
-                        + " LEFT JOIN ProductMaster PM ON PM.PID=MP.PID"
+                        + " INNER JOIN ProductMaster PM ON PM.PID=MP.PID"
                         + " WHERE" + query1 + " AND "
                         + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                         + " BETWEEN P.startdate AND P.enddate";
@@ -302,7 +302,7 @@ public class PlanoGramHelper {
                         + " FROM PlanogramMapping MP ON MP.PId = PM.Pid"
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " INNER JOIN PlanogramImageInfo PI on PI.ImgId=MP.ImageId"
-                        + " LEFT JOIN ProductMaster PM ON PM.PID=MP.PID"
+                        + " INNER JOIN ProductMaster PM ON PM.PID=MP.PID"
                         + " WHERE"
                         + " MP.RID ='0'"
                         + " AND "
@@ -353,7 +353,8 @@ public class PlanoGramHelper {
             String tid = "";
             String sql = "SELECT Tid FROM PlanogramHeader WHERE RetailerId = "
                     + retailerId + " AND Date = "
-                    + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+                    + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + " and (upload='N' OR refid!=0)";
 
             Cursor orderHeaderCursor = db.selectSQL(sql);
             if (orderHeaderCursor != null) {
@@ -364,7 +365,7 @@ public class PlanoGramHelper {
 
             orderHeaderCursor.close();
 
-            String sql1 = "SELECT PId, PLID, ImageName, Adherence, ReasonID, LocID, IFNULL(Audit,'2')"
+            String sql1 = "SELECT PId, PLID, ImageName, Adherence, ReasonID, LocID, IFNULL(isAuditDone,'2')"
                     + " FROM PlanogramDetails WHERE tid=" + QT(tid);
 
             Cursor orderDetailCursor = db.selectSQL(sql1);
@@ -485,7 +486,7 @@ public class PlanoGramHelper {
             Cursor headerCursor;
 
             String headerColumns = "TiD, RetailerId, Date, timezone, uid, RefId,Type,CounterId,DistributorID,ridSF,VisitId";
-            String detailColumns = "TiD, MappingId, Pid, ImageName,ImagePath, Adherence, RetailerId, ReasonID, LocID,Audit,CounterId";
+            String detailColumns = "TiD, MappingId, Pid, ImageName,ImagePath, Adherence, RetailerId, ReasonID, LocID,isAuditDone,CounterId";
 
             String values;
             boolean isData;
