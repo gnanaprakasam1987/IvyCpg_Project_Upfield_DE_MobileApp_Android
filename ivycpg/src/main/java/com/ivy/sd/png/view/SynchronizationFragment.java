@@ -612,6 +612,10 @@ public class SynchronizationFragment extends IvyBaseFragment
                         .setText(bmodel.labelsMasterHelper
                                 .applyLabels(view.findViewById(R.id.startsync)
                                         .getTag()));
+
+            if (bmodel.labelsMasterHelper.applyLabels(closeDay_tv.getTag()) != null)
+                closeDay_tv.setText(bmodel.labelsMasterHelper
+                        .applyLabels(closeDay_tv.getTag()));
         } catch (Exception e) {
             Commons.printException(e);
         }

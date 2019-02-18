@@ -206,6 +206,9 @@ public class CollectionReportHelper {
         return childPaymentList;
     }
 
+    public ArrayList<PaymentBO> getPaymentList() {
+        return paymentList;
+    }
 
     private HashMap<String, ArrayList<PaymentBO>> lstPaymentBObyGroupId;
 
@@ -292,6 +295,42 @@ public class CollectionReportHelper {
             Commons.printException(e);
             if (db != null)
                 db.closeDB();
+        }
+    }
+
+    public int getPaymentPrintCount(String groupId) {
+        int count = 0;
+        try {
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            Cursor c = db.selectSQL("select print_count from Payment where groupid='" + groupId + "'");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    count = c.getInt(0);
+
+                }
+                c.close();
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return count;
+    }
+
+    public void updatePaymentPrintCount(String groupId, int count) {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            db.updateSQL("update Payment set print_count=" + count + " where groupid = '" + groupId + "'");
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
         }
     }
 }

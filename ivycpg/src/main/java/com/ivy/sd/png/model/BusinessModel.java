@@ -6018,13 +6018,25 @@ public class BusinessModel extends Application {
 
                             mComputeID.append(appendZero(seqNo, "0000"));
                         }
+                    } //Retailer Type ID
+                    else if (mRules.get(i).contains("{RETAILER_TYPE,")) {
+
+                        String value = getTypeCodeByRPType(mRules.get(i).substring(mRules.get(i).lastIndexOf(",") + 1, mRules.get(i).lastIndexOf("}")).replace(" ", ""));
+                        mComputeID.append(value);
+                    } else if (mRules.get(i).contains("{SOURCE")) {
+
+                        mComputeID.append("M");
                     }
 
 
                     // Download Date
-                    if (mRules.get(i).contains("YYYY") || mRules.get(i).contains("yyyy")) {
+                    if (mRules.get(i).contains("YYYY") || mRules.get(i).contains("yyyy")
+                            || mRules.get(i).contains("YY") || mRules.get(i).contains("yy")) {
                         String str = mRules.get(i).replace("{", "").replace("}", "");
-                        str = str.replace("YYYY", "yyyy");
+                        if (str.equalsIgnoreCase("YY"))
+                            str = str.replace("YY", "yy");
+                        else
+                            str = str.replace("YYYY", "yyyy");
                         mComputeID.append(DateTimeUtils.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(), str));
                     }
                    /* else if (mRules.get(i).contains("yyyy")) {
@@ -6122,6 +6134,29 @@ public class BusinessModel extends Application {
         }
 
         return mComputeID.toString();
+    }
+
+    /**
+     *
+     * @param ruleString
+     * @return this method will return retailer type based Retailer Type Code
+     */
+    private String getTypeCodeByRPType(String ruleString) {
+        final String CASH_TYPE = "CASH";
+        final String CREDIT_TYPE = "CREDIT";
+        final String READY_TO_SALES_TYPE = "READYSALE";
+        String retType;
+
+        if (getRetailerMasterBO().getRpTypeCode().equalsIgnoreCase(CASH_TYPE)) {
+            retType = (ruleString.split("\\|")[0]).split("_")[1];
+        } else if (getRetailerMasterBO().getRpTypeCode().equalsIgnoreCase(CREDIT_TYPE)) {
+            retType = (ruleString.split("\\|")[1]).split("_")[1];
+        } else if (getRetailerMasterBO().getRpTypeCode().equalsIgnoreCase(READY_TO_SALES_TYPE)) {
+            retType = (ruleString.split("\\|")[1]).split("_")[1];
+        } else {
+            retType = "";
+        }
+        return retType;
     }
 
     /**
