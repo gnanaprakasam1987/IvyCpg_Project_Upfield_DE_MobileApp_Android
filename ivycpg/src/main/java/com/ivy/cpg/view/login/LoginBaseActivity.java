@@ -152,7 +152,7 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
         LoginHelper loginHelper = LoginHelper.getInstance(this);
         loginHelper.downloadTermsAndConditions(this);
 
-        if (!loginHelper.isTermsAccepted()) {
+        if (businessModel.configurationMasterHelper.IS_SHOW_TERMS_COND && !loginHelper.isTermsAccepted()) {
             Intent intent = new Intent(this, TermsAndConditionsActivity.class);
             intent.putExtra("fromScreen", "login");
             startActivity(intent);

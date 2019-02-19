@@ -435,6 +435,20 @@ public class SerializedAssetAdapter extends BaseAdapter {
             serialNo = mBModel.labelsMasterHelper
                     .applyLabels(row.findViewById(
                             R.id.tv_serialNo).getTag());
+
+        if (assetTrackingHelper.SHOW_ASSET_VENDOR)
+        serialNo = serialNo +  "   " + mContext.getResources().getString(
+                R.string.vendor) + " : " + holder.assetBO.getVendorName();
+        if (assetTrackingHelper.SHOW_ASSET_MODEL)
+            serialNo = serialNo + "   " + mContext.getResources().getString(
+                R.string.model) + " : " + holder.assetBO.getModelName();
+        if (assetTrackingHelper.SHOW_ASSET_TYPE)
+            serialNo = serialNo + "   " + mContext.getResources().getString(
+                    R.string.type) + " : " + holder.assetBO.getAssetType();
+        if (assetTrackingHelper.SHOW_ASSET_CAPACITY)
+            serialNo = serialNo + "   " + mContext.getResources().getString(
+                R.string.capacity) + " : " + holder.assetBO.getCapacity();
+
         holder.serialNoTV.setText(serialNo);
 
         holder.mInstallDate
@@ -586,7 +600,6 @@ public class SerializedAssetAdapter extends BaseAdapter {
         CheckBox availQtyRB;
         LinearLayout availQtyLL;
         ImageButton audit;
-        TextView grpTV;
         CheckBox execQtyRB;
         LinearLayout execQtyLL;
     }

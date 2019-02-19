@@ -1545,6 +1545,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SKIP_SCHEME_APPLY = "SCH12";
     public boolean IS_SKIP_SCHEME_APPLY;
 
+    private static final String CODE_SHOW_TERMS_COND = "FUN76";
+    public boolean IS_SHOW_TERMS_COND;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2695,6 +2698,7 @@ public class ConfigurationMasterHelper {
         if (hashMapHHTModuleConfig.get(CODE_BATCH_ALLOCATION) != null) {
             IS_ORD_BY_BATCH_EXPIRY_DATE_WISE = hashMapHHTModuleOrder.get(CODE_BATCH_ALLOCATION) == 1;
         }
+        this.IS_SHOW_TERMS_COND = hashMapHHTModuleConfig.get(CODE_SHOW_TERMS_COND) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TERMS_COND) : false;
     }
 
     private boolean isInOutModule() {
