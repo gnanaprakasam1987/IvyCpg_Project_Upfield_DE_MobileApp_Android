@@ -11,6 +11,16 @@ public class SupplierMasterBO implements Parcelable {
     private int distParentID;
     private float creditLimit;
     private int supplierTaxLocId;
+    private String rpTypeCode;
+
+    public String getRpTypeCode() {
+        return rpTypeCode;
+    }
+
+    public void setRpTypeCode(String rpTypeCode) {
+        this.rpTypeCode = rpTypeCode;
+    }
+
 
     public boolean isCompositeRetailer() {
         return isCompositeRetailer;

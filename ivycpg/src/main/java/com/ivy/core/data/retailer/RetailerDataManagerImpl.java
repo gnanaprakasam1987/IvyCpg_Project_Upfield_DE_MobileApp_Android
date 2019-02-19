@@ -95,7 +95,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                                     + " (select count (sbdid) from SbdMerchandisingMaster where ChannelId = A.ChannelId"
                                                     + " and TypeListId = (select ListId from StandardListMaster where ListCode='MERCH')) as rpstgt,"
                                                     + " ifnull(A.RPS_Merch_Achieved,0) as RPS_Merch_Achieved, ifnull(RC.weekNo,0) as weekNo,A.isDeadStore,A.isPlanned,"
-                                                    + " ifnull((select ListCode from StandardListMaster where ListID=A.RpTypeId),'') as RpTypeCode, A.sptgt, A.isOrderMerch,"
+                                                    + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? " ifnull((select ListCode from StandardListMaster where ListID=SM.RpTypeId),'') as RpTypeCode," : " ifnull((select ListCode from StandardListMaster where ListID=A.RpTypeId),'') as RpTypeCode,")
+                                                    + "A.sptgt, A.isOrderMerch,"
                                                     + " A.PastVisitStatus, A.isMerchandisingDone, A.isInitMerchandisingDone,"
                                                     + " case when RC.WalkingSeq='' then 9999 else RC.WalkingSeq end as WalkingSeq,"
                                                     + " A.sbd_dist_stock,A.RField1,"
