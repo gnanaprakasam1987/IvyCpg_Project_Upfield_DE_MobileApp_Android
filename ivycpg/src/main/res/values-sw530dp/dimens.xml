@@ -322,7 +322,7 @@
     <dimen name="login_content_padding">39.2dp</dimen>
 
     <dimen name="edittext_height">48dp</dimen>
-    <dimen name="forgot_text_width">52dp</dimen>
+    <dimen name="forgot_text_width">82dp</dimen>
 
     <dimen name="login_btn_bottom_margin">8dp</dimen>
 

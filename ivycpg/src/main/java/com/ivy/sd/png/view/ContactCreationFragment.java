@@ -57,10 +57,10 @@ public class ContactCreationFragment extends IvyBaseFragment {
     private BusinessModel bmodel;
     private ArrayList<ConfigureBO> contactConfig;
 
-    private static String CODE_CONTACTNAME = "CONTACTNAME";
-    private static String CODE_CONTACTNUMBER = "CONTACTNUMBER";
-    private static String CODE_CONTACTPRIMARY = "CONTACTPRIMARY";
-    private static String CODE_CONTACTMAIL = "CONTACTMAIL";
+    private  String CODE_CONTACTNAME = "CONTACTNAME";
+    private  String CODE_CONTACTNUMBER = "CONTACTNUMBER";
+    private  String CODE_CONTACTPRIMARY = "CONTACTPRIMARY";
+    private  String CODE_CONTACTMAIL = "CONTACTMAIL";
     private boolean ISCONTACTNAME, ISCONTACTNO, ISCONTACTPRIMARY, ISCONTACTEMAIL;
     private Unbinder unbinder;
 
