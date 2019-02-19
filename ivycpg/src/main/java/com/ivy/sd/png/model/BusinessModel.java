@@ -72,6 +72,8 @@ import com.ivy.cpg.view.callanalysis.CallAnalysisActivity;
 import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.collection.CollectionScreen;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.cpg.view.initiative.InitiativeHelper;
 import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.order.OrderHelper;
@@ -141,8 +143,6 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.TimerCount;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CircleTransform;
-import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.NewOutlet;
 import com.ivy.sd.png.view.ReAllocationActivity;
@@ -1372,7 +1372,8 @@ public class BusinessModel extends Application {
                             + " (select count (sbdid) from SbdMerchandisingMaster where ChannelId = A.ChannelId"
                             + " and TypeListId = (select ListId from StandardListMaster where ListCode='MERCH')) as rpstgt,"
                             + " ifnull(A.RPS_Merch_Achieved,0) as RPS_Merch_Achieved, ifnull(RC.weekNo,0) as weekNo,A.isDeadStore,A.isPlanned,"
-                            + " ifnull((select ListCode from StandardListMaster where ListID=A.RpTypeId),'') as RpTypeCode, A.sptgt, A.isOrderMerch,"
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? " ifnull((select ListCode from StandardListMaster where ListID=SM.RpTypeId),'') as RpTypeCode," : " ifnull((select ListCode from StandardListMaster where ListID=A.RpTypeId),'') as RpTypeCode,")
+                            + "A.sptgt, A.isOrderMerch,"
                             + " A.PastVisitStatus, A.isMerchandisingDone, A.isInitMerchandisingDone,"
                             + " case when RC.WalkingSeq='' then 9999 else RC.WalkingSeq end as WalkingSeq,"
                             + " A.sbd_dist_stock,A.RField1,"
@@ -5223,9 +5224,13 @@ public class BusinessModel extends Application {
                 sb.append("select did,dname,type,0,parentid from DistributorMaster ");
 
             } else {
-                sb.append("select sid,sname,stype,isPrimary,parentid,creditlimit,supplierTaxLocId,IsCompositionScheme from Suppliermaster ");
-                sb.append("where rid=" + QT(retailerMasterBO.getRetailerID()));
-                sb.append(" or rid= 0 order by isPrimary desc");
+                sb.append("select SM.sid,SM.sname,SM.stype,SM.isPrimary,SM.parentid," +
+                        "SM.creditlimit,SM.supplierTaxLocId,SM.IsCompositionScheme,IFNULL(SLM.ListCode,'') as RpTypeCode " +
+                        "from Suppliermaster SM ");
+                sb.append("LEFT JOIN StandardListMaster SLM ON SLM.ListId=SM.RpTypeId ");
+                sb.append("where rid=");
+                sb.append(StringUtils.QT(retailerMasterBO.getRetailerID()));
+                sb.append(" or SM.rid= 0 order by SM.isPrimary desc");
             }
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -5241,14 +5246,16 @@ public class BusinessModel extends Application {
                     supplierMasterBO.setIsPrimary(c.getInt(3));
                     supplierMasterBO.setDistParentID(c.getInt(4));
 
-                    if (c.getColumnCount() == 6)
+                    if (c.getColumnCount() == 8) {
                         supplierMasterBO.setCreditLimit(c.getFloat(5));
+                        supplierMasterBO.setSupplierTaxLocId(c.getInt(6));
 
-                    supplierMasterBO.setSupplierTaxLocId(c.getInt(6));
+                        if (c.getInt(7) == 1)
+                            supplierMasterBO.setCompositeRetailer(true);
+                        else supplierMasterBO.setCompositeRetailer(false);
 
-                    if (c.getInt(7) == 1)
-                        supplierMasterBO.setCompositeRetailer(true);
-                    else supplierMasterBO.setCompositeRetailer(false);
+                        supplierMasterBO.setRpTypeCode(c.getString(8));
+                    }
 
                     mSupplierList.add(supplierMasterBO);
                 }
