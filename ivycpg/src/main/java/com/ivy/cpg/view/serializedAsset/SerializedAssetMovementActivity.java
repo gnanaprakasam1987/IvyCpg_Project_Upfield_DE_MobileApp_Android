@@ -1,6 +1,5 @@
 package com.ivy.cpg.view.serializedAsset;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -11,20 +10,14 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.asset.AssetTrackingHelper;
-import com.ivy.cpg.view.asset.MovementAssetDialog;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.view.MyDialogCloseListener;
-import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 
@@ -35,7 +28,7 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
     protected ArrayList<SerializedAssetBO> mAssetTrackingList = new ArrayList<>();
     protected RecyclerAdapter recyclerAdapter;
     protected SerializedAssetMovementDialog movementAssetDialog;
-    protected TextView txtSerialNo;
+    private SerializedAssetHelper assetTrackingHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +36,7 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
         setContentView(R.layout.activity_asset_movement);
         mBModel = (BusinessModel) getApplicationContext();
         mBModel.setContext(this);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         if(getSupportActionBar()!=null) {
@@ -52,16 +45,7 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
             setScreenTitle(getResources().getString(R.string.moveAsset));
         }
 
-        txtSerialNo = findViewById(R.id.txt_move_serialNumber);
-        ((TextView) findViewById(R.id.txt_move_serialNumber)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
-                R.id.txt_move_serialNumber).getTag()) != null)
-            ((TextView) findViewById(R.id.txt_move_serialNumber))
-                    .setText(mBModel.labelsMasterHelper
-                            .applyLabels(findViewById(
-                                    R.id.txt_move_serialNumber).getTag()));
-
-        recyclerView = (RecyclerView) findViewById(R.id.recyclerview_move_asset);
+        recyclerView = findViewById(R.id.recyclerview_move_asset);
         if (recyclerView != null) {
             recyclerView.setHasFixedSize(false);
         }
@@ -76,17 +60,15 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
     protected void onStart() {
         super.onStart();
 
-            updateList(getApplicationContext());
+            updateList();
 
     }
 
     /**
      * update List with asset movement details
-     * @param
      */
-    protected void updateList(Context mContext) {
-        SerializedAssetHelper assetTrackingHelper = SerializedAssetHelper.getInstance(this);
-        //mAssetTrackingList=assetTrackingHelper.getAssetTrackingList();
+    protected void updateList() {
+        assetTrackingHelper = SerializedAssetHelper.getInstance(this);
         assetTrackingHelper.loadDataForAssetPOSM(getApplicationContext(), "MENU_SERIALIZED_ASSET");
         mAssetTrackingList = assetTrackingHelper.removeMovedAsset(this);
 
@@ -125,7 +107,7 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
 
     @Override
     public void handleDialogClose(DialogInterface dialog) {
-        updateList(getApplicationContext());
+        updateList();
     }
 
 
@@ -147,18 +129,32 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
         public void onBindViewHolder(final MyViewHolder holder, int position) {
             holder.assetTrackingBO = data.get(position);
             holder.TVAssetName.setText(holder.assetTrackingBO.getAssetName());
-            holder.TVSerialNumber.setText(holder.assetTrackingBO.getSerialNo());
+            String serialNo = getResources().getString(
+                    R.string.serial_no)
+                    + " : " + holder.assetTrackingBO.getSerialNo();
+            if (assetTrackingHelper.SHOW_ASSET_VENDOR)
+                serialNo = serialNo + "   " +  getResources().getString(
+                        R.string.vendor) + " : " + holder.assetTrackingBO.getVendorName();
+            if (assetTrackingHelper.SHOW_ASSET_MODEL)
+                serialNo = serialNo + "   " + getResources().getString(
+                        R.string.model) + " : " + holder.assetTrackingBO.getModelName();
+            if (assetTrackingHelper.SHOW_ASSET_TYPE)
+                serialNo = serialNo + "   " + getResources().getString(
+                        R.string.type) + " : " + holder.assetTrackingBO.getAssetType();
+            if (assetTrackingHelper.SHOW_ASSET_CAPACITY)
+                serialNo = serialNo + "   " + getResources().getString(
+                        R.string.capacity) + " : " + holder.assetTrackingBO.getCapacity();
+            holder.TVSerialNumber.setText(serialNo);
 
             holder.IVMoveIcon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     movementAssetDialog = new SerializedAssetMovementDialog();
                     Bundle args = new Bundle();
-                    args.putString("retailerName", mBModel.getRetailerMasterBO().getRetailerName());
+                    args.putString("retailerName", mBModel.getAppDataProvider().getRetailMaster().getRetailerName());
                     args.putString("serialNo", holder.assetTrackingBO.getSerialNo());
                     args.putString("assetName", holder.assetTrackingBO.getAssetName());
                     args.putInt("assetId", holder.assetTrackingBO.getAssetID());
-                    //args.putString("brand", holder.assetTrackingBO.getProductId()+"");
                     args.putInt("referenceId", holder.assetTrackingBO.getReferenceId());
                     movementAssetDialog.setArguments(args);
                     movementAssetDialog.show(getSupportFragmentManager(), "Asset");
@@ -178,9 +174,9 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
 
             MyViewHolder(View itemView) {
                 super(itemView);
-                TVAssetName = (TextView) itemView.findViewById(R.id.txt_move_assetName);
-                TVSerialNumber = (TextView) itemView.findViewById(R.id.txt_move_serialNumber);
-                IVMoveIcon = (ImageView) itemView.findViewById(R.id.iv_move_icon);
+                TVAssetName = itemView.findViewById(R.id.txt_move_assetName);
+                TVSerialNumber = itemView.findViewById(R.id.txt_move_serialNumber);
+                IVMoveIcon = itemView.findViewById(R.id.iv_move_icon);
             }
         }
     }

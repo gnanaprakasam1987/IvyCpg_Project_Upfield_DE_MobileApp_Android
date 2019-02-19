@@ -421,7 +421,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         LoginHelper loginHelper = LoginHelper.getInstance(getActivity());
         loginHelper.downloadTermsAndConditions(getActivity());
-        if (!loginHelper.isTermsAccepted() && !showDefaultScreen) {
+        if (bmodel.configurationMasterHelper.IS_SHOW_TERMS_COND && !loginHelper.isTermsAccepted() && !showDefaultScreen) {
             Intent intent = new Intent(getActivity(), TermsAndConditionsActivity.class);
             intent.putExtra("fromScreen", "homescreen");
             ActivityOptionsCompat opts = ActivityOptionsCompat.makeCustomAnimation(getActivity(), R.anim.zoom_enter, R.anim.hold);

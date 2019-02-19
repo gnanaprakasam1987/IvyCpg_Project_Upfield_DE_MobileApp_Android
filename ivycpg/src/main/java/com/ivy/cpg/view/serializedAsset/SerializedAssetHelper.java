@@ -61,16 +61,17 @@ public class SerializedAssetHelper {
     public boolean ASSET_PHOTO_VALIDATION;
     public boolean NEW_ASSET_PHOTO;
     public boolean NEW_ASSET_PHOTO_MANDATORY;
+    public boolean SHOW_ASSET_VENDOR;
+    public boolean SHOW_ASSET_CAPACITY;
+    public boolean SHOW_ASSET_MODEL;
+    public boolean SHOW_ASSET_TYPE;
 
     //
 
     private ArrayList<ReasonMaster> mAssetReasonList = new ArrayList<>();
-    private ArrayList<ReasonMaster> mAssetRemarkList = new ArrayList<>();
     private ArrayList<ReasonMaster> mAssetConditionList = new ArrayList<>();
     private HashMap<String, String> mUniqueSerialNo;
     private ArrayList<SerializedAssetBO> mAssetTrackingList = new ArrayList<>();
-    private Vector<AssetAddDetailBO> mAssetSpinner = null;
-    private Vector<AssetAddDetailBO> mBrandSpinner = null;
     private Vector<SerializedAssetBO> mRemovableAssets = null;
     private Vector<SerializedAssetBO> assetServiceList = null;
 
@@ -90,9 +91,6 @@ public class SerializedAssetHelper {
             instance = new SerializedAssetHelper(context);
 
         return instance;
-    }
-
-    private SerializedAssetHelper() {
     }
 
     public void clear() {
@@ -130,7 +128,7 @@ public class SerializedAssetHelper {
 
         // Load data from transaction
         loadAssetData(mContext, mBusinessModel
-                .getRetailerMasterBO().getRetailerID(), mMenuCode);
+                .getAppDataProvider().getRetailMaster().getRetailerID(), mMenuCode);
     }
 
 
@@ -157,6 +155,10 @@ public class SerializedAssetHelper {
             SHOW_NFC_SEARCH_IN_ASSET = false;
             NEW_ASSET_PHOTO = false;
             NEW_ASSET_PHOTO_MANDATORY = false;
+            SHOW_ASSET_VENDOR = false;
+            SHOW_ASSET_MODEL = false;
+            SHOW_ASSET_CAPACITY = false;
+            SHOW_ASSET_TYPE = false;
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
             );
@@ -245,6 +247,18 @@ public class SerializedAssetHelper {
             case "EXECUTED":
                 SHOW_ASSET_EXECUTED = true;
                 break;
+            case "VDR":
+                SHOW_ASSET_VENDOR = true;
+                break;
+            case "MOD":
+                SHOW_ASSET_MODEL = true;
+                break;
+            case "CAP":
+                SHOW_ASSET_CAPACITY = true;
+                break;
+            case "TYPE":
+                SHOW_ASSET_TYPE = true;
+                break;
         }
     }
 
@@ -257,9 +271,6 @@ public class SerializedAssetHelper {
         switch (category) {
             case ASSET_REASON:
                 mAssetReasonList = new ArrayList<>();
-                break;
-            case ASSET_REMARK:
-                mAssetRemarkList = new ArrayList<>();
                 break;
             case ASSET_CONDITION:
                 mAssetConditionList = new ArrayList<>();
@@ -283,9 +294,6 @@ public class SerializedAssetHelper {
                     switch (category) {
                         case ASSET_REASON:
                             mAssetReasonList.add(reasonBO);
-                            break;
-                        case ASSET_REMARK:
-                            mAssetRemarkList.add(reasonBO);
                             break;
                         case ASSET_CONDITION:
                             mAssetConditionList.add(reasonBO);
@@ -324,9 +332,16 @@ public class SerializedAssetHelper {
 
             db.openDataBase();
 
-            sb.append("select Distinct A.assetId,A.assetName,B.serialNumber,'',B.NFCNumber,'' as ParentHierarchy,AllocationRefId from SerializedAssetMaster A  ");
+            sb.append("select Distinct A.assetId,A.assetName,B.serialNumber,'',B.NFCNumber,'' as ParentHierarchy,AllocationRefId,");
+            sb.append("ifnull(A.assettype,'') as AssetTypeId,A.capacity as capacity,A.vendorid as vendorid,A.modelid as modelid,ifnull(SAVM.name,'') as name,");
+            sb.append("ifnull((select SLM.Listname from StandardListMaster SLM where SLM.ListId=A.modelid ");
+            sb.append("and SLM.ListType='ASSET_MODEL_TYPE'),'') as ModelName,");
+            sb.append("ifnull((select SLM.Listname from StandardListMaster SLM where SLM.ListId=A.AssetType ");
+            sb.append("and SLM.ListType='ASSET_TYPE'),'') as AssetType ");
+            sb.append("from SerializedAssetMaster A ");
             sb.append("inner join SerializedAssetMapping B on A.AssetId=B.AssetId ");
             sb.append("left join SerializedAssetProductMapping C on C.AssetId=A.AssetId ");
+            sb.append("left join SerializedAssetVendorMaster SAVM on SAVM.id=A.vendorid ");
 
             String allMasterSb = sb.toString();
 
@@ -352,6 +367,13 @@ public class SerializedAssetHelper {
                     assetTrackingBO.setNFCTagId(c.getString(c.getColumnIndex("NFCNumber")));
                     assetTrackingBO.setParentHierarchy("");
                     assetTrackingBO.setReferenceId(c.getInt(c.getColumnIndex("AllocationRefId")));
+                    assetTrackingBO.setCapacity(c.getInt(c.getColumnIndex("capacity")));
+                    assetTrackingBO.setVendorId(c.getString(c.getColumnIndex("vendorid")));
+                    assetTrackingBO.setVendorName(c.getString(c.getColumnIndex("name")));
+                    assetTrackingBO.setModelId(c.getString(c.getColumnIndex("modelid")));
+                    assetTrackingBO.setModelName(c.getString(c.getColumnIndex("ModelName")));
+                    assetTrackingBO.setAssetTypeId(c.getString(c.getColumnIndex("AssetTypeId")));
+                    assetTrackingBO.setAssetType(c.getString(c.getColumnIndex("AssetType")));
 
 
                     mAssetTrackingList.add(assetTrackingBO);
@@ -393,9 +415,9 @@ public class SerializedAssetHelper {
             }
 
 
-            String sb1 = "select  serialNumber from SerializedAssetTransfer where transfer_type='RTR_WH' and retailerid=" + mBusinessModel.getRetailerMasterBO().getRetailerID();
+            String sb1 = "select  serialNumber from SerializedAssetTransfer where transfer_type='RTR_WH' and retailerid=" + mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID();
             Cursor cursorDelete = db.selectSQL(sb1);
-            SerializedAssetBO assetBoDelete = null;
+            SerializedAssetBO assetBoDelete;
             List<SerializedAssetBO> deletedAssetList = new ArrayList<>();
             if (cursorDelete.getCount() > 0) {
                 while (cursorDelete.moveToNext()) {
@@ -585,7 +607,7 @@ public class SerializedAssetHelper {
                                  String mReasonId, String serialNo,
                                  String conditionId, String installDate, String serviceDate, String nfcTagID) {
 
-        SerializedAssetBO assetBO = null;
+        SerializedAssetBO assetBO;
 
         if (mAssetTrackingList != null) {
             int size = mAssetTrackingList.size();
@@ -917,28 +939,30 @@ public class SerializedAssetHelper {
     /**
      * Download unique POSM available
      *
-     * @param moduleName Module Name
      */
-    public void downloadUniqueAssets(Context mContext, String moduleName) {
+    public ArrayList<AssetAddDetailBO> downloadUniqueAssets(Context mContext) {
 
-        AssetAddDetailBO assetBO;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-        );
+        ArrayList<AssetAddDetailBO> posmList = new ArrayList<>();
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
 
             db.openDataBase();
-            String sb = "select distinct  AssetId,AssetName from SerializedAssetMaster";
+            String sb = "select distinct  AssetId,AssetName,ifnull(vendorid,''),ifnull(modelid,''),capacity,ifnull(assettype,'') from SerializedAssetMaster";
 
 
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
-                mAssetSpinner = new Vector<>();
+                Vector<AssetAddDetailBO> mAssetSpinner = new Vector<>();
                 while (c.moveToNext()) {
-                    assetBO = new AssetAddDetailBO();
+                    AssetAddDetailBO assetBO = new AssetAddDetailBO();
                     assetBO.setPOSMId(c.getString(0));
                     assetBO.setPOSMDescription(c.getString(1));
-
+                    assetBO.setVendorId(c.getString(2));
+                    assetBO.setModelId(c.getString(3));
+                    assetBO.setCapacity(c.getString(4));
+                    assetBO.setTypeId(c.getString(5));
                     mAssetSpinner.add(assetBO);
+                    posmList.add(assetBO);
 
                 }
             }
@@ -959,144 +983,8 @@ public class SerializedAssetHelper {
             Commons.printException("" + e);
             db.closeDB();
         }
-    }
 
-    public Vector<String> getAssetNames() {
-        AssetAddDetailBO brand;
-        Vector<String> data = new Vector<>();
-        try {
-            int siz = mAssetSpinner.size();
-            if (siz == 0)
-                return data;
-
-            for (int i = 0; i < siz; ++i) {
-                brand = mAssetSpinner.get(i);
-                data.add(brand.getPOSMDescription());
-            }
-        } catch (Exception ex) {
-            Commons.printException("" + ex);
-        }
-        return data;
-    }
-
-    /**
-     * Download asset brands
-     *
-     * @param brandPosm POSM Id
-     */
-    public void downloadAssetBrand(Context mContext, String brandPosm) {
-
-        AssetAddDetailBO assetBO;
-        mBrandSpinner = new Vector<>();
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-        );
-        try {
-
-            db.openDataBase();
-            String sb = "SELECT PM.pid,PM.PName FROM ProductMaster PM INNER JOIN SerializedAssetProductMapping PO ON PM.Pid = PO.Productid WHERE PO.AssetId =" + StringUtils.QT(brandPosm);
-
-            Cursor c = db.selectSQL(sb);
-
-            if (c.getCount() > 0) {
-
-                while (c.moveToNext()) {
-                    assetBO = new AssetAddDetailBO();
-                    assetBO.setAssetBrandId(c.getString(0));
-                    assetBO.setAssetBrandName(c.getString(1));
-
-                    mBrandSpinner.add(assetBO);
-
-                }
-            }
-            c.close();
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            db.closeDB();
-        }
-    }
-
-    /**
-     * Get asset Id for given asset name
-     *
-     * @param mAssetName Asset name
-     * @return Asset Id
-     */
-    public String getAssetIds(String mAssetName) {
-        AssetAddDetailBO brand;
-
-        try {
-            int siz = mAssetSpinner.size();
-            if (siz == 0)
-                return null;
-
-            for (int i = 0; i < siz; ++i) {
-                brand = mAssetSpinner.get(i);
-                Commons.print("brand.getPOSMDescription()="
-                        + brand.getPOSMDescription() + "," + mAssetName);
-                if (brand.getPOSMDescription().equals(mAssetName)) {
-
-                    return brand.getPOSMId();
-
-                }
-
-            }
-        } catch (Exception ex) {
-            Commons.printException("" + ex);
-        }
-        return mAssetName;
-    }
-
-    /**
-     * Get asset brands
-     *
-     * @return Vector List of Asset Brands
-     */
-    public Vector<String> getAssetBrandNames() {
-        AssetAddDetailBO brand;
-        Vector<String> data = new Vector<>();
-        try {
-            int siz = mBrandSpinner.size();
-            if (siz == 0)
-                return data;
-
-            for (int i = 0; i < siz; ++i) {
-                brand = mBrandSpinner.get(i);
-                data.add(brand.getAssetBrandName());
-            }
-        } catch (Exception ex) {
-            Commons.printException("" + ex);
-        }
-        return data;
-    }
-
-    /**
-     * Get Asset brand Id for given Asset Brand Name
-     *
-     * @param mAssetBrandName Asset brand name
-     * @return Brand id
-     */
-    public String getAssetBrandIds(String mAssetBrandName) {
-        AssetAddDetailBO brand;
-
-        try {
-            int siz = mBrandSpinner.size();
-            if (siz == 0)
-                return null;
-
-            for (int i = 0; i < siz; ++i) {
-                brand = mBrandSpinner.get(i);
-                if (brand.getAssetBrandName().equals(mAssetBrandName)) {
-                    return brand.getAssetBrandId();
-
-                }
-
-            }
-        } catch (Exception ex) {
-            Commons.printException("" + ex);
-        }
-        return mAssetBrandName;
+        return posmList;
     }
 
     //check serial no is available are not in hash map for uniqueness
@@ -1117,7 +1005,6 @@ public class SerializedAssetHelper {
      * @param moduleName Module Name
      */
     public void loadRemovableAssets(Context mContext, String moduleName) {
-        String type;
 
         SerializedAssetBO assetBO;
 
@@ -1132,11 +1019,17 @@ public class SerializedAssetHelper {
 
 
             StringBuilder sb = new StringBuilder();
-            sb.append("select distinct P.AssetId,P.AssetName,SAM.SerialNumber,SBD.Productid,AllocationRefId  from SerializedAssetMaster P  inner join SerializedAssetProductMapping SBD on P.AssetId=SBD.AssetId ");
+            sb.append("select distinct P.AssetId,P.AssetName,SAM.SerialNumber,SBD.Productid,AllocationRefId,");
+            sb.append("ifnull(P.assettype,'') as AssetTypeId,P.capacity as capacity,");
+            sb.append("P.vendorid as vendorid,P.modelid as modelid,ifnull(SAVM.name,'') as name,");
+            sb.append("ifnull((select SLM.Listname from StandardListMaster SLM where SLM.ListId=P.modelid and SLM.ListType='ASSET_MODEL_TYPE'),'') as ModelName,");
+            sb.append("ifnull((select SLM.Listname from StandardListMaster SLM where SLM.ListId=P.AssetType and SLM.ListType='ASSET_TYPE'),'') as AssetType");
+            sb.append(" from SerializedAssetMaster P  inner join SerializedAssetProductMapping SBD on P.AssetId=SBD.AssetId");
             sb.append(" inner join SerializedAssetMapping SAM ON SAM.assetId=P.AssetId");
+            sb.append(" left join SerializedAssetVendorMaster SAVM on SAVM.id=P.vendorid");
             sb.append(" where (SAM.SerialNumber  in (select distinct SerialNumber from SerializedAssetTransfer AAD where Transfer_Type!='RTR_WH'");
             sb.append(") or SAM.SerialNumber not in (select distinct SerialNumber from SerializedAssetTransfer AAD1");
-            sb.append(")) and retailerid in (0," + mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
+            sb.append(")) and retailerid in (0," + StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()) + ")");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -1154,11 +1047,25 @@ public class SerializedAssetHelper {
                     assetBO.setFlag("N");
                     assetBO.setBrand(c.getString(3));
                     assetBO.setReferenceId(c.getInt(4));
+                    assetBO.setCapacity(c.getInt(c.getColumnIndex("capacity")));
+                    assetBO.setVendorId(c.getString(c.getColumnIndex("vendorid")));
+                    assetBO.setVendorName(c.getString(c.getColumnIndex("name")));
+                    assetBO.setModelId(c.getString(c.getColumnIndex("modelid")));
+                    assetBO.setModelName(c.getString(c.getColumnIndex("ModelName")));
+                    assetBO.setAssetTypeId(c.getString(c.getColumnIndex("AssetTypeId")));
+                    assetBO.setAssetType(c.getString(c.getColumnIndex("AssetType")));
                     mRemovableAssets.add(assetBO);
                 }
             }
-            String sb1 = "select distinct  P.AssetId,P.AssetName,serialNumber,installdate  from SerializedAssetMaster P  inner  join SerializedAssetTransfer AAD on P.AssetId=AAD.AssetId where Transfer_Type!='RTR_WH'  and retailerid=" +
-                    StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
+
+            String sb1 = "select distinct  P.AssetId,P.AssetName,serialNumber,installdate," +
+                    "ifnull(P.assettype,'') as AssetTypeId,P.capacity as capacity,P.vendorid as vendorid,P.modelid as modelid,ifnull(SAVM.name,'') as name," +
+                    "ifnull((select SLM.Listname from StandardListMaster SLM where SLM.ListId=P.modelid and SLM.ListType='ASSET_MODEL_TYPE'),'') as ModelName," +
+                    "ifnull((select SLM.Listname from StandardListMaster SLM where SLM.ListId=P.AssetType and SLM.ListType='ASSET_TYPE'),'') as AssetType" +
+                    " from SerializedAssetMaster P inner  join SerializedAssetTransfer AAD on P.AssetId=AAD.AssetId" +
+                    " left join SerializedAssetVendorMaster SAVM on SAVM.id=P.vendorid" +
+                    " where Transfer_Type!='RTR_WH'  and retailerid=" +
+                    StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID());
 
             Cursor c1 = db.selectSQL(sb1);
             if (c1.getCount() > 0) {
@@ -1176,7 +1083,13 @@ public class SerializedAssetHelper {
                     assetBO.setNewInstallDate(c1.getString(3));
                     assetBO.setFlag("Y");
                     assetBO.setSBDId(" ");
-                    //assetBO.setBrand(c1.getString(4));
+                    assetBO.setCapacity(c.getInt(c.getColumnIndex("capacity")));
+                    assetBO.setVendorId(c.getString(c.getColumnIndex("vendorid")));
+                    assetBO.setVendorName(c.getString(c.getColumnIndex("name")));
+                    assetBO.setModelId(c.getString(c.getColumnIndex("modelid")));
+                    assetBO.setModelName(c.getString(c.getColumnIndex("ModelName")));
+                    assetBO.setAssetTypeId(c.getString(c.getColumnIndex("AssetTypeId")));
+                    assetBO.setAssetType(c.getString(c.getColumnIndex("AssetType")));
                     mRemovableAssets.add(assetBO);
                 }
             }
@@ -1326,8 +1239,13 @@ public class SerializedAssetHelper {
             mBusinessModel.productHelper.getRetailerlevel(moduleName);
 
             StringBuilder sb = new StringBuilder();
-            sb.append("select distinct P.AssetId,P.AssetName,SAM.SerialNumber,SBD.Productid  from SerializedAssetMaster P  inner join SerializedAssetProductMapping SBD on P.AssetId=SBD.AssetId ");
+            sb.append("select distinct P.AssetId,P.AssetName,SAM.SerialNumber,SBD.Productid,");
+            sb.append("ifnull(P.assettype,'') as AssetTypeId,P.capacity as capacity,P.vendorid as vendorid,");
+            sb.append("P.modelid as modelid,ifnull(SAVM.name,'') as name,ifnull((select SLM.Listname from StandardListMaster SLM where SLM.ListId=P.modelid and SLM.ListType='ASSET_MODEL_TYPE'),'') as ModelName,");
+            sb.append(" ifnull((select SLM.Listname from StandardListMaster SLM where SLM.ListId=P.AssetType and SLM.ListType='ASSET_TYPE'),'') as AssetType");
+            sb.append(" from SerializedAssetMaster P  inner join SerializedAssetProductMapping SBD on P.AssetId=SBD.AssetId");
             sb.append(" inner join SerializedAssetMapping SAM ON SAM.assetId=P.AssetId");
+            sb.append(" left join SerializedAssetVendorMaster SAVM on SAVM.id=P.vendorid");
             sb.append(" where (SAM.SerialNumber  in (select distinct SerialNumber from SerializedAssetTransfer AAD where Transfer_Type!='RTR_WH'");
             sb.append(") or SAM.SerialNumber not in (select distinct SerialNumber from SerializedAssetTransfer AAD1");
             sb.append("))");
@@ -1351,11 +1269,24 @@ public class SerializedAssetHelper {
                     assetBO.setNewInstallDate(" ");
                     assetBO.setFlag("N");
                     assetBO.setBrand(c.getString(3));
+                    assetBO.setCapacity(c.getInt(c.getColumnIndex("capacity")));
+                    assetBO.setVendorId(c.getString(c.getColumnIndex("vendorid")));
+                    assetBO.setVendorName(c.getString(c.getColumnIndex("name")));
+                    assetBO.setModelId(c.getString(c.getColumnIndex("modelid")));
+                    assetBO.setModelName(c.getString(c.getColumnIndex("ModelName")));
+                    assetBO.setAssetTypeId(c.getString(c.getColumnIndex("AssetTypeId")));
+                    assetBO.setAssetType(c.getString(c.getColumnIndex("AssetType")));
                     assetServiceList.add(assetBO);
                 }
             }
-            String sb1 = "select distinct  P.AssetId,P.AssetName,serialNumber,installdate  from SerializedAssetMaster P  inner  join SerializedAssetTransfer AAD on P.AssetId=AAD.AssetId where Transfer_Type!='RTR_WH'  and retailerid=" +
-                    StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
+            String sb1 = "select distinct  P.AssetId,P.AssetName,serialNumber,installdate," +
+                    "ifnull(P.assettype,'') as AssetTypeId,P.capacity as capacity,P.vendorid as vendorid,P.modelid as modelid,ifnull(SAVM.name,'') as name," +
+                    "ifnull((select SLM.Listname from StandardListMaster SLM where SLM.ListId=P.modelid and SLM.ListType='ASSET_MODEL_TYPE'),'') as ModelName," +
+                    "ifnull((select SLM.Listname from StandardListMaster SLM where SLM.ListId=P.AssetType and SLM.ListType='ASSET_TYPE'),'') as AssetType" +
+                    " from SerializedAssetMaster P  inner  join SerializedAssetTransfer AAD on P.AssetId=AAD.AssetId" +
+                    " left join SerializedAssetVendorMaster SAVM on SAVM.id=P.vendorid" +
+                    " where Transfer_Type!='RTR_WH'  and retailerid=" +
+                    StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID());
 
             Cursor c1 = db.selectSQL(sb1);
             if (c1.getCount() > 0) {
@@ -1468,5 +1399,97 @@ public class SerializedAssetHelper {
             db.closeDB();
         }
     }
+
+    public ArrayList<SerializedAssetBO> getAssetVendors(Context context) {
+        ArrayList<SerializedAssetBO> vendorList = new ArrayList<>();
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        try {
+            db.openDataBase();
+            Cursor cursor = db.selectSQL("select distinct id,name from SerializedAssetVendorMaster");
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    SerializedAssetBO serializedAssetBO = new SerializedAssetBO(1);
+                    serializedAssetBO.setVendorId(cursor.getString(0));
+                    serializedAssetBO.setVendorName(cursor.getString(1));
+                    vendorList.add(serializedAssetBO);
+                }
+            }
+        } catch (Exception e) {
+            db.closeDB();
+            e.printStackTrace();
+        }
+        db.closeDB();
+
+        return vendorList;
+    }
+
+    public ArrayList<SerializedAssetBO> getAssetModels(Context context) {
+        ArrayList<SerializedAssetBO> modelList = new ArrayList<>();
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        try {
+            db.openDataBase();
+            Cursor cursor = db.selectSQL("select listid,listname from standardlistmaster where listtype='ASSET_MODEL_TYPE'");
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    SerializedAssetBO serializedAssetBO = new SerializedAssetBO(2);
+                    serializedAssetBO.setModelId(cursor.getString(0));
+                    serializedAssetBO.setModelName(cursor.getString(1));
+                    modelList.add(serializedAssetBO);
+                }
+            }
+        } catch (Exception e) {
+            db.closeDB();
+            e.printStackTrace();
+        }
+        db.closeDB();
+
+        return modelList;
+    }
+
+    public ArrayList<SerializedAssetBO> getAssetTypes(Context context) {
+        ArrayList<SerializedAssetBO> typeList = new ArrayList<>();
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        try {
+            db.openDataBase();
+            Cursor cursor = db.selectSQL("select listid,listname from standardlistmaster where listtype='ASSET_TYPE'");
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    SerializedAssetBO serializedAssetBO = new SerializedAssetBO(3);
+                    serializedAssetBO.setAssetTypeId(cursor.getString(0));
+                    serializedAssetBO.setAssetType(cursor.getString(1));
+                    typeList.add(serializedAssetBO);
+                }
+            }
+        } catch (Exception e) {
+            db.closeDB();
+            e.printStackTrace();
+        }
+        db.closeDB();
+
+        return typeList;
+    }
+
+    public ArrayList<String> getAssetCapacity(Context context) {
+        ArrayList<String> capacityList = new ArrayList<>();
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        try {
+            db.openDataBase();
+            Cursor cursor = db.selectSQL("select distinct capacity from SerializedAssetMaster");
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    String capacity = cursor.getString(0);
+                    if (!"0".equals(capacity))
+                        capacityList.add(capacity);
+                }
+            }
+        } catch (Exception e) {
+            db.closeDB();
+            e.printStackTrace();
+        }
+        db.closeDB();
+
+        return capacityList;
+    }
+
 
 }

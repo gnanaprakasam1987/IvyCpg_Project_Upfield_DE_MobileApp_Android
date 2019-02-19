@@ -1,11 +1,10 @@
 package com.ivy.cpg.view.login;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
+import android.database.SQLException;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.support.v7.widget.Toolbar;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
@@ -15,14 +14,20 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.cpg.view.sync.UploadHelper;
+import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.NetworkUtils;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Created by ramkumard on 8/2/19.
@@ -31,7 +36,6 @@ import com.ivy.utils.NetworkUtils;
 
 public class TermsAndConditionsActivity extends IvyBaseActivityNoActionBar {
 
-    private AlertDialog alertDialog;
     private BusinessModel bmodel;
     private String fromScreen = "";
 
@@ -62,7 +66,6 @@ public class TermsAndConditionsActivity extends IvyBaseActivityNoActionBar {
         }
 
         bmodel = (BusinessModel) getApplicationContext();
-        bmodel.setContext(this);
 
         fromScreen = getIntent().getStringExtra("fromScreen");
         TextView tv_content = findViewById(R.id.tv_terms_cond);
@@ -87,53 +90,34 @@ public class TermsAndConditionsActivity extends IvyBaseActivityNoActionBar {
         btn_accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (NetworkUtils.isNetworkConnected(TermsAndConditionsActivity.this))
-                    new UploadTermsAccepted().execute();
-                 else
-                    bmodel.showAlert(getResources().getString(
-                            R.string.please_connect_to_internet), 0);
-            }
+                btn_accept.setEnabled(false);
+                    if (NetworkUtils.isNetworkConnected(TermsAndConditionsActivity.this)) {
+                        new Thread(new Runnable() {
+                            public void run() {
+                                Looper.prepare();
+                                uploadTermsAccepted();
+                                Looper.loop();
+                                Looper myLooper = Looper.myLooper();
+                                if (myLooper != null)
+                                    myLooper.quit();
+                            }
+                        }).start();
+                        updateTermsAccepted();
+                        if ("login".equals(fromScreen)) {
+                            Intent myIntent = new Intent(TermsAndConditionsActivity.this, HomeScreenActivity.class);
+                            myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(myIntent);
+                        }
+                        overridePendingTransition(0, R.anim.zoom_exit);
+                        finish();
+                    } else {
+                        bmodel.showAlert(getResources().getString(
+                                R.string.please_connect_to_internet), 0);
+                        btn_accept.setEnabled(true);
+                    }
+                }
         });
-    }
-
-
-    class UploadTermsAccepted extends AsyncTask<String, Void, Boolean> {
-        protected void onPreExecute() {
-
-            AlertDialog.Builder builder = new AlertDialog.Builder(TermsAndConditionsActivity.this);
-
-            customProgressDialog(builder,
-                    getResources().
-                            getString(R.string.uploading_data));
-            alertDialog = builder.create();
-            alertDialog.show();
-
-        }
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-
-                UploadHelper mUploadHelper = UploadHelper.getInstance(TermsAndConditionsActivity.this);
-                String res = mUploadHelper.updateTermsAccepted();
-
-                return "1".equals(res);
-            }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-            super.onPostExecute(result);
-            alertDialog.dismiss();
-            if (result) {
-                updateTermsAccepted();
-                showAlert(getResources().getString(
-                        R.string.successfully_uploaded));
-            }
-            else
-                bmodel.showAlert(getResources().getString(
-                        R.string.error_e10), 0);
-
-        }
-
     }
 
     private void updateTermsAccepted() {
@@ -148,24 +132,55 @@ public class TermsAndConditionsActivity extends IvyBaseActivityNoActionBar {
         }
     }
 
-    private void showAlert(String msg) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(msg);
-        builder.setPositiveButton(getResources().getString(R.string.ok),
-                new android.content.DialogInterface.OnClickListener() {
+    public void uploadTermsAccepted() {
+        try {
 
-                    public void onClick(DialogInterface dialog, int which) {
-                        if ("login".equals(fromScreen)) {
-                            Intent myIntent = new Intent(TermsAndConditionsActivity.this, HomeScreenActivity.class);
-                            myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(myIntent);
-                        }
-                        overridePendingTransition(0, R.anim.zoom_exit);
-                        finish();
-                    }
+            JSONObject jsonobj = new JSONObject();
 
-                });
-        bmodel.applyAlertDialogTheme(builder);
+            JSONObject jObject = new JSONObject();
+            jObject.put("isTermsAccepted", "1");
+            jsonobj.put("UserMaster", jObject);
+
+
+            JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
+
+            jsonFormatter.addParameter("DeviceId",
+                    DeviceUtils.getIMEINumber(this));
+            jsonFormatter.addParameter("LoginId", bmodel.getAppDataProvider()
+                    .getUser().getLoginName());
+            jsonFormatter.addParameter("VersionCode",
+                    bmodel.getApplicationVersionNumber());
+            jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
+            jsonFormatter.addParameter("DistributorId", bmodel.getAppDataProvider()
+                    .getUser().getDistributorid());
+            jsonFormatter.addParameter("OrganisationId", bmodel.getAppDataProvider()
+                    .getUser().getOrganizationId());
+            jsonFormatter.addParameter("MobileDateTime",
+                    Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            jsonFormatter.addParameter("MobileUTCDateTime",
+                    Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
+            jsonFormatter.addParameter("UserId", bmodel.getAppDataProvider()
+                    .getUser().getUserid());
+            jsonFormatter.addParameter("VanId", bmodel.getAppDataProvider()
+                    .getUser().getVanId());
+            String LastDayClose = "";
+            if (bmodel.synchronizationHelper.isDayClosed()) {
+                LastDayClose = bmodel.getAppDataProvider().getUser()
+                        .getDownloadDate();
+            }
+            jsonFormatter.addParameter("LastDayClose", LastDayClose);
+            jsonFormatter.addParameter("BranchId", bmodel.getAppDataProvider()
+                    .getUser().getBranchId());
+            jsonFormatter.addParameter("DownloadedDataDate", bmodel.getAppDataProvider()
+                    .getUser().getDownloadDate());
+            jsonFormatter.addParameter("DataValidationKey", bmodel.synchronizationHelper.generateChecksum(jsonobj.toString()));
+            Commons.print(jsonFormatter.getDataInJson());
+            String appendurl = bmodel.synchronizationHelper.getUploadUrl("UPDATEUSER");
+            bmodel.synchronizationHelper
+                    .getUploadResponse(jsonFormatter.getDataInJson(),
+                            jsonobj.toString(), appendurl);
+        } catch (SQLException | JSONException e) {
+            Commons.printException(e);
+        }
     }
 }

@@ -28,17 +28,13 @@
             android:paddingEnd="@dimen/list_padding_left_n_right"
             android:weightSum="10">
 
-            <View
-                android:layout_width="@dimen/dimen_40dp"
-                android:layout_height="match_parent" />
-
             <TextView
                 android:id="@+id/tv_hd_assetname"
                 style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="7"
-                android:gravity="start"
+                android:gravity="center"
                 android:text="@string/asset" />
 
 
