@@ -4248,7 +4248,7 @@ public class BusinessModel extends Application {
                     + userMasterHelper.getUserMasterBO().getUserid();
 
 
-            if (imageName.startsWith("AT_")) {
+            if (imageName.startsWith("AT_") || imageName.startsWith("NAT_")) {
                 mBucketName = mBucketDetails + "/" + "Asset" + path;
             } else if (imageName.startsWith("NO_")) {
                 mBucketName = mBucketDetails + "/" + "RetailerImages" +
