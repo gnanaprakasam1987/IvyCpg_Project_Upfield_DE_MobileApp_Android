@@ -129,21 +129,50 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
         public void onBindViewHolder(final MyViewHolder holder, int position) {
             holder.assetTrackingBO = data.get(position);
             holder.TVAssetName.setText(holder.assetTrackingBO.getAssetName());
+
             String serialNo = getResources().getString(
-                    R.string.serial_no)
-                    + " : " + holder.assetTrackingBO.getSerialNo();
-            if (assetTrackingHelper.SHOW_ASSET_VENDOR)
-                serialNo = serialNo + "   " +  getResources().getString(
-                        R.string.vendor) + " : " + holder.assetTrackingBO.getVendorName();
-            if (assetTrackingHelper.SHOW_ASSET_MODEL)
-                serialNo = serialNo + "   " + getResources().getString(
-                        R.string.model) + " : " + holder.assetTrackingBO.getModelName();
-            if (assetTrackingHelper.SHOW_ASSET_TYPE)
-                serialNo = serialNo + "   " + getResources().getString(
-                        R.string.type) + " : " + holder.assetTrackingBO.getAssetType();
-            if (assetTrackingHelper.SHOW_ASSET_CAPACITY)
-                serialNo = serialNo + "   " + getResources().getString(
-                        R.string.capacity) + " : " + holder.assetTrackingBO.getCapacity();
+                    R.string.serial_no);
+            if (mBModel.labelsMasterHelper
+                    .applyLabels((Object) "asset_serialno") != null)
+                serialNo = mBModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_serialno");
+
+            serialNo = serialNo +  " : " + holder.assetTrackingBO.getSerialNo();
+
+            String strLabel;
+            if (assetTrackingHelper.SHOW_ASSET_VENDOR) {
+                strLabel = getResources().getString(R.string.vendor);
+                if (mBModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_vendor") != null)
+                    strLabel = mBModel.labelsMasterHelper
+                            .applyLabels((Object) "asset_vendor");
+                serialNo = serialNo + "   " + strLabel + " : " + holder.assetTrackingBO.getVendorName();
+            }
+            if (assetTrackingHelper.SHOW_ASSET_MODEL) {
+                strLabel = getResources().getString(R.string.model);
+                if (mBModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_model") != null)
+                    strLabel = mBModel.labelsMasterHelper
+                            .applyLabels((Object) "asset_model");
+                serialNo = serialNo + "   " + strLabel  + " : " + holder.assetTrackingBO.getModelName();
+            }
+            if (assetTrackingHelper.SHOW_ASSET_TYPE) {
+                strLabel = getResources().getString(R.string.type);
+                if (mBModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_type") != null)
+                    strLabel = mBModel.labelsMasterHelper
+                            .applyLabels((Object) "asset_type");
+                serialNo = serialNo + "   " + strLabel + " : " + holder.assetTrackingBO.getAssetType();
+            }
+            if (assetTrackingHelper.SHOW_ASSET_CAPACITY) {
+                strLabel = getResources().getString(R.string.capacity);
+                if (mBModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_capacity") != null)
+                    strLabel = mBModel.labelsMasterHelper
+                            .applyLabels((Object) "asset_capacity");
+                serialNo = serialNo + "   " + strLabel + " : " + holder.assetTrackingBO.getCapacity();
+            }
+
             holder.TVSerialNumber.setText(serialNo);
 
             holder.IVMoveIcon.setOnClickListener(new View.OnClickListener() {

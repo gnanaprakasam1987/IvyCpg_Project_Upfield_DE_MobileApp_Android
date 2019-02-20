@@ -37,11 +37,13 @@
             android:layout_weight="2.5">
 
             <TextView
+                android:id="@+id/label_asset_type"
                 style="@style/TextViewCaptionNormal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dimen_10dp"
                 android:layout_marginRight="@dimen/dimen_10dp"
+                android:tag="asset_type"
                 android:text="@string/type" />
 
             <Spinner
@@ -63,9 +65,11 @@
             android:layout_weight="2.5">
 
             <TextView
+                android:id="@+id/label_asset_model"
                 style="@style/TextViewCaptionNormal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:tag="asset_model"
                 android:text="@string/model" />
 
             <Spinner
@@ -100,9 +104,11 @@
             android:layout_weight="2.5">
 
             <TextView
+                android:id="@+id/label_asset_vendor"
                 style="@style/TextViewCaptionNormal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:tag="asset_vendor"
                 android:layout_marginEnd="@dimen/dimen_10dp"
                 android:layout_marginRight="@dimen/dimen_10dp"
                 android:text="@string/vendor" />
@@ -126,9 +132,11 @@
             android:layout_weight="2.5">
 
             <TextView
+                android:id="@+id/label_asset_capacity"
                 style="@style/TextViewCaptionNormal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:tag="asset_capacity"
                 android:text="@string/capacity" />
 
             <Spinner

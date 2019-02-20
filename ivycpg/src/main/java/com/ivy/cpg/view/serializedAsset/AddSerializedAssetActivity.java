@@ -112,7 +112,6 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             setScreenTitle(getResources().getString(R.string.addnewasset));
         }
 
-        ((TextView) findViewById(R.id.txtNFCLabel)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         if (mBModel.labelsMasterHelper.applyLabels(findViewById(
                 R.id.txtNFCLabel).getTag()) != null)
             ((TextView) findViewById(R.id.txtNFCLabel))
@@ -120,13 +119,40 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                             .applyLabels(findViewById(
                                     R.id.txtNFCLabel).getTag()));
 
-        ((TextView) findViewById(R.id.label_scan)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         if (mBModel.labelsMasterHelper.applyLabels(findViewById(
                 R.id.label_scan).getTag()) != null)
             ((TextView) findViewById(R.id.label_scan))
                     .setText(mBModel.labelsMasterHelper
                             .applyLabels(findViewById(
                                     R.id.label_scan).getTag()));
+
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                R.id.label_asset_type).getTag()) != null)
+            ((TextView) findViewById(R.id.label_asset_type))
+                    .setText(mBModel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.label_asset_type).getTag()));
+
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                R.id.label_asset_model).getTag()) != null)
+            ((TextView) findViewById(R.id.label_asset_model))
+                    .setText(mBModel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.label_asset_model).getTag()));
+
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                R.id.label_asset_vendor).getTag()) != null)
+            ((TextView) findViewById(R.id.label_asset_vendor))
+                    .setText(mBModel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.label_asset_vendor).getTag()));
+
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                R.id.label_asset_capacity).getTag()) != null)
+            ((TextView) findViewById(R.id.label_asset_capacity))
+                    .setText(mBModel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.label_asset_capacity).getTag()));
 
         mAsset = findViewById(R.id.spinner_asset);
         btnAddInstallDate = findViewById(R.id.date_button);
