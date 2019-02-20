@@ -627,7 +627,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                     Commons.print("AddSerialAsset" + ",Camers Activity : Sucessfully Captured.");
 
                     //For adding server ref path to image name
-                    String imagePath = "AT_/"
+                    String imagePath = "Asset/"
                             + mBModel.userMasterHelper.getUserMasterBO().getDownloadDate()
                             .replace("/", "") + "/"
                             + mBModel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imageName;
