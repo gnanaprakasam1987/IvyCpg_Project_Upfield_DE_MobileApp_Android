@@ -371,7 +371,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1 && mPlanoGramList != null) {
                 for (PlanoGramBO planBo : mPlanoGramList) {
-                    if (planBo.getPid() == productId) {
+                    if (planBo.getPid() == productId && planBo.getLocationID() == mSelectedLocationId) {
 //                        planBo.setPlanogramCameraImgName(imageFileName);
                         if(planBo.getPlanoGramCameraImgList().size()>0)
                             planBo.getPlanoGramCameraImgList().add(imageFileName);

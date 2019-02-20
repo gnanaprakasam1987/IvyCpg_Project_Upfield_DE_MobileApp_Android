@@ -394,14 +394,14 @@ public class PlanoGramHelper {
     /**
      * Set planoGram details in object
      *
-     * @param planogramPId pid
+     * @param planogramProductId pid
      * @param imageName    imageName
      * @param adherence    adherence
      * @param reasonID     reasonID
      * @param locationID   location id
      * @param isAudit      audit
      */
-    private void setPlanoGramDetails(int planogramPId, String imageName,
+    private void setPlanoGramDetails(int planogramProductId, String imageName,
                                      String adherence, String reasonID, int locationID, int isAudit,String tId,Context context) {
         PlanoGramBO planogram;
         int siz = getPlanogramMaster().size();
@@ -410,20 +410,20 @@ public class PlanoGramHelper {
 
         for (int i = 0; i < siz; ++i) {
             planogram = getPlanogramMaster().get(i);
-            if (planogram.getPid() == planogramPId &&
+            if (planogram.getPid() == planogramProductId &&
                     (!IS_LOCATION_WISE_PLANOGRAM || planogram.getLocationID() == locationID)) {
                 planogram.setPlanogramCameraImgName(imageName);
                 planogram.setAdherence(adherence);
                 planogram.setReasonID(reasonID);
                 planogram.setAudit(isAudit);
-                planogram.setPlanoGramCameraImgList(getPlanogramImage(planogramPId,tId,context));
+                planogram.setPlanoGramCameraImgList(getPlanogramImage(planogramProductId,tId,context, locationID));
                 getPlanogramMaster().setElementAt(planogram, i);
                 return;
             }
         }
     }
 
-    private ArrayList<String> getPlanogramImage(int planogramId,String tId,Context context){
+    private ArrayList<String> getPlanogramImage(int productID,String tId,Context context,int locationID){
 
         ArrayList<String> planogramImagList = new ArrayList<>();
 
@@ -431,7 +431,8 @@ public class PlanoGramHelper {
         try {
             db.openDataBase();
 
-            String query = "Select imageName from PlanogramImageDetails where Tid ="+QT(tId)+" and PId ="+planogramId;
+            String query = "Select A.imageName from PlanogramImageDetails A inner join PlanogramDetails B " +
+                    "on A.MappingId = B.MappingID where A.Tid =" + QT(tId) + "and A.PId =" + productID + " and B.LocID = " + locationID;
             Cursor planoImgCursor = db.selectSQL(query);
 
             if (planoImgCursor != null) {
