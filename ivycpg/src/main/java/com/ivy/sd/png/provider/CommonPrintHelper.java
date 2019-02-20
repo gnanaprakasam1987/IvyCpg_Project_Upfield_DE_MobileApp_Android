@@ -150,6 +150,7 @@ public class CommonPrintHelper {
     private static String TAG_PRODUCT_SUM_QTY_PIECE_WITH_REP = "prod_qty_total_piece_with_rep";
 
     private static String TAG_PRODUCT_LINE_TOTAL = "line_total";
+    private static String TAG_PRODUCT_LINE_EXCLUDING_TAX_TOTAL = "line_excl_tax_total";
     private static String TAG_PRODUCT_LINE_TOTAL_WITH_QTY = "line_total_with_qty";
     private static String TAG_PRODUCT_LINE_TOTAL_QTY = "total_qty";
 
@@ -404,6 +405,7 @@ public class CommonPrintHelper {
                                     && !attr_name.contains("tax_bill")
                                     && !attr_name.contains("empty_total")
                                     && !attr_name.contains("line_total")
+                                    && !attr_name.contains("line_excl_tax_total")
                                     && !attr_name.contains("net_amount")
                                     && !attr_name.contains("net_scheme_discount")
                                     && !attr_name.contains("amount_word")
@@ -801,6 +803,10 @@ public class CommonPrintHelper {
             int extraSpace = 0;
             extraSpace = SDUtil.convertToInt(attr_space_str);
             value = alignWithLabelForSingleLine(label, formatValueInPrint(total_line_value_incl_tax, precisionCount), extraSpace);
+        } else if (tag.equalsIgnoreCase(TAG_PRODUCT_LINE_EXCLUDING_TAX_TOTAL)) {
+            int extraSpace = 0;
+            extraSpace = SDUtil.convertToInt(attr_space_str);
+            value = alignWithLabelForSingleLine(label, formatSalesValueInPrint(mProductLineValueExcludingTaxTotal, precisionCount), extraSpace);
         } else if (tag.equalsIgnoreCase(TAG_PRODUCT_LINE_TOTAL_WITH_QTY)) {
             value = getTotalWithQty(label, product_name_single_line);
         } else if (tag.equalsIgnoreCase(TAG_NET_PAYABLE)) {
