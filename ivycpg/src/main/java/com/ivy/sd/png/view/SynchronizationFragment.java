@@ -103,6 +103,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import static com.ivy.utils.DateTimeUtils.DATE;
+
 public class SynchronizationFragment extends IvyBaseFragment
         implements SwitchUserDialog.onSwitchUser, SyncContractor.SyncView {
 
@@ -777,7 +779,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                             selectedDate.getTime(), ConfigurationMasterHelper.outDateFormat));
 
 
-                    if (DateTimeUtils.convertDateObjectToRequestedFormat(selectedDate.getTime(), "MM/dd/yyyy").equals(Utils.getDate()))
+                    if (DateTimeUtils.convertDateObjectToRequestedFormat(selectedDate.getTime(), "MM/dd/yyyy").equals(DateTimeUtils.now(DATE)))
                         DataMembers.backDate = "";
                     else
                         DataMembers.backDate = DateTimeUtils.convertDateObjectToRequestedFormat(selectedDate.getTime(), "MM/dd/yyyy");
