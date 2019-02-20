@@ -428,26 +428,48 @@ public class SerializedAssetAdapter extends BaseAdapter {
                 .getItemIndex(holder.assetBO.getReason1ID(),
                         mAssetPresenter.getAssetReasonList(),true));
 
-        String serialNo = mContext.getResources().getString(R.string.serial_no)
-                + ": " + holder.assetBO.getSerialNo();
+        String serialNo = mContext.getResources().getString(R.string.serial_no);
         if (mBModel.labelsMasterHelper.applyLabels(row.findViewById(
                 R.id.tv_serialNo).getTag()) != null)
             serialNo = mBModel.labelsMasterHelper
                     .applyLabels(row.findViewById(
-                            R.id.tv_serialNo).getTag());
+                            R.id.tv_serialNo).getTag()) ;
 
-        if (assetTrackingHelper.SHOW_ASSET_VENDOR)
-        serialNo = serialNo +  "   " + mContext.getResources().getString(
-                R.string.vendor) + " : " + holder.assetBO.getVendorName();
-        if (assetTrackingHelper.SHOW_ASSET_MODEL)
-            serialNo = serialNo + "   " + mContext.getResources().getString(
-                R.string.model) + " : " + holder.assetBO.getModelName();
-        if (assetTrackingHelper.SHOW_ASSET_TYPE)
-            serialNo = serialNo + "   " + mContext.getResources().getString(
-                    R.string.type) + " : " + holder.assetBO.getAssetType();
-        if (assetTrackingHelper.SHOW_ASSET_CAPACITY)
-            serialNo = serialNo + "   " + mContext.getResources().getString(
-                R.string.capacity) + " : " + holder.assetBO.getCapacity();
+        serialNo = serialNo + ": " + holder.assetBO.getSerialNo();
+
+        String strLabel;
+        if (assetTrackingHelper.SHOW_ASSET_VENDOR) {
+            strLabel = mContext.getResources().getString(R.string.vendor);
+            if (mBModel.labelsMasterHelper
+                    .applyLabels((Object) "asset_vendor") != null)
+                strLabel = mBModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_vendor");
+            serialNo = serialNo + "   " + strLabel + " : " + holder.assetBO.getVendorName();
+        }
+        if (assetTrackingHelper.SHOW_ASSET_MODEL) {
+            strLabel = mContext.getResources().getString(R.string.model);
+            if (mBModel.labelsMasterHelper
+                    .applyLabels((Object) "asset_model") != null)
+                strLabel = mBModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_model");
+            serialNo = serialNo + "   " + strLabel  + " : " + holder.assetBO.getModelName();
+        }
+        if (assetTrackingHelper.SHOW_ASSET_TYPE) {
+            strLabel = mContext.getResources().getString(R.string.type);
+            if (mBModel.labelsMasterHelper
+                    .applyLabels((Object) "asset_type") != null)
+                strLabel = mBModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_type");
+            serialNo = serialNo + "   " + strLabel + " : " + holder.assetBO.getAssetType();
+        }
+        if (assetTrackingHelper.SHOW_ASSET_CAPACITY) {
+            strLabel = mContext.getResources().getString(R.string.capacity);
+            if (mBModel.labelsMasterHelper
+                    .applyLabels((Object) "asset_capacity") != null)
+                strLabel = mBModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_capacity");
+            serialNo = serialNo + "   " + strLabel + " : " + holder.assetBO.getCapacity();
+        }
 
         holder.serialNoTV.setText(serialNo);
 
