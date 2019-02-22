@@ -83,6 +83,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.RetailerOTPDialog;
+import com.ivy.ui.profile.ProfileConstant;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.StringUtils;
@@ -1357,6 +1358,27 @@ public class ProfileEditFragment extends IvyBaseFragment
                                 getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
                                 commonsparams);
 
+                } else if (configCode.equals(ProfileConstant.DISTRICT) && flag == 1 && Order == 1) {
+                    if (retailerObj.getDistrict() == null
+                            || retailerObj.getDistrict().equals(
+                            "null")) {
+                        retailerObj.setDistrict("");
+                    }
+                    String text = retailerObj.getDistrict() + "";
+                    if (bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode) != null)
+                        if (!bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode).equals(text))
+                            text = bmodel.newOutletHelper.getmPreviousProfileChangesList().get(configCode);
+                    if (!bmodel.configurationMasterHelper.IS_UPPERCASE_LETTER)
+
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_VARIATION_PERSON_NAME),
+                                commonsparams);
+
+                    else
+                        totalView.addView(
+                                getEditTextView(mNumber, mName, text, InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS),
+                                commonsparams);
+
                 }
 
 
@@ -1498,7 +1520,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                 comparConfigerCode(mConfigCode, PROFILE_61) || comparConfigerCode(mConfigCode, PROFILE_81) ||
                 comparConfigerCode(mConfigCode, PROFILE_82) || comparConfigerCode(mConfigCode, PROFILE_84) ||
                 comparConfigerCode(mConfigCode, PROFILE_78) || comparConfigerCode(mConfigCode, PROFILE_87) ||
-                comparConfigerCode(mConfigCode, PROFILE_88)) {
+                comparConfigerCode(mConfigCode, PROFILE_88) || comparConfigerCode(mConfigCode, ProfileConstant.DISTRICT)) {
 
             editTextInputLayout = new TextInputLayout(getActivity());
             editTextInputLayout.addView(getSingleEditTextView(mNumber, mConfigCode, MName, textValue));
@@ -3962,6 +3984,14 @@ public class ProfileEditFragment extends IvyBaseFragment
                         );
                     }
                 } else if (configCode.equals(PROFILE_88) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equals(ProfileConstant.DISTRICT) && profileConfig.get(i).getModule_Order() == 1) {
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         profileConfig.get(i).setMenuNumber("");
                     } else {

@@ -1300,6 +1300,13 @@ public class ProfileFragment extends IvyBaseFragment {
                 finalProfileList.add(outletBO);
                 break;
             }
+            case "PROFILE89": {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getDistrict());
+                finalProfileList.add(outletBO);
+                break;
+            }
             default:
                 break;
         }

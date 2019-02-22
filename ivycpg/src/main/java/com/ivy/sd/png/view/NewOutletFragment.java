@@ -75,6 +75,7 @@ import com.ivy.maplib.BaiduMapDialogue;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
+import com.ivy.sd.png.bo.CensusLocationBO;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.GenericObjectPair;
@@ -845,6 +846,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         || configCode.equalsIgnoreCase("FOOD_LICENCE_NUM")
                         || configCode.equalsIgnoreCase("REGION")
                         || configCode.equalsIgnoreCase("COUNTRY")
+                        || configCode.equalsIgnoreCase("DISTRICT")
                         ) {
 
                     totalView.addView(getEditTextView(i, mName, InputType.TYPE_TEXT_VARIATION_PERSON_NAME, mandatory), commonsparams);
@@ -2267,6 +2269,19 @@ public class NewOutletFragment extends IvyBaseFragment
                         validate = false;
                         Toast.makeText(getContext(), getResources().getString(R.string.contact_list_mandatory), Toast.LENGTH_LONG).show();
                     }
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("DISTRICT")
+                        && mandatory == 1) {
+                    edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
+                    if (editText[i].getText().toString().trim().length() == 0) {
+                        validate = false;
+                        scrollToSpecificEditText(edittextinputLayout);
+                        editText[i].requestFocus();
+                        edittextinputLayout.setErrorEnabled(true);
+                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                        editText[i].addTextChangedListener(watcher);
+                        break;
+                    }
                 }
 
             }
@@ -2301,7 +2316,8 @@ public class NewOutletFragment extends IvyBaseFragment
 
         if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("ADDRESS1") ||
                 profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("ADDRESS2") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("ADDRESS3")) {
+                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("ADDRESS3") ||
+                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("DISTRICT")) {
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             checkRegex(profileConfig.get(mNumber).getRegex());
         }
@@ -2953,6 +2969,14 @@ public class NewOutletFragment extends IvyBaseFragment
                             editText[mNumber].setText(s);
                             editText[mNumber].setSelection(editText[mNumber].length());
                         }
+
+                        if ("PINCODE".equalsIgnoreCase(profileConfig.get(mNumber).getConfigCode())){
+                            CensusLocationBO censusLocationBO = getLocationDetails(s);
+                            if (censusLocationBO != null) {
+                                setLocationDetails(censusLocationBO);
+                            }
+
+                        }
                     }
                 });
 
@@ -3199,6 +3223,8 @@ public class NewOutletFragment extends IvyBaseFragment
                 return outlet.getCountry();
             case "MOBILE":
                 return outlet.getMobile();
+            case "DISTRICT":
+                return outlet.getDistrict();
         }
 
 
@@ -5316,6 +5342,7 @@ public class NewOutletFragment extends IvyBaseFragment
             boolean isRegion = false;
             boolean isCountry = false;
             boolean isMobile = false;
+            boolean isDistrict = false;
 
 
             for (int i = 0; i < size; i++) {
@@ -5744,6 +5771,15 @@ public class NewOutletFragment extends IvyBaseFragment
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
+                } else if (configCode.equalsIgnoreCase("DISTRICT")) {
+                    isDistrict = true;
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        outlet.setDistrict("");
+                    } else {
+                        outlet.setDistrict(StringUtils.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
                 }
 
 
@@ -5841,6 +5877,8 @@ public class NewOutletFragment extends IvyBaseFragment
                 outlet.setCountry("");
             if (!isMobile)
                 outlet.setMobile("");
+            if (!isDistrict)
+                outlet.setDistrict("");
             /*if (!isCreditDays)
                 outlet.setCreditDays("-1");*/
 
@@ -6604,6 +6642,38 @@ public class NewOutletFragment extends IvyBaseFragment
         }
 
 
+    }
+
+    private CensusLocationBO getLocationDetails(String pincode) {
+        for (CensusLocationBO locationBO : bmodel.newOutletHelper.getCensusLocationList()) {
+            if (!pincode.isEmpty() && pincode.equals(locationBO.getPincode()))
+                return locationBO;
+        }
+
+        return null;
+    }
+
+    private void setLocationDetails(CensusLocationBO censusLocationBO) {
+        int size = profileConfig.size();
+        int count = 0;
+        for (int i=0; i<size; i++) {
+            if ("CITY".equalsIgnoreCase(profileConfig.get(i).getConfigCode())){
+                editText[i].setText(censusLocationBO.getLocationName());
+                count++;
+            }else if ("DISTRICT".equalsIgnoreCase(profileConfig.get(i).getConfigCode())){
+                editText[i].setText(censusLocationBO.getDistrict());
+                count++;
+            } else if ("STATE".equalsIgnoreCase(profileConfig.get(i).getConfigCode())){
+                editText[i].setText(censusLocationBO.getState());
+                count++;
+            } else if ("COUNTRY".equalsIgnoreCase(profileConfig.get(i).getConfigCode())){
+                editText[i].setText(censusLocationBO.getCountry());
+                count++;
+            }
+
+            if (count == 4)
+                break;
+        }
     }
 
 }

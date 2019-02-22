@@ -1397,7 +1397,7 @@ public class BusinessModel extends Application {
                             + " IFNULL(RPG.GroupId,0) as retgroupID, RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
 
                             + " IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
-                            + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,"
+                            + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,RA.District,"
                             + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                             + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
@@ -1591,6 +1591,7 @@ public class BusinessModel extends Application {
                     retailer.setRetailerTaxLocId(c.getInt(c.getColumnIndex("RetailerTaxLocId")));
                     retailer.setSupplierTaxLocId(c.getInt(c.getColumnIndex("SupplierTaxLocId")));
                     retailer.setRidSF(c.getString(c.getColumnIndex("ridSF")));
+                    retailer.setDistrict(c.getString(c.getColumnIndex("District")));
 
                     retailer.setIsToday(0);
                     retailer.setHangingOrder(false);

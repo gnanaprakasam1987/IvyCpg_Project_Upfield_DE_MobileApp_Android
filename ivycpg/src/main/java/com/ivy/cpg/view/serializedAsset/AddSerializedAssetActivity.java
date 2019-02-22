@@ -169,6 +169,15 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         capacitySpinner = findViewById(R.id.spinner_capcity);
         typeSpinner = findViewById(R.id.spinner_type);
 
+        if (!assetTrackingHelper.SHOW_ASSET_TYPE)
+            findViewById(R.id.ll_asset_type).setVisibility(View.GONE);
+        if (!assetTrackingHelper.SHOW_ASSET_CAPACITY)
+            findViewById(R.id.ll_asset_capacity).setVisibility(View.GONE);
+        if (!assetTrackingHelper.SHOW_ASSET_MODEL)
+            findViewById(R.id.ll_asset_model).setVisibility(View.GONE);
+        if (!assetTrackingHelper.SHOW_ASSET_VENDOR)
+            findViewById(R.id.ll_asset_vendor).setVisibility(View.GONE);
+
         loadData();
 
 

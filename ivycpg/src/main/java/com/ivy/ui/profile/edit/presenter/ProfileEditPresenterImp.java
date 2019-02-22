@@ -1006,6 +1006,9 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     case ProfileConstant.ATTRIBUTE:
                         updateRetailerMasterAttributeList();
                         break;
+                    case ProfileConstant.DISTRICT:
+                        updateDistrict(configBO);
+                        break;
                 }
             } else if (configurationMasterHelper.IS_LOCATION_WHILE_NEWOUTLET_IMAGE_CAPTURE) {
                 switch (conficCode) {
@@ -1916,6 +1919,23 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         }
     }
 
+    private void updateDistrict(ConfigureBO configBO) {
+        if ((retailerMasterBO.getDistrict() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) != null) {
+            deletePreviousRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID());
+        } else if ((!(retailerMasterBO.getDistrict() + "").equals(configBO.getMenuNumber())
+                && mPreviousProfileChanges.get(configBO.getConfigCode()) == null)
+                || (mPreviousProfileChanges.get(configBO.getConfigCode()) != null
+                && (!mPreviousProfileChanges.get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+            String mCustomquery = StringUtils.QT(configBO.getConfigCode())
+                    + "," + StringUtils.QT(configBO.getMenuNumber())
+                    + "," + retailerMasterBO.getAddressid()
+                    + "," + retailerMasterBO.getRetailerID() + ")";
+            insertRow(configBO.getConfigCode(), retailerMasterBO.getRetailerID(), mCustomquery);
+        }
+    }
+
     private void updateHeaderList() {
 
         getCompositeDisposable().add(mProfileDataManager.updateRetailer(tid, retailerMasterBO.getRetailerID(), currentDate)
@@ -2458,6 +2478,12 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     } else {
                         profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
                     }
+                } else if (configCode.equals(ProfileConstant.DISTRICT) && profileConfig.get(i).getModule_Order() == 1) {
+                    if (StringUtils.isEmptyString(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i)))) {
+                        profileConfig.get(i).setMenuNumber("");
+                    } else {
+                        profileConfig.get(i).setMenuNumber(StringUtils.removeQuotes(AppUtils.validateInput(getIvyView().getDynamicEditTextValues(i))));
+                    }
                 }
             }
 
@@ -2678,7 +2704,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 || comparConfigerCode(mConfigCode, ProfileConstant.CONTACT_NUMBER)
                 || comparConfigerCode(mConfigCode, ProfileConstant.MOBILE)
                 || comparConfigerCode(mConfigCode, ProfileConstant.FAX)
-                || comparConfigerCode(mConfigCode, ProfileConstant.CREDITPERIOD)) {
+                || comparConfigerCode(mConfigCode, ProfileConstant.CREDITPERIOD)
+                || comparConfigerCode(mConfigCode, ProfileConstant.DISTRICT)) {
 
             int Mandatory = profileConfig.get(mNumber).getMandatory();
             int MAX_CREDIT_DAYS = configurationMasterHelper.MAX_CREDIT_DAYS;
@@ -2820,6 +2847,9 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         break;
                     case ProfileConstant.DRUG_LICENSE_EXP_DATE:
                         prepareDrugLiceneExpDate();
+                        break;
+                    case ProfileConstant.DISTRICT:
+                        prepareDistrict();
                         break;
                 }
             } else {
@@ -3050,6 +3080,16 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 id = SDUtil.convertToInt(mPreviousProfileChanges.get(configCode));
         channelMaster.addAll(channelMasterHelper.getChannelMaster());
         getIvyView().createSpinnerView(mNumber, mName, configCode, id);
+    }
+
+    private void prepareDistrict() {
+        if (StringUtils.isEmptyString(retailerMasterBO.getDistrict()))
+            retailerMasterBO.setDistrict("");
+        String text = retailerMasterBO.getDistrict();
+        if (mPreviousProfileChanges.get(configCode) != null)
+            if (!mPreviousProfileChanges.get(configCode).equals(text))
+                text = mPreviousProfileChanges.get(configCode);
+        checkConfigrationForEditText(mNumber, configCode, mName, text);
     }
 
     @Override

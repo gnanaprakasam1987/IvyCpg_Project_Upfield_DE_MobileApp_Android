@@ -589,7 +589,7 @@ public class DataMembers {
     private static final String tbl_retailerContactupload_cols = "RetailerID,contactname,ContactName_LName,ContactNumber," +
             "contact_title,contact_title_lovid,IsPrimary,Email";
     private static final String tbl_retailerAddressupload_cols = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
-            + "email,FaxNo,pincode,State,IsPrimary,Mobile,Region,Country";
+            + "email,FaxNo,pincode,State,IsPrimary,Mobile,Region,Country,District";
     private static final String tbl_retailerAttributeupload_cols = "RetailerId,AttributeId,LevelId";
     private static final String tbl_retailerEditAttributeupload_cols = "Tid,RetailerId,AttributeId,LevelId,Status";
     private static final String tbl_OrderHeaderRequest_cols = "OrderID,OrderDate,RetailerID,DistributorId,OrderValue,LinesPerCall,TotalWeight,Remarks,OrderTime";

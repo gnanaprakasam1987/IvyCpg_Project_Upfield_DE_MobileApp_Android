@@ -1863,6 +1863,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
                     bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(bmodel.productHelper.getFilterProductLevels(), true));
                 }
+
+                bmodel.newOutletHelper.downloadLocationLevels();
                 //clear distributor id and group id
                 bmodel.getRetailerMasterBO().setDistributorId(0);
                 bmodel.getRetailerMasterBO().setGroupId(0);

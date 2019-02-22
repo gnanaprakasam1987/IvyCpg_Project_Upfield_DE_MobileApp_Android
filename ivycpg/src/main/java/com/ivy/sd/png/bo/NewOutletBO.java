@@ -61,6 +61,7 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
     private String region;
     private String country;
     private String mobile;
+    private String district;
 
     public java.lang.String getRetailerId() {
         return retailerId;
@@ -698,5 +699,13 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
 
     public void setMobile(java.lang.String mobile) {
         this.mobile = mobile;
+    }
+
+    public java.lang.String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(java.lang.String district) {
+        this.district = district;
     }
 }
