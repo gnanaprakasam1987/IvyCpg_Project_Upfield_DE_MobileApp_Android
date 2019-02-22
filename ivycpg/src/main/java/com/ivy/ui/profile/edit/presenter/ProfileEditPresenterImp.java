@@ -4,13 +4,10 @@ package com.ivy.ui.profile.edit.presenter;
 import android.annotation.SuppressLint;
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.OnLifecycleEvent;
-
 import android.util.SparseArray;
-
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
-
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
@@ -24,7 +21,6 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SubchannelBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
-
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.NewOutletHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
@@ -57,7 +53,6 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function5;
-
 import io.reactivex.observers.DisposableObserver;
 
 
@@ -434,8 +429,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     @Override
     public void updateLatLong(String lat, String longitude) {
-        this.lat= lat;
-        this.longitude=longitude;
+        this.lat = lat;
+        this.longitude = longitude;
     }
 
     @Override
@@ -1034,7 +1029,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     }
                 }
             }
-             /*inset the RetailerContactList */
+            /*inset the RetailerContactList */
             getCompositeDisposable().add(mProfileDataManager.insertRetailerContactEdit(tid,
                     retailerMasterBO.getRetailerID(),
                     newOutletHelper.getRetailerContactList())
@@ -2135,30 +2130,31 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     && profileConfig.get(i).getModule_Order() == 1) {
                 int length = getIvyView().getDynamicEditTextValues(i).length();
                 try {
-                    if (length < profileConfig.get(i).getMaxLengthNo() ||
-                            !StringUtils.isValidRegx(getIvyView().getDynamicEditTextValues(i), profileConfig.get(i).getRegex()) ||
-                            !isValidGSTINWithPAN(getIvyView().getDynamicEditTextValues(i))) {
-
-                        if (length > 0 && length < profileConfig.get(i).getMaxLengthNo()) {
-                            validate = false;
-                            getIvyView().showMessage(profileConfig.get(i).getMenuName()
-                                    + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
-                            break;
-                        } else if (length > 0 && !StringUtils.isValidRegx(getIvyView().getDynamicEditTextValues(i)
-                                , profileConfig.get(i).getRegex())) {
-                            validate = false;
-                            getIvyView().setDynamicEditTextFocus(i);
-                            String errorMessage = profileConfig.get(i).getMenuName();
-                            getIvyView().profileEditShowMessage(R.string.enter_valid, errorMessage);
-                            break;
-                        } else if (length > 0 && !isValidGSTINWithPAN(getIvyView().getDynamicEditTextValues(i))) {
-                            validate = false;
-                            getIvyView().setDynamicEditTextFocus(i);
-                            String errorMessage = profileConfig.get(i).getMenuName();
-                            getIvyView().profileEditShowMessage(R.string.enter_valid, errorMessage);
-                            break;
-                        }
+                    if (length == 0 && profileConfig.get(i).getMandatory() == 1) {
+                        validate = false;
+                        String errorMessage = profileConfig.get(i).getMenuName();
+                        getIvyView().profileEditShowMessage(R.string.enter, errorMessage);
+                        break;
+                    } else if (length > 0 && length < profileConfig.get(i).getMaxLengthNo()) {
+                        validate = false;
+                        getIvyView().showMessage(profileConfig.get(i).getMenuName()
+                                + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
+                        break;
+                    } else if (length > 0 && !StringUtils.isValidRegx(getIvyView().getDynamicEditTextValues(i)
+                            , profileConfig.get(i).getRegex())) {
+                        validate = false;
+                        getIvyView().setDynamicEditTextFocus(i);
+                        String errorMessage = profileConfig.get(i).getMenuName();
+                        getIvyView().profileEditShowMessage(R.string.enter_valid, errorMessage);
+                        break;
+                    } else if (length > 0 && !isValidGSTINWithPAN(getIvyView().getDynamicEditTextValues(i))) {
+                        validate = false;
+                        getIvyView().setDynamicEditTextFocus(i);
+                        String errorMessage = profileConfig.get(i).getMenuName();
+                        getIvyView().profileEditShowMessage(R.string.enter_valid, errorMessage);
+                        break;
                     }
+
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
@@ -2579,8 +2575,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                     @Override
                     public void accept(String s) throws Exception {
 
-               /* if(!AppUtils.isEmptyString(s)){
-                        *//*switch (mType) {
+                        /* if(!AppUtils.isEmptyString(s)){
+                         *//*switch (mType) {
                             case "MOBILE":
                                 if (mValue != null && !mValue.isEmpty() && mValue.length() == 10)
                                    // verifyOtpAsyncTask(mValue, mType); //Need to do later
@@ -3435,7 +3431,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
     @Override
     public boolean checkRegex(int menuNumber, String typedText) {
-        return  StringUtils.validRegex(profileConfig.get(menuNumber).getRegex(),typedText);
+        return StringUtils.validRegex(profileConfig.get(menuNumber).getRegex(), typedText);
     }
 }
 

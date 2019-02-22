@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 
 import com.ivy.core.data.user.UserDataManagerImpl;
+import com.ivy.cpg.view.order.catalog.CatalogOrder;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
@@ -19,7 +20,6 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.cpg.view.order.catalog.CatalogOrder;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.StringUtils;
 
@@ -1411,6 +1411,7 @@ public class ConfigurationMasterHelper {
     public boolean COMPUTE_DUE_DAYS;
 
     public boolean SHOW_SALES_RETURN_IN_ORDER;
+    public boolean SHOW_SALES_RETURN_TV_IN_ORDER;
     public boolean SHOW_SALES_RETURN_IN_DELIVERY;
 
 
@@ -3938,6 +3939,7 @@ public class ConfigurationMasterHelper {
             IS_STK_ORD_BS = false;
             IS_STK_ORD_PROJECT = false;
             SHOW_SALES_RETURN_IN_ORDER = false;
+            SHOW_SALES_RETURN_TV_IN_ORDER =false;
 
 
             IS_PRINT_SEQUENCE_REQUIRED = false;
@@ -3989,22 +3991,26 @@ public class ConfigurationMasterHelper {
 
                 String codeSplit[] = codeValue.split(",");
                 for (String temp : codeSplit)
-                   switch (temp) {
-                        case"REPPC":
-                        SHOW_REPLACED_QTY_PC = true;
-                    break;
-                        case"REPCS":
-                        SHOW_REPLACED_QTY_CS = true;
-                    break;
-                        case"REPOO":
-                        SHOW_REPLACED_QTY_OU = true;
-                    break;
-                        case"CSTK":
-                        IS_COMBINED_STOCK_CHECK_FROM_ORDER = true;
-                    break;
-                        case"SR":
-                        SHOW_SALES_RETURN_IN_ORDER = true;
-                break;}
+                    switch (temp) {
+                        case "REPPC":
+                            SHOW_REPLACED_QTY_PC = true;
+                            break;
+                        case "REPCS":
+                            SHOW_REPLACED_QTY_CS = true;
+                            break;
+                        case "REPOO":
+                            SHOW_REPLACED_QTY_OU = true;
+                            break;
+                        case "CSTK":
+                            IS_COMBINED_STOCK_CHECK_FROM_ORDER = true;
+                            break;
+                        case "SR":
+                            SHOW_SALES_RETURN_IN_ORDER = true;
+                            break;
+                        case "SRQTY":
+                            SHOW_SALES_RETURN_TV_IN_ORDER = true;
+                            break;
+                    }
             }
 
 
