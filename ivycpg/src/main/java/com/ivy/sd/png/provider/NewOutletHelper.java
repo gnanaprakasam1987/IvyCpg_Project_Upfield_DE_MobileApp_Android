@@ -9,6 +9,7 @@ import android.util.SparseArray;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.AddressBO;
+import com.ivy.sd.png.bo.CensusLocationBO;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.LocationBO;
@@ -24,9 +25,11 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.profile.ProfileConstant;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 
 import com.ivy.sd.png.view.profile.RetailerContactBo;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
@@ -57,6 +60,7 @@ public class NewOutletHelper {
     private ArrayList<StandardListBO> selectedPrioProducts = new ArrayList<>();
     private ArrayList<ProductMasterBO> orderedProductList = new ArrayList<>();
     private ArrayList<ProductMasterBO> opprProductList = new ArrayList<>();
+    private ArrayList<CensusLocationBO> censusLocationList = new ArrayList<>();
 
     public AppCompatEditText[] getEditText() {
         return editText;
@@ -1254,6 +1258,26 @@ public class NewOutletHelper {
                         }
 
                     }
+                } else if (configBO.getConfigCode().equalsIgnoreCase(ProfileConstant.DISTRICT) && configBO.getModule_Order() == 1) {
+                    if (!configBO.getMenuNumber().equals("")) {
+                        if (bmodel.getAppDataProvider().getRetailMaster().getDistrict().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null) {
+                            deleteQuery(configBO.getConfigCode(), bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
+                            isData = true;
+                        } else if ((!bmodel.getAppDataProvider().getRetailMaster().getDistrict().equals(configBO.getMenuNumber())
+                                && getmPreviousProfileChangesList().get(configBO.getConfigCode()) == null)
+                                || (getmPreviousProfileChangesList().get(configBO.getConfigCode()) != null
+                                && (!getmPreviousProfileChangesList().get(configBO.getConfigCode()).equals(configBO.getMenuNumber())))) {
+
+                            deleteQuery(configBO.getConfigCode(), bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
+                            queryInsert = insertquery + QT(configBO.getConfigCode())
+                                    + "," + QT(configBO.getMenuNumber()) + ","
+                                    + bmodel.getAppDataProvider().getRetailMaster().getAddressid()
+                                    + "," + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + ")";
+                            isData = true;
+                        }
+
+                    }
                 }
 
                 if (!queryInsert.equals(""))
@@ -1424,7 +1448,7 @@ public class NewOutletHelper {
                     ",RC1.contact_title as contact_title1,RC1.contact_title_lovid as contact_title_lovid1" +
                     ",RC2.contactname as contactName2,RC2.ContactName_LName as contactLName2,RC2.contactNumber as contactNumber2,RC2.contact_title as contact_title2,RC2.contact_title_lovid as contact_title_lovid2," +
                     "RA.address1,RA.address2,RA.address3,RA.City,RA.latitude,RA.longitude,RA.email,RA.FaxNo,RA.pincode,RA.State,RM.RField5,RM.RField6,RM.TinExpDate," +
-                    "RM.pan_number,RM.food_licence_number,RM.food_licence_exp_date,RM.DLNo,RM.DLNoExpDate,RM.RField4,RM.RField7,RA.Mobile,RA.Region,RA.Country,RM.userid,RM.GSTNumber" +
+                    "RM.pan_number,RM.food_licence_number,RM.food_licence_exp_date,RM.DLNo,RM.DLNoExpDate,RM.RField4,RM.RField7,RA.Mobile,RA.Region,RA.Country,RM.userid,RM.GSTNumber,RA.District" +
                     " from RetailerMaster RM LEFT JOIN RetailerContact RC1 ON Rm.retailerid=RC1.retailerId AND RC1.isprimary=1" +
                     " LEFT JOIN RetailerContact RC2 ON Rm.retailerid=RC2.retailerId AND RC2.isprimary=0" +
                     " LEFT JOIN RetailerAddress RA ON RA.RetailerId=RM.retailerId" +
@@ -1490,6 +1514,7 @@ public class NewOutletHelper {
                         retailer.setMobile(c.getString(c.getColumnIndex("Mobile")));
                         retailer.setUserId(c.getInt(c.getColumnIndex("userid")));
                         retailer.setGstNum(c.getString(c.getColumnIndex("GSTNumber")));
+                        retailer.setDistrict(c.getString(c.getColumnIndex("District")));
                         retailer.setImageName(loadImgList(retailer.getRetailerId(), db));
                         retailer.setEditAttributeList(loadEditAttributes(retailer.getRetailerId(), db));
                         lst.add(retailer);
@@ -2304,7 +2329,7 @@ public class NewOutletHelper {
 
 
             column = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
-                    + "email,FaxNo,pincode,State,Upload,IsPrimary,AddressTypeID,Region,Country,Mobile";
+                    + "email,FaxNo,pincode,State,Upload,IsPrimary,AddressTypeID,Region,Country,Mobile,District";
 
             //converting big decimal value while Exponential value occur
             String lattitude = (outlet.getNewOutletlattitude() + "").contains("E")
@@ -2336,7 +2361,11 @@ public class NewOutletHelper {
                             + "," + QT(addressBO.getState())
                             + "," + QT("N")
                             + "," + 1
-                            + "," + addressType;
+                            + "," + addressType
+                            + "," + QT(getNewoutlet().getRegion())
+                            + "," + QT(getNewoutlet().getCountry())
+                            + "," + QT(getNewoutlet().getMobile())
+                            + "," + QT(getNewoutlet().getDistrict());
 
 
                     db.insertSQL("RetailerAddress", column, value);
@@ -2360,7 +2389,8 @@ public class NewOutletHelper {
                         + "," + 0
                         + "," + QT(getNewoutlet().getRegion())
                         + "," + QT(getNewoutlet().getCountry())
-                        + "," + QT(getNewoutlet().getMobile());
+                        + "," + QT(getNewoutlet().getMobile())
+                        + "," + QT(getNewoutlet().getDistrict());
 
                 db.insertSQL("RetailerAddress", column, value);
 
@@ -2737,6 +2767,82 @@ public class NewOutletHelper {
         }
 
         return contactTitleList;
+    }
+
+    public ArrayList<CensusLocationBO> getCensusLocationList() {
+        return censusLocationList;
+    }
+
+    public void setCensusLocationList(ArrayList<CensusLocationBO> censusLocationList) {
+        this.censusLocationList = censusLocationList;
+    }
+
+    public void downloadLocationLevels() {
+        int pincodeLevel = 0;
+        ArrayList<CensusLocationBO> pincodeList = new ArrayList<>();
+        ArrayList<CensusLocationBO> pincodeTempList = new ArrayList<>();
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+            db.openDataBase();
+            Cursor cursor = db.selectSQL("select LevelId from CensusLocationLevel  where sequence = (select MAX(Sequence) from censuslocationlevel)");
+            if (cursor.getCount() > 0) {
+                if (cursor.moveToNext())
+                    pincodeLevel = cursor.getInt(0);
+            }
+            cursor = db.selectSQL("select id,name,levelid,parentid,pincode from CensusLocationMaster where levelid =" + pincodeLevel);
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    CensusLocationBO censusBO = new CensusLocationBO();
+                    censusBO.setId(cursor.getString(0));
+                    censusBO.setLocationName(cursor.getString(1));
+                    censusBO.setLevelId(cursor.getString(2));
+                    censusBO.setParentId(cursor.getString(3));
+                    censusBO.setPincode(cursor.getString(4));
+                    pincodeList.add(censusBO);
+                }
+            }
+            cursor = db.selectSQL("select id,name,levelid,parentid,(select sequence from CensusLocationLevel where levelid = A.levelid)" +
+                    " as sequence from CensusLocationMaster A where levelid !=" + pincodeLevel + " order by sequence desc");
+            if (cursor != null) {
+                while (cursor.moveToNext()) {
+                    CensusLocationBO censusBO = new CensusLocationBO();
+                    censusBO.setId(cursor.getString(0));
+                    censusBO.setLocationName(cursor.getString(1));
+                    censusBO.setLevelId(cursor.getString(2));
+                    censusBO.setParentId(cursor.getString(3));
+                    pincodeTempList.add(censusBO);
+                }
+            }
+
+            prepareCensusLocationData(pincodeList, pincodeTempList);
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    private void prepareCensusLocationData(ArrayList<CensusLocationBO> pincodeList, ArrayList<CensusLocationBO> tempList) {
+        String districtId;
+        String stateId;
+        String countryId;
+        for (CensusLocationBO pincodeBO : pincodeList) {
+            stateId = "";
+            countryId = "";
+            districtId = pincodeBO.getParentId();
+            for (CensusLocationBO tempBO : tempList) {
+                if (districtId.equals(tempBO.getId())) {
+                    pincodeBO.setDistrict(tempBO.getLocationName());
+                    stateId = tempBO.getParentId();
+                } else if (stateId.equals(tempBO.getId())) {
+                    pincodeBO.setState(tempBO.getLocationName());
+                    countryId = tempBO.getParentId();
+                } else if (countryId.equals(tempBO.getId())) {
+                    pincodeBO.setCountry(tempBO.getLocationName());
+                    break;
+                }
+            }
+        }
+
+        setCensusLocationList(pincodeList);
     }
 
 
