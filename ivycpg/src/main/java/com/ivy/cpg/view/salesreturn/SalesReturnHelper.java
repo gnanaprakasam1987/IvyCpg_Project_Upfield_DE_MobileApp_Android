@@ -5,13 +5,13 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 
 import com.ivy.cpg.view.collection.CollectionHelper;
+import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.CreditNoteListBO;
 import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -698,7 +698,7 @@ public class SalesReturnHelper {
                 else
                     values = values + "," + QT("") + "," + QT("");
 
-               values = values + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                values = values + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
                         + bmodel.getAppDataProvider().getUniqueId();
 
                 if (bmodel.configurationMasterHelper.IS_INVOICE_SR)
@@ -868,7 +868,7 @@ public class SalesReturnHelper {
      * Load sales return transaction data into object.
      * If replacement is enbaled the replacement will also get loaded into memory.
      */
-    public void loadSalesReturnData(Context mContext, String module, String orderId) {
+    public void loadSalesReturnData(Context mContext, String module, String orderId, boolean isSRQty) {
         DBUtil db = null;
         try {
             String uId = "";
@@ -906,7 +906,7 @@ public class SalesReturnHelper {
                     if ("null".equals(lotNo)) {
                         lotNo = "";
                     }
-                    setSalesReturnObject(productid, condition, pqty, cqty, oqty, oldmrp, mfgDate, expDate, invoiceNo, srpEdited, lotNo, c.getString(13), module);
+                    setSalesReturnObject(productid, condition, pqty, cqty, oqty, oldmrp, mfgDate, expDate, invoiceNo, srpEdited, lotNo, c.getString(13), module, isSRQty);
                     Commons.print("inside sales return data load");
 
                     uId = c.getString(14);
@@ -926,10 +926,10 @@ public class SalesReturnHelper {
         }
     }
 
-    private void setSalesReturnObject(int pid, String condition, int pqty, int cqty, int oqty, double oldmrp, String mfgDate, String expDate, String invoiceNo, float srpEdited, String lotNo, String status, String module) {
+    private void setSalesReturnObject(int pid, String condition, int pqty, int cqty, int oqty, double oldmrp, String mfgDate, String expDate, String invoiceNo, float srpEdited, String lotNo, String status, String module, boolean isSRQty) {
 
         ProductMasterBO productBO;
-        if (module.equals("ORDER"))
+        if (module.equals("ORDER") || isSRQty)
             productBO = bmodel.productHelper.getProductMasterBOById(Integer.toString(pid));
         else
             productBO = getSalesReturnProductBOById(Integer.toString(pid));
@@ -1354,7 +1354,7 @@ public class SalesReturnHelper {
             boolean checkType = false;
             if (((module.equals("ORDER") && code.equals(CREDIT_TYPE)) &&
                     ((bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED && bmodel.getRetailerMasterBO().getIsVansales() == 1) || bmodel.configurationMasterHelper.IS_INVOICE))
-                    ) {
+            ) {
                 // from order module
                 checkType = true;
             } else if (module.equals("")) {

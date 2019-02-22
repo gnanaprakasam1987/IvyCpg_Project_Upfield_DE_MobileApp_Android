@@ -7,8 +7,10 @@ import android.util.SparseArray;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.collection.CollectionHelper;
+import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.cpg.view.order.discount.DiscountHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
+import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
@@ -23,11 +25,9 @@ import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.SerialNoBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
-import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -187,19 +187,19 @@ public class OrderHelper {
                     + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
             uid = StringUtils.QT(id);
 
-            if ((!hasAlreadyOrdered(mContext, businessModel.getAppDataProvider().getRetailMaster().getRetailerID())||
-                businessModel.configurationMasterHelper.IS_MULTI_STOCKORDER) &&
+            if ((!hasAlreadyOrdered(mContext, businessModel.getAppDataProvider().getRetailMaster().getRetailerID()) ||
+                    businessModel.configurationMasterHelper.IS_MULTI_STOCKORDER) &&
                     businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
 
                 businessModel.insertSeqNumber("ORD");
                 uid = businessModel.downloadSequenceNo("ORD");
 
-                if(uid.length()>16) {
+                if (uid.length() > 16) {
                     //Toast.makeText(mContext, mContext.getResources().getString(R.string.not_able_to_generate_invoice), Toast.LENGTH_LONG).show();
                     return false;
                 }
 
-                uid= StringUtils.QT(uid);
+                uid = StringUtils.QT(uid);
 
             }
 
@@ -622,7 +622,7 @@ public class OrderHelper {
                     businessModel.insertSeqNumber("ORD");
                     uid = StringUtils.QT(businessModel.downloadSequenceNo("ORD"));
 
-                    if(uid.length()>16){
+                    if (uid.length() > 16) {
                         return false;
                     }
                 }
@@ -1692,7 +1692,7 @@ public class OrderHelper {
                 }
             }
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
-                SalesReturnHelper.getInstance(mContext).loadSalesReturnData(mContext, "ORDER", orderID);
+                SalesReturnHelper.getInstance(mContext).loadSalesReturnData(mContext, "ORDER", orderID, false);
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -1830,12 +1830,11 @@ public class OrderHelper {
                 seqNo = businessModel.downloadSequenceNo("INV");
                 invoiceId = seqNo;
 
-                if(invoiceId.length()>16) {
+                if (invoiceId.length() > 16) {
                     Toast.makeText(mContext, mContext.getResources().getString(R.string.not_able_to_generate_invoice), Toast.LENGTH_LONG).show();
                     return false;
                 }
             }
-
 
 
             String timeStampId = "";
@@ -3285,9 +3284,9 @@ public class OrderHelper {
         StockCheckHelper stockCheckHelper = StockCheckHelper.getInstance(context);
 
         // No need to show delete stock&order button if stock columns disabled even if the call from MENU_STK_ORD
-        if(!stockCheckHelper.SHOW_STOCK_SC
-                &&!stockCheckHelper.SHOW_STOCK_SP
-                &&!stockCheckHelper.SHOW_SHELF_OUTER){
+        if (!stockCheckHelper.SHOW_STOCK_SC
+                && !stockCheckHelper.SHOW_STOCK_SP
+                && !stockCheckHelper.SHOW_SHELF_OUTER) {
             return false;
         }
         for (int i = 0; i < config.size(); i++) {
@@ -3471,7 +3470,7 @@ public class OrderHelper {
         ArrayList<ProductMasterBO> batchWiseList = businessModel.batchAllocationHelper
                 .getBatchlistByProductID().get(productBO.getProductID());
 
-        ProductMasterBO productMasterBO=businessModel.productHelper.getProductMasterBOById(productBO.getProductID());
+        ProductMasterBO productMasterBO = businessModel.productHelper.getProductMasterBOById(productBO.getProductID());
 
         double totalValue = 0.0;
         if (batchWiseList != null) {
@@ -3711,13 +3710,13 @@ public class OrderHelper {
                         totalReturnQty += totalQty;
                     }
                 }
-                totalReturnAmount += (totalReturnQty * (double)product.getSrp());
+                totalReturnAmount += (totalReturnQty * (double) product.getSrp());
             }
 
 
             // Calculate replacement qty price.
             int totalReplaceQty = product.getRepPieceQty() + (product.getRepCaseQty() * product.getCaseSize()) + (product.getRepOuterQty() * product.getOutersize());
-            totalReplaceAmount = totalReplaceAmount + totalReplaceQty * (double)product.getSrp();
+            totalReplaceAmount = totalReplaceAmount + totalReplaceQty * (double) product.getSrp();
         }
 
         //Check for whether the replacement amount and return amount are same, works only for Cash customer
@@ -3765,7 +3764,7 @@ public class OrderHelper {
                 ((businessModel.configurationMasterHelper.SHOW_OUTER_CASE) ? productBO.getOrderedOuterQty() : productBO.getOrderedCaseQty());
     }
 
-    private String getOrderedProductLevelCode(String pid){
+    private String getOrderedProductLevelCode(String pid) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
             );
