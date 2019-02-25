@@ -94,6 +94,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_photo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -112,18 +113,18 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/skuPromolayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/list_item_inter_margin"
-        android:gravity="center_horizontal"
+        android:layout_gravity="center_vertical"
         android:orientation="horizontal">
 
         <LinearLayout
             android:id="@+id/ll_install_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="2.25"
+            android:layout_gravity="center_vertical"
             android:orientation="vertical">
 
             <TextView
@@ -149,8 +150,10 @@
             android:id="@+id/ll_service_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:gravity="center_vertical"
+            android:layout_weight="2.25"
+            android:layout_marginStart="@dimen/dimens_6dp"
+            android:layout_marginLeft="@dimen/dimens_6dp"
+            android:layout_gravity="center_vertical"
             android:orientation="vertical">
 
             <TextView
@@ -173,9 +176,10 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/ll_reason"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="2.25"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -190,7 +194,7 @@
 
             <Spinner
                 android:id="@+id/spin_reason"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/list_item_date_picker_height"
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_marginRight="@dimen/dimen_2dp"
@@ -205,7 +209,7 @@
             android:id="@+id/ll_rating"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
+            android:layout_weight="2.25"
             android:gravity="center_vertical"
             android:orientation="vertical">
 
@@ -222,7 +226,7 @@
 
             <Spinner
                 android:id="@+id/spin_rating"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/list_item_date_picker_height"
                 android:layout_gravity="start"
                 android:layout_marginEnd="@dimen/dimen_2dp"

@@ -722,7 +722,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         TextView tvProductName;
         Button mFromDateBTN;
         Button mToDateBTN;
-        LinearLayout llSkuPromolayout;
         LinearLayout ll_Rating;
         ImageView img_remarks;
     }
@@ -780,7 +779,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                         .findViewById(R.id.tv_product_name);
                 holder.mFromDateBTN = row.findViewById(R.id.btn_fromdatepicker);
                 holder.mToDateBTN = row.findViewById(R.id.btn_todatepicker);
-                holder.llSkuPromolayout = row.findViewById(R.id.skuPromolayout);
 
                 holder.reasonSpin.setAdapter(reasonAdapter);
                 holder.ratingSpin = row.findViewById(R.id.spin_rating);
@@ -790,24 +788,15 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                     holder.ratingSpin.setAdapter(mRatingAdapter);
 
 
-                if (promotionHelper.SHOW_PROMO_PHOTO) {
-                    holder.btnPhoto.setVisibility(View.VISIBLE);
+                if (!promotionHelper.SHOW_PROMO_PHOTO)
+                    row.findViewById(R.id.ll_photo).setVisibility(View.GONE);
 
-                } else {
-                    holder.btnPhoto.setVisibility(View.GONE);
-
-                }
-                if (promotionHelper.SHOW_PROMO_REASON) {
-                    holder.reasonSpin.setVisibility(View.VISIBLE);
-                } else {
-                    holder.reasonSpin.setVisibility(View.GONE);
-                }
                 if (promotionHelper.SHOW_PROMO_TYPE) {
                     holder.tvGroupName.setVisibility(View.VISIBLE);
                 } else {
                     holder.tvGroupName.setVisibility(View.GONE);
                 }
-                if (!promotionHelper.SHOW_PROMO_RATING) {
+                if (promotionHelper.SHOW_PROMO_RATING) {
                     holder.ll_Rating.setVisibility(View.VISIBLE);
                     try {
                         if (businessModel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -831,6 +820,13 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 }
                 if (!promotionHelper.SHOW_PROMO_ANNOUNCER)
                     (row.findViewById(R.id.ll_announced)).setVisibility(View.GONE);
+                if (!promotionHelper.SHOW_PROMO_REASON)
+                    (row.findViewById(R.id.ll_reason)).setVisibility(View.GONE);
+                if (promotionHelper.SHOW_PROMO_FEEDBACK) {
+                    holder.img_remarks.setVisibility(View.VISIBLE);
+                } else {
+                    holder.img_remarks.setVisibility(View.GONE);
+                }
 
                 holder.rbExecuted.setOnClickListener(new OnClickListener() {
                     @Override
@@ -1003,10 +999,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                     holder.tvGroupName.setVisibility(View.VISIBLE);
                 }
 
-                if (businessModel.configurationMasterHelper.IS_ENABLE_PROMOTION_DATES) {
-                    holder.llSkuPromolayout.setVisibility(View.VISIBLE);
-                } else {
-                    holder.llSkuPromolayout.setVisibility(View.GONE);
+                if (!businessModel.configurationMasterHelper.IS_ENABLE_PROMOTION_DATES) {
+                    row.findViewById(R.id.ll_install_date).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_service_date).setVisibility(View.GONE);
                 }
                 row.setTag(holder);
 

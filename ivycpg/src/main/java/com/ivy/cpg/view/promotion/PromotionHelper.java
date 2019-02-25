@@ -31,6 +31,7 @@ public class PromotionHelper {
     boolean SHOW_PROMO_PHOTO;
     boolean SHOW_PROMO_QTY;
     boolean SHOW_PROMO_ANNOUNCER;
+    boolean SHOW_PROMO_FEEDBACK;
 
     private PromotionHelper(Context context) {
         businessModel = (BusinessModel) context.getApplicationContext();
@@ -75,6 +76,7 @@ public class PromotionHelper {
             SHOW_PROMO_PHOTO = false;
             SHOW_PROMO_QTY = false;
             SHOW_PROMO_ANNOUNCER = false;
+            SHOW_PROMO_FEEDBACK = false;
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
             );
@@ -107,6 +109,9 @@ public class PromotionHelper {
                                     break;
                                 case "ANNOUNCER":
                                     this.SHOW_PROMO_ANNOUNCER = true;
+                                    break;
+                                case "FEEDBACK":
+                                    this.SHOW_PROMO_FEEDBACK = true;
                                     break;
                             }
                         }
