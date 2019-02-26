@@ -1,6 +1,7 @@
 package com.ivy.ui.task.data;
 
 import android.database.Cursor;
+import android.text.format.DateUtils;
 
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.di.scope.DataBaseInfo;
@@ -11,8 +12,11 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Vector;
 import java.util.concurrent.Callable;
 
@@ -183,11 +187,11 @@ public class TaskDataManagerImpl implements TaskDataManager {
                     public Boolean call() throws Exception {
                         String uID;
                         if (retailerId.equals("0"))
-                            uID = AppUtils.QT(appDataProvider.getUser().getUserid()
-                                    + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                            uID = StringUtils.QT(appDataProvider.getUser().getUserid()
+                                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
                         else
-                            uID = AppUtils.QT(appDataProvider.getRetailMaster().getRetailerID()
-                                    + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                            uID = StringUtils.QT(appDataProvider.getRetailMaster().getRetailerID()
+                                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
 
 
                         String columns = "TaskId,RetailerId,Date,UId,Upload";
@@ -195,7 +199,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
 
                         try {
                             if (taskDataBO.isChecked()) {
-                                values = taskDataBO.getTaskId() + "," + AppUtils.QT(retailerId) + "," + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + uID + ",'N'";
+                                values = taskDataBO.getTaskId() + "," + StringUtils.QT(retailerId) + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + uID + ",'N'";
                                 mDbUtil.insertSQL("TaskExecutionDetails", columns, values);
                                 //bmodel.saveModuleCompletion("MENU_TASK");
                             } else {
@@ -233,16 +237,16 @@ public class TaskDataManagerImpl implements TaskDataManager {
                 String title = taskTitleDesc.replaceAll("'", " ");
 
                 // Generate Unique ID
-                String id = AppUtils.QT(appDataProvider.getUser()
-                        .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID));
+                String id = StringUtils.QT(appDataProvider.getUser()
+                        .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
-                String date = AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                String date = StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
                 Commons.print("date :: ," + date + "");
 
 
                 String columns = "taskid,retailerid,usercreated,upload,date,uid,userid";
-                String uID = AppUtils.QT(channelId
-                        + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                String uID = StringUtils.QT(channelId
+                        + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
                 String values;
 
                 try {
@@ -251,8 +255,8 @@ public class TaskDataManagerImpl implements TaskDataManager {
                     // Insert Task into TaskMaster
                     String columns_new = "taskid,taskcode,taskdesc,upload ,taskowner,date,usercreated";
 
-                    String value_new = id + "," + AppUtils.QT(title) + "," + AppUtils.QT(name) + ","
-                            + "'N'," + AppUtils.QT("self") + ", " + date + ",1";
+                    String value_new = id + "," + StringUtils.QT(title) + "," + StringUtils.QT(name) + ","
+                            + "'N'," + StringUtils.QT("self") + ", " + date + ",1";
 
                     mDbUtil.insertSQL("TaskMaster", columns_new, value_new);
 

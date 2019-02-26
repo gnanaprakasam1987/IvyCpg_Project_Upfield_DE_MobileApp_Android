@@ -21,8 +21,6 @@ public interface ReasonDataManager extends AppDataManagerContract {
 
     Single<Boolean> isNpReasonPhotoAvailable(String retailerID, String moduleName);
 
-    Observable<ArrayList<ReasonMaster>> fetchReasonFromStdListMasterByTypeCode(String mReasonTypeCode);
-
     Observable<ArrayList<ReasonMaster>> fetPlaneDeviatedReasons(String listType);
 
     Observable<ArrayList<ReasonMaster>> fetchPlanedActivitiesReason(String listType);
@@ -30,6 +28,8 @@ public interface ReasonDataManager extends AppDataManagerContract {
     Observable<ArrayList<ReasonMaster>> fetchReasons();
 
     Observable<ArrayList<StandardListBO>> fetchSRCategoryReasons();
+
+    Observable<ArrayList<ReasonMaster>> fetchReasonFromStdListMasterByListCode(String mReasonListCode);
 
     Observable<ArrayList<ReasonMaster>> fetchReasonsFromStdListMasterByListType(String listType);
 

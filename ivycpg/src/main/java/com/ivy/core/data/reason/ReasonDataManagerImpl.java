@@ -6,12 +6,11 @@ import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -88,6 +87,11 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
         });
     }
 
+    /**
+     * This method used to fetch Non Planned Reasons from SLM table
+     *
+     * @return
+     */
     @Override
     public Observable<ArrayList<ReasonMaster>> fetchNonPlannedReasons() {
         return Observable.fromCallable(new Callable<ArrayList<ReasonMaster>>() {
@@ -126,6 +130,10 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
         });
     }
 
+
+    /*
+    This method used to fetch non Productive Reasons based on retailer id and module Name
+     */
     @Override
     public Single<NonproductivereasonBO> fetchNonProductiveReasons(String retailerID, String moduleName) {
         return Single.fromCallable(new Callable<NonproductivereasonBO>() {
@@ -162,6 +170,10 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
         });
     }
 
+    /*
+     This method used to return  reason with photo capture is available
+      or not based on retailer id and Module Name
+     */
     @Override
     public Single<Boolean> isNpReasonPhotoAvailable(String retailerID, String moduleName) {
         return Single.fromCallable(new Callable<Boolean>() {
@@ -193,41 +205,9 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
         });
     }
 
-    @Override
-    public Observable<ArrayList<ReasonMaster>> fetchReasonFromStdListMasterByTypeCode(String mReasonTypeCode) {
-        return Observable.fromCallable(new Callable<ArrayList<ReasonMaster>>() {
-            ArrayList<ReasonMaster> reasonList = new ArrayList<>();
-            ReasonMaster reasonMasterBo;
-
-            @Override
-            public ArrayList<ReasonMaster> call() throws Exception {
-                try {
-                    if (mDbUtil.isDbNullOrClosed())
-                        initDb();
-
-                    String query = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType = 'REASON'"
-                            + " AND ParentId = (SELECT ListId FROM StandardListMaster WHERE ListType ='REASON_TYPE' AND ListCode = '" + mReasonTypeCode + "')";
-
-                    Cursor c = mDbUtil.selectSQL(query);
-                    if (c != null) {
-                        while (c.moveToNext()) {
-                            reasonMasterBo = new ReasonMaster();
-                            reasonMasterBo.setReasonID(c.getString(0));
-                            reasonMasterBo.setReasonDesc(c.getString(1));
-                            reasonList.add(reasonMasterBo);
-                        }
-                        c.close();
-                    }
-                    shutDownDb();
-                    return reasonList;
-                } catch (Exception ignore) {
-                    shutDownDb();
-                }
-                return reasonList;
-            }
-        });
-    }
-
+    /*
+    This method used to fetch plane deviation reason based on ListType
+     */
     @Override
     public Observable<ArrayList<ReasonMaster>> fetPlaneDeviatedReasons(String listType) {
         return Observable.fromCallable(new Callable<ArrayList<ReasonMaster>>() {
@@ -241,7 +221,7 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
                         initDb();
 
                     String s = "SELECT ListId, ListName,CASE WHEN ifnull(P.id,0) >0 THEN 1 ELSE 0 END as planned FROM StandardListMaster S" +
-                            " Left join PlannedNonFieldActivity P on P.id=S.ListId WHERE ListType =" + AppUtils.QT(listType);
+                            " Left join PlannedNonFieldActivity P on P.id=S.ListId WHERE ListType =" + StringUtils.QT(listType);
                     Cursor c = mDbUtil.selectSQL(s);
                     if (c != null) {
                         while (c.moveToNext()) {
@@ -268,6 +248,9 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
         });
     }
 
+    /*
+    This method used to fetch planned activities reasons based on ListType
+     */
     @Override
     public Observable<ArrayList<ReasonMaster>> fetchPlanedActivitiesReason(String listType) {
         return Observable.fromCallable(new Callable<ArrayList<ReasonMaster>>() {
@@ -279,7 +262,7 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
                 try {
                     if (mDbUtil.isDbNullOrClosed())
                         initDb();
-                    String s = "SELECT ListId, ListName FROM StandardListMaster S INNER JOIN PlannedNonFieldActivity P on P.id=S.ListId WHERE ListType =" + AppUtils.QT(listType);
+                    String s = "SELECT ListId, ListName FROM StandardListMaster S INNER JOIN PlannedNonFieldActivity P on P.id=S.ListId WHERE ListType =" + StringUtils.QT(listType);
                     Cursor c = mDbUtil.selectSQL(s);
                     if (c != null) {
                         while (c.moveToNext()) {
@@ -300,6 +283,9 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
         });
     }
 
+    /*
+    This method used to fetch reasons from SLM Table
+     */
     @Override
     public Observable<ArrayList<ReasonMaster>> fetchReasons() {
         return Observable.fromCallable(new Callable<ArrayList<ReasonMaster>>() {
@@ -342,6 +328,11 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
         });
     }
 
+    /*
+    This method used to fetch Sales Return Category reasons based on two type : SR,SRS
+    SR  - SALES RETURN NON-SALABLE REASON TYPE
+    SRS - SALES RETURN SALABLE REASON TYPE
+     */
     @Override
     public Observable<ArrayList<StandardListBO>> fetchSRCategoryReasons() {
         return Observable.fromCallable(new Callable<ArrayList<StandardListBO>>() {
@@ -411,6 +402,47 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
         });
     }*/
 
+    /*
+    This method used to fetch reason's from SLM table based on ListCode
+     */
+    @Override
+    public Observable<ArrayList<ReasonMaster>> fetchReasonFromStdListMasterByListCode(String mReasonListCode) {
+        return Observable.fromCallable(new Callable<ArrayList<ReasonMaster>>() {
+            ArrayList<ReasonMaster> reasonList = new ArrayList<>();
+            ReasonMaster reasonMasterBo;
+
+            @Override
+            public ArrayList<ReasonMaster> call() throws Exception {
+                try {
+                    if (mDbUtil.isDbNullOrClosed())
+                        initDb();
+
+                    String query = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType = 'REASON'"
+                            + " AND ParentId = (SELECT ListId FROM StandardListMaster WHERE ListType ='REASON_TYPE' AND ListCode = '" + mReasonListCode + "')";
+
+                    Cursor c = mDbUtil.selectSQL(query);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            reasonMasterBo = new ReasonMaster();
+                            reasonMasterBo.setReasonID(c.getString(0));
+                            reasonMasterBo.setReasonDesc(c.getString(1));
+                            reasonList.add(reasonMasterBo);
+                        }
+                        c.close();
+                    }
+                    shutDownDb();
+                    return reasonList;
+                } catch (Exception ignore) {
+                    shutDownDb();
+                }
+                return reasonList;
+            }
+        });
+    }
+
+    /*
+    This method used to fetch reason's from SLM table based on ListType
+     */
     @Override
     public Observable<ArrayList<ReasonMaster>> fetchReasonsFromStdListMasterByListType(String listType) {
         return Observable.fromCallable(new Callable<ArrayList<ReasonMaster>>() {
@@ -423,7 +455,7 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
                     if (mDbUtil.isDbNullOrClosed())
                         initDb();
 
-                    String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType =" + AppUtils.QT(listType);
+                    String s = "SELECT ListId, ListName FROM StandardListMaster WHERE ListType =" + StringUtils.QT(listType);
                     Cursor c = mDbUtil.selectSQL(s);
                     if (c != null) {
                         while (c.moveToNext()) {
@@ -444,6 +476,10 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
         });
     }
 
+    /*
+    This method used to fetch Retailer address from SLM table based on retailer id and addressCode(ListCode)
+    and List Type should be ADDRESS_TYPE
+     */
     @Override
     public Observable<ArrayList<ReasonMaster>> fetchRetailerAddressFromSLM(String retailerID, String addressCode) {
         return Observable.fromCallable(new Callable<ArrayList<ReasonMaster>>() {
@@ -464,7 +500,7 @@ public class ReasonDataManagerImpl implements ReasonDataManager {
                             if (addressSB.length() > 0)
                                 addressSB.append(",");
 
-                            addressSB.append(AppUtils.QT(addCodes));
+                            addressSB.append(StringUtils.QT(addCodes));
                             i = i + 1;
                         }
                     } else

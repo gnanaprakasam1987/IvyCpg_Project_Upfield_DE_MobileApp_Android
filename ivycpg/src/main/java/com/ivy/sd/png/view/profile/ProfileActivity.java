@@ -69,6 +69,7 @@ import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.cpg.nfc.NFCReadDialogActivity;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.location.LocationUtil;
@@ -91,16 +92,15 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.TimerCount;
-import com.ivy.sd.png.view.profile.assetHistory.AssetHistoryFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.sd.png.view.profile.mslUnsold.MSLUnsoldFragment;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
-import com.ivy.cpg.view.task.TaskListFragment;
-import com.ivy.sd.png.view.profile.userSelection.UserSelectionDialogue;
+import com.ivy.sd.png.view.profile.assetHistory.AssetHistoryFragment;
+import com.ivy.sd.png.view.profile.mslUnsold.MSLUnsoldFragment;
 import com.ivy.sd.png.view.profile.orderandinvoicehistory.InvoiceHistoryFragment;
 import com.ivy.sd.png.view.profile.orderandinvoicehistory.OrderHistoryFragment;
 import com.ivy.sd.png.view.profile.otpValidation.OTPValidationDialog;
+import com.ivy.sd.png.view.profile.userSelection.UserSelectionDialogue;
+import com.ivy.ui.task.view.TaskFragment;
 import com.ivy.utils.DateTimeUtils;
 
 import org.json.JSONObject;
@@ -1398,7 +1398,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             } else if (tabName.equals(ASSET_HISTORY)) {
                 return new AssetHistoryFragment();
             } else if (tabName.equalsIgnoreCase(TASK)) {
-                TaskListFragment taskListFragment = new TaskListFragment();
+                TaskFragment taskListFragment = new TaskFragment();
                 Bundle args1 = new Bundle();
                 args1.putInt("type", 1);
                 args1.putBoolean("isRetailer", true);
@@ -2128,10 +2128,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         protected Boolean doInBackground(Integer... params) {
             try {
 
-                selectedUserId = bmodel.retailerMasterBO.getSelectedUserID()+"";
+                selectedUserId = bmodel.retailerMasterBO.getSelectedUserID() + "";
 
                 String loginId = bmodel.synchronizationHelper.
-                        getSelectedUserLoginId(bmodel.retailerMasterBO.getSelectedUserID()+"",ProfileActivity.this);
+                        getSelectedUserLoginId(bmodel.retailerMasterBO.getSelectedUserID() + "", ProfileActivity.this);
                 bmodel.synchronizationHelper.updateAuthenticateTokenWithoutPassword(loginId);
 
                 bmodel.synchronizationHelper.downloadUserRetailerTranUrl();
@@ -2294,7 +2294,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 if (errorCode != null && errorCode
                         .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     bmodel.synchronizationHelper
-                            .downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.VISIT_SCREEN, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE,selectedUserId);
+                            .downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.VISIT_SCREEN, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE, selectedUserId);
                     selectedUserId = "";
                 } else {
                     String errorDownlodCode = bundle

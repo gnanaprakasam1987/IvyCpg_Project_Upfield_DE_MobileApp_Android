@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -25,12 +25,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
     private Context mContext;
     private String outDateFormat;
     private TaskClickListener taskClickListener;
+    private Boolean isFromProfileSrc;
 
-    public TaskListAdapter(ArrayList<TaskDataBO> taskDatas, Context mContext, String outDateFormat, TaskClickListener taskClickListener) {
+    public TaskListAdapter(ArrayList<TaskDataBO> taskDatas, Context mContext, String outDateFormat, TaskClickListener taskClickListener, boolean isFromProfileSrc) {
         this.taskDatas = taskDatas;
         this.mContext = mContext;
         this.outDateFormat = outDateFormat;
         this.taskClickListener = taskClickListener;
+        this.isFromProfileSrc = isFromProfileSrc;
     }
 
 
@@ -49,7 +51,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         TaskDataBO taskBo = taskDatas.get(position);
 
         holder.taskTaskOwner.setText(" : " + taskBo.getTaskOwner());
-        holder.taskCreatedDate.setText(DateUtil.convertFromServerDateToRequestedFormat
+        holder.taskCreatedDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
                 (taskBo.getCreatedDate(), outDateFormat) + ", ");
 
         holder.taskTitle.setText(taskBo.getTasktitle());
@@ -112,6 +114,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             taskCreatedDate = itemView.findViewById(R.id.task_createdOn);
             layoutCB = itemView.findViewById(R.id.layoutCB);
             layoutrow = itemView.findViewById(R.id.layoutBorder);
+
+            if (isFromProfileSrc) {
+                taskCB.setVisibility(View.GONE);
+                itemView.findViewById(R.id.rl_created_by).setVisibility(View.GONE);
+            }
 
         }
     }

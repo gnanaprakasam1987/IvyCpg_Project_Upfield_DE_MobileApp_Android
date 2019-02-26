@@ -22,13 +22,11 @@ import android.widget.TextView;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.cpg.view.task.TaskCreation;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -54,6 +52,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     private boolean IsRetailerwisetask;
     private boolean fromHomeScreen;
     private boolean isFromSurvey;
+    private boolean fromProfileScreen;
     private String mSelectedRetailerID = "0";
 
 
@@ -106,13 +105,16 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             if (bundle.containsKey("FromSurvey")) {
                 isFromSurvey = bundle.getBoolean("FromSurvey", false);
             }
+            if (bundle.containsKey("fromProfileScreen")) {
+                fromProfileScreen = getArguments().getBoolean("fromProfileScreen", false);
+            }
         }
     }
 
     @Override
     protected void setUpViews() {
-
-        setUpActionBar();
+        if (!fromProfileScreen)
+            setUpActionBar();
         addTabs();
 
         if (taskPresenter.isMoveNextActivity()) {
@@ -194,7 +196,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
 
     private void setUpActionBar() {
-        ActionBar actionBar = ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
+        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
@@ -231,7 +233,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     @Override
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
 
-        recyclerView.setAdapter(new TaskListAdapter(updatedList, getActivity(), taskPresenter.outDateFormat(), taskClickListener));
+        recyclerView.setAdapter(new TaskListAdapter(updatedList, getActivity(), taskPresenter.outDateFormat(), taskClickListener, fromProfileScreen));
     }
 
     @Override
