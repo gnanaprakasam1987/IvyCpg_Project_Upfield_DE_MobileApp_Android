@@ -810,7 +810,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                         DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                         DateTimeUtils.now(DateTimeUtils.TIME), MENU_TASK);
-                Intent intent = new Intent(getApplicationContext(), Task.class);
+                Intent intent = new Intent(getApplicationContext(), TaskActivity.class);
                 intent.putExtra("IsRetailerwisetask", true);
                 startActivity(intent);
 
