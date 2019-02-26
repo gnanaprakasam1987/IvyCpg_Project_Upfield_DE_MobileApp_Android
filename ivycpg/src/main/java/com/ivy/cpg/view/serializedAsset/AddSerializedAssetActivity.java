@@ -81,6 +81,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
     private ArrayList<SerializedAssetBO> vendorList;
     private ArrayList<SerializedAssetBO> typeList;
     private ArrayList<String> capacityList;
+    private ArrayList<SerializedAssetBO>noBarCodeReasonList;
 
     private Spinner modelSpinner;
     private Spinner capacitySpinner;
@@ -249,6 +250,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         vendorList = assetTrackingHelper.getAssetVendors(this);
         typeList = assetTrackingHelper.getAssetTypes(this);
         capacityList = assetTrackingHelper.getAssetCapacity(this);
+        noBarCodeReasonList = assetTrackingHelper.getNoBarCodeAssetReasonList(this);
 
         SerializedAssetBO tempBO = new SerializedAssetBO(1);
         tempBO.setVendorName(ALL);
@@ -266,6 +268,11 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         typeList.add(0, tempBO);
 
         capacityList.add(0,ALL);
+
+        tempBO = new SerializedAssetBO(4);
+        tempBO.setAssetType(getString(R.string.select_reason));
+        tempBO.setAssetTypeId("0");
+        noBarCodeReasonList.add(0, tempBO);
 
         ArrayAdapter<SerializedAssetBO> mModelAdapter = new ArrayAdapter<>(this,
                 R.layout.spinner_bluetext_layout, modelList);
