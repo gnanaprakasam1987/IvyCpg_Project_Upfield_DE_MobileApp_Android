@@ -38,13 +38,13 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
 
@@ -377,7 +377,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                     public void onClick(View view) {
                         mSelectedBill = holder.invoiceHeaderBO.getInvoiceNo();
                         if (holder.invoiceHeaderBO.getDocSignImage() != null && holder.invoiceHeaderBO.getDocSignImage().length() > 0) {
-                            if (bmodel.checkForNFilesInFolder(HomeScreenFragment.photoPath, 1, holder.invoiceHeaderBO.getDocSignImage())) {
+                            if (bmodel.checkForNFilesInFolder(FileUtils.photoFolderPath, 1, holder.invoiceHeaderBO.getDocSignImage())) {
                                 DialogFragment dialog = new signatureExistingAlert();
                                 Bundle args = new Bundle();
                                 args.putString("title", getResources().getString(
@@ -491,8 +491,8 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
             // result is the value returned from doInBackground
 
             progressDialogue.dismiss();
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
 
             Toast.makeText(CollectionReference.this,
                     getResources().getString(R.string.saved_successfully),
@@ -504,8 +504,8 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
     }
 
     private void onBackClicked() {
-        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME));
+        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                .now(DateTimeUtils.TIME));
         finish();
 
         Intent myIntent = new Intent(this, HomeScreenTwo.class);
@@ -565,7 +565,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
                     .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                            bmodel.deleteFiles(FileUtils.photoFolderPath,
                                     imgName);
                             Intent i = new Intent(getActivity(),
                                     CaptureSignatureActivity.class);

@@ -36,7 +36,6 @@ import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DigitalContentBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
@@ -52,6 +51,7 @@ import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.cpg.view.initiative.InitiativeActivity;
 import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.cpg.view.order.scheme.SchemeApply;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
@@ -363,8 +363,8 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
                         if (mBModel.configurationMasterHelper.IS_INITIATIVE) {
                             mBModel.outletTimeStampHelper
-                                    .updateTimeStampModuleWise(SDUtil
-                                            .now(SDUtil.TIME));
+                                    .updateTimeStampModuleWise(DateTimeUtils
+                                            .now(DateTimeUtils.TIME));
                             Intent intent = new Intent(getActivity(),
                                     InitiativeActivity.class);
                             intent.putExtra("ScreenCode", screenCode);
@@ -388,8 +388,8 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                             getActivity().finish();
                         } else {
                             mBModel.outletTimeStampHelper
-                                    .updateTimeStampModuleWise(SDUtil
-                                            .now(SDUtil.TIME));
+                                    .updateTimeStampModuleWise(DateTimeUtils
+                                            .now(DateTimeUtils.TIME));
                             Intent intent;
                             if (screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER)) {
                                 intent = new Intent(getActivity(), CatalogOrder.class);
@@ -405,7 +405,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                         break;
                     case "Digi": {
                         mBModel.outletTimeStampHelper
-                                .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                                .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                         Intent intent = new Intent(getActivity(),
                                 HomeScreenTwo.class);
                         startActivity(intent);
@@ -425,8 +425,8 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                 mDigitalContentHelper.setIsDigitalContent();
                 mDigitalContentHelper.setDigitalContentInDB(getContext().getApplicationContext());
                 mBModel.getRetailerMasterBO().setIsDigitalContent("Y");
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 Intent i = new Intent(getActivity(),
                         OrderSummary.class);
                 i.putExtra("ScreenCode", screenCode);

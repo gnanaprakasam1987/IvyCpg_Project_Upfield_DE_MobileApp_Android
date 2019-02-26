@@ -1,14 +1,14 @@
-package com.ivy.sd.png.provider;
+package com.ivy.cpg.view.homescreen.userFeedback;
 
 import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -19,21 +19,14 @@ public class UserFeedBackHelper {
 
     private Context context;
     private BusinessModel bmodel;
-    private static UserFeedBackHelper instance = null;
 
-    private UserFeedBackHelper(Context context) {
+    public UserFeedBackHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
     }
 
-    public static UserFeedBackHelper getInstance(Context context) {
-        if (instance == null) {
-            instance = new UserFeedBackHelper(context);
-        }
-        return instance;
-    }
 
-    ArrayList<ReasonMaster> mFeedBackType;
+    private ArrayList<ReasonMaster> mFeedBackType;
 
     public ArrayList<ReasonMaster> getFeedBackType() {
         return mFeedBackType;
@@ -80,9 +73,9 @@ public class UserFeedBackHelper {
             String columns = "UId, DateTime, TypeLovId, Feedback, Rating";
             StringBuffer values = new StringBuffer();
             values.append(bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID));
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
             values.append(",");
-            values.append(bmodel.QT(SDUtil.now(SDUtil.DATE_TIME)));
+            values.append(bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME)));
             values.append(",");
             values.append(bmodel.QT(type));
             values.append(",");

@@ -8,11 +8,11 @@ import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.LoadManagementBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +45,7 @@ public class VanUnLoadModuleHelper {
             LoadManagementBO vanunloadbo;
             String columns = "uid,pid,pname,batchid,batchno,sih,caseqty,pcsqty,outerqty,duomqty,douomqty,dUomId,dOuomid,date,type,isFree";
             String uid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
             transactionId = uid;
 
             for (int i = 0; i < mylist.size(); i++) {
@@ -53,7 +53,7 @@ public class VanUnLoadModuleHelper {
                 if (vanunloadbo.getCaseqty() > 0
                         || vanunloadbo.getPieceqty() > 0
                         || vanunloadbo.getOuterQty() > 0) {
-                    String values = AppUtils.QT(uid)
+                    String values = StringUtils.QT(uid)
                             + ","
                             + vanunloadbo.getProductid()
                             + ","
@@ -62,7 +62,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + vanunloadbo.getBatchId()
                             + ","
-                            + AppUtils.QT(vanunloadbo.getBatchNo())
+                            + StringUtils.QT(vanunloadbo.getBatchNo())
                             + ","
                             + vanunloadbo.getStocksih()
                             + ","
@@ -80,7 +80,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + vanunloadbo.getdOuonid()
                             + ","
-                            + AppUtils.QT(bmodel.userMasterHelper
+                            + StringUtils.QT(bmodel.userMasterHelper
                             .getUserMasterBO().getDownloadDate()) + ","
                             + 1 + "," + vanunloadbo.getIsFree();
                     db.insertSQL(DataMembers.tbl_vanunload_details, columns,
@@ -375,7 +375,7 @@ public class VanUnLoadModuleHelper {
     public void vanUnloadAutomatically(Context context) {
         String columns = "uid,pid,pname,batchid,batchno,sih,caseqty,pcsqty,outerqty,duomqty,douomqty,dUomId,dOuomid,date,type";
         String uid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                + SDUtil.now(SDUtil.DATE_TIME_ID);
+                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
         try {
             DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
@@ -389,7 +389,7 @@ public class VanUnLoadModuleHelper {
 
             if (c != null) {
                 while (c.moveToNext()) {
-                    String values = AppUtils.QT(uid)
+                    String values = StringUtils.QT(uid)
                             + ","
                             + c.getInt(0)
                             + ","
@@ -397,7 +397,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + c.getInt(2)
                             + ","
-                            + AppUtils.QT(c.getString(3))
+                            + StringUtils.QT(c.getString(3))
                             + ","
                             + c.getInt(4)
                             + ","
@@ -415,7 +415,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + c.getInt(8)
                             + ","
-                            + AppUtils.QT(bmodel.userMasterHelper
+                            + StringUtils.QT(bmodel.userMasterHelper
                             .getUserMasterBO().getDownloadDate()) + ","
                             + 1;
 
@@ -449,7 +449,7 @@ public class VanUnLoadModuleHelper {
     public void vanUnloadNonSalableAutomatically(Context context) {
         String columns = "uid,pid,pname,sih,caseqty,pcsqty,outerqty,duomqty,douomqty,dUomId,dOuomid,date,type,typeid";
         String uid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                + SDUtil.now(SDUtil.DATE_TIME_ID);
+                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -515,7 +515,7 @@ public class VanUnLoadModuleHelper {
     public void vanUnloadFreeSiHAutomatically(Context context) {
         String columns = "uid,pid,pname,batchid,batchno,sih,caseqty,pcsqty,outerqty,duomqty,douomqty,dUomId,dOuomid,date,type";
         String uid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                + SDUtil.now(SDUtil.DATE_TIME_ID);
+                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
         try {
             DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
@@ -529,7 +529,7 @@ public class VanUnLoadModuleHelper {
 
             if (c != null) {
                 while (c.moveToNext()) {
-                    String values = AppUtils.QT(uid)
+                    String values = StringUtils.QT(uid)
                             + ","
                             + c.getInt(0)
                             + ","
@@ -537,7 +537,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + c.getInt(2)
                             + ","
-                            + AppUtils.QT(c.getString(3))
+                            + StringUtils.QT(c.getString(3))
                             + ","
                             + c.getInt(4)
                             + ","
@@ -555,7 +555,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + c.getInt(8)
                             + ","
-                            + AppUtils.QT(bmodel.userMasterHelper
+                            + StringUtils.QT(bmodel.userMasterHelper
                             .getUserMasterBO().getDownloadDate()) + ","
                             + 1;
 

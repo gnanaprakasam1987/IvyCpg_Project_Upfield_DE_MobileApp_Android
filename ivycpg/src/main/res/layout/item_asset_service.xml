@@ -32,13 +32,11 @@
 
         <TextView
             android:id="@+id/tv_lt_sno"
-            style="@style/TextViewListItemCaption"
+            style="@style/TextViewListItemSecondaryHighlight"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_lt_assetname"
             android:ellipsize="end"
-            android:maxLines="1"
-            android:singleLine="true"
             android:text="@string/app_name" />
     </RelativeLayout>
 

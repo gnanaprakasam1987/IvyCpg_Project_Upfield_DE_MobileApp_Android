@@ -40,11 +40,9 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
@@ -52,6 +50,7 @@ import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -217,7 +216,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
         listview = view.findViewById(R.id.list);
         listview.setCacheColorHint(0);
 
-        if (mBModel.configurationMasterHelper.IS_TEAMLEAD) {
+        if (mBModel.configurationMasterHelper.isAuditEnabled()) {
             TextView tvAudit = view.findViewById(R.id.audit);
             tvAudit.setVisibility(View.VISIBLE);
 
@@ -532,7 +531,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                         if (mBModel.reasonHelper.isNpReasonPhotoAvaiable(mBModel.retailerMasterBO.getRetailerID(), MENU_ASSET)) {
                             mBModel.saveModuleCompletion(MENU_ASSET);
                             mBModel.outletTimeStampHelper
-                                    .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                                    .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                             startActivity(new Intent(getActivity(),
                                     HomeScreenTwo.class));
                             getActivity().finish();

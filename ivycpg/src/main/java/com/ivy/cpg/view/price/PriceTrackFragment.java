@@ -65,6 +65,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CompetitorFilterFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -471,8 +472,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 if (isFromChild)
                     startActivity(new Intent(getActivity(), HomeScreenTwo.class)
                             .putExtra("isStoreMenu", true));
@@ -657,8 +658,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             try {
                 priceTrackingHelper.savePriceTransaction(getContext().getApplicationContext(), businessModel.productHelper.getTaggedProducts());
                 businessModel.saveModuleCompletion(HomeScreenTwo.MENU_PRICE);
-                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
 
                 return Boolean.TRUE;
             } catch (Exception e) {

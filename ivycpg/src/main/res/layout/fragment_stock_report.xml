@@ -88,7 +88,8 @@
                         style="@style/TextViewListTitle"
                         android:layout_width="@dimen/prodcode_width"
                         android:layout_height="wrap_content"
-                        android:text="@string/prod_code" />
+                        android:text="@string/prod_code"
+                        android:tag="pcode"/>
 
                     <TextView
                         style="@style/TextViewListTitle"

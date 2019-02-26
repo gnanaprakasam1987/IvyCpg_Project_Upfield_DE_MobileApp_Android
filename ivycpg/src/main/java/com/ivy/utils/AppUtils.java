@@ -30,6 +30,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.sd.png.util.DataMembers;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,24 +41,8 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class AppUtils {
 
-
     private AppUtils() {
 
-    }
-
-    public static void checkFileExist(String imageName, String retailerID, boolean isLatLongImage) {
-        try {
-            String fName = (!isLatLongImage) ? "PRO_" : "LATLONG_" + retailerID;
-            File sourceDir = new File(HomeScreenFragment.photoPath);
-            File[] files = sourceDir.listFiles();
-            for (File file : files) {
-                if (file.getName().startsWith(fName) &&
-                        !file.getName().equals(imageName))
-                    file.delete();
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
     }
 
     public static String validateInput(String input) {
@@ -66,19 +51,6 @@ public class AppUtils {
             str = Html.fromHtml(input).toString();
         }
         return str;
-    }
-
-    public static boolean isValidRegx(CharSequence target, String regx) {
-
-        if (regx.equals("")) {
-            return true;
-        }
-        String value = regx.replaceAll("\\<.*?\\>", "");
-        return !TextUtils.isEmpty(target) && Pattern.compile(value).matcher(target).matches();
-    }
-
-    public static boolean isValidEmail(CharSequence target) {
-        return !TextUtils.isEmpty(target) && android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
     }
 
     public static String latlongImageFileName;
@@ -105,53 +77,6 @@ public class AppUtils {
     }
 
 
-    public static boolean isEmptyString(String text) {
-        return (text == null || text.trim().equals("null") || text.trim()
-                .length() <= 0);
-    }
-
-    public static boolean checkImagePresent(String path) {
-        File f = new File(path);
-        return f.exists();
-    }
-
-
-    /**
-     * DecodeFile is convert the large size image to fixed size which mentioned
-     * above
-     */
-    public static Bitmap decodeFile(File f) {
-        int IMAGE_MAX_SIZE = 500;
-        Bitmap b = null;
-        try {
-            // Decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-
-            FileInputStream fis = new FileInputStream(f);
-            BitmapFactory.decodeStream(fis, null, o);
-            fis.close();
-
-            int scale = 1;
-            if (o.outHeight > IMAGE_MAX_SIZE || o.outWidth > IMAGE_MAX_SIZE) {
-                scale = (int) Math.pow(
-                        2,
-                        (int) Math.ceil(Math.log(IMAGE_MAX_SIZE
-                                / (double) Math.max(o.outHeight, o.outWidth))
-                                / Math.log(0.5)));
-            }
-
-            // Decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize = scale;
-            fis = new FileInputStream(f);
-            b = BitmapFactory.decodeStream(fis, null, o2);
-            fis.close();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return b;
-    }
 
     public static String getApplicationVersionName(Context context) {
         String versionName = "";
@@ -258,134 +183,6 @@ public class AppUtils {
     }
 
 
-
-    public static String QT(String data) {
-        return "'" + data + "'";
-    }
-
-    public static boolean isNullOrEmpty(String string) {
-        return string == null || string.length() == 0;
-    }
-
-    /**
-     * To check file availability
-     *
-     * @param path File path
-     * @return Availability
-     */
-    public static boolean isFileExisting(String path) {
-        File f = new File(path);
-        return f.exists();
-    }
-
-    /**
-     * Getting file URI
-     *
-     * @param path File path
-     * @return URI
-     */
-    public static Uri getUriFromFile(Context mContext, String path) {
-        File f = new File(path);
-        if (Build.VERSION.SDK_INT >= 24) {
-            return FileProvider.getUriForFile(mContext, BuildConfig.APPLICATION_ID + ".provider", f);
-
-        } else {
-            return Uri.fromFile(f);
-        }
-
-    }
-
-    /**
-     * @return <code>true<code/> if external storage available else <code>false<code/>
-     */
-
-    public static boolean isExternalStorageAvailable() {
-
-        StatFs stat = new StatFs(Environment.getExternalStorageDirectory()
-                .getPath());
-        double sdAvailSize = (double) stat.getAvailableBlocks()
-                * (double) stat.getBlockSize();
-        // One binary gigabyte equals 1,073,741,824 bytes.
-        double mbAvailable = sdAvailSize / 1048576;
-
-        String state = Environment.getExternalStorageState();
-        boolean mExternalStorageAvailable = false;
-        boolean mExternalStorageWriteable = false;
-
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            // We can read and write the media
-            mExternalStorageAvailable = mExternalStorageWriteable = true;
-        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            // We can only read the media
-            mExternalStorageAvailable = true;
-            mExternalStorageWriteable = false;
-        } else {
-            // Something else is wrong. It may be one of many other states, but
-            // all we need
-            // to know is we can neither read nor write
-            mExternalStorageAvailable = mExternalStorageWriteable = false;
-        }
-
-        if (mExternalStorageAvailable == true
-                && mExternalStorageWriteable == true && mbAvailable > 10) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-
-    /*
-     * It returns true if the folder contains the n or more than n files
-     * which starts name fnameStarts otherwiese returns false;
-     */
-
-    public static boolean checkForNFilesInFolder(String folderPath, int n,
-                                                 String fNameStarts) {
-        if (n < 1)
-            return true;
-
-        File folder = new File(folderPath);
-        if (!folder.exists()) {
-            return false;
-        } else {
-            String fnames[] = folder.list();
-            if ((fnames == null) || (fnames.length < n)) {
-                return false;
-            } else {
-                int count = 0;
-                for (String str : fnames) {
-                    if ((str != null) && !fNameStarts.equals("") && (str.length() > 0)) {
-                        if (str.startsWith(fNameStarts)) {
-                            count++;
-                        }
-                    }
-
-                    if (count == n) {
-                        return true;
-                    }
-                }
-            }
-
-        }
-        return false;
-    }
-
-    public static void deleteFiles(String folderPath, String fnamesStarts) {
-        File folder = new File(folderPath);
-
-        File files[] = folder.listFiles();
-        if ((files != null) && (files.length >= 1)) {
-
-            for (File tempFile : files) {
-                if (tempFile != null) {
-                    if (tempFile.getName().startsWith(fnamesStarts))
-                        tempFile.delete();
-                }
-            }
-        }
-    }
-
     /**
      * @return Application's {@code SharedPreferences}.
      */
@@ -397,23 +194,5 @@ public class AppUtils {
                 MODE_PRIVATE);
     }
 
-
-    public static boolean validRegex(String pattern, String str) {
-
-        if (pattern.equals("")) {
-            return true;
-        }
-
-        Pattern mPattern = Pattern.compile(pattern);
-        Matcher matcher = mPattern.matcher(str);
-
-        // Entered text does not match the pattern
-        if (!matcher.matches()) {
-            // It does not match partially too
-            if (!matcher.hitEnd())
-                return false;
-        }
-        return true;
-    }
 
 }

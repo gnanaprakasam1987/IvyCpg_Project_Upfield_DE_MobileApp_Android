@@ -32,6 +32,7 @@ import com.aem.api.AEMPrinter;
 import com.aem.api.AEMScrybeDevice;
 import com.bixolon.printer.BixolonPrinter;
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.reports.collectionreport.CollectionReportHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -39,8 +40,8 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.DateTimeUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -85,6 +86,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
     int no_of_print_done = 0;
 
     private Toolbar toolbar;
+    private CollectionReportHelper mCollectionReportHelper;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -93,6 +95,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
         try {
             bmodel = (BusinessModel) getApplicationContext();
             bmodel.setContext(this);
+            mCollectionReportHelper = new CollectionReportHelper(this);
             Bundle extras = getIntent().getExtras();
 
             toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -138,7 +141,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
             getSupportActionBar().setDisplayShowHomeEnabled(true);
             // Used to hide the app logo icon from actionbar
             // getSupportActionBar().setDisplayUseLogoEnabled(false);
-
+            mCollectionReportHelper.loadCollectionReport();
 
         } catch (Exception e1) {
             Commons.printException("" + e1);
@@ -190,7 +193,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
             mSelectedGroupId = getIntent().getStringExtra("GroupId");
 
         if (!mSelectedRetailer.equals("ALL"))
-            no_of_print_done = bmodel.reportHelper.getPaymentPrintCount(mSelectedGroupId);
+            no_of_print_done = mCollectionReportHelper.getPaymentPrintCount(mSelectedGroupId);
 
         doInitialize();
     }
@@ -199,7 +202,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
     private void doInitialize() {
         try {
 
-            mDetails = bmodel.reportHelper.getPaymentList();
+            mDetails = mCollectionReportHelper.getPaymentList();
             updatePreviewDetails();
 
             if (totalCash != null)
@@ -230,9 +233,9 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
             LinearLayout ll_cashType;
             LayoutInflater inflater = getLayoutInflater();
 
-            for (String groupid : bmodel.reportHelper.getLstPaymentBObyGroupId().keySet()) {
+            for (String groupid : mCollectionReportHelper.getLstPaymentBObyGroupId().keySet()) {
 
-                if (mSelectedRetailer.equals("ALL") || (groupid.equals(mSelectedGroupId) && bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(0).getRetailerName().equals(mSelectedRetailer))) {
+                if (mSelectedRetailer.equals("ALL") || (groupid.equals(mSelectedGroupId) && mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).get(0).getRetailerName().equals(mSelectedRetailer))) {
 
                     View v = inflater.inflate(
                             R.layout.row_collection_print_preview_diageo, null);
@@ -245,15 +248,15 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
                     ll_cashType = (LinearLayout) v.findViewById(R.id.product_container_ll);
 
-                    tv_reciptDate.setText(bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(0).getCollectionDate());
-                    tv_reciptNum.setText(bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(0).getGroupId());
+                    tv_reciptDate.setText(mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).get(0).getCollectionDate());
+                    tv_reciptNum.setText(mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).get(0).getGroupId());
                     tv_userCode.setText(bmodel.userMasterHelper.getUserMasterBO().getUserCode());
                     tv_userName.setText(bmodel.userMasterHelper.getUserMasterBO().getUserName());
-                    tv_retailerCode.setText(bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(0).getRetailerCode());
-                    tv_retailerName.setText(bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(0).getRetailerName());
+                    tv_retailerCode.setText(mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).get(0).getRetailerCode());
+                    tv_retailerName.setText(mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).get(0).getRetailerName());
 
-                    for (int i = 0; i < bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).size(); i++) {
-                        PaymentBO payBO = bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(i);
+                    for (int i = 0; i < mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).size(); i++) {
+                        PaymentBO payBO = mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).get(i);
                         View view = inflater.inflate(
                                 R.layout.row_collection_print_preview_cash_type, null);
                         tv_cashType = ((TextView) view.findViewById(R.id.tv_type));
@@ -286,15 +289,15 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                             totalCn += payBO.getAmount();
                         }
 
-                        tv_date.setText(bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(i).getChequeDate());
+                        tv_date.setText(mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).get(i).getChequeDate());
 
                         if (!payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE) && !payBO.getCashMode().equals(StandardListMasterConstants.ADVANCE_PAYMENT))
-                            tv_cheq_num.setText(bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(i).getChequeNumber());
+                            tv_cheq_num.setText(mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).get(i).getChequeNumber());
                         else
                             tv_cheq_num.setText("");
 
-                        tv_inv_num.setText(bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(i).getBillNumber());
-                        tv_total.setText(bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(i).getAmount() + "");
+                        tv_inv_num.setText(mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).get(i).getBillNumber());
+                        tv_total.setText(mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).get(i).getAmount() + "");
 
                         ll_cashType.addView(view);
                     }
@@ -386,7 +389,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                 }
 
                 if (!mSelectedRetailer.equals("ALL"))
-                    bmodel.reportHelper.updatePaymentPrintCount(mSelectedGroupId, (SDUtil.convertToInt(count) + no_of_print_done));
+                    mCollectionReportHelper.updatePaymentPrintCount(mSelectedGroupId, (SDUtil.convertToInt(count) + no_of_print_done));
 
                 bmodel.showAlert(
                         getResources().getString(
@@ -491,14 +494,14 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                 // disconnect();
                 isPrinterLanguageDetected = false;
             } /*
-			 * catch (ZebraPrinterLanguageUnknownException e) {
-			 * setStatus("Unknown Printer Language", Color.RED);
-			 * Commons.printException(e);
-			 * 
-			 * isPrinterLanguageDetected = false;
-			 * 
-			 * // printer = null; // DemoSleeper.sleep(1000); // disconnect(); }
-			 */
+             * catch (ZebraPrinterLanguageUnknownException e) {
+             * setStatus("Unknown Printer Language", Color.RED);
+             * Commons.printException(e);
+             *
+             * isPrinterLanguageDetected = false;
+             *
+             * // printer = null; // DemoSleeper.sleep(1000); // disconnect(); }
+             */
         }
 
         return printer;
@@ -631,11 +634,11 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
                 int rowItemSize = 0;
                 int size = 0;
-                for (String groupid : bmodel.reportHelper.getLstPaymentBObyGroupId().keySet()) {
-                    if (mSelectedRetailer.equals("ALL") || (groupid.equals(mSelectedGroupId) && bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(0).getRetailerName().equals(mSelectedRetailer))) {
+                for (String groupid : mCollectionReportHelper.getLstPaymentBObyGroupId().keySet()) {
+                    if (mSelectedRetailer.equals("ALL") || (groupid.equals(mSelectedGroupId) && mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).get(0).getRetailerName().equals(mSelectedRetailer))) {
                         size += 1;
 
-                        for (int j = 0; j < bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).size(); j++) {
+                        for (int j = 0; j < mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).size(); j++) {
                             rowItemSize += 1;
                         }
                     }
@@ -698,8 +701,8 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
                 double total = 0;
 
-                for (String groupid : bmodel.reportHelper.getLstPaymentBObyGroupId().keySet()) {
-                    PaymentBO payHeaderBO = bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(0);
+                for (String groupid : mCollectionReportHelper.getLstPaymentBObyGroupId().keySet()) {
+                    PaymentBO payHeaderBO = mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).get(0);
                     if (mSelectedRetailer.equals("ALL") || (groupid.equals(mSelectedGroupId) && payHeaderBO.getRetailerName().equals(mSelectedRetailer))) {
                         total = 0;
                         x += 10;
@@ -778,8 +781,8 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
                         x += 20;
                         Printitem += "T 5 0 10 " + x + " --------------------------------------------------\r\n";
-                        for (int i = 0; i < bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).size(); i++) {
-                            PaymentBO payBO = bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(i);
+                        for (int i = 0; i < mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).size(); i++) {
+                            PaymentBO payBO = mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).get(i);
 
                             x += 40;
 
@@ -928,8 +931,8 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                 Printitem += "T 5 0 520 230 "
                         + getResources().getString(R.string.date)
                         + ":"
-                        + DateUtil.convertFromServerDateToRequestedFormat(
-                        SDUtil.now(SDUtil.DATE_GLOBAL),
+                        + DateTimeUtils.convertFromServerDateToRequestedFormat(
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                         bmodel.configurationMasterHelper.outDateFormat)
                         + "\r\n";
 
@@ -1389,9 +1392,9 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                 IsOriginal = false;
 
                 int count = 0;
-                for (String groupid : bmodel.reportHelper.getLstPaymentBObyGroupId().keySet()) {
+                for (String groupid : mCollectionReportHelper.getLstPaymentBObyGroupId().keySet()) {
                     count = count + 1;
-                    if (count == bmodel.reportHelper.getLstPaymentBObyGroupId().size()) {
+                    if (count == mCollectionReportHelper.getLstPaymentBObyGroupId().size()) {
                         if (count == 1)
                             sb.append(bmodel.printHelper.printDataforBixolon3inchCollectionprinter(true, bmodel.QT(groupid), IsOriginal, true));
                         else
@@ -1408,7 +1411,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
             }
 
             if (!mSelectedRetailer.equals("ALL"))
-                bmodel.reportHelper.updatePaymentPrintCount(mSelectedGroupId, (SDUtil.convertToInt(count)));
+                mCollectionReportHelper.updatePaymentPrintCount(mSelectedGroupId, (SDUtil.convertToInt(count)));
         }
         return sb.toString();
     }
@@ -1571,8 +1574,8 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
             double total;
             double totalDiscount = 0;
-            for (String groupid : bmodel.reportHelper.getLstPaymentBObyGroupId().keySet()) {
-                PaymentBO payHeaderBO = bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(0);
+            for (String groupid : mCollectionReportHelper.getLstPaymentBObyGroupId().keySet()) {
+                PaymentBO payHeaderBO = mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).get(0);
                 if (mSelectedRetailer.equals("ALL") || (groupid.equals(mSelectedGroupId) && payHeaderBO.getRetailerName().equals(mSelectedRetailer))) {
                     total = 0;
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
@@ -1585,13 +1588,13 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                     tempsb.append("SETBOLD 1 \r\n");
                     if (payHeaderBO.getAdvancePaymentId() != null) {
                         tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
-                                + "Rcpt Date:"
-                                + ""
+                                + getString(R.string.recipt_date)
+                                + ":"
                                 + payHeaderBO.getAdvancePaymentDate() + "\r\n");
                     } else {
                         tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
-                                + "Rcpt Date:"
-                                + ""
+                                + getString(R.string.recipt_date)
+                                + ":"
                                 + payHeaderBO.getCollectionDateTime() + "\r\n");
                     }
                     tempsb.append("SETBOLD 0 \r\n");
@@ -1600,7 +1603,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
                     tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
-                            + "Rcpt NO"
+                            + getString(R.string.recipt_no)
                             + ":"
                             + payHeaderBO.getGroupId()
                             + "\r\n");
@@ -1610,8 +1613,8 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
                     tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
-                            + "AgentCode:"
-                            + ""
+                            + getString(R.string.agent_code)
+                            + ":"
                             + bmodel.userMasterHelper.getUserMasterBO()
                             .getUserCode() + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
@@ -1620,7 +1623,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
                     tempsb.append("TEXT ANG12PT.CPF 0 " + 250 + " 1 "
-                            + "AgentName"
+                            + getString(R.string.agent_name)
                             + ":"
                             + bmodel.userMasterHelper.getUserMasterBO().getUserName()
                             + "\r\n");
@@ -1637,7 +1640,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
                     tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
-                            + "CustName"
+                            + getString(R.string.cust_name)
                             + ":"
                             + retailername
                             + "\r\n");
@@ -1647,8 +1650,8 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
                     tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
-                            + "CustCode:"
-                            + ""
+                            + getString(R.string.cust_code)
+                            + ":"
                             + payHeaderBO.getRetailerCode()
                             + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
@@ -1663,19 +1666,19 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "Inv No" + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + getString(R.string.inv_no) + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 160 + " 1 " + "Type" + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 160 + " 1 " + getString(R.string.type) + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 240 + " 1 " + "Date" + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 240 + " 1 " + getString(R.string.date) + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
 
@@ -1687,7 +1690,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 440 + " 1 " + "Total" + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 440 + " 1 " + getString(R.string.total) + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT\r\n");
 
@@ -1696,8 +1699,8 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                     tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + " ---------------------------------------------------------------------------\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT\r\n");
-                    for (int i = 0; i < bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).size(); i++) {
-                        PaymentBO payBO = bmodel.reportHelper.getLstPaymentBObyGroupId().get(groupid).get(i);
+                    for (int i = 0; i < mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).size(); i++) {
+                        PaymentBO payBO = mCollectionReportHelper.getLstPaymentBObyGroupId().get(groupid).get(i);
 
 
                         tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
@@ -1782,7 +1785,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "Discount " + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + getString(R.string.discount) + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
 
@@ -1795,7 +1798,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 360 + " 1 " + "Total " + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 360 + " 1 " + getString(R.string.total) + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
 
@@ -1818,7 +1821,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
             tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
             tempsb.append("SETBOLD 1 \r\n");
-            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + "Comments:------------------------------------------------------------\r\n");
+            tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + getString(R.string.comments)+":------------------------------------------------------------\r\n");
             tempsb.append("SETBOLD 0 \r\n");
             tempsb.append("PRINT\r\n");
 

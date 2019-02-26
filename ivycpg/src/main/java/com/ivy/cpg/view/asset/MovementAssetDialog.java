@@ -25,12 +25,11 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.MyDialogCloseListener;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -189,8 +188,8 @@ public class MovementAssetDialog extends DialogFragment {
     }
     private void setAddAssetDetails() {
 
-        String todayDate = DateUtil.convertFromServerDateToRequestedFormat(
-                SDUtil.now(SDUtil.DATE_GLOBAL),
+        String todayDate = DateTimeUtils.convertFromServerDateToRequestedFormat(
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
         String remarks=ETDesc.getText().toString().trim();
         retailerId=retailerMasterBOs.get(retailerSelected).getMovRetailerId();

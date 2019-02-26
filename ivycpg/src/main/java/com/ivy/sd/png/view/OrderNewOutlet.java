@@ -78,6 +78,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -170,7 +171,6 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
     private final String TEMP_REMARK = "tempRemark";
     private final String TEMP_RFIELD1 = "tempRField1";
     private final String TEMP_RFIELD2 = "tempRField2";
-    private double totalvalue = 0;
 
     private int mSelectedBrandID = 0;
     private String mSelectedFiltertext = "Brand";
@@ -188,19 +188,12 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
     private int SbdDistPre = 0; // Dist stock
     private int sbdDistAchieved = 0;
     private Button mBtnNext;
-    private Button mBtnGuidedSelling_next, mBtnGuidedSelling_prev;
 
-    private Toolbar toolbar;
 
     private ArrayList<String> fiveFilter_productIDs;
 
     private LinkedList<String> mProductList = new LinkedList<>();
 
-    private final String mStockCode = "STK";
-    private final String mOrderCode = "ORD";
-    private int totalAllQty = 0;
-
-    private boolean isFilter = true;// only for guided selling. Default value is true, so it will ot affect normal flow
     private TextView totalQtyTV;
     private OrderHelper orderHelper;
 
@@ -214,7 +207,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         bmodel.setContext(this);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         orderHelper = OrderHelper.getInstance(this);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         Bundle extras = getIntent().getExtras();
         OrderedFlag = "MENU_STK_ORD";
         screenCode = "MENU_STK_ORD";
@@ -253,14 +246,14 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                     : savedInstanceState.getSerializable(TEMP_RFIELD2));
         }
 
-        FrameLayout drawer = (FrameLayout) findViewById(R.id.right_drawer);
+        FrameLayout drawer = findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
         DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         // set a custom shadow that overlays the main content when the drawer
         // opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
@@ -272,15 +265,15 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
         inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
+        viewFlipper = findViewById(R.id.view_flipper);
 
-        mEdt_searchproductName = (EditText) findViewById(R.id.edt_searchproductName);
-        mBtn_Search = (Button) findViewById(R.id.btn_search);
-        mBtnFilterPopup = (Button) findViewById(R.id.btn_filter_popup);
-        mBtn_clear = (Button) findViewById(R.id.btn_clear);
-        mBtnNext = (Button) findViewById(R.id.btn_next);
-        mBtnGuidedSelling_next = (Button) findViewById(R.id.btn_guided_selling_next);
-        mBtnGuidedSelling_prev = (Button) findViewById(R.id.btn_guided_selling_prev);
+        mEdt_searchproductName = findViewById(R.id.edt_searchproductName);
+        mBtn_Search = findViewById(R.id.btn_search);
+        mBtnFilterPopup = findViewById(R.id.btn_filter_popup);
+        mBtn_clear = findViewById(R.id.btn_clear);
+        mBtnNext = findViewById(R.id.btn_next);
+        Button mBtnGuidedSelling_next = findViewById(R.id.btn_guided_selling_next);
+        Button mBtnGuidedSelling_prev = findViewById(R.id.btn_guided_selling_prev);
         mBtnGuidedSelling_next.setOnClickListener(this);
         mBtnGuidedSelling_prev.setOnClickListener(this);
 
@@ -298,7 +291,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
-            updateTitle(screenCode);
+            updateTitle();
 //            // Used to on / off the back arrow icon
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 //           // Used to remove the app logo actionbar icon and set title as home
@@ -320,9 +313,8 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         ) {
             public void onDrawerClosed(View view) {
                 if (getSupportActionBar() != null) {
-                    String title;
                     if (generalbutton.equals(GENERAL)) {
-                        updateTitle(screenCode);
+                        updateTitle();
                     }
                 }
 
@@ -349,19 +341,19 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
             mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
         }
 
-        totalValueText = (TextView) findViewById(R.id.totalValue);
-        lpcText = (TextView) findViewById(R.id.lcp);
-        distValue = (TextView) findViewById(R.id.distValue);
-        totalQtyTV = (TextView) findViewById(R.id.tv_totalqty);
+        totalValueText = findViewById(R.id.totalValue);
+        lpcText = findViewById(R.id.lcp);
+        distValue = findViewById(R.id.distValue);
+        totalQtyTV = findViewById(R.id.tv_totalqty);
 
         hideAndSeek();
 
-        productName = (TextView) findViewById(R.id.productName);
+        productName = findViewById(R.id.productName);
         productName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         mEdt_searchproductName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
 
 
-        lvwplist = (ListView) findViewById(R.id.list);
+        lvwplist = findViewById(R.id.list);
         lvwplist.setCacheColorHint(0);
 
         /* Calculate the SBD Dist Acheivement value */
@@ -423,9 +415,6 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
                     }
 
-
-                    //
-
                 } else {
                     mSelectedFilterMap.put("General", GENERAL);
                     updateGeneralText(GENERAL);
@@ -473,7 +462,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
     }
 
 
-    private void updateTitle(String menucode) {
+    private void updateTitle() {
 
         String title;
         if ("MENU_ORDER".equals(screenCode)) {
@@ -568,14 +557,12 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
     private class MyAdapter extends ArrayAdapter<ProductMasterBO> {
         private final Vector<ProductMasterBO> items;
-        private final int SOLogic;
         private CustomKeyBoard dialogCustomKeyBoard;
 
         public MyAdapter(Vector<ProductMasterBO> items) {
             super(OrderNewOutlet.this,
                     R.layout.activity_stock_and_order_listview_new, items);
             this.items = items;
-            SOLogic = bmodel.configurationMasterHelper.getSOLogic();
         }
 
         public ProductMasterBO getItem(int position) {
@@ -604,35 +591,35 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                         false);
                 holder = new ViewHolder();
 
-                holder.tvbarcode = (TextView) row
+                holder.tvbarcode = row
                         .findViewById(R.id.stock_and_order_listview_productbarcode);
 
-                holder.psname = (TextView) row
+                holder.psname = row
                         .findViewById(R.id.stock_and_order_listview_productname);
 
 
                 //Store - Order
-                holder.caseQty = (EditText) row
+                holder.caseQty = row
                         .findViewById(R.id.stock_and_order_listview_case_qty);
-                holder.pcsQty = (EditText) row
+                holder.pcsQty = row
                         .findViewById(R.id.stock_and_order_listview_pcs_qty);
-                holder.outerQty = (EditText) row
+                holder.outerQty = row
                         .findViewById(R.id.stock_and_order_listview_outer_case_qty);
 
-                holder.srp = (TextView) row
+                holder.srp = row
                         .findViewById(R.id.stock_and_order_listview_srp);
 
-                holder.total = (TextView) row
+                holder.total = row
                         .findViewById(R.id.stock_and_order_listview_total);
 
 
-                holder.weight = (TextView) row
+                holder.weight = row
                         .findViewById(R.id.stock_and_order_listview_weight);
 
-                holder.iv_info = (ImageView) row.findViewById(R.id.ivInfoicon);
+                holder.iv_info = row.findViewById(R.id.ivInfoicon);
 
                 holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-                ((View) row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                (row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 //setting typefaces
                 holder.tvbarcode.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
                 holder.psname.setTypeface(bmodel.configurationMasterHelper.getProductNameFont());
@@ -665,7 +652,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                     }
                 }
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-                    ((LinearLayout) row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
                 else {
                     try {
                         ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -680,7 +667,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                     }
                 }
                 if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
-                    ((LinearLayout) row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 else {
                     try {
                         ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -698,7 +685,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
 
                 if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP)
-                    ((LinearLayout) row.findViewById(R.id.llSrp)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llSrp)).setVisibility(View.GONE);
                 else {
                     try {
                         ((TextView) row.findViewById(R.id.srpTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -714,7 +701,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_TOTAL)
-                    ((LinearLayout) row.findViewById(R.id.llTotal)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llTotal)).setVisibility(View.GONE);
                 else {
                     try {
                         ((TextView) row.findViewById(R.id.totalTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -731,7 +718,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
 
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
-                    ((LinearLayout) row.findViewById(R.id.llWeight)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llWeight)).setVisibility(View.GONE);
                 else {
                     try {
                         ((TextView) row.findViewById(R.id.weight)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
@@ -1263,9 +1250,9 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
     public void updateValue() {
         try {
-            totalAllQty = 0;
+            int totalAllQty = 0;
             int lpccount = 0;
-            totalvalue = 0;
+            double totalvalue = 0;
             HashSet<String> sbdAcheived = new HashSet<>();
             HashSet<String> sbdStockAchieved = new HashSet<>();
             HashSet<String> sbdStkAndOrderAchieved = new HashSet<>();
@@ -1546,7 +1533,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                 showDialog(0);
             } else {
                 bmodel.outletTimeStampHelper
-                        .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                        .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                 finish();
             }
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
@@ -1652,7 +1639,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
 
             } else {
-                Button ed = (Button) findViewById(vw.getId());
+                Button ed = findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
                 val = SDUtil.convertToInt(append);
@@ -1730,12 +1717,6 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                 ProductMasterBO ret = items.elementAt(i);
                 if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && ret.getGroupid() == 0)
                     continue;
-                if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                        && ret.getSIH() > 0)
-                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0)) {
-
-                    if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
 
                         if (ret.getIsSaleable() == 1) {
                             if (generalbutton.equals(GENERAL) && brandbutton.equals(BRAND))//No filters selected
@@ -1743,8 +1724,6 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                             else if (applyProductAndSpecialFilter(ret))
                                 mylist.add(ret);
                         }
-                    }
-                }
             }
 
             if (bmodel.configurationMasterHelper.IS_PRODUCT_SEQUENCE_UNIPAL)
@@ -1778,12 +1757,6 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                 if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && ret.getGroupid() == 0)
                     continue;
 
-                if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                        || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                        && ret.getSIH() > 0 && bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED)
-                        || (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0) ||
-                        (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && ret.getSIH() > 0)) {
-                    if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
                         if (mSelectedFilter.equals(getResources().getString(
                                 R.string.order_dialog_barcode))) {
 
@@ -1860,8 +1833,6 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                                     mylist.add(ret);
                             }
                         }
-                    }
-                }
             }
             if (bmodel.configurationMasterHelper.IS_PRODUCT_SEQUENCE_UNIPAL)
                 getProductBySequence();
@@ -1977,13 +1948,6 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                     if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && ret.getGroupid() == 0)
                         continue;
 
-                    if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                            && ret.getSIH() > 0 && bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED)
-                            || (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED && bmodel.getRetailerMasterBO().getIsVansales() == 0 && ret.getWSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && ret.getSIH() > 0)) {
-
-                        if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && ret.getIndicativeOrder_oc() > 0)) {
                             if ((bid == -1 || bid == ret.getParentid()) && GENERAL.equalsIgnoreCase(generaltxt) && ret.getIsSaleable() == 1) {
                                 // product filter alone
                                 if (mEdt_searchproductName.getText().length() >= 3) {
@@ -2004,8 +1968,6 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                                 }
 
                             }
-                        }
-                    }
                 }
             }
 
@@ -2091,16 +2053,6 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                 || (generaltxt.equalsIgnoreCase(mShelf) && (ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > -1 || ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > -1 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > -1));
     }
 
-    private String getFilterName(String filtername) {
-        Vector<ConfigureBO> genfilter = bmodel.configurationMasterHelper
-                .getGenFilter();
-        for (int i = 0; i < genfilter.size(); i++) {
-            if (genfilter.get(i).getConfigCode().equals(filtername))
-                filtername = genfilter.get(i).getMenuName();
-        }
-        return filtername;
-    }
-
     private String getDefaultFilter() {
         String defaultfilter = "";
         try {
@@ -2184,7 +2136,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         if (bmodel.configurationMasterHelper.SHOW_ORD_CALC)
             menu.findItem(R.id.menu_calculator).setVisible(true);
 
-        if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && isFilter && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
+        if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
             menu.findItem(R.id.menu_spl_filter).setVisible(true);
         } else {
             menu.findItem(R.id.menu_spl_filter).setVisible(false);
@@ -2209,9 +2161,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         menu.findItem(R.id.menu_fivefilter).setVisible(false);
 
         if (bmodel.productHelper.isFilterAvaiable("MENU_STK_ORD")) {
-            if (isFilter) {
                 menu.findItem(R.id.menu_fivefilter).setVisible(true);
-            }
         }
 
         if (mSelectedIdByLevelId != null) {
@@ -2242,8 +2192,6 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                 backButtonClick();
             return true;
         } else if (i == R.id.menu_survey) {
-           /* bmodel.productHelper
-                    .downloadFiveLevelFilterNonProducts("MENU_SURVEY");*/
             bmodel.productHelper.setFilterProductLevelsRex(bmodel.productHelper.downloadFilterLevel("MENU_SURVEY"));
             bmodel.productHelper.setFilterProductsByLevelIdRex(bmodel.productHelper.downloadFilterLevelProducts(
                     bmodel.productHelper.getRetailerModuleSequenceValues(),false));
@@ -2304,7 +2252,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                     if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), OrderedFlag)) {
                         bmodel.saveModuleCompletion(OrderedFlag);
                         bmodel.outletTimeStampHelper
-                                .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                                .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                         /*startActivity(new Intent(OrderNewOutlet.this,
                                 HomeScreenTwo.class));*/
                         finish();
@@ -2603,40 +2551,6 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         }
     }
 
-    /**
-     * @param product
-     * @return
-     * @author rajesh.k update stock total value in lisview
-     */
-    private int getProductTotalValue(ProductMasterBO product) {
-        int totalQty = 0;
-        Vector<StandardListBO> locationList = bmodel.productHelper
-                .getInStoreLocation();
-
-        int size = locationList.size();
-        for (int i = 0; i < size; i++) {
-
-            //Defailt value is -1 for stock fields, so adding only if value>0
-            if (product.getLocations().get(i).getShelfPiece() > -1)
-                totalQty += product.getLocations().get(i).getShelfPiece();
-
-            if (product.getLocations().get(i).getShelfCase() > -1)
-                totalQty += (product.getLocations().get(i).getShelfCase() * product
-                        .getCaseSize());
-
-            if (product.getLocations().get(i).getShelfOuter() > -1)
-                totalQty += (product.getLocations().get(i).getShelfOuter() * product
-                        .getOutersize());
-
-            totalQty += product.getLocations().get(i).getWHPiece();
-            totalQty += (product.getLocations().get(i).getWHCase() * product
-                    .getCaseSize());
-            totalQty += (product.getLocations().get(i).getWHOuter() * product
-                    .getOutersize());
-        }
-        return totalQty;
-    }
-
     @Override
     public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         String filtertext = getResources().getString(R.string.product_name);
@@ -2646,21 +2560,11 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         brandbutton = filtertext;
         fiveFilter_productIDs = new ArrayList<>();
 
-        int count = 0;
         mylist = new Vector<>();
         Vector<ProductMasterBO> items = bmodel.productHelper.getProductMaster();
         if (mAttributeProducts != null) {
-            count = 0;
             if (mFilteredPid != 0) {
-                count++;
                 for (ProductMasterBO productBO : items) {
-                    if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                            && productBO.getSIH() > 0)
-                            || (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0) ||
-                            (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && productBO.getSIH() > 0)) {
-
-                        if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
 
                             if (productBO.getIsSaleable() == 1 && productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
                                 // here we get all products mapped to parent id list, then that product will be added only if it is mapped to selected attribute
@@ -2672,86 +2576,42 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                                     fiveFilter_productIDs.add(productBO.getProductID());
                                 }
                             }
-                        }
-                    }
 
                 }
             } else {
                 for (int pid : mAttributeProducts) {
                     for (ProductMasterBO productBO : items) {
-                        if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                                || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                                && productBO.getSIH() > 0)
-                                || (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0) ||
-                                (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY && bmodel.configurationMasterHelper.IS_INVOICE && productBO.getSIH() > 0)) {
-
-
-                            if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productBO.getIndicativeOrder_oc() > 0)) {
                                 if (pid == SDUtil.convertToInt(productBO.getProductID()) && productBO.getIsSaleable() == 1) {
                                     if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
                                         continue;
                                     mylist.add(productBO);
                                     fiveFilter_productIDs.add(productBO.getProductID());
                                 }
-                            }
-                        }
                     }
                 }
             }
         } else {
             if (mFilterText.length() > 0) {
-                count++;
                 for (ProductMasterBO productBO : items) {
 
-                    if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                            && productBO.getSIH() > 0)
-                            || (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED
-                            && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            && bmodel.configurationMasterHelper.IS_INVOICE
-                            && productBO.getSIH() > 0)) {
-
-                        if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
-                                || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
-                                && productBO.getIndicativeOrder_oc() > 0)) {
                             if (productBO.getIsSaleable() == 1) {
                                 if (productBO.getParentHierarchy().contains("/" + mFilteredPid + "/")) {
-                                    //  filtertext = levelBO.getLevelName();
                                     if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
                                         continue;
                                     mylist.add(productBO);
                                     fiveFilter_productIDs.add(productBO.getProductID());
                                 }
                             }
-                        }
-                    }
                 }
             } else {
                 for (ProductMasterBO productBO : items) {
 
-                    if (!bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            && bmodel.getRetailerMasterBO().getIsVansales() == 1
-                            && productBO.getSIH() > 0)
-                            || (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED
-                            && bmodel.getRetailerMasterBO().getIsVansales() == 0 && productBO.getWSIH() > 0)
-                            || (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY
-                            && bmodel.configurationMasterHelper.IS_INVOICE
-                            && productBO.getSIH() > 0)) {
-
-                        if (!bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
-                                || (bmodel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER
-                                && productBO.getIndicativeOrder_oc() > 0)) {
                             if (productBO.getIsSaleable() == 1) {
                                 if (bmodel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productBO.getGroupid() == 0)
                                     continue;
                                 mylist.add(productBO);
                                 fiveFilter_productIDs.add(productBO.getProductID());
                             }
-                        }
-                    }
                 }
             }
 
@@ -2801,7 +2661,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         int qty = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
 
         if (qty == 0) {
-            bmodel.productHelper.getmProductidOrderByEntry().remove((String) productBO.getProductID());
+            bmodel.productHelper.getmProductidOrderByEntry().remove(productBO.getProductID());
             bmodel.productHelper.getmProductidOrderByEntryMap().remove(SDUtil.convertToInt(productBO.getProductID()));
         } else {
             int lastQty = 0;
@@ -2826,8 +2686,8 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
 
     private void loadSpecialFilterView() {
         findViewById(R.id.hscrl_spl_filter).setVisibility(View.VISIBLE);
-        ll_spl_filter = (LinearLayout) findViewById(R.id.ll_spl_filter);
-        ll_tab_selection = (LinearLayout) findViewById(R.id.ll_tab_selection);
+        ll_spl_filter = findViewById(R.id.ll_spl_filter);
+        ll_tab_selection = findViewById(R.id.ll_tab_selection);
         float scale;
         int width;
 
@@ -2870,10 +2730,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
         });
 
         for (int i = 0; i < bmodel.configurationMasterHelper.getGenFilter().size(); i++) {
-//        for (int i = 0; i < 2; i++) {
             ConfigureBO config = bmodel.configurationMasterHelper.getGenFilter().get(i);
-          /*  ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
-                    (getResources().getDimensionPixelSize(getResources().getDimension(R.dimen.special_filter_item_width)*scale+0.5f)), ViewGroup.LayoutParams.WRAP_CONTENT);*/
 
             TypedArray typearr = getTheme().obtainStyledAttributes(R.styleable.MyTextView);
             final int color = typearr.getColor(R.styleable.MyTextView_textColor, 0);

@@ -29,12 +29,11 @@ import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -313,7 +312,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                     if (listing.getObjectSummaries().size() > 0) {
                         for (S3ObjectSummary fileList : listing.getObjectSummaries()) {
                             if (fileList.getLastModified()
-                                    .after(DateUtil.convertStringToDateObject(lastDownloadTime, "MM/dd/yyyy HH:mm:ss"))) {
+                                    .after(DateTimeUtils.convertStringToDateObject(lastDownloadTime, "MM/dd/yyyy HH:mm:ss"))) {
                                 summaries.add(fileList);
                             }
                         }
@@ -324,7 +323,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                         if (listing.getObjectSummaries().size() > 0) {
                             for (S3ObjectSummary fileList : listing.getObjectSummaries()) {
                                 if (fileList.getLastModified()
-                                        .after(DateUtil.convertStringToDateObject(lastDownloadTime, "MM/dd/yyyy HH:mm:ss"))) {
+                                        .after(DateTimeUtils.convertStringToDateObject(lastDownloadTime, "MM/dd/yyyy HH:mm:ss"))) {
                                     summaries.add(fileList);
                                 }
                             }
@@ -372,7 +371,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                         return "Success";
                     }
                     filesCount = getFilesCount();
-                    catalogImageDownloadProvider.setCatalogImageDownloadFinishTime(filesCount + "", SDUtil.now(SDUtil.DATE_TIME));
+                    catalogImageDownloadProvider.setCatalogImageDownloadFinishTime(filesCount + "", DateTimeUtils.now(DateTimeUtils.DATE_TIME));
                     lastDownloadTime = catalogImageDownloadProvider.getLastDownloadedDateTime();
 
                 }
@@ -512,7 +511,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                 // Update time in UI
                 if (last_download_time != null)
                     last_download_time.setText(getResources().getString(R.string.last_image_download_time) + " " +
-                            SDUtil.now(SDUtil.DATE_TIME));
+                            DateTimeUtils.now(DateTimeUtils.DATE_TIME));
 
                 int mb = 10;
                 try {

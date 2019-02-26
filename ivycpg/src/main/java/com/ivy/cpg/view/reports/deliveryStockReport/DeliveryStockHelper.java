@@ -56,25 +56,26 @@ public class DeliveryStockHelper {
 
                     db.openDataBase();
 
-                    String sql = "select productid,pm.pname,pm.psname,PM.piece_uomid,PM.duomid,Pm.dOuomid"
-                            + ",uomid as orderedUomId,qty as orderedQty from InvoiceDetailUOMWise ID"
-                            + " Left join ProductMaster pm on pm.pid=ID.productid"
-                            + " where invoiceid in(select InvoiceNo from InvoiceDeliveryMaster where Retailerid in (" + retailerIds + "))";
+                    String sql = "select productid,PM.pname,PM.psname,PM.piece_uomid as pieceUomID,PM.duomid as caseUomId,Pm.dOuomid as outerUomId"
+                            + ",uomid as orderedUomId,qty as orderedQty,PM.dUomQty as caseSize,PM.dOuomQty as outerSize from InvoiceDetailUOMWise ID"
+                            + " inner join InvoiceDeliveryMaster IDM on IDM.InvoiceNo=ID.invoiceid"
+                            + " Left join ProductMaster PM on PM.pid=ID.productid"
+                            + " where IDM.Retailerid in (" + retailerIds + ") and IDM.InvoiceNo not in (select invoiceid from VanDeliveryHeader)";
 
                     Cursor c = db.selectSQL(sql);
                     if (c.getCount() > 0) {
+                        int pcsQty = 0, csQtyinPieces = 0, ouQtyinPieces = 0;
                         mDeliveryProductsBObyId = new HashMap<>();
                         DeliveryStockBo bo;
                         while (c.moveToNext()) {
                             if (mDeliveryProductsBObyId.get(c.getString(0)) != null) {
-                                DeliveryStockBo deliveryStockBo = mDeliveryProductsBObyId.get(c.getString(0));
-                                if (deliveryStockBo.getPcUomid() == c.getInt(6))
-                                    deliveryStockBo.setOrderedPcsQty((deliveryStockBo.getOrderedPcsQty() + c.getInt(7)));
-                                if (deliveryStockBo.getCaseUomId() == c.getInt(6))
-                                    deliveryStockBo.setOrderedCaseQty((deliveryStockBo.getOrderedCaseQty() + c.getInt(7)));
-                                if (deliveryStockBo.getOuUomid() == c.getInt(6))
-                                    deliveryStockBo.setOrderedOuterQty((deliveryStockBo.getOrderedOuterQty() + c.getInt(7)));
+
+                                bo = mDeliveryProductsBObyId.get(c.getString(0));
+
                             } else {
+                                pcsQty = 0;
+                                csQtyinPieces = 0;
+                                ouQtyinPieces = 0;
                                 bo = new DeliveryStockBo();
                                 bo.setProductID(c.getString(0));
                                 bo.setProductName(c.getString(1));
@@ -94,6 +95,41 @@ public class DeliveryStockHelper {
                                 mDeliveryProductsBObyId.put(bo.getProductID(), bo);
                                 mDeliveryStocks.add(bo);
                             }
+
+                            if (c.getInt(c.getColumnIndex("orderedUomId")) == c.getInt(c.getColumnIndex("pieceUomID"))) {
+                                pcsQty = (mDeliveryProductsBObyId.get(c.getString(0)) == null) ? c.getInt(7) : (pcsQty + c.getInt(7));
+                                bo.setPcUomid(c.getInt(2));
+                            } else if (c.getInt(c.getColumnIndex("orderedUomId")) == c.getInt(c.getColumnIndex("caseUomId"))) {
+                                csQtyinPieces = (mDeliveryProductsBObyId.get(c.getString(0)) == null) ? (c.getInt(7) * bo.getCaseSize()) :
+                                        (csQtyinPieces + (c.getInt(7) * bo.getCaseSize()));
+                                bo.setCaseUomId(c.getInt(2));
+                            } else if (c.getInt(c.getColumnIndex("orderedUomId")) == c.getInt(c.getColumnIndex("outerUomId"))) {
+                                ouQtyinPieces = (mDeliveryProductsBObyId.get(c.getString(0)) == null) ? (c.getInt(7) * bo.getOuterSize()) :
+                                        (ouQtyinPieces + (c.getInt(7) * bo.getOuterSize()));
+                                bo.setOuUomid(c.getInt(2));
+                            }
+
+
+                            bo.setCaseSize(c.getInt(c.getColumnIndex("caseSize")));
+                            bo.setOuterSize(c.getInt(c.getColumnIndex("outerSize")));
+
+
+                            int totalqty = pcsQty + csQtyinPieces + ouQtyinPieces;
+                            int caseQty = 0;
+                            if (businessModel.configurationMasterHelper.SHOW_ORDER_CASE) {
+                                caseQty = bo.getCaseSize() != 0 ? totalqty / bo.getCaseSize() : totalqty;
+                            }
+                            int QtyRemaining = totalqty - (caseQty * bo.getCaseSize());
+
+                            int outerQty = 0;
+                            if (businessModel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                                outerQty = bo.getOuterSize() != 0 ? QtyRemaining / bo.getOuterSize() : QtyRemaining;
+                            }
+                            int pieceQty = QtyRemaining - (outerQty * bo.getOuterSize());
+
+                            bo.setOrderedPcsQty(pieceQty);
+                            bo.setOrderedCaseQty(bo.getCaseSize() != 0 ? caseQty : 0);
+                            bo.setOrderedOuterQty(bo.getOuterSize() != 0 ? outerQty : 0);
                         }
                     }
                     subscriber.onNext(mDeliveryStocks);

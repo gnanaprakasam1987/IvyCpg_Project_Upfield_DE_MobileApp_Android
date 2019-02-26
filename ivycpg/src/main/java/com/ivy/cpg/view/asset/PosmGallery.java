@@ -26,7 +26,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,8 +47,8 @@ public class PosmGallery extends IvyBaseActivityNoActionBar {
 
     private Unbinder unbinder;
 
-    private String listId, photoNamePath, imageName;
-    private int assetId;
+    private String listId, photoNamePath, imageName, serialNo;
+    private int assetId, productID;
 
     private ArrayList<AssetTrackingBO> mAssetTrackingList;
     private AssetTrackingHelper assetTrackingHelper;
@@ -78,13 +78,15 @@ public class PosmGallery extends IvyBaseActivityNoActionBar {
 
         listId = getIntent().getStringExtra("listId");
         assetId = getIntent().getIntExtra("assetId", 0);
+        serialNo = getIntent().getStringExtra("serialNo");
+        productID = getIntent().getIntExtra("productID", 0);
 
         Commons.print("listId, " + "" + listId);
         Commons.print("assetId, " + "" + assetId);
 
         assetTrackingHelper = AssetTrackingHelper.getInstance(this);
 
-        photoNamePath = HomeScreenFragment.photoPath + "/";
+        photoNamePath = FileUtils.photoFolderPath + "/";
 
 
         loadData();
@@ -104,7 +106,8 @@ public class PosmGallery extends IvyBaseActivityNoActionBar {
             if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetTrackingBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
                 continue;
 
-            if (assetTrackingBO.getAssetID() == assetId && assetTrackingBO.getImageList().size() > 0) {
+            if (assetTrackingBO.getAssetID() == assetId && assetTrackingBO.getSerialNo().equals(serialNo)
+                    && assetTrackingBO.getProductId() == productID && assetTrackingBO.getImageList().size() > 0) {
                 setScreenTitle(assetTrackingBO.getAssetName() + " " + getResources().getString(R.string.tab_text_images));
                 imgGrid.setAdapter(new MyAdapter(assetTrackingBO.getImageList()));
                 break;
@@ -118,7 +121,8 @@ public class PosmGallery extends IvyBaseActivityNoActionBar {
         for (AssetTrackingBO assetTrackingBO : mAssetTrackingList) {
             if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetTrackingBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
                 continue;
-            if (assetTrackingBO.getAssetID() == assetId) {
+            if (assetTrackingBO.getAssetID() == assetId && assetTrackingBO.getSerialNo().equals(serialNo)
+                    && assetTrackingBO.getProductId() == productID) {
                 count = assetTrackingBO.getImageList().size();
                 break;
             }
@@ -284,18 +288,21 @@ public class PosmGallery extends IvyBaseActivityNoActionBar {
                         for (AssetTrackingBO assetTrackingBO : mAssetTrackingList) {
                             if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetTrackingBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
                                 continue;
-                            for (int i = 0; i < assetTrackingBO.getImageList().size(); i++) {
-                                if (assetTrackingBO.getImageList().get(i).equals(path)) {
-                                    assetTrackingBO.getImageList().remove(i);
-                                    break;
+                            if (assetTrackingBO.getAssetID() == assetId && assetTrackingBO.getSerialNo().equals(serialNo)
+                                    && assetTrackingBO.getProductId() == productID) {
+                                for (int i = 0; i < assetTrackingBO.getImageList().size(); i++) {
+                                    if (assetTrackingBO.getImageList().get(i).equals(path)) {
+                                        assetTrackingBO.getImageList().remove(i);
+                                        break;
+                                    }
                                 }
-                            }
                            /* if (assetTrackingBO.getImageList().size() > 0) {
                                 imgGrid.setAdapter(new MyAdapter(assetTrackingBO.getImageList()));
                                 break;
                             } else
                                 finish();*/
-                           finish();
+                                finish();
+                            }
                         }
 
                     }
@@ -326,9 +333,9 @@ public class PosmGallery extends IvyBaseActivityNoActionBar {
                     + "_img.jpg";
             Intent intent = new Intent(this,
                     CameraActivity.class);
-            intent.putExtra("quality", 40);
+            intent.putExtra(CameraActivity.QUALITY, 40);
             String path = photoPath + "/" + imageName;
-            intent.putExtra("path", path);
+            intent.putExtra(CameraActivity.PATH, path);
             startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
         } catch (Exception e) {
@@ -363,7 +370,8 @@ public class PosmGallery extends IvyBaseActivityNoActionBar {
         for (AssetTrackingBO assetBO : mAssetTrackingList) {
             if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !assetBO.getParentHierarchy().contains("/" + bmodel.productHelper.getmSelectedGlobalProductId() + "/"))
                 continue;
-            if (assetId == assetBO.getAssetID()) {
+            if (assetId == assetBO.getAssetID() && serialNo.equals(assetBO.getSerialNo())
+                    && productID == assetBO.getProductId()) {
                 ArrayList<String> imageList = assetBO.getImageList();
                 imageList.add(imagePath);
                 assetBO.setImageList(imageList);

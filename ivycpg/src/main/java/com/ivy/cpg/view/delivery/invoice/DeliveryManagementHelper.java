@@ -17,7 +17,8 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 
@@ -136,9 +137,13 @@ public class DeliveryManagementHelper {
             if (c.getCount() > 0) {
                 ProductMasterBO invoiceProductBO;
                 int productid;
+                int pcsQty =0 ,csQtyinPieces = 0, ouQtyinPieces = 0;
                 while (c.moveToNext()) {
                     productid = c.getInt(c.getColumnIndex("productid"));
                     if (invoicedProducts.get(productid) == null) {
+                        pcsQty = 0;
+                        csQtyinPieces = 0;
+                        ouQtyinPieces = 0;
                         invoiceProductBO = new ProductMasterBO();
                         invoiceProductBO.setProductID(productid + "");
                         invoiceProductBO.setProductShortName(c.getString(c.getColumnIndex("psname")));
@@ -147,18 +152,18 @@ public class DeliveryManagementHelper {
                     } else {
                         invoiceProductBO = invoicedProducts.get(productid);
                     }
-                    int pcsQty =0 ,csQtyinPieces = 0, ouQtyinPieces = 0;
-
                     if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("pieceUomID"))) {
-                        pcsQty = c.getInt(1);
+                        pcsQty = (invoicedProducts.get(productid) == null) ? c.getInt(1) : (pcsQty + c.getInt(1));
                         invoiceProductBO.setPcUomid(c.getInt(2));
                         invoiceProductBO.setLocalOrderPieceqty(c.getInt(1));
                     } else if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("caseUomId"))) {
-                        csQtyinPieces = c.getInt(1) * invoiceProductBO.getCaseSize();
+                        csQtyinPieces = (invoicedProducts.get(productid) == null) ? (c.getInt(1) * invoiceProductBO.getCaseSize()) :
+                                (csQtyinPieces + (c.getInt(1) * invoiceProductBO.getCaseSize()));
                         invoiceProductBO.setCaseUomId(c.getInt(2));
                         invoiceProductBO.setLocalOrderCaseqty(c.getInt(1));
                     } else if (c.getInt(c.getColumnIndex("uomid")) == c.getInt(c.getColumnIndex("outerUomId"))) {
-                        ouQtyinPieces = c.getInt(1) * invoiceProductBO.getOutersize();
+                        ouQtyinPieces = (invoicedProducts.get(productid) == null) ? (c.getInt(1) * invoiceProductBO.getOutersize()) :
+                                (ouQtyinPieces + (c.getInt(1) * invoiceProductBO.getOutersize()));
                         invoiceProductBO.setOuUomid(c.getInt(2));
                         invoiceProductBO.setLocalOrderOuterQty(c.getInt(1));
                     }
@@ -167,9 +172,16 @@ public class DeliveryManagementHelper {
                     invoiceProductBO.setOutersize(c.getInt(c.getColumnIndex("outerSize")));
 
                     int totalqty = pcsQty + csQtyinPieces + ouQtyinPieces;
-                    int caseQty = invoiceProductBO.getCaseSize() != 0 ? totalqty / invoiceProductBO.getCaseSize() : totalqty;
+                    int caseQty = 0;
+                    if(bmodel.configurationMasterHelper.SHOW_DELIVERY_CA) {
+                        caseQty = invoiceProductBO.getCaseSize() != 0 ? totalqty / invoiceProductBO.getCaseSize() : totalqty;
+                    }
                     int QtyRemaining = totalqty - (caseQty * invoiceProductBO.getCaseSize());
-                    int outerQty = invoiceProductBO.getOutersize() != 0 ? QtyRemaining / invoiceProductBO.getOutersize() : QtyRemaining;
+
+                    int outerQty = 0;
+                    if(bmodel.configurationMasterHelper.SHOW_DELIVERY_OU) {
+                        outerQty = invoiceProductBO.getOutersize() != 0 ? QtyRemaining / invoiceProductBO.getOutersize() : QtyRemaining;
+                    }
                     int pieceQty = QtyRemaining - (outerQty * invoiceProductBO.getOutersize());
 
                     invoiceProductBO.setOrderedPcsQty(pieceQty);
@@ -223,24 +235,24 @@ public class DeliveryManagementHelper {
                 status = "R";
             }
 
-            String uid = AppUtils.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID));
-            String header = (uid + "," + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ",") +
-                    AppUtils.QT(invoiceHeaderBO.getInvoiceDate()) + "," + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," +
-                    AppUtils.QT(status) + "," + AppUtils.QT(bmodel.mSelectedRetailerLatitude + "") + "," + AppUtils.QT(bmodel.mSelectedRetailerLongitude + "") + "," +
+            String uid = StringUtils.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
+            String header = (uid + "," + StringUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ",") +
+                    StringUtils.QT(invoiceHeaderBO.getInvoiceDate()) + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," +
+                    StringUtils.QT(status) + "," + StringUtils.QT(bmodel.mSelectedRetailerLatitude + "") + "," + StringUtils.QT(bmodel.mSelectedRetailerLongitude + "") + "," +
                     DatabaseUtils.sqlEscapeString(Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")) +
-                    "," + AppUtils.QT(invoiceno) +
-                    "," + AppUtils.QT(SignName) +//internal colunm
-                    "," + AppUtils.QT(SignPath) +// proofPicture not used... so using same column
-                    "," + AppUtils.QT(contactName) +
-                    "," + AppUtils.QT(contactNo) +
-                    "," + AppUtils.QT(SignPath) +
-                    "," + AppUtils.QT(invoiceHeaderBO.getPickListId());
+                    "," + StringUtils.QT(invoiceno) +
+                    "," + StringUtils.QT(SignName) +//internal colunm
+                    "," + StringUtils.QT(SignPath) +// proofPicture not used... so using same column
+                    "," + StringUtils.QT(contactName) +
+                    "," + StringUtils.QT(contactNo) +
+                    "," + StringUtils.QT(SignPath) +
+                    "," + StringUtils.QT(invoiceHeaderBO.getPickListId());
             db.insertSQL(DataMembers.tbl_van_delivery_header, deliveryheadercolumns, header);
 
-            String values = AppUtils.QT(invoiceHeaderBO.getPickListId()) + ","
-                    + AppUtils.QT(invoiceno) + ","
-                    + AppUtils.QT(status);
+            String values = StringUtils.QT(invoiceHeaderBO.getPickListId()) + ","
+                    + StringUtils.QT(invoiceno) + ","
+                    + StringUtils.QT(status);
 
             db.insertSQL(DataMembers.tbl_picklist_invoice, DataMembers.tbl_picklist_invoice_cols, values);
 
@@ -366,7 +378,7 @@ public class DeliveryManagementHelper {
                                 if (c.getPosition() == 0) {
 
                                     Cursor cursor = db.selectSQL("SELECT Tid FROM EmptyReconciliationHeader WHERE Date = "
-                                            + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                                            + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
                                     // delete transaction if exist
                                     if (cursor.getCount() > 0) {
                                         cursor.moveToNext();
@@ -375,10 +387,10 @@ public class DeliveryManagementHelper {
                                     }
 
                                     tid = bmodel.userMasterHelper.getUserMasterBO().getUserid() + ""
-                                            + SDUtil.now(SDUtil.DATE_TIME_ID);
+                                            + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
                                     db.insertSQL("EmptyReconciliationHeader", headerColumns,
-                                            bmodel.QT(tid) + "," + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                                            bmodel.QT(tid) + "," + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                                                     + bmodel.QT(bmodel.getTimeZone()) + "," + 0);
                                 }
 
@@ -410,7 +422,7 @@ public class DeliveryManagementHelper {
         db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
 
-        String id = AppUtils.QT("SR" + bmodel.getAppDataProvider().getUser().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID));
+        String id = StringUtils.QT("SR" + bmodel.getAppDataProvider().getUser().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
         boolean isData = false;
         double totalReturnValue = 0;
         int lpc = 0;
@@ -443,9 +455,9 @@ public class DeliveryManagementHelper {
                         + ","
                         + DatabaseUtils.sqlEscapeString(productMasterBO.getProductID())
                         + ","
-                        + pieceQty
+                        + totalQty
                         + ","
-                        + caseQty
+                        + 0
                         + ","
                         + 0
                         + ","
@@ -453,11 +465,11 @@ public class DeliveryManagementHelper {
                         + ","
                         + 0
                         + ","
-                        + AppUtils.QT("")
+                        + StringUtils.QT("")
                         + ","
-                        + AppUtils.QT("")
+                        + StringUtils.QT("")
                         + ","
-                        + outerQty
+                        + 0
                         + ","
                         + productMasterBO.getOutersize()
                         + ","
@@ -469,7 +481,7 @@ public class DeliveryManagementHelper {
                         .getOldBatchIDByMfd(productMasterBO
                                 .getProductID())
                         + ","
-                        + AppUtils.QT((invoiceno == null || "null".equals(invoiceno)) ? "" : invoiceno)
+                        + StringUtils.QT((invoiceno == null || "null".equals(invoiceno)) ? "" : invoiceno)
                         + ","
                         + 0
                         + ","
@@ -477,10 +489,10 @@ public class DeliveryManagementHelper {
                         + ","
                         + totalValue
                         + ","
-                        + AppUtils.QT(bmodel.retailerMasterBO
+                        + StringUtils.QT(bmodel.retailerMasterBO
                         .getRetailerID()) + ","
-                        + 1 + "," + AppUtils.QT("") + "," + productMasterBO.getPcUomid()
-                        + "," + AppUtils.QT("") + "," + AppUtils.QT(productMasterBO.getHsnCode());
+                        + 1 + "," + StringUtils.QT("") + "," + productMasterBO.getPcUomid()
+                        + "," + StringUtils.QT("") + "," + StringUtils.QT(productMasterBO.getHsnCode());
 
                 db.insertSQL(
                         DataMembers.tbl_SalesReturnDetails,
@@ -501,27 +513,27 @@ public class DeliveryManagementHelper {
 
             columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,CollectStatus,invoiceid,ridSF,VisitId";
             String values = id + ","
-                    + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                    + AppUtils.QT(bmodel.retailerMasterBO.getRetailerID()) + ","
+                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                    + StringUtils.QT(bmodel.retailerMasterBO.getRetailerID()) + ","
                     + bmodel.retailerMasterBO.getBeatID() + "," +
                     srUserID
                     + "," + bmodel.QT(SDUtil.format(totalReturnValue,
                     bmodel.configurationMasterHelper.PERCENT_PRECISION_COUNT, 0)) + "," + lpc + ","
-                    + AppUtils.QT(bmodel.retailerMasterBO.getRetailerCode()) + ","
-                    + AppUtils.QT(bmodel.getSaleReturnNote()) + ","
-                    + AppUtils.QT(bmodel.mSelectedRetailerLatitude + "") + ","
-                    + AppUtils.QT(bmodel.mSelectedRetailerLongitude + "") + ","
+                    + StringUtils.QT(bmodel.retailerMasterBO.getRetailerCode()) + ","
+                    + StringUtils.QT(bmodel.getSaleReturnNote()) + ","
+                    + StringUtils.QT(bmodel.mSelectedRetailerLatitude + "") + ","
+                    + StringUtils.QT(bmodel.mSelectedRetailerLongitude + "") + ","
                     + bmodel.retailerMasterBO.getDistributorId() + ","
                     + bmodel.retailerMasterBO.getDistParentId() + ","
-                    + AppUtils.QT("") + ","
-                    + AppUtils.QT("") + ","
+                    + StringUtils.QT("") + ","
+                    + StringUtils.QT("") + ","
                     + 1;// 1 means Indicative, 0 means normal
 
-            values = values + "," + AppUtils.QT("") + ","
-                    + AppUtils.QT("") + ","
-                    + AppUtils.QT(status) + ","// update delivery status
-                    + AppUtils.QT(invoiceID) + ","
-                    + AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+            values = values + "," + StringUtils.QT("") + ","
+                    + StringUtils.QT("") + ","
+                    + StringUtils.QT(status) + ","// update delivery status
+                    + StringUtils.QT(invoiceID) + ","
+                    + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
                     + bmodel.getAppDataProvider().getUniqueId();
 
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
@@ -615,13 +627,13 @@ public class DeliveryManagementHelper {
 
                     header = new StringBuffer();
                     String uid = bmodel.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                            + SDUtil.now(SDUtil.DATE_TIME_ID));
+                            + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
                     header.append(uid).append(",").append(bmodel.QT(retailerid)).append(",");
                     header.append(bmodel.QT(invoicedate)).append(",");
                     header.append(bmodel.QT("N")).append(",").append(bmodel.QT(LocationUtil.latitude + "")).append(",").append(bmodel.QT(LocationUtil.longitude + "")).append(",");
                     header.append(DatabaseUtils.sqlEscapeString(Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")));
                     header.append(",").append(bmodel.QT(invoiceno));
-                    header.append(",").append(bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                    header.append(",").append(bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
                     db.insertSQL(DataMembers.tbl_van_delivery_header, deliveryheadercolumns, header.toString());
 
                 }
@@ -689,7 +701,7 @@ public class DeliveryManagementHelper {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
             );
             db.openDataBase();
-            String s = "SELECT count(uid) from SalesReturnHeader where RetailerID =" + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID());
+            String s = "SELECT count(uid) from SalesReturnHeader where RetailerID =" + StringUtils.QT(bmodel.getRetailerMasterBO().getRetailerID());
             int count = 0;
             Cursor c = db.selectSQL(s);
             if (c != null) {
@@ -713,7 +725,7 @@ public class DeliveryManagementHelper {
         try {
             String[] iD = new String[2];
             String query = "select UserID,invoiceno from InvoiceDeliveryMaster" +
-                    " Where InvoiceRefNo=" + AppUtils.QT(invoiceno);
+                    " Where InvoiceRefNo=" + StringUtils.QT(invoiceno);
             Cursor c = db.selectSQL(query);
             if (c != null) {
                 if (c.moveToNext()) {

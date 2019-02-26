@@ -93,11 +93,11 @@ public class CurrentReportTest {
         Vector<StockReportBO> stockReportBOS = new Vector<>();
         stockReportBOS.add(stockReportBO);
         mPresenter.updateStockReportGrid(1, stockReportBOS);
-        given(stockReportBO.getBrandId()).willReturn(1);
+//        given(stockReportBO.getBrandId()).willReturn(1);
 
         testScheduler.triggerActions();
         ArrayList<StockReportBO> arrayList = new ArrayList();
-        arrayList.add(stockReportBO);
+       // arrayList.add(stockReportBO);
         then(mCurrentReportView).should().setAdapter(arrayList, mockConfigurationHelper);
     }
 

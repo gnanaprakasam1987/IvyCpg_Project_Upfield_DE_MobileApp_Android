@@ -137,6 +137,10 @@ public class ExpandableListAdapter extends BaseExpandableListAdapter {
         if (bModel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
             String prodCode = context.getString(R.string.prod_code) + ": " +
                     groupBoObj.getProductCode() + " ";
+            if (bModel.labelsMasterHelper.applyLabels(holder.prodcode.getTag()) != null)
+                prodCode = bModel.labelsMasterHelper
+                        .applyLabels(holder.prodcode.getTag()) + ": " +
+                        groupBoObj.getProductCode() + " ";
             holder.prodcode.setText(prodCode);
         }
 

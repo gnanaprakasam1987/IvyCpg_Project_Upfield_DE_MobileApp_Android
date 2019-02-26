@@ -64,6 +64,7 @@ import com.ivy.cpg.view.collection.CollectionScreen;
 import com.ivy.sd.png.view.EmailDialog;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -265,8 +266,8 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 } else if (isFromCollection) {
                     CollectionHelper.getInstance(CommonPrintPreviewActivity.this).downloadCollectionMethods();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), "MENU_COLLECTION");
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), "MENU_COLLECTION");
 
                     Intent intent = new Intent(CommonPrintPreviewActivity.this,
                             CollectionScreen.class);
@@ -435,13 +436,20 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
             HashMap<String, String> mUserCredentials = bmodel.downloadEmailAccountCredentials();
             final String emailId = mUserCredentials.get("EMAILID");
             final String password = mUserCredentials.get("PASSWORD");
+            final String type = mUserCredentials.get("TYPE");
 
             Properties props = System.getProperties();// new Properties();
 
-            //Configuring properties for GMAIL
-            props.put("mail.smtp.host", "smtp.gmail.com");
+            if(type.equalsIgnoreCase("office365")) {
+                //Properties for Office365
+                props.put("mail.smtp.host", "smtp.office365.com");
+            } else {
+                //Configuring properties for GMAIL
+                props.put("mail.smtp.host", "smtp.gmail.com");
+                props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+            }
+
             props.put("mail.smtp.socketFactory.port", "587");
-            props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.port", "587");
             props.put("mail.smtp.starttls.enable", "true");
@@ -1301,8 +1309,8 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         } else if (isFromCollection) {
             CollectionHelper.getInstance(CommonPrintPreviewActivity.this).downloadCollectionMethods();
             bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                    SDUtil.now(SDUtil.DATE_GLOBAL),
-                    SDUtil.now(SDUtil.TIME), "MENU_COLLECTION");
+                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                    DateTimeUtils.now(DateTimeUtils.TIME), "MENU_COLLECTION");
 
             Intent intent = new Intent(CommonPrintPreviewActivity.this,
                     CollectionScreen.class);

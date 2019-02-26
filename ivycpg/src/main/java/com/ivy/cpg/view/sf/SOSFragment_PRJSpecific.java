@@ -25,6 +25,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -222,8 +223,8 @@ public class SOSFragment_PRJSpecific extends IvyBaseFragment implements View.OnC
                         .putExtra("isStoreMenu", true));
             else
                 startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-            mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+            mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
             getActivity().finish();
             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;

@@ -29,6 +29,7 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.asset.AssetAddDetailBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -36,12 +37,13 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.FontUtils;
+import com.ivy.utils.DateTimeUtils;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Vector;
 
 /**
  * Created by rajkumar.s on 3/28/2017.
@@ -53,8 +55,8 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
     BusinessModel mBModel;
 
     private static final String SELECT = "-Select-";
+    private static final String ALL = "All";
     private Spinner mAsset;
-    private Spinner mBrand;
     private EditText mSNO, editext_NFC_number;
     private Button btnAddInstallDate;
     EditText edittext;
@@ -71,10 +73,26 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
     ImageView imageView_barcode_scan;
     ImageView iv_photo;
 
-    private final String moduleName = "NAT_";
     private static final int CAMERA_REQUEST_CODE = 1;
     private String photoPath;
     private String imageName;
+
+    private ArrayList<SerializedAssetBO> modelList;
+    private ArrayList<SerializedAssetBO> vendorList;
+    private ArrayList<SerializedAssetBO> typeList;
+    private ArrayList<String> capacityList;
+
+    private Spinner modelSpinner;
+    private Spinner capacitySpinner;
+    private Spinner vendorSpinner;
+    private Spinner typeSpinner;
+
+    private AssetAddDetailBO mSelectedPOSM = null;
+    private ArrayList<AssetAddDetailBO> posmList;
+    private String mSelectedModel = "0";
+    private String mSelectedVendor = "0";
+    private String mSelectedType = "0";
+    private String mSelectedCapacity = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +104,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
         assetTrackingHelper = SerializedAssetHelper.getInstance(this);
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -94,17 +112,71 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             setScreenTitle(getResources().getString(R.string.addnewasset));
         }
 
-        mAsset = (Spinner) findViewById(R.id.spinner_asset);
-        mBrand = (Spinner) findViewById(R.id.spinner_brand);
-        btnAddInstallDate = (Button) findViewById(R.id.date_button);
-        mSNO = (EditText) findViewById(R.id.etxt_sno);
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                R.id.txtNFCLabel).getTag()) != null)
+            ((TextView) findViewById(R.id.txtNFCLabel))
+                    .setText(mBModel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.txtNFCLabel).getTag()));
+
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                R.id.label_scan).getTag()) != null)
+            ((TextView) findViewById(R.id.label_scan))
+                    .setText(mBModel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.label_scan).getTag()));
+
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                R.id.label_asset_type).getTag()) != null)
+            ((TextView) findViewById(R.id.label_asset_type))
+                    .setText(mBModel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.label_asset_type).getTag()));
+
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                R.id.label_asset_model).getTag()) != null)
+            ((TextView) findViewById(R.id.label_asset_model))
+                    .setText(mBModel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.label_asset_model).getTag()));
+
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                R.id.label_asset_vendor).getTag()) != null)
+            ((TextView) findViewById(R.id.label_asset_vendor))
+                    .setText(mBModel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.label_asset_vendor).getTag()));
+
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                R.id.label_asset_capacity).getTag()) != null)
+            ((TextView) findViewById(R.id.label_asset_capacity))
+                    .setText(mBModel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.label_asset_capacity).getTag()));
+
+        mAsset = findViewById(R.id.spinner_asset);
+        btnAddInstallDate = findViewById(R.id.date_button);
+        mSNO = findViewById(R.id.etxt_sno);
         editext_NFC_number = findViewById(R.id.etxt_nfc_number);
-        btnSave = (Button) findViewById(R.id.btn_save);
+        btnSave = findViewById(R.id.btn_save);
         btnSave.setOnClickListener(this);
         imageView_barcode_scan = findViewById(R.id.imageView_barcode_scan);
         imageView_barcode_scan.setOnClickListener(this);
         iv_photo = findViewById(R.id.iv_photo);
         iv_photo.setOnClickListener(this);
+        modelSpinner = findViewById(R.id.spinner_model);
+        vendorSpinner = findViewById(R.id.spinner_vendor);
+        capacitySpinner = findViewById(R.id.spinner_capcity);
+        typeSpinner = findViewById(R.id.spinner_type);
+
+        if (!assetTrackingHelper.SHOW_ASSET_TYPE)
+            findViewById(R.id.ll_asset_type).setVisibility(View.GONE);
+        if (!assetTrackingHelper.SHOW_ASSET_CAPACITY)
+            findViewById(R.id.ll_asset_capacity).setVisibility(View.GONE);
+        if (!assetTrackingHelper.SHOW_ASSET_MODEL)
+            findViewById(R.id.ll_asset_model).setVisibility(View.GONE);
+        if (!assetTrackingHelper.SHOW_ASSET_VENDOR)
+            findViewById(R.id.ll_asset_vendor).setVisibility(View.GONE);
 
         loadData();
 
@@ -138,22 +210,21 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         if (!assetTrackingHelper.NEW_ASSET_PHOTO)
             findViewById(R.id.llnewassetPhoto).setVisibility(View.GONE);
 
-        assetTrackingHelper.downloadUniqueAssets(getApplicationContext(), "MENU_ASSET");
+        posmList = assetTrackingHelper.downloadUniqueAssets(getApplicationContext());
 
-        Vector mPOSMList = assetTrackingHelper.getAssetNames();
 
-        int siz = mPOSMList.size();
+        AssetAddDetailBO tempPosm = new AssetAddDetailBO();
+        tempPosm.setPOSMId("0");
+        tempPosm.setPOSMDescription(SELECT);
+        posmList.add(0, tempPosm);
 
-        ArrayAdapter<CharSequence> mAssetSpinAdapter = new ArrayAdapter<>(
-                this, R.layout.spinner_bluetext_layout);
+        mSelectedPOSM = tempPosm;
+
+        ArrayAdapter<AssetAddDetailBO> mAssetSpinAdapter = new ArrayAdapter<>(
+                this, R.layout.spinner_bluetext_layout, posmList);
         mAssetSpinAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        mAssetSpinAdapter.add(SELECT);
 
-        for (int k = 0; k < siz; ++k) {
-            mAssetSpinAdapter.add(mPOSMList.elementAt(k).toString());
-
-        }
 
         Commons.print("mAssetSpinAdapter" + mAssetSpinAdapter + ","
                 + mAsset);
@@ -164,20 +235,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int position, long arg3) {
 
-               /* assetTrackingHelper
-                        .downloadAssetBrand(getActivity().getApplicationContext(), assetTrackingHelper
-                                .getAssetIds(mAsset.getSelectedItem()
-                                        .toString()));
-
-                if (position != 0
-                        && assetTrackingHelper.getAssetBrandNames().size() > 0) {
-                    loadBrandData();
-                } else {
-                    if (position == 0 || assetTrackingHelper.getAssetBrandNames().size() == 0)
-                        ((TextView) getView().findViewById(R.id.brand_spinner_txt)).setVisibility(View.GONE);
-                    mBrand.setVisibility(View.GONE);
-                }*/
-
+                mSelectedPOSM = mAssetSpinAdapter.getItem(position);
 
             }
 
@@ -187,8 +245,114 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             }
         });
 
-        String todayDate = DateUtil.convertFromServerDateToRequestedFormat(
-                SDUtil.now(SDUtil.DATE_GLOBAL),
+        modelList = assetTrackingHelper.getAssetModels(this);
+        vendorList = assetTrackingHelper.getAssetVendors(this);
+        typeList = assetTrackingHelper.getAssetTypes(this);
+        capacityList = assetTrackingHelper.getAssetCapacity(this);
+
+        SerializedAssetBO tempBO = new SerializedAssetBO(1);
+        tempBO.setVendorName(ALL);
+        tempBO.setVendorId("0");
+        vendorList.add(0, tempBO);
+
+        tempBO = new SerializedAssetBO(2);
+        tempBO.setModelName(ALL);
+        tempBO.setModelId("0");
+        modelList.add(0, tempBO);
+
+        tempBO = new SerializedAssetBO(3);
+        tempBO.setAssetType(ALL);
+        tempBO.setAssetTypeId("0");
+        typeList.add(0, tempBO);
+
+        capacityList.add(0,ALL);
+
+        ArrayAdapter<SerializedAssetBO> mModelAdapter = new ArrayAdapter<>(this,
+                R.layout.spinner_bluetext_layout, modelList);
+        mModelAdapter
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+
+        ArrayAdapter<SerializedAssetBO> mVendorAdapter = new ArrayAdapter<>(this,
+                R.layout.spinner_bluetext_layout, vendorList);
+        mVendorAdapter
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+
+        ArrayAdapter<String> mCapacityAdapter = new ArrayAdapter<>(this,
+                R.layout.spinner_bluetext_layout, capacityList);
+        mCapacityAdapter
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+
+        ArrayAdapter<SerializedAssetBO> mAssetTypeAdapter = new ArrayAdapter<>(this,
+                R.layout.spinner_bluetext_layout, typeList);
+        mAssetTypeAdapter
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+
+        capacitySpinner.setAdapter(mCapacityAdapter);
+        capacitySpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                       int position, long arg3) {
+                    mSelectedCapacity = capacityList.get(position);
+                    filterPosm();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+
+            }
+        });
+
+        vendorSpinner.setAdapter(mVendorAdapter);
+        vendorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                       int position, long arg3) {
+                        mSelectedVendor = vendorList.get(position).getVendorId();
+                        filterPosm();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+
+            }
+        });
+
+        modelSpinner.setAdapter(mModelAdapter);
+        modelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                       int position, long arg3) {
+                        mSelectedModel = modelList.get(position).getModelId();
+                        filterPosm();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+
+            }
+        });
+
+        typeSpinner.setAdapter(mAssetTypeAdapter);
+        typeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> arg0, View arg1,
+                                       int position, long arg3) {
+                mSelectedType = typeList.get(position).getAssetTypeId();
+                filterPosm();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> arg0) {
+
+            }
+        });
+
+           String todayDate = DateTimeUtils.convertFromServerDateToRequestedFormat(
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
 
 
@@ -219,7 +383,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                                     mDay = dayOfMonth;
                                     Calendar selectedDate = new GregorianCalendar(
                                             year, monthOfYear, dayOfMonth);
-                                    btnAddInstallDate.setText(DateUtil
+                                    btnAddInstallDate.setText(DateTimeUtils
                                             .convertDateObjectToRequestedFormat(
                                                     selectedDate.getTime(),
                                                     ConfigurationMasterHelper.outDateFormat));
@@ -230,7 +394,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                                                 AddSerializedAssetActivity.this,
                                                 R.string.future_date_not_allowed,
                                                 Toast.LENGTH_SHORT).show();
-                                        btnAddInstallDate.setText(DateUtil
+                                        btnAddInstallDate.setText(DateTimeUtils
                                                 .convertDateObjectToRequestedFormat(
                                                         mCurrentCalendar.getTime(),
                                                         ConfigurationMasterHelper.outDateFormat));
@@ -271,52 +435,12 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
     }
 
     /**
-     * Load brands
-     */
-    private void loadBrandData() {
-        ((TextView) findViewById(R.id.brand_spinner_txt)).setVisibility(View.VISIBLE);
-        mBrand.setVisibility(View.VISIBLE);
-        ArrayAdapter<CharSequence> mAssetBrandsAdapter = new ArrayAdapter<>(
-                this, R.layout.spinner_bluetext_layout);
-        mAssetBrandsAdapter
-                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        Vector mBrand = assetTrackingHelper.getAssetBrandNames();
-        if (mBrand == null || mBrand.size() < 1) {
-            this.mBrand.setAdapter(null);
-            mAssetBrandsAdapter.add(SELECT);
-            this.mBrand.setAdapter(mAssetBrandsAdapter);
-            return;
-        }
-        int mBrandSize = mBrand.size();
-        if (mBrandSize == 0)
-            return;
-
-        mAssetBrandsAdapter.add(SELECT);
-
-        for (int i = 0; i < mBrandSize; ++i) {
-
-            mAssetBrandsAdapter.add(mBrand.elementAt(i).toString());
-
-        }
-        this.mBrand.setAdapter(mAssetBrandsAdapter);
-    }
-
-    /**
      * Set values for adding asset
      */
     private void setAddAssetDetails() {
 
-        assetBo.setPOSM(assetTrackingHelper.getAssetIds(mAsset
-                .getSelectedItem().toString()));
+        assetBo.setPOSM(mSelectedPOSM.getPOSMId());
 
-            /*if (mBrand.getSelectedItem() != null) {
-                if (!mBrand.getSelectedItem().toString()
-                        .equals(SELECT))
-                    assetBo.setBrand(assetTrackingHelper.getAssetBrandIds(mBrand
-                            .getSelectedItem().toString()));
-                else
-                    assetBo.setBrand("0");
-            } else*/
         assetBo.setBrand("0");
 
         assetBo.setNewInstallDate(btnAddInstallDate.getText().toString());
@@ -336,8 +460,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         if (view.getId() == R.id.btn_save) {
 
             try {
-                if (!mAsset.getSelectedItem().toString()
-                        .equals(SELECT)
+                if (mAsset.getSelectedItemPosition() != 0
                         && !mSNO.getText().toString().equals("")) {
                     if (!assetTrackingHelper
                             .getUniqueSerialNo(mSNO.getText()
@@ -387,8 +510,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         } else if (view.getId() == R.id.imageView_barcode_scan) {
             scanBarCode();
         } else if (view.getId() == R.id.iv_photo) {
-            if (!mAsset.getSelectedItem().toString()
-                    .equals(SELECT)
+            if (mAsset.getSelectedItemPosition() != 0
                     && !mSNO.getText().toString().equals("")) {
                 if (!assetTrackingHelper
                         .getUniqueSerialNo(mSNO.getText()
@@ -425,7 +547,6 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                         .getString(
                                 R.string.saved_successfully),
                 Toast.LENGTH_SHORT).show();
-        //dismiss();
         finish();
     }
 
@@ -470,7 +591,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                 String strQty = s + "";
                 edittext.setText(strQty);
             } else {
-                Button ed = (Button) findViewById(vw.getId());
+                Button ed = findViewById(vw.getId());
                 append = ed.getText().toString();
                 eff();
             }
@@ -553,18 +674,18 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                         Environment.DIRECTORY_PICTURES)
                         + "/" + DataMembers.photoFolderName + "/";
 
-                imageName = moduleName
-                        + mBModel.getRetailerMasterBO()
+                imageName = "NAT_"
+                        + mBModel.getAppDataProvider().getRetailMaster()
                         .getRetailerID() + "_"
-                        + assetTrackingHelper.getAssetIds(mAsset.getSelectedItem().toString()) + "_"
+                        + mSelectedPOSM.getPOSMId() + "_"
                         + mSNO.getText().toString() + "_"
                         + Commons.now(Commons.DATE_TIME)
                         + "_img.jpg";
 
-                String fileNameStarts = moduleName
-                        + mBModel.getRetailerMasterBO()
+                String fileNameStarts = "NAT_"
+                        + mBModel.getAppDataProvider().getRetailMaster()
                         .getRetailerID() + "_"
-                        + assetTrackingHelper.getAssetIds(mAsset.getSelectedItem().toString()) + "_"
+                        + mSelectedPOSM.getPOSMId() + "_"
                         + mSNO.getText().toString() + "_"
                         + Commons.now(Commons.DATE);
 
@@ -576,9 +697,9 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                 } else {
                     Intent intent = new Intent(this,
                             CameraActivity.class);
-                    intent.putExtra("quality", 40);
+                    intent.putExtra(CameraActivity.QUALITY, 40);
                     String path = photoPath + "/" + imageName;
-                    intent.putExtra("path", path);
+                    intent.putExtra(CameraActivity.PATH, path);
                     startActivityForResult(intent, CAMERA_REQUEST_CODE);
                 }
 
@@ -617,9 +738,9 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                                 imageNameStarts);
                         Intent intent = new Intent(getApplicationContext(),
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
                         String path = photoPath + "/" + imageName;
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 CAMERA_REQUEST_CODE);
 
@@ -627,10 +748,40 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                 }, new CommonDialog.negativeOnClickListener() {
             @Override
             public void onNegativeButtonClick() {
-// dialog.dismiss();
             }
         });
         commonDialog.show();
         commonDialog.setCancelable(false);
+    }
+
+    private void filterPosm() {
+
+        ArrayList<AssetAddDetailBO> filterList = new ArrayList<>();
+        for (AssetAddDetailBO assetAddDetailBO : posmList) {
+            if (vendorSpinner.getSelectedItemPosition() != 0 && mSelectedVendor.equals(assetAddDetailBO.getVendorId()))
+                filterList.add(assetAddDetailBO);
+            if (modelSpinner.getSelectedItemPosition() != 0 && mSelectedModel.equals(assetAddDetailBO.getModelId()) && !filterList.contains(assetAddDetailBO))
+                filterList.add(assetAddDetailBO);
+            if (capacitySpinner.getSelectedItemPosition() != 0 && mSelectedCapacity.equals(assetAddDetailBO.getCapacity()) && !filterList.contains(assetAddDetailBO))
+                filterList.add(assetAddDetailBO);
+            if (typeSpinner.getSelectedItemPosition() != 0 && mSelectedType.equals(assetAddDetailBO.getTypeId()) && !filterList.contains(assetAddDetailBO))
+                filterList.add(assetAddDetailBO);
+
+        }
+
+        if (capacitySpinner.getSelectedItemPosition() == 0 && vendorSpinner.getSelectedItemPosition() == 0 && modelSpinner.getSelectedItemPosition() == 0 && typeSpinner.getSelectedItemPosition() == 0)
+            filterList.addAll(posmList);
+
+        AssetAddDetailBO tempPosm = new AssetAddDetailBO();
+        tempPosm.setPOSMId("0");
+        tempPosm.setPOSMDescription(SELECT);
+        filterList.add(0, tempPosm);
+
+        ArrayAdapter<AssetAddDetailBO> mAssetSpinAdapter = new ArrayAdapter<>(
+                this, R.layout.spinner_bluetext_layout, filterList);
+        mAssetSpinAdapter
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+        mAsset.setAdapter(mAssetSpinAdapter);
+
     }
 }

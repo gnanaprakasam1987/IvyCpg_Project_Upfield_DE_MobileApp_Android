@@ -31,6 +31,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
@@ -43,8 +44,8 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -139,7 +140,7 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
             distName = (TextView) findViewById(R.id.distname);
             distName2 = (TextView) findViewById(R.id.distname2);
             distaddress = (TextView) findViewById(R.id.distadd);
-            salesdate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.configurationMasterHelper.outDateFormat));
+            salesdate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), bmodel.configurationMasterHelper.outDateFormat));
             invoiceno.setText(mInvoiceno);
             if (bmodel.userMasterHelper.getUserMasterBO().getDistributorName().length() > 15) {
                 distName.setText(bmodel.userMasterHelper.getUserMasterBO()
@@ -320,8 +321,8 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                 }
             }
 
-                bmodel.productHelper.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
-                bmodel.productHelper.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
+            bmodel.productHelper.taxHelper.loadTaxDetailsForPrint(bmodel.invoiceNumber);
+            bmodel.productHelper.taxHelper.loadTaxProductDetailsForPrint(bmodel.invoiceNumber);
 
             ArrayList<TaxBO> groupIdList = bmodel.productHelper.taxHelper.getGroupIdList();
 
@@ -336,7 +337,7 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
             }
 
 
-            ArrayList<SubDepotBo> distributorList = bmodel.loadManagementHelper.getSubDepotList();
+            ArrayList<SubDepotBo> distributorList = LoadManagementHelper.getInstance(this).getSubDepotList();
             String distributorAddress1 = "";
             String distributorAddress2 = "";
             String distributorContactNo = "";
@@ -754,8 +755,8 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
             if (IsFromReport) {
                 finish();
             } else {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 finish();
                 //BusinessModel.loadActivity(this, DataMembers.actHomeScreenTwo);
                 //  DataMembers.actHomeScreenTwo);
@@ -839,7 +840,7 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                 }
 
 
-                ArrayList<SubDepotBo> distributorList = bmodel.loadManagementHelper.getSubDepotList();
+                ArrayList<SubDepotBo> distributorList = LoadManagementHelper.getInstance(this).getSubDepotList();
                 String distributorAddress1 = "";
                 String distributorAddress2 = "";
                 String distributorContactNo = "";
@@ -885,7 +886,7 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                     sb.append("Invoice No:" + bmodel.invoiceNumber + "\r\n");
 
                     sb.append("T 5 0 200 " + (80 + totalLength));
-                    sb.append("Date:" + DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.configurationMasterHelper.outDateFormat) + "\r\n");
+                    sb.append("Date:" + DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), bmodel.configurationMasterHelper.outDateFormat) + "\r\n");
 
 
                     sb.append("T 5 0 10 " + (130 + totalLength));
@@ -1531,13 +1532,13 @@ public class PrintPreviewScreenTitan extends IvyBaseActivityNoActionBar {
                 isPrinterLanguageDetected = false;
             } /*
              * catch (ZebraPrinterLanguageUnknownException e) {
-			 * setStatus("Unknown Printer Language", Color.RED);
-			 * Commons.printException(e);
-			 * 
-			 * isPrinterLanguageDetected = false;
-			 * 
-			 * // printer = null; // DemoSleeper.sleep(1000); // disconnect(); }
-			 */
+             * setStatus("Unknown Printer Language", Color.RED);
+             * Commons.printException(e);
+             *
+             * isPrinterLanguageDetected = false;
+             *
+             * // printer = null; // DemoSleeper.sleep(1000); // disconnect(); }
+             */
         }
 
         return printer;

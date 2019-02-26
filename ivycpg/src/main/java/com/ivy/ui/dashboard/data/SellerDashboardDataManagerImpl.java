@@ -14,6 +14,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.rx.Optional;
 
 import org.reactivestreams.Publisher;
@@ -43,7 +44,7 @@ import static com.ivy.ui.dashboard.SellerDashboardConstants.PRD_ORD;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.PRD_STK;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.PRODUCTVIE_CALLS;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.WEEK;
-import static com.ivy.utils.AppUtils.QT;
+import static com.ivy.utils.StringUtils.QT;
 
 public class SellerDashboardDataManagerImpl implements SellerDashboardDataManager {
 
@@ -295,7 +296,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                             + " and interval= "
                             + QT(interval)
                             + " AND "
-                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                             + " between SK.fromdate and SK.todate "
                             + (userId.equals("0") ? " and SK.isSummary=1" : "")
                             + " group by SLM.Listid order by DisplaySeq asc";
@@ -447,7 +448,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                             + " inner join BeatMaster on RouteID = BeatID "
                             + " where interval= '" + interval + "' "
                             + " AND "
-                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                             + " between RK.fromdate and RK.todate group by SLM.Listid,RKD.KPiid order by DisplaySeq,RKD.KPiid asc";
                     Cursor c = mDbUtil.selectSQL(sql);
                     if (c != null) {
@@ -510,7 +511,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                                     + " and interval= "
                                     + QT(interval)
                                     + " AND "
-                                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                                     + " between SK.fromdate and SK.todate "
                                     + (userId.equals("0") ? " and SK.isSummary=1" : "")
                                     + " group by SLM.Listid order by DisplaySeq asc";
@@ -686,7 +687,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                     String sb = "SELECT Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt," +
                             " Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os " +
                             " FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo" +
-                            " Where Inv.InvoiceDate = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                            " Where Inv.InvoiceDate = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
                     Cursor c = mDbUtil
                             .selectSQL(sb);
@@ -810,7 +811,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                 try {
                     initDb();
 
-                    String sb = "Select IntervalDesc from SellerKPI where " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " between fromdate and todate and Interval = " + QT(WEEK);
+                    String sb = "Select IntervalDesc from SellerKPI where " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " between fromdate and todate and Interval = " + QT(WEEK);
                     Cursor c = mDbUtil.selectSQL(sb);
                     if (c.getCount() > 0) {
                         while (c.moveToNext()) {
@@ -843,7 +844,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
                     if (!configurationMasterHelper.IS_INVOICE) {
                         sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
-                        sb.append("where upload!='X' and OrderDate=").append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                        sb.append("where upload!='X' and OrderDate=").append(QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
                         c = mDbUtil
                                 .selectSQL(sb.toString());
                         if (c != null) {
@@ -857,7 +858,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                         }
                     } else {
                         sb.append("select  count(distinct retailerid),sum(linespercall),sum(invoiceAmount) from Invoicemaster ");
-                        sb.append("where InvoiceDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                        sb.append("where InvoiceDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
                         c = mDbUtil
                                 .selectSQL(sb.toString());
                         if (c != null) {
@@ -871,7 +872,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                     }
                     sb = new StringBuffer();
                     sb.append("select  sum(mspvalues),count(distinct orderid) from OrderHeader ");
-                    sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                    sb.append("where upload!='X' and OrderDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
                     c = mDbUtil
                             .selectSQL(sb.toString());
                     if (c != null) {
@@ -1191,9 +1192,9 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
         return Single.fromCallable(new Callable<Double>() {
             @Override
             public Double call() throws Exception {
-                double salesReturnValue =0.0;
+                double salesReturnValue = 0.0;
                 initDb();
-                try{
+                try {
                     Cursor c = mDbUtil
                             .selectSQL("select count(distinct uid),sum(ReturnValue) from SalesReturnHeader where upload!='X'");
                     if (c != null) {
@@ -1204,7 +1205,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                         }
                         c.close();
                     }
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
 
@@ -1220,7 +1221,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
             public Optional<DailyReportBO> call() throws Exception {
                 DailyReportBO dailyRp = new DailyReportBO();
 
-                try{
+                try {
                     initDb();
 
                     String query = "select VL.pcsqty,VL.outerqty,VL.douomqty,VL.caseqty,VL.duomqty,"
@@ -1252,7 +1253,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                         c.close();
                     }
 
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
 
@@ -1275,10 +1276,10 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
                         String chIDs = "";
                         int count = 0;
-                        try{
+                        try {
 
-                            for(RetailerMasterBO retailerMasterBO: appDataProvider.getRetailerMasters()){
-                                if(retailerMasterBO.getIsToday() == 1){
+                            for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
+                                if (retailerMasterBO.getIsToday() == 1) {
                                     chIDs = chIDs + "," + channelIds;
                                 }
                             }
@@ -1294,7 +1295,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                             }
                             c.close();
 
-                        }catch (Exception ignored){
+                        } catch (Exception ignored) {
 
                         }
                         shutDownDb();
@@ -1306,11 +1307,11 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
     }
 
-    private int promotionExecutedCount=0;
+    private int promotionExecutedCount = 0;
 
     @Override
     public Single<Integer> fetchPromotionExecutedCount() {
-        promotionExecutedCount=0;
+        promotionExecutedCount = 0;
 
         return Flowable.just(appDataProvider.getRetailerMasters()).flatMap(new Function<ArrayList<RetailerMasterBO>, Publisher<RetailerMasterBO>>() {
             @Override
@@ -1326,7 +1327,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
         }).takeWhile(new Predicate<RetailerMasterBO>() {
             @Override
             public boolean test(RetailerMasterBO retailerMasterBO) throws Exception {
-                return retailerMasterBO.getIsToday()== 1;
+                return retailerMasterBO.getIsToday() == 1;
             }
         }).flatMapSingle(new Function<RetailerMasterBO, SingleSource<Integer>>() {
             @Override
@@ -1337,14 +1338,13 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
     }
 
 
-
-    private Single<Integer> fetchPromotionExecCount(final String retailerID){
+    private Single<Integer> fetchPromotionExecCount(final String retailerID) {
         return Single.fromCallable(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
 
 
-                try{
+                try {
                     initDb();
 
                     Cursor c = mDbUtil.selectSQL("SELECT count( distinct PromotionID) FROM PromotionDetail where RetailerID =" + QT(retailerID));
@@ -1355,7 +1355,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                     }
                     c.close();
 
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
                 shutDownDb();
@@ -1371,11 +1371,11 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
         return channelDataManager.fetchChannelIds().flatMap((Function<String, SingleSource<Optional<String>>>) channelIds -> Single.fromCallable(() -> {
 
             String chIDs = "";
-            String mslProdIDs="";
-            try{
+            String mslProdIDs = "";
+            try {
 
-                for(RetailerMasterBO retailerMasterBO: appDataProvider.getRetailerMasters()){
-                    if(retailerMasterBO.getIsToday() == 1){
+                for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
+                    if (retailerMasterBO.getIsToday() == 1) {
                         chIDs = chIDs + "," + channelIds;
                     }
                 }
@@ -1386,17 +1386,17 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                         "inner join ProductTaggingGroupMapping PTGM on PTGM.groupid = PTCM.groupid " +
                         "inner join  ProductTaggingCriteriaMapping PTCM on PTM.groupid = PTCM.groupid " +
                         "AND PTM.TaggingTypelovID in (select listid from standardlistmaster where listcode='MSL' and listtype='PRODUCT_TAGGING') " +
-                        "where criteriatype = 'CHANNEL' and Criteriaid in (" + chIDs + ")";
+                        "where PTCM.ChannelId in (" + chIDs + ")";
 
                 Cursor c = mDbUtil.selectSQL(sb);
                 if (c.getCount() > 0) {
                     while (c.moveToNext()) {
                         mslCount[0]++;
-                        mslProdIDs=mslProdIDs+","+c.getInt(1);
+                        mslProdIDs = mslProdIDs + "," + c.getInt(1);
                     }
                 }
                 c.close();
-            }catch (Exception ignored){
+            } catch (Exception ignored) {
 
             }
             shutDownDb();
@@ -1406,9 +1406,9 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
             public Optional<String> call() throws Exception {
 
                 String rids = "";
-                int mslExecutedCount=0;
+                int mslExecutedCount = 0;
 
-                for(RetailerMasterBO retailerMasterBO: appDataProvider.getRetailerMasters())
+                for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters())
                     if (retailerMasterBO.getIsToday() == 1) {
                         rids = rids + "," + retailerMasterBO.getRetailerID();
                     }
@@ -1418,7 +1418,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                 if (rids.endsWith(","))
                     rids = rids.substring(0, rids.length() - 1);
 
-                try{
+                try {
                     initDb();
 
                     StringBuilder sb = new StringBuilder();
@@ -1433,12 +1433,12 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                     }
                     c.close();
 
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
 
 
-                return new Optional<String>(mslCount[0]+","+mslExecutedCount);
+                return new Optional<String>(mslCount[0] + "," + mslExecutedCount);
             }
         })));
     }

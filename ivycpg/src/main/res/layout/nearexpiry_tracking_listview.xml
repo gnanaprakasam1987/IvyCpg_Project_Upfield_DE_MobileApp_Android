@@ -36,7 +36,8 @@
             android:layout_gravity="center"
             android:ellipsize="marquee"
             android:singleLine="true"
-            android:text="@string/prod_code" />
+            android:text="@string/prod_code"
+            android:tag="pcode"/>
 
         <TextView
             android:id="@+id/barcode"

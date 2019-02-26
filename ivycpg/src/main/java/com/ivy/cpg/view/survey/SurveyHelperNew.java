@@ -12,7 +12,8 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -427,7 +428,7 @@ public class SurveyHelperNew {
             sb.append(" and SM.SurveyId not in (select AH.surveyid from answerheader AH ");
             sb.append("Where retailerid = '" + retailerid + "' and AH.frequency='DAILY_PIRAMAL') ");
             sb.append("AND SM.SurveyId NOT IN (SELECT SH.surveyid FROM SurveyHistroy SH WHERE SH.retailerid = '" + retailerid + "' and " +
-                    "(case when lower(freq) = 'daily' then Date = '" + SDUtil.now(SDUtil.DATE_GLOBAL) + "' " +
+                    "(case when lower(freq) = 'daily' then Date = '" + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL) + "' " +
                     "when lower(freq) = 'monthly' then Date like '%/" + (Calendar.getInstance().get(Calendar.MONTH) + 1) + "/%' " +
                     "when lower(freq) = 'yearly' then Date like '" + Calendar.getInstance().get(Calendar.YEAR) + "/%' end)) ");
             sb.append("ORDER BY SM.Sequence, SM.SurveyId, SMP.GroupName, SMP.Sequence, SMP.QID, OM.OptionId");
@@ -504,8 +505,7 @@ public class SurveyHelperNew {
                                         imgName = c1.getString(0);
                                     }
                                     questionBO.setImage1Captured(true);
-                                    questionBO.setImage1Path(HomeScreenFragment.folder
-                                            .getPath() + imgName);
+                                    questionBO.setImage1Path(FileUtils.photoFolderPath + imgName);
                                     questionBO.setImage2Captured(false);
                                     questionBO.setImage2Path("");
                                     counter++;
@@ -517,8 +517,7 @@ public class SurveyHelperNew {
                                         imgName = c1.getString(0);
                                     }
                                     questionBO.setImage2Captured(true);
-                                    questionBO.setImage2Path(HomeScreenFragment.folder
-                                            .getPath() + imgName);
+                                    questionBO.setImage2Path(FileUtils.photoFolderPath + imgName);
                                     break;
                                 }
                             }
@@ -601,8 +600,7 @@ public class SurveyHelperNew {
                                             imgName = c1.getString(0);
                                         }
                                         questionBO.setImage1Captured(true);
-                                        questionBO.setImage1Path(HomeScreenFragment.folder
-                                                .getPath() + "/" + imgName);
+                                        questionBO.setImage1Path(FileUtils.photoFolderPath + "/" + imgName);
                                         questionBO.setImage2Captured(false);
                                         questionBO.setImage2Path("");
                                         counter++;
@@ -614,8 +612,7 @@ public class SurveyHelperNew {
                                             imgName = c1.getString(0);
                                         }
                                         questionBO.setImage2Captured(true);
-                                        questionBO.setImage2Path(HomeScreenFragment.folder
-                                                .getPath() + imgName);
+                                        questionBO.setImage2Path(FileUtils.photoFolderPath + imgName);
                                         break;
                                     }
                                 }
@@ -1100,7 +1097,7 @@ public class SurveyHelperNew {
                     String sql = "SELECT uid FROM AnswerHeader WHERE"
                             + " surveyid = " + sBO.getSurveyID()
                             + " AND date = "
-                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                             + " AND retailerid = " + QT(retailerid)
                             + " AND distributorID = " + distID
                             + " AND ModuleID = " + QT(surveyTypeStandardListId)
@@ -1132,7 +1129,7 @@ public class SurveyHelperNew {
                             + ""
                             + bmodel.userMasterHelper.getUserMasterBO()
                             .getUserid() + ""
-                            + SDUtil.now(SDUtil.DATE_TIME_ID);
+                            + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
                     // update joint call
                     bmodel.outletTimeStampHelper.updateJointCallDetailsByModuleWise(menuCode, uid, oldUid);
 
@@ -1260,7 +1257,7 @@ public class SurveyHelperNew {
 
                                 String headerValues = QT(uid) + ","
                                         + sBO.getSurveyID() + ","
-                                        + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                                        + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                                         + QT(retailerid) + "," + distID + "," + QT(surveyTypeStandardListId) + ","
                                         + superwiserID
                                         + "," + totalAchievedScore + "," + qBO.getTargtScore()
@@ -1287,7 +1284,7 @@ public class SurveyHelperNew {
                         String sql = "SELECT uid FROM AnswerHeader WHERE"
                                 + " surveyid = " + sBO.getSurveyID()
                                 + " AND date = "
-                                + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                                + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                                 + " AND retailerid = " + QT(retailerid)
                                 + " AND distributorID = " + distID
                                 + " AND ModuleID = " + QT(surveyTypeStandardListId)
@@ -1321,7 +1318,7 @@ public class SurveyHelperNew {
                                 + ""
                                 + bmodel.userMasterHelper.getUserMasterBO()
                                 .getUserid() + ""
-                                + SDUtil.now(SDUtil.DATE_TIME_ID);
+                                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
                         // update joint call
                         bmodel.outletTimeStampHelper.updateJointCallDetailsByModuleWise(menuCode, uid, oldUid);
@@ -1451,7 +1448,7 @@ public class SurveyHelperNew {
 
                                     String headerValues = QT(uid) + ","
                                             + surBO.getSurveyID() + ","
-                                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                                             + QT(retailerid) + "," + distID + "," + QT(surveyTypeStandardListId) + ","
                                             + superwiserID
                                             + "," + totalAchievedScore + "," + sBO.getTargtScore()
@@ -1607,7 +1604,7 @@ public class SurveyHelperNew {
 
 
     private void deleteFiles(String filename) {
-        File folder = new File(HomeScreenFragment.photoPath + "/");
+        File folder = new File(FileUtils.photoFolderPath + "/");
 
         File[] files = folder.listFiles();
         for (File tempFile : files) {
@@ -1655,7 +1652,7 @@ public class SurveyHelperNew {
                 sb.append("SELECT uid FROM AnswerHeader  ");
                 sb.append(" WHERE retailerid = " + QT(retailerid) + " AND distributorID = " + distID + " AND surveyid = ");
                 sb.append(+surveyId + " AND date = ");
-                sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                sb.append(QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
                 sb.append(" and upload='N' and supervisiorId = " + supervisiorId + " AND userid = " + userid);
                 sb.append(" and frequency!='MULTIPLE'");
 
@@ -1740,8 +1737,7 @@ public class SurveyHelperNew {
                                                     } catch (Exception e) {
                                                         imgName = c3.getString(0);
                                                     }
-                                                    subqBO.setImage1Path(HomeScreenFragment.folder
-                                                            .getPath() + imgName);
+                                                    subqBO.setImage1Path(FileUtils.photoFolderPath + imgName);
                                                     subqBO.setImage2Captured(false);
                                                     subqBO.setImage2Path("");
                                                     counter++;
@@ -1753,8 +1749,7 @@ public class SurveyHelperNew {
                                                         imgName = c3.getString(0);
                                                     }
                                                     subqBO.setImage2Captured(true);
-                                                    subqBO.setImage2Path(HomeScreenFragment.folder
-                                                            .getPath() + imgName);
+                                                    subqBO.setImage2Path(FileUtils.photoFolderPath + imgName);
                                                     break;
                                                 }
                                             }
@@ -1952,7 +1947,7 @@ public class SurveyHelperNew {
             String sql = "SELECT uid FROM AnswerHeader WHERE"
                     + " retailerid = " + QT(retailerid) + " AND surveyid = "
                     + surveyId + " AND date = "
-                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " and upload='I' and supervisiorId = " + supervisiorId
                     + " and refid='" + referenceId + "'";
 
@@ -2093,7 +2088,7 @@ public class SurveyHelperNew {
             String sql = "SELECT uid FROM AnswerHeader WHERE"
                     + " retailerid = " + QT(retailerid) + " AND distributorID = " + distID + " AND surveyid = "
                     + surveyId + " AND date = "
-                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " and upload='N' and supervisiorId = " + supervisiorId;
 
             Cursor answerHeaderCursor = db.selectSQL(sql);
@@ -2275,7 +2270,7 @@ public class SurveyHelperNew {
                     String sql = "SELECT uid FROM NewRetailerSurveyResultHeader WHERE"
                             + " surveyid = " + sBO.getSurveyID()
                             + " AND date = "
-                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                             + " AND retailerid = " + QT(retailerid)
                             + " AND menucode=" + QT(menuCode)
                             + " AND userid=" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
@@ -2298,7 +2293,7 @@ public class SurveyHelperNew {
                             + ""
                             + bmodel.userMasterHelper.getUserMasterBO()
                             .getUserid() + ""
-                            + SDUtil.now(SDUtil.DATE_TIME_ID);
+                            + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
                     // update joint call
                     bmodel.outletTimeStampHelper.updateJointCallDetailsByModuleWise(menuCode, uid, oldUid);
 
@@ -2356,7 +2351,7 @@ public class SurveyHelperNew {
 
                                 String headerValues = QT(uid) + ","
                                         + sBO.getSurveyID() + ","
-                                        + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                                        + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                                         + QT(retailerid) + ","
                                         + QT(remarkDone) + ","
                                         + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ","
@@ -2379,7 +2374,7 @@ public class SurveyHelperNew {
                         String sql = "SELECT uid FROM NewRetailerSurveyResultHeader WHERE"
                                 + " surveyid = " + sBO.getSurveyID()
                                 + " AND date = "
-                                + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                                + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                                 + " AND retailerid = " + QT(retailerid)
                                 + " AND menucode=" + QT(menuCode)
                                 + " AND userid=" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
@@ -2403,7 +2398,7 @@ public class SurveyHelperNew {
                                 + ""
                                 + bmodel.userMasterHelper.getUserMasterBO()
                                 .getUserid() + ""
-                                + SDUtil.now(SDUtil.DATE_TIME_ID);
+                                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
                         // update joint call
                         bmodel.outletTimeStampHelper.updateJointCallDetailsByModuleWise(menuCode, uid, oldUid);
@@ -2456,7 +2451,7 @@ public class SurveyHelperNew {
 
                                     String headerValues = QT(uid) + ","
                                             + sBO.getSurveyID() + ","
-                                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                                             + QT(retailerid) + ","
                                             + QT(remarkDone) + ","
                                             + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ","

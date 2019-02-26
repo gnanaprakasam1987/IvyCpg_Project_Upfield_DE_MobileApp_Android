@@ -33,7 +33,7 @@
             android:layout_below="@+id/productname"
             android:gravity="start|center"
             android:text="@string/prod_code"
-            />
+            android:tag="pcode"/>
 
         <TextView
             android:id="@+id/batchid"

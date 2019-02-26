@@ -75,6 +75,7 @@ import com.ivy.maplib.BaiduMapDialogue;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
+import com.ivy.sd.png.bo.CensusLocationBO;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.GenericObjectPair;
@@ -98,6 +99,8 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.profile.RetailerContactBo;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -298,13 +301,13 @@ public class NewOutletFragment extends IvyBaseFragment
         editText = new AppCompatEditText[100];
         textview = new TextView[100];
 
-        uID = SDUtil.now(SDUtil.DATE_TIME_ID);
+        uID = DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
         bmodel.newOutletHelper.setId(bmodel.userMasterHelper.getUserMasterBO()
                 .getDistributorid()
                 + ""
                 + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                 + ""
-                + SDUtil.now(SDUtil.DATE_TIME_ID));
+                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
         saveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -843,6 +846,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         || configCode.equalsIgnoreCase("FOOD_LICENCE_NUM")
                         || configCode.equalsIgnoreCase("REGION")
                         || configCode.equalsIgnoreCase("COUNTRY")
+                        || configCode.equalsIgnoreCase("DISTRICT")
                         ) {
 
                     totalView.addView(getEditTextView(i, mName, InputType.TYPE_TEXT_VARIATION_PERSON_NAME, mandatory), commonsparams);
@@ -2265,6 +2269,19 @@ public class NewOutletFragment extends IvyBaseFragment
                         validate = false;
                         Toast.makeText(getContext(), getResources().getString(R.string.contact_list_mandatory), Toast.LENGTH_LONG).show();
                     }
+                } else if (profileConfig.get(i).getConfigCode()
+                        .equalsIgnoreCase("DISTRICT")
+                        && mandatory == 1) {
+                    edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
+                    if (editText[i].getText().toString().trim().length() == 0) {
+                        validate = false;
+                        scrollToSpecificEditText(edittextinputLayout);
+                        editText[i].requestFocus();
+                        edittextinputLayout.setErrorEnabled(true);
+                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                        editText[i].addTextChangedListener(watcher);
+                        break;
+                    }
                 }
 
             }
@@ -2299,7 +2316,8 @@ public class NewOutletFragment extends IvyBaseFragment
 
         if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("ADDRESS1") ||
                 profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("ADDRESS2") ||
-                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("ADDRESS3")) {
+                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("ADDRESS3") ||
+                profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("DISTRICT")) {
             addLengthFilter(profileConfig.get(mNumber).getRegex());
             checkRegex(profileConfig.get(mNumber).getRegex());
         }
@@ -2951,6 +2969,14 @@ public class NewOutletFragment extends IvyBaseFragment
                             editText[mNumber].setText(s);
                             editText[mNumber].setSelection(editText[mNumber].length());
                         }
+
+                        if ("PINCODE".equalsIgnoreCase(profileConfig.get(mNumber).getConfigCode())){
+                            CensusLocationBO censusLocationBO = getLocationDetails(s);
+                            if (censusLocationBO != null) {
+                                setLocationDetails(censusLocationBO);
+                            }
+
+                        }
                     }
                 });
 
@@ -3197,6 +3223,8 @@ public class NewOutletFragment extends IvyBaseFragment
                 return outlet.getCountry();
             case "MOBILE":
                 return outlet.getMobile();
+            case "DISTRICT":
+                return outlet.getDistrict();
         }
 
 
@@ -3613,21 +3641,23 @@ public class NewOutletFragment extends IvyBaseFragment
         public void onDateSet(DatePicker view, int year, int month, int day) {
 
             Calendar selectedDate = new GregorianCalendar(year, month, day);
-            if (selectedDate.after(Calendar.getInstance())) {
-                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
-                if (code.equalsIgnoreCase("TINEXPDATE"))
-                    tinExpDateTextView.setText(sdf.format(selectedDate.getTime()));
-                else if (code.equalsIgnoreCase("DLEXPDATE"))
-                    dlExpDateTextView.setText(sdf.format(selectedDate.getTime()));
-                else if (code.equalsIgnoreCase("FLEXPDATE"))
-                    flExpDateTextView.setText(sdf.format(selectedDate.getTime()));
-                this.year = year;
-                this.day = day;
-                this.month = month;
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+            if (code.equalsIgnoreCase("TINEXPDATE")) {
+                tinExpDateTextView.setText(sdf.format(selectedDate.getTime()));
             } else {
-                Toast.makeText(getActivity(),
-                        "Select future date",
-                        Toast.LENGTH_SHORT).show();
+                if (selectedDate.after(Calendar.getInstance())) {
+                    if (code.equalsIgnoreCase("DLEXPDATE"))
+                        dlExpDateTextView.setText(sdf.format(selectedDate.getTime()));
+                    else if (code.equalsIgnoreCase("FLEXPDATE"))
+                        flExpDateTextView.setText(sdf.format(selectedDate.getTime()));
+                    this.year = year;
+                    this.day = day;
+                    this.month = month;
+                } else {
+                    Toast.makeText(getActivity(),
+                            "Select future date",
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
@@ -5312,6 +5342,7 @@ public class NewOutletFragment extends IvyBaseFragment
             boolean isRegion = false;
             boolean isCountry = false;
             boolean isMobile = false;
+            boolean isDistrict = false;
 
 
             for (int i = 0; i < size; i++) {
@@ -5323,7 +5354,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         outlet.setOutletName("");
                     } else {
-                        outlet.setOutletName(SDUtil.removeQuotes(
+                        outlet.setOutletName(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString())));
                     }
                 } else if (configCode.equalsIgnoreCase("ADDRESS1")) {
@@ -5331,7 +5362,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         outlet.setAddress("");
                     } else {
-                        outlet.setAddress(SDUtil.removeQuotes(
+                        outlet.setAddress(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -5341,15 +5372,15 @@ public class NewOutletFragment extends IvyBaseFragment
                         outlet.setContactpersonname("");
                         outlet.setContactpersonnameLastName("");
                     } else {
-                        outlet.setContactpersonname(SDUtil
+                        outlet.setContactpersonname(StringUtils
                                 .removeQuotes(bmodel.validateInput(editText[i].getText().toString())));
-                        outlet.setContactpersonnameLastName(SDUtil.removeQuotes(bmodel.validateInput(editText[i + 50].getText().toString())));
+                        outlet.setContactpersonnameLastName(StringUtils.removeQuotes(bmodel.validateInput(editText[i + 50].getText().toString())));
                     }
                     if (isContactTitle) {
                         if (contactTitleSpinner1.getSelectedItem().toString()
                                 .contains("OTHERS")) {
                             outlet.setContact1titlelovid("0");
-                            outlet.setContact1title(SDUtil.removeQuotes(bmodel.validateInput(editText[i + 50 + 5].getText().toString())));
+                            outlet.setContact1title(StringUtils.removeQuotes(bmodel.validateInput(editText[i + 50 + 5].getText().toString())));
 
                         }
                         if (contactTitleSpinner1.getSelectedItem().toString()
@@ -5364,14 +5395,14 @@ public class NewOutletFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         outlet.setAddress2("");
                     } else {
-                        outlet.setAddress2(SDUtil.removeQuotes(
+                        outlet.setAddress2(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString())));
                     }
                 } else if (configCode.equalsIgnoreCase("ADDRESS3")) {
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         outlet.setAddress3("");
                     } else {
-                        outlet.setAddress3(SDUtil.removeQuotes(
+                        outlet.setAddress3(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString())));
                     }
                 } else if (configCode.equalsIgnoreCase("CITY")) {
@@ -5379,7 +5410,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         outlet.setCity("");
                     } else {
-                        outlet.setCity(SDUtil.removeQuotes(
+                        outlet.setCity(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString())));
                     }
                 } else if (configCode.equalsIgnoreCase("STATE")) {
@@ -5387,7 +5418,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         outlet.setState("");
                     } else {
-                        outlet.setState(SDUtil.removeQuotes(
+                        outlet.setState(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString())));
                     }
                 } else if (configCode.equalsIgnoreCase("CONTACTPERSON2")) {
@@ -5396,16 +5427,16 @@ public class NewOutletFragment extends IvyBaseFragment
                         outlet.setContactpersonname2("");
                         outlet.setContactpersonname2LastName("");
                     } else {
-                        outlet.setContactpersonname2(SDUtil
+                        outlet.setContactpersonname2(StringUtils
                                 .removeQuotes(bmodel.validateInput(editText[i].getText().toString())));
-                        outlet.setContactpersonname2LastName(SDUtil
+                        outlet.setContactpersonname2LastName(StringUtils
                                 .removeQuotes(bmodel.validateInput(editText[i + 51].getText().toString())));
                     }
                     if (isContactTitle) {
                         if (contactTitleSpinner2.getSelectedItem().toString()
                                 .contains("OTHERS")) {
                             outlet.setContact2titlelovid("0");
-                            outlet.setContact2title(SDUtil.removeQuotes(bmodel.validateInput(editText[i + 51 + 5].getText().toString())));
+                            outlet.setContact2title(StringUtils.removeQuotes(bmodel.validateInput(editText[i + 51 + 5].getText().toString())));
                         }
                         if (contactTitleSpinner2.getSelectedItem().toString()
                                 .contains("Select")) {
@@ -5673,7 +5704,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         outlet.setPanNo("");
                     } else {
-                        outlet.setPanNo(SDUtil.removeQuotes(
+                        outlet.setPanNo(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -5682,7 +5713,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         outlet.setDrugLicenseNo("");
                     } else {
-                        outlet.setDrugLicenseNo(SDUtil.removeQuotes(
+                        outlet.setDrugLicenseNo(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -5691,7 +5722,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         outlet.setFoodLicenseNo("");
                     } else {
-                        outlet.setFoodLicenseNo(SDUtil.removeQuotes(
+                        outlet.setFoodLicenseNo(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -5718,7 +5749,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         outlet.setRegion("");
                     } else {
-                        outlet.setRegion(SDUtil.removeQuotes(
+                        outlet.setRegion(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -5727,7 +5758,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         outlet.setCountry("");
                     } else {
-                        outlet.setCountry(SDUtil.removeQuotes(
+                        outlet.setCountry(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -5736,7 +5767,16 @@ public class NewOutletFragment extends IvyBaseFragment
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         outlet.setMobile("");
                     } else {
-                        outlet.setMobile(SDUtil.removeQuotes(
+                        outlet.setMobile(StringUtils.removeQuotes(
+                                bmodel.validateInput(editText[i].getText().toString()))
+                        );
+                    }
+                } else if (configCode.equalsIgnoreCase("DISTRICT")) {
+                    isDistrict = true;
+                    if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
+                        outlet.setDistrict("");
+                    } else {
+                        outlet.setDistrict(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
@@ -5837,6 +5877,8 @@ public class NewOutletFragment extends IvyBaseFragment
                 outlet.setCountry("");
             if (!isMobile)
                 outlet.setMobile("");
+            if (!isDistrict)
+                outlet.setDistrict("");
             /*if (!isCreditDays)
                 outlet.setCreditDays("-1");*/
 
@@ -5866,9 +5908,9 @@ public class NewOutletFragment extends IvyBaseFragment
         try {
 
             Intent intent = new Intent(getActivity(), CameraActivity.class);
-            intent.putExtra("quality", 40);
+            intent.putExtra(CameraActivity.QUALITY, 40);
             String _path = PHOTO_PATH + "/" + imageName;
-            intent.putExtra("path", _path);
+            intent.putExtra(CameraActivity.PATH, _path);
             startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
         } catch (Exception e) {
@@ -5896,7 +5938,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         outlet.getImageId().remove(Integer.valueOf(imageId));
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
                         String _path = PHOTO_PATH + "/" + imageName;
                         intent.putExtra("path", _path);
                         startActivityForResult(intent, CAMERA_REQUEST_CODE);
@@ -6268,7 +6310,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 if (SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE
                         .equals(errorCode)) {
 
-                    bmodel.synchronizationHelper.downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.NEW_RETAILER, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE);
+                    bmodel.synchronizationHelper.downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.NEW_RETAILER, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE,"");
 
 
                 } else {
@@ -6600,6 +6642,38 @@ public class NewOutletFragment extends IvyBaseFragment
         }
 
 
+    }
+
+    private CensusLocationBO getLocationDetails(String pincode) {
+        for (CensusLocationBO locationBO : bmodel.newOutletHelper.getCensusLocationList()) {
+            if (!pincode.isEmpty() && pincode.equals(locationBO.getPincode()))
+                return locationBO;
+        }
+
+        return null;
+    }
+
+    private void setLocationDetails(CensusLocationBO censusLocationBO) {
+        int size = profileConfig.size();
+        int count = 0;
+        for (int i=0; i<size; i++) {
+            if ("CITY".equalsIgnoreCase(profileConfig.get(i).getConfigCode())){
+                editText[i].setText(censusLocationBO.getLocationName());
+                count++;
+            }else if ("DISTRICT".equalsIgnoreCase(profileConfig.get(i).getConfigCode())){
+                editText[i].setText(censusLocationBO.getDistrict());
+                count++;
+            } else if ("STATE".equalsIgnoreCase(profileConfig.get(i).getConfigCode())){
+                editText[i].setText(censusLocationBO.getState());
+                count++;
+            } else if ("COUNTRY".equalsIgnoreCase(profileConfig.get(i).getConfigCode())){
+                editText[i].setText(censusLocationBO.getCountry());
+                count++;
+            }
+
+            if (count == 4)
+                break;
+        }
     }
 
 }

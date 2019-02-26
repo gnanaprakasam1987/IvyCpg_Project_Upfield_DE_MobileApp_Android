@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.BomBO;
 import com.ivy.sd.png.bo.BomMasterBO;
@@ -16,7 +17,8 @@ import com.ivy.cpg.view.emptyreconcil.EmptyReconciliationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -51,7 +53,7 @@ public class ManualVanLoadHelper {
     public void loadManuvalVanLoadData(String menuCode) {
 
         if (bmodel.configurationMasterHelper.SHOW_SUBDEPOT) {
-            bmodel.loadManagementHelper.downloadSubDepots();
+            LoadManagementHelper.getInstance(context).downloadSubDepots();
         }
 
         bmodel.productHelper.downloadLoadMgmtProductsWithFiveLevel(
@@ -80,7 +82,7 @@ public class ManualVanLoadHelper {
      * @param menuCode
      */
     private void updateModuleWiseTimeStampDetails(String menuCode) {
-        bmodel.moduleTimeStampHelper.setTid("MTS" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID));
+        bmodel.moduleTimeStampHelper.setTid("MTS" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
         bmodel.moduleTimeStampHelper.setModuleCode(menuCode);
         bmodel.moduleTimeStampHelper.saveModuleTimeStamp("In");
 
@@ -161,7 +163,7 @@ public class ManualVanLoadHelper {
             String columns = "uid,pid,caseQty,pcsQty,qty,date,upload,outerQty,duomQty,duomid,dOuomQty,dOuomId,BatchId,batchno,SubDepotId,Flag";
 
             String uid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             for (int i = 0; i < siz; i++) {
 
@@ -185,7 +187,7 @@ public class ManualVanLoadHelper {
                                     else {
                                         batchid = "0";
                                     }
-                                    values = AppUtils.QT(uid)
+                                    values = StringUtils.QT(uid)
                                             + ","
                                             + product.getProductid()
                                             + ","
@@ -195,17 +197,17 @@ public class ManualVanLoadHelper {
                                             + ","
                                             + totalsih
                                             + ","
-                                            + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                                            + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                                             + ","
-                                            + AppUtils.QT("Y")
+                                            + StringUtils.QT("Y")
                                             + ","
                                             + bo.getOuterQty() + ","
                                             + product.getCaseSize() + ","
                                             + product.getdUomid() + ","
                                             + product.getOuterSize() + ","
                                             + product.getdOuonid() + ","
-                                            + AppUtils.QT(batchid) + ","
-                                            + AppUtils.QT(bo.getBatchNo()) + ","
+                                            + StringUtils.QT(batchid) + ","
+                                            + StringUtils.QT(bo.getBatchNo()) + ","
                                             + selectedSubDepotID + "," + 1;
 
                                     db.insertSQL(DataMembers.tbl_vanload, columns,
@@ -217,7 +219,7 @@ public class ManualVanLoadHelper {
                     } else {
 
                         batchid = 0 + "";
-                        values = AppUtils.QT(uid)
+                        values = StringUtils.QT(uid)
                                 + ","
                                 + product.getProductid()
                                 + ","
@@ -227,16 +229,16 @@ public class ManualVanLoadHelper {
                                 + ","
                                 + totalsih
                                 + ","
-                                + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                                + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                                 + ","
-                                + AppUtils.QT("Y")
+                                + StringUtils.QT("Y")
                                 + ","
                                 + product.getOuterQty() + ","
                                 + product.getCaseSize() + ","
                                 + product.getdUomid() + ","
                                 + product.getOuterSize() + ","
                                 + product.getdOuonid() + ","
-                                + AppUtils.QT(batchid) + ","
+                                + StringUtils.QT(batchid) + ","
                                 + 0 + ","
                                 + selectedSubDepotID + "," + 1;
 
@@ -254,7 +256,7 @@ public class ManualVanLoadHelper {
                 returnProducts = bmodel.productHelper.getBomReturnProducts();
 
                 String tranId = bmodel.userMasterHelper.getUserMasterBO()
-                        .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID);
+                        .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
                 for (BomReturnBO bomReturnBo : returnProducts) {
 
@@ -263,9 +265,9 @@ public class ManualVanLoadHelper {
 
                         values = tranId
                                 + ","
-                                + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                                + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                                 + ","
-                                + AppUtils.QT(bomReturnBo.getPid())
+                                + StringUtils.QT(bomReturnBo.getPid())
                                 + ","
                                 + bomReturnBo.getLiableQty()
                                 + ","
@@ -302,12 +304,12 @@ public class ManualVanLoadHelper {
                 String subDepotColumns = "Uid,PaymentType,Amount,SubDepotId,RefId,Date";
 
                 String tid = bmodel.userMasterHelper.getUserMasterBO()
-                        .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID);
+                        .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
                 values = tid + "," + mPaymentTypeId + ","
                         + SDUtil.format(getmVanLoadAmount(), 2, 0) + ","
                         + selectedSubDepotID + "," + uid + ","
-                        + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                        + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
                 db.insertSQL(DataMembers.tbl_SubDepotSettlement,
                         subDepotColumns, values);
@@ -341,7 +343,7 @@ public class ManualVanLoadHelper {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("SELECT batchid from BatchMaster where batchNum="
-                            + AppUtils.QT(batchno) + " and pid=" + pid);
+                            + StringUtils.QT(batchno) + " and pid=" + pid);
             if (c != null) {
                 while (c.moveToNext()) {
                     batchid = c.getString(0);
@@ -458,10 +460,10 @@ public class ManualVanLoadHelper {
 
             String columns = "batchid,batchNum,pid,MfgDate,ExpDate,is_new";
 
-            values = batchId + "," + AppUtils.QT(product.getManualBatchNo())
+            values = batchId + "," + StringUtils.QT(product.getManualBatchNo())
                     + "," + product.getProductid() + ","
-                    + AppUtils.QT(product.getMfgDate()) + ","
-                    + AppUtils.QT(product.getExpDate()) + ", 1";
+                    + StringUtils.QT(product.getMfgDate()) + ","
+                    + StringUtils.QT(product.getExpDate()) + ", 1";
 
             db.insertSQL("BatchMaster", columns, values);
             db.closeDB();

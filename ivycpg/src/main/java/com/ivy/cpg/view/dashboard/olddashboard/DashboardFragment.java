@@ -24,11 +24,11 @@ import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -268,8 +268,8 @@ public class DashboardFragment extends IvyBaseFragment implements DashboardContr
         if (i == android.R.id.home) {
             //back navigation based on previous screen
             if (isFromHomeScreenTwo) {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 bmodel.saveModuleCompletion(menuCode);
                 getActivity().finish();
             } else {

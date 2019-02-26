@@ -13,31 +13,28 @@
 
         <TextView
             android:id="@+id/pname"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="@dimen/price_product_name"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:ellipsize="marquee"
             android:maxLines="2"
-            android:padding="3dp"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:padding="3dp" />
 
         <TextView
             android:id="@+id/product_code"
-            style="?textFieldStyle"
+            style="@style/TextViewListItemSecondaryHighlight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/pname"
             android:layout_gravity="center"
             android:padding="3dp"
             android:text="@string/prod_code"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/text_size_secondary"
-            android:textStyle="normal" />
+            android:tag="pcode"/>
 
         <TextView
             android:id="@+id/batchnumber"
-            style="?textFieldStyle"
+            style="@style/TextViewListItemSecondaryHighlight"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/pname"
@@ -45,10 +42,7 @@
             android:layout_toEndOf="@+id/product_code"
             android:layout_toRightOf="@+id/product_code"
             android:padding="3dp"
-            android:text="@string/batch_no"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/text_size_secondary"
-            android:textStyle="normal" />
+            android:text="@string/batch_no" />
     </RelativeLayout>
 
 
@@ -61,6 +55,7 @@
 
         <TextView
             android:id="@+id/loadstock_cs"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -68,12 +63,11 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
 
         <TextView
             android:id="@+id/loadstock_ou"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -81,12 +75,11 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
 
         <TextView
             android:id="@+id/loadstock"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -94,9 +87,7 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
     </LinearLayout>
 
     <LinearLayout
@@ -105,11 +96,11 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
         <TextView
             android:id="@+id/loaded_free_stock_cs"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -117,12 +108,11 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
 
         <TextView
             android:id="@+id/loaded_free_stock_ou"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -130,12 +120,11 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
 
         <TextView
             android:id="@+id/loaded_free_stock"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -143,9 +132,7 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
     </LinearLayout>
 
 
@@ -159,6 +146,7 @@
 
         <TextView
             android:id="@+id/tv_return_cs"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -167,12 +155,11 @@
             android:maxLines="2"
             android:padding="3dp"
             android:text="@string/zero"
-            android:visibility="gone"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_return_ou"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -181,12 +168,11 @@
             android:maxLines="2"
             android:padding="3dp"
             android:text="@string/zero"
-            android:visibility="gone"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_return"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -194,9 +180,7 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
     </LinearLayout>
 
 
@@ -209,6 +193,7 @@
 
         <TextView
             android:id="@+id/soldstock_cs"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -216,13 +201,12 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:visibility="gone"
             android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/soldstock_ou"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -230,13 +214,12 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:visibility="gone"
             android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/soldstock"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -244,9 +227,7 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
     </LinearLayout>
 
 
@@ -261,6 +242,7 @@
 
         <TextView
             android:id="@+id/freeissued_cs"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -268,12 +250,11 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
 
         <TextView
             android:id="@+id/freeissued_ou"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -281,12 +262,11 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
 
         <TextView
             android:id="@+id/freeissued"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -294,9 +274,7 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
     </LinearLayout>
 
 
@@ -311,6 +289,7 @@
 
         <TextView
             android:id="@+id/replacement_cs"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -318,12 +297,11 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
 
         <TextView
             android:id="@+id/replacement_ou"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -331,12 +309,11 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
 
         <TextView
             android:id="@+id/replacement"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -344,9 +321,7 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
     </LinearLayout>
 
 
@@ -356,11 +331,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:visibility="gone"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_unload_cs"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -369,12 +345,11 @@
             android:maxLines="2"
             android:padding="3dp"
             android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small"
             android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_unload_ou"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -383,12 +358,11 @@
             android:maxLines="2"
             android:padding="3dp"
             android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small"
             android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_unload_ps"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -396,9 +370,7 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
     </LinearLayout>
 
 
@@ -411,6 +383,7 @@
 
         <TextView
             android:id="@+id/sih_cs"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -418,12 +391,11 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
 
         <TextView
             android:id="@+id/sih_ou"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -431,12 +403,11 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
 
         <TextView
             android:id="@+id/sih"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -444,9 +415,7 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
     </LinearLayout>
 
     <LinearLayout
@@ -460,6 +429,7 @@
 
         <TextView
             android:id="@+id/free_sih_cs"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -467,12 +437,11 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
 
         <TextView
             android:id="@+id/free_sih_ou"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -480,12 +449,11 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
 
         <TextView
             android:id="@+id/free_sih"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -493,9 +461,7 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
     </LinearLayout>
 
     <LinearLayout
@@ -509,6 +475,7 @@
 
         <TextView
             android:id="@+id/empty_cs"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -516,12 +483,11 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
 
         <TextView
             android:id="@+id/empty_ou"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -529,12 +495,11 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
 
         <TextView
             android:id="@+id/empty"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -542,9 +507,7 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
     </LinearLayout>
 
 
@@ -558,6 +521,7 @@
 
         <TextView
             android:id="@+id/tv_nonsalable_cs"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -566,12 +530,11 @@
             android:maxLines="2"
             android:padding="3dp"
             android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small"
             android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_nonsalable_ou"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -580,12 +543,11 @@
             android:maxLines="2"
             android:padding="3dp"
             android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small"
             android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_nonsalable_ps"
+            style="@style/TextViewListItemValues"
             android:layout_width="@dimen/price_value"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -593,9 +555,7 @@
             android:gravity="center"
             android:maxLines="2"
             android:padding="3dp"
-            android:text="@string/zero"
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/font_small" />
+            android:text="@string/zero" />
     </LinearLayout>
 
 

@@ -13,10 +13,6 @@ import static org.junit.Assert.*;
  */
 public class ApplicationConfigsTest implements ApplicationConfigs {
 
-    @Test
-    public void checkWithActivation() {
-        Assert.assertTrue("ApplicationConfig: Expected value for variable - withActivation is True but actual value is " + withActivation, withActivation);
-    }
 
     @Test
     public void checkUTC_Time() {

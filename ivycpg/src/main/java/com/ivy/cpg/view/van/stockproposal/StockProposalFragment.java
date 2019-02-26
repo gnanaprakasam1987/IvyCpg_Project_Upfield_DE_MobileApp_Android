@@ -314,9 +314,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
                 public void beforeTextChanged(CharSequence s, int start,
                                               int count, int after) {
 
-                    if (mEdt_searchproductName.getText().toString().length() < 3) {
-                        stockPropMylist.clear();
-                    }
                     if (searchAsync.getStatus() == AsyncTask.Status.RUNNING) {
                         searchAsync.cancel(true);
                     }
@@ -1283,7 +1280,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
         protected Boolean doInBackground(Integer... params) {
             try {
 
-                bmodel.stockProposalModuleHelper
+                StockProposalModuleHelper.getInstance(getActivity())
                         .saveStockProposal(stockPropVector);
             } catch (Exception e) {
                 Log.i("e", e.getMessage());
@@ -1576,7 +1573,7 @@ public class StockProposalFragment extends IvyBaseFragment implements
     private void onNextButtonClick() {
         if (hasStockProposalDone()) {
             if (bmodel.configurationMasterHelper.IS_MUST_STOCK
-                    && !bmodel.stockProposalModuleHelper
+                    && !StockProposalModuleHelper.getInstance(getActivity())
                     .isMustStockFilled(stockPropVector)) {
                 onCreateDialog(1);
 

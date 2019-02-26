@@ -110,7 +110,8 @@ public class PlanningMapFragment extends SupportMapFragment implements
     private TextView infoSnippet, infoDistance;
     private Button startVisitBtn;
     private LinearLayout startVisitLty;
-    private ImageButton carDirBtn, walkDirBtn, clearRouteBtn;
+    private ImageButton carDirBtn;
+    private ImageButton walkDirBtn;
     private LayoutInflater layInflater;
     private OnInfoWindowElemTouchListener infoButtonListener;
     private boolean showToast = true;
@@ -119,7 +120,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
     private int retRadius = 10;
     private boolean isLocationUpdated = false;
     ImageView visitView;
-    FloatingActionButton fab1, fab2, fab3;
+    FloatingActionButton fab1, fab2, fab3, fab4;
     private LinearLayout bottomLayout;
     private Marker rmarker;
     private Map<String, String> mRetailerProp;
@@ -196,13 +197,14 @@ public class PlanningMapFragment extends SupportMapFragment implements
         fab1 = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab2 = (FloatingActionButton) rootView.findViewById(R.id.fab2);
         fab3 = (FloatingActionButton) rootView.findViewById(R.id.fab3);
+        fab4 = rootView.findViewById(R.id.fab4);
         cardView = (CardView) rootView.findViewById(R.id.card_view);
         cardView1 = (CardView) rootView.findViewById(R.id.card_view1);
         carDirBtn = (ImageButton) rootView.findViewById(R.id.car_direction);
         walkDirBtn = (ImageButton) rootView.findViewById(R.id.walk_direction);
         bottomLayout = (LinearLayout) rootView.findViewById(R.id.bottom_view);
         hrsTextView = (TextView) rootView.findViewById(R.id.hrs_txt_value);
-        clearRouteBtn = (ImageButton) rootView.findViewById(R.id.clear_route_id);
+        ImageButton clearRouteBtn = (ImageButton) rootView.findViewById(R.id.clear_route_id);
         crossLine = (ImageView) rootView.findViewById(R.id.cross_line);
 
 
@@ -408,6 +410,13 @@ public class PlanningMapFragment extends SupportMapFragment implements
                 nearByRetailerDialog();
             }
         });
+        fab4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMap.setMapType((mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL) ? GoogleMap.MAP_TYPE_SATELLITE :
+                        GoogleMap.MAP_TYPE_NORMAL);
+            }
+        });
 
         walkDirBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -500,42 +509,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
         String testString;
         mainLayout = (MapWrapperLayout) rootView
                 .findViewById(R.id.planningmapnew);
-//        mainLayout.addView(mapView);
 
-
-//        LayoutParams linearlprams = new LayoutParams(LayoutParams.MATCH_PARENT,
-//                LayoutParams.MATCH_PARENT);
-//        LinearLayout linearWidget = new LinearLayout(getActivity());
-//        linearWidget.setLayoutParams(linearlprams);
-//        linearWidget.setGravity(Gravity.BOTTOM);
-//        linearWidget.setLayoutParams(linearlprams);
-//        LayoutParams lprams = new LayoutParams(LayoutParams.MATCH_PARENT,
-//                LayoutParams.WRAP_CONTENT);
-//        lprams.weight = 1;
-//        fromTv = new TextView(getActivity());
-//        testString = "From : ";
-//        fromTv.setText(testString);
-//        fromTv.setTextColor(Color.parseColor("#FFFFFF"));
-//        fromTv.setLayoutParams(lprams);
-//        fromTv.setPadding(5, 5, 5, 5);
-//        fromTv.setBackgroundColor(Color.parseColor("#AA5A5A5E"));
-//        fromTv.setSingleLine(true);
-//        fromTv.setTypeface(null, Typeface.BOLD);
-//        toTv = new TextView(getActivity());
-//        testString = "To : ";
-//        toTv.setText(testString);
-//        toTv.setTextColor(Color.parseColor("#FFFFFF"));
-//        toTv.setLayoutParams(lprams);
-//        toTv.setPadding(5, 5, 5, 5);
-//        toTv.setBackgroundColor(Color.parseColor("#AA5A5A5E"));
-//        toTv.setSingleLine(true);
-//        toTv.setTypeface(null, Typeface.BOLD);
-//        linearWidget.addView(fromTv);
-//        linearWidget.addView(toTv);
-//        FrameLayout.LayoutParams params = (android.widget.FrameLayout.LayoutParams) mainLayout
-//                .getLayoutParams();
-//        params.gravity = Gravity.BOTTOM;
-//        mainLayout.addView(linearWidget, params);
     }
 
     @Override
@@ -578,47 +552,6 @@ public class PlanningMapFragment extends SupportMapFragment implements
 
     }
 
-//    @Override
-//    public void onPrepareOptionsMenu(Menu menu) {
-//        super.onPrepareOptionsMenu(menu);
-//        if (!(GooglePlayServicesUtil
-//                .isGooglePlayServicesAvailable(getActivity()
-//                        .getApplicationContext()) == ConnectionResult.SUCCESS)) {
-//            menu.findItem(R.id.show_me).setVisible(false);
-//            menu.findItem(R.id.show_places).setVisible(false);
-//            menu.findItem(R.id.clear_route).setVisible(false);
-//        }
-//    }
-
-//    @Override
-//    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-//        inflater.inflate(R.menu.map_menu, menu);
-//        super.onCreateOptionsMenu(menu, inflater);
-//
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        if (item.getItemId() == R.id.show_me) {
-//            showMeOnMap();
-//            return true;
-//        } else if (item.getItemId() == R.id.show_places) {
-//            showToast = false;
-//            clearRoute();
-//            removeMarkersfromMap();
-//            addMarkersToMap();
-//            onGlobalLayout();
-//            return true;
-//        } else if (item.getItemId() == R.id.clear_route) {
-//            clearRoute();
-//            return true;
-//        } else if (item.getItemId() == R.id.nearRet) {
-//            nearByRetailerDialog();
-//            return true;
-//        } else {
-//            return super.onOptionsItemSelected(item);
-//        }
-//    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -1757,83 +1690,5 @@ public class PlanningMapFragment extends SupportMapFragment implements
         }
     }
 
-//    private boolean isSurveyDone(String menucode, String rid) {
-//        boolean flag = false;
-//        try {
-//            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
-//                    DataMembers.DB_PATH);
-//            db.openDataBase();
-//            Cursor c = db.selectSQL("select uid from "
-//                    + DataMembers.tbl_AnswerHeader + " where retailerid="
-//                    + bmodel.QT(rid)
-//                    + " and menucode=" + bmodel.QT(menucode));
-//            if (c != null) {
-//                if (c.getCount() > 0) {
-//                    flag = true;
-//                }
-//                c.close();
-//            }
-//
-//            db.closeDB();
-//        } catch (Exception e) {
-//            Commons.printException(e);
-//        }
-//        return flag;
-//    }
-//
-//    private void setRetailerDoneforNoOrderMenu(ArrayList<RetailerMasterBO> retailer) {
-//        List<TempBO> outletDetails = null;
-//        try {
-//            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME,
-//                    DataMembers.DB_PATH);
-//            db.openDataBase();
-//            Cursor c = db.selectSQL("SELECT DISTINCT ModuleCode, RetailerID FROM OutletTimeStampDetail INNER JOIN HhtMenuMaster ON (HHTCode = ModuleCode  AND MenuType = 'ACT_MENU' AND FLAG =1 AND hasLink = 1) WHERE (ModuleCode <>'MENU_CLOSE_CALL') ORDER BY RetailerID");
-//            if (c != null) {
-//                outletDetails = new ArrayList<>();
-//                while (c.moveToNext()) {
-//                    TempBO bo = new TempBO();
-//                    bo.setModuleCode(c.getString(0));
-//                    bo.setRetailerId(c.getString(1));
-//                    outletDetails.add(bo);
-//                }
-//                c.close();
-//            }
-//            db.closeDB();
-//            for (RetailerMasterBO ret : retailer) {
-//                if (!ret.isSurveyDone())
-//                    if (outletDetails != null && !outletDetails.isEmpty()) {
-//                        for (TempBO tBo : outletDetails) {
-//                            if (tBo.getRetailerId().equals(ret.getRetailerID()))
-//                                if (isSurveyDone(tBo.getModuleCode(), ret.getRetailerID())) {
-//                                    ret.setIsSurveyDone(true);
-//                                    break;
-//                                }
-//                        }
-//                    }
-//            }
-//        } catch (Exception e) {
-//            Commons.printException(e);
-//        }
-//    }
 
-//    private class TempBO {
-//        private String moduleCode;
-//        private String retailerId;
-//
-//        public String getModuleCode() {
-//            return moduleCode;
-//        }
-//
-//        public void setModuleCode(String moduleCode) {
-//            this.moduleCode = moduleCode;
-//        }
-//
-//        public String getRetailerId() {
-//            return retailerId;
-//        }
-//
-//        public void setRetailerId(String retailerId) {
-//            this.retailerId = retailerId;
-//        }
-//    }
 }

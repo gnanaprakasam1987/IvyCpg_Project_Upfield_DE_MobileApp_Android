@@ -50,6 +50,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.ivy.core.IvyConstants;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
@@ -63,9 +64,10 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -276,6 +278,8 @@ public class SOSFragment extends IvyBaseFragment implements
             }
         });
 
+        if (mBModel.configurationMasterHelper.isAuditEnabled())
+            view.findViewById(R.id.audit).setVisibility(View.VISIBLE);
 
     }
 
@@ -378,7 +382,7 @@ public class SOSFragment extends IvyBaseFragment implements
      */
     private void deleteUnsavedImageFromFolder() {
         for (String imgList : totalImgList) {
-            mBModel.deleteFiles(HomeScreenFragment.photoPath,
+            mBModel.deleteFiles(FileUtils.photoFolderPath,
                     imgList);
         }
     }
@@ -495,8 +499,8 @@ public class SOSFragment extends IvyBaseFragment implements
                 if (mSFHelper.getLstSOS_PRJSpecific() != null || totalImgList.size() > 0)
                     showAlertOnBackClick();
                 else {
-                    mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                            .now(SDUtil.TIME));
+                    mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                            .now(DateTimeUtils.TIME));
                     if (isFromChild)
                         startActivity(new Intent(getActivity(), HomeScreenTwo.class)
                                 .putExtra("isStoreMenu", true));
@@ -631,8 +635,8 @@ public class SOSFragment extends IvyBaseFragment implements
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                                .now(SDUtil.TIME));
+                        mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                                .now(DateTimeUtils.TIME));
 
                         if (totalImgList != null)
                             deleteUnsavedImageFromFolder();
@@ -680,15 +684,15 @@ public class SOSFragment extends IvyBaseFragment implements
                     @Override
                     public void onPositiveButtonClick() {
 
-                        mBModel.deleteFiles(HomeScreenFragment.photoPath,
+                        mBModel.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
                         if (dialog != null)
                             dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
-                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
+                        String path = FileUtils.photoFolderPath + "/" + mImageName;
+                        intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 CAMERA_REQUEST_CODE);
 
@@ -1020,7 +1024,7 @@ public class SOSFragment extends IvyBaseFragment implements
         ImageButton audit;
         ImageView btnPhoto;
         EditText edt_other_remarks;
-        LinearLayout remark_layout;
+        LinearLayout remark_layout,auditLayout;
     }
 
     /**
@@ -1080,6 +1084,8 @@ public class SOSFragment extends IvyBaseFragment implements
                 holder.audit = row
                         .findViewById(R.id.btn_audit);
 
+                holder.auditLayout = row.findViewById(R.id.ll_audit);
+
                 holder.etTotal.setTag(holder);
 
                 holder.remark_layout = row.findViewById(R.id.remark_layout);
@@ -1107,23 +1113,26 @@ public class SOSFragment extends IvyBaseFragment implements
                     @Override
                     public void onClick(View view) {
 
-                        if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 2) {
+                        if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() ==
+                                IvyConstants.AUDIT_DEFAULT) {
 
-                            holder.mSOS.getLocations().get(mSelectedLocationIndex).setAudit(1);
-                            holder.audit
-                                    .setImageResource(R.drawable.ic_audit_yes);
+                            holder.mSOS.getLocations().get(mSelectedLocationIndex)
+                                    .setAudit(IvyConstants.AUDIT_OK);
+                            holder.audit.setImageResource(R.drawable.ic_audit_yes);
 
-                        } else if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 1) {
+                        } else if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit()
+                                == IvyConstants.AUDIT_OK) {
 
-                            holder.mSOS.getLocations().get(mSelectedLocationIndex).setAudit(0);
-                            holder.audit
-                                    .setImageResource(R.drawable.ic_audit_no);
+                            holder.mSOS.getLocations().get(mSelectedLocationIndex)
+                                    .setAudit(IvyConstants.AUDIT_NOT_OK);
+                            holder.audit.setImageResource(R.drawable.ic_audit_no);
 
-                        } else if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 0) {
+                        } else if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit()
+                                == IvyConstants.AUDIT_NOT_OK) {
 
-                            holder.mSOS.getLocations().get(mSelectedLocationIndex).setAudit(2);
-                            holder.audit
-                                    .setImageResource(R.drawable.ic_audit_none);
+                            holder.mSOS.getLocations().get(mSelectedLocationIndex)
+                                    .setAudit(IvyConstants.AUDIT_DEFAULT);
+                            holder.audit.setImageResource(R.drawable.ic_audit_none);
                         }
 
                     }
@@ -1202,7 +1211,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
                             boolean nFilesThere = mBModel
                                     .checkForNFilesInFolder(
-                                            HomeScreenFragment.photoPath,
+                                            FileUtils.photoFolderPath,
                                             1, mFirstName);
                             if (nFilesThere) {
 
@@ -1210,10 +1219,10 @@ public class SOSFragment extends IvyBaseFragment implements
                             } else {
                                 Intent intent = new Intent(getActivity(),
                                         CameraActivity.class);
-                                intent.putExtra("quality", 40);
-                                String path = HomeScreenFragment.photoPath + "/"
+                                intent.putExtra(CameraActivity.QUALITY, 40);
+                                String path = FileUtils.photoFolderPath + "/"
                                         + mImageName;
-                                intent.putExtra("path", path);
+                                intent.putExtra(CameraActivity.PATH, path);
                                 startActivityForResult(intent,
                                         CAMERA_REQUEST_CODE);
                                 holder.btnPhoto.requestFocus();
@@ -1229,8 +1238,11 @@ public class SOSFragment extends IvyBaseFragment implements
                     }
                 });
 
-                if (mBModel.configurationMasterHelper.IS_TEAMLEAD) {
+                if (mBModel.configurationMasterHelper.isAuditEnabled()) {
+
                     holder.audit.setVisibility(View.VISIBLE);
+                    holder.auditLayout.setVisibility(View.VISIBLE);
+
 
                     holder.spnReason.setEnabled(false);
                     holder.spnReason.setClickable(false);
@@ -1248,11 +1260,14 @@ public class SOSFragment extends IvyBaseFragment implements
 
             holder.mSOS = items.get(position);
 
-            if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 2)
+            if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit()
+                    == IvyConstants.AUDIT_DEFAULT)
                 holder.audit.setImageResource(R.drawable.ic_audit_none);
-            else if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 1)
+            else if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit()
+                    == IvyConstants.AUDIT_OK)
                 holder.audit.setImageResource(R.drawable.ic_audit_yes);
-            else if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit() == 0)
+            else if (holder.mSOS.getLocations().get(mSelectedLocationIndex).getAudit()
+                    == IvyConstants.AUDIT_NOT_OK)
                 holder.audit.setImageResource(R.drawable.ic_audit_no);
 
             holder.tvBrandName.setText(holder.mSOS.getProductName());
@@ -1263,10 +1278,27 @@ public class SOSFragment extends IvyBaseFragment implements
                 holder.etTotal.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getParentTotal());
             }
 
-            holder.tvActual.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getActual() + "/"
-                    + holder.mSOS.getLocations().get(mSelectedLocationIndex).getTarget());
-            holder.tvPercentage.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getPercentage() + "/"
-                    + holder.mSOS.getNorm() + "");
+            String actual = holder.mSOS.getLocations().get(mSelectedLocationIndex).getActual() != null
+                    ? holder.mSOS.getLocations().get(mSelectedLocationIndex).getActual() : "0";
+            String target = holder.mSOS.getLocations().get(mSelectedLocationIndex).getTarget() != null
+                    ? holder.mSOS.getLocations().get(mSelectedLocationIndex).getTarget() : "0";
+
+            if (mBModel.configurationMasterHelper.isAuditEnabled()) {
+                float parentTotal = Float.parseFloat(holder.mSOS.getLocations().get(mSelectedLocationIndex).getParentTotal() != null ?
+                        holder.mSOS.getLocations().get(mSelectedLocationIndex).getParentTotal() : "0");
+
+                float percentage = 0;
+                if (parentTotal > 0)
+                    percentage = (Float.parseFloat(actual) / parentTotal) * 100;
+
+                holder.mSOS.getLocations().get(mSelectedLocationIndex).setPercentage(percentage+"");
+            }
+
+            String percent = holder.mSOS.getLocations().get(mSelectedLocationIndex).getPercentage() != null
+                    ? holder.mSOS.getLocations().get(mSelectedLocationIndex).getPercentage() : "0";
+
+            holder.tvActual.setText(actual + "/" + target);
+            holder.tvPercentage.setText(percent + "/" + holder.mSOS.getNorm() + "");
             holder.tvGap.setText(holder.mSOS.getLocations().get(mSelectedLocationIndex).getGap());
 
             if (SDUtil.convertToFloat(holder.mSOS.getLocations().get(mSelectedLocationIndex).getGap()) < 0)
@@ -1325,7 +1357,7 @@ public class SOSFragment extends IvyBaseFragment implements
                     && (!"null".equals(holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName()))) {
 
                 Glide.with(getActivity())
-                        .load(HomeScreenFragment.photoPath + "/" + holder.mSOS.getLocations().get(mSelectedLocationIndex).getImgName())
+                        .load(FileUtils.photoFolderPath + "/" + holder.mSOS.getLocations().get(mSelectedLocationIndex).getImgName())
                         .asBitmap()
                         .centerCrop()
                         .placeholder(R.drawable.ic_photo_camera)
@@ -1376,8 +1408,8 @@ public class SOSFragment extends IvyBaseFragment implements
                 mSFHelper
                         .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOS);
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOS);
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException("" + e);

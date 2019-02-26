@@ -25,7 +25,8 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class ReportHelper {
 
     public ReportHelper(Context context) {
         this.mContext = context;
-        this.bmodel = (BusinessModel) context;
+        this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     public static ReportHelper getInstance(Context context) {
@@ -427,7 +428,7 @@ public class ReportHelper {
                             " inner join Payment PM on PM.uid=CN.refno" +
                             " left join StandardListMaster SM on PM.cashMode=SM.listid" +
                             " left join RetailerMaster RM on RM.retailerid=CN.retailerID" +
-                            " where id like 'AP%' and CN.date=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                            " where id like 'AP%' and CN.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             if (c != null) {
                 PaymentBO bo;
                 lstAdvancePayment = new ArrayList<>();
@@ -1579,13 +1580,13 @@ public class ReportHelper {
 
     private void initializeUOMmapping(int reportType) {
         if (reportType == 1) {
-            for (StockReportBO bo : bmodel.reportHelper.getEODStockReport()) {
+            for (StockReportBO bo : getEODStockReport()) {
                 bo.setBaseUomCaseWise(false);
                 bo.setBaseUomOuterWise(false);
                 bo.setBaseUomPieceWise(false);
             }
         } else if (reportType == 2) {
-            for (StockReportBO bo : bmodel.reportHelper.getCurrentStock()) {
+            for (StockReportBO bo : getCurrentStock()) {
                 bo.setBaseUomCaseWise(false);
                 bo.setBaseUomOuterWise(false);
                 bo.setBaseUomPieceWise(false);
@@ -1601,13 +1602,13 @@ public class ReportHelper {
 
     private void enableUOMForAllProducts(int reportType) {
         if (reportType == 1) {
-            for (StockReportBO bo : bmodel.reportHelper.getEODStockReport()) {
+            for (StockReportBO bo : getEODStockReport()) {
                 bo.setBaseUomCaseWise(true);
                 bo.setBaseUomOuterWise(true);
                 bo.setBaseUomPieceWise(true);
             }
         } else if (reportType == 2) {
-            for (StockReportBO bo : bmodel.reportHelper.getCurrentStock()) {
+            for (StockReportBO bo : getCurrentStock()) {
                 bo.setBaseUomCaseWise(true);
                 bo.setBaseUomOuterWise(true);
                 bo.setBaseUomPieceWise(true);
@@ -1631,7 +1632,7 @@ public class ReportHelper {
 
             if (contentLevelId == pLevelId) {
                 if (reportType == 1) {
-                    for (StockReportBO bo : bmodel.reportHelper.getEODStockReport()) {
+                    for (StockReportBO bo : getEODStockReport()) {
                         if (bo.getProductID().equals(productId)) {
                             if (bo.getPiece_uomid() == uomId)
                                 bo.setBaseUomPieceWise(true);
@@ -1642,7 +1643,7 @@ public class ReportHelper {
                         }
                     }
                 } else if (reportType == 2) {
-                    for (StockReportBO bo : bmodel.reportHelper.getCurrentStock()) {
+                    for (StockReportBO bo : getCurrentStock()) {
                         if (bo.getProductID().equals(productId)) {
                             if (bo.getPiece_uomid() == uomId)
                                 bo.setBaseUomPieceWise(true);
@@ -1690,7 +1691,7 @@ public class ReportHelper {
                     while (c.moveToNext()) {
 
                         if (reportType == 1) {
-                            for (StockReportBO bo : bmodel.reportHelper.getEODStockReport()) {
+                            for (StockReportBO bo : getEODStockReport()) {
                                 if (bo.getProductID().equals(c.getString(0))) {
                                     if (bo.getPiece_uomid() == uomId)
                                         bo.setBaseUomPieceWise(true);
@@ -1701,7 +1702,7 @@ public class ReportHelper {
                                 }
                             }
                         } else if (reportType == 2) {
-                            for (StockReportBO bo : bmodel.reportHelper.getCurrentStock()) {
+                            for (StockReportBO bo : getCurrentStock()) {
                                 if (bo.getProductID().equals(c.getString(0))) {
                                     if (bo.getPiece_uomid() == uomId)
                                         bo.setBaseUomPieceWise(true);
@@ -1910,9 +1911,9 @@ public class ReportHelper {
 
         if (isInvoice) {
             sb.append("inner join SchemeMaster SM ON SM.SchemeID = SFP.SchemeID ");
-            sb.append("where invoiceid=" + AppUtils.QT(id) + " and SM.IsOnInvoice = '1'");
+            sb.append("where invoiceid=" + StringUtils.QT(id) + " and SM.IsOnInvoice = '1'");
         } else // Order Report
-            sb.append("where OrderID=" + AppUtils.QT(id));
+            sb.append("where OrderID=" + StringUtils.QT(id));
         Cursor c = db.selectSQL(sb.toString());
         if (c != null) {
             SchemeProductBO schemeProductBO;

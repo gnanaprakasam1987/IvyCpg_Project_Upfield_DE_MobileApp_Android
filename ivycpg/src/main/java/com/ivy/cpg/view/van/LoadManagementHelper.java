@@ -24,11 +24,11 @@ import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SubDepotBo;
 import com.ivy.sd.png.bo.VanLoadMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,9 +55,9 @@ public class LoadManagementHelper {
     private static final String TAG = "LoadManagementHelper";
     private RequestQueue mRequestQueue;
 
-    public LoadManagementHelper(Context context) {
+    private LoadManagementHelper(Context context) {
         this.context = context;
-        this.bmodel = (BusinessModel) context;
+        this.bmodel = (BusinessModel) context.getApplicationContext();
 
     }
 
@@ -438,7 +438,7 @@ public class LoadManagementHelper {
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
             if (!DataMembers.backDate.isEmpty())
                 json.put("RequestDate",
-                        SDUtil.now(SDUtil.DATE_TIME_NEW));
+                        DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
         } catch (Exception e) {
             Commons.printException(e);
 

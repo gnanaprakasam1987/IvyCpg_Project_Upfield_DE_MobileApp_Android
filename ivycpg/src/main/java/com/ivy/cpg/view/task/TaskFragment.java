@@ -35,10 +35,10 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.Vector;
 
@@ -360,7 +360,7 @@ public class TaskFragment extends IvyBaseFragment {
                 // old code if (IsRetailerwisetask && !fromReviewScreen) {
                 // Comment by Gp, Issue while going back from Activity Menu
                 if (IsRetailerwisetask) {
-                    bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                    bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                 }
                 bool = true;
                 if (fromHomeScreen)
@@ -370,9 +370,8 @@ public class TaskFragment extends IvyBaseFragment {
             getActivity().finish();
             return true;
         } else if (i1 == R.id.menu_new_task) {
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
-
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
             Intent i = new Intent(getActivity(), TaskCreation.class);
             i.putExtra("fromHomeScreen", fromHomeScreen);
             i.putExtra("IsRetailerwisetask", IsRetailerwisetask);
@@ -479,7 +478,6 @@ public class TaskFragment extends IvyBaseFragment {
                                         .equals("1")) {
                                     taskDataBOForAdapter.add(taskData);
                                 }
-
                             } else {
                                 taskDataBOForAdapter.add(taskData);
                             }
@@ -520,7 +518,7 @@ public class TaskFragment extends IvyBaseFragment {
 
                 holder.layoutCB.setVisibility(View.VISIBLE);
                 holder.taskTaskOwner.setText(" : " + task.getTaskOwner());
-                holder.taskCreatedDate.setText(DateUtil.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat) + ", ");
+                holder.taskCreatedDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat) + ", ");
 
                 holder.layoutrow.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -533,7 +531,7 @@ public class TaskFragment extends IvyBaseFragment {
                             holder.taskBO.setChecked(false);
                         }
 
-                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                         if (IsRetailerwisetask) {
                             taskHelper.saveTask(bmodel
                                     .getRetailerMasterBO()

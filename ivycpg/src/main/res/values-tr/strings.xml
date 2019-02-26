@@ -84,7 +84,7 @@
     <string name="retailername">Mağaza İsmi</string>
     <string name="version">Versiyon:</string>
     <string name="all">Hepsi</string>
-    <string name="quality">Kalite</string>
+
     <string name="mrp">MSF</string>
     <string name="gallery">Galeri</string>
     <string name="enter_activation_key">Aktivasyon Kodunu Girin</string>
@@ -448,7 +448,7 @@
     <string name="opencalendar">Takvimi Aç</string>
     <string name="pc">SKU</string>
     <string name="invaliddate">Geçersiz Tarih</string>
-    <string name="saverequired">Kaydetmeniz Gerekiyor</string>
+
     <string name="cant_skip_go_by_sequence">Atlayamazsınız, Sıraya göre ilerleyin</string>
     <string name="no_damaged_stock_to_unload">No damaged stock to unload</string>
     <string name="do_you_want_to_save_stock">Stoğu kaydetmek ister misin?</string>

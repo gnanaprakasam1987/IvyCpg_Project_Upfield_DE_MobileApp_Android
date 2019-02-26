@@ -50,7 +50,7 @@ import com.ivy.sd.png.model.DownloaderThreadNew;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -521,7 +521,7 @@ public class ProfileFragment extends IvyBaseFragment {
             holder.menuText.setText(holder.projectObj.getmName());
             holder.valueText.setText(holder.projectObj.getValueText());
             holder.itemView.setTag(holder.projectObj);
-            Commons.print("view constructtime " + SDUtil.now(SDUtil.TIME));
+            Commons.print("view constructtime " + DateTimeUtils.now(DateTimeUtils.TIME));
         }
 
         @Override
@@ -916,7 +916,7 @@ public class ProfileFragment extends IvyBaseFragment {
                 break;
             }
             case "PROFILE23": {
-                String text = DateUtil.convertFromServerDateToRequestedFormat(bmodel.mRetailerHelper.getContractExpiryDate(), ConfigurationMasterHelper.outDateFormat);
+                String text = DateTimeUtils.convertFromServerDateToRequestedFormat(bmodel.mRetailerHelper.getContractExpiryDate(), ConfigurationMasterHelper.outDateFormat);
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
                 outletBO.setValueText(text);
@@ -981,7 +981,7 @@ public class ProfileFragment extends IvyBaseFragment {
                 break;
             }
             case "PROFILE33": {
-                String text = DateUtil.convertFromServerDateToRequestedFormat(bmodel.mRetailerHelper.getContractStartDate(), ConfigurationMasterHelper.outDateFormat);
+                String text = DateTimeUtils.convertFromServerDateToRequestedFormat(bmodel.mRetailerHelper.getContractStartDate(), ConfigurationMasterHelper.outDateFormat);
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
                 outletBO.setValueText(text);
@@ -1297,6 +1297,13 @@ public class ProfileFragment extends IvyBaseFragment {
                 outletBO = new NewOutletBO();
                 outletBO.setmName(mName);
                 outletBO.setValueText(retailerObj.getCountry());
+                finalProfileList.add(outletBO);
+                break;
+            }
+            case "PROFILE89": {
+                outletBO = new NewOutletBO();
+                outletBO.setmName(mName);
+                outletBO.setValueText(retailerObj.getDistrict());
                 finalProfileList.add(outletBO);
                 break;
             }

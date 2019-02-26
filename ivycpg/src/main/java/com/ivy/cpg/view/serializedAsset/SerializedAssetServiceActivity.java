@@ -22,15 +22,10 @@ import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.base.view.BaseIvyView;
-import com.ivy.cpg.view.asset.AssetServiceContract;
-import com.ivy.cpg.view.asset.AssetTrackingHelper;
-import com.ivy.cpg.view.asset.assetservicedi.AssetServiceModule;
-import com.ivy.cpg.view.asset.assetservicedi.DaggerAssetServiceComponent;
 import com.ivy.cpg.view.serializedAsset.assetservicedi.DaggerSerializedAssetServiceComponent;
 import com.ivy.cpg.view.serializedAsset.assetservicedi.SerializedAssetServiceModule;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 
@@ -197,7 +192,6 @@ public class SerializedAssetServiceActivity extends BaseActivity implements Seri
                     assetTrackingHelper
                             .saveAssetServiceDetails(getApplicationContext(), assetId, serialNo, mReasonID, mModuleName);
                 }
-                //bModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
             }
         }
         if (isAdded)
@@ -302,8 +296,48 @@ public class SerializedAssetServiceActivity extends BaseActivity implements Seri
 
 
             String mSno = getResources().getString(
-                    R.string.serial_no)
-                    + ":" + holder.productObj.getSNO();
+                    R.string.serial_no);
+            if (bModel.labelsMasterHelper
+                    .applyLabels((Object) "asset_serialno") != null)
+                mSno = bModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_serialno");
+
+            mSno = mSno +  " : " + holder.productObj.getSNO();
+
+            String strLabel;
+            if (assetTrackingHelper.SHOW_ASSET_VENDOR) {
+                strLabel = getResources().getString(R.string.vendor);
+                if (bModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_vendor") != null)
+                    strLabel = bModel.labelsMasterHelper
+                            .applyLabels((Object) "asset_vendor");
+                mSno = mSno + "   " + strLabel + " : " + holder.productObj.getVendorName();
+            }
+            if (assetTrackingHelper.SHOW_ASSET_MODEL) {
+                strLabel = getResources().getString(R.string.model);
+                if (bModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_model") != null)
+                    strLabel = bModel.labelsMasterHelper
+                            .applyLabels((Object) "asset_model");
+                mSno = mSno + "   " + strLabel + " : " + holder.productObj.getModelName();
+            }
+            if (assetTrackingHelper.SHOW_ASSET_TYPE) {
+                strLabel = getResources().getString(R.string.type);
+                if (bModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_type") != null)
+                    strLabel = bModel.labelsMasterHelper
+                            .applyLabels((Object) "asset_type");
+                mSno = mSno + "   " + strLabel + " : " + holder.productObj.getAssetType();
+            }
+            if (assetTrackingHelper.SHOW_ASSET_CAPACITY) {
+                strLabel = getResources().getString(R.string.capacity);
+                if (bModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_capacity") != null)
+                    strLabel = bModel.labelsMasterHelper
+                            .applyLabels((Object) "asset_capacity");
+                mSno = mSno + "   " + strLabel + " : " + holder.productObj.getCapacity();
+            }
+
             holder.tvSNO.setText(mSno);
 
             TypedArray mTypedArray = SerializedAssetServiceActivity.this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);

@@ -30,11 +30,11 @@ import android.widget.Toast;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -432,7 +432,7 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
                             .getRetailerID() + "_"
                             + questBO.getSurveyid() + "_"
                             + questBO.getQuestionID() + "_"
-                            + SDUtil.now(SDUtil.DATE_TIME_ID)
+                            + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)
                             + ".jpg";
 
                     try {
@@ -445,8 +445,7 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
                         Intent intent = new Intent(
                                 DragDropPictureActivity.this,
                                 CameraActivity.class);
-                        String path = HomeScreenFragment.folder
-                                .getPath() + "/" + imageName;
+                        String path = FileUtils.photoFolderPath + "/" + imageName;
                         if (i == 0) {
                             questBO.setImage1Path(path);
                             questBO.setImage1Captured(true);
@@ -457,8 +456,8 @@ public class DragDropPictureActivity extends IvyBaseActivityNoActionBar implemen
 
                         pathSrc = path;
                         Log.e("TakenPath", path);
-                        intent.putExtra("quality", 40);
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
+                        intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 CAMERA_REQUEST_CODE);
                     } catch (Exception e) {

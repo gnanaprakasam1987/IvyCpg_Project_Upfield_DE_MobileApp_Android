@@ -28,8 +28,8 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.StringTokenizer;
 
@@ -189,7 +189,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                             int count = 0, selectedPos = -1;
                             for (ReasonMaster temp : bmodel.reasonHelper
                                     .getRemarksReasonMaster()) {
-                                if (temp.getReasonDesc().equals(bmodel.getRField1()))
+                                if (temp.getReasonID().equals(bmodel.getRField1()))
                                     selectedPos = count + 1;
                                 spinnerAdapter.add(temp);
                                 count++;
@@ -338,7 +338,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                 textInputLayout2.setVisibility(View.GONE);
                 textInputLayout3.setVisibility(View.GONE);
                 lnrRField1.setVisibility(View.GONE);
-                if (!AppUtils.isNullOrEmpty(promotionBO.getRemarks()))
+                if (!StringUtils.isNullOrEmpty(promotionBO.getRemarks()))
                     remarks.setText(promotionBO.getRemarks());
                 else
                     remarks.setText("");

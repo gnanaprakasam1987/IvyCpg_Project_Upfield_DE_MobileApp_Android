@@ -55,6 +55,7 @@ import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.sync.catalogdownload.Util;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -69,13 +70,11 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.AmountSplitUpDialog;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.OrderRemarkDialog;
 import com.ivy.sd.png.view.OrderSummaryDialogFragment;
@@ -85,6 +84,8 @@ import com.ivy.sd.print.CommonPrintPreviewActivity;
 import com.ivy.sd.print.DemoSleeper;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 import com.ivy.sd.print.SettingsHelper;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 import com.tremol.zfplibj.ZFPLib;
 import com.zebra.sdk.comm.BluetoothConnection;
@@ -522,18 +523,18 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         try {
             if (bModel.isEdit()) {
 
-                String delDate = DateUtil.convertFromServerDateToRequestedFormat(bModel.getDeliveryDate(OrderHelper.getInstance(this).selectedOrderId, bModel.getRetailerMasterBO()
+                String delDate = DateTimeUtils.convertFromServerDateToRequestedFormat(bModel.getDeliveryDate(OrderHelper.getInstance(this).selectedOrderId, bModel.getRetailerMasterBO()
                                 .getRetailerID()),
                         ConfigurationMasterHelper.outDateFormat);
                 button_deliveryDate.setText(delDate);
-                Date selected = DateUtil.convertStringToDateObject(delDate, ConfigurationMasterHelper.outDateFormat);
+                Date selected = DateTimeUtils.convertStringToDateObject(delDate, ConfigurationMasterHelper.outDateFormat);
                 mCalendar.setTime(selected);
             } else {
                 NonFieldHelper.getInstance(this).downWeekOffs(OrderSummary.this);
                 mCalendar.add(Calendar.DAY_OF_YEAR, (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
 
                 mCalendar = dateValidation(mCalendar);
-                button_deliveryDate.setText(DateUtil.convertDateObjectToRequestedFormat(mCalendar.getTime(), ConfigurationMasterHelper.outDateFormat));
+                button_deliveryDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(mCalendar.getTime(), ConfigurationMasterHelper.outDateFormat));
 
             }
         } catch (Exception e) {
@@ -704,7 +705,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 boolean isGSTEnabled = bModel.configurationMasterHelper.IS_GST || bModel.configurationMasterHelper.IS_GST_HSN;
 
-                if (!isGSTEnabled || !bModel.getRetailerMasterBO().getSupplierBO().isCompositeRetailer()) {
+                if (!isGSTEnabled || bModel.getRetailerMasterBO().getSupplierBO() != null && !bModel.getRetailerMasterBO().getSupplierBO().isCompositeRetailer() ) {
 
                     if (!isGSTEnabled
                             || (!bModel.getRetailerMasterBO().getGSTNumber().equals("-") || totalOrderValue > 5000)) {
@@ -1122,7 +1123,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 boolean nFilesThere = bModel
                         .checkForNFilesInFolder(
-                                HomeScreenFragment.photoPath,
+                                FileUtils.photoFolderPath,
                                 1, mFirstName);
                 if (nFilesThere) {
 
@@ -1131,7 +1132,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 } else {
                     Intent intent = new Intent(OrderSummary.this,
                             CameraActivity.class);
-                    String path = HomeScreenFragment.photoPath + "/"
+                    String path = FileUtils.photoFolderPath + "/"
                             + mImageName;
                     intent.putExtra("path", path);
                     startActivityForResult(intent,
@@ -1158,12 +1159,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             boolean nFilesThere = bModel
                     .checkForNFilesInFolder(
-                            HomeScreenFragment.photoPath,
+                            FileUtils.photoFolderPath,
                             1, mFirstName);
             if (nFilesThere) {
                 openPdfDeleteDialog(mFirstName);
             } else {
-                String path = HomeScreenFragment.photoPath + "/"
+                String path = FileUtils.photoFolderPath + "/"
                         + attachedFilePath;
                 Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                 intent.setType("application/pdf");
@@ -1270,8 +1271,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         bModel.setDoubleEdit_temp(false);
 
 
-        bModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME));
+        bModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                .now(DateTimeUtils.TIME));
 
         Intent i;
         if (screenCode.equals(HomeScreenTwo.MENU_CATALOG_ORDER)) {
@@ -1835,8 +1836,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         bModel.getOrderHeaderBO().setDiscountId(0);
                         bModel.getOrderHeaderBO().setIsCompanyGiven(0);
                         bModel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt((String) text_LPC.getText()));
-                        bModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(),
-                                ConfigurationMasterHelper.outDateFormat));
+                        if (!button_deliveryDate.getText().toString().trim().equals("")) {
+                            bModel.getOrderHeaderBO().setDeliveryDate(DateTimeUtils.convertToServerDateFormat(button_deliveryDate.getText().toString(),
+                                    ConfigurationMasterHelper.outDateFormat));
+                        } else {
+                            bModel.getOrderHeaderBO().setDeliveryDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+                        }
                         signatureName = bModel.getOrderHeaderBO().getSignatureName();
                     }
 
@@ -1967,7 +1972,12 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 bModel.getOrderHeaderBO().setDiscountId(0);
                 bModel.getOrderHeaderBO().setIsCompanyGiven(0);
                 bModel.getOrderHeaderBO().setLinesPerCall(SDUtil.convertToInt((String) text_LPC.getText()));
-                bModel.getOrderHeaderBO().setDeliveryDate(DateUtil.convertToServerDateFormat(button_deliveryDate.getText().toString(), ConfigurationMasterHelper.outDateFormat));
+                if (!button_deliveryDate.getText().toString().trim().equals("")) {
+                    bModel.getOrderHeaderBO().setDeliveryDate(DateTimeUtils.convertToServerDateFormat(button_deliveryDate.getText().toString(),
+                            ConfigurationMasterHelper.outDateFormat));
+                } else {
+                    bModel.getOrderHeaderBO().setDeliveryDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+                }
                 signatureName = bModel.getOrderHeaderBO().getSignatureName();
             }
 
@@ -2968,14 +2978,14 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             Calendar selectedDate = new GregorianCalendar(year, monthOfYear,
                     dayOfMonth);
 
-            String dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
+            String dbDateFormat = DateTimeUtils.convertDateObjectToRequestedFormat(
                     selectedDate.getTime(), "yyyy/MM/dd");
             if (NonFieldHelper.getInstance(OrderSummary.this).isHoliday(dbDateFormat, OrderSummary.this)
                     || NonFieldHelper.getInstance(OrderSummary.this).isWeekOff(dbDateFormat)) {
                 Toast.makeText(OrderSummary.this, "The Selected day is a holiday", Toast.LENGTH_SHORT).show();
             }
 
-            button_deliveryDate.setText(DateUtil.convertDateObjectToRequestedFormat(
+            button_deliveryDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                     selectedDate.getTime(),
                     ConfigurationMasterHelper.outDateFormat));
             Calendar currentCalendar = Calendar.getInstance();
@@ -2990,20 +3000,20 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                 Calendar defaultCalendar = Calendar.getInstance();
                 defaultCalendar.add(Calendar.DAY_OF_YEAR, (bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER == 0 ? 1 : bModel.configurationMasterHelper.DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER));
-                button_deliveryDate.setText(DateUtil.convertDateObjectToRequestedFormat(defaultCalendar.getTime(), ConfigurationMasterHelper.outDateFormat));
+                button_deliveryDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(defaultCalendar.getTime(), ConfigurationMasterHelper.outDateFormat));
             }
             view.updateDate(year, monthOfYear, dayOfMonth);
         }
     };
 
     private Calendar dateValidation(Calendar selectedDate) {
-        String dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
+        String dbDateFormat = DateTimeUtils.convertDateObjectToRequestedFormat(
                 selectedDate.getTime(), "yyyy/MM/dd");
 
         while (NonFieldHelper.getInstance(OrderSummary.this).isHoliday(dbDateFormat, OrderSummary.this)
                 || NonFieldHelper.getInstance(OrderSummary.this).isWeekOff(dbDateFormat)) {
             selectedDate.add(Calendar.DAY_OF_MONTH, 1);
-            dbDateFormat = DateUtil.convertDateObjectToRequestedFormat(
+            dbDateFormat = DateTimeUtils.convertDateObjectToRequestedFormat(
                     selectedDate.getTime(), "yyyy/MM/dd");
         }
         return selectedDate;
@@ -3032,7 +3042,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 try {
 
                     alertDialog.dismiss();
-                    bModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                    bModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
 
                     if (bModel.configurationMasterHelper.SHOW_PRINT_ORDER && !orderHelper.isQuickCall) {
                         showDialog(DIALOG_ORDER_SAVED_WITH_PRINT_OPTION);
@@ -3314,7 +3324,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             printer = InitializeZebraPrinter();
 
             if (printer != null) {
-                bModel.loadManagementHelper.downloadSubDepots();
+                LoadManagementHelper.getInstance(this).downloadSubDepots();
                 projectSpecificPrinterCall(printerName);
             } else {
                 bModel.productHelper.clearOrderTable();
@@ -3510,7 +3520,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     invalidateOptionsMenu();
                     String realPath = Util.getPath(this, data.getData());
-                    Util.copyFile(new File(realPath), HomeScreenFragment.photoPath, attachedFilePath);
+                    Util.copyFile(new File(realPath), FileUtils.photoFolderPath, attachedFilePath);
                     if (bModel.getOrderHeaderBO() != null)
                         bModel.getOrderHeaderBO().setOrderImageName(attachedFilePath);
                 }
@@ -3634,13 +3644,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     @Override
                     public void onPositiveButtonClick() {
 
-                        bModel.deleteFiles(HomeScreenFragment.photoPath,
+                        bModel.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
                         bModel.getOrderHeaderBO().setOrderImageName("");
 
                         Intent intent = new Intent(OrderSummary.this,
                                 CameraActivity.class);
-                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
+                        String path = FileUtils.photoFolderPath + "/" + mImageName;
                         intent.putExtra("path", path);
                         startActivityForResult(intent,
                                 CAMERA_REQUEST_CODE);
@@ -3700,11 +3710,11 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     public void onPositiveButtonClick() {
                         invalidateOptionsMenu();
 
-                        bModel.deleteFiles(HomeScreenFragment.photoPath,
+                        bModel.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
                         bModel.getOrderHeaderBO().setOrderImageName("");
 
-                        String path = HomeScreenFragment.photoPath + "/"
+                        String path = FileUtils.photoFolderPath + "/"
                                 + attachedFilePath;
                         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
                         intent.setType("application/pdf");

@@ -28,7 +28,8 @@
             android:layout_below="@+id/prd_nameTv"
             android:layout_marginRight="@dimen/dimens_2dp"
             android:gravity="center"
-            android:text="@string/prod_code" />
+            android:text="@string/prod_code"
+            android:tag="pcode"/>
 
         <TextView
             android:id="@+id/batch_no"

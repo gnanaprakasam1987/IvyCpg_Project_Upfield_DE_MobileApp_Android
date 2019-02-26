@@ -35,9 +35,9 @@ static def fetchRevisionNumber() {
 }
 
 def majorVersion = 2
-def minorVersion = 135
+def minorVersion = 137
 def patchVersion = 0
-def verCode = 1350
+def verCode = 1370
 def revNumber = fetchRevisionNumber()
 
 android {
@@ -295,6 +295,11 @@ dependencies {
     testImplementation "org.hamcrest:hamcrest-all:$rootProject.hamcrestVersion"
     testAnnotationProcessor "com.google.dagger:dagger-compiler:$rootProject.dagger2Version"
     testImplementation 'org.json:json:20140107'
+    testCompile 'org.powermock:powermock-api-mockito2:1.7.0RC2'
+    testCompile 'org.powermock:powermock-module-junit4:1.7.0'
+    testCompile 'org.powermock:powermock-core:1.7.0'
+    testCompile 'org.powermock:powermock-module-junit4-rule:1.7.0'
+
 
     sfdcImplementation 'com.salesforce.mobilesdk:SmartSync:5.0.0'
 

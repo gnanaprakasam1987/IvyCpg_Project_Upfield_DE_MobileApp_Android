@@ -48,10 +48,12 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -165,8 +167,8 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 if (isFromChild)
                     startActivity(new Intent(getActivity(), HomeScreenTwo.class)
                             .putExtra("isStoreMenu", true));
@@ -377,8 +379,8 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
             try {
                 priceTrackingHelper.savePriceTransaction(getContext().getApplicationContext(), bmodel.productHelper.getTaggedProducts());
                 bmodel.saveModuleCompletion(HomeScreenTwo.MENU_PRICE_COMP);
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
 
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -435,13 +437,14 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
     }
 
     private void onLoadModule() {
-        if (bmodel.competitorTrackingHelper.getCompanyList().size() > 0) {
+        CompetitorTrackingHelper competitorTrackingHelper = CompetitorTrackingHelper.getInstance(getActivity());
+        if (competitorTrackingHelper.getCompanyList().size() > 0) {
             CompanyBO companyBO = new CompanyBO();
             companyBO.setCompetitorid(0);
             companyBO.setCompetitorName(getResources().getString(R.string.all));
             ArrayList<CompanyBO> companyList = new ArrayList<>();
             companyList.add(companyBO);
-            companyList.addAll(bmodel.competitorTrackingHelper.getCompanyList());
+            companyList.addAll(competitorTrackingHelper.getCompanyList());
             companyAdapter = new CompanyAdapter(companyList);
             rvCompanyList.setAdapter(companyAdapter);
 

@@ -23,11 +23,11 @@ import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
@@ -107,7 +107,7 @@ public class ExpenseFragment extends IvyBaseFragment {
         TextView tvClear = view.findViewById(R.id.tv_clear);
 
         imagesList = new ArrayList<>();
-        photoNamePath = HomeScreenFragment.photoPath + "/";
+        photoNamePath = FileUtils.photoFolderPath + "/";
         Commons.print("Photo Path, " + "" + photoNamePath);
 
         appSchedulerProvider = new AppSchedulerProvider();
@@ -158,7 +158,7 @@ public class ExpenseFragment extends IvyBaseFragment {
             }
         });
 
-        et_exp_date.setText(SDUtil.now(SDUtil.DATE_GLOBAL));
+        et_exp_date.setText(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
         et_exp_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -219,8 +219,8 @@ public class ExpenseFragment extends IvyBaseFragment {
                     amountValue = et_amount.getText().toString();
                     dateValue = et_exp_date.getText().toString();
                     if (isHeaderExists) {
-                        new CompositeDisposable().add(expenseSheetHelper.updateHeaderInsert(Tid, dateValue, amountValue, exp_type, imagesList, exp_type + "" + SDUtil
-                                .now(SDUtil.DATE_TIME_ID))
+                        new CompositeDisposable().add(expenseSheetHelper.updateHeaderInsert(Tid, dateValue, amountValue, exp_type, imagesList, exp_type + "" + DateTimeUtils
+                                .now(DateTimeUtils.DATE_TIME_ID))
                                 .subscribeOn(appSchedulerProvider.io())
                                 .observeOn(appSchedulerProvider.ui())
                                 .subscribe(new Consumer<Boolean>() {
@@ -231,11 +231,11 @@ public class ExpenseFragment extends IvyBaseFragment {
                                 }));
                     } else {
                         ExpensesBO expensesBO = new ExpensesBO();
-                        expensesBO.setTid(bmodel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
-                                .now(SDUtil.DATE_TIME_ID));
+                        expensesBO.setTid(bmodel.userMasterHelper.getUserMasterBO().getUserid() + DateTimeUtils
+                                .now(DateTimeUtils.DATE_TIME_ID));
                         expensesBO.setTypeId(exp_type);
-                        expensesBO.setRefId(exp_type + "" + SDUtil
-                                .now(SDUtil.DATE_TIME_ID));
+                        expensesBO.setRefId(exp_type + "" + DateTimeUtils
+                                .now(DateTimeUtils.DATE_TIME_ID));
                         expensesBO.setAmount(amountValue);
                         expensesBO.setImageList(imagesList);
                         new CompositeDisposable().add(expenseSheetHelper.saveAllData(expensesBO, dateValue)
@@ -351,8 +351,8 @@ public class ExpenseFragment extends IvyBaseFragment {
             String path = photoNamePath + "/" + imageFileName;
             try {
                 Intent intent = new Intent(mContext, CameraActivity.class);
-                intent.putExtra(getResources().getString(R.string.quality), 40);
-                intent.putExtra(getResources().getString(R.string.path), path);
+                intent.putExtra(CameraActivity.QUALITY, 40);
+                intent.putExtra(CameraActivity.PATH, path);
                 startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
             } catch (Exception e) {

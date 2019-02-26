@@ -64,8 +64,8 @@ import static com.ivy.ui.dashboard.SellerDashboardConstants.DAY;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.P3M;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.ROUTE;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.WEEK;
-import static com.ivy.utils.AppUtils.QT;
-import static com.ivy.utils.AppUtils.isNullOrEmpty;
+import static com.ivy.utils.StringUtils.QT;
+import static com.ivy.utils.StringUtils.isNullOrEmpty;
 
 public class SellerDashboardFragment extends BaseFragment implements SellerDashboardContract.SellerDashboardView, DashboardClickListener {
 

@@ -20,6 +20,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.ui.dashboard.data.SellerDashboardDataManagerImpl;
+import com.ivy.utils.DateTimeUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -300,7 +301,7 @@ public class DashBoardHelper {
         try {
             db.createDataBase();
             db.openDataBase();
-            String sb = "Select IntervalDesc from SellerKPI where " + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " between fromdate and todate and Interval = " + bmodel.QT(WEEK);
+            String sb = "Select IntervalDesc from SellerKPI where " + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " between fromdate and todate and Interval = " + bmodel.QT(WEEK);
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -622,7 +623,7 @@ public class DashBoardHelper {
                     + " inner join BeatMaster on RouteID = BeatID "
                     + " where interval= '" + interval + "' "
                     + " AND "
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " between RK.fromdate and RK.todate group by SLM.Listid,RKD.KPiid order by DisplaySeq,RKD.KPiid asc";
             Cursor c = db.selectSQL(sql);
             if (c != null) {
@@ -1276,7 +1277,7 @@ public class DashBoardHelper {
                     + " and interval= "
                     + bmodel.QT(interval)
                     + " AND "
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " between SK.fromdate and SK.todate "
                     + (userid.equals("0") ? " and SK.isSummary=1" : "")
                     + " group by SLM.Listid order by DisplaySeq asc";
@@ -1876,7 +1877,7 @@ public class DashBoardHelper {
                     sb.append(kpiID);
                     sb.append(" and SKSD.KPIParamLovId=");
                     sb.append(kpiTypeLovID);
-                    sb.append(" left join OrderDetail OD on OD.ProductID = SKSD.PiD inner join  ProductLevel pl on pl.levelid = p1.plid " +
+                    sb.append(" left join OrderDetail OD on OD.ProductID = (Select ProductId  from OrderDetail inner join ProductMaster on Pid = ProductID and parenthierarchy like '%/' || SKSD .pid || '/%') inner join  ProductLevel pl on pl.levelid = p1.plid " +
                             "GROUP BY P1.PID, P1.pname, P1.psname, P1.pcode, P1.parentId, p1.plid ");
                     for (int i = 2; i <= loopEnd; i++) {
                         Commons.print("Loop I," + "" + i);
@@ -1895,7 +1896,7 @@ public class DashBoardHelper {
                         sb.append(i);
                         sb.append(".plid,IFNULL(SKSD .kpiid,0),SUM(IFNULL(SKSD .Target,0))");
                         sb.append(",IFNULL(sum(0+OD.totalamount),0),ROUND(CASE WHEN (100-((SUM(OD.totalamount)*100)/((SUM(SKSD .Target))*1.0))) < ");
-                        sb.append("0 THEN 100 ELSE ((SUM(OD.totalamount*100))/((SUM(SKSD .Target))*1.0)) END ,2) AS acheived,pl.sequence from SellerKPISKUDetail SKSD left join OrderDetail OD on OD.ProductID = SKSD.PiD ");
+                        sb.append("0 THEN 100 ELSE ((SUM(OD.totalamount*100))/((SUM(SKSD .Target))*1.0)) END ,2) AS acheived,pl.sequence from SellerKPISKUDetail SKSD left join OrderDetail OD on OD.ProductID = (Select ProductId  from OrderDetail inner join ProductMaster on Pid = ProductID and parenthierarchy like '%/' || SKSD .pid || '/%') ");
                         sb.append("INNER JOIN ProductMaster p1 ON SKSD .pid = p1.pid and SKSD.kpiid=");
                         sb.append(kpiID);
                         sb.append(" and SKSD.KPIParamLovId=");
@@ -2877,7 +2878,7 @@ public class DashBoardHelper {
                             + " and interval= "
                             + bmodel.QT(interval)
                             + " AND "
-                            + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                            + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                             + " between SK.fromdate and SK.todate "
                             + (userid.equals("0") ? " and SK.isSummary=1" : "")
                             + " group by SLM.Listid order by DisplaySeq asc");
@@ -3501,10 +3502,10 @@ public class DashBoardHelper {
 
 
     /**
-     * @deprecated
-     * @See {@link SellerDashboardDataManagerImpl#fetchMslCount()}
      * @param flag
      * @return
+     * @See {@link SellerDashboardDataManagerImpl#fetchMslCount()}
+     * @deprecated
      */
     public int getMSLDetail(String flag) {
         DBUtil db;
@@ -3533,7 +3534,7 @@ public class DashBoardHelper {
                 sb.append("inner join ProductTaggingGroupMapping PTGM on PTGM.groupid = PTCM.groupid ");
                 sb.append("inner join  ProductTaggingCriteriaMapping PTCM on PTM.groupid = PTCM.groupid ");
                 sb.append("AND PTM.TaggingTypelovID in (select listid from standardlistmaster where listcode='MSL' and listtype='PRODUCT_TAGGING') ");
-                sb.append("where criteriatype = 'CHANNEL' and Criteriaid in (" + chIDs + ")");
+                sb.append("where PTCM.ChannelId in (" + chIDs + ")");
 
                 Cursor c = db.selectSQL(sb.toString());
                 if (c.getCount() > 0) {
@@ -3605,7 +3606,7 @@ public class DashBoardHelper {
 
         if (!bmodel.configurationMasterHelper.IS_INVOICE) {
             sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
-            sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sb.append("where upload!='X' and OrderDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             c = db
                     .selectSQL(sb.toString());
             if (c != null) {
@@ -3619,7 +3620,7 @@ public class DashBoardHelper {
             }
         } else {
             sb.append("select  count(distinct retailerid),sum(linespercall),sum(invoiceAmount) from Invoicemaster ");
-            sb.append("where InvoiceDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sb.append("where InvoiceDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             c = db
                     .selectSQL(sb.toString());
             if (c != null) {
@@ -3633,7 +3634,7 @@ public class DashBoardHelper {
         }
         sb = new StringBuffer();
         sb.append("select  sum(mspvalues),count(distinct orderid) from OrderHeader ");
-        sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        sb.append("where upload!='X' and OrderDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
@@ -4169,7 +4170,7 @@ public class DashBoardHelper {
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select sum(totalweight) from orderheader where OrderDate=");
-            sb.append(bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sb.append(bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             if (!retailerid.equals("")) {
                 sb.append("and upload!='X' and retailerid=" + bmodel.QT(retailerid));
             }
@@ -4188,8 +4189,8 @@ public class DashBoardHelper {
         return totalWeight;
     }
 
-    public String getLastDownloadDate(){
-        String downloadDate ="";
+    public String getLastDownloadDate() {
+        String downloadDate = "";
 
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
@@ -4204,15 +4205,15 @@ public class DashBoardHelper {
 
             db.closeDB();
 
-            if (downloadDate != null && !downloadDate.equals("")){
+            if (downloadDate != null && !downloadDate.equals("")) {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss",
                         Locale.ENGLISH);
                 Date date = sdf.parse(downloadDate);
-                sdf = new SimpleDateFormat(ConfigurationMasterHelper.outDateFormat +" HH:mm:ss", Locale.ENGLISH);
+                sdf = new SimpleDateFormat(ConfigurationMasterHelper.outDateFormat + " HH:mm:ss", Locale.ENGLISH);
 
                 downloadDate = mContext.getResources().getString(R.string.last_download_on)
-                        +" "+sdf.format(date);
+                        + " " + sdf.format(date);
 
             }
 

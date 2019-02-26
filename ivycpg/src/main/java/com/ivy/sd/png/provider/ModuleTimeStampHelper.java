@@ -4,10 +4,10 @@ import android.content.Context;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 /**
  * Created by mayuri.v on 9/4/2017.
@@ -55,7 +55,7 @@ public class ModuleTimeStampHelper {
             db.openDataBase();
             String columns = "Tid,DistributorId,UserId,Date,ModuleCode,Activity,Latitude,Longitude,GpsAccuracy,upload";
             String values = bmodel.QT(getTid()) + "," + bmodel.userMasterHelper.getUserMasterBO().getBranchId() + "," +
-                    bmodel.userMasterHelper.getUserMasterBO().getUserid() + "," + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL) + " " + SDUtil.now(SDUtil.TIME)) + "," +
+                    bmodel.userMasterHelper.getUserMasterBO().getUserid() + "," + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL) + " " + DateTimeUtils.now(DateTimeUtils.TIME)) + "," +
                     bmodel.QT(getModuleCode()) + "," + bmodel.QT(inOrout) + "," + bmodel.QT(LocationUtil.latitude + "") + "," +
                     bmodel.QT(LocationUtil.longitude + "") + "," + bmodel.QT(LocationUtil.accuracy + "") + ",'N'";
             db.insertSQL(DataMembers.tbl_ModuleActivityDetails, columns, values);

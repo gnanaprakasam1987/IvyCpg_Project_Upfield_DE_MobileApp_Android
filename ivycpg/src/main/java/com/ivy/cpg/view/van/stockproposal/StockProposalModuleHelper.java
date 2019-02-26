@@ -6,11 +6,11 @@ import android.util.SparseArray;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.LoadManagementBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.Vector;
 
@@ -22,7 +22,7 @@ public class StockProposalModuleHelper {
 
 	protected StockProposalModuleHelper(Context context) {
 		this.context = context;
-		this.bmodel = (BusinessModel) context;
+		this.bmodel = (BusinessModel) context.getApplicationContext();
 	}
 
 	public static StockProposalModuleHelper getInstance(Context context) {
@@ -36,7 +36,7 @@ public class StockProposalModuleHelper {
 		try {
 
 			String invid = bmodel.userMasterHelper.getUserMasterBO()
-					.getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID);
+					.getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
 			DBUtil db = new DBUtil(context, DataMembers.DB_NAME
             );
@@ -55,7 +55,7 @@ public class StockProposalModuleHelper {
 									+ " and upload='Y'");
 					if (stockcursor.getCount() > 0) {
 						stockcursor.moveToNext();
-						invid = AppUtils.QT(stockcursor.getString(0));
+						invid = StringUtils.QT(stockcursor.getString(0));
 					}
 					stockcursor.close();
 				}
@@ -82,7 +82,7 @@ public class StockProposalModuleHelper {
 							+ product.getdUomid() + "," + product.getCaseSize()
 							+ "," + product.getOuterSize() + ","
 							+ product.getdOuonid() + ","
-							+ AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+							+ StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
 					String sql = "insert into " + "StockProposalMaster" + "("
 							+ columns + ") values(" + values + ")";

@@ -22,10 +22,10 @@ import com.ivy.cpg.primarysale.bo.DistInvoiceDetailsBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.Vector;
 
@@ -97,7 +97,7 @@ public class InvoiceStatusFragment extends IvyBaseFragment {
 
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            bmodel.distTimeStampHeaderHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+            bmodel.distTimeStampHeaderHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
             getActivity().setResult(getActivity().RESULT_OK);
             getActivity().finish();
             return true;

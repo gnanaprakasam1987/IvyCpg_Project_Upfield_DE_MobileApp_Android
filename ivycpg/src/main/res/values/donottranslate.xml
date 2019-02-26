@@ -11,7 +11,7 @@
     <string name="dummy_txt">text</string>
     <string name="da">DA</string>
     <string name="nan">NaN</string>
-    <string name="path">path</string>
+
 
     <string-array name="languageList">
         <item name="en">English</item>
@@ -145,6 +145,18 @@
     <string name="amount_mismatch">Amount mismatch</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="ivy_mobility_privacy">Ivy Mobility Privacy Policy</string>
+    <string name="terms_conditions">Terms &amp; Conditions</string>
+    <string name="accept">Accept</string>
+    <string name="select_valid_destination">Select Valid Destination Outlet</string>
+
+    <string name="map_satellite">Satellite View</string>
+    <string name="map_normal">Normal View</string>
+    <string name="retailer_trans_not_exist">Retailer Transaction not exist</string>
+    <string name="data_cleared_do_u_want_go_back">Data not saved. Do you want to go back…?</string>
+
+    <string name="vendor">Vendor</string>
+    <string name="capacity">Capacity</string>
+    <string name="model">Model</string>
     <string name="select_seller">Select Seller</string>
     <string name="task_updated_successfully">Task updated successfully…</string>
 </resources>

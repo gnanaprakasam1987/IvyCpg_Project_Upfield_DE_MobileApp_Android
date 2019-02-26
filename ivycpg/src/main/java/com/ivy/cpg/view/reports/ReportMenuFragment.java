@@ -32,13 +32,14 @@ import com.ivy.cpg.view.van.stockview.StockViewActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.DateTimeUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +55,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
 
     private BusinessModel bmodel;
     private static final HashMap<String, Integer> menuIcons = new HashMap<>();
+    private ReportHelper reportHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -64,6 +66,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
         try {
             bmodel = (BusinessModel) getActivity().getApplicationContext();
             bmodel.setContext(getActivity());
+            reportHelper = ReportHelper.getInstance(getActivity());
 
             ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
 
@@ -185,7 +188,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
     protected void gotoSelectedFragement(ConfigureBO config) {
         switch (config.getConfigCode()) {
             case StandardListMasterConstants.MENU_INVOICE_REPORT:
-                if (bmodel.reportHelper.downloadInvoicereport().size() >= 1) {
+                if (reportHelper.downloadInvoicereport().size() >= 1) {
                     gotoReportActivity(config);
                 } else {
                     showToast();
@@ -197,7 +200,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
                 break;
             case StandardListMasterConstants.MENU_ORDER_REPORT:
 
-                if (bmodel.reportHelper.downloadOrderreport().size() >= 1) {
+                if (reportHelper.downloadOrderreport().size() >= 1) {
                     gotoReportActivity(config);
                 } else {
                     showToast();
@@ -251,14 +254,14 @@ public class ReportMenuFragment extends IvyBaseFragment {
                     showToast();
                 break;
             case StandardListMasterConstants.MENU_COLLECTION_REPORT:
-                if (bmodel.reportHelper.hasPayment()) {
+                if (reportHelper.hasPayment()) {
                     gotoReportActivity(config);
                 } else
                     showToast();
                 break;
 
             case StandardListMasterConstants.MENU_SKU_REPORT:
-                if(bmodel.reportHelper.hasOrder())
+                if(reportHelper.hasOrder())
                     gotoReportActivity(config);
                 else
                     showToast();
@@ -445,7 +448,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
                                     .getDefaultSharedPreferences(getActivity())
                                     .edit();
                             editor.putString("rpt_dwntime",
-                                    SDUtil.now(SDUtil.DATE_TIME_NEW));
+                                    DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
                             editor.apply();
 
                         }

@@ -10,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.NestedScrollView;
@@ -29,13 +28,12 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsFragment;
-import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -187,10 +185,10 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
             if (pdt_image != null) {
                 Uri path;
                 if (Build.VERSION.SDK_INT >= 24) {
-                    path = AppUtils.getUriFromFile(ProductSchemeDetailsActivity.this, appImageFolderPath + "/"
+                    path = FileUtils.getUriFromFile(ProductSchemeDetailsActivity.this, appImageFolderPath + "/"
                                     + DataMembers.CATALOG + "/" + bmodel.productHelper.getProductObj().getProductCode() + ".jpg");
                 } else {
-                    path = AppUtils.getUriFromFile(ProductSchemeDetailsActivity.this, appImageFolderPath + "/"
+                    path = FileUtils.getUriFromFile(ProductSchemeDetailsActivity.this, appImageFolderPath + "/"
                                     + DataMembers.CATALOG + "/" + bmodel.productHelper.getProductObj().getProductCode() + ".jpg");
                 }
 
@@ -260,19 +258,22 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
     private void addFragments() {
 
         mFragmentList = new ArrayList<>();
-        Fragment mSelectFragment = new SchemeDetailsFragment();
-        Bundle bundle =new Bundle();
-        bundle.putString("productId",productId);
-        if(getIntent()!=null&&getIntent().getStringExtra("slabId")!=null)
-          bundle.putString("slabId",getIntent().getStringExtra("slabId"));
 
-        mSelectFragment.setArguments(bundle);
-        mFragmentList.add(mSelectFragment);
+        if (!isFromUpSelling && (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG
+                || bmodel.configurationMasterHelper.IS_SCHEME_DIALOG)) {
+            Fragment mSelectFragment = new SchemeDetailsFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("productId", productId);
+            if (getIntent() != null && getIntent().getStringExtra("slabId") != null)
+                bundle.putString("slabId", getIntent().getStringExtra("slabId"));
 
+            mSelectFragment.setArguments(bundle);
+            mFragmentList.add(mSelectFragment);
+        }
 
-
-        if (!isFromUpSelling&&bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG) {
-            mSelectFragment = new ProductDetailsFragment();
+        if (!isFromUpSelling && (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG
+                || bmodel.configurationMasterHelper.IS_PRODUCT_DIALOG)) {
+            Fragment mSelectFragment = new ProductDetailsFragment();
             mFragmentList.add(mSelectFragment);
         }
     }

@@ -305,6 +305,7 @@
     <dimen name="fab1_bottom_margin">60dp</dimen>
     <dimen name="fab2_bottom_margin">120dp</dimen>
     <dimen name="fab3_bottom_margin">170dp</dimen>
+    <dimen name="fab4_bottom_margin">220dp</dimen>
     <dimen name="retailer_map_button_hegight">20dp</dimen>
     <dimen name="retailer_map_button_width">35dp</dimen>
     <dimen name="ratiler_map_bottomview_height">80dp</dimen>
@@ -385,7 +386,7 @@
     <dimen name="login_box_footer_height">36dp</dimen>
     <dimen name="login_content_padding">26dp</dimen>
     <dimen name="edittext_height">40dp</dimen>
-    <dimen name="forgot_text_width">55dp</dimen>
+    <dimen name="forgot_text_width">75dp</dimen>
     <dimen name="login_btn_bottom_margin">4dp</dimen>
     <dimen name="resetbox_header_height">54dp</dimen>
 

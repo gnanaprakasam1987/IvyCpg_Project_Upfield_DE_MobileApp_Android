@@ -72,9 +72,10 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -507,7 +508,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
 
                             boolean mIsFileAvailable = mBModel
                                     .checkForNFilesInFolder(
-                                            HomeScreenFragment.photoPath,
+                                            FileUtils.photoFolderPath,
                                             1, mFileNameStarts);
                             if (mIsFileAvailable) {
 
@@ -515,10 +516,10 @@ public class SODAssetFragment extends IvyBaseFragment implements
                             } else {
                                 Intent intent = new Intent(getActivity(),
                                         CameraActivity.class);
-                                intent.putExtra("quality", 40);
-                                String _path = HomeScreenFragment.photoPath + "/"
+                                intent.putExtra(CameraActivity.QUALITY, 40);
+                                String _path = FileUtils.photoFolderPath + "/"
                                         + mImageName;
-                                intent.putExtra("path", _path);
+                                intent.putExtra(CameraActivity.PATH, _path);
                                 startActivityForResult(intent,
                                         mBModel.CAMERA_REQUEST_CODE);
                                 holder.btnPhoto.requestFocus();
@@ -590,7 +591,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
                     && (!"".equals(holder.mSOD.getLocations().get(mSelectedLocationIndex).getImageName()))
                     && (!"null".equals(holder.mSOD.getLocations().get(mSelectedLocationIndex).getImageName()))) {
                 Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_photo_camera);
-                Glide.with(getActivity()).load(HomeScreenFragment.photoPath + "/" + holder.mSOD.getLocations().get(mSelectedLocationIndex).getImageName()).asBitmap().centerCrop().placeholder(new BitmapDrawable(getResources(), defaultIcon)).into(new BitmapImageViewTarget(holder.btnPhoto) {
+                Glide.with(getActivity()).load(FileUtils.photoFolderPath + "/" + holder.mSOD.getLocations().get(mSelectedLocationIndex).getImageName()).asBitmap().centerCrop().placeholder(new BitmapDrawable(getResources(), defaultIcon)).into(new BitmapImageViewTarget(holder.btnPhoto) {
                     @Override
                     protected void setResource(Bitmap resource) {
                         holder.btnPhoto.setImageDrawable(new BitmapDrawable(getResources(), getCircularBitmapFrom(resource)));
@@ -761,8 +762,8 @@ public class SODAssetFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 if (isFromChild)
                     startActivity(new Intent(getActivity(), HomeScreenTwo.class)
                             .putExtra("isStoreMenu", true));
@@ -893,8 +894,8 @@ public class SODAssetFragment extends IvyBaseFragment implements
                 mSODAssetHelper
                         .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOD_ASSET, mAssetsForDialog);
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOD_ASSET);
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException("" + e);
@@ -963,14 +964,14 @@ public class SODAssetFragment extends IvyBaseFragment implements
         builder.setPositiveButton(getResources().getString(R.string.yes),
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        mBModel.deleteFiles(HomeScreenFragment.photoPath,
+                        mBModel.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
-                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
+                        String path = FileUtils.photoFolderPath + "/" + mImageName;
+                        intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 mBModel.CAMERA_REQUEST_CODE);
 

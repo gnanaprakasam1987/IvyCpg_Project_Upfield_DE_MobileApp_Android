@@ -22,12 +22,10 @@ import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.List;
-
-import javax.inject.Inject;
 
 public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
 
@@ -112,7 +110,7 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
 
                 try {
                     childHolder.paymentOrChqDateTv
-                            .setText(DateUtil.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
+                            .setText(DateTimeUtils.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
                                     childHolder.childpos).getChequeDate(),
                                     ConfigurationMasterHelper.outDateFormat));
                 } catch (Exception e) {
@@ -136,7 +134,7 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
                         childHolder.childpos).getReferenceNumber());
                 try {
                     childHolder.paymentOrChqDateTv
-                            .setText(DateUtil.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
+                            .setText(DateTimeUtils.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
                                     childHolder.childpos).getCollectionDate(),
                                     ConfigurationMasterHelper.outDateFormat));
                 } catch (Exception e) {
@@ -156,7 +154,7 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
                         childHolder.childpos).getChequeNumber());
                 try {
                     childHolder.paymentOrChqDateTv
-                            .setText(DateUtil.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
+                            .setText(DateTimeUtils.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
                                     childHolder.childpos).getCollectionDate(),
                                     ConfigurationMasterHelper.outDateFormat));
                 } catch (Exception e) {
@@ -177,7 +175,7 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
                         childHolder.childpos).getChequeNumber());
                 try {
                     childHolder.paymentOrChqDateTv
-                            .setText(DateUtil.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
+                            .setText(DateTimeUtils.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
                                     childHolder.childpos).getCollectionDate(), ConfigurationMasterHelper.outDateFormat));
                 } catch (Exception e) {
                     childHolder.paymentOrChqDateTv
@@ -197,7 +195,7 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
                         childHolder.childpos).getChequeNumber());
                 try {
                     childHolder.paymentOrChqDateTv
-                            .setText(DateUtil.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
+                            .setText(DateTimeUtils.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
                                     childHolder.childpos).getCollectionDate(),
                                     ConfigurationMasterHelper.outDateFormat));
                 } catch (Exception e) {
@@ -211,7 +209,7 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
             } else {
                 try {
                     childHolder.paymentOrChqDateTv
-                            .setText(DateUtil.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
+                            .setText(DateTimeUtils.convertFromServerDateToRequestedFormat(childHolder.paymentChldObj.get(
                                     childHolder.childpos).getCollectionDate(),
                                     ConfigurationMasterHelper.outDateFormat));
                 } catch (Exception e) {
@@ -385,7 +383,7 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
             holder.adv_cash_modeTV.setText(holder.paymentObj.getListName());
             holder.adv_amountTV.setText(bModel.formatValue(holder.paymentObj.getAmount()));
             try {
-                holder.invDateTv.setText(DateUtil.convertFromServerDateToRequestedFormat(holder.paymentObj.getAdvancePaymentDate(),
+                holder.invDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.paymentObj.getAdvancePaymentDate(),
                         ConfigurationMasterHelper.outDateFormat));
             } catch (Exception e) {
                 holder.invDateTv.setText("");
@@ -399,7 +397,7 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
                     .getBalance()));
 
             try {
-                holder.invDateTv.setText(DateUtil.convertFromServerDateToRequestedFormat(holder.paymentObj.getInvoiceDate(),
+                holder.invDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.paymentObj.getInvoiceDate(),
                         ConfigurationMasterHelper.outDateFormat));
             } catch (Exception e) {
                 holder.invDateTv.setText("");

@@ -67,7 +67,7 @@ import com.ivy.cpg.view.digitalcontent.StoreWiseGallery;
 import com.ivy.cpg.view.displayscheme.DisplaySchemeActivity;
 import com.ivy.cpg.view.displayscheme.DisplaySchemeTrackingActivity;
 import com.ivy.cpg.view.emptyreturn.EmptyReturnActivity;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.cpg.view.emptyreturn.EmptyReturnHelper;
 import com.ivy.cpg.view.loyality.LoyalityHelper;
 import com.ivy.cpg.view.loyality.LoyaltyPointsFragmentActivity;
 import com.ivy.cpg.view.nearexpiry.NearExpiryTrackingActivity;
@@ -111,7 +111,6 @@ import com.ivy.cpg.view.task.TaskHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -120,11 +119,15 @@ import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.DownloadProductsAndPrice;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.profile.ProfileActivity;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.ui.task.view.TaskActivity;
 import com.ivy.utils.view.OnSingleClickListener;
 
@@ -132,7 +135,6 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Vector;
 
 
@@ -806,9 +808,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (!isClick) {
                 isClick = true;
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        SDUtil.now(SDUtil.DATE_GLOBAL),
-                        SDUtil.now(SDUtil.TIME), MENU_TASK);
-                Intent intent = new Intent(getApplicationContext(), TaskActivity.class);
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.TIME), MENU_TASK);
+                Intent intent = new Intent(getApplicationContext(), Task.class);
                 intent.putExtra("IsRetailerwisetask", true);
                 startActivity(intent);
 
@@ -843,8 +845,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             Toast.LENGTH_LONG).show();
 
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), MENU_PHOTO);
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), MENU_PHOTO);
                     startActivity(new Intent(HomeScreenTwo.this,
                             com.ivy.ui.photocapture.view.PhotoCaptureActivity.class).putExtra("isFromMenuClick", true));
                     finish();
@@ -861,8 +863,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 } else {
 
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), MENU_PHOTO);
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), MENU_PHOTO);
                     startActivity(new Intent(HomeScreenTwo.this,
                             com.ivy.ui.photocapture.view.PhotoCaptureActivity.class).putExtra("isFromMenuClick", true));
                     finish();
@@ -896,8 +898,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         && mDigitalContentHelper.getDigitalMaster()
                         .size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), MENU_DGT);
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), MENU_DGT);
                     Intent i = new Intent(HomeScreenTwo.this,
                             DigitalContentActivity.class);
                     i.putExtra("FromDigi", "Digi");
@@ -1679,8 +1681,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     bmodel.productHelper.loadRetailerWiseProductWisePurchased();
                     bmodel.productHelper.loadRetailerWiseProductWiseP4StockAndOrderQty();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                     /**
                      * Download product long-press information dialog
@@ -1751,7 +1753,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     if (bmodel.productHelper.getProductMaster().size() > 0) {
 
 
-                        if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
+                        if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+                                || bmodel.configurationMasterHelper.SHOW_SALES_RETURN_TV_IN_ORDER) {
                             SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
                             salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());
                             bmodel.reasonHelper.downloadSalesReturnReason();
@@ -1763,6 +1766,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 ////                        if (!bmodel.configurationMasterHelper.IS_INVOICE) {
                                 salesReturnHelper.getInstance(this).removeSalesReturnTable(true);
 ////                        }
+                                if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_TV_IN_ORDER) {
+                                    salesReturnHelper.getInstance(HomeScreenTwo.this).loadSalesReturnData(getApplicationContext(), "", "", bmodel.configurationMasterHelper.SHOW_SALES_RETURN_TV_IN_ORDER);
+                                }
                             }
                         }
 
@@ -1998,8 +2004,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     bmodel.configurationMasterHelper.downloadFilterList();
                     bmodel.productHelper.updateProductColor();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
 //                    OrderSummary.mCurrentActivityCode = menu.getConfigCode();
 //
@@ -2124,8 +2130,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                 .getConfigCode());
 
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
-                                SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                         Intent intent = new Intent(HomeScreenTwo.this,
                                 SurveyActivityNew.class);
@@ -2167,8 +2173,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     if (TaskHelper.getInstance(this).getTaskData(bmodel.getRetailerMasterBO().getRetailerID()).size() > 0) {
                         bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_TASK);
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
-                                SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
                         Intent intent = new Intent(getApplicationContext(),
                                 TaskActivity.class);
                         intent.putExtra("CurrentActivityCode", menu.getConfigCode());
@@ -2203,8 +2209,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     isClick = true;
                     // finish();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
                     Intent intent = new Intent(getApplicationContext(),
                             KellogsDashBoardActivity.class);
                     intent.putExtra("screenTitle", menu.getMenuName());
@@ -2254,8 +2260,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             finish();
 
                             bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                                    SDUtil.now(SDUtil.DATE_GLOBAL),
-                                    SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                    DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                             Intent intent = new Intent(HomeScreenTwo.this,
                                     PhotoCaptureActivity.class);
@@ -2278,8 +2284,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             finish();
 
                             bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                                    SDUtil.now(SDUtil.DATE_GLOBAL),
-                                    SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                    DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                             Intent intent = new Intent(HomeScreenTwo.this,
                                     PhotoCaptureActivity.class);
@@ -2353,8 +2359,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     // OrderSummary.class);
                     Intent intent = null;
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
                     /*if (bmodel.configurationMasterHelper.SHOW_ZEBRA_DIAGEO) {
                         intent = new Intent(HomeScreenTwo.this,
                                 PrintPreviewScreenDiageo.class);
@@ -2409,8 +2415,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         }
 
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
-                                SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                         if (menu.getConfigCode().equals(
                                 StandardListMasterConstants.MENU_COLLECTION_VIEW)) {
@@ -2470,8 +2476,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             && bmodel.getInvoiceHeaderBO().size() > 0) {
 
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
-                                SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                         Intent intent = new Intent(HomeScreenTwo.this,
                                 CollectionReference.class);
@@ -2560,8 +2566,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             && mDigitalContentHelper.getDigitalMaster()
                             .size() > 0) {
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
-                                SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
                         Intent i = new Intent(HomeScreenTwo.this,
                                 DigitalContentActivity.class);
                         i.putExtra("CurrentActivityCode", menu.getConfigCode());
@@ -2601,8 +2607,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || (bmodel.configurationMasterHelper.IS_JUMP && isAllMandatoryMenuDone())
                     || !canAllowCallAnalysis()) {
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        SDUtil.now(SDUtil.DATE_GLOBAL),
-                        SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                 // bmodel.productHelper.downloadIndicativeOrder();
 
@@ -2647,8 +2653,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         assetTrackingHelper.mSelectedActivityName = menu.getMenuName();
 
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
-                                SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                         Intent in = new Intent(HomeScreenTwo.this,
                                 AssetTrackingActivity.class);
@@ -2696,8 +2702,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(menu.getConfigCode());
 
                         bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
-                                SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                         Intent in = new Intent(HomeScreenTwo.this,
                                 SerializedAssetActivity.class);
@@ -2740,8 +2746,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     assetTrackingHelper.mSelectedActivityName = menu.getMenuName();
 
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                     Intent in = new Intent(HomeScreenTwo.this,
                             PosmTrackingActivity.class);
@@ -2777,7 +2783,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 NearExpiryTrackingHelper mNearExpiryHelper = NearExpiryTrackingHelper.getInstance(this);
 
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        SDUtil.now(SDUtil.DATE_GLOBAL), SDUtil.now(SDUtil.TIME),
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), DateTimeUtils.now(DateTimeUtils.TIME),
                         MENU_NEAREXPIRY);
                 mNearExpiryHelper.mSelectedActivityName = menu.getMenuName();
 
@@ -2842,8 +2848,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || bmodel.configurationMasterHelper.IS_JUMP
             ) {
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        SDUtil.now(SDUtil.DATE_GLOBAL),
-                        SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
                 RetailerContractHelper retailerContractHelper = RetailerContractHelper.getInstance(this);
                 retailerContractHelper.downloadRetailerContract(bmodel.getRetailerMasterBO().getRetailerID());
                 retailerContractHelper.downloadRenewedContract(bmodel.getRetailerMasterBO().getRetailerID());
@@ -2882,8 +2888,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 if (mPlanoGramHelper.getPlanogramMaster() != null && mPlanoGramHelper.getPlanogramMaster().size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                     Intent in = new Intent(HomeScreenTwo.this,
                             PlanoGramActivity.class);
@@ -2955,8 +2961,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_PRICE), 0);
 
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        SDUtil.now(SDUtil.DATE_GLOBAL),
-                        SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
 
                 Intent in = new Intent(HomeScreenTwo.this,
@@ -3004,7 +3010,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 priceTrackingHelper.clearPriceCheck();
                 priceTrackingHelper.loadPriceTransaction(getApplicationContext());
-                bmodel.competitorTrackingHelper.downloadPriceCompanyMaster(MENU_PRICE_COMP);
+                CompetitorTrackingHelper.getInstance(this).downloadPriceCompanyMaster(MENU_PRICE_COMP);
 
                 if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_IN_EDIT_MODE && !priceTrackingHelper.isPriceCheckDone(getApplicationContext())) {
                     priceTrackingHelper.updateLastVisitPriceAndMRP();
@@ -3013,8 +3019,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_PRICE_COMP), 0);
 
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        SDUtil.now(SDUtil.DATE_GLOBAL),
-                        SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
 
                 Intent in = new Intent(HomeScreenTwo.this,
@@ -3039,11 +3045,11 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || bmodel.configurationMasterHelper.IS_JUMP
             ) {
                 if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN)
-                    bmodel.mEmptyReturnHelper.downloadProductType();
+                    EmptyReturnHelper.getInstance(this).downloadProductType();
                 bmodel.mSelectedActivityName = menu.getMenuName();
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        SDUtil.now(SDUtil.DATE_GLOBAL),
-                        SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
                 Intent in = new Intent(HomeScreenTwo.this,
                         EmptyReturnActivity.class);
                 startActivity(in);
@@ -3068,8 +3074,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 if (promotionHelper.getPromotionList().size() > 0) {
                     bmodel.mSelectedActivityName = menu.getMenuName();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME),
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME),
                             MENU_PROMO);
                     Intent intent = new Intent(HomeScreenTwo.this,
                             PromotionTrackingActivity.class);
@@ -3127,8 +3133,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         && mSFHelper.getSOSList().size() > 0) {
 
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME),
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME),
                             MENU_SOS);
 
                     mSFHelper.mSelectedActivityName = menu.getMenuName();
@@ -3165,8 +3171,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || bmodel.configurationMasterHelper.IS_JUMP) {
 
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        SDUtil.now(SDUtil.DATE_GLOBAL),
-                        SDUtil.now(SDUtil.TIME),
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.TIME),
                         MENU_SOS_PROJ);
 
                 Intent intent = new Intent(this, SOSActivity_PRJSpecific.class);
@@ -3213,8 +3219,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 if (mSFHelper.getSODList() != null && mSFHelper.getSODList().size() > 0) {
 
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME),
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME),
                             MENU_SOD);
                     mSFHelper.mSelectedActivityName = menu.getMenuName();
                     Intent intent = new Intent(this, SODActivity.class);
@@ -3267,8 +3273,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 if (mSODAssetHelper.getSODList() != null && mSODAssetHelper.getSODList().size() > 0) {
 
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME),
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME),
                             MENU_SOD_ASSET);
                     mSODAssetHelper.mSelectedActivityName = menu.getMenuName();
                     Intent intent = new Intent(this, SODAssetActivity.class);
@@ -3319,8 +3325,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 if (mSFHelper.getSOSKUList() != null && mSFHelper.getSOSKUList().size() > 0) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME),
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME),
                             MENU_SOSKU);
                     mSFHelper.mSelectedActivityName = menu.getMenuName();
                     Intent intent = new Intent(this, SOSKUActivity.class);
@@ -3355,18 +3361,18 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
             ) {
-                bmodel.competitorTrackingHelper.downloadCompanyMaster(MENU_COMPETITOR);
-                bmodel.competitorTrackingHelper.downloadTrackingList();
-                bmodel.competitorTrackingHelper
+                CompetitorTrackingHelper competitorTrackingHelper = CompetitorTrackingHelper.getInstance(this);
+                competitorTrackingHelper.downloadCompanyMaster(MENU_COMPETITOR);
+                competitorTrackingHelper.downloadTrackingList();
+                competitorTrackingHelper
                         .downloadCompetitors(MENU_COMPETITOR);
-                bmodel.competitorTrackingHelper.loadcompetitors();
-                int companySize = bmodel.competitorTrackingHelper
-                        .getCompanyList().size();
+                competitorTrackingHelper.loadcompetitors();
+                int companySize = competitorTrackingHelper.getCompanyList().size();
                 if (companySize > 0) {
                     bmodel.mSelectedActivityName = menu.getMenuName();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME),
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME),
                             MENU_COMPETITOR);
                     Intent intent = new Intent(this,
                             CompetitorTrackingActivity.class);
@@ -3399,8 +3405,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     || !canAllowCallAnalysis()) {
                 bmodel.reasonHelper.downloadClosecallReasonList();
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        SDUtil.now(SDUtil.DATE_GLOBAL),
-                        SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
                 int reasonsize = bmodel.reasonHelper.getClosecallReasonList().size();
 
                 if (reasonsize > 0) {
@@ -3436,8 +3442,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         || (bmodel.configurationMasterHelper.IS_JUMP && isAllMandatoryMenuDone())
                         || !canAllowCallAnalysis()) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                     if (menuCodeList.size() > 0)
                         menuCodeList.clear();
@@ -3521,8 +3527,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     i.putExtras(bnd);
                     bmodel.mSelectedActivityName = menu.getMenuName();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
                     startActivity(i);
                 } else {
                     Toast.makeText(
@@ -3559,8 +3565,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 i.putExtra("retid", bmodel.getRetailerMasterBO().getRetailerID());
                 bmodel.mSelectedActivityName = menu.getMenuName();
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        SDUtil.now(SDUtil.DATE_GLOBAL),
-                        SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
                 startActivity(i);
             } else {
                 Toast.makeText(
@@ -3588,8 +3594,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     bmodel.mSelectedActivityName = menu.getMenuName();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), menu.getConfigCode());
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
                     Intent i = new Intent(this,
                             DeliveryOrderActivity.class);
@@ -3699,8 +3705,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 if (orderDeliveryHelper.getOrderHeaders().size() > 0) {
                     bmodel.outletTimeStampHelper
                             .saveTimeStampModuleWise(
-                                    SDUtil.now(SDUtil.DATE_GLOBAL),
-                                    SDUtil.now(SDUtil.TIME),
+                                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                    DateTimeUtils.now(DateTimeUtils.TIME),
                                     MENU_ORD_DELIVERY);
 
                     Intent i = new Intent(this,
@@ -3891,8 +3897,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     }
                     bmodel.outletTimeStampHelper
                             .saveTimeStampModuleWise(
-                                    SDUtil.now(SDUtil.DATE_GLOBAL),
-                                    SDUtil.now(SDUtil.TIME),
+                                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                    DateTimeUtils.now(DateTimeUtils.TIME),
                                     menu);
                     OrderHelper.getInstance(this).isQuickCall = false;
                     Intent intent = new Intent(HomeScreenTwo.this,
@@ -3906,8 +3912,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             } else {
                 bmodel.outletTimeStampHelper
                         .saveTimeStampModuleWise(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
-                                SDUtil.now(SDUtil.TIME),
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME),
                                 menu);
 
                 if (bmodel.productHelper.getIndicativeList() != null) {
@@ -4040,22 +4046,19 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                                             bmodel.configurationMasterHelper.
                                                     updateConfigurationSelectedSellerType(false);
                                             updateRetailerwiseSellertype(1); // Vansales
-                                            bmodel.getRetailerMasterBO()
+                                            bmodel.getAppDataProvider().getRetailMaster()
                                                     .setIsVansales(1);
 
                                         } else {
                                             bmodel.configurationMasterHelper.
                                                     updateConfigurationSelectedSellerType(true);
                                             updateRetailerwiseSellertype(0); // Presales
-                                            bmodel.getRetailerMasterBO()
+                                            bmodel.getAppDataProvider().getRetailMaster()
                                                     .setIsVansales(0);
                                         }
                                         if (bmodel.configurationMasterHelper.IS_SWITCH_SELLER_CONFIG_LEVEL) {
-                                            GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
-                                            if (genericObjectPair != null) {
-                                                bmodel.productHelper.setProductMaster(genericObjectPair.object1);
-                                                bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
-                                            }
+                                            new DownloadProductsAndPrice(HomeScreenTwo.this, "", "",
+                                                    "", "", false).execute();
                                         }
                                         dialog.dismiss();
 
@@ -4689,7 +4692,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         try {
             String[] imgPaths = retailerObj.getProfileImagePath().split("/");
             String path = imgPaths[imgPaths.length - 1];
-            Uri uri = bmodel.profilehelper.getUriFromFile(HomeScreenFragment.photoPath + "/" + path);
+            Uri uri = bmodel.profilehelper.getUriFromFile(FileUtils.photoFolderPath + "/" + path);
             retProfileImage.invalidate();
             retProfileImage.setImageURI(uri);
         } catch (Exception e) {
@@ -4841,14 +4844,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 if (!bmodel.configurationMasterHelper.IS_INVOICE) {
                     salesReturnHelper.getInstance(HomeScreenTwo.this).removeSalesReturnTable(false);
-                    salesReturnHelper.getInstance(HomeScreenTwo.this).loadSalesReturnData(getApplicationContext(), "", "");
+                    salesReturnHelper.getInstance(HomeScreenTwo.this).loadSalesReturnData(getApplicationContext(), "", "", false);
                 }
 
                 bmodel.updateProductUOM(StandardListMasterConstants.mActivityCodeByMenuCode.get(MENU_SALES_RET), 1);
 
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        SDUtil.now(SDUtil.DATE_GLOBAL),
-                        SDUtil.now(SDUtil.TIME), menCode);
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.TIME), menCode);
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException("" + e);
@@ -4909,8 +4912,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
                 bmodel.outletTimeStampHelper
                         .saveTimeStampModuleWise(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
-                                SDUtil.now(SDUtil.TIME),
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME),
                                 configCode);
                 OrderHelper.getInstance(this).isQuickCall = false;
                 Intent i = new Intent(HomeScreenTwo.this,
@@ -4941,8 +4944,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             }
             bmodel.outletTimeStampHelper
                     .saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME),
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME),
                             configCode);
             OrderHelper.getInstance(this).isQuickCall = false;
             Intent i = new Intent(HomeScreenTwo.this,
@@ -5080,7 +5083,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     && (bmodel.getRetailerMasterBO().getRField4().equals("1")
                     || (bmodel.getRetailerMasterBO().getTinExpDate() != null
                     && !bmodel.getRetailerMasterBO().getTinExpDate().isEmpty() &&
-                    SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),
+                    DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             bmodel.getRetailerMasterBO().getTinExpDate(), "yyyy/MM/dd") > 0))) {
                 bmodel.showAlert(getResources().getString(R.string.order_not_allowed_for_retailer), 0);
                 isCreated = false;
@@ -5104,7 +5107,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 bmodel.getRetailerMasterBO().setCreditLimit(bmodel.getRetailerMasterBO().getSupplierBO().getCreditLimit());
             }
 
-            if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER) {
+            if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+                    || bmodel.configurationMasterHelper.SHOW_SALES_RETURN_TV_IN_ORDER) {
                 SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(this);
                 salesReturnHelper.loadSalesReturnConfigurations(getApplicationContext());
                 bmodel.reasonHelper.downloadSalesReturnReason();
@@ -5112,6 +5116,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     salesReturnHelper.cloneReasonMaster(true);//
                     salesReturnHelper.clearSalesReturnTable(true);//
                     salesReturnHelper.removeSalesReturnTable(true);
+
+                    if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_TV_IN_ORDER) {
+                        salesReturnHelper.getInstance(HomeScreenTwo.this).loadSalesReturnData(getApplicationContext(), "", "", bmodel.configurationMasterHelper.SHOW_SALES_RETURN_TV_IN_ORDER);
+                    }
                 }
             }
             if (!isClick) {

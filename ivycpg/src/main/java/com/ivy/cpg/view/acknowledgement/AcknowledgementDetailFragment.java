@@ -27,7 +27,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -47,6 +47,7 @@ public class AcknowledgementDetailFragment extends IvyBaseFragment {
     DashBoardListViewAdapter dashBoardListViewAdapter;
     private boolean isChecked = false;
     TextView txtUser;
+    private  AcknowledgementHelper acknowledgementHelper;
 
 
     @Nullable
@@ -59,6 +60,9 @@ public class AcknowledgementDetailFragment extends IvyBaseFragment {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
+        acknowledgementHelper = AcknowledgementHelper.getInstance(getActivity());
+
         fm = getActivity().getSupportFragmentManager();
         if (getActivity().getIntent().getExtras() != null) {
             userID = getActivity().getIntent().getStringExtra("UserID");
@@ -88,8 +92,8 @@ public class AcknowledgementDetailFragment extends IvyBaseFragment {
         dashBoardList.setNestedScrollingEnabled(false);
         dashBoardList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        bmodel.acknowledgeHelper.loadJointCallAcknowledgement(userID);
-        joinCallAcknowledgementList = bmodel.acknowledgeHelper.getAcknowledgementList();
+        acknowledgementHelper.loadJointCallAcknowledgement(userID);
+        joinCallAcknowledgementList = acknowledgementHelper.getAcknowledgementList();
 
         dashBoardListViewAdapter = new DashBoardListViewAdapter(joinCallAcknowledgementList);
         dashBoardList.setAdapter(dashBoardListViewAdapter);
@@ -117,7 +121,7 @@ public class AcknowledgementDetailFragment extends IvyBaseFragment {
 
             holder.invoiceHeaderBO = joinCallAcknowledgementList.get(position);
             txtUser.setText(holder.invoiceHeaderBO.getUsername());
-            holder.txtDate.setText(DateUtil.convertFromServerDateToRequestedFormat(holder.invoiceHeaderBO.getDate(),
+            holder.txtDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.invoiceHeaderBO.getDate(),
                     ConfigurationMasterHelper.outDateFormat));
             holder.txtBeat.setText(holder.invoiceHeaderBO.getBeat());
             holder.txtValue.setText(holder.invoiceHeaderBO.getValue());
@@ -235,7 +239,7 @@ public class AcknowledgementDetailFragment extends IvyBaseFragment {
         protected Boolean doInBackground(Void... arg0) {
             try {
                 for (JointCallAcknowledgementBO acknowledgeBO : joinCallAcknowledgementList) {
-                    bmodel.acknowledgeHelper.updateAcknowledgement(acknowledgeBO.getUserid(),
+                    acknowledgementHelper.updateAcknowledgement(acknowledgeBO.getUserid(),
                             acknowledgeBO.getRefid(), acknowledgeBO.getUpload());
                 }
                 return true;

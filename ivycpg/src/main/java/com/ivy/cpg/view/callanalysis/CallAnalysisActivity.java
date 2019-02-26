@@ -59,15 +59,15 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
-import com.ivy.sd.png.util.ScreenOrientation;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.SyncRetailerSelectActivity;
 import com.ivy.sd.png.view.SyncVisitedRetailer;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.DeviceUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -292,7 +292,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 }
             }
 
-            if (ScreenOrientation.isTabletDevice(this)) {
+            if (DeviceUtils.isTabletDevice(this)) {
                 if (configlist.size() > 0) {
 
                     GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
@@ -934,7 +934,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
             if (bmodel.configurationMasterHelper.IS_COLLECTION_MANDATE
                     && bmodel.retailerMasterBO.getRpTypeCode().equalsIgnoreCase("CASH")
-                    && bmodel.hasPendingInvoice(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.getRetailerMasterBO().getRetailerID())) {
+                    && bmodel.hasPendingInvoice(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), bmodel.getRetailerMasterBO().getRetailerID())) {
 
                 Toast.makeText(this, getResources().getString(R.string.collection_mandatory), Toast.LENGTH_SHORT).show();
                 return;
@@ -1101,7 +1101,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             db.openDataBase();
             Cursor c = db.selectSQL("select stockid from "
                     + DataMembers.tbl_closingstockheader + " where retailerid="
-                    + AppUtils.QT(bmodel.getRetailerMasterBO().getRetailerID())
+                    + StringUtils.QT(bmodel.getRetailerMasterBO().getRetailerID())
                     + " AND DistributorID=" + bmodel.getRetailerMasterBO().getDistributorId());
             if (c != null) {
                 if (c.getCount() > 0) {
@@ -1213,8 +1213,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                                                         int whichButton) {
                                         resetRemarksBO();
                                         bmodel.outletTimeStampHelper
-                                                .updateTimeStampModuleWise(SDUtil
-                                                        .now(SDUtil.TIME));
+                                                .updateTimeStampModuleWise(DateTimeUtils
+                                                        .now(DateTimeUtils.TIME));
                                        /* BusinessModel.loadActivity(
                                                 CallAnalysisActivity.this,
                                                 DataMembers.actHomeScreenTwo);*/
@@ -1362,14 +1362,14 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
         if (bmodel.configurationMasterHelper.SHOW_NO_ORDER_EDITTEXT) {
             if (edt_noOrderReason.getText().length() > 0) {
-                bmodel.outletTimeStampHelper.updateTimeStamp(SDUtil
-                        .now(SDUtil.TIME), edt_noOrderReason.getText().toString());
+                bmodel.outletTimeStampHelper.updateTimeStamp(DateTimeUtils
+                        .now(DateTimeUtils.TIME), edt_noOrderReason.getText().toString());
             } else {
                 showNoOrderReason();
             }
         } else {
-            bmodel.outletTimeStampHelper.updateTimeStamp(SDUtil
-                    .now(SDUtil.TIME), mFeedbackReasonId);
+            bmodel.outletTimeStampHelper.updateTimeStamp(DateTimeUtils
+                    .now(DateTimeUtils.TIME), mFeedbackReasonId);
         }
 
         if (!hasActivityDone() && !bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL && !bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON) {
@@ -1379,8 +1379,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             bmodel.outletTimeStampHelper.deleteImagesFromFolder();
 
         } else {
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
             bmodel.saveModuleCompletion("MENU_CALL_ANLYS");
         }
         resetRemarksBO();
@@ -1531,8 +1531,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
     public boolean onOptionsItemSelected(MenuItem item) {
         int i1 = item.getItemId();
         if (i1 == android.R.id.home) {
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
             resetRemarksBO();
            /* BusinessModel.loadActivity(CallAnalysisActivity.this,
                     DataMembers.actHomeScreenTwo);*/
@@ -1558,7 +1558,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                         Toast.LENGTH_LONG).show();
                 return;
             }
-            if (AppUtils.isExternalStorageAvailable()) {
+            if (FileUtils.isExternalStorageAvailable()) {
 
                 String mModuleName = "MENU_CALL_ANLYS";
                 mImageName = "NP_" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
@@ -1578,17 +1578,17 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
                 boolean nFilesThere = bmodel
                         .checkForNFilesInFolder(
-                                HomeScreenFragment.photoPath, 1,
+                                FileUtils.photoFolderPath, 1,
                                 fnameStarts);
                 if (nFilesThere) {
                     showFileDeleteAlert(fnameStarts);
                 } else {
                     Intent intent = new Intent(this,
                             CameraActivity.class);
-                    intent.putExtra("quality", 40);
-                    String path = HomeScreenFragment.photoPath + "/"
+                    intent.putExtra(CameraActivity.QUALITY, 40);
+                    String path = FileUtils.photoFolderPath + "/"
                             + mImageName;
-                    intent.putExtra("path", path);
+                    intent.putExtra(CameraActivity.PATH, path);
                     startActivityForResult(intent,
                             bmodel.CAMERA_REQUEST_CODE);
                 }
@@ -1611,15 +1611,15 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                        bmodel.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         isPhotoTaken = false;
                         Intent intent = new Intent(CallAnalysisActivity.this,
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
-                        String path = HomeScreenFragment.photoPath + "/" + mImageName;
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
+                        String path = FileUtils.photoFolderPath + "/" + mImageName;
+                        intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);
                     }
@@ -1896,10 +1896,10 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
     private void updateLastSync() {
         SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
-        edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
-                SDUtil.now(SDUtil.DATE_GLOBAL),
+        edt.putString("date", DateTimeUtils.convertFromServerDateToRequestedFormat(
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat));
-        edt.putString("time", SDUtil.now(SDUtil.TIME));
+        edt.putString("time", DateTimeUtils.now(DateTimeUtils.TIME));
         edt.apply();
     }
 

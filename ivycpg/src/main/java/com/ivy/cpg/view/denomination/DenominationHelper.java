@@ -4,10 +4,10 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -153,8 +153,8 @@ public class DenominationHelper {
                     db.deleteSQL("DenominationDetails", "", true);
                     db.deleteSQL("DenominationHeader", "", true);
 
-                    String currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
-                    String id = "DEN" + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    String currentDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
+                    String id = "DEN" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
 
                     for (int i = 0; i < denominationInputValues.size(); i++) {
@@ -163,10 +163,10 @@ public class DenominationHelper {
 
                         String columns = "uid,value,count,lineAmount,isCoin";
 
-                        String values = AppUtils.QT(id) + ","
-                                + AppUtils.QT(denominationInputValues.get(i).getDenominationDisplayNameValues()) + ","
-                                + AppUtils.QT(denominationInputValues.get(i).getCount()) + ","
-                                + AppUtils.QT(String.valueOf(lineAmount)) + ","
+                        String values = StringUtils.QT(id) + ","
+                                + StringUtils.QT(denominationInputValues.get(i).getDenominationDisplayNameValues()) + ","
+                                + StringUtils.QT(denominationInputValues.get(i).getCount()) + ","
+                                + StringUtils.QT(String.valueOf(lineAmount)) + ","
                                 + denominationInputValues.get(i).getIsCoin();
 
                         db.insertSQL("DenominationDetails", columns, values);
@@ -178,7 +178,7 @@ public class DenominationHelper {
 
                         String columns = "uid,date,amount";
 
-                        String values = AppUtils.QT(id) + "," + AppUtils.QT(currentDate) + "," + AppUtils.QT(initialTotalAmount);
+                        String values = StringUtils.QT(id) + "," + StringUtils.QT(currentDate) + "," + StringUtils.QT(initialTotalAmount);
 
                         db.insertSQL("DenominationHeader", columns, values);
                     }

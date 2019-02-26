@@ -12,6 +12,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -439,7 +440,7 @@ public class FitScoreHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("Select sum(0+Score)/count(RetailerID) from RetailerScoreHeader where Date ="
-                    + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                    + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             if (c != null) {
                 while (c.moveToNext()) {
                     return c.getDouble(0);

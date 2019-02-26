@@ -12,6 +12,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -548,13 +549,14 @@ public class UserMasterHelper {
         return userList;
     }
 
-    public boolean hasProfileImagePath(UserMasterBO userMasterBO) {
+    public boolean hasProfileImageSetLocally(UserMasterBO userMasterBO) {
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
             );
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("SELECT Value FROM UserEditDetail  where Code='ProfileImagePath' AND UserID=" + userMasterBO.getUserid());
+                    .selectSQL("SELECT Value FROM UserEditDetail  where Code='ProfileImagePath' AND " +
+                            "UserID=" + userMasterBO.getUserid());
             if (c != null) {
                 if (c.getCount() > 0) {
                     if (c.moveToNext()) {
@@ -584,7 +586,7 @@ public class UserMasterHelper {
             db.openDataBase();
             String tid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + bmodel.getRetailerMasterBO().getRetailerID()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
             deleteQuery(userMasterBO.getUserid());
             String imagePath = "User" + "/" + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
                     + "/"

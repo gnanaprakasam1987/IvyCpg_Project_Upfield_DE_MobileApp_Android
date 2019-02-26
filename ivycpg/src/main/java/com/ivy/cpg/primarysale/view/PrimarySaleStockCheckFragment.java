@@ -42,6 +42,7 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -346,7 +347,7 @@ public class PrimarySaleStockCheckFragment extends IvyBaseFragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            bmodel.distTimeStampHeaderHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+            bmodel.distTimeStampHeaderHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
             getActivity().setResult(getActivity().RESULT_OK);
             getActivity().finish();
             return true;

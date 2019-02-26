@@ -30,11 +30,12 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CompanyBO;
 import com.ivy.sd.png.bo.CompetitorBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -52,6 +53,7 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
     private String calledBy = "0";
     private TabLayout tabLayout;
     private boolean isFromChild;
+    private CompetitorTrackingHelper competitorTrackingHelper;
 
     @Override
     public void onAttach(Activity activity) {
@@ -59,6 +61,7 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
         super.onAttach(activity);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        competitorTrackingHelper = CompetitorTrackingHelper.getInstance(getActivity());
     }
 
     @Override
@@ -98,7 +101,7 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
         tabLayout = view.findViewById(R.id.tab_layout);
 
         float scale = getContext().getResources().getDisplayMetrics().widthPixels;
-        scale = scale / bmodel.competitorTrackingHelper.getCompanyList().size();
+        scale = scale / competitorTrackingHelper.getCompanyList().size();
 
 
         TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
@@ -107,8 +110,8 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
         lvcategorylist.setCacheColorHint(0);
 
         CompanyBO companyBO;
-        for (int i = 0; i < bmodel.competitorTrackingHelper.getCompanyList().size(); i++) {
-            companyBO = bmodel.competitorTrackingHelper.getCompanyList().get(i);
+        for (int i = 0; i < competitorTrackingHelper.getCompanyList().size(); i++) {
+            companyBO = competitorTrackingHelper.getCompanyList().get(i);
             TabLayout.Tab tab = tabLayout.newTab();
 
             TextView txtVw = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
@@ -218,7 +221,7 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
     public void onResume() {
         super.onResume();
 
-        bmodel.competitorTrackingHelper.loadcompetitors();
+        competitorTrackingHelper.loadcompetitors();
         updateList();
     }
 
@@ -239,9 +242,9 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
                     String value = pair.getValue().toString();
                     String fileName = value.substring(value.lastIndexOf('/') + 1, value.length());
                     String path = value.substring(0, value.lastIndexOf('/'));
-                    bmodel.competitorTrackingHelper
+                    competitorTrackingHelper
                             .deleteImageName(fileName);
-                    bmodel.competitorTrackingHelper.deleteFiles(
+                    competitorTrackingHelper.deleteFiles(
                             path, fileName);
 
                     //it.remove(); // avoids a ConcurrentModificationException
@@ -255,8 +258,8 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
 //                startActivity(new Intent(getActivity(), CSHomeScreen.class));
                 getActivity().finish();
             } else {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 if (isFromChild)
                     startActivity(new Intent(getActivity(), HomeScreenTwo.class)
                             .putExtra("isStoreMenu", true));
@@ -283,11 +286,11 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-                bmodel.competitorTrackingHelper.saveCompetitor();
+                competitorTrackingHelper.saveCompetitor();
                 if (!calledBy.equals("3"))
                     bmodel.saveModuleCompletion(HomeScreenTwo.MENU_COMPETITOR);
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException(e);
@@ -340,9 +343,9 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
     private void updateList() {
         ArrayList<CompetitorBO> items = new ArrayList<>();
 
-        for (int i = 0; i < bmodel.competitorTrackingHelper
+        for (int i = 0; i < competitorTrackingHelper
                 .getCompetitorMaster().size(); i++) {
-            CompetitorBO ret = bmodel.competitorTrackingHelper
+            CompetitorBO ret = competitorTrackingHelper
                     .getCompetitorMaster().get(i);
             if (ret.getCompanyID() == mSelectedCompany || mSelectedCompany == -1)
                 items.add(ret);

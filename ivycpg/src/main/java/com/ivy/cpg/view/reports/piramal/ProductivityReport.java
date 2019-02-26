@@ -13,9 +13,10 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductivityReportBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ReportHelper;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -67,7 +68,7 @@ public class ProductivityReport extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        mylist = bmodel.reportHelper.downloadProductivitysReport(SDUtil.now(SDUtil.DATE_GLOBAL));
+        mylist = ReportHelper.getInstance(getActivity()).downloadProductivitysReport(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
         // Show alert if error loading data.
         if (mylist == null) {

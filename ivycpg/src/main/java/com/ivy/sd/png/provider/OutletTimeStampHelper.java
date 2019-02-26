@@ -15,8 +15,9 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
+import com.ivy.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -209,7 +210,7 @@ public class OutletTimeStampHelper {
         if (fileArry.length > 0) {
             filename = fileArry[fileArry.length - 1];
         }
-        File folder = new File(HomeScreenFragment.photoPath + "/");
+        File folder = new File(FileUtils.photoFolderPath + "/");
 
         File[] files = folder.listFiles();
         for (File tempFile : files) {
@@ -315,7 +316,7 @@ public class OutletTimeStampHelper {
             );
             db.createDataBase();
             db.openDataBase();
-            String dateTime = SDUtil.now(SDUtil.DATE_GLOBAL) + " " + timeOut;
+            String dateTime = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL) + " " + timeOut;
             String query = "UPDATE OutletTimeStamp SET TimeOut = '" + dateTime
                     + "',feedback=" + bmodel.QT(reasonDesc)
                     + ", OrderValue = " + QT(String.valueOf(bmodel.getOrderValue()))
@@ -381,7 +382,7 @@ public class OutletTimeStampHelper {
             );
             db.createDataBase();
             db.openDataBase();
-            String dateTime = com.ivy.sd.png.commons.SDUtil.now(com.ivy.sd.png.commons.SDUtil.DATE_GLOBAL) + " " + timeOut;
+            String dateTime = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL) + " " + timeOut;
             String query = "UPDATE OutletTimeStampDetail SET TimeOut = '" + dateTime
                     + "'  WHERE RetailerID = '"
                     + bmodel.retailerMasterBO.getRetailerID()

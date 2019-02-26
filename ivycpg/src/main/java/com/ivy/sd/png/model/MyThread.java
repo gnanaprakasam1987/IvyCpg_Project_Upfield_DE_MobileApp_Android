@@ -22,11 +22,11 @@ import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.cpg.view.callanalysis.CallAnalysisActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.cpg.view.subd.SubDStockOrderActivity;
 import com.ivy.sd.png.view.UserSettingsActivity;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
+import com.ivy.utils.FileUtils;
 
 import java.util.Locale;
 import java.util.Vector;
@@ -438,7 +438,7 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
             //delete captured image form folder
             if (bmodel.getOrderHeaderBO().getOrderImageName().length() > 0)
-                bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                bmodel.deleteFiles(FileUtils.photoFolderPath,
                         bmodel.getOrderHeaderBO().getOrderImageName());
 
             orderHelper.deleteOrder(ctx, bmodel.getRetailerMasterBO().getRetailerID());
@@ -501,7 +501,7 @@ public class MyThread extends Thread {
             bmodel.setContext(ctx);
             //delete captured image form folder
             if (bmodel.getOrderHeaderBO().getOrderImageName().length() > 0)
-                bmodel.deleteFiles(HomeScreenFragment.photoPath,
+                bmodel.deleteFiles(FileUtils.photoFolderPath,
                         bmodel.getOrderHeaderBO().getOrderImageName());
 
             orderHelper.deleteStockAndOrder(ctx);

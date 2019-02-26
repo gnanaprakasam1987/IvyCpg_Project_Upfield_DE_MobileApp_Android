@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.VanLoadMasterBO;
@@ -46,9 +47,8 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
-import com.ivy.utils.FontUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.regex.Pattern;
 
@@ -130,19 +130,17 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         TextView endtimevalue = findViewById(R.id.endtimevalue);
         TextView timeend = findViewById(R.id.timeend);
         TextView enddatevalue = findViewById(R.id.enddatevalue);
-        TextView vanno = findViewById(R.id.vanno);
         TextView vannovalue = findViewById(R.id.vannovalue);
         startjourney = findViewById(R.id.startjourney);
         endjourney = findViewById(R.id.endjourney);
         LinearLayout endingtriplayout = findViewById(R.id.endingtriplayout);
         RelativeLayout distancelayout = findViewById(R.id.distancelayout);
-        LinearLayout enddatetime_layout = findViewById(R.id.enddatetime_layout);
+        RelativeLayout enddatetime_layout = findViewById(R.id.enddatetime_layout);
 
         CustomDigitalClock clk1 = findViewById(R.id.digitalClock1);
         CustomDigitalClock clk2 = findViewById(R.id.digitalClock2);
 
         try {
-            ((TextView) findViewById(R.id.vanno)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
             if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                     R.id.vanno).getTag()) != null)
                 ((TextView) findViewById(R.id.vanno))
@@ -152,32 +150,12 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         } catch (Exception e) {
             Commons.printException(e + "");
         }
-        vanno.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
-        vannovalue.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
-        ((TextView) this.findViewById(R.id.datetxtview)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
-        ((TextView) this.findViewById(R.id.timetxtview)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
-        ((TextView) this.findViewById(R.id.starttriptxtview)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
-        ((TextView) this.findViewById(R.id.endtriptxtview)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
-        ((TextView) this.findViewById(R.id.distencetxtview)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.LIGHT));
-        datevalue.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.THIN));
-        timevalue.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.THIN));
 
-        timevaluestart.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
-        endtimevalue.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
-
-        timeend.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
-        enddatevalue.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
-        clk1.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
-        clk2.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
-
-        photoNamePath = HomeScreenFragment.photoPath + "/";
+        photoNamePath = FileUtils.photoFolderPath + "/";
         Commons.print("Photo Path, " + "" + photoNamePath);
 
         startjourney.setOnClickListener(this);
         endjourney.setOnClickListener(this);
-
-        startjourney.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        endjourney.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
         if (!bmodel.configurationMasterHelper.SHOW_END_JOURNEY)
             endjourney.setVisibility(View.GONE);
@@ -202,16 +180,16 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         }
 
 
-        datevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL),
+        datevalue.setText("" + DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat));
-        timevalue.setText("" + SDUtil.now(SDUtil.TIME));
-        enddatevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL),
+        timevalue.setText("" + DateTimeUtils.now(DateTimeUtils.TIME));
+        enddatevalue.setText("" + DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat));
-        endtimevalue.setText("" + SDUtil.now(SDUtil.TIME));
+        endtimevalue.setText("" + DateTimeUtils.now(DateTimeUtils.TIME));
         vannovalue.setText(" " + bmodel.userMasterHelper.getUserMasterBO().getVanno());
-        findViewById(R.id.calcdot).setVisibility(View.VISIBLE);
+        //findViewById(R.id.calcdot).setVisibility(View.VISIBLE);
 
-        product = bmodel.loadManagementHelper.downloadOdameter();
+        product = LoadManagementHelper.getInstance(this).downloadOdameter();
 
         if (product == null)
             product = new VanLoadMasterBO();
@@ -284,10 +262,10 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
         if (product.getIsstarted() == 1 && product.getIsended() == 0) {
 
-            String[] CurrentString = product.getStartdatetime().toString().split(" ");
+            String[] CurrentString = product.getStartdatetime().split(" ");
 
             timevaluestart.setText(CurrentString[1]);
-            datevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(CurrentString[0],
+            datevalue.setText("" + DateTimeUtils.convertFromServerDateToRequestedFormat(CurrentString[0],
                     ConfigurationMasterHelper.outDateFormat));
 
             timevaluestart.setVisibility(View.VISIBLE);
@@ -335,11 +313,11 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             String CurrentString1 = product.getEndtime();
             String[] separated = CurrentString.split(" ");
             timevaluestart.setText(separated[1]);
-            datevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(separated[0],
+            datevalue.setText("" + DateTimeUtils.convertFromServerDateToRequestedFormat(separated[0],
                     ConfigurationMasterHelper.outDateFormat));
             String[] separated1 = CurrentString1.split(" ");
             timeend.setText(separated1[1]);
-            enddatevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(separated[0],
+            enddatevalue.setText("" + DateTimeUtils.convertFromServerDateToRequestedFormat(separated[0],
                     ConfigurationMasterHelper.outDateFormat));
 
 
@@ -399,7 +377,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
                     startingvalue = SDUtil.convertToDouble(value);
                     Commons.print("Planning ," + " starting value :" + startingvalue);
-                    tripStartInsideTry(value);
+                    updateTripDistanceCovered();
                     product.setOdameterstart(startingvalue);
 
                 }
@@ -438,7 +416,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                     if (value.length() > 0 && !"0".equals(value))
                         tripEnding.setSelection(value.length());
                     endingvalue = SDUtil.convertToDouble(value);
-                    tripEndInsideTry(value);
+                    updateTripDistanceCovered();
                     product.setOdameterend(endingvalue);
                 }
             });
@@ -484,7 +462,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
 
             if (nFilesThere) {
 
-                showFileDeleteAlertWithImage(imageFileName, " ");
+                showFileDeleteAlertWithImage(imageFileName);
             } else {
 
                 imageFileName = "ODA_" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
@@ -494,8 +472,8 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                 String path = photoNamePath + "/" + imageFileName;
                 try {
                     Intent intent = new Intent(mContext, CameraActivity.class);
-                    intent.putExtra(getResources().getString(R.string.quality), 40);
-                    intent.putExtra(getResources().getString(R.string.path), path);
+                    intent.putExtra(CameraActivity.QUALITY, 40);
+                    intent.putExtra(CameraActivity.PATH, path);
                     startActivityForResult(intent, CAMERA_REQUEST_CODE);
 
                 } catch (Exception e) {
@@ -516,8 +494,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
     }
 
 
-    private void showFileDeleteAlertWithImage(final String imageNameStarts,
-                                              final String imageSrc) {
+    private void showFileDeleteAlertWithImage(final String imageNameStarts) {
         final CommonDialog commonDialog = new CommonDialog(OdaMeterScreen.this.getApplication(), //Context
                 OdaMeterScreen.this, //Context
                 "", //Title
@@ -535,9 +512,9 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
                                 imageNameStarts);
                         Intent intent = new Intent(getApplicationContext(),
                                 CameraActivity.class);
-                        intent.putExtra("quality", 40);
+                        intent.putExtra(CameraActivity.QUALITY, 40);
                         String path = photoNamePath + "/" + imageNameStarts;
-                        intent.putExtra("path", path);
+                        intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);
 
@@ -607,36 +584,17 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         }
     }
 
-    private void tripEndInsideTry(String value) {
-        try {
-            if (endingvalue > startingvalue)
-                distanceCovered = endingvalue - startingvalue;
-            else
-                distanceCovered = 0;
 
-            double distance = SDUtil.convertToDouble(String.valueOf(distanceCovered));
+    private void updateTripDistanceCovered() {
 
-            distanceCoveredEt.setText(String.format("%.2f", distance));
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-    }
+        if (endingvalue > startingvalue)
+            distanceCovered = endingvalue - startingvalue;
+        else
+            distanceCovered = 0;
 
-    private void tripStartInsideTry(String value) {
-        try {
+        double distance = SDUtil.convertToDouble(String.valueOf(distanceCovered));
 
-            if (endingvalue > startingvalue)
-                distanceCovered = endingvalue - startingvalue;
-            else
-                distanceCovered = 0;
-
-
-            double distance = SDUtil.convertToDouble(String.valueOf(distanceCovered));
-
-            distanceCoveredEt.setText(String.format("%.2f", distance));
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
+        distanceCoveredEt.setText(String.format("%.2f", distance));
     }
 
     @Override

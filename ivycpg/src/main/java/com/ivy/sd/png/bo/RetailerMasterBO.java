@@ -207,6 +207,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private int retailerTaxLocId;
     private int supplierTaxLocId;
     private String ridSF;
+    private String district;
 
     public int getIsSEZzone() {
         return isSEZzone;
@@ -1044,6 +1045,8 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     }
 
     public SupplierMasterBO getSupplierBO() {
+        if(supplierBO==null)
+            supplierBO=new SupplierMasterBO();
         return supplierBO;
     }
 
@@ -1602,4 +1605,12 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     }
 
     private double mOrderedTotWgt;
+
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
 }

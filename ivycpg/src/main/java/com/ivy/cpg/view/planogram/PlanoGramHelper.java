@@ -9,10 +9,10 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.ParentLevelBo;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -151,7 +151,7 @@ public class PlanoGramHelper {
                         + str
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " AND "
-                        + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                         + " BETWEEN P.StartDate AND P.EndDate"
                         + " WHERE PM1.PLid IN (SELECT ProductFilter1 FROM ConfigActivityFilter"
                         + " WHERE ActivityCode ='" + moduleName + "')";
@@ -190,7 +190,7 @@ public class PlanoGramHelper {
                         + str
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " AND "
-                        + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                         + " BETWEEN P.StartDate AND P.EndDate"
                         + " WHERE PM1.PLid IN (SELECT ProductFilter1 FROM ConfigActivityFilter"
                         + " WHERE ActivityCode='" + moduleName + "')";
@@ -219,7 +219,7 @@ public class PlanoGramHelper {
                         + str
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " AND "
-                        + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                         + " BETWEEN P.StartDate AND P.EndDate"
                         + " WHERE PM1.PLid IN (SELECT ProductFilter1 FROM ConfigActivityFilter"
                         + " WHERE ActivityCode= '" + moduleName + "')";
@@ -293,20 +293,20 @@ public class PlanoGramHelper {
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " INNER JOIN PlanogramImageInfo PI on PI.ImgId=MP.ImageId"
                         + " LEFT JOIN StandardListMaster STM  on STM.Listid = MP.StoreLocId"
-                        + " LEFT JOIN ProductMaster PM ON PM.PID=MP.PID"
+                        + " INNER JOIN ProductMaster PM ON PM.PID=MP.PID"
                         + " WHERE" + query1 + " AND "
-                        + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                         + " BETWEEN P.startdate AND P.enddate";
             } else {
                 query = "SELECT ifnull(PM.Pid,0) ,MP.MappingId as PlanogramID, P.PLDesc, PI.ImgName,0,0, PM.PName,PI.ImgId,PM.ParentHierarchy"
                         + " FROM PlanogramMapping MP ON MP.PId = PM.Pid"
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " INNER JOIN PlanogramImageInfo PI on PI.ImgId=MP.ImageId"
-                        + " LEFT JOIN ProductMaster PM ON PM.PID=MP.PID"
+                        + " INNER JOIN ProductMaster PM ON PM.PID=MP.PID"
                         + " WHERE"
                         + " MP.RID ='0'"
                         + " AND "
-                        + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                        + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                         + " BETWEEN P.startdate AND P.enddate";
             }
 
@@ -315,7 +315,7 @@ public class PlanoGramHelper {
             Cursor c = db.selectSQL(query);
 
             if (c != null) {
-                setPlanogramMaster(new Vector<PlanoGramBO>());
+                mPlanoGramMaster = new Vector<PlanoGramBO>();
                 while (c.moveToNext()) {
                     planogram = new PlanoGramBO();
                     planogram.setPid(c.getInt(0));
@@ -325,10 +325,11 @@ public class PlanoGramHelper {
                     planogram.setProductName(c.getString(6));
                     planogram.setImageId(c.getInt(7));
                     planogram.setParentHierarchy(c.getString(8));
-                    getPlanogramMaster().add(planogram);
+                    mPlanoGramMaster.add(planogram);
                 }
                 c.close();
             }
+            setPlanogramMaster(mPlanoGramMaster);
             db.closeDB();
 
             if (("MENU_PLANOGRAM".equals(moduleName) || "MENU_PLANOGRAM_CS".equals(moduleName)))
@@ -352,7 +353,8 @@ public class PlanoGramHelper {
             String tid = "";
             String sql = "SELECT Tid FROM PlanogramHeader WHERE RetailerId = "
                     + retailerId + " AND Date = "
-                    + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                    + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + " and (upload='N' OR refid!=0)";
 
             Cursor orderHeaderCursor = db.selectSQL(sql);
             if (orderHeaderCursor != null) {
@@ -363,7 +365,7 @@ public class PlanoGramHelper {
 
             orderHeaderCursor.close();
 
-            String sql1 = "SELECT PId, PLID, ImageName, Adherence, ReasonID, LocID, IFNULL(Audit,'2')"
+            String sql1 = "SELECT PId, PLID, ImageName, Adherence, ReasonID, LocID, IFNULL(isAuditDone,'2')"
                     + " FROM PlanogramDetails WHERE tid=" + QT(tid);
 
             Cursor orderDetailCursor = db.selectSQL(sql1);
@@ -392,14 +394,14 @@ public class PlanoGramHelper {
     /**
      * Set planoGram details in object
      *
-     * @param planogramPId pid
+     * @param planogramProductId pid
      * @param imageName    imageName
      * @param adherence    adherence
      * @param reasonID     reasonID
      * @param locationID   location id
      * @param isAudit      audit
      */
-    private void setPlanoGramDetails(int planogramPId, String imageName,
+    private void setPlanoGramDetails(int planogramProductId, String imageName,
                                      String adherence, String reasonID, int locationID, int isAudit,String tId,Context context) {
         PlanoGramBO planogram;
         int siz = getPlanogramMaster().size();
@@ -408,20 +410,20 @@ public class PlanoGramHelper {
 
         for (int i = 0; i < siz; ++i) {
             planogram = getPlanogramMaster().get(i);
-            if (planogram.getPid() == planogramPId &&
+            if (planogram.getPid() == planogramProductId &&
                     (!IS_LOCATION_WISE_PLANOGRAM || planogram.getLocationID() == locationID)) {
                 planogram.setPlanogramCameraImgName(imageName);
                 planogram.setAdherence(adherence);
                 planogram.setReasonID(reasonID);
                 planogram.setAudit(isAudit);
-                planogram.setPlanoGramCameraImgList(getPlanogramImage(planogramPId,tId,context));
+                planogram.setPlanoGramCameraImgList(getPlanogramImage(planogramProductId,tId,context, locationID));
                 getPlanogramMaster().setElementAt(planogram, i);
                 return;
             }
         }
     }
 
-    private ArrayList<String> getPlanogramImage(int planogramId,String tId,Context context){
+    private ArrayList<String> getPlanogramImage(int productID,String tId,Context context,int locationID){
 
         ArrayList<String> planogramImagList = new ArrayList<>();
 
@@ -429,7 +431,8 @@ public class PlanoGramHelper {
         try {
             db.openDataBase();
 
-            String query = "Select imageName from PlanogramImageDetails where Tid ="+QT(tId)+" and PId ="+planogramId;
+            String query = "Select A.imageName from PlanogramImageDetails A inner join PlanogramDetails B " +
+                    "on A.MappingId = B.MappingID where A.Tid =" + QT(tId) + "and A.PId =" + productID + " and B.LocID = " + locationID;
             Cursor planoImgCursor = db.selectSQL(query);
 
             if (planoImgCursor != null) {
@@ -484,7 +487,7 @@ public class PlanoGramHelper {
             Cursor headerCursor;
 
             String headerColumns = "TiD, RetailerId, Date, timezone, uid, RefId,Type,CounterId,DistributorID,ridSF,VisitId";
-            String detailColumns = "TiD, MappingId, Pid, ImageName,ImagePath, Adherence, RetailerId, ReasonID, LocID,Audit,CounterId";
+            String detailColumns = "TiD, MappingId, Pid, ImageName,ImagePath, Adherence, RetailerId, ReasonID, LocID,isAuditDone,CounterId";
 
             String values;
             boolean isData;
@@ -496,7 +499,7 @@ public class PlanoGramHelper {
 
             tid = mBModel.getAppDataProvider().getUser().getUserid() + ""
                     + mBModel.getAppDataProvider().getRetailMaster().getRetailerID() + ""
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             // delete transaction if exist
             headerCursor = db
@@ -507,7 +510,7 @@ public class PlanoGramHelper {
                             + mBModel.getAppDataProvider().getRetailMaster().getDistributorId()
                             + " AND CounterId = 0"
                             + " AND Date = "
-                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
             if (headerCursor.getCount() > 0) {
                 headerCursor.moveToNext();
@@ -553,7 +556,7 @@ public class PlanoGramHelper {
             if (isData) {
                 values = QT(tid) + ","
                         + mBModel.getAppDataProvider().getRetailMaster().getRetailerID() + ","
-                        + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                        + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                         + QT(mBModel.getTimeZone()) + ","
                         + mBModel.getAppDataProvider().getUser().getUserid()
                         + "," + QT(refId) + ","

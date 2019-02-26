@@ -67,7 +67,6 @@ import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductTaggingBO;
@@ -81,7 +80,6 @@ import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.ScreenOrientation;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CustomKeyBoardCatalog;
 import com.ivy.sd.png.view.FilterFiveFragment;
@@ -91,6 +89,8 @@ import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.sd.png.view.PauseOnFling;
 import com.ivy.sd.png.view.SlantView;
 import com.ivy.sd.png.view.SpecialFilterFragment;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
 
@@ -414,7 +414,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         });
 
         GridLayoutManager gridLayoutManager;
-        if (ScreenOrientation.isCatalogDevice(CatalogOrder.this)) {
+        if (DeviceUtils.isCatalogDevice(CatalogOrder.this)) {
             gridLayoutManager = new GridLayoutManager(getApplicationContext(), 2);
         } else {
             gridLayoutManager = new GridLayoutManager(getApplicationContext(), 1);
@@ -1310,7 +1310,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                 bmodel.productHelper.clearOrderTable();
 
                 bmodel.outletTimeStampHelper
-                        .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                        .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                 startActivity(new Intent(CatalogOrder.this,
                         HomeScreenTwo.class));
                 finish();
@@ -1568,8 +1568,8 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     public void nextBtnSubTask() {
 
-        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME));
+        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                .now(DateTimeUtils.TIME));
 
         SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
@@ -1923,6 +1923,10 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
                 String prodCode = getResources().getString(R.string.prod_code)
                         + ": " + holder.productObj.getProductCode() + " ";
+                if (bmodel.labelsMasterHelper.applyLabels(holder.productCode.getTag()) != null)
+                    prodCode = bmodel.labelsMasterHelper
+                            .applyLabels(holder.productCode.getTag()) + ": " +
+                            holder.productObj.getProductCode() + " ";
                 holder.productCode.setText(prodCode);
             }
             if (holder.ppq != null) {

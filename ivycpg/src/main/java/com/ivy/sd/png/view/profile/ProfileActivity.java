@@ -69,16 +69,12 @@ import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.cpg.nfc.NFCReadDialogActivity;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
-import com.ivy.cpg.view.order.scheme.RetailerInfo;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.GenericObjectPair;
-import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -89,7 +85,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.UserDialogInterface;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.provider.SBDHelper;
+import com.ivy.sd.png.provider.DownloadProductsAndPrice;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
@@ -97,7 +93,6 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.TimerCount;
 import com.ivy.sd.png.view.profile.assetHistory.AssetHistoryFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.profile.mslUnsold.MSLUnsoldFragment;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
@@ -106,6 +101,7 @@ import com.ivy.sd.png.view.profile.userSelection.UserSelectionDialogue;
 import com.ivy.sd.png.view.profile.orderandinvoicehistory.InvoiceHistoryFragment;
 import com.ivy.sd.png.view.profile.orderandinvoicehistory.OrderHistoryFragment;
 import com.ivy.sd.png.view.profile.otpValidation.OTPValidationDialog;
+import com.ivy.utils.DateTimeUtils;
 
 import org.json.JSONObject;
 
@@ -117,7 +113,6 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
@@ -129,12 +124,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         implements NearByRetailerDialog.NearByRetailerInterface,
         MapWrapperLayout.OnDragListener,
         CommonReasonDialog.AddNonVisitListener,
-        View.OnClickListener, RetailerInfo {
+        View.OnClickListener {
 
     private static final String MENU_VISIT = "Trade Coverage";
     private static final String MENU_PLANNING = "Day Planning";
     private static final String MENU_PLANNING_SUB = "Day Planning Sub";
-    private static final String MENU_STK_ORD = "MENU_STK_ORD";
 
     private static final int CAMERA_REQUEST_CODE = 100;
     private CollapsingToolbarLayout collapsingToolbarLayout;
@@ -185,6 +179,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private Drawable upArrow;
     private ImageView profileEditBtn;
     private ImageView drawRouteBtn;
+    private ImageView mapSwitchBtn;
     private ProgressBar mapProgressBar;
     private TextView retailerNameTxt, retailerCodeTxt;
     private LinearLayout iconLinearLayout;
@@ -215,6 +210,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     Runnable runnable = null;
 
     String dynamicReportTitle = "";
+
+    String selectedUserId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -308,8 +305,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             Commons.printException(e);
         }
 
-        if (bmodel.configurationMasterHelper.IS_TEAMLEAD
-                && bmodel.configurationMasterHelper.IS_AUDIT_USER) {
+        if (bmodel.configurationMasterHelper.isAuditEnabled()) {
             mUserByRetailerID = bmodel.getUserByRetailerID();
             registerReceiver();
         }
@@ -358,6 +354,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         profileEditBtn.setOnClickListener(this);
         drawRouteBtn = findViewById(R.id.draw_routeimg_btn);
         drawRouteBtn.setOnClickListener(this);
+        mapSwitchBtn = findViewById(R.id.profile_mapswitch);
+        mapSwitchBtn.setOnClickListener(this);
     }
 
     private void initilizeToolBar() {
@@ -725,6 +723,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 startActivity(i);
                 break;
             }
+            case R.id.profile_mapswitch:
+                mMap.setMapType((mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL) ? GoogleMap.MAP_TYPE_SATELLITE :
+                        GoogleMap.MAP_TYPE_NORMAL);
+                break;
             default:
                 break;
         }
@@ -1586,8 +1588,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private void validationToStartVisit() {
 
         // Downloaded date vs Mobile Date validation.
-        if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd") > 0)
+        if ((DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd") > 0)
                 && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
             Toast.makeText(this,
                     getResources().getString(R.string.next_day_coverage),
@@ -1704,6 +1706,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 SupplierMasterBO supplierBo = mSupplierList.get(0);
                 bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
                 bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
+                bmodel.getRetailerMasterBO().setSupplierTaxLocId(supplierBo.getSupplierTaxLocId());
+                bmodel.getRetailerMasterBO().setRpTypeCode(supplierBo.getRpTypeCode());
                 bmodel.updatePriceGroupId(true);
                 showMessage(getString(R.string.distributor_name) + " "
                         + getString(R.string.selected) + " "
@@ -1739,6 +1743,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                                                 .getItem(which);
                                         bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
                                         bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
+                                        bmodel.getRetailerMasterBO().setSupplierTaxLocId(supplierBo.getSupplierTaxLocId());
+                                        bmodel.getRetailerMasterBO().setRpTypeCode(supplierBo.getRpTypeCode());
                                         bmodel.updatePriceGroupId(true);
 
                                         dialog.dismiss();
@@ -1781,7 +1787,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private void loadHomeScreenTwo(RetailerMasterBO ret) {
 
         // Time count Starts for the retailer
-        if (bmodel.configurationMasterHelper.IS_TEAMLEAD && bmodel.configurationMasterHelper.IS_AUDIT_USER) {
+        if (bmodel.configurationMasterHelper.isAuditEnabled()) {
             bmodel.setRetailerMasterBO(ret);
 
             ArrayList<UserMasterBO> mUserList = mUserByRetailerID.get(ret
@@ -1833,7 +1839,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             // Set the select retailer Obj in bmodel
             bmodel.setRetailerMasterBO(ret);
 
-            downloadProductsAndPrice = new DownloadProductsAndPrice();
+            downloadProductsAndPrice = new DownloadProductsAndPrice(ProfileActivity.this, getPhotoPath(), fnameStarts,
+                    mVisitMode, mNFCReasonId, true);
             if (downloadProductsAndPrice.getStatus() != AsyncTask.Status.RUNNING)
                 downloadProductsAndPrice.execute();
 
@@ -1857,7 +1864,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         // new DownloadProductsAndPrice().execute();
-                                        downloadProductsAndPrice = new DownloadProductsAndPrice();
+                                        downloadProductsAndPrice = new DownloadProductsAndPrice(ProfileActivity.this, getPhotoPath(), fnameStarts,
+                                                mVisitMode, mNFCReasonId, true);
                                         downloadProductsAndPrice.execute();
 
                                     }
@@ -1939,7 +1947,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
 
     private void takePhotoForRetailer() {
-        dateTimeStampForId = SDUtil.now(SDUtil.DATE_TIME_ID);
+        dateTimeStampForId = DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
         bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + dateTimeStampForId));
 
         if (bmodel.synchronizationHelper
@@ -1981,9 +1989,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     private void callCamera(String imageName) {
         Intent intent = new Intent(this, CameraActivity.class);
-        intent.putExtra("quality", 40);
+        intent.putExtra(CameraActivity.QUALITY, 40);
         String mPath = getPhotoPath() + "/" + imageName;
-        intent.putExtra("path", mPath);
+        intent.putExtra(CameraActivity.PATH, mPath);
         startActivityForResult(intent, CAMERA_REQUEST_CODE);
     }
 
@@ -1991,7 +1999,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private boolean validateSequenceSkip(RetailerMasterBO ret) {
         if (!getPreviousRetailerVisitedStatus(ret)) {
             if (ret.getSkipActivatedDate() == null
-                    || !ret.getSkipActivatedDate().equals(SDUtil.now(SDUtil.DATE_GLOBAL))) {
+                    || !ret.getSkipActivatedDate().equals(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))) {
                 if (bmodel.configurationMasterHelper.ret_skip_flag == 1
                         || bmodel.configurationMasterHelper.ret_skip_flag == 2) {
                     callOTPDialog(
@@ -2065,7 +2073,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         try {
             if (ret.getOtpActivatedDate() == null
                     || !ret.getOtpActivatedDate().equals(
-                    SDUtil.now(SDUtil.DATE_GLOBAL))) {
+                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))) {
                 if (ret.getLatitude() == 0 && ret.getLongitude() == 0) {
                     showToastMessage(ret, -1);
                     return false;
@@ -2113,156 +2121,19 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         callOTPDialog(ret, strTitle, OTPValidationDialog.ValidationType.LOCATION);
     }
 
-
-    @SuppressLint("StaticFieldLeak")
-    private class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolean> {
-        private AlertDialog.Builder builder;
-        private AlertDialog alertDialog;
-
-        @Override
-        protected Boolean doInBackground(Integer... params) {
-            try {
-                if (!isCancelled()) {
-
-                    if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
-                        bmodel.getRetailerWiseSellerType();
-                        bmodel.configurationMasterHelper.updateConfigurationSelectedSellerType(bmodel.getRetailerMasterBO().getIsVansales() != 1);
-                    }
-
-                    GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_STK_ORD);
-                    if (genericObjectPair != null) {
-                        bmodel.productHelper.setProductMaster(genericObjectPair.object1);
-                        bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
-                    }
-                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_STK_ORD));
-                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
-                            bmodel.productHelper.getFilterProductLevels(), true));
-
-                    if (bmodel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
-                        //to reload product filter if diffrent retailer selected
-                        bmodel.productHelper.setmLoadedGlobalProductId(0);
-                    }
-
-                    bmodel.configurationMasterHelper
-                            .loadOrderAndStockConfiguration(bmodel.retailerMasterBO
-                                    .getSubchannelid());
-
-                    if (bmodel.productHelper.isSBDFilterAvaiable())
-                        SBDHelper.getInstance(ProfileActivity.this).loadSBDFocusData(getApplicationContext());
-
-                    if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION) {
-                        bmodel.batchAllocationHelper.downloadBatchDetails(bmodel
-                                .getRetailerMasterBO().getGroupId());
-                        bmodel.batchAllocationHelper.downloadProductBatchCount();
-                    }
-
-                    bmodel.productHelper.downloadBomMaster();
-
-                    if (bmodel.configurationMasterHelper.SHOW_PRODUCTRETURN
-                            && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                        bmodel.productHelper.downlaodReturnableProducts(MENU_STK_ORD);
-                        if (bmodel.configurationMasterHelper.SHOW_GROUPPRODUCTRETURN) {
-                            bmodel.productHelper.downloadTypeProducts();
-                            bmodel.productHelper.downloadGenericProductID();
-                        }
-                    }
-
-
-                    if (!bmodel.configurationMasterHelper.SHEME_NOT_APPLY_DEVIATEDSTORE
-                            || (bmodel.getRetailerMasterBO().getIsDeviated() != null && !"Y".equals(bmodel.getRetailerMasterBO().getIsDeviated()))) {
-
-                        SchemeDetailsMasterHelper.getInstance(getApplicationContext()).initializeScheme(ProfileActivity.this,
-                                bmodel.userMasterHelper.getUserMasterBO().getUserid(), bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION);
-
-                    }
-
-                    if (bmodel.configurationMasterHelper.SHOW_DISCOUNT) {
-                        bmodel.productHelper.downloadProductDiscountDetails();
-                        bmodel.productHelper.downloadDiscountIdListByTypeId();
-                    }
-
-                    if (bmodel.configurationMasterHelper.IS_DISCOUNT_FOR_UNPRICED_PRODUCTS) {
-                        bmodel.productHelper.downloadDocketPricing();
-                    }
-
-                    //Getting Attributes mapped for the retailer
-                    bmodel.getAttributeHierarchyForRetailer();
-
-                    bmodel.reasonHelper.downloadReasons();
-
-                }
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
-            return Boolean.TRUE;
-        }
-
-        protected void onPreExecute() {
-            if (!isCancelled()) {
-                builder = new AlertDialog.Builder(ProfileActivity.this);
-                customProgressDialog(builder, getResources().getString(R.string.loading));
-                alertDialog = builder.create();
-                alertDialog.show();
-            }
-        }
-
-        protected void onProgressUpdate(Integer... progress) {
-        }
-
-        protected void onPostExecute(Boolean result) {
-            if (!isCancelled()) {
-
-                float distance = 0.0f;
-                try {
-                    // to get last user visited retailer sequence and location to calculate distance..
-                    bmodel.outletTimeStampHelper.getlastRetailerDatas();
-                    distance = calculateDistanceBetweenRetailers();
-                } catch (Exception e) {
-                    Commons.printException(e);
-                }
-
-                String date = SDUtil.now(SDUtil.DATE_GLOBAL);
-                String time = SDUtil.now(SDUtil.TIME);
-                dateTimeStampForId = SDUtil.now(SDUtil.DATE_TIME_ID);
-
-                bmodel.outletTimeStampHelper.setTimeIn(date + " " + time);
-                bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + dateTimeStampForId));
-
-
-                boolean outletTimeStampSaved = bmodel.outletTimeStampHelper.saveTimeStamp(
-                        SDUtil.now(SDUtil.DATE_GLOBAL), time
-                        , distance, getPhotoPath(), fnameStarts, mVisitMode, mNFCReasonId);
-
-                if (alertDialog != null && alertDialog.isShowing()) {
-                    alertDialog.dismiss();
-                }
-                //set selected retailer location and its used on retailer modules
-                bmodel.mSelectedRetailerLatitude = LocationUtil.latitude;
-                bmodel.mSelectedRetailerLongitude = LocationUtil.longitude;
-
-                Commons.print("Attribute<><><><><><<<><><><><<" + bmodel.getRetailerAttributeList());
-
-                if (outletTimeStampSaved) {
-                    Intent i = new Intent(ProfileActivity.this, HomeScreenTwo.class);
-                    i.putExtra("isLocDialog", true);
-                    i.putExtra("isMandatoryDialog", true);
-                    i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
-                    startActivity(i);
-                    finish();
-                } else {
-                    Toast.makeText(getApplicationContext(), getString(R.string.not_able_to_register_visit), Toast.LENGTH_LONG).show();
-                }
-            }
-        }
-    }
-
     class DownloadSupervisorData extends AsyncTask<Integer, Integer, Boolean> {
         private AlertDialog.Builder builder;
 
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.synchronizationHelper.updateAuthenticateToken(false);
+
+                selectedUserId = bmodel.retailerMasterBO.getSelectedUserID()+"";
+
+                String loginId = bmodel.synchronizationHelper.
+                        getSelectedUserLoginId(bmodel.retailerMasterBO.getSelectedUserID()+"",ProfileActivity.this);
+                bmodel.synchronizationHelper.updateAuthenticateTokenWithoutPassword(loginId);
+
                 bmodel.synchronizationHelper.downloadUserRetailerTranUrl();
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -2288,6 +2159,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     bmodel.synchronizationHelper.downloadUserRetailerTranFromUrl(bmodel
                             .getRetailerMasterBO()
                             .getRetailerID());
+                } else {
+                    alertDialog.dismiss();
+                    Toast.makeText(ProfileActivity.this, getResources().getString(R.string.retailer_trans_not_exist), Toast.LENGTH_SHORT).show();
+                    downloadProductsAndPrice = new DownloadProductsAndPrice(ProfileActivity.this, getPhotoPath(), fnameStarts,
+                            mVisitMode, mNFCReasonId, true);
+                    if (downloadProductsAndPrice.getStatus() != AsyncTask.Status.RUNNING)
+                        downloadProductsAndPrice.execute();
                 }
             } else {
                 String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
@@ -2388,8 +2266,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (bmodel.configurationMasterHelper.IS_TEAMLEAD
-                && bmodel.configurationMasterHelper.IS_AUDIT_USER) {
+        if (bmodel.configurationMasterHelper.isAuditEnabled()) {
             unregisterReceiver(receiver);
         }
 
@@ -2416,7 +2293,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             case SynchronizationHelper.USER_RETAILER_TRAN_DOWNLOAD_INSERT:
                 if (errorCode != null && errorCode
                         .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    bmodel.synchronizationHelper.downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.VISIT_SCREEN, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE);
+                    bmodel.synchronizationHelper
+                            .downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.VISIT_SCREEN, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE,selectedUserId);
+                    selectedUserId = "";
                 } else {
                     String errorDownlodCode = bundle
                             .getString(SynchronizationHelper.ERROR_CODE);
@@ -2440,7 +2319,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 isClicked = false;
 
                 bmodel.updateUserAudit(1);
-                downloadProductsAndPrice = new DownloadProductsAndPrice();
+                downloadProductsAndPrice = new DownloadProductsAndPrice(ProfileActivity.this, getPhotoPath(), fnameStarts,
+                        mVisitMode, mNFCReasonId, true);
                 downloadProductsAndPrice.execute();
                 // new DownloadProductsAndPrice().execute();
                 break;
@@ -2507,35 +2387,5 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             });
         }
 
-    }
-
-    @Override
-    public String getRetailerId() {
-        return bmodel.getRetailerMasterBO().getRetailerID();
-    }
-
-    @Override
-    public int getDistributorId() {
-        return bmodel.getRetailerMasterBO().getDistributorId();
-    }
-
-    @Override
-    public int getSubChannelId() {
-        return bmodel.getRetailerMasterBO().getSubchannelid();
-    }
-
-    @Override
-    public int getLocationId() {
-        return bmodel.getRetailerMasterBO().getLocationId();
-    }
-
-    @Override
-    public int getAccountId() {
-        return bmodel.getRetailerMasterBO().getAccountid();
-    }
-
-    @Override
-    public int getPriorityProductId() {
-        return bmodel.getRetailerMasterBO().getPrioriryProductId();
     }
 }

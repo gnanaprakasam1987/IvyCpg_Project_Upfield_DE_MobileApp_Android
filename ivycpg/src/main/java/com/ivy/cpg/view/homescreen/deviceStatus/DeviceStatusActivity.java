@@ -1,4 +1,4 @@
-package com.ivy.sd.png.view;
+package com.ivy.cpg.view.homescreen.deviceStatus;
 
 import android.app.Activity;
 import android.content.Context;
@@ -28,17 +28,15 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
 public class DeviceStatusActivity extends IvyBaseActivityNoActionBar {
 
-	private BusinessModel bmodel;
-	private ListView lstvw;
 	private ArrayList<RowItem> status;
 	private String currentStatus = "";
 
@@ -46,17 +44,14 @@ public class DeviceStatusActivity extends IvyBaseActivityNoActionBar {
 	private boolean enabled;
 	private int signalstrength;
 	private Intent callGPSSettingIntent;
-	private String signalstatus;
-	private ListArrayAdapter adapter;
-	SharedPreferences mLastSyncSharedPref;
-
-	private Toolbar toolbar;
+	private SharedPreferences mLastSyncSharedPref;
 
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_device_status);
-		bmodel = (BusinessModel) getApplicationContext();
+
+		BusinessModel bmodel = (BusinessModel) getApplicationContext();
 		bmodel.setContext(this);
 
 		if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
@@ -65,7 +60,7 @@ public class DeviceStatusActivity extends IvyBaseActivityNoActionBar {
 					Toast.LENGTH_SHORT).show();
 			finish();
 		}
-        toolbar = (Toolbar)findViewById(R.id.toolbar);
+		Toolbar toolbar = findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		// Set title to toolbar
 		getSupportActionBar().setTitle(
@@ -94,8 +89,8 @@ public class DeviceStatusActivity extends IvyBaseActivityNoActionBar {
 
 		// Check if enabled and if not send user to the GPS settings
 
-		lstvw = (ListView) findViewById(R.id.devicestatusList);
-		adapter = new ListArrayAdapter(DeviceStatusActivity.this,
+		ListView lstvw = findViewById(R.id.devicestatusList);
+		ListArrayAdapter adapter = new ListArrayAdapter(DeviceStatusActivity.this,
 				R.layout.device_status_list_item, status);
 		lstvw.setAdapter(adapter);
 		lstvw.setOnItemClickListener(new OnItemClickListener() {
@@ -114,7 +109,7 @@ public class DeviceStatusActivity extends IvyBaseActivityNoActionBar {
 					startActivity(callGPSSettingIntent);
 				} else if (row.getTitle().equalsIgnoreCase(
 						getResources().getString(R.string.wifi))
-						&& mWifi.isConnected() == false) {
+						&& !mWifi.isConnected()) {
 					startActivity(new Intent(
 							android.provider.Settings.ACTION_WIFI_SETTINGS));
 
@@ -146,8 +141,7 @@ public class DeviceStatusActivity extends IvyBaseActivityNoActionBar {
 
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
-			Commons.print("status,"+ status.get(1).getTitle());
-			RowItem item = (RowItem) status.get(position);
+			RowItem item = status.get(position);
 			View row = convertView;
 			ViewHolder holder;
 			if (convertView == null) {
@@ -157,16 +151,15 @@ public class DeviceStatusActivity extends IvyBaseActivityNoActionBar {
 				row = inflater.inflate(ResourceId, parent, false);
 
 				holder = new ViewHolder();
-				holder.desc = (TextView) row.findViewById(R.id.desc);
-				holder.title = (TextView) row.findViewById(R.id.titletxt);
-				holder.img = (ImageView) row.findViewById(R.id.icon);
+				holder.desc = row.findViewById(R.id.desc);
+				holder.title = row.findViewById(R.id.titletxt);
+				holder.img = row.findViewById(R.id.icon);
 				row.setTag(holder);
 			} else
 				holder = (ViewHolder) row.getTag();
 
 			if (status.get(position).getTitle()
-					.equalsIgnoreCase(getResources().getString(R.string.wifi))
-					&& status
+					.equalsIgnoreCase(getResources().getString(R.string.wifi)) && status
 							.get(position)
 							.getDesc()
 							.equalsIgnoreCase(
@@ -252,11 +245,11 @@ public class DeviceStatusActivity extends IvyBaseActivityNoActionBar {
 		status = new ArrayList();
 		// if (bmodel.configurationMasterHelper.SHOW_DS_CURRENT_DATE)
 		status.add(new RowItem(R.drawable.ic_time, getResources().getString(
-				R.string.current_date), DateUtil.convertFromServerDateToRequestedFormat(
-				SDUtil.now(SDUtil.DATE_GLOBAL),
-				bmodel.configurationMasterHelper.outDateFormat)
+				R.string.current_date), DateTimeUtils.convertFromServerDateToRequestedFormat(
+				DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+				ConfigurationMasterHelper.outDateFormat)
 				+ " "
-				+ SDUtil.now(SDUtil.TIME)));
+				+ DateTimeUtils.now(DateTimeUtils.TIME)));
 		// if (bmodel.configurationMasterHelper.SHOW_DS_BATTERY_STATUS)
 		status.add(new RowItem(R.drawable.ic_battery, getResources().getString(
 				R.string.battery_status), currentStatus + "%"));
@@ -304,6 +297,7 @@ public class DeviceStatusActivity extends IvyBaseActivityNoActionBar {
 		};
 		SignalManager.listen(signalListener,
 				PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+		String signalstatus;
 		if (signalstrength >= 0 && signalstrength < 15)
 			signalstatus = getResources().getString(R.string.low);
 		else if (signalstrength > 15)
@@ -320,10 +314,7 @@ public class DeviceStatusActivity extends IvyBaseActivityNoActionBar {
 	private boolean isOnline() {
 		ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo netInfo = cm.getActiveNetworkInfo();
-		if (netInfo != null && netInfo.isConnectedOrConnecting()) {
-			return true;
-		}
-		return false;
+		return netInfo != null && netInfo.isConnectedOrConnecting();
 	}
 
 	public class RowItem {
