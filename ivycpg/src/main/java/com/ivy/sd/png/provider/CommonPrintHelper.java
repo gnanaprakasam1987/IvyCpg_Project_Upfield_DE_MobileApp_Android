@@ -189,6 +189,7 @@ public class CommonPrintHelper {
     private static String TAG_PRODUCT_EMPTY_BOTTLE_STOCK = "prod_estock";
     private static String TAG_PRODUCT_RETURN_STOCK = "prod_return_stock";
     private static String TAG_PRODUCT_REP_STOCK = "prod_replaced_stock";
+    private static String TAG_PRODUCT_NON_SALABLE = "prod_nonsalable_stock";
 
     private int mLoadStockTotal;
     private int mSoldStockTotal;
@@ -197,6 +198,7 @@ public class CommonPrintHelper {
     private int mEmptyStockTotal;
     private int mReturnStockTotal;
     private int mRepStockTotal;
+    private int mNonSalableTotal;
     //
 
     private HashMap<String, String> mKeyValues;
@@ -891,6 +893,8 @@ public class CommonPrintHelper {
                 mProductValue = mReturnStockTotal + "";
             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_REP_STOCK)) {
                 mProductValue = mRepStockTotal + "";
+            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NON_SALABLE)) {
+                mProductValue = mNonSalableTotal + "";
             }
 
 
@@ -2240,6 +2244,7 @@ public class CommonPrintHelper {
         mEmptyStockTotal = 0;
         mReturnStockTotal = 0;
         mRepStockTotal = 0;
+        mNonSalableTotal = 0;
     }
 
     private String formatValueInPrint(double value, int precision) {
@@ -2402,6 +2407,7 @@ public class CommonPrintHelper {
         mEmptyStockTotal = 0;
         mReturnStockTotal = 0;
         mRepStockTotal = 0;
+        mNonSalableTotal = 0;
 
         sb.append("\n");
         String mProductValue;
@@ -2417,8 +2423,16 @@ public class CommonPrintHelper {
                     if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
                         mProductValue = (prod.getProductShortName() != null ? prod.getProductShortName() : prod.getProductName());
                     } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LOADING_STOCK)) {
-                        mProductValue = prod.getVanLoadQty() + "";
-                        mLoadStockTotal += prod.getVanLoadQty();
+                        int vanloadQty = 0;
+                        if (bmodel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
+                            vanloadQty = (prod.getVanLoadQty_cs() * prod.getCaseSize()
+                                    + prod.getVanLoadQty_ou() * prod.getOuterSize()
+                                    + prod.getVanLoadQty_pc());
+                        } else {
+                            vanloadQty = prod.getVanLoadQty();
+                        }
+                        mProductValue = String.valueOf(vanloadQty);
+                        mLoadStockTotal += vanloadQty;
                     } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SOLD_STOCK)) {
                         mProductValue = prod.getSoldQty() + "";
                         mSoldStockTotal += prod.getSoldQty();
@@ -2437,6 +2451,9 @@ public class CommonPrintHelper {
                     } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_REP_STOCK)) {
                         mProductValue = prod.getReplacementQty() + "";
                         mRepStockTotal += prod.getReplacementQty();
+                    } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NON_SALABLE)) {
+                        mProductValue = prod.getNonSalableQty() + "";
+                        mNonSalableTotal += prod.getNonSalableQty();
                     }
 
 
