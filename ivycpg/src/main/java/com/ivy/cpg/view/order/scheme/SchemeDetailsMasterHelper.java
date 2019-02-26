@@ -3308,7 +3308,7 @@ public class SchemeDetailsMasterHelper {
                         sb.append(productBo.getSrp());
                         sb.append("," + bModel.formatValue(schemeProductBo.getTaxAmount()));
                     } else {
-                        sb.append(0 + "," + 0);
+                        sb.append(",0,0");
                     }
 
                     sb.append("," + bModel.QT(productBo.getHsnCode()));
