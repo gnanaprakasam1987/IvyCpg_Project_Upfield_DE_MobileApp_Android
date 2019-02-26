@@ -4713,7 +4713,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 + "/"
                 + DataMembers.PROFILE + "/"
                 + path);
-        Bitmap myBitmap = bmodel.decodeFile(imgFile);
+        Bitmap myBitmap = FileUtils.decodeFile(imgFile);
         retProfileImage.setImageBitmap(myBitmap);
     }
 

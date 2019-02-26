@@ -557,7 +557,7 @@ public class PlanoGramHelper {
                 values = QT(tid) + ","
                         + mBModel.getAppDataProvider().getRetailMaster().getRetailerID() + ","
                         + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-                        + QT(mBModel.getTimeZone()) + ","
+                        + QT(DateTimeUtils.getTimeZone()) + ","
                         + mBModel.getAppDataProvider().getUser().getUserid()
                         + "," + QT(refId) + ","
                         + QT("") + ",0" + "," + mBModel.getAppDataProvider().getRetailMaster().getDistributorId()

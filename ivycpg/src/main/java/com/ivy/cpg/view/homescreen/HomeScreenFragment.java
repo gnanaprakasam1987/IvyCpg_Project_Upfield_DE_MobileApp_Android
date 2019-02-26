@@ -511,7 +511,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         switch (requestCode) {
             case CAMERA_REQUEST_CODE:
                 if (resultCode == 1) {
-                    Uri uri = bmodel.getUriFromFile(FileUtils.photoFolderPath + "/" + imageFileName);
+                    Uri uri = FileUtils.getUriFromFile(getActivity(),FileUtils.photoFolderPath + "/" + imageFileName);
                     bmodel.userMasterHelper.getUserMasterBO().setImagePath(imageFileName);
                     bmodel.userMasterHelper.saveUserProfile(bmodel.userMasterHelper.getUserMasterBO());
                     profileImageView.invalidate();

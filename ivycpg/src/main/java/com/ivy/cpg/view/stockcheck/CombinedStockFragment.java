@@ -77,6 +77,7 @@ import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SchemeDialog;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
@@ -1691,7 +1692,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             return;
         }
 
-        if (mSelectedIdByLevelId != null && bmodel.isMapEmpty(mSelectedIdByLevelId) == false) {
+        if (mSelectedIdByLevelId != null && AppUtils.isMapEmpty(mSelectedIdByLevelId) == false) {
             mCompetitorSelectedIdByLevelId = new HashMap<>();
 
         }

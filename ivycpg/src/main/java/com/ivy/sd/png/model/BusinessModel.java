@@ -3357,6 +3357,11 @@ public class BusinessModel extends Application {
         return mRetailerBOByRetailerid;
     }
 
+    @Deprecated
+    /**
+     * @deprecated
+     * @see {@link AppUtils#getApplicationVersionName(Context)}
+     */
     public String getApplicationVersionName() {
         String versionName = "";
         try {
@@ -3371,6 +3376,11 @@ public class BusinessModel extends Application {
 
     // *****************************************************
 
+    @Deprecated
+    /**
+     * @deprecated
+     * @see {@link AppUtils#getApplicationVersionNumber(Context)}
+     */
     public String getApplicationVersionNumber() {
         int versionNumber = 0;
         try {
@@ -4900,17 +4910,6 @@ public class BusinessModel extends Application {
     }
 
 
-    public String getTimeZone() {
-        try {
-            return TimeZone.getDefault().getDisplayName(false, TimeZone.SHORT,
-                    Locale.ENGLISH);
-        } catch (Exception e) {
-
-        }
-        return "UTC";
-    }
-
-
     public int getTotalLines() {
         try {
             boolean isVansales;
@@ -5147,37 +5146,6 @@ public class BusinessModel extends Application {
         }
     }
 
-
-    public boolean validDecimalValue(String value, int wholeValueCount,
-                                     int decimalValueCount) {
-        String strPattern = "(^([0-9]{0," + wholeValueCount
-                + "})?)(\\.[0-9]{0," + decimalValueCount + "})?$";
-        if (value.matches(strPattern))
-            return true;
-        else
-            return false;
-    }
-
-    public String checkDecimalValue(String value, int wholeValueCount,
-                                    int decimalValueCount) {
-        if (!value.contains("."))
-            return value;
-        else {
-            String fString = "", lString = "";
-            value = value.startsWith(".") ? "0" + value : value;
-            value = value.endsWith(".") ? value + "0" : value;
-            String[] valArr = value.split("\\.");
-            if (valArr[0].length() > wholeValueCount)
-                fString = valArr[0].substring(0, valArr[0].length() - 1);
-            if (valArr[1].length() > decimalValueCount)
-                lString = valArr[1].substring(0, valArr[0].length() - 1);
-            if (valArr[0].length() <= wholeValueCount && valArr[1].length() <= decimalValueCount) {
-                fString = valArr[0];
-                lString = valArr[1];
-            }
-            return fString + "." + lString;
-        }
-    }
 
     /**
      * download retailer wise seller type
@@ -6917,68 +6885,6 @@ public class BusinessModel extends Application {
         this.selectedUserId = selectedUserId;
     }
 
-    /**
-     * DecodeFile is convert the large size image to fixed size which mentioned
-     * above
-     */
-    /**
-     * @See {@link com.ivy.utils.AppUtils}
-     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils}
-     * Will be removed from @version CPG133 Release
-     * @deprecated This has been Migrated to MVP pattern
-     */
-    public Bitmap decodeFile(File f) {
-        int IMAGE_MAX_SIZE = 500;
-        Bitmap b = null;
-        try {
-            // Decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-
-            FileInputStream fis = new FileInputStream(f);
-            BitmapFactory.decodeStream(fis, null, o);
-            fis.close();
-
-            int scale = 1;
-            if (o.outHeight > IMAGE_MAX_SIZE || o.outWidth > IMAGE_MAX_SIZE) {
-                scale = (int) Math.pow(
-                        2,
-                        (int) Math.ceil(Math.log(IMAGE_MAX_SIZE
-                                / (double) Math.max(o.outHeight, o.outWidth))
-                                / Math.log(0.5)));
-            }
-
-            // Decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize = scale;
-            fis = new FileInputStream(f);
-            b = BitmapFactory.decodeStream(fis, null, o2);
-            fis.close();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return b;
-    }
-
-    public boolean isMockSettingsON() {
-        // returns true if mock location enabled, false if not enabled.
-        if (Settings.Secure.getString(getContentResolver(),
-                Settings.Secure.ALLOW_MOCK_LOCATION).equals("0"))
-            return false;
-        else
-            return true;
-    }
-
-    /* Checks if all values are null */
-    public boolean isMapEmpty(HashMap<Integer, Integer> aMap) {
-        for (Integer v : aMap.values()) {
-            if (v != 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 
     //Pending invoice report
 
@@ -7204,33 +7110,7 @@ public class BusinessModel extends Application {
         }
     }
 
-    /**
-     * To check file availability
-     *
-     * @param path File path
-     * @return Availability
-     */
-    public boolean isImagePresent(String path) {
-        File f = new File(path);
-        return f.exists();
-    }
 
-    /**
-     * Getting file URI
-     *
-     * @param path File path
-     * @return URI
-     */
-    public Uri getUriFromFile(String path) {
-        File f = new File(path);
-        if (Build.VERSION.SDK_INT >= 24) {
-            return FileProvider.getUriForFile(ctx, BuildConfig.APPLICATION_ID + ".provider", f);
-
-        } else {
-            return Uri.fromFile(f);
-        }
-
-    }
 
     /**
      * Returns email credentials given

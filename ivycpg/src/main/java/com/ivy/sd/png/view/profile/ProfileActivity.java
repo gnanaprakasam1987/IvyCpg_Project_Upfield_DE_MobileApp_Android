@@ -23,6 +23,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -1657,7 +1658,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         // Restrict user to start visit if mock location provider is set.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            if (bmodel.isMockSettingsON()) {
+            if (isMockSettingsON()) {
                 showMocLocationAlert();
                 return;
             }
@@ -1765,6 +1766,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         loadHomeScreenTwo(bmodel.getRetailerMasterBO());
 
     }
+
+    private boolean isMockSettingsON() {
+        // returns true if mock location enabled, false if not enabled.
+        return !Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ALLOW_MOCK_LOCATION).equals("0");
+    }
+
 
 
     private void showMocLocationAlert() {

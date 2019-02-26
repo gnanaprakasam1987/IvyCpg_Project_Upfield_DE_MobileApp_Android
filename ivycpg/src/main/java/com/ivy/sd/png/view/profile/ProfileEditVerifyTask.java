@@ -5,6 +5,7 @@ import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.DeviceUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -54,7 +55,7 @@ public class ProfileEditVerifyTask extends AsyncTask<Integer,Integer,Integer> {
             jsonFormatter.addParameter("LoginId", bmodel.userNameTemp.trim());
             jsonFormatter.addParameter("MobileDateTime", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             jsonFormatter.addParameter("MobileUTCDateTime", Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
-            jsonFormatter.addParameter("DeviceId", bmodel.activationHelper.getIMEINumber());
+            jsonFormatter.addParameter("DeviceId", DeviceUtils.getIMEINumber(bmodel.getContext()));
             jsonFormatter.addParameter("VersionCode", bmodel.getApplicationVersionNumber());
             jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
             jsonFormatter.addParameter("OrganisationId", bmodel.userMasterHelper.getUserMasterBO().getOrganizationId());

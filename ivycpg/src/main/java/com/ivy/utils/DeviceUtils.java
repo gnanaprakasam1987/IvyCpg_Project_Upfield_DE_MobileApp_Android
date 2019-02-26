@@ -108,4 +108,10 @@ public class DeviceUtils {
         }
         return false;
     }
+
+    public static int dpToPixel(Context context ,int dp){
+        final float scale = context.getResources().getDisplayMetrics().density;
+        int pixels = (int) (dp * scale + 0.5f);
+        return pixels;
+    }
 }

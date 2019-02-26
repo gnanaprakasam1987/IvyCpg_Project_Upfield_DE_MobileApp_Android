@@ -88,7 +88,7 @@ public class LoyalityHelper {
                             + ltyBo.getLoyaltyId() + ","
                             + ltyBo.getSelectedPoints() + ","
                             + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-                            + QT(bmodel.getTimeZone()) + ","
+                            + QT(DateTimeUtils.getTimeZone()) + ","
                             + ltyBo.getPointTypeId();
 
                     db.insertSQL(mLoyaltyRedemptionHeader, headerColumns, values);//save into  LoyaltyRedemption Header Table

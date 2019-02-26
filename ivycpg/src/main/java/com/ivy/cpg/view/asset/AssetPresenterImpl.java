@@ -10,6 +10,7 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 
@@ -218,7 +219,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                         }
                     }
                 } else if (mAttributeProducts == null && mProductId != 0) {// product filter alone selected
-                    if (mSelectedIdByLevelId.size() == 0 || mBModel.isMapEmpty(mSelectedIdByLevelId)) {
+                    if (mSelectedIdByLevelId.size() == 0 || AppUtils.isMapEmpty(mSelectedIdByLevelId)) {
                         mAssetList.addAll(mAssetTrackingList);
                     } else {
                         for (AssetTrackingBO assetBO : mAssetTrackingList) {

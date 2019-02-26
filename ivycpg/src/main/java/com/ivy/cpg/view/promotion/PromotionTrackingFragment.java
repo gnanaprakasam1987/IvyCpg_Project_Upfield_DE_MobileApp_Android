@@ -62,6 +62,7 @@ import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.StringUtils;
@@ -1241,7 +1242,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                     }
                 }
             } else {
-                if (mSelectedIdByLevelId.size() == 0 || businessModel.isMapEmpty(mSelectedIdByLevelId)) {
+                if (mSelectedIdByLevelId.size() == 0 || AppUtils.isMapEmpty(mSelectedIdByLevelId)) {
                     promoList.addAll(items);
                 } else {
                     if (mFilterText.length() > 0) {

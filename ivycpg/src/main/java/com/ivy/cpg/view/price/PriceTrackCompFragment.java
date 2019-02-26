@@ -722,7 +722,7 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
                         String qty = s.toString();
                         if (qty.length() > 0)
                             holder.mCaPrice.setSelection(qty.length());
-                        if (bmodel.validDecimalValue(qty, 8, 2)) {
+                        if (SDUtil.isValidDecimal(qty, 8, 2)) {
                             holder.mSKUBO.setPrice_ca(qty);
                         } else {
                             Toast.makeText(
@@ -771,7 +771,7 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
                         String qty = s.toString();
                         if (qty.length() > 0)
                             holder.mPcPrice.setSelection(qty.length());
-                        if (bmodel.validDecimalValue(qty, 8, 2)) {
+                        if (SDUtil.isValidDecimal(qty, 8, 2)) {
                             holder.mSKUBO.setPrice_pc(qty);
                         } else {
                             Toast.makeText(
@@ -819,7 +819,7 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
                         String qty = s.toString();
                         if (qty.length() > 0)
                             holder.mOoPrice.setSelection(qty.length());
-                        if (bmodel.validDecimalValue(qty, 8, 2)) {
+                        if (SDUtil.isValidDecimal(qty, 8, 2)) {
                             holder.mSKUBO.setPrice_oo(qty);
                         } else {
                             Toast.makeText(

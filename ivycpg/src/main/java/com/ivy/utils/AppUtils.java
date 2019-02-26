@@ -34,12 +34,16 @@ import com.ivy.sd.png.util.DataMembers;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.content.Context.MODE_PRIVATE;
 
 public class AppUtils {
+
+    private static final AtomicInteger sNextGeneratedId = new AtomicInteger(1);
 
     private AppUtils() {
 
@@ -195,4 +199,31 @@ public class AppUtils {
     }
 
 
+    /**
+     * Generate a value suitable for use in {@link #setId(int)}.
+     * This value will not collide with ID values generated at build time by aapt for R.id.
+     *
+     * @return a generated ID value
+     */
+    public static int generateViewId() {
+        for (;;) {
+            final int result = sNextGeneratedId.get();
+            // aapt-generated IDs have the high byte nonzero; clamp to the range under that.
+            int newValue = result + 1;
+            if (newValue > 0x00FFFFFF) newValue = 1; // Roll over to 1, not 0.
+            if (sNextGeneratedId.compareAndSet(result, newValue)) {
+                return result;
+            }
+        }
+    }
+
+    /* Checks if all values are null */
+    public static boolean isMapEmpty(HashMap<Integer, Integer> aMap) {
+        for (Integer v : aMap.values()) {
+            if (v != 0) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

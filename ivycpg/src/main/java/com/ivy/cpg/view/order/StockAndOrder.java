@@ -3095,7 +3095,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.srpEdit.setSelection(qty.length());
                         }
                         if (!"".equals(qty)) {
-                            if (bmodel.validDecimalValue(qty, 8, 2)) {
+                            if (SDUtil.isValidDecimal(qty, 8, 2)) {
 
                                 holder.productObj.setSrp(SDUtil.convertToFloat(SDUtil.format(SDUtil.convertToFloat(qty), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
 

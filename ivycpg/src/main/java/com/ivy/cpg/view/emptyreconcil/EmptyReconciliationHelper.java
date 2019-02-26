@@ -251,7 +251,7 @@ public class EmptyReconciliationHelper {
 
 			// save header
 			values = QT(tid) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-					+ QT(bmodel.getTimeZone()) + "," + 0;
+					+ QT(DateTimeUtils.getTimeZone()) + "," + 0;
 
 			db.insertSQL(mTransactionHeader, headerColumns, values);
 
@@ -431,7 +431,7 @@ public class EmptyReconciliationHelper {
 			if (isData) {
 				// save header
 				values = QT(tid) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-						+ "," + QT(bmodel.getTimeZone()) + "," + 0 + ","
+						+ "," + QT(DateTimeUtils.getTimeZone()) + "," + 0 + ","
 						+ "'X'";
 
 				db.insertSQL(mTransactionHeader, headerColumns, values);

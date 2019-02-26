@@ -4231,7 +4231,7 @@ public class ProfileEditFragment extends IvyBaseFragment
                 + "/"
                 + DataMembers.PROFILE + "/"
                 + path);
-        Bitmap myBitmap = bmodel.decodeFile(imgFile);
+        Bitmap myBitmap = FileUtils.decodeFile(imgFile);
         imageView.setScaleType(ImageView.ScaleType.FIT_XY);
         imageView.setAdjustViewBounds(true);
         imageView.setImageBitmap(myBitmap);

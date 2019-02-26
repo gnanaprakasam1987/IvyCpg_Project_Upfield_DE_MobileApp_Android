@@ -343,7 +343,7 @@ public class CheckModeFragment extends IvyBaseFragment
             @Override
             public void afterTextChanged(Editable s) {
                 String qty = s.toString();
-                if (bmodel.validDecimalValue(qty, 16, 2)) {
+                if (SDUtil.isValidDecimal(qty, 16, 2)) {
                     double value = 0;
                     if (!"".equals(qty)) {
                         value = SDUtil.convertToDouble(qty);
