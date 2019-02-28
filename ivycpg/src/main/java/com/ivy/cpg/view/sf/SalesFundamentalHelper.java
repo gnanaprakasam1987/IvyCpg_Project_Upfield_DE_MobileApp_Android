@@ -1450,11 +1450,12 @@ public class SalesFundamentalHelper {
      *
      * @param mModuleName Module Name
      */
-    public void loadSavedTracking(String mModuleName) {
+    public boolean loadSavedTracking(String mModuleName) {
         DBUtil db = null;
         String sql;
         String uid;
         String moduleName = mModuleName.replaceAll("MENU_", "");
+        boolean isDataAvailableSOS = false, isDataAvailableSOD = false, isDataAvailableSOSKU = false;
         try {
             db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
@@ -1524,7 +1525,7 @@ public class SalesFundamentalHelper {
                                             msos.getLocations().get(i).setRemarks(detailCursor.getString(detailCursor.getColumnIndex("remarks")));
                                             msos.getLocations().get(i).setImgName(detailCursor.getString(detailCursor.getColumnIndex("tempImageName")));
                                             msos.getLocations().get(i).setAudit(detailCursor.getInt(10));
-
+                                            isDataAvailableSOS = true;
                                         }
                                     }
                                 }
@@ -1580,6 +1581,7 @@ public class SalesFundamentalHelper {
                                             msod.getLocations().get(i).setImageName(detailCursor.getString(8));
                                             msod.getLocations().get(i).setImgName(detailCursor.getString(detailCursor.getColumnIndex("tempImageName")));
                                             msod.getLocations().get(i).setAudit(detailCursor.getInt(10));
+                                            isDataAvailableSOD = true;
                                         }
                                     }
                                 }
@@ -1628,6 +1630,7 @@ public class SalesFundamentalHelper {
                                     soskuBO.setImageName(detailCursor
                                             .getString(8));
                                     soskuBO.setImgName(detailCursor.getString(detailCursor.getColumnIndex("tempImageName")));
+                                    isDataAvailableSOSKU = true;
                                     break;
                                 }
                             }
@@ -1683,7 +1686,7 @@ public class SalesFundamentalHelper {
                                                     msos.getLocations().get(i).setPercentage(0 + "");
                                                     msos.getLocations().get(i).setGap(0 + "");
                                                 }
-
+                                                isDataAvailableSOS = true;
                                             }
                                         }
                                     }
@@ -1701,6 +1704,16 @@ public class SalesFundamentalHelper {
                 db.closeDB();
             Commons.printException("loadSavedTracking" + mModuleName + e);
         }
+
+        if (mBModel.configurationMasterHelper.isAuditEnabled()) {
+            if (mModuleName.equalsIgnoreCase(moduleSOS))
+                return isDataAvailableSOS;
+            else if (mModuleName.equalsIgnoreCase(moduleSOD))
+                return isDataAvailableSOD;
+            else if (mModuleName.equalsIgnoreCase(moduleSOSKU))
+                return isDataAvailableSOSKU;
+            else return false;
+        } else return true;
     }
 
     /**

@@ -346,7 +346,7 @@ public class PlanoGramHelper {
      *
      * @param retailerId Retailer Id
      */
-    public void loadPlanoGramInEditMode(Context mContext, String retailerId) {
+    public boolean loadPlanoGramInEditMode(Context mContext, String retailerId) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
@@ -360,10 +360,17 @@ public class PlanoGramHelper {
             if (orderHeaderCursor != null) {
                 if (orderHeaderCursor.moveToNext())
                     tid = orderHeaderCursor.getString(0);
-            } else
-                return;
+            }
 
             orderHeaderCursor.close();
+
+            if(tid.trim().isEmpty()){
+                db.close();
+                if(mBModel.configurationMasterHelper.isAuditEnabled())
+                    return false;
+                else
+                    return true;
+            }
 
             String sql1 = "SELECT PId, PLID, ImageName, Adherence, ReasonID, LocID, IFNULL(isAuditDone,'2')"
                     + " FROM PlanogramDetails WHERE tid=" + QT(tid);
@@ -389,6 +396,7 @@ public class PlanoGramHelper {
             db.closeDB();
             Commons.printException("" + e);
         }
+        return true;
     }
 
     /**
