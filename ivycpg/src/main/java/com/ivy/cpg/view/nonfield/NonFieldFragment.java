@@ -38,7 +38,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.text.DateFormat;
@@ -479,8 +479,8 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                 if (isLeave && isSingle && !btn_frmDate.getText().equals(getResources().getString(R.string.select))) {
                     if (isRuleAvailable) {
                         nonFieldHelper.computeLeaves(leaveTypeLovId,
-                                DateUtil.convertFromServerDateToRequestedFormat(btn_frmDate.getText().toString(), outPutDateFormat),
-                                DateUtil.convertFromServerDateToRequestedFormat(btn_frmDate.getText().toString(), outPutDateFormat), 0, session, getApplicationContext());
+                                DateTimeUtils.convertFromServerDateToRequestedFormat(btn_frmDate.getText().toString(), outPutDateFormat),
+                                DateTimeUtils.convertFromServerDateToRequestedFormat(btn_frmDate.getText().toString(), outPutDateFormat), 0, session, getApplicationContext());
                         ArrayList<LeaveRuleBO> multipleLeaves = nonFieldHelper.getLeavesBo();
                         if (!multipleLeaves.isEmpty()) {
                             if (multipleLeaves.get(0).isAvailable()) {
@@ -508,9 +508,9 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
             btn_toDate.setText(getResources().getString(R.string.select));
             ll_total.setVisibility(View.VISIBLE);
         } else {
-            btn_frmDate.setText(DateUtil.convertDateObjectToRequestedFormat(
+            btn_frmDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                     calendar.getTime(), outPutDateFormat));
-            btn_toDate.setText(DateUtil.convertDateObjectToRequestedFormat(
+            btn_toDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                     calendar.getTime(), outPutDateFormat));
             ll_total.setVisibility(View.GONE);
         }
@@ -696,11 +696,11 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
             if (bmodel.configurationMasterHelper.ALLOW_BACK_DATE || selectedDate.getTimeInMillis() >= calendar.getTimeInMillis()) {
                 if ("datePicker1".equals(this.getTag())) {
                     if (isLeave) {
-                        LeaveRuleBO leaveRuleBO = nonFieldHelper.checkRule(leaveTypeLovId, DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat), getActivity().getApplicationContext());
+                        LeaveRuleBO leaveRuleBO = nonFieldHelper.checkRule(leaveTypeLovId, DateTimeUtils.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat), getActivity().getApplicationContext());
                         if (leaveRuleBO != null) {
                             if (leaveRuleBO.getNoticeDays() == 0 && leaveRuleBO.getEffectiveTo().length() == 0) {
                                 isRuleAvailable = false;
-                                btn_frmDate.setText(DateUtil.convertDateObjectToRequestedFormat(
+                                btn_frmDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                                         selectedDate.getTime(), outPutDateFormat));
                                 if (!isSingleDay &&
                                         !btn_toDate.getText().toString().equals(getResources().getString(R.string.select)))
@@ -713,24 +713,24 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                             } else {
                                 isRuleAvailable = true;
                                 if (isSingleDay) {
-                                    if (nonFieldHelper.isHoliday(DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat),
+                                    if (nonFieldHelper.isHoliday(DateTimeUtils.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat),
                                             getActivity().getApplicationContext()))
                                         Toast.makeText(getActivity(), getResources().getString(R.string.text_select_holiday), Toast.LENGTH_SHORT).show();
-                                    else if (nonFieldHelper.isWeekOff(DateUtil.convertDateObjectToRequestedFormat(
+                                    else if (nonFieldHelper.isWeekOff(DateTimeUtils.convertDateObjectToRequestedFormat(
                                             selectedDate.getTime(), outPutDateFormat)))
                                         Toast.makeText(getActivity(), getResources().getString(R.string.text_select_weekoff), Toast.LENGTH_SHORT).show();
                                     else if (!bmodel.configurationMasterHelper.ALLOW_BACK_DATE && leaveRuleBO.getNoticeDays() > getDifferenceDays(calendar, selectedDate))
                                         Toast.makeText(getActivity(), getResources().getString(R.string.text_initmation_period), Toast.LENGTH_SHORT).show();
                                     else {
                                         nonFieldHelper.computeLeaves(leaveTypeLovId,
-                                                DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(),
-                                                        outPutDateFormat), DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(),
+                                                DateTimeUtils.convertDateObjectToRequestedFormat(selectedDate.getTime(),
+                                                        outPutDateFormat), DateTimeUtils.convertDateObjectToRequestedFormat(selectedDate.getTime(),
                                                         outPutDateFormat), 0, session, getActivity().getApplicationContext());
 
                                         ArrayList<LeaveRuleBO> multipleLeaves = nonFieldHelper.getLeavesBo();
                                         if (!multipleLeaves.isEmpty()) {
                                             if (multipleLeaves.get(0).isAvailable()) {
-                                                btn_frmDate.setText(DateUtil.convertDateObjectToRequestedFormat(
+                                                btn_frmDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                                                         selectedDate.getTime(), outPutDateFormat));
                                                 String strLeaves = multipleLeaves.get(0).getAppliedDays() + "";
                                                 txt_total_value.setText(strLeaves);
@@ -744,7 +744,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                                     if (!bmodel.configurationMasterHelper.ALLOW_BACK_DATE && leaveRuleBO.getNoticeDays() > getDifferenceDays(calendar, selectedDate)) {
                                         Toast.makeText(getActivity(), getResources().getString(R.string.text_initmation_period), Toast.LENGTH_SHORT).show();
                                     } else {
-                                        btn_frmDate.setText(DateUtil.convertDateObjectToRequestedFormat(
+                                        btn_frmDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                                                 selectedDate.getTime(), outPutDateFormat));
                                         if (!btn_toDate.getText().toString().equals(getResources().getString(R.string.select)))
                                             updateTotalDays(selectedDate, getActivity().getApplicationContext());
@@ -753,20 +753,20 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                             }
                         }
                     } else {
-                        btn_frmDate.setText(DateUtil.convertDateObjectToRequestedFormat(
+                        btn_frmDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), outPutDateFormat));
                     }
                     // To Date Picker
                 } else if ("datePicker2".equals(this.getTag())) {
                     if (!isRuleAvailable && isLeave) {
-                        btn_toDate.setText(DateUtil.convertDateObjectToRequestedFormat(
+                        btn_toDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), outPutDateFormat));
                         String strNoOfDays = "" + getNoofDays(btn_frmDate.getText().toString(), btn_toDate.getText().toString());
                         txt_total_value.setText(strNoOfDays);
                     } else if (isRuleAvailable && isLeave) {
                         nonFieldHelper.computeLeaves(leaveTypeLovId,
-                                DateUtil.convertFromServerDateToRequestedFormat(btn_frmDate.getText().toString(), outPutDateFormat),
-                                DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat),
+                                DateTimeUtils.convertFromServerDateToRequestedFormat(btn_frmDate.getText().toString(), outPutDateFormat),
+                                DateTimeUtils.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat),
                                 1, session, getActivity().getApplicationContext());
                         ArrayList<LeaveRuleBO> multipleLeaves = nonFieldHelper.getLeavesBo();
                         if (!multipleLeaves.isEmpty()) {
@@ -781,7 +781,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                             }
 
                             if (isAvailable) {
-                                btn_toDate.setText(DateUtil.convertDateObjectToRequestedFormat(
+                                btn_toDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                                         selectedDate.getTime(), outPutDateFormat));
                                 String strTotal = total + "";
                                 txt_total_value.setText(strTotal);
@@ -792,7 +792,7 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
                             }
                         }
                     } else {
-                        btn_toDate.setText(DateUtil.convertDateObjectToRequestedFormat(
+                        btn_toDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), outPutDateFormat));
                     }
                 }
@@ -819,8 +819,8 @@ public class NonFieldFragment extends IvyBaseActivityNoActionBar implements OnCl
         double total = 0;
         if (!btn_toDate.getText().toString().equals(select)) {
             nonFieldHelper.computeLeaves(leaveTypeLovId,
-                    DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat),
-                    DateUtil.convertFromServerDateToRequestedFormat(btn_toDate.getText().toString(), outPutDateFormat), 1, session, context);
+                    DateTimeUtils.convertDateObjectToRequestedFormat(selectedDate.getTime(), outPutDateFormat),
+                    DateTimeUtils.convertFromServerDateToRequestedFormat(btn_toDate.getText().toString(), outPutDateFormat), 1, session, context);
             ArrayList<LeaveRuleBO> multipleLeaves = nonFieldHelper.getLeavesBo();
             for (LeaveRuleBO obj : multipleLeaves) {
                 if (!obj.isAvailable()) {

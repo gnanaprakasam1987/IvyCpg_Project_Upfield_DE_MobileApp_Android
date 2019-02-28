@@ -13,8 +13,8 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 
@@ -48,7 +48,7 @@ public class DamageReturnPendingFragment extends IvyBaseFragment {
         if (DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().size() > 0) {
 
             for(int i=0;i<DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().size();i++){
-                if(AppUtils.isEmptyString(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i).getStatus())){
+                if(StringUtils.isEmptyString(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i).getStatus())){
                     pandingDeliveryBOS.add(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i));
                 }
             }

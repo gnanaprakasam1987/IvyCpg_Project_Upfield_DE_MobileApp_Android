@@ -3,8 +3,8 @@ package com.ivy.cpg.view.sync;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.DateTimeUtils;
 
 /**
  * Created by abbas.a on 25/07/18.
@@ -24,8 +24,8 @@ public class LastSyncTimeHelper {
         try {
             SharedPreferences.Editor edt = mLastUploadAndDownloadPref.edit();
             edt.putString("uploadDate",
-                    SDUtil.now(SDUtil.DATE_GLOBAL));
-            edt.putString("uploadTime", SDUtil.now(SDUtil.TIME));
+                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            edt.putString("uploadTime", DateTimeUtils.now(DateTimeUtils.TIME));
             edt.apply();
 
 
@@ -38,8 +38,8 @@ public class LastSyncTimeHelper {
         try {
             SharedPreferences.Editor edt = mLastUploadAndDownloadPref.edit();
             edt.putString("downloadDate",
-                    SDUtil.now(SDUtil.DATE_GLOBAL));
-            edt.putString("downloadTime", SDUtil.now(SDUtil.TIME));
+                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            edt.putString("downloadTime", DateTimeUtils.now(DateTimeUtils.TIME));
             edt.apply();
 
         } catch (Exception ex) {

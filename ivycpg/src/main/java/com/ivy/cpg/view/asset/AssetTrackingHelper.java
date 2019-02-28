@@ -16,8 +16,8 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,7 +146,7 @@ public class AssetTrackingHelper {
     /*
     Download Master Data needed for Asset Screen
      */
-    public void loadDataForAssetPOSM(Context mContext, String mMenuCode) {
+    public boolean loadDataForAssetPOSM(Context mContext, String mMenuCode) {
         if (mBusinessModel.configurationMasterHelper
                 .downloadFloatingSurveyConfig(mMenuCode)) {
             SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(mContext);
@@ -184,7 +184,7 @@ public class AssetTrackingHelper {
 
 
         // Load data from transaction
-        loadAssetData(mContext, mBusinessModel
+        return loadAssetData(mContext, mBusinessModel
                 .getRetailerMasterBO().getRetailerID(), mMenuCode);
     }
 
@@ -633,7 +633,7 @@ public class AssetTrackingHelper {
      * @param mRetailerId Retailer ID
      * @param moduleName  Module Name
      */
-    private void loadAssetData(Context mContext, String mRetailerId, String moduleName) {
+    private boolean loadAssetData(Context mContext, String mRetailerId, String moduleName) {
         String type;
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
@@ -663,7 +663,13 @@ public class AssetTrackingHelper {
                 mBusinessModel.setAssetRemark("");
             }
 
-            String sb2 = "select assetid,availqty,imagename,reasonid,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Locid,PosmGroupLovId,isExecuted,imgName,MappingId  from assetDetail where uid=" +
+            if(mBusinessModel.configurationMasterHelper.isAuditEnabled() && uid.trim().isEmpty()){
+                c.close();
+                db.closeDB();
+                return false;
+            }
+
+            String sb2 = "select assetid,availqty,imagename,reasonid,SerialNumber,conditionId,installdate,servicedate,isAuditDone,Productid,CompQty,Locid,PosmGroupLovId,isExecuted,imgName,MappingId  from assetDetail where uid=" +
                     QT(uid);
 
 
@@ -693,10 +699,10 @@ public class AssetTrackingHelper {
 
                             serialNo,
                             conditionId,
-                            DateUtil.convertFromServerDateToRequestedFormat(
+                            DateTimeUtils.convertFromServerDateToRequestedFormat(
                                     detailCursor.getString(6),
                                     ConfigurationMasterHelper.outDateFormat),
-                            DateUtil.convertFromServerDateToRequestedFormat(
+                            DateTimeUtils.convertFromServerDateToRequestedFormat(
                                     detailCursor.getString(7),
                                     ConfigurationMasterHelper.outDateFormat), audit, pid, compQty, locId, isExecuted,
                             detailCursor.getString(detailCursor.getColumnIndex("imgName")),
@@ -711,6 +717,7 @@ public class AssetTrackingHelper {
             Commons.printException("" + e);
             db.closeDB();
         }
+        return true;
     }
 
     /**
@@ -1236,17 +1243,17 @@ public class AssetTrackingHelper {
                 }
             }
             String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
             AssetTrackingBO assets = getAssetTrackingBO();
             String addAssetColumns = "uid,retailerid,AssetId,serialNum,productid,installdate,creationdate,TypeLovId,reasonid,remarks";
 
             String assetAddAndDeleteValues = id + "," + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ","
                     + QT(assets.getPOSM()) + "," + QT(assets.getSNO()) + ","
                     + QT(assets.getBrand()) + ","
-                    + QT(DateUtil.convertToServerDateFormat(
+                    + QT(DateTimeUtils.convertToServerDateFormat(
                     assets.getNewInstallDate(),
                     ConfigurationMasterHelper.outDateFormat))
-                    + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + typeListId + "," +
+                    + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + typeListId + "," +
                     QT(assets.getReasonId()) + "," + QT(assets.getRemarks());
 
             db.insertSQL(DataMembers.tbl_AssetAddDelete, addAssetColumns,
@@ -1287,14 +1294,14 @@ public class AssetTrackingHelper {
                 }
             }
             String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
             AssetTrackingBO assets = getAssetTrackingBO();
             String addAssetColumns = "uid,retailerid,AssetId,serialNum,productid,creationdate,flag,TypeLovId,reasonid,remarks,toRetailerId";
 
             String assetAddAndDeleteValues = id + "," + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ","
                     + QT(assets.getPOSM()) + "," + QT(assets.getSNO()) + ","
                     + QT(assets.getBrand()) + ","
-                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + QT("M") + "," + typeListId + "," +
+                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + QT("M") + "," + typeListId + "," +
                     QT(assets.getReasonId()) + "," + QT(assets.getRemarks()) + "," + QT(assets.getToRetailerId());
 
             db.insertSQL(DataMembers.tbl_AssetAddDelete, addAssetColumns,
@@ -1341,13 +1348,13 @@ public class AssetTrackingHelper {
                 }
             }
             String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             String addAssetColumns = "uid,retailerid,AssetId,serialNum,creationdate,flag,mappingid,Productid,TypeLovId,reasonid";
 
             String assetAddAndDeleteValues = id + "," + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ","
                     + QT(posmId) + "," + QT(mSno) + ","
-                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + QT("D") + ","
+                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + QT("D") + ","
                     + QT(mSbdId) + "," + QT(mBrandId) + "," + typeListId + "," + QT(reasonId);
 
             db.insertSQL(DataMembers.tbl_AssetAddDelete, addAssetColumns,
@@ -1506,13 +1513,13 @@ public class AssetTrackingHelper {
             double productWeightAge, sum = 0;
 
             String id = mBusinessModel.getAppDataProvider().getUser().getUserid()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             String assetHeaderColumns = "uid,Date,RetailerId,remark,TypeLovid,tgtTotal,achTotal,refid,distributorid,ridSF,VisitId";
             StringBuilder assetHeaderValues = new StringBuilder();
             assetHeaderValues.append(id);
             assetHeaderValues.append(",");
-            assetHeaderValues.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            assetHeaderValues.append(QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             assetHeaderValues.append(",");
             assetHeaderValues.append(QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
             assetHeaderValues.append(",");
@@ -1521,7 +1528,7 @@ public class AssetTrackingHelper {
             assetHeaderValues.append(typeListId);
 
 
-            String AssetDetailColumns = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,conditionId,installdate,servicedate,isAudit,Productid,CompQty,Retailerid,LocId,PosmGroupLovId,isExecuted,imgName";
+            String AssetDetailColumns = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,conditionId,installdate,servicedate,isAuditDone,Productid,CompQty,Retailerid,LocId,PosmGroupLovId,isExecuted,imgName";
             String AssetImageInfoColumns = "uid,AssetID,ImageName,PId,LocId";
             if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 AssetDetailColumns = AssetDetailColumns + ",Score";
@@ -1581,9 +1588,9 @@ public class AssetTrackingHelper {
                                             .sqlEscapeString(SHOW_ASSET_INSTALL_DATE ? ((assetBo
                                                     .getInstallDate() == null || assetBo
                                                     .getInstallDate()
-                                                    .length() == 0) ? SDUtil
-                                                    .now(SDUtil.DATE_GLOBAL)
-                                                    : (DateUtil
+                                                    .length() == 0) ? DateTimeUtils
+                                                    .now(DateTimeUtils.DATE_GLOBAL)
+                                                    : (DateTimeUtils
                                                     .convertToServerDateFormat(
                                                             assetBo.getInstallDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
@@ -1593,9 +1600,9 @@ public class AssetTrackingHelper {
                                             .sqlEscapeString(SHOW_ASSET_SERVICE_DATE ? ((assetBo
                                                     .getServiceDate() == null || assetBo
                                                     .getServiceDate()
-                                                    .length() == 0) ? SDUtil
-                                                    .now(SDUtil.DATE_GLOBAL)
-                                                    : (DateUtil
+                                                    .length() == 0) ? DateTimeUtils
+                                                    .now(DateTimeUtils.DATE_GLOBAL)
+                                                    : (DateTimeUtils
                                                     .convertToServerDateFormat(
                                                             assetBo.getServiceDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
@@ -1605,9 +1612,9 @@ public class AssetTrackingHelper {
                                             .sqlEscapeString(SHOW_POSM_INSTALL_DATE ? ((assetBo
                                                     .getInstallDate() == null || assetBo
                                                     .getInstallDate()
-                                                    .length() == 0) ? SDUtil
-                                                    .now(SDUtil.DATE_GLOBAL)
-                                                    : (DateUtil
+                                                    .length() == 0) ? DateTimeUtils
+                                                    .now(DateTimeUtils.DATE_GLOBAL)
+                                                    : (DateTimeUtils
                                                     .convertToServerDateFormat(
                                                             assetBo.getInstallDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
@@ -1617,9 +1624,9 @@ public class AssetTrackingHelper {
                                             .sqlEscapeString(SHOW_POSM_SERVICE_DATE ? ((assetBo
                                                     .getServiceDate() == null || assetBo
                                                     .getServiceDate()
-                                                    .length() == 0) ? SDUtil
-                                                    .now(SDUtil.DATE_GLOBAL)
-                                                    : (DateUtil
+                                                    .length() == 0) ? DateTimeUtils
+                                                    .now(DateTimeUtils.DATE_GLOBAL)
+                                                    : (DateTimeUtils
                                                     .convertToServerDateFormat(
                                                             assetBo.getServiceDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
@@ -1722,9 +1729,9 @@ public class AssetTrackingHelper {
                                             .sqlEscapeString(SHOW_ASSET_INSTALL_DATE ? ((assetBo
                                                     .getInstallDate() == null || assetBo
                                                     .getInstallDate()
-                                                    .length() == 0) ? SDUtil
-                                                    .now(SDUtil.DATE_GLOBAL)
-                                                    : (DateUtil
+                                                    .length() == 0) ? DateTimeUtils
+                                                    .now(DateTimeUtils.DATE_GLOBAL)
+                                                    : (DateTimeUtils
                                                     .convertToServerDateFormat(
                                                             assetBo.getInstallDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
@@ -1734,9 +1741,9 @@ public class AssetTrackingHelper {
                                             .sqlEscapeString(SHOW_ASSET_SERVICE_DATE ? ((assetBo
                                                     .getServiceDate() == null || assetBo
                                                     .getServiceDate()
-                                                    .length() == 0) ? SDUtil
-                                                    .now(SDUtil.DATE_GLOBAL)
-                                                    : (DateUtil
+                                                    .length() == 0) ? DateTimeUtils
+                                                    .now(DateTimeUtils.DATE_GLOBAL)
+                                                    : (DateTimeUtils
                                                     .convertToServerDateFormat(
                                                             assetBo.getServiceDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
@@ -1746,9 +1753,9 @@ public class AssetTrackingHelper {
                                             .sqlEscapeString(SHOW_POSM_INSTALL_DATE ? ((assetBo
                                                     .getInstallDate() == null || assetBo
                                                     .getInstallDate()
-                                                    .length() == 0) ? SDUtil
-                                                    .now(SDUtil.DATE_GLOBAL)
-                                                    : (DateUtil
+                                                    .length() == 0) ? DateTimeUtils
+                                                    .now(DateTimeUtils.DATE_GLOBAL)
+                                                    : (DateTimeUtils
                                                     .convertToServerDateFormat(
                                                             assetBo.getInstallDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
@@ -1758,9 +1765,9 @@ public class AssetTrackingHelper {
                                             .sqlEscapeString(SHOW_POSM_SERVICE_DATE ? ((assetBo
                                                     .getServiceDate() == null || assetBo
                                                     .getServiceDate()
-                                                    .length() == 0) ? SDUtil
-                                                    .now(SDUtil.DATE_GLOBAL)
-                                                    : (DateUtil
+                                                    .length() == 0) ? DateTimeUtils
+                                                    .now(DateTimeUtils.DATE_GLOBAL)
+                                                    : (DateTimeUtils
                                                     .convertToServerDateFormat(
                                                             assetBo.getServiceDate(),
                                                             ConfigurationMasterHelper.outDateFormat)))
@@ -1943,8 +1950,16 @@ public class AssetTrackingHelper {
             mAssetTrackingList = standardListBO.getAssetTrackingList();
             if (mAssetTrackingList != null) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
-
-                    if (assetBO.getAvailQty() > 0 || assetBO.getAudit() != 2 || assetBO.getCompetitorQty() > 0 || assetBO.getExecutorQty() > 0) {
+                    if (mBusinessModel.configurationMasterHelper.isAuditEnabled()) {
+                        if (((assetBO.getAvailQty() > 0
+                                || assetBO.getCompetitorQty() > 0
+                                || assetBO.getExecutorQty() > 0)
+                                && assetBO.getAudit() != 2)
+                                 || assetBO.getAudit() != 2) {
+                            return true;
+                        }
+                    }
+                    else if (assetBO.getAvailQty() > 0 || assetBO.getAudit() != 2 || assetBO.getCompetitorQty() > 0 || assetBO.getExecutorQty() > 0) {
                         return true;
                     } else if (assetBO.getReason1ID() != null) {
                         if (!assetBO.getReason1ID().equals(Integer.toString(0))) {
@@ -2077,12 +2092,12 @@ public class AssetTrackingHelper {
 
             db.openDataBase();
             String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             String addAssetColumns = "Uid,date,AssetId,serialNum,reasonid,retailerid";
 
             String assetAddAndDeleteValues = id + ","
-                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                     + QT(assetId) + "," + QT(serialNo) + ","
                     + QT(mReasonID) + ","
                     + QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
@@ -2327,7 +2342,7 @@ public class AssetTrackingHelper {
 
         String attrQuery = "Select distinct Id,MappingSetId from POSMCriteriaAttributesMappingV2 PCA"
                 + " inner join RetailerAttribute RA on RA.AttributeId = PCA.RetailerAttibuteId and RA.RetailerId ="
-                + AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
+                + StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
 
         Cursor c = db.selectSQL(attrQuery);
 
@@ -2340,10 +2355,10 @@ public class AssetTrackingHelper {
         String criteriaQuery = "Select Distinct pcm.Id,pcm.MappingSetId,pcm.AccountId,pcm.Retailerid,pcm.LocationId,pcm.ChannelId,IFNULL(pca.Id,0) as attrMapped from POSMCriteriaMappingV2 pcm "
                 + " Left Join POSMCriteriaAttributesMappingV2 pca on pca.Id = pcm.Id and pca.MappingSetId = pcm.MappingSetId "
                 + "where AccountId in(0," + mBusinessModel.getRetailerMasterBO().getAccountid() + ") and "
-                + " Retailerid in(0," + AppUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ") and "
+                + " Retailerid in(0," + StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ") and "
                 + " LocationId in(0," + mBusinessModel.productHelper.getMappingLocationId(mBusinessModel.productHelper.locid, mBusinessModel.getRetailerMasterBO().getLocationId()) + ") and "
                 + " ChannelId in(0," + mBusinessModel.getRetailerMasterBO().getSubchannelid() + ") OR "
-                + " ChannelId in (0," + AppUtils.QT(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext)) + ")";
+                + " ChannelId in (0," + StringUtils.QT(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext)) + ")";
 
         c = db.selectSQL(criteriaQuery);
         if (c.getCount() > 0) {

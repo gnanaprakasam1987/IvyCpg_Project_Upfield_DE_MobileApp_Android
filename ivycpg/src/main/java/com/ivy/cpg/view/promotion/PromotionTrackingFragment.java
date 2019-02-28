@@ -58,13 +58,14 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
+import com.ivy.utils.StringUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -483,8 +484,8 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 if (getActivity().getIntent().getBooleanExtra("isFromChild", false))
                     startActivity(new Intent(getActivity(), HomeScreenTwo.class)
                             .putExtra("isStoreMenu", true));
@@ -611,13 +612,13 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                                 promoBO.setImageName("");
                             }
                         }
-                        businessModel.deleteFiles(AppUtils.photoFolderPath,
+                        businessModel.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra(CameraActivity.QUALITY, 40);
-                        String path = AppUtils.photoFolderPath + "/" + mImageName;
+                        String path = FileUtils.photoFolderPath + "/" + mImageName;
                         intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 businessModel.CAMERA_REQUEST_CODE);
@@ -722,7 +723,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         TextView tvProductName;
         Button mFromDateBTN;
         Button mToDateBTN;
-        LinearLayout llSkuPromolayout;
         LinearLayout ll_Rating;
         ImageView img_remarks;
     }
@@ -780,7 +780,6 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                         .findViewById(R.id.tv_product_name);
                 holder.mFromDateBTN = row.findViewById(R.id.btn_fromdatepicker);
                 holder.mToDateBTN = row.findViewById(R.id.btn_todatepicker);
-                holder.llSkuPromolayout = row.findViewById(R.id.skuPromolayout);
 
                 holder.reasonSpin.setAdapter(reasonAdapter);
                 holder.ratingSpin = row.findViewById(R.id.spin_rating);
@@ -790,24 +789,15 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                     holder.ratingSpin.setAdapter(mRatingAdapter);
 
 
-                if (promotionHelper.SHOW_PROMO_PHOTO) {
-                    holder.btnPhoto.setVisibility(View.VISIBLE);
+                if (!promotionHelper.SHOW_PROMO_PHOTO)
+                    row.findViewById(R.id.ll_photo).setVisibility(View.GONE);
 
-                } else {
-                    holder.btnPhoto.setVisibility(View.GONE);
-
-                }
-                if (promotionHelper.SHOW_PROMO_REASON) {
-                    holder.reasonSpin.setVisibility(View.VISIBLE);
-                } else {
-                    holder.reasonSpin.setVisibility(View.GONE);
-                }
                 if (promotionHelper.SHOW_PROMO_TYPE) {
                     holder.tvGroupName.setVisibility(View.VISIBLE);
                 } else {
                     holder.tvGroupName.setVisibility(View.GONE);
                 }
-                if (!promotionHelper.SHOW_PROMO_RATING) {
+                if (promotionHelper.SHOW_PROMO_RATING) {
                     holder.ll_Rating.setVisibility(View.VISIBLE);
                     try {
                         if (businessModel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -831,6 +821,13 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 }
                 if (!promotionHelper.SHOW_PROMO_ANNOUNCER)
                     (row.findViewById(R.id.ll_announced)).setVisibility(View.GONE);
+                if (!promotionHelper.SHOW_PROMO_REASON)
+                    (row.findViewById(R.id.ll_reason)).setVisibility(View.GONE);
+                if (promotionHelper.SHOW_PROMO_FEEDBACK) {
+                    holder.img_remarks.setVisibility(View.VISIBLE);
+                } else {
+                    holder.img_remarks.setVisibility(View.GONE);
+                }
 
                 holder.rbExecuted.setOnClickListener(new OnClickListener() {
                     @Override
@@ -966,7 +963,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
                             boolean nFilesThere = businessModel
                                     .checkForNFilesInFolder(
-                                            AppUtils.photoFolderPath, 1,
+                                            FileUtils.photoFolderPath, 1,
                                             fNameStarts);
                             if (nFilesThere) {
                                 showFileDeleteAlert(
@@ -976,7 +973,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                                 Intent intent = new Intent(getActivity(),
                                         CameraActivity.class);
                                 intent.putExtra(CameraActivity.QUALITY, 40);
-                                String path = AppUtils.photoFolderPath + "/"
+                                String path = FileUtils.photoFolderPath + "/"
                                         + mImageName;
                                 intent.putExtra(CameraActivity.PATH, path);
                                 startActivityForResult(intent,
@@ -1003,10 +1000,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                     holder.tvGroupName.setVisibility(View.VISIBLE);
                 }
 
-                if (businessModel.configurationMasterHelper.IS_ENABLE_PROMOTION_DATES) {
-                    holder.llSkuPromolayout.setVisibility(View.VISIBLE);
-                } else {
-                    holder.llSkuPromolayout.setVisibility(View.GONE);
+                if (!businessModel.configurationMasterHelper.IS_ENABLE_PROMOTION_DATES) {
+                    row.findViewById(R.id.ll_install_date).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_service_date).setVisibility(View.GONE);
                 }
                 row.setTag(holder);
 
@@ -1045,7 +1041,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                     && (!"".equals(holder.mPromotionMasterBO.getImageName()))
                     && (!"null"
                     .equals(holder.mPromotionMasterBO.getImageName()))) {
-                File imgFile = new File(AppUtils.photoFolderPath + "/" + holder.mPromotionMasterBO.getImageName());
+                File imgFile = new File(FileUtils.photoFolderPath + "/" + holder.mPromotionMasterBO.getImageName());
                 Glide.with(getActivity())
                         .load(imgFile.getAbsoluteFile())
                         .asBitmap()
@@ -1093,10 +1089,10 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
             holder.tvProductName.setText(holder.mPromotionMasterBO.getpName() == null ? "" : holder.mPromotionMasterBO.getpName());
             holder.mFromDateBTN.setText(holder.mPromotionMasterBO.getFromDate() == null ? "" :
-                    DateUtil.convertFromServerDateToRequestedFormat(
+                    DateTimeUtils.convertFromServerDateToRequestedFormat(
                             holder.mPromotionMasterBO.getFromDate(), ConfigurationMasterHelper.outDateFormat));
             holder.mToDateBTN.setText(holder.mPromotionMasterBO.getToDate() == null ? "" :
-                    DateUtil.convertFromServerDateToRequestedFormat(
+                    DateTimeUtils.convertFromServerDateToRequestedFormat(
                             holder.mPromotionMasterBO.getToDate(), ConfigurationMasterHelper.outDateFormat));
 
             holder.mFromDateBTN.setOnClickListener(new View.OnClickListener() {
@@ -1123,7 +1119,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 }
             });
 
-            if (!AppUtils.isNullOrEmpty(holder.mPromotionMasterBO.getRemarks()))
+            if (!StringUtils.isNullOrEmpty(holder.mPromotionMasterBO.getRemarks()))
                 holder.img_remarks.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.feedback_promo, null));
             else
                 holder.img_remarks.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.feedback_no_promo, null));
@@ -1153,8 +1149,8 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 promotionHelper.savePromotionDetails(getContext().getApplicationContext());
                 promotionHelper.deleteUnusedImages();
                 businessModel.saveModuleCompletion(HomeScreenTwo.MENU_PROMO);
-                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException("" + e);
@@ -1246,7 +1242,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                     }
                 }
             } else {
-                if (mSelectedIdByLevelId.size() == 0 || businessModel.isMapEmpty(mSelectedIdByLevelId)) {
+                if (mSelectedIdByLevelId.size() == 0 || AppUtils.isMapEmpty(mSelectedIdByLevelId)) {
                     promoList.addAll(items);
                 } else {
                     if (mFilterText.length() > 0) {
@@ -1285,7 +1281,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
     @Override
     public void updateDate(Date date, String tag) {
         try {
-            String paidDate = DateUtil.convertDateObjectToRequestedFormat(
+            String paidDate = DateTimeUtils.convertDateObjectToRequestedFormat(
                     date, "yyyy/MM/dd");
             if (selectedposition != -1) {
                 if (tag.equals("fromdatePicker")) {

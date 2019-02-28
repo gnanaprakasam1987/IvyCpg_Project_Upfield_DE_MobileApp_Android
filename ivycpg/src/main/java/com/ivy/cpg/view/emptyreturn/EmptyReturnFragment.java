@@ -40,6 +40,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -119,8 +120,8 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 startActivity(new Intent(getActivity(), HomeScreenTwo.class));
                 ((Activity) context).finish();
             }
@@ -348,8 +349,8 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
         protected Boolean doInBackground(Void... arg0) {
             try {
                 emptyReturnHelper.saveEmptyReturn();
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 bmodel.saveModuleCompletion("MENU_EMPTY_RETURN");
 
                 return Boolean.TRUE;

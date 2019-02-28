@@ -54,11 +54,10 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -560,13 +559,13 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
             holder.edtQty.setText(holder.mCompTrackBO.getQty() + "");
             holder.edtRemark.setText(holder.mCompTrackBO.getRemarks() + "");
             if (!holder.mCompTrackBO.isExecuted()) {
-                holder.btnFromDate.setText(DateUtil.convertFromServerDateToRequestedFormat(
-                        SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                holder.btnFromDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
                 holder.mCompTrackBO.setFromDate(holder.btnFromDate.getText()
                         .toString());
 
-                holder.btnToDate.setText(DateUtil.convertFromServerDateToRequestedFormat(
-                        SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                holder.btnToDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
                 holder.mCompTrackBO.setToDate(holder.btnToDate.getText()
                         .toString());
                 //holder.mCompTrackBO.setReasonID(resonId);
@@ -580,15 +579,15 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                 holder.spnReason.setEnabled(false);
             } else {
                 holder.btnFromDate
-                        .setText((holder.mCompTrackBO.getFromDate() == null) ? (DateUtil
+                        .setText((holder.mCompTrackBO.getFromDate() == null) ? (DateTimeUtils
                                 .convertFromServerDateToRequestedFormat(
-                                        SDUtil.now(SDUtil.DATE_GLOBAL),
+                                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                         outPutDateFormat))
                                 : holder.mCompTrackBO.getFromDate());
                 holder.btnToDate
-                        .setText((holder.mCompTrackBO.getToDate() == null) ? (DateUtil
+                        .setText((holder.mCompTrackBO.getToDate() == null) ? (DateTimeUtils
                                 .convertFromServerDateToRequestedFormat(
-                                        SDUtil.now(SDUtil.DATE_GLOBAL),
+                                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                         outPutDateFormat))
                                 : holder.mCompTrackBO.getToDate());
                 holder.edtQty.setEnabled(true);
@@ -656,7 +655,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
     private void setPictureToImageView(String imageName, final ImageView imageView) {
         Bitmap defaultIcon = BitmapFactory.decodeResource(getResources(), R.drawable.ic_photo_camera_blue_24dp);
         Glide.with(SubCompetitorTrackingActivity.this)
-                .load(AppUtils.photoFolderPath + "/" + imageName)
+                .load(FileUtils.photoFolderPath + "/" + imageName)
                 .asBitmap()
                 .centerCrop()
                 .placeholder(new BitmapDrawable(getResources(), defaultIcon))
@@ -693,7 +692,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
             String fnameStarts = path_prefix + "_" + Commons.now(Commons.DATE);
 
             boolean nfiles_there = bmodel.checkForNFilesInFolder(
-                    AppUtils.photoFolderPath, 1, fnameStarts);
+                    FileUtils.photoFolderPath, 1, fnameStarts);
 
             if (nfiles_there) {
                 if (isCompPhoto)
@@ -708,7 +707,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                     this.sendBroadcast(i);
                     Thread.sleep(100);
 
-                    String _path = AppUtils.photoFolderPath + "/" + imageName;
+                    String _path = FileUtils.photoFolderPath + "/" + imageName;
                     bmodel.getPhotosTakeninCurrentCompetitorTracking().put(trackinglistId + "", _path);
 
                     Intent intent = new Intent(this,
@@ -808,12 +807,12 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                         competitorTrackingHelper
                                 .deleteImageName(imageNameStarts);
                         competitorTrackingHelper.deleteFiles(
-                                AppUtils.photoFolderPath, imageNameStarts);
+                                FileUtils.photoFolderPath, imageNameStarts);
                         dialog.dismiss();
 
                         Intent intent = new Intent(SubCompetitorTrackingActivity.this,
                                 CameraActivity.class);
-                        String _path = AppUtils.photoFolderPath + "/" + imageName;
+                        String _path = FileUtils.photoFolderPath + "/" + imageName;
                         intent.putExtra(
                                 CameraActivity.QUALITY, 40);
                         intent.putExtra(
@@ -872,8 +871,8 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                 competitorTrackingHelper.saveCompetitor();
                 if (!calledBy.equals("3"))
                     bmodel.saveModuleCompletion(HomeScreenTwo.MENU_COMPETITOR);
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException(e);
@@ -930,7 +929,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
              * default - Show current date in date picker dialog
              */
             if (!date.isEmpty())
-                selectionDate = DateUtil.convertStringToDateObject(
+                selectionDate = DateTimeUtils.convertStringToDateObject(
                         date, outPutDateFormat);
 
             Calendar c = Calendar.getInstance();
@@ -951,34 +950,34 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
                     Toast.makeText(getActivity(),
                             R.string.future_date_not_allowed,
                             Toast.LENGTH_SHORT).show();
-                    bo.setFromDate(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    bo.setFromDate(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), outPutDateFormat));
-                    btn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    btn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), outPutDateFormat));
                 } else {
-                    bo.setFromDate(DateUtil.convertDateObjectToRequestedFormat(
+                    bo.setFromDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
-                    btn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    btn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                 }
             } else if (this.getTag().equals("datePicker2")) {
                 if (bo.getFromDate() != null && bo.getFromDate().length() > 0) {
-                    Date dateMfg = DateUtil.convertStringToDateObject(
+                    Date dateMfg = DateTimeUtils.convertStringToDateObject(
                             bo.getFromDate(), outPutDateFormat);
                     if (dateMfg != null && selectedDate.getTime() != null
                             && dateMfg.after(selectedDate.getTime())) {
                         Toast.makeText(getActivity(), R.string.competitor_date,
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        bo.setToDate(DateUtil.convertDateObjectToRequestedFormat(
+                        bo.setToDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), outPutDateFormat));
-                        btn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                        btn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), outPutDateFormat));
                     }
                 } else {
-                    bo.setToDate(DateUtil.convertDateObjectToRequestedFormat(
+                    bo.setToDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
-                    btn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    btn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                 }
             }

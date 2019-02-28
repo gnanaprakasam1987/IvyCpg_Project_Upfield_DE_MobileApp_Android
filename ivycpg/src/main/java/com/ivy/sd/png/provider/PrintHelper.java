@@ -24,9 +24,9 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.cpg.view.collection.CollectionFragmentNew;
+import com.ivy.utils.DateTimeUtils;
 import com.zebra.sdk.printer.PrinterLanguage;
 
 import java.io.File;
@@ -93,7 +93,7 @@ public class PrintHelper {
                 sb.append("T 5 0 10 " + (55 + totalLength));
                 sb.append(" Order No :" + orderHelper.getOrderId().replaceAll("\'", "") + "\r\n");
                 sb.append("T 5 0 350 " + (55 + totalLength));
-                sb.append("Date:" + SDUtil.now(SDUtil.DATE_GLOBAL) + "\r\n");
+                sb.append("Date:" + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL) + "\r\n");
                 sb.append("T 5 0 10 " + (120 + totalLength));
                 if (bmodel.userMasterHelper.getUserMasterBO().getDistributorName() != null) {
                     sb.append(" " + bmodel.userMasterHelper.getUserMasterBO().getDistributorName() + "\r\n");
@@ -824,7 +824,7 @@ public class PrintHelper {
 
 
                     sb.append("T 5 0 200 " + (80 + totalLength));
-                    sb.append("Date:" + DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat) + "\r\n");
+                    sb.append("Date:" + DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat) + "\r\n");
 
 
                     sb.append("T 5 0 10 " + (130 + totalLength));
@@ -1751,8 +1751,8 @@ public class PrintHelper {
 
             String mInvoiceno = bmodel.invoiceNumber;
             String mCustomername = bmodel.getRetailerMasterBO().getRetailerName();
-            String mSalesdate = DateUtil.convertFromServerDateToRequestedFormat(
-                    SDUtil.now(SDUtil.DATE_GLOBAL),
+            String mSalesdate = DateTimeUtils.convertFromServerDateToRequestedFormat(
+                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                     ConfigurationMasterHelper.outDateFormat);
 
             PrinterLanguage printerLanguage = PrinterLanguage.CPCL;

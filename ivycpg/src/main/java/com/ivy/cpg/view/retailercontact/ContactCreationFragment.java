@@ -34,7 +34,8 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
@@ -55,10 +56,10 @@ public class ContactCreationFragment extends IvyBaseFragment {
     private BusinessModel bmodel;
     private ArrayList<ConfigureBO> contactConfig;
 
-    private static String CODE_CONTACTNAME = "CONTACTNAME";
-    private static String CODE_CONTACTNUMBER = "CONTACTNUMBER";
-    private static String CODE_CONTACTPRIMARY = "CONTACTPRIMARY";
-    private static String CODE_CONTACTMAIL = "CONTACTMAIL";
+    private  String CODE_CONTACTNAME = "CONTACTNAME";
+    private  String CODE_CONTACTNUMBER = "CONTACTNUMBER";
+    private  String CODE_CONTACTPRIMARY = "CONTACTPRIMARY";
+    private  String CODE_CONTACTMAIL = "CONTACTMAIL";
     private boolean ISCONTACTNAME, ISCONTACTNO, ISCONTACTPRIMARY, ISCONTACTEMAIL;
     private Unbinder unbinder;
 
@@ -230,7 +231,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                         if (count < bmodel.configurationMasterHelper.RETAILER_CONTACT_COUNT) {
                             retailerContactBo.setStatus("I");
                             retailerContactBo.setCpId("" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                                    + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
                             contactList.add(retailerContactBo);
                         } else
                             showMessage(getActivity().getString(R.string.max_contacts_added));
@@ -246,7 +247,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                     } else {
                         if (contactList.size() < bmodel.configurationMasterHelper.RETAILER_CONTACT_COUNT) {
                             retailerContactBo.setCpId("" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                                    + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
                             contactList.add(retailerContactBo);
                         } else
                             showMessage(getActivity().getString(R.string.max_contacts_added));
@@ -272,7 +273,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setFistname("");
                 else {
-                    if (AppUtils.validRegex(menuMap.get(CODE_CONTACTNAME).getRegex(), s.toString().trim())) {
+                    if (StringUtils.validRegex(menuMap.get(CODE_CONTACTNAME).getRegex(), s.toString().trim())) {
                         etFirstName.setSelection(s.toString().length());
                         retailerContactBo.setFistname(s.toString().trim());
                     } else {
@@ -299,7 +300,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setLastname("");
                 else {
-                    if (AppUtils.validRegex(menuMap.get(CODE_CONTACTNAME).getRegex(), s.toString().trim())) {
+                    if (StringUtils.validRegex(menuMap.get(CODE_CONTACTNAME).getRegex(), s.toString().trim())) {
                         etLastName.setSelection(s.toString().length());
                         retailerContactBo.setLastname(s.toString().trim());
                     } else {
@@ -325,7 +326,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setContactNumber("");
                 else {
-                    if (AppUtils.validRegex(menuMap.get(CODE_CONTACTNUMBER).getRegex(), s.toString().trim())) {
+                    if (StringUtils.validRegex(menuMap.get(CODE_CONTACTNUMBER).getRegex(), s.toString().trim())) {
                         etPhno.setSelection(s.toString().length());
                         retailerContactBo.setContactNumber(s.toString().trim());
                     } else {
@@ -350,7 +351,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setContactMail("");
                 else {
-                    if (AppUtils.validRegex(menuMap.get(CODE_CONTACTMAIL).getRegex(), s.toString().trim())) {
+                    if (StringUtils.validRegex(menuMap.get(CODE_CONTACTMAIL).getRegex(), s.toString().trim())) {
                         etEmail.setSelection(s.toString().length());
                         retailerContactBo.setContactMail(s.toString().trim());
                     } else {
@@ -651,7 +652,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                         etEmail.requestFocus();
                         return false;
                     }
-                    if (!AppUtils.isValidEmail(retailerContactBo.getContactMail())) {
+                    if (!StringUtils.isValidEmail(retailerContactBo.getContactMail())) {
                         showMessage(getActivity().getString(R.string.invalid_email_address));
                         etEmail.requestFocus();
                         return false;

@@ -11,12 +11,11 @@ import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 
@@ -902,7 +901,7 @@ public class ReasonHelper {
                 if (addressSB.length() > 0)
                     addressSB.append(",");
 
-                addressSB.append(AppUtils.QT(addCodes));
+                addressSB.append(StringUtils.QT(addCodes));
                 i = i + 1;
             }
         } else

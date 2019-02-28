@@ -26,11 +26,11 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.network.TLSSocketFactory;
 
@@ -298,7 +298,7 @@ public class UploadHelper {
 
 
             if (businessModel.configurationMasterHelper.SHOW_DATA_UPLOAD_STATUS) {
-                String id = SDUtil.now(SDUtil.DATE_TIME);
+                String id = DateTimeUtils.now(DateTimeUtils.DATE_TIME);
                 Iterator<String> keyItr = jsonObjData.keys();
                 while (keyItr.hasNext()) {
                     String key = keyItr.next();
@@ -342,7 +342,7 @@ public class UploadHelper {
                         .getUserMasterBO().getOrganizationId());
                 jsonFormatter.addParameter("ParentPositionIds", businessModel.getUserParentPosition());
                 if (businessModel.synchronizationHelper.isDayClosed()) {
-                    int varianceDwnDate = SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),
+                    int varianceDwnDate = DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(),
                             "yyyy/MM/dd");
                     if (varianceDwnDate == 0) {
@@ -533,7 +533,7 @@ public class UploadHelper {
         MyjsonarrayPostRequest jsonObjectRequest;
 
         uniqueTransactionID = businessModel.userMasterHelper.getUserMasterBO().getUserid()
-                + SDUtil.now(SDUtil.DATE_TIME_ID);
+                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
 
         try {
@@ -580,7 +580,7 @@ public class UploadHelper {
                     headers.put("Authorization", "OAuth " + access_token);
                     headers.put("Content_Type", "application/json");
                     if (businessModel.synchronizationHelper.isDayClosed()) {
-                        int varianceDwnDate = SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),
+                        int varianceDwnDate = DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(),
                                 "yyyy/MM/dd");
                         if (varianceDwnDate == 0) {
@@ -1454,85 +1454,6 @@ public class UploadHelper {
                         String key = (String) itr.next();
                         if (key.equals("ErrorCode")) {
                             res = jsonObject.getString("ErrorCode");
-                        }
-                    }
-
-
-                }
-            } else {
-                if (!businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    res = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
-                }
-            }
-        } catch (SQLException | JSONException e) {
-            Commons.printException(e);
-        }
-        return res;
-    }
-
-
-    public String updateTermsAccepted() {
-        String res = "";
-        try {
-
-            JSONObject jsonobj = new JSONObject();
-
-            JSONObject jObject = new JSONObject();
-            jObject.put("isTermsAccepted", "1");
-            jsonobj.put("UserMaster", jObject);
-
-
-            JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
-
-            jsonFormatter.addParameter("DeviceId",
-                    DeviceUtils.getIMEINumber(mContext));
-            jsonFormatter.addParameter("LoginId", businessModel.getAppDataProvider()
-                    .getUser().getLoginName());
-            jsonFormatter.addParameter("VersionCode",
-                    businessModel.getApplicationVersionNumber());
-            jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, businessModel.getApplicationVersionName());
-            jsonFormatter.addParameter("DistributorId", businessModel.getAppDataProvider()
-                    .getUser().getDistributorid());
-            jsonFormatter.addParameter("OrganisationId", businessModel.getAppDataProvider()
-                    .getUser().getOrganizationId());
-            jsonFormatter.addParameter("MobileDateTime",
-                    Utils.getDate("yyyy/MM/dd HH:mm:ss"));
-            jsonFormatter.addParameter("MobileUTCDateTime",
-                    Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
-            jsonFormatter.addParameter("UserId", businessModel.getAppDataProvider()
-                    .getUser().getUserid());
-            jsonFormatter.addParameter("VanId", businessModel.getAppDataProvider()
-                    .getUser().getVanId());
-            String LastDayClose = "";
-            if (businessModel.synchronizationHelper.isDayClosed()) {
-                LastDayClose = businessModel.getAppDataProvider().getUser()
-                        .getDownloadDate();
-            }
-            jsonFormatter.addParameter("LastDayClose", LastDayClose);
-            jsonFormatter.addParameter("BranchId", businessModel.getAppDataProvider()
-                    .getUser().getBranchId());
-            jsonFormatter.addParameter("DownloadedDataDate", businessModel.getAppDataProvider()
-                    .getUser().getDownloadDate());
-            jsonFormatter.addParameter("DataValidationKey", businessModel.synchronizationHelper.generateChecksum(jsonobj.toString()));
-            Commons.print(jsonFormatter.getDataInJson());
-            String appendurl = businessModel.synchronizationHelper.getUploadUrl("UPDATEUSER");
-            if (appendurl.length() == 0)
-                return 2 + "";
-            Vector<String> responseVector = businessModel.synchronizationHelper
-                    .getUploadResponse(jsonFormatter.getDataInJson(),
-                            jsonobj.toString(), appendurl);
-
-            if (responseVector.size() > 0) {
-
-
-                for (String s : responseVector) {
-                    JSONObject jsonObject = new JSONObject(s);
-
-                    Iterator itr = jsonObject.keys();
-                    while (itr.hasNext()) {
-                        String key = (String) itr.next();
-                        if (key.equals("Response")) {
-                            res = jsonObject.getString("Response");
                         }
                     }
 

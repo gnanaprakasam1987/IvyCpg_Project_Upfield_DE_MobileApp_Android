@@ -23,6 +23,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -179,6 +180,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private Drawable upArrow;
     private ImageView profileEditBtn;
     private ImageView drawRouteBtn;
+    private ImageView mapSwitchBtn;
     private ProgressBar mapProgressBar;
     private TextView retailerNameTxt, retailerCodeTxt;
     private LinearLayout iconLinearLayout;
@@ -209,6 +211,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     Runnable runnable = null;
 
     String dynamicReportTitle = "";
+
+    String selectedUserId = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -302,8 +306,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             Commons.printException(e);
         }
 
-        if (bmodel.configurationMasterHelper.IS_TEAMLEAD
-                && bmodel.configurationMasterHelper.IS_AUDIT_USER) {
+        if (bmodel.configurationMasterHelper.isAuditEnabled()) {
             mUserByRetailerID = bmodel.getUserByRetailerID();
             registerReceiver();
         }
@@ -352,6 +355,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         profileEditBtn.setOnClickListener(this);
         drawRouteBtn = findViewById(R.id.draw_routeimg_btn);
         drawRouteBtn.setOnClickListener(this);
+        mapSwitchBtn = findViewById(R.id.profile_mapswitch);
+        mapSwitchBtn.setOnClickListener(this);
     }
 
     private void initilizeToolBar() {
@@ -719,6 +724,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 startActivity(i);
                 break;
             }
+            case R.id.profile_mapswitch:
+                mMap.setMapType((mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL) ? GoogleMap.MAP_TYPE_SATELLITE :
+                        GoogleMap.MAP_TYPE_NORMAL);
+                break;
             default:
                 break;
         }
@@ -1580,8 +1589,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private void validationToStartVisit() {
 
         // Downloaded date vs Mobile Date validation.
-        if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd") > 0)
+        if ((DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd") > 0)
                 && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
             Toast.makeText(this,
                     getResources().getString(R.string.next_day_coverage),
@@ -1649,7 +1658,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         // Restrict user to start visit if mock location provider is set.
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            if (bmodel.isMockSettingsON()) {
+            if (isMockSettingsON()) {
                 showMocLocationAlert();
                 return;
             }
@@ -1698,6 +1707,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 SupplierMasterBO supplierBo = mSupplierList.get(0);
                 bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
                 bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
+                bmodel.getRetailerMasterBO().setSupplierTaxLocId(supplierBo.getSupplierTaxLocId());
+                bmodel.getRetailerMasterBO().setRpTypeCode(supplierBo.getRpTypeCode());
                 bmodel.updatePriceGroupId(true);
                 showMessage(getString(R.string.distributor_name) + " "
                         + getString(R.string.selected) + " "
@@ -1733,6 +1744,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                                                 .getItem(which);
                                         bmodel.getRetailerMasterBO().setDistributorId(supplierBo.getSupplierID());
                                         bmodel.getRetailerMasterBO().setDistParentId(supplierBo.getDistParentID());
+                                        bmodel.getRetailerMasterBO().setSupplierTaxLocId(supplierBo.getSupplierTaxLocId());
+                                        bmodel.getRetailerMasterBO().setRpTypeCode(supplierBo.getRpTypeCode());
                                         bmodel.updatePriceGroupId(true);
 
                                         dialog.dismiss();
@@ -1753,6 +1766,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         loadHomeScreenTwo(bmodel.getRetailerMasterBO());
 
     }
+
+    private boolean isMockSettingsON() {
+        // returns true if mock location enabled, false if not enabled.
+        return !Settings.Secure.getString(getContentResolver(),
+                Settings.Secure.ALLOW_MOCK_LOCATION).equals("0");
+    }
+
 
 
     private void showMocLocationAlert() {
@@ -1775,7 +1795,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private void loadHomeScreenTwo(RetailerMasterBO ret) {
 
         // Time count Starts for the retailer
-        if (bmodel.configurationMasterHelper.IS_TEAMLEAD && bmodel.configurationMasterHelper.IS_AUDIT_USER) {
+        if (bmodel.configurationMasterHelper.isAuditEnabled()) {
             bmodel.setRetailerMasterBO(ret);
 
             ArrayList<UserMasterBO> mUserList = mUserByRetailerID.get(ret
@@ -1935,7 +1955,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
 
     private void takePhotoForRetailer() {
-        dateTimeStampForId = SDUtil.now(SDUtil.DATE_TIME_ID);
+        dateTimeStampForId = DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
         bmodel.outletTimeStampHelper.setUid(bmodel.QT("OTS" + dateTimeStampForId));
 
         if (bmodel.synchronizationHelper
@@ -1987,7 +2007,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private boolean validateSequenceSkip(RetailerMasterBO ret) {
         if (!getPreviousRetailerVisitedStatus(ret)) {
             if (ret.getSkipActivatedDate() == null
-                    || !ret.getSkipActivatedDate().equals(SDUtil.now(SDUtil.DATE_GLOBAL))) {
+                    || !ret.getSkipActivatedDate().equals(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))) {
                 if (bmodel.configurationMasterHelper.ret_skip_flag == 1
                         || bmodel.configurationMasterHelper.ret_skip_flag == 2) {
                     callOTPDialog(
@@ -2061,7 +2081,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         try {
             if (ret.getOtpActivatedDate() == null
                     || !ret.getOtpActivatedDate().equals(
-                    SDUtil.now(SDUtil.DATE_GLOBAL))) {
+                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))) {
                 if (ret.getLatitude() == 0 && ret.getLongitude() == 0) {
                     showToastMessage(ret, -1);
                     return false;
@@ -2115,7 +2135,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                bmodel.synchronizationHelper.updateAuthenticateToken(false);
+
+                selectedUserId = bmodel.retailerMasterBO.getSelectedUserID()+"";
+
+                String loginId = bmodel.synchronizationHelper.
+                        getSelectedUserLoginId(bmodel.retailerMasterBO.getSelectedUserID()+"",ProfileActivity.this);
+                bmodel.synchronizationHelper.updateAuthenticateTokenWithoutPassword(loginId);
+
                 bmodel.synchronizationHelper.downloadUserRetailerTranUrl();
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -2141,6 +2167,13 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     bmodel.synchronizationHelper.downloadUserRetailerTranFromUrl(bmodel
                             .getRetailerMasterBO()
                             .getRetailerID());
+                } else {
+                    alertDialog.dismiss();
+                    Toast.makeText(ProfileActivity.this, getResources().getString(R.string.retailer_trans_not_exist), Toast.LENGTH_SHORT).show();
+                    downloadProductsAndPrice = new DownloadProductsAndPrice(ProfileActivity.this, getPhotoPath(), fnameStarts,
+                            mVisitMode, mNFCReasonId, true);
+                    if (downloadProductsAndPrice.getStatus() != AsyncTask.Status.RUNNING)
+                        downloadProductsAndPrice.execute();
                 }
             } else {
                 String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
@@ -2241,8 +2274,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (bmodel.configurationMasterHelper.IS_TEAMLEAD
-                && bmodel.configurationMasterHelper.IS_AUDIT_USER) {
+        if (bmodel.configurationMasterHelper.isAuditEnabled()) {
             unregisterReceiver(receiver);
         }
 
@@ -2269,7 +2301,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             case SynchronizationHelper.USER_RETAILER_TRAN_DOWNLOAD_INSERT:
                 if (errorCode != null && errorCode
                         .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    bmodel.synchronizationHelper.downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.VISIT_SCREEN, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE);
+                    bmodel.synchronizationHelper
+                            .downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.VISIT_SCREEN, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE,selectedUserId);
+                    selectedUserId = "";
                 } else {
                     String errorDownlodCode = bundle
                             .getString(SynchronizationHelper.ERROR_CODE);

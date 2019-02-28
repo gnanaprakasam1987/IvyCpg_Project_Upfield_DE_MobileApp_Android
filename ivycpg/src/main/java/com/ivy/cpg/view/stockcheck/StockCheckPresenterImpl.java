@@ -15,6 +15,8 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -180,8 +182,8 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
         protected void onPostExecute(Boolean result) {
             stockCheckView.dismissAlertDialog();
             if (result == Boolean.TRUE) {
-                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
 
                 stockCheckView.showStockSavedDialog();
             }
@@ -200,7 +202,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
             stockCheckView.showAlert();
             return;
         }
-        if (mSelectedIdByLevelId != null && !businessModel.isMapEmpty(mSelectedIdByLevelId)) {
+        if (mSelectedIdByLevelId != null && !AppUtils.isMapEmpty(mSelectedIdByLevelId)) {
             mCompetitorSelectedIdByLevelId = new HashMap<>();
         }
         ArrayList<ProductMasterBO> stockList = new ArrayList<>();
@@ -855,7 +857,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
 
     public void returnToHome() {
         businessModel.productHelper.clearOrderTable();
-        businessModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME));
+        businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                .now(DateTimeUtils.TIME));
     }
 }

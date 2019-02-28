@@ -7,15 +7,11 @@ import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.IndicativeBO;
-import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -23,11 +19,9 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 
-import static com.ivy.sd.png.provider.ConfigurationMasterHelper.CODE_SHOW_ALL_ROUTE_FILTER;
-import static com.ivy.utils.AppUtils.QT;
+import static com.ivy.utils.StringUtils.QT;
 
 public class AppDataManagerImpl implements AppDataManager {
 

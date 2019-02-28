@@ -254,7 +254,7 @@ public class TLAttendanceActivity extends IvyBaseActivityNoActionBar {
 
                 } else {
 
-                    bmodel.synchronizationHelper.downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.TL_ALLOCATION, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE);
+                        bmodel.synchronizationHelper.downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.TL_ALLOCATION, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE,"");
 
 
                 }

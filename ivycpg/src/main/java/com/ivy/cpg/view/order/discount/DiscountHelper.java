@@ -14,7 +14,8 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -856,7 +857,7 @@ public class DiscountHelper {
             StringBuffer sb = new StringBuffer();
             sb.append("select Percentage,DiscountTypeID from PayTermDiscount ");
             sb.append("where Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID());
-            sb.append(" and " + businessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " between FromDate and ToDate");
+            sb.append(" and " + businessModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " between FromDate and ToDate");
             c = db.selectSQL(sb.toString());
 
             if (c != null) {
@@ -1314,7 +1315,7 @@ public class DiscountHelper {
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select typeid,discountType,sum(Value) from OrderDiscountDetail" +
-                    " where orderid="+ AppUtils.QT(orderId)+"  group by typeid");
+                    " where orderid="+ StringUtils.QT(orderId)+"  group by typeid");
             Cursor c = db.selectSQL(sb.toString());
             while (c.moveToNext()){
                 mDiscountsApplied.put(c.getString(1),c.getDouble(2));

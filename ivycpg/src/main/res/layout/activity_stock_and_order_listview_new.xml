@@ -27,13 +27,13 @@
                 style="@style/TextViewListItemPrimary"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_marginRight="@dimen/list_margin"
-                android:layout_toLeftOf="@+id/img_view_layout"
                 android:layout_toStartOf="@+id/img_view_layout"
+                android:layout_toLeftOf="@+id/img_view_layout"
                 android:maxLines="1"
                 android:text="@string/product_name" />
 
@@ -77,11 +77,12 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/stock_and_order_listview_productname"
                 android:layout_gravity="end|center"
-                android:layout_marginBottom="-2dp"
-                android:layout_marginRight="@dimen/dimens_4dp"
                 android:layout_marginTop="@dimen/dimens_6dp"
+                android:layout_marginRight="@dimen/dimens_4dp"
+                android:layout_marginBottom="-2dp"
                 android:gravity="start|center"
                 android:maxLines="1"
+                android:tag="pcode"
                 android:text="@string/prod_code"
                 android:textSize="@dimen/text_size_secondary"
                 android:visibility="visible" />
@@ -93,8 +94,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/stock_and_order_listview_productname"
                 android:layout_gravity="end|center"
-                android:layout_marginBottom="-2dp"
                 android:layout_marginTop="@dimen/dimens_6dp"
+                android:layout_marginBottom="-2dp"
                 android:layout_toEndOf="@+id/stock_and_order_listview_productcode"
                 android:layout_toRightOf="@+id/stock_and_order_listview_productcode"
                 android:gravity="start|center"
@@ -111,87 +112,37 @@
             android:orientation="horizontal"
             android:padding="3dp">
 
-            <LinearLayout
-                android:id="@+id/llAllocation"
+
+            <TextView
+                android:id="@+id/stock_and_order_listview_allocation"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/margin_5px"
                 android:layout_marginStart="@dimen/margin_5px"
-                android:orientation="horizontal"
-                android:visibility="gone">
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:maxLines="1"
+                android:tag="allocation"
+                android:text="@string/allocation" />
 
-                <TextView
-                    android:id="@+id/allocationTitle"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:maxLines="1"
-                    android:tag="allocation"
-                    android:text="@string/allocation" />
 
-                <TextView
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/dimen_1dp"
-                    android:maxLines="1"
-                    android:text=":" />
-
-                <TextView
-                    android:id="@+id/stock_and_order_listview_allocation"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/zero" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llSrp"
+            <TextView
+                android:id="@+id/stock_and_order_listview_srp"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginLeft="@dimen/margin_5px"
                 android:layout_marginStart="@dimen/margin_5px"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/srpTitle"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:maxLines="1"
-                    android:tag="srp"
-                    android:text="@string/srp" />
-
-                <TextView
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/dimen_1dp"
-                    android:maxLines="1"
-                    android:text=":" />
-
-                <TextView
-                    android:id="@+id/stock_and_order_listview_srp"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/zero" />
-            </LinearLayout>
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:maxLines="1"
+                android:tag="srp"
+                android:text="@string/srp" />
 
             <TextView
                 android:id="@+id/stock_and_order_listview_ppq"
                 style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_5px"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:maxLines="1"
                 android:tag="ppq"
                 android:text="@string/ou" />
@@ -201,8 +152,8 @@
                 style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_5px"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:maxLines="1"
                 android:text="@string/mrp" />
 
@@ -211,8 +162,8 @@
                 style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_5px"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:maxLines="1"
                 android:tag="msq"
                 android:text="@string/msq"
@@ -223,468 +174,179 @@
                 style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_5px"
                 android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
                 android:maxLines="1"
                 android:tag="psq"
                 android:text="@string/psq"
                 android:visibility="gone" />
 
-
-            <LinearLayout
-                android:id="@+id/llmoq"
+            <TextView
+                android:id="@+id/stock_and_order_listview_sr_tv"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
+                android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
-                android:orientation="horizontal">
+                android:maxLines="1"
+                android:tag="sales_return"
+                android:text="@string/sr"
+                android:visibility="gone" />
 
-                <TextView
-                    android:id="@+id/moqTitle"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:tag="moq"
-                    android:text="@string/moq" />
 
-                <TextView
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_1dp"
-                    android:layout_marginRight="@dimen/dimen_1dp"
-                    android:maxLines="1"
-                    android:text=":" />
-
-                <TextView
-                    android:id="@+id/stock_and_order_listview_moq"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/zero" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llwsih"
+            <TextView
+                android:id="@+id/stock_and_order_listview_moq"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/outlet_left_margin"
+                android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:maxLines="1"
+                android:tag="moq"
+                android:text="@string/moq"
+                android:visibility="gone" />
+
+
+            <TextView
+                android:id="@+id/stock_and_order_listview_wsih"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/outlet_left_margin"
-                android:orientation="horizontal">
+                android:layout_marginLeft="@dimen/outlet_left_margin"
+                android:maxLines="1"
+                android:tag="dist_inv"
+                android:text="@string/dist_inv" />
 
-                <TextView
-                    android:id="@+id/wsihTitle"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:tag="dist_inv"
-                    android:text="@string/dist_inv" />
 
-                <TextView
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/dimen_1dp"
-                    android:maxLines="1"
-                    android:text=":" />
-
-                <TextView
-                    android:id="@+id/stock_and_order_listview_wsih"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/zero" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llsihcase"
+            <TextView
+                android:id="@+id/stock_and_order_listview_sih_case"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_5px"
                 android:layout_marginStart="@dimen/margin_5px"
-                android:orientation="horizontal">
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:maxLines="1"
+                android:tag="sih_case"
+                android:text="@string/sih_case" />
 
-                <TextView
-                    android:id="@+id/sihCaseTitle"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:tag="sih_case"
-                    android:text="@string/sih_case" />
 
-                <TextView
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/dimen_1dp"
-                    android:maxLines="1"
-                    android:text=":" />
-
-                <TextView
-                    android:id="@+id/stock_and_order_listview_sih_case"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/zero" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llsihouter"
+            <TextView
+                android:id="@+id/stock_and_order_listview_sih_outer"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_5px"
                 android:layout_marginStart="@dimen/margin_5px"
-                android:orientation="horizontal">
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:maxLines="1"
+                android:tag="sih_outer"
+                android:text="@string/sih_outer" />
 
-                <TextView
-                    android:id="@+id/sihOuterTitle"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:tag="sih_outer"
-                    android:text="@string/sih_outer" />
 
-                <TextView
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/dimen_1dp"
-                    android:maxLines="1"
-                    android:text=":" />
-
-                <TextView
-                    android:id="@+id/stock_and_order_listview_sih_outer"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/zero" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llSihPc"
+            <TextView
+                android:id="@+id/stock_and_order_listview_sih"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_5px"
                 android:layout_marginStart="@dimen/margin_5px"
-                android:orientation="horizontal">
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:maxLines="1"
+                android:tag="sih_piece"
+                android:text="@string/sih" />
 
-                <TextView
-                    android:id="@+id/sihTitle"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:tag="sih_piece"
-                    android:text="@string/sih" />
 
-                <TextView
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/dimen_1dp"
-                    android:maxLines="1"
-                    android:text=":" />
-
-                <TextView
-                    android:id="@+id/stock_and_order_listview_sih"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/zero" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llIo"
+            <TextView
+                android:id="@+id/indicativeOrder_oc"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_5px"
                 android:layout_marginStart="@dimen/margin_5px"
-                android:orientation="horizontal">
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:maxLines="1"
+                android:tag="io_case"
+                android:text="@string/io" />
 
-                <TextView
-                    android:id="@+id/io_oc_Title"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:tag="io_case"
-                    android:text="@string/io" />
-
-                <TextView
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/dimen_1dp"
-                    android:maxLines="1"
-                    android:text=":" />
-
-                <TextView
-                    android:id="@+id/indicativeOrder_oc"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/zero" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llCo"
+            <TextView
+                android:id="@+id/cleanedOrder_oc"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_5px"
                 android:layout_marginStart="@dimen/margin_5px"
-                android:orientation="horizontal">
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:maxLines="1"
+                android:tag="co_case"
+                android:text="@string/co" />
 
-                <TextView
-                    android:id="@+id/co_oc_Title"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:tag="co_case"
-                    android:text="@string/co" />
 
-                <TextView
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/dimen_1dp"
-                    android:maxLines="1"
-                    android:text=":" />
-
-                <TextView
-                    android:id="@+id/cleanedOrder_oc"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/zero" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llSoc"
+            <TextView
+                android:id="@+id/stock_and_order_listview_socs"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_5px"
                 android:layout_marginStart="@dimen/margin_5px"
-                android:orientation="horizontal">
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:maxLines="1"
+                android:tag="so_case"
+                android:text="@string/so_case" />
 
-                <TextView
-                    android:id="@+id/soCaseTitle"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:tag="so_case"
-                    android:text="@string/so_case" />
 
-                <TextView
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/dimen_1dp"
-                    android:maxLines="1"
-                    android:text=":" />
-
-                <TextView
-                    android:id="@+id/stock_and_order_listview_socs"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/zero" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llSo"
+            <TextView
+                android:id="@+id/stock_and_order_listview_so"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_5px"
                 android:layout_marginStart="@dimen/margin_5px"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/soTitle"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:tag="so_piece"
-                    android:text="@string/so" />
-
-                <TextView
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/dimen_1dp"
-                    android:maxLines="1"
-                    android:text=":" />
-
-                <TextView
-                    android:id="@+id/stock_and_order_listview_so"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/zero" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llRepCase"
-                android:layout_width="@dimen/values_editextWidth"
-                android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_5px"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:orientation="horizontal">
+                android:maxLines="1"
+                android:tag="so_piece"
+                android:text="@string/so" />
 
-                <TextView
-                    android:id="@+id/rep_caseTitle"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:tag="item_sr_case"
-                    android:text="@string/rep_case" />
 
-                <TextView
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/dimen_1dp"
-                    android:maxLines="1"
-                    android:text=":" />
-
-                <TextView
-                    android:id="@+id/rep_case"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/zero" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llRepOu"
-                android:layout_width="@dimen/values_editextWidth"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/rep_outerTitle"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:tag="item_sr_outer"
-                    android:text="@string/rep_outer" />
-
-                <TextView
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/dimen_1dp"
-                    android:maxLines="1"
-                    android:text=":" />
-
-                <TextView
-                    android:id="@+id/rep_outer"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/zero" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/llRepPc"
-                android:layout_width="@dimen/values_editextWidth"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_5px"
-                android:layout_marginStart="@dimen/margin_5px"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/rep_pcsTitle"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:tag="item_sr_piece"
-                    android:text="@string/rep_pcs" />
-
-                <TextView
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/dimen_1dp"
-                    android:maxLines="1"
-                    android:text=":" />
-
-                <TextView
-                    android:id="@+id/rep_pcs"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/zero" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/layout_stock"
+            <TextView
+                android:id="@+id/rep_case"
+                style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/margin_5px"
                 android:layout_marginStart="@dimen/margin_5px"
-                android:orientation="horizontal">
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:maxLines="1"
+                android:tag="item_sr_case"
+                android:text="@string/rep_case" />
 
-                <TextView
-                    android:id="@+id/text_stock_title"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:tag="item_sr_piece"
-                    android:text="@string/stock" />
 
-                <TextView
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dimen_1dp"
-                    android:layout_marginStart="@dimen/dimen_1dp"
-                    android:maxLines="1"
-                    android:text=":" />
+            <TextView
+                android:id="@+id/rep_outer"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:maxLines="1"
+                android:tag="item_sr_outer"
+                android:text="@string/rep_outer" />
 
-                <TextView
-                    android:id="@+id/text_stock"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:maxLines="1"
-                    android:text="@string/zero" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/rep_pcs"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:maxLines="1"
+                android:tag="item_sr_piece"
+                android:text="@string/rep_pcs" />
+
+
+            <TextView
+                android:id="@+id/text_stock"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/margin_5px"
+                android:layout_marginLeft="@dimen/margin_5px"
+                android:maxLines="1"
+                android:tag="item_sr_piece"
+                android:text="@string/zero" />
 
         </LinearLayout>
 
@@ -704,10 +366,10 @@
                 android:id="@+id/lleditLaouyt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:layout_toLeftOf="@+id/lltotwight"
+                android:layout_alignParentLeft="true"
                 android:layout_toStartOf="@+id/lltotwight"
+                android:layout_toLeftOf="@+id/lltotwight"
                 android:background="@color/white"
                 android:orientation="horizontal">
 
@@ -724,8 +386,8 @@
                         style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:tag="avail_title"
                         android:maxLines="1"
+                        android:tag="avail_title"
                         android:text="@string/avail" />
 
                     <android.support.v7.widget.AppCompatCheckBox
@@ -1021,10 +683,10 @@
                 android:id="@+id/lltotwight"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_alignTop="@+id/lleditLaouyt"
                 android:layout_alignBottom="@+id/lleditLaouyt"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignTop="@+id/lleditLaouyt"
                 android:layout_marginEnd="@dimen/list_margin"
                 android:layout_marginRight="@dimen/list_margin"
                 android:gravity="top"

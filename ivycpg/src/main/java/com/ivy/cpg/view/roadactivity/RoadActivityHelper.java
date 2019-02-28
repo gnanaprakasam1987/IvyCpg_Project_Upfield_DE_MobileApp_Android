@@ -6,10 +6,10 @@ import android.database.Cursor;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -244,7 +244,7 @@ public class RoadActivityHelper {
             db.createDataBase();
             db.openDataBase();
             String uid = bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
-                    .getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID));
+                    .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
             String headerValues = uid + "," + TypeId + "," + PId + "," + LocationId + ","
                     + bmodel.QT(Remarks);
             String detailValues = "";
@@ -325,7 +325,7 @@ public class RoadActivityHelper {
         boolean hasonlyOne = false;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         db.openDataBase();
-        Cursor c = db.selectSQL("select uid  from RoadActivityTransactiondetail where imgname = " + bmodel.QT("RoadActivity" + "/" + SDUtil.now(SDUtil.DATE_GLOBAL_PLAIN)
+        Cursor c = db.selectSQL("select uid  from RoadActivityTransactiondetail where imgname = " + bmodel.QT("RoadActivity" + "/" + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_PLAIN)
                 + "/" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                 + "/" + imgName) + " and Upload = 'N'");
         if (c != null) {

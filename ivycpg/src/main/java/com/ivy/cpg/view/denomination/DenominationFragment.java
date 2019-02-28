@@ -18,11 +18,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.NewOutletAttributeBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.StringUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
@@ -33,7 +32,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 import io.reactivex.Observable;
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -240,7 +238,7 @@ public class DenominationFragment extends IvyBaseFragment {
                     totalValues = 0;
                     for (Integer key : editTextHashMap.keySet()) {
                         String values = getDynamicEditTextValues(key);
-                        if (!AppUtils.isEmptyString(values)) {
+                        if (!StringUtils.isEmptyString(values)) {
                             double temp = Double.valueOf(denominationInputValues.get(key).getDenominationDisplayNameValues());
                             totalValues = totalValues + (Double.valueOf(values) * temp);
                             if (totalValues <= Double.valueOf(initialTotalAmount)) {
@@ -273,7 +271,7 @@ public class DenominationFragment extends IvyBaseFragment {
                 totalValues = 0;
                 for (Integer key : editTextHashMap.keySet()) {
                     String values = getDynamicEditTextValues(key);
-                    if (!AppUtils.isEmptyString(values)) {
+                    if (!StringUtils.isEmptyString(values)) {
                         double temp = Double.valueOf(denominationInputValues.get(key).getDenominationDisplayNameValues());
                         totalValues = totalValues + (Double.valueOf(values) * temp);
                         if (totalValues <= Double.valueOf(initialTotalAmount)) {
@@ -301,7 +299,7 @@ public class DenominationFragment extends IvyBaseFragment {
 
             String count = getDynamicEditTextValues(key);
 
-            if (!AppUtils.isEmptyString(count)) {
+            if (!StringUtils.isEmptyString(count)) {
 
                 double temp = Double.valueOf(denominationInputValues.get(key).getDenominationDisplayNameValues());
 
@@ -324,7 +322,7 @@ public class DenominationFragment extends IvyBaseFragment {
         ArrayList<DenominationBO> denominationList = new ArrayList<>();
         for (Integer key : editTextHashMap.keySet()) {
             String count = getDynamicEditTextValues(key);
-            if (!AppUtils.isEmptyString(count)) {
+            if (!StringUtils.isEmptyString(count)) {
                 DenominationBO denominationBO = new DenominationBO();
                 denominationBO.setDenomintionId(denominationInputValues.get(key).getDenomintionId());
                 denominationBO.setDenominationDisplayName(denominationInputValues.get(key).getDenominationDisplayName());

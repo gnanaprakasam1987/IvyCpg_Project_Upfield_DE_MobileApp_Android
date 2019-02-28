@@ -24,19 +24,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.ivy.core.IvyConstants;
+import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -196,23 +196,20 @@ public class AssetAdapter extends BaseAdapter {
                 @Override
                 public void onClick(View view) {
 
-                    if (holder.assetBO.getAudit() == 2) {
+                    if (holder.assetBO.getAudit() == IvyConstants.AUDIT_DEFAULT) {
 
-                        holder.assetBO.setAudit(1);
-                        holder.audit
-                                .setImageResource(R.drawable.ic_audit_yes);
+                        holder.assetBO.setAudit(IvyConstants.AUDIT_OK);
+                        holder.audit.setImageResource(R.drawable.ic_audit_yes);
 
-                    } else if (holder.assetBO.getAudit() == 1) {
+                    } else if (holder.assetBO.getAudit() == IvyConstants.AUDIT_OK) {
 
-                        holder.assetBO.setAudit(0);
-                        holder.audit
-                                .setImageResource(R.drawable.ic_audit_no);
+                        holder.assetBO.setAudit(IvyConstants.AUDIT_NOT_OK);
+                        holder.audit.setImageResource(R.drawable.ic_audit_no);
 
-                    } else if (holder.assetBO.getAudit() == 0) {
+                    } else if (holder.assetBO.getAudit() == IvyConstants.AUDIT_NOT_OK) {
 
-                        holder.assetBO.setAudit(2);
-                        holder.audit
-                                .setImageResource(R.drawable.ic_audit_none);
+                        holder.assetBO.setAudit(IvyConstants.AUDIT_DEFAULT);
+                        holder.audit.setImageResource(R.drawable.ic_audit_none);
                     }
 
                 }
@@ -326,7 +323,7 @@ public class AssetAdapter extends BaseAdapter {
                         mAssetPresenter.mSelectedImageName = imageName;
                         mAssetPresenter.mSelectedSerial = holder.assetBO.getSerialNo();
 
-                        String _path = AppUtils.photoFolderPath + "/" + mAssetPresenter.mSelectedImageName;
+                        String _path = FileUtils.photoFolderPath + "/" + mAssetPresenter.mSelectedImageName;
                         mBModel.getPhotosTakeninCurrentAssetTracking().put(mAssetPresenter.mSelectedAssetID +"", _path);
 
                         boolean nFilesThere = mBModel.checkForNFilesInFolder(photoPath, 1,
@@ -391,10 +388,10 @@ public class AssetAdapter extends BaseAdapter {
                         holder.mConditionSpin.setSelection(0);
                         holder.mInstallDate.setEnabled(false);
                         holder.mServiceDate.setEnabled(false);
-                        holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                        holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                        holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                        holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                        holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                        holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                        holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                        holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
 
                     }
 
@@ -416,17 +413,21 @@ public class AssetAdapter extends BaseAdapter {
                 }
             });
 
+            if (mBModel.configurationMasterHelper.isAuditEnabled()) {
+                holder.audit.setVisibility(View.VISIBLE);
+            }
+
         } else {
             holder = (ViewHolder) row.getTag();
         }
 
         holder.assetBO = items.get(position);
 
-        if (holder.assetBO.getAudit() == 2)
+        if (holder.assetBO.getAudit() == IvyConstants.AUDIT_DEFAULT)
             holder.audit.setImageResource(R.drawable.ic_audit_none);
-        else if (holder.assetBO.getAudit() == 1)
+        else if (holder.assetBO.getAudit() == IvyConstants.AUDIT_OK)
             holder.audit.setImageResource(R.drawable.ic_audit_yes);
-        else if (holder.assetBO.getAudit() == 0)
+        else if (holder.assetBO.getAudit() == IvyConstants.AUDIT_NOT_OK)
             holder.audit.setImageResource(R.drawable.ic_audit_no);
 
         holder.assetNameTV.setText(holder.assetBO.getAssetName());
@@ -439,15 +440,15 @@ public class AssetAdapter extends BaseAdapter {
         holder.serialNoTV.setText(serialNo);
 
         holder.mInstallDate
-                .setText((holder.assetBO.getInstallDate() == null) ? DateUtil
+                .setText((holder.assetBO.getInstallDate() == null) ? DateTimeUtils
                         .convertFromServerDateToRequestedFormat(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 outPutDateFormat) : holder.assetBO
                         .getInstallDate());
         holder.mServiceDate
-                .setText((holder.assetBO.getServiceDate() == null) ? DateUtil
+                .setText((holder.assetBO.getServiceDate() == null) ? DateTimeUtils
                         .convertFromServerDateToRequestedFormat(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 outPutDateFormat) : holder.assetBO
                         .getServiceDate());
         holder.grpTV.setText(holder.assetBO.getGroupLevelName());
@@ -483,10 +484,10 @@ public class AssetAdapter extends BaseAdapter {
             holder.mServiceDate.setEnabled(false);
             holder.assetBO.setImageName("");
             holder.assetBO.setImgName("");
-            holder.assetBO.setInstallDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-            holder.assetBO.setServiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-            holder.mInstallDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-            holder.mServiceDate.setText(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+            holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+            holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+            holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+            holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
 
         }
 
@@ -568,6 +569,15 @@ public class AssetAdapter extends BaseAdapter {
 //                holder.assetBO.getAvailQty() == 1);
 //        holder.availQtyRB.setEnabled((assetTrackingHelper.SHOW_ASSET_BARCODE && holder.assetBO.getSerialNo().equals(""))
 //                || holder.assetBO.getNFCTagId().isEmpty());
+
+        if (mBModel.configurationMasterHelper.isAuditEnabled()){
+            holder.reason1Spin.setEnabled(false);
+            holder.photoBTN.setEnabled(false);
+            holder.mConditionSpin.setEnabled(false);
+            holder.mInstallDate.setEnabled(false);
+            holder.mServiceDate.setEnabled(false);
+            holder.availQtyRB.setEnabled(false);
+        }
 
         return row;
     }
@@ -668,15 +678,15 @@ public class AssetAdapter extends BaseAdapter {
                 Toast.makeText(mContext,
                         R.string.future_date_not_allowed,
                         Toast.LENGTH_SHORT).show();
-                bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
+                bo.setInstallDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                         Calendar.getInstance().getTime(), outPutDateFormat));
-                dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                dateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                         .getInstance().getTime(), outPutDateFormat));
             } else {
 
-                bo.setInstallDate(DateUtil.convertDateObjectToRequestedFormat(
+                bo.setInstallDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                         selectedDate.getTime(), outPutDateFormat));
-                dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                dateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                         selectedDate.getTime(), outPutDateFormat));
             }
 
@@ -684,7 +694,7 @@ public class AssetAdapter extends BaseAdapter {
 
             if (bo.getInstallDate() != null
                     && bo.getInstallDate().length() > 0) {
-                Date mInstallDate = DateUtil.convertStringToDateObject(
+                Date mInstallDate = DateTimeUtils.convertStringToDateObject(
                         bo.getInstallDate(), outPutDateFormat);
                 if (mInstallDate != null && selectedDate.getTime() != null
                         && mInstallDate.after(selectedDate.getTime())) {
@@ -695,21 +705,21 @@ public class AssetAdapter extends BaseAdapter {
                     Toast.makeText(mContext,
                             R.string.future_date_not_allowed,
                             Toast.LENGTH_SHORT).show();
-                    bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
+                    bo.setServiceDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                             Calendar.getInstance().getTime(), outPutDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    dateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), outPutDateFormat));
                 } else {
-                    bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
+                    bo.setServiceDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    dateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                 }
             } else {
 
-                bo.setServiceDate(DateUtil.convertDateObjectToRequestedFormat(
+                bo.setServiceDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                         selectedDate.getTime(), outPutDateFormat));
-                dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                dateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                         selectedDate.getTime(), outPutDateFormat));
             }
         }

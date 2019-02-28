@@ -54,6 +54,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="start"
                 android:maxLines="2"
+                android:tag="asset_serialno"
                 android:text="@string/serial_no" />
         </LinearLayout>
 

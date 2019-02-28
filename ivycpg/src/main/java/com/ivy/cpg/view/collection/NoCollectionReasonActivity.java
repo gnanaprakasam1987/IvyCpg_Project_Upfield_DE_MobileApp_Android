@@ -21,11 +21,11 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -98,7 +98,7 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
 
 
                     String id = bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                            + SDUtil.now(SDUtil.DATE_TIME_ID);
+                            + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
                     String uid = bmodel.QT(id);
 
                     String columns = "", values;
@@ -109,7 +109,7 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
                         columns = "Date,SubmittedDate,RetailerId,uid,DistributorId,ParentDistributorId";
 
                         values = bmodel.QT(invoiceHeaderBO.getInvoiceDate()) + "," +
-                                bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," +
+                                bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," +
                                 bmodel.QT(invoiceHeaderBO.getRetailerId()) + "," +
                                 uid + "," +
                                 bmodel.getRetailerMasterBO().getDistributorId() + "," +

@@ -8,8 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -33,6 +31,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -46,6 +45,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -290,8 +290,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 if (isFromChild)
                     startActivity(new Intent(getActivity(), HomeScreenTwo.class)
                             .putExtra("isStoreMenu", true));
@@ -424,35 +424,32 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                     @Override
                     public void onClick(View view) {
 
-                        if (holder.mSKUBO.getLocations()
-                                .get(mNearExpiryHelper.mSelectedLocationIndex).getAudit() == 2) {
+                        if (holder.mSKUBO.getLocations().get(mNearExpiryHelper.mSelectedLocationIndex).getAudit()
+                                == IvyConstants.AUDIT_DEFAULT) {
 
-                            holder.mSKUBO.getLocations()
-                                    .get(mNearExpiryHelper.mSelectedLocationIndex).setAudit(1);
-                            holder.audit
-                                    .setImageResource(R.drawable.ic_audit_yes);
+                            holder.mSKUBO.getLocations().get(mNearExpiryHelper.mSelectedLocationIndex)
+                                    .setAudit(IvyConstants.AUDIT_OK);
+                            holder.audit.setImageResource(R.drawable.ic_audit_yes);
 
-                        } else if (holder.mSKUBO.getLocations()
-                                .get(mNearExpiryHelper.mSelectedLocationIndex).getAudit() == 1) {
+                        } else if (holder.mSKUBO.getLocations().get(mNearExpiryHelper.mSelectedLocationIndex).getAudit()
+                                == IvyConstants.AUDIT_OK) {
 
-                            holder.mSKUBO.getLocations()
-                                    .get(mNearExpiryHelper.mSelectedLocationIndex).setAudit(0);
-                            holder.audit
-                                    .setImageResource(R.drawable.ic_audit_no);
+                            holder.mSKUBO.getLocations().get(mNearExpiryHelper.mSelectedLocationIndex)
+                                    .setAudit(IvyConstants.AUDIT_NOT_OK);
+                            holder.audit.setImageResource(R.drawable.ic_audit_no);
 
-                        } else if (holder.mSKUBO.getLocations()
-                                .get(mNearExpiryHelper.mSelectedLocationIndex).getAudit() == 0) {
+                        } else if (holder.mSKUBO.getLocations().get(mNearExpiryHelper.mSelectedLocationIndex).getAudit()
+                                == IvyConstants.AUDIT_NOT_OK) {
 
-                            holder.mSKUBO.getLocations()
-                                    .get(mNearExpiryHelper.mSelectedLocationIndex).setAudit(2);
-                            holder.audit
-                                    .setImageResource(R.drawable.ic_audit_none);
+                            holder.mSKUBO.getLocations().get(mNearExpiryHelper.mSelectedLocationIndex)
+                                    .setAudit(IvyConstants.AUDIT_DEFAULT);
+                            holder.audit.setImageResource(R.drawable.ic_audit_none);
                         }
 
                     }
                 });
 
-                if (mBModel.configurationMasterHelper.IS_TEAMLEAD && mBModel.configurationMasterHelper.IS_AUDIT_USER) {
+                if (mBModel.configurationMasterHelper.isAuditEnabled()) {
                     holder.audit.setVisibility(View.VISIBLE);
 
                 }
@@ -486,13 +483,13 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
 
             if (holder.mSKUBO.getLocations()
-                    .get(mNearExpiryHelper.mSelectedLocationIndex).getAudit() == 2)
+                    .get(mNearExpiryHelper.mSelectedLocationIndex).getAudit() == IvyConstants.AUDIT_DEFAULT)
                 holder.audit.setImageResource(R.drawable.ic_audit_none);
             else if (holder.mSKUBO.getLocations()
-                    .get(mNearExpiryHelper.mSelectedLocationIndex).getAudit() == 1)
+                    .get(mNearExpiryHelper.mSelectedLocationIndex).getAudit() == IvyConstants.AUDIT_OK)
                 holder.audit.setImageResource(R.drawable.ic_audit_yes);
             else if (holder.mSKUBO.getLocations()
-                    .get(mNearExpiryHelper.mSelectedLocationIndex).getAudit() == 0)
+                    .get(mNearExpiryHelper.mSelectedLocationIndex).getAudit() == IvyConstants.AUDIT_NOT_OK)
                 holder.audit.setImageResource(R.drawable.ic_audit_no);
 
             if (holder.mSKUBO.getBarCode() == null
@@ -583,8 +580,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             try {
                 mNearExpiryHelper.saveSKUTracking(getActivity().getApplicationContext());
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_NEAREXPIRY);
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
 
                 return Boolean.TRUE;
             } catch (Exception e) {

@@ -30,8 +30,8 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -311,9 +311,9 @@ public class NonFieldHomeFragment extends IvyBaseFragment {
             }
 
             holder.nonFieldBO = nonFieldList.get(position);
-            holder.tvFromDatae.setText(DateUtil.convertFromServerDateToRequestedFormat(holder.nonFieldBO.getFrmDate(),
+            holder.tvFromDatae.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.nonFieldBO.getFrmDate(),
                     ConfigurationMasterHelper.outDateFormat));
-            holder.tvToDate.setText(DateUtil.convertFromServerDateToRequestedFormat(holder.nonFieldBO.getToDate(),
+            holder.tvToDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.nonFieldBO.getToDate(),
                     ConfigurationMasterHelper.outDateFormat));
             holder.tvSession.setText(nonFieldHelper
                     .getSessionBOBySessionID(holder.nonFieldBO.getsessionID()));

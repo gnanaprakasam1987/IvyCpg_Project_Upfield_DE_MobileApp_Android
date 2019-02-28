@@ -4,14 +4,15 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
+import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -79,7 +80,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
 
     @Override
     public void updateTimeStamp() {
-        mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+        mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
     }
 
     @Override
@@ -218,7 +219,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
                         }
                     }
                 } else if (mAttributeProducts == null && mProductId != 0) {// product filter alone selected
-                    if (mSelectedIdByLevelId.size() == 0 || mBModel.isMapEmpty(mSelectedIdByLevelId)) {
+                    if (mSelectedIdByLevelId.size() == 0 || AppUtils.isMapEmpty(mSelectedIdByLevelId)) {
                         mAssetList.addAll(mAssetTrackingList);
                     } else {
                         for (AssetTrackingBO assetBO : mAssetTrackingList) {
@@ -331,7 +332,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
      */
     private void deleteFiles(String filename) {
 
-        File folder = new File(AppUtils.photoFolderPath + "/");
+        File folder = new File(FileUtils.photoFolderPath + "/");
         File[] files = folder.listFiles();
         for (File tempFile : files) {
             if (tempFile != null && tempFile.getName().equals(filename)) {

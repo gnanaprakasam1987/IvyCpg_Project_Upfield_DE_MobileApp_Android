@@ -31,6 +31,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.dashboard.SellerDashboardConstants;
 import com.ivy.ui.dashboard.SellerDashboardContract;
 import com.ivy.ui.dashboard.data.SellerDashboardDataManager;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.rx.Optional;
 import com.ivy.utils.rx.SchedulerProvider;
 
@@ -45,7 +46,6 @@ import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableObserver;
 
@@ -146,8 +146,8 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
 
     @Override
     public void updateTimeStampModuleWise() {
-        getCompositeDisposable().add(mOutletTimeStampDataManager.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME))
+        getCompositeDisposable().add(mOutletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils
+                .now(DateTimeUtils.TIME))
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(aBoolean -> {

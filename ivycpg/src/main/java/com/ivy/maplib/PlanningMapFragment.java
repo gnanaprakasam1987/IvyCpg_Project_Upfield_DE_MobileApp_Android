@@ -120,7 +120,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
     private int retRadius = 10;
     private boolean isLocationUpdated = false;
     ImageView visitView;
-    FloatingActionButton fab1, fab2, fab3;
+    FloatingActionButton fab1, fab2, fab3, fab4;
     private LinearLayout bottomLayout;
     private Marker rmarker;
     private Map<String, String> mRetailerProp;
@@ -197,6 +197,7 @@ public class PlanningMapFragment extends SupportMapFragment implements
         fab1 = (FloatingActionButton) rootView.findViewById(R.id.fab);
         fab2 = (FloatingActionButton) rootView.findViewById(R.id.fab2);
         fab3 = (FloatingActionButton) rootView.findViewById(R.id.fab3);
+        fab4 = rootView.findViewById(R.id.fab4);
         cardView = (CardView) rootView.findViewById(R.id.card_view);
         cardView1 = (CardView) rootView.findViewById(R.id.card_view1);
         carDirBtn = (ImageButton) rootView.findViewById(R.id.car_direction);
@@ -407,6 +408,13 @@ public class PlanningMapFragment extends SupportMapFragment implements
             @Override
             public void onClick(View v) {
                 nearByRetailerDialog();
+            }
+        });
+        fab4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mMap.setMapType((mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL) ? GoogleMap.MAP_TYPE_SATELLITE :
+                        GoogleMap.MAP_TYPE_NORMAL);
             }
         });
 

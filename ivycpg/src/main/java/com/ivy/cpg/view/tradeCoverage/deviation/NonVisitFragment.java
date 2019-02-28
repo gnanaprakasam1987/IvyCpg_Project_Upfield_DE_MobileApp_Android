@@ -5,11 +5,9 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -34,7 +32,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.cpg.view.tradeCoverage.deviation.PlanningActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.DateWisePlanBO;
@@ -42,7 +39,6 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
@@ -50,6 +46,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.PlanningVisitActivity;
 import com.ivy.cpg.view.profile.CommonReasonDialog;
 import com.ivy.cpg.view.profile.ProfileActivity;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -471,7 +468,7 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
 
                     if (plannedDateList != null) {
                         for (DateWisePlanBO dateWisePlanBO : plannedDateList) {
-                            int result = SDUtil.compareDate(date,
+                            int result = DateTimeUtils.compareDate(date,
                                     dateWisePlanBO.getDate(), "yyyy/MM/dd");
                             if (result == 0) {
                                 if (searchStr != null) {

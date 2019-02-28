@@ -13,10 +13,10 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.TaskAssignBO;
 import com.ivy.sd.png.bo.TeamLeadBO;
 import com.ivy.sd.png.bo.UserMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -279,10 +279,10 @@ public class TeamLeaderMasterHelper {
                     if(assignedTaskList!=null) {
                         String tid = QT("TL"
                                 + bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                                + SDUtil.now(SDUtil.DATE_TIME_ID));
+                                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
                         headerBuffer=new StringBuffer();
                         headerBuffer.append(tid+","+bmodel.userMasterHelper.getUserMasterBO().getUserid()+",");
-                        headerBuffer.append(presentid+","+ bmodel.QT(SDUtil.now(SDUtil.DATE)));
+                        headerBuffer.append(presentid+","+ bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE)));
                         headerBuffer.append(","+bmodel.QT(Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")));
 
                         db.insertSQL(DataMembers.tbl_ReallocationHeader,DataMembers.tbl_ReallocationHeader_Cols,headerBuffer.toString());

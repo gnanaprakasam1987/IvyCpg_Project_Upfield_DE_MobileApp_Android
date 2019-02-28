@@ -52,13 +52,13 @@ public class RemoveSerializedAssetActivity extends IvyBaseActivityNoActionBar {
         assetTrackingHelper = SerializedAssetHelper.getInstance(this);
 
 
-        mListView = (ListView) findViewById(R.id.lv_assetlist);
+        mListView = findViewById(R.id.lv_assetlist);
         mListView.setCacheColorHint(0);
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        btnDelete = (Button) findViewById(R.id.btn_delete);
+        btnDelete = findViewById(R.id.btn_delete);
         btnDelete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -196,13 +196,13 @@ public class RemoveSerializedAssetActivity extends IvyBaseActivityNoActionBar {
                 row = inflater
                         .inflate(R.layout.row_asset_dailog, parent, false);
                 holder = new ViewHolder();
-                holder.tvAssetName = (TextView) row
+                holder.tvAssetName = row
                         .findViewById(R.id.tv_lt_assetname);
-                holder.tvSNO = (TextView) row.findViewById(R.id.tv_lt_sno);
-                holder.tvInstall = (TextView) row
+                holder.tvSNO = row.findViewById(R.id.tv_lt_sno);
+                holder.tvInstall = row
                         .findViewById(R.id.tv_lt_install);
-                holder.chkRemove = (CheckBox) row.findViewById(R.id.chk);
-                holder.SPRemove = (Spinner) row.findViewById(R.id.sp_remove_reason);
+                holder.chkRemove = row.findViewById(R.id.chk);
+                holder.SPRemove = row.findViewById(R.id.sp_remove_reason);
                 holder.SPRemove.setEnabled(false);
                 holder.chkRemove.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
@@ -248,8 +248,48 @@ public class RemoveSerializedAssetActivity extends IvyBaseActivityNoActionBar {
             holder.tvInstall.setText(holder.productObj.getNewInstallDate());
 
             String mSno = getResources().getString(
-                    R.string.serial_no)
-                    + ":" + holder.productObj.getSNO();
+                    R.string.serial_no);
+
+            if (bModel.labelsMasterHelper
+                    .applyLabels((Object) "asset_serialno") != null)
+                mSno = bModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_serialno");
+
+            mSno = mSno +  " : " + holder.productObj.getSNO();
+
+            String strLabel;
+            if (assetTrackingHelper.SHOW_ASSET_VENDOR) {
+                strLabel = getResources().getString(R.string.vendor);
+                if (bModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_vendor") != null)
+                    strLabel = bModel.labelsMasterHelper
+                            .applyLabels((Object) "asset_vendor");
+                mSno = mSno + "   " + strLabel + " : " + holder.productObj.getVendorName();
+            }
+            if (assetTrackingHelper.SHOW_ASSET_MODEL) {
+                strLabel = getResources().getString(R.string.model);
+                if (bModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_model") != null)
+                    strLabel = bModel.labelsMasterHelper
+                            .applyLabels((Object) "asset_model");
+                mSno = mSno + "   " + strLabel + " : " + holder.productObj.getModelName();
+            }
+            if (assetTrackingHelper.SHOW_ASSET_TYPE) {
+                strLabel = getResources().getString(R.string.type);
+                if (bModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_type") != null)
+                    strLabel = bModel.labelsMasterHelper
+                            .applyLabels((Object) "asset_type");
+                mSno = mSno + "   " + strLabel + " : " + holder.productObj.getAssetType();
+            }
+            if (assetTrackingHelper.SHOW_ASSET_CAPACITY) {
+                strLabel = getResources().getString(R.string.capacity);
+                if (bModel.labelsMasterHelper
+                        .applyLabels((Object) "asset_capacity") != null)
+                    strLabel = bModel.labelsMasterHelper
+                            .applyLabels((Object) "asset_capacity");
+                mSno = mSno + "   " + strLabel + " : " + holder.productObj.getCapacity();
+            }
             holder.tvSNO.setText(mSno);
 
             TypedArray mTypedArray = RemoveSerializedAssetActivity.this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);

@@ -22,6 +22,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 
 /**
  * Created by rajkumar.s on 4/25/2017.
@@ -188,8 +189,8 @@ public class SOSSummaryActivity_PRJSpecific extends IvyBaseActivityNoActionBar i
             try {
                 mSFHelper.saveSOS_PRJSpecific_Transaction();
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOS_PROJ);
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException(e + "");

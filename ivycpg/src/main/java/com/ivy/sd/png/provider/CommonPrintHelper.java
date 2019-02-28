@@ -3,7 +3,6 @@ package com.ivy.sd.png.provider;
 import android.content.Context;
 import android.os.Environment;
 import android.text.TextPaint;
-import android.util.SparseArray;
 
 import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.order.OrderHelper;
@@ -20,15 +19,13 @@ import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.StockReportBO;
-import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.sd.png.commons.NumberToWord;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.DateTimeUtils;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
@@ -153,6 +150,7 @@ public class CommonPrintHelper {
     private static String TAG_PRODUCT_SUM_QTY_PIECE_WITH_REP = "prod_qty_total_piece_with_rep";
 
     private static String TAG_PRODUCT_LINE_TOTAL = "line_total";
+    private static String TAG_PRODUCT_LINE_EXCLUDING_TAX_TOTAL = "line_excl_tax_total";
     private static String TAG_PRODUCT_LINE_TOTAL_WITH_QTY = "line_total_with_qty";
     private static String TAG_PRODUCT_LINE_TOTAL_QTY = "total_qty";
 
@@ -191,6 +189,7 @@ public class CommonPrintHelper {
     private static String TAG_PRODUCT_EMPTY_BOTTLE_STOCK = "prod_estock";
     private static String TAG_PRODUCT_RETURN_STOCK = "prod_return_stock";
     private static String TAG_PRODUCT_REP_STOCK = "prod_replaced_stock";
+    private static String TAG_PRODUCT_NON_SALABLE = "prod_nonsalable_stock";
 
     private int mLoadStockTotal;
     private int mSoldStockTotal;
@@ -199,6 +198,7 @@ public class CommonPrintHelper {
     private int mEmptyStockTotal;
     private int mReturnStockTotal;
     private int mRepStockTotal;
+    private int mNonSalableTotal;
     //
 
     private HashMap<String, String> mKeyValues;
@@ -407,6 +407,7 @@ public class CommonPrintHelper {
                                     && !attr_name.contains("tax_bill")
                                     && !attr_name.contains("empty_total")
                                     && !attr_name.contains("line_total")
+                                    && !attr_name.contains("line_excl_tax_total")
                                     && !attr_name.contains("net_amount")
                                     && !attr_name.contains("net_scheme_discount")
                                     && !attr_name.contains("amount_word")
@@ -700,14 +701,14 @@ public class CommonPrintHelper {
                 value = label;
             }
         } else if (tag.equalsIgnoreCase(TAG_DATE)) {
-            value = label + DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL),
+            value = label + DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                     bmodel.configurationMasterHelper.outDateFormat);
         } else if (tag.equalsIgnoreCase(TAG_TIME)) {
-            value = label + SDUtil.now(SDUtil.TIME);
+            value = label + DateTimeUtils.now(DateTimeUtils.TIME);
         } else if (tag.equalsIgnoreCase(TAG_DELIVERY_DATE)) {
             String deliveryDate = bmodel.getDeliveryDate(OrderHelper.getInstance(context).selectedOrderId, bmodel.getRetailerMasterBO().getRetailerID());
             if (!deliveryDate.equals("")) {
-                String delDate = DateUtil.convertFromServerDateToRequestedFormat(deliveryDate, bmodel.configurationMasterHelper.outDateFormat);
+                String delDate = DateTimeUtils.convertFromServerDateToRequestedFormat(deliveryDate, bmodel.configurationMasterHelper.outDateFormat);
                 value = label + delDate;
             }
         } else if (tag.equalsIgnoreCase(TAG_INVOICE_NUMBER)) {
@@ -804,6 +805,10 @@ public class CommonPrintHelper {
             int extraSpace = 0;
             extraSpace = SDUtil.convertToInt(attr_space_str);
             value = alignWithLabelForSingleLine(label, formatValueInPrint(total_line_value_incl_tax, precisionCount), extraSpace);
+        } else if (tag.equalsIgnoreCase(TAG_PRODUCT_LINE_EXCLUDING_TAX_TOTAL)) {
+            int extraSpace = 0;
+            extraSpace = SDUtil.convertToInt(attr_space_str);
+            value = alignWithLabelForSingleLine(label, formatSalesValueInPrint(mProductLineValueExcludingTaxTotal, precisionCount), extraSpace);
         } else if (tag.equalsIgnoreCase(TAG_PRODUCT_LINE_TOTAL_WITH_QTY)) {
             value = getTotalWithQty(label, product_name_single_line);
         } else if (tag.equalsIgnoreCase(TAG_NET_PAYABLE)) {
@@ -888,6 +893,8 @@ public class CommonPrintHelper {
                 mProductValue = mReturnStockTotal + "";
             } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_REP_STOCK)) {
                 mProductValue = mRepStockTotal + "";
+            } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NON_SALABLE)) {
+                mProductValue = mNonSalableTotal + "";
             }
 
 
@@ -2237,6 +2244,7 @@ public class CommonPrintHelper {
         mEmptyStockTotal = 0;
         mReturnStockTotal = 0;
         mRepStockTotal = 0;
+        mNonSalableTotal = 0;
     }
 
     private String formatValueInPrint(double value, int precision) {
@@ -2399,6 +2407,7 @@ public class CommonPrintHelper {
         mEmptyStockTotal = 0;
         mReturnStockTotal = 0;
         mRepStockTotal = 0;
+        mNonSalableTotal = 0;
 
         sb.append("\n");
         String mProductValue;
@@ -2414,8 +2423,16 @@ public class CommonPrintHelper {
                     if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
                         mProductValue = (prod.getProductShortName() != null ? prod.getProductShortName() : prod.getProductName());
                     } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LOADING_STOCK)) {
-                        mProductValue = prod.getVanLoadQty() + "";
-                        mLoadStockTotal += prod.getVanLoadQty();
+                        int vanloadQty = 0;
+                        if (bmodel.configurationMasterHelper.IS_EOD_STOCK_SPLIT) {
+                            vanloadQty = (prod.getVanLoadQty_cs() * prod.getCaseSize()
+                                    + prod.getVanLoadQty_ou() * prod.getOuterSize()
+                                    + prod.getVanLoadQty_pc());
+                        } else {
+                            vanloadQty = prod.getVanLoadQty();
+                        }
+                        mProductValue = String.valueOf(vanloadQty);
+                        mLoadStockTotal += vanloadQty;
                     } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_SOLD_STOCK)) {
                         mProductValue = prod.getSoldQty() + "";
                         mSoldStockTotal += prod.getSoldQty();
@@ -2434,6 +2451,9 @@ public class CommonPrintHelper {
                     } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_REP_STOCK)) {
                         mProductValue = prod.getReplacementQty() + "";
                         mRepStockTotal += prod.getReplacementQty();
+                    } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NON_SALABLE)) {
+                        mProductValue = prod.getNonSalableQty() + "";
+                        mNonSalableTotal += prod.getNonSalableQty();
                     }
 
 

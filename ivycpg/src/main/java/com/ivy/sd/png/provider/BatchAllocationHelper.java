@@ -102,7 +102,13 @@ public class BatchAllocationHelper {
             if (!bmodel.configurationMasterHelper.IS_APPLY_BATCH_PRICE_FROM_PRODUCT)
                 sb.append("BM.batchid=Price.batchid AND ");
 
-            sb.append(" BM.pid = PM.pid group by BM.batchid order by PM.pid,BM.MfgDate asc");
+
+            sb.append(" BM.pid = PM.pid group by BM.batchid");
+
+            if (bmodel.configurationMasterHelper.IS_ORD_BY_BATCH_EXPIRY_DATE_WISE)
+                sb.append(" Order By PM.pid,BM.ExpDate asc");
+            else
+                sb.append(" Order By PM.pid,BM.MfgDate asc");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -499,11 +505,14 @@ public class BatchAllocationHelper {
                     currentStockinhand = product.getSIH() - totalQty;
                 }
 
+                schemeProductBatchBO.setBatchid(SDUtil.convertToInt(product
+                        .getBatchid()));
                 //If stock not enough to give free then remaining quantity will be given from next batch
                 if (currentStockinhand < pieceQty) {
                     // stock not enough
                     schemeProductBatchBO.setQty(currentStockinhand);
                     pieceQty = pieceQty - currentStockinhand;
+                    schemeProductBatchList.add(schemeProductBatchBO);
                 } else {
                     // stock available
                     if (productBo.getCaseUomId() == schemeProductBO.getUomID()) {
@@ -519,13 +528,11 @@ public class BatchAllocationHelper {
                         schemeProductBatchBO.setQty(pieceQty);
                         pieceQty = 0;
                     }
-
+                    schemeProductBatchList.add(schemeProductBatchBO);
                     //Breaking loop as all free qty delivered
                     break;
                 }
-                schemeProductBatchBO.setBatchid(SDUtil.convertToInt(product
-                        .getBatchid()));
-                schemeProductBatchList.add(schemeProductBatchBO);
+
 
             }
             schemeProductBO.setBatchWiseQty(schemeProductBatchList);

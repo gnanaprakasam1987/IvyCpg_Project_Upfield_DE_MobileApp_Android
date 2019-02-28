@@ -64,6 +64,7 @@ import com.ivy.cpg.view.collection.CollectionScreen;
 import com.ivy.sd.png.view.EmailDialog;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -265,8 +266,8 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                 } else if (isFromCollection) {
                     CollectionHelper.getInstance(CommonPrintPreviewActivity.this).downloadCollectionMethods();
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), "MENU_COLLECTION");
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), "MENU_COLLECTION");
 
                     Intent intent = new Intent(CommonPrintPreviewActivity.this,
                             CollectionScreen.class);
@@ -1308,8 +1309,8 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         } else if (isFromCollection) {
             CollectionHelper.getInstance(CommonPrintPreviewActivity.this).downloadCollectionMethods();
             bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                    SDUtil.now(SDUtil.DATE_GLOBAL),
-                    SDUtil.now(SDUtil.TIME), "MENU_COLLECTION");
+                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                    DateTimeUtils.now(DateTimeUtils.TIME), "MENU_COLLECTION");
 
             Intent intent = new Intent(CommonPrintPreviewActivity.this,
                     CollectionScreen.class);

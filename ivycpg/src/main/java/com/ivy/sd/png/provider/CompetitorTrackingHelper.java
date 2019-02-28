@@ -8,13 +8,11 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.CompanyBO;
 import com.ivy.sd.png.bo.CompetetorPOSMBO;
 import com.ivy.sd.png.bo.CompetitorBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -233,12 +231,12 @@ public class CompetitorTrackingHelper {
 
             String competitorReturnID = "CT"
                     + bmodel.getAppDataProvider().getUser().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             Cursor orderDetailCursor = db.selectSQL("select tid from "
                     + DataMembers.tbl_CompetitorHeader + " where retailerid="
                     + QT(bmodel.retailerMasterBO.getRetailerID())
-                    + " and date= " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + " and date= " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " and upload!= 'Y'");
 
             if (orderDetailCursor.getCount() > 0) {
@@ -276,7 +274,7 @@ public class CompetitorTrackingHelper {
                     String values = QT(competitorReturnID + "-"
                             + competitor.getCompetitorpid())
                             + ","
-                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                             + ","
                             + QT(bmodel.retailerMasterBO.getRetailerID())
                             + ","
@@ -286,7 +284,7 @@ public class CompetitorTrackingHelper {
                             + ","
                             + QT(competitor.getImagePath())
                             + ","
-                            + QT(bmodel.getTimeZone())
+                            + QT(DateTimeUtils.getTimeZone())
                             + ","
                             + competitor.getCompetitorpid()
                             + ","
@@ -320,12 +318,12 @@ public class CompetitorTrackingHelper {
                                 + QT(bmodel.getAppDataProvider().getRetailMaster()
                                 .getRetailerID())
                                 + ","
-                                + QT(DateUtil
+                                + QT(DateTimeUtils
                                 .convertToServerDateFormat(
                                         temp.getFromDate(),
                                         ConfigurationMasterHelper.outDateFormat))
                                 + ","
-                                + QT(DateUtil
+                                + QT(DateTimeUtils
                                 .convertToServerDateFormat(
                                         temp.getToDate(),
                                         ConfigurationMasterHelper.outDateFormat))
@@ -373,7 +371,7 @@ public class CompetitorTrackingHelper {
                     + " where retailerid = "
                     + QT(bmodel.getRetailerMasterBO().getRetailerID())
                     + " and date="
-                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " and upload!= 'Y'";
 
             Cursor orderHeaderCursor = db.selectSQL(sql);
@@ -440,10 +438,10 @@ public class CompetitorTrackingHelper {
                 for (CompetetorPOSMBO temp : trackinglist) {
                     if (temp.getId() == trackingid) {
                         temp.setExecuted(true);
-                        temp.setFromDate(DateUtil.convertFromServerDateToRequestedFormat(
+                        temp.setFromDate(DateTimeUtils.convertFromServerDateToRequestedFormat(
                                 fromDate,
                                 bmodel.configurationMasterHelper.outDateFormat));
-                        temp.setToDate(DateUtil.convertFromServerDateToRequestedFormat(
+                        temp.setToDate(DateTimeUtils.convertFromServerDateToRequestedFormat(
                                 toDate,
                                 bmodel.configurationMasterHelper.outDateFormat));
                         temp.setFeedBack(feedback);
@@ -548,7 +546,7 @@ public class CompetitorTrackingHelper {
     public boolean getNoOfImages() {
         try {
 
-            File f = new File(AppUtils.photoFolderPath);
+            File f = new File(FileUtils.photoFolderPath);
             int count = 0;
             if (f.listFiles() != null) {
                 String fnames[] = f.list();

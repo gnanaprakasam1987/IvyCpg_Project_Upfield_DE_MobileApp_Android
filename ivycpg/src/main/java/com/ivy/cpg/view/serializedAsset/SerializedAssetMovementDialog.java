@@ -25,12 +25,11 @@ import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.MyDialogCloseListener;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -54,6 +53,9 @@ public class SerializedAssetMovementDialog extends DialogFragment {
     private final SerializedAssetBO assetBo = new SerializedAssetBO();
     SerializedAssetHelper assetTrackingHelper;
     private String movementType="RTR_WH";
+
+    ArrayList<String> mRetailerNameList = new ArrayList<>();
+    ArrayList<String> mRetailerIdList = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -110,7 +112,13 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         //brand=getArguments().getString("brand");
         assetId=getArguments().getInt("assetId");
         referenceId=getArguments().getInt("referenceId");
-        String mSerialNumber=getString(R.string.serial_no) + ": " + serialNo;
+        String mSerialNo = getString(R.string.serial_no);
+        if (mBModel.labelsMasterHelper.applyLabels(view.findViewById(
+                R.id.input_movement_serialNo).getTag()) != null)
+            mSerialNo = mBModel.labelsMasterHelper
+                    .applyLabels(view.findViewById(
+                            R.id.input_movement_serialNo).getTag());
+        String mSerialNumber = mSerialNo + ": " + serialNo;
         TVSerialNo.setText(mSerialNumber);
         TVOutletName.setText(retailerName);
         TVAssetName.setText(assetName);
@@ -149,8 +157,8 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         retailerMasterBOs = mBModel.downloadRetailerMasterData();
         retailerMasterBOs.add(0, retailer);
 
-        ArrayList<String> mRetailerNameList = new ArrayList<>();
-        ArrayList<String> mRetailerIdList = new ArrayList<>();
+        mRetailerNameList = new ArrayList<>();
+        mRetailerIdList = new ArrayList<>();
         for (int i = 0; i < retailerMasterBOs.size(); i++) {
             if(!retailerMasterBOs.get(i).getMovRetailerId().equals(mBModel.getRetailerMasterBO().getRetailerID())) {
                 mRetailerNameList.add(retailerMasterBOs.get(i).getMovRetailerName());
@@ -170,10 +178,9 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         autoCompleteToOutletName.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                retailerSelected=position;
-                toRetailerId=mRetailerIdList.get(position);
-
-                if(position>0)
+                int selectedPosition = mRetailerNameList.indexOf((String) adapterView.getItemAtPosition(position));
+                toRetailerId=mRetailerIdList.get(selectedPosition);
+                if(selectedPosition>0)
                     movementType="RTR_RTR";
                 else movementType="RTR_WH";
             }
@@ -197,7 +204,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
     }
 
     private void saveFunction() {
-        if (validateDesc() && validateDestination())
+        if (validateDestinationData() && validateDesc() && validateDestination())
             //if (SpToOutletName.getSelectedItemPosition() != 0 && retailerSelected>0) {
                 if (SpReason.getSelectedItemPosition() != 0) {
 
@@ -217,8 +224,8 @@ public class SerializedAssetMovementDialog extends DialogFragment {
     }
     private void setAddAssetDetails() {
 
-        String todayDate = DateUtil.convertFromServerDateToRequestedFormat(
-                SDUtil.now(SDUtil.DATE_GLOBAL),
+        String todayDate = DateTimeUtils.convertFromServerDateToRequestedFormat(
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
         String remarks=ETDesc.getText().toString().trim();
 
@@ -251,6 +258,15 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         return true;
     }
 
+    private boolean validateDestinationData() {
+        String toOutletString = autoCompleteToOutletName.getText().toString().trim();
+        if (toOutletString.isEmpty() || !mRetailerNameList.contains(toOutletString)) {
+            Toast.makeText(mBModel, getString(R.string.select_valid_destination), Toast.LENGTH_SHORT).show();
+            requestFocus(autoCompleteToOutletName);
+            return false;
+        }
+        return true;
+    }
 
     private void requestFocus(View view) {
         if (view.requestFocus()) {

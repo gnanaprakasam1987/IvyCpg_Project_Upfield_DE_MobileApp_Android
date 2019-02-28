@@ -24,7 +24,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -468,8 +468,8 @@ public class CreditNotePrintPreviewScreen extends IvyBaseActivityNoActionBar {
                 Printitem += "T 5 0 350 230 "
                         + getResources().getString(R.string.date)
                         + ":"
-                        + DateUtil.convertFromServerDateToRequestedFormat(
-                        SDUtil.now(SDUtil.DATE_GLOBAL),
+                        + DateTimeUtils.convertFromServerDateToRequestedFormat(
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                         bmodel.configurationMasterHelper.outDateFormat)
                         + "\r\n";
 

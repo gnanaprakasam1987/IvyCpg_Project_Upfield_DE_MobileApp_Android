@@ -206,6 +206,7 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
 
     private void setMap(){
         if (mMap != null) {
+            mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
             mMap.setMyLocationEnabled(true);
             if (mMarkerParentView != null &&
                     mMarkerParentView.findViewById(SDUtil.convertToInt("1")) != null) {

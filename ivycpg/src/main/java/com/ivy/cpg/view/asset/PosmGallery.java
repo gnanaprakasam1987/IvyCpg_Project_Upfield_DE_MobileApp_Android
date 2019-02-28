@@ -26,7 +26,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -86,7 +86,7 @@ public class PosmGallery extends IvyBaseActivityNoActionBar {
 
         assetTrackingHelper = AssetTrackingHelper.getInstance(this);
 
-        photoNamePath = AppUtils.photoFolderPath + "/";
+        photoNamePath = FileUtils.photoFolderPath + "/";
 
 
         loadData();
