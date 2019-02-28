@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.Vector;
 
 /**
  * Created by mansoor on 03/10/2018
@@ -331,56 +332,26 @@ public class StockCheckHelper {
         return false;
     }
 
-    public boolean isReasonSelectedForAllProducts() {
-
-        int siz = bmodel.productHelper.getProductMaster().size();
-        if (siz == 0)
-            return false;
-        for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = bmodel.productHelper
-                    .getProductMaster().get(i);
-
-            int siz1 = product.getLocations().size();
-            for (int j = 0; j < siz1; j++) {
-                if (product.getIsFocusBrand() == 1 || product.getIsFocusBrand() == 2) {
-                    if ((SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() == -1)
-                            && (SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() == -1)
-                            && (SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() == -1)
-                            && (SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() == 0)
-                            && product.getLocations().get(j).getReasonId() == 0)
-                        return false;
-                }
-            }
-        }
-        return true;
-    }
-
     boolean isReasonSelectedForAllProducts(boolean isCombinedStock) {
 
-        int siz = 0;
+        Vector<ProductMasterBO> productList = new Vector<>();
         if (isCombinedStock)
-            siz = bmodel.productHelper.getTaggedProducts().size();
+            productList = bmodel.productHelper.getTaggedProducts();
         else
-            siz = bmodel.productHelper.getProductMaster().size();
+            productList = bmodel.productHelper.getProductMaster();
 
-        if (siz == 0)
+        if (productList.size() == 0)
             return false;
 
-        for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product;
-            if (isCombinedStock)
-                product = bmodel.productHelper.getTaggedProducts().get(i);
-            else
-                product = bmodel.productHelper
-                        .getProductMaster().get(i);
+        for (ProductMasterBO productMasterBO : productList) {
 
-            int siz1 = product.getLocations().size();
+            int siz1 = productMasterBO.getLocations().size();
             for (int j = 0; j < siz1; j++) {
-                if ((SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() == 0)
-                        && (SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() == 0)
-                        && (SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() == 0)
-                        && (SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() == 0)
-                        && product.getLocations().get(j).getReasonId() == 0)
+                if ((SHOW_STOCK_SP && productMasterBO.getLocations().get(j).getShelfPiece() == 0)
+                        && (SHOW_STOCK_SC && productMasterBO.getLocations().get(j).getShelfCase() == 0)
+                        && (SHOW_SHELF_OUTER && productMasterBO.getLocations().get(j).getShelfOuter() == 0)
+                        && (SHOW_STOCK_CB && productMasterBO.getLocations().get(j).getAvailability() == 0)
+                        && productMasterBO.getLocations().get(j).getReasonId() == 0)
                     return false;
             }
         }

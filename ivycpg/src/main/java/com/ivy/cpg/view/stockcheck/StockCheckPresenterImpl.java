@@ -85,7 +85,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
 
     public void saveClosingStock(ArrayList<ProductMasterBO> stockList) {
         if (stockCheckHelper.hasStockCheck()) {
-            if (!businessModel.configurationMasterHelper.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS || stockCheckHelper.isReasonSelectedForAllProducts()) {
+            if (!businessModel.configurationMasterHelper.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS || stockCheckHelper.isReasonSelectedForAllProducts(false)) {
                 new SaveClosingStockAsyncTask(stockList).execute();
             } else {
                 stockCheckView.savePromptMessage(1, "");
