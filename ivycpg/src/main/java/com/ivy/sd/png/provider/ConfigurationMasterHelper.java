@@ -4226,17 +4226,23 @@ public class ConfigurationMasterHelper {
             }
             if (codeValue != null && !codeValue.equals("")) {
                 String codeSplit[] = codeValue.split(",");
-                if (codeSplit[0] != null && !codeSplit[0].equals(""))
-                    DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = SDUtil.convertToInt(codeSplit[0]);
-                if (codeSplit[1] != null && !codeSplit[1].equals(""))
-                    MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[1]);
-                if (codeSplit[2] != null && !codeSplit[2].equals(""))
-                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[2]);
-                if (DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER < MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER) {
-                    MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER;
-                }
-                if (DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER > MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER) {
-                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER;
+                if(codeSplit.length==3) {
+                    if (codeSplit[0] != null && !codeSplit[0].equals(""))
+                        DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = SDUtil.convertToInt(codeSplit[0]);
+                    if (codeSplit[1] != null && !codeSplit[1].equals(""))
+                        MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[1]);
+                    if (codeSplit[2] != null && !codeSplit[2].equals(""))
+                        MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[2]);
+                    if (DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER < MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER) {
+                        MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER;
+                    }
+                    if (DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER > MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER) {
+                        MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER;
+                    }
+                } else {
+                    DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 1;
+                    MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 1;
+                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 1;
                 }
             }
 
