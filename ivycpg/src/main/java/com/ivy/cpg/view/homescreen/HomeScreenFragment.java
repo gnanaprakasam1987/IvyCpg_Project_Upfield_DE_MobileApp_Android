@@ -1953,6 +1953,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putString("Newplanningsub", "");
                 fragment = new VisitFragment();
                 fragment.setArguments(bndl);
+                ((VisitFragment) fragment).setMapViewListener(this);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_PLANNING);
                 break;

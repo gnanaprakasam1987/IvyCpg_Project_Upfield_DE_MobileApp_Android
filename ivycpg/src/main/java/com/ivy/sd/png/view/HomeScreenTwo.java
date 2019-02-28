@@ -2167,31 +2167,22 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } else if (menu.getConfigCode().equals(MENU_TASK) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
-            ) {
+                    ) {
                 if (!isClick) {
                     isClick = true;
                     // finish();
-                    if (TaskHelper.getInstance(this).getTaskData(bmodel.getRetailerMasterBO().getRetailerID()).size() > 0) {
-                        bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_TASK);
-                        bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                                DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
-                        Intent intent = new Intent(getApplicationContext(),
-                                Task.class);
-                        intent.putExtra("CurrentActivityCode", menu.getConfigCode());
-                        intent.putExtra("IsRetailerwisetask", true);
-                        intent.putExtra("screentitle", menu.getMenuName());
+                    bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_TASK);
+                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
+                    Intent intent = new Intent(getApplicationContext(),
+                            Task.class);
+                    intent.putExtra("CurrentActivityCode", menu.getConfigCode());
+                    intent.putExtra("IsRetailerwisetask", true);
+                    intent.putExtra("screentitle", menu.getMenuName());
 
-                        startActivity(intent);
-                        isCreated = false;
-                    } else {
-                        dataNotMapped();
-                        isClick = false;
-                        isCreated = false;
-                        menuCode = (menuCodeList.get(menu.getConfigCode()) == null ? "" : menuCodeList.get(menu.getConfigCode()));
-                        if (!menuCode.equals(menu.getConfigCode()))
-                            menuCodeList.put(menu.getConfigCode(), menu.getConfigCode());
-                    }
+                    startActivity(intent);
+                    isCreated = false;
                 }
             } else {
                 Toast.makeText(

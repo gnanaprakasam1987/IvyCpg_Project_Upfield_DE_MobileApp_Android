@@ -290,45 +290,44 @@ public class TaxGstHelper implements TaxInterface {
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
-            sb.append("select taxType,taxRate,taxName,parentType,taxValue,pid from "+tableName+" IT" +
-                    " where orderid="+mBusinessModel.QT(orderId)+"  order by taxType,taxRate,taxName desc");
+            sb.append("select taxType,taxRate,taxName,parentType,taxValue,pid from " + tableName + " IT" +
+                    " where orderid="+orderId+"  order by taxType,taxRate,taxName desc");
             Cursor c = db.selectSQL(sb.toString());
             String lastTaxType="",lastTaxRate="",lastTaxName="";
             double totalTaxByType=0,totalTaxableAmountByType=0;
             ArrayList<String> uniqueTaxTypeWithRate=new ArrayList<>();
-            if(c.getCount()>0) {
-                while (c.moveToNext()) {
+            while (c.moveToNext()){
 
-                    String taxType = c.getString(0);
-                    String taxRate = c.getString(1);
-                    String taxName = c.getString(2);
-                    double taxAmount = c.getDouble(4);
-                    double taxableAmount = mBusinessModel.productHelper.getProductMasterBOById(c.getString(5)).getTaxableAmount();
+                String taxType=c.getString(0);
+                String taxRate=c.getString(1);
+                String taxName = c.getString(2);
+                double taxAmount=c.getDouble(4);
+                double taxableAmount=mBusinessModel.productHelper.getProductMasterBOById(c.getString(5)).getTaxableAmount();
 
-                    if (!lastTaxType.equals("") && (!lastTaxType.equals(taxType) || !lastTaxRate.equals(taxRate))) {
+                if(!lastTaxType.equals("") && (!lastTaxType.equals(taxType) || !lastTaxRate.equals(taxRate))){
 
-                        if (!uniqueTaxTypeWithRate.contains(lastTaxType + lastTaxRate)) {
-                            mTaxesApplied.put(lastTaxName + " " + lastTaxRate + "% " + context.getResources().getString(R.string.tax_on) + " " + SDUtil.format(totalTaxableAmountByType, mBusinessModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0), totalTaxByType);
-                            uniqueTaxTypeWithRate.add(lastTaxType + lastTaxRate);
-                        }
-
-                        totalTaxByType = taxAmount;
-                        totalTaxableAmountByType = taxableAmount;
-
-                    } else {
-                        totalTaxByType += taxAmount;
-                        totalTaxableAmountByType += taxableAmount;
+                    if (!uniqueTaxTypeWithRate.contains(lastTaxType + lastTaxRate)) {
+                        mTaxesApplied.put(lastTaxName + " " + lastTaxRate + "% " + context.getResources().getString(R.string.tax_on) + " " + totalTaxableAmountByType, totalTaxByType);
+                        uniqueTaxTypeWithRate.add(lastTaxType + lastTaxRate);
                     }
 
-                    //
-                    lastTaxName = taxName;
-                    lastTaxRate = taxRate;
-                    lastTaxType = taxType;
+                    totalTaxByType=taxAmount;
+                    totalTaxableAmountByType=taxableAmount;
 
                 }
-                if (!uniqueTaxTypeWithRate.contains(lastTaxType + lastTaxRate)) {
-                    mTaxesApplied.put(lastTaxName + " " + lastTaxRate + "% " + context.getResources().getString(R.string.tax_on) + " " + SDUtil.format(totalTaxableAmountByType, mBusinessModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0), totalTaxByType);
+                else {
+                    totalTaxByType+=taxAmount;
+                    totalTaxableAmountByType+=taxableAmount;
                 }
+
+                //
+                lastTaxName=taxName;
+                lastTaxRate=taxRate;
+                lastTaxType=taxType;
+
+            }
+            if (!uniqueTaxTypeWithRate.contains(lastTaxType + lastTaxRate)) {
+                mTaxesApplied.put(lastTaxName + " " + lastTaxRate + "% " + context.getResources().getString(R.string.tax_on) + " " + SDUtil.format(totalTaxableAmountByType, mBusinessModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0), totalTaxByType);
             }
         }
         catch (Exception ex){
@@ -559,6 +558,7 @@ public class TaxGstHelper implements TaxInterface {
                             //  calculateTotalTaxForProduct(productBo);
                             calculateProductExcludeTax(productBo, taxRate);
 
+                            calculateandDistributeTax(productBo,taxRate,taxList);
                         }
                     }
                 }
@@ -567,6 +567,13 @@ public class TaxGstHelper implements TaxInterface {
 
     }
 
+    private void calculateandDistributeTax(ProductMasterBO productBO, double taxRate, ArrayList<TaxBO> taxList) {
+        for (TaxBO taxBO : taxList) {
+            if (taxBO.getParentType() == null || taxBO.getParentType().equals("0")) {
+                taxBO.setTotalTaxAmount(SDUtil.formatAsPerCalculationConfig(productBO.getTaxableAmount() * (taxBO.getTaxRate() / 100)));
+            }
+        }
+    }
 
     // Excluding tax value from product total value and setting it in taxlist(mTaxListByProductId) against to product id
     public void calculateTaxOnTax(ProductMasterBO productMasterBO, TaxBO taxBO, boolean isFreeProduct) {

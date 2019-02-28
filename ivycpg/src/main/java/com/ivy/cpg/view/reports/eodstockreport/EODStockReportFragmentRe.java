@@ -101,7 +101,7 @@ public class EODStockReportFragmentRe extends Fragment implements IEodStockView 
     private void setUpViews(View view) {
 
         if (bmodel.configurationMasterHelper.SHOW_STOCK_RETURN)
-            view.findViewById(R.id.ll_returnQty);
+            view.findViewById(R.id.ll_returnQty).setVisibility(View.VISIBLE);
 
         if (bmodel.configurationMasterHelper.SHOW_STOCK_REPLACE)
             view.findViewById(R.id.ll_replacement).setVisibility(View.VISIBLE);
