@@ -359,9 +359,9 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
     public void checkDataExistToSave() {
         //mAssetView.isDataExistToSave(hasAssetTaken(), hasAssetPhotoTaken(), hasAssetReasonTaken(), errorMsg);
 
-        if (!hasAssetPhotoTaken() || !hasAssetReasonTaken()) {
+        if (!validateAsset()) {
             mAssetView.showError(errorMsg);
-        } else if (hasAssetTaken() || hasAssetPhotoTaken() || hasAssetReasonTaken()) {
+        } else {
             mAssetView.save();
         }
 
@@ -374,70 +374,34 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
      */
     String errorMsg = "";
 
-    private boolean hasAssetTaken() {
+    /**
+     * Method to check Asset reason taken or not
+     *
+     * @return true if asset validation successful
+     */
+    private boolean validateAsset() {
         ArrayList<AssetTrackingBO> mAssetTrackingList;
-
+        boolean isFlag = true;
         for (StandardListBO standardListBO : mBModel.productHelper.getInStoreLocation()) {
             mAssetTrackingList = standardListBO.getAssetTrackingList();
             if (mAssetTrackingList != null
                     && mAssetTrackingList.size() > 0) {
                 for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                    if (assetBO.getAvailQty() > 0 || assetBO.getAudit() != 2
-                            || assetBO.getCompetitorQty() > 0 || assetBO.getExecutorQty() > 0 || (!assetBO.getReason1ID().equalsIgnoreCase("0"))) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    }
-
-
-    /**
-     * Method to check Asset Photo already taken or not
-     *
-     * @return true if asset photo taken
-     */
-    private boolean hasAssetReasonTaken() {
-        ArrayList<AssetTrackingBO> mAssetTrackingList;
-        boolean isFlag = true;
-        if (mAssetTrackingHelper.SHOW_ASSET_REASON) {
-            for (StandardListBO standardListBO : mBModel.productHelper.getInStoreLocation()) {
-                mAssetTrackingList = standardListBO.getAssetTrackingList();
-                if (mAssetTrackingList != null
-                        && mAssetTrackingList.size() > 0) {
-                    for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                        if (assetBO.getReason1ID().equals(Integer.toString(0))
-                                && assetBO.getAvailQty() == 0 && assetBO.getAudit() == 2
-                                && assetBO.getCompetitorQty() == 0 && assetBO.getExecutorQty() == 0) {
-                            isFlag = false;
-                            errorMsg = mContext.getString(R.string.please_provide_valid_reason_or_Availability);
-                        }
-                    }
-                }
-            }
-        }
-        return isFlag;
-    }
-
-    /**
-     * Method to check Asset reason taken or not
-     *
-     * @return true if asset reason already taken
-     */
-    private boolean hasAssetPhotoTaken() {
-        ArrayList<AssetTrackingBO> mAssetTrackingList;
-        boolean isFlag = true;
-        if (mBModel.configurationMasterHelper.ASSET_PHOTO_VALIDATION) {
-            for (StandardListBO standardListBO : mBModel.productHelper.getInStoreLocation()) {
-                mAssetTrackingList = standardListBO.getAssetTrackingList();
-                if (mAssetTrackingList != null
-                        && mAssetTrackingList.size() > 0) {
-                    for (AssetTrackingBO assetBO : mAssetTrackingList) {
-                        if (assetBO.getAvailQty() == 0 && (assetBO.getImageName().equals("") || assetBO.getImgName().equals(""))) {
-                            isFlag = false;
-                            errorMsg = mContext.getString(R.string.photo_mandatory);
-                        }
+                    if (mAssetTrackingHelper.SHOW_ASSET_REASON && (assetBO.getReason1ID().equals(Integer.toString(0))
+                            && assetBO.getAvailQty() == 0 && assetBO.getAudit() == 2
+                            && assetBO.getCompetitorQty() == 0 && assetBO.getExecutorQty() == 0)) {
+                        isFlag = false;
+                        errorMsg = mContext.getString(R.string.please_provide_valid_reason_or_Availability);
+                        break;
+                    } else if (mBModel.configurationMasterHelper.ASSET_PHOTO_VALIDATION && (assetBO.getAvailQty() == 1 && (assetBO.getImageName().equals("") && assetBO.getImgName().equals("")))) {
+                        isFlag = false;
+                        errorMsg = mContext.getString(R.string.photo_mandatory);
+                        break;
+                    } else if (mBModel.configurationMasterHelper.ASSET_PHOTO_VALIDATION && (assetBO.getAvailQty() == 1 && (!assetBO.getImageName().equals("") || !assetBO.getImgName().equals("")))
+                            && assetBO.getConditionID().equals("0")) {
+                        isFlag = false;
+                        errorMsg = mContext.getString(R.string.condition_mandatory);
+                        break;
                     }
                 }
             }
