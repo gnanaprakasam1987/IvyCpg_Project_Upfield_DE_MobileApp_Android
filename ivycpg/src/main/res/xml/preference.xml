@@ -6,7 +6,7 @@
         android:layout="@layout/settings_header_layout"
         android:title="@string/language_settings__label">
         <!--<com.ivy.sd.png.view.CustomListPreference-->
-        <com.ivy.sd.png.view.ThemedListPreference
+        <com.ivy.cpg.view.settings.ThemedListPreference
             android:entries="@array/languageList"
             android:entryValues="@array/languageListValues"
             android:key="languagePref"
@@ -24,7 +24,7 @@
             android:layout="@layout/settings_card_layout"
             android:summary="@string/enter_mac_address"
             android:title="MAC"></com.ivy.sd.png.view.CustomPreference>
-        <com.ivy.sd.png.view.ThemedListPreference
+        <com.ivy.cpg.view.settings.ThemedListPreference
             android:entries="@array/printerList"
             android:entryValues="@array/printerListValues"
             android:key="PrinterPref"

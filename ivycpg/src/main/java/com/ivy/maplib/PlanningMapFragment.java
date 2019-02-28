@@ -63,7 +63,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.profile.ProfileActivity;
+import com.ivy.cpg.view.profile.ProfileActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;

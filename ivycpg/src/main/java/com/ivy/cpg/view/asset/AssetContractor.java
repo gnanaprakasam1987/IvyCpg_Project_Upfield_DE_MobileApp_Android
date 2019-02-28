@@ -2,10 +2,9 @@ package com.ivy.cpg.view.asset;
 
 import android.os.Bundle;
 
-import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
+import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 
 import java.util.ArrayList;
 import java.util.HashMap;

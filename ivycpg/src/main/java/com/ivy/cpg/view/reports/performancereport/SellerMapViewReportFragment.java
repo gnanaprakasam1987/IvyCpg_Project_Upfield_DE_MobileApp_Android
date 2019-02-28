@@ -45,7 +45,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.view.profile.DirectionsJSONParser;
+import com.ivy.cpg.view.profile.DirectionsJSONParser;
 import com.ivy.utils.FontUtils;
 
 import org.json.JSONObject;

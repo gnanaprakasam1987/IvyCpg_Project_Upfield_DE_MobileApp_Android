@@ -63,7 +63,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.CustomFragment;
 import com.ivy.cpg.view.tradeCoverage.deviation.PlanningActivity;
-import com.ivy.sd.png.view.profile.ProfileActivity;
+import com.ivy.cpg.view.profile.ProfileActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;

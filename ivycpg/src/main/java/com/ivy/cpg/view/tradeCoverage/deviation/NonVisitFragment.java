@@ -44,8 +44,8 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.PlanningVisitActivity;
-import com.ivy.sd.png.view.profile.CommonReasonDialog;
-import com.ivy.sd.png.view.profile.ProfileActivity;
+import com.ivy.cpg.view.profile.CommonReasonDialog;
+import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 

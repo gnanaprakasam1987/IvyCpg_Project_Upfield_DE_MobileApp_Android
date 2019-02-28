@@ -829,7 +829,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                                             || !holder.productObj.getLocations().get(mSelectedLocationIndex).getNearexpiryDate().get(0).getNearexpCA().equals("0")
                                             || !holder.productObj.getLocations().get(mSelectedLocationIndex).getNearexpiryDate().get(0).getNearexpOU().equals("0"))
                                     || (holder.productObj.getLocations().get(mSelectedLocationIndex).getFacingQty() > 0)
-                                    ) {
+                            ) {
 
                                 bmodel.setEditStockCheck(true);
                             }
@@ -872,12 +872,12 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                     holder.tvProductCode.setText(prodCode);
                 }
 
-                if(!StringUtils.isEmptyString(holder.productObj.getBarCode())){
+                if (!StringUtils.isEmptyString(holder.productObj.getBarCode())) {
                     holder.tvbarcode.setVisibility(View.VISIBLE);
-                    String parCode =" "+getResources().getString(R.string.barcode) + ": " +
+                    String parCode = " " + getResources().getString(R.string.barcode) + ": " +
                             holder.productObj.getBarCode() + " ";
                     holder.tvbarcode.setText(parCode);
-                }else{
+                } else {
                     holder.tvbarcode.setText(View.GONE);
                 }
 
@@ -1041,7 +1041,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     private void onBackButonClick() {
 
         if (bmodel.hasCombinedStkChecked()) {
-            mDialog1(0);
+            showDialog(0);
         } else {
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                     .now(DateTimeUtils.TIME));
@@ -1213,79 +1213,72 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
     private void onNextButtonClick() {
         if (bmodel.hasCombinedStkChecked()) {
-            new SaveAsyncTask().execute();
+            if (!bmodel.configurationMasterHelper.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS || stockCheckHelper.isReasonSelectedForAllProducts(true))
+                new SaveAsyncTask().execute();
+            else
+                showDialog(2);
+
         } else {
-            mDialog1(1);
+            showDialog(1);
         }
     }
 
-    private void mDialog1(int id) {
+    private void showDialog(int id) {
 
         switch (id) {
-
             case 0:
-                AlertDialog.Builder alertDialogBuilder1 = new AlertDialog.Builder(
-                        getActivity());
-                alertDialogBuilder1
-                        .setIcon(null)
-                        .setCancelable(false)
-                        .setTitle(getResources().getString(R.string.doyouwantgoback))
-                        .setPositiveButton(getResources().getString(R.string.ok),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
+                CommonDialog dialog = new CommonDialog(getActivity(), getResources().getString(R.string.doyouwantgoback),
+                        "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+                    @Override
+                    public void onPositiveButtonClick() {
+                        bmodel.productHelper.clearCombindStockCheckedTable();
 
-                                        bmodel.productHelper.clearCombindStockCheckedTable();
+                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                                .now(DateTimeUtils.TIME));
+                        if (isFromChild)
+                            startActivity(new Intent(getActivity(), HomeScreenTwo.class)
+                                    .putExtra("isStoreMenu", true));
+                        else
+                            startActivity(new Intent(getActivity(), HomeScreenTwo.class));
+                        getActivity().finish();
+                        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                    }
+                }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {
+                    @Override
+                    public void onNegativeButtonClick() {
 
-                                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
-                                                .now(DateTimeUtils.TIME));
-                                        if (isFromChild)
-                                            startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                                                    .putExtra("isStoreMenu", true));
-                                        else
-                                            startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                                        getActivity().finish();
-                                        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-                                    }
-                                }).setNegativeButton(getResources().getString(R.string.cancel)
-                        , new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                    }
+                });
+                dialog.show();
+                dialog.setCancelable(false);
 
-                            }
-                        });
-
-                AlertDialog alertDialog1 = alertDialogBuilder1.create();
-                bmodel.applyAlertDialogTheme(alertDialogBuilder1);
                 break;
             case 1:
-                AlertDialog.Builder alertDialogBuilder2 = new AlertDialog.Builder(
-                        getActivity());
-                alertDialogBuilder2
-                        .setIcon(null)
-                        .setCancelable(false)
-                        .setTitle(getResources().getString(R.string.no_items_added))
-                        .setPositiveButton(getResources().getString(R.string.ok),
-                                new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog,
-                                                        int whichButton) {
+                CommonDialog commonDialog = new CommonDialog(getActivity(),
+                        getResources().getString(R.string.no_items_added),
+                        "",
+                        getResources().getString(R.string.ok));
 
-                                    }
-                                });
-
-                AlertDialog alertDialog2 = alertDialogBuilder2.create();
-                bmodel.applyAlertDialogTheme(alertDialogBuilder2);
+                commonDialog.show();
+                commonDialog.setCancelable(false);
                 break;
-
+            case 2:
+                CommonDialog commonDialog1 = new CommonDialog(getActivity(),
+                        getResources().getString(R.string.reason_required_for) + getResources().getString(R.string.non_stock_products),
+                        "",
+                        getResources().getString(R.string.ok));
+                commonDialog1.show();
+                commonDialog1.setCancelable(false);
+                break;
         }
 
     }
 
     private void loadSpecialFilterView(View view) {
-        hscrl_spl_filter = (HorizontalScrollView) view.findViewById(R.id.hscrl_spl_filter);
+        hscrl_spl_filter =  view.findViewById(R.id.hscrl_spl_filter);
         hscrl_spl_filter.setVisibility(View.VISIBLE);
-        ll_spl_filter = (LinearLayout) view.findViewById(R.id.ll_spl_filter);
-        ll_tab_selection = (LinearLayout) view.findViewById(R.id.ll_tab_selection);
+        ll_spl_filter =  view.findViewById(R.id.ll_spl_filter);
+        ll_tab_selection = view.findViewById(R.id.ll_tab_selection);
         float scale;
         int width;
 

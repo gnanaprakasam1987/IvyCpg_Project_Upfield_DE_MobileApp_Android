@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.Vector;
 
 /**
  * Created by mansoor on 03/10/2018
@@ -331,25 +332,27 @@ public class StockCheckHelper {
         return false;
     }
 
-    public boolean isReasonSelectedForAllProducts() {
+    boolean isReasonSelectedForAllProducts(boolean isCombinedStock) {
 
-        int siz = bmodel.productHelper.getProductMaster().size();
-        if (siz == 0)
+        Vector<ProductMasterBO> productList = new Vector<>();
+        if (isCombinedStock)
+            productList = bmodel.productHelper.getTaggedProducts();
+        else
+            productList = bmodel.productHelper.getProductMaster();
+
+        if (productList.size() == 0)
             return false;
-        for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = bmodel.productHelper
-                    .getProductMaster().get(i);
 
-            int siz1 = product.getLocations().size();
+        for (ProductMasterBO productMasterBO : productList) {
+
+            int siz1 = productMasterBO.getLocations().size();
             for (int j = 0; j < siz1; j++) {
-                if (product.getIsFocusBrand() == 1 || product.getIsFocusBrand() == 2) {
-                    if ((SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() == -1)
-                            && (SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() == -1)
-                            && (SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() == -1)
-                            && (SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() == 0)
-                            && product.getLocations().get(j).getReasonId() == 0)
-                        return false;
-                }
+                if ((SHOW_STOCK_SP && productMasterBO.getLocations().get(j).getShelfPiece() == 0)
+                        && (SHOW_STOCK_SC && productMasterBO.getLocations().get(j).getShelfCase() == 0)
+                        && (SHOW_SHELF_OUTER && productMasterBO.getLocations().get(j).getShelfOuter() == 0)
+                        && (SHOW_STOCK_CB && productMasterBO.getLocations().get(j).getAvailability() == 0)
+                        && productMasterBO.getLocations().get(j).getReasonId() == 0)
+                    return false;
             }
         }
         return true;

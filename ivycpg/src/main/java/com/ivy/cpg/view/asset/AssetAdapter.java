@@ -25,10 +25,10 @@ import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.ivy.core.IvyConstants;
+import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;

@@ -1768,7 +1768,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     .setIcon(null)
                     .setCancelable(false)
 
-                    .setTitle(getResources().getString(R.string.reason_required_for) + text)
+                    .setTitle(getResources().getString(R.string.reason_required_for) + getResources().getString(R.string.non_stock_products))
                     .setPositiveButton(getResources().getString(R.string.ok),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
