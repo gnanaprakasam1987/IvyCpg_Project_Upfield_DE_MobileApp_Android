@@ -381,7 +381,7 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
 
     public void clearAppUrl() {
         SharedPreferences.Editor editor = PreferenceManager
-                .getDefaultSharedPreferences(context)
+                .getDefaultSharedPreferences(this)
                 .edit();
         editor.putString("appUrlNew", "");
         editor.putString("application", "");
