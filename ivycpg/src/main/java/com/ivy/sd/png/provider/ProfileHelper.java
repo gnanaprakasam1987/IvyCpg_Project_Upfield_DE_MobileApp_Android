@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
+import com.ivy.cpg.view.retailercontact.RetailerContactBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -24,7 +25,6 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.profile.RetailerContactBo;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 
