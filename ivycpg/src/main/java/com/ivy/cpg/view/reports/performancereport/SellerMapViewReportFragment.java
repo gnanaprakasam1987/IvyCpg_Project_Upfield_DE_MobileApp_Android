@@ -355,7 +355,7 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
                     for (OutletReportBO bo : lstReports) {
                         if (mSelectedUsers != null && mSelectedUsers.contains(bo.getUserId())) {
                             totalRetailers += 1;
-                            if (bo.isVisited != 0)
+                            if (bo.isVisited() != 0)
                                 totalRetailers += 1;
                         }
                     }
@@ -363,15 +363,15 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
 
                 int sequence = 0;
                 for (OutletReportBO bo : lstReports) {
-                    if ((isAlluser && outletPerfomanceHelper.getLstUsers().size() > 1
-                            && lstLastVisitedRetailerIds.contains(bo.retailerId))
-                            || (mSelectedUsers != null && mSelectedUsers.contains(bo.userId))) {
+                    if ((isAlluser && outletPerfomanceHelper.getLstUsers().size() >= 1
+                            && lstLastVisitedRetailerIds.contains(bo.getRetailerId()))
+                            || (mSelectedUsers != null && mSelectedUsers.contains(bo.getUserId()))) {
 
                         if (isValidLatLng(bo.getLatitude(), bo.getLongitude())) {
                             if (bo.getLatitude() != 0 && bo.getLongitude() != 0) {
 
                                 if (!isAlluser) {
-                                    if (bo.isVisited != 0)
+                                    if (bo.isVisited() != 0)
                                         sequence += 1;
 
                                     bo.setSequence(sequence);
@@ -394,22 +394,26 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
                                 storeLatLng = new LatLng(bo.getLatitude(), bo.getLongitude());
 
                                 IconGenerator iconFactory = new IconGenerator(getActivity());
+
                                 MarkerOptions markerOptions = new MarkerOptions().title(bo.getRetailerName()).
                                         position(storeLatLng).
                                         anchor(iconFactory.getAnchorU(), iconFactory.getAnchorV())
                                         .snippet(bo.getRetailerId() + "");
 
-                                if (bo.isVisited == 0) {
+                                if (bo.isVisited() == 0) {
                                     markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), R.drawable.ic_marker_nonvisited_person)));
-                                } else if (bo.sequence == 1) {
-                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("S")));
+                                } else if (bo.getSequence() == 1) {
+                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), true, bo.getCompliance() == 1)));
                                 } else if (bo.getSequence() != 0 && bo.getSequence() == totalRetailers) {
-                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(iconFactory.makeIcon("E")));
+                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getContext(), false, bo.getCompliance() == 1)));
                                 } else {
-                                    markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getActivity(), R.drawable.ic_marker_person)));
+                                    if (bo.getCompliance() == 1)
+                                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getActivity(), R.drawable.ic_marker_person_compliance)));
+                                    else
+                                        markerOptions.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable(getActivity(), R.drawable.ic_marker_person_non_compliance)));
                                 }
 
-                                if (bo.isVisited != 0) {
+                                if (bo.isVisited() != 0) {
                                     markerList.add(markerOptions);
                                 }
 
@@ -506,7 +510,7 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
                         if (bo.getIsPlanned() == 1) {
                             iv_planned.setVisibility(View.VISIBLE);
                             iv_deviated.setVisibility(View.GONE);
-                        } else if (bo.getIsPlanned() == 0 && bo.getIsVisited() == 1) {
+                        } else if (bo.getIsPlanned() == 0 && bo.isVisited() == 1) {
                             iv_deviated.setVisibility(View.VISIBLE);
                             iv_planned.setVisibility(View.GONE);
                         } else {
@@ -528,7 +532,9 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
     }
 
     public static Bitmap getBitmapFromVectorDrawable(Context context, int drawableId) {
-        @SuppressLint("RestrictedApi") Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, drawableId);
+        @SuppressLint("RestrictedApi")
+        Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, drawableId);
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
             drawable = (DrawableCompat.wrap(drawable)).mutate();
         }
@@ -541,6 +547,36 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
 
         return bitmap;
     }
+
+    @SuppressLint("RestrictedApi")
+    public static Bitmap getBitmapFromVectorDrawable(Context context, boolean isStart, boolean isCompliance) {
+        Drawable drawable = null;
+
+        if (isStart) {//start
+            if (isCompliance)
+                drawable = AppCompatDrawableManager.get().getDrawable(context, R.drawable.ic_start_marker_compliance);
+            else
+                drawable = AppCompatDrawableManager.get().getDrawable(context, R.drawable.ic_start_marker_non_compliance);
+        } else {//end
+            if (isCompliance)
+                drawable = AppCompatDrawableManager.get().getDrawable(context, R.drawable.ic_end_marker_compliance);
+            else
+                drawable = AppCompatDrawableManager.get().getDrawable(context, R.drawable.ic_end_marker_non_compliance);
+        }
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+            drawable = (DrawableCompat.wrap(drawable)).mutate();
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+
+        return bitmap;
+    }
+
 
     /**
      * Method used to validate lat long values.

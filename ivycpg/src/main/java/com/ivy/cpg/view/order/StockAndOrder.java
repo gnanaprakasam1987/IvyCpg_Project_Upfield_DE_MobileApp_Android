@@ -1424,7 +1424,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!stockCheckHelper.SHOW_STOCK_CB
                         || screenCode
                         .equals(ConfigurationMasterHelper.MENU_ORDER))
-                    ( row.findViewById(R.id.llAvail)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llAvail)).setVisibility(View.GONE);
 
                 else {
                     try {
@@ -1445,7 +1445,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!stockCheckHelper.SHOW_STOCK_SC
                         || screenCode
                         .equals(ConfigurationMasterHelper.MENU_ORDER))
-                    ( row.findViewById(R.id.llShelfCase)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llShelfCase)).setVisibility(View.GONE);
                 else {
                     try {
                         ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
@@ -1463,7 +1463,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!stockCheckHelper.SHOW_STOCK_SP
                         || screenCode
                         .equals(ConfigurationMasterHelper.MENU_ORDER))
-                    ( row.findViewById(R.id.llShelfPc)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llShelfPc)).setVisibility(View.GONE);
                 else {
                     try {
                         ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
@@ -1481,7 +1481,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (!stockCheckHelper.SHOW_SHELF_OUTER
                         || screenCode
                         .equals(ConfigurationMasterHelper.MENU_ORDER))
-                    ( row.findViewById(R.id.llShelfOuter)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llShelfOuter)).setVisibility(View.GONE);
                 else {
                     try {
                         ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
@@ -1533,7 +1533,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 // SIH - Enable/Disable - Start
                 // Order Field - Enable/Disable
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-                    ( row.findViewById(R.id.llCase)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llCase)).setVisibility(View.GONE);
                 else {
                     try {
                         if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
@@ -1576,7 +1576,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_FOC)
-                    ( row.findViewById(R.id.llFoc)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llFoc)).setVisibility(View.GONE);
                 else {
                     try {
                         ((TextView) row.findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
@@ -1592,7 +1592,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
-                    ( row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                 else {
                     try {
                         if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
@@ -1612,7 +1612,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT)
-                    ( row.findViewById(R.id.llSrpEdit)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llSrpEdit)).setVisibility(View.GONE);
                 else {
                     try {
                         ((TextView) row.findViewById(R.id.srpeditTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
@@ -1631,7 +1631,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     holder.srp.setVisibility(View.GONE);
 
                 if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
-                    ( row.findViewById(R.id.llStkRtEdit)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llStkRtEdit)).setVisibility(View.GONE);
                 else {
                     try {
                         ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
@@ -1646,7 +1646,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
 
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_TOTAL)
-                    ( row.findViewById(R.id.llTotal)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llTotal)).setVisibility(View.GONE);
                 else {
                     try {
                         ((TextView) row.findViewById(R.id.totalTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
@@ -1663,7 +1663,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
                 if (!bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
-                    ( row.findViewById(R.id.llWeight)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llWeight)).setVisibility(View.GONE);
                 else {
                     try {
                         ((TextView) row.findViewById(R.id.weight)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
@@ -1692,12 +1692,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     holder.text_stock.setVisibility(View.GONE);
 
                 if (!bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM) {
-                    ( row.findViewById(R.id.llUom_Qty)).setVisibility(View.GONE);
-                    ( row.findViewById(R.id.llUom_dropdwon)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llUom_Qty)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llUom_dropdwon)).setVisibility(View.GONE);
                 } else {
-                    ( row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
-                    ( row.findViewById(R.id.llCase)).setVisibility(View.GONE);
-                    ( row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llCase)).setVisibility(View.GONE);
+                    (row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
                     ((TextView) row.findViewById(R.id.uomTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     try {
                         if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
@@ -5613,6 +5613,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         if (!bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK)
             menu.findItem(R.id.menu_refresh).setVisible(false);
 
+        menu.findItem(R.id.menu_digtal_content).setVisible(DigitalContentHelper.getInstance(this).SHOW_FLT_DGT_CONTENT);
+
+
         if (drawerOpen)
             menu.clear();
 
@@ -5780,6 +5783,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 startActivity(intent);
             }
 
+        } else if (i == R.id.menu_digtal_content) {
+            Intent i1 = new Intent(StockAndOrder.this,
+                    DigitalContentActivity.class);
+            i1.putExtra("ScreenCode", screenCode);
+            i1.putExtra("FromInit", "FloatDigi");
+            startActivity(i1);
         }
         return super.onOptionsItemSelected(item);
     }
