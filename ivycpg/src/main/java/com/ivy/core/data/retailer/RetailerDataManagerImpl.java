@@ -119,7 +119,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
                                                     + " IFNULL(RPG.GroupId,0) as retgroupID, RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
 
-                                                    + " IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
+                                                    + " IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RField8,RField9,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
                                                     + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,RA.District,"
                                                     + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                                                     + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
@@ -289,6 +289,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                             retailer.setRField5(c.getString(c.getColumnIndex("RField5")));
                                             retailer.setRField6(c.getString(c.getColumnIndex("RField6")));
                                             retailer.setRField7(c.getString(c.getColumnIndex("RField7")));
+                                            retailer.setRField8(c.getString(c.getColumnIndex("RField8")));
+                                            retailer.setRField9(c.getString(c.getColumnIndex("RField9")));
 
                                             retailer.setPrioriryProductId(c.getInt(c.getColumnIndex("priorityBrand")));
                                             retailer.setSalesTypeId(c.getInt(c.getColumnIndex("SalesType")));

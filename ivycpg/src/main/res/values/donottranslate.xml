@@ -159,6 +159,7 @@
     <string name="vendor">Vendor</string>
     <string name="capacity">Capacity</string>
     <string name="model">Model</string>
+    <string name="digital_content">Digital Content</string>
     <string name="logout_joint_user_dayclose">Please logout JointCall User before Closing the day</string>
 
     <string name="condition_mandatory">Plases select Condition</string>

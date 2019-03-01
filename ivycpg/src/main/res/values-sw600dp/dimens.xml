@@ -289,7 +289,7 @@
     <dimen name="new_ret_width">70dp</dimen>
     <dimen name="beat_spinner_min">40dp</dimen>
     <dimen name="card_child_margin">4dp</dimen>
-    <dimen name="ret_image_size">25dp</dimen>
+    <dimen name="ret_image_size">28dp</dimen>
     <dimen name="ret_card_image">35dp</dimen>
     <dimen name="ret_list_div">2dp</dimen>
     <dimen name="fab1_bottom_margin">90dp</dimen>

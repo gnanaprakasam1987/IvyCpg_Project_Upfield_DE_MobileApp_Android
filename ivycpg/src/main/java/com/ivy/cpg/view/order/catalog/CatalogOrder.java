@@ -53,6 +53,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
+import com.ivy.cpg.view.digitalcontent.DigitalContentHelper;
 import com.ivy.cpg.view.initiative.InitiativeActivity;
 import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.order.OrderSummary;
@@ -1138,6 +1139,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
         if (bmodel.configurationMasterHelper.IS_DOWNLOAD_WAREHOUSE_STOCK) {
             menu.findItem(R.id.menu_refresh).setVisible(true);
         }
+        menu.findItem(R.id.menu_digtal_content).setVisible(DigitalContentHelper.getInstance(this).SHOW_FLT_DGT_CONTENT);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -1191,6 +1193,13 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
                         getResources()
                                 .getString(R.string.no_network_connection), 0);
             }
+        }
+        else if (i == R.id.menu_digtal_content) {
+            Intent i1 = new Intent(CatalogOrder.this,
+                    DigitalContentActivity.class);
+            i1.putExtra("ScreenCode", screenCode);
+            i1.putExtra("FromInit", "FloatDigi");
+            startActivity(i1);
         }
         return super.onOptionsItemSelected(item);
     }

@@ -161,11 +161,11 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
                             fitScore += SDUtil.convertToDouble(outletReport.getFitScore());
                             if (outletReport.getIsPlanned() == 1)
                                 plannedCall += 1;
-                            if (outletReport.getIsPlanned() == 0 && outletReport.getIsVisited() == 1)
+                            if (outletReport.getIsPlanned() == 0 && outletReport.isVisited() == 1)
                                 deviateCall += 1;
-                            if (outletReport.getIsVisited() == 1)
+                            if (outletReport.isVisited() == 1)
                                 actualCall += 1;
-                            if (outletReport.getIsVisited() == 1 && SDUtil.convertToDouble(outletReport.getSalesValue()) > 0)
+                            if (outletReport.isVisited() == 1 && SDUtil.convertToDouble(outletReport.getSalesValue()) > 0)
                                 productiveCall += 1;
 
                             //parse date and sum up intervals

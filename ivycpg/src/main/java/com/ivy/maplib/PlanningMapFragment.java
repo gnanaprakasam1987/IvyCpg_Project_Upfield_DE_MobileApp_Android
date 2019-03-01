@@ -123,7 +123,6 @@ public class PlanningMapFragment extends SupportMapFragment implements
     FloatingActionButton fab1, fab2, fab3, fab4;
     private LinearLayout bottomLayout;
     private Marker rmarker;
-    private Map<String, String> mRetailerProp;
     private Map<String, String> mRetTgtAchv;
     private String calledBy;
     CardView cardView, cardView1;
@@ -297,7 +296,6 @@ public class PlanningMapFragment extends SupportMapFragment implements
             }
         });
         /** End of show all routes **/
-        mRetailerProp = new HashMap<>();
         mRetTgtAchv = new HashMap<>();
         if (getArguments() != null)
             calledBy = getArguments().getString("From");
@@ -306,7 +304,6 @@ public class PlanningMapFragment extends SupportMapFragment implements
             calledBy = MENU_VISIT;
 
         updateRetailerAttributes();
-        updateRetailerProperty();
         bmodel.mRetailerHelper.IsRetailerGivenNoVisitReason();
 
 //        TextView tvStoreLbl = (TextView)rootView.findViewById(R.id.tv_label);
@@ -1306,15 +1303,6 @@ public class PlanningMapFragment extends SupportMapFragment implements
         }
         strAchieved = bmodel.formatValue(value);
         return strAchieved;
-    }
-
-    public void updateRetailerProperty() {
-
-        mRetailerProp = new HashMap<>();
-        for (String code : bmodel.configurationMasterHelper
-                .getRetailerPropertyList()) {
-            mRetailerProp.put(code, "1");
-        }
     }
 
     private void updateRetailerAttributes() {

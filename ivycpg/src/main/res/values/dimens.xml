@@ -606,7 +606,7 @@
     <dimen name="radio_margin">9dp</dimen>
     <dimen name="card_margin">7dp</dimen>
 
-    <dimen name="ret_image_size">15dp</dimen>
+    <dimen name="ret_image_size">18dp</dimen>
 
 
     <!--spinner dropdown vertical offset-->

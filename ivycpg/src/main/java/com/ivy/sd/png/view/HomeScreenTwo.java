@@ -1947,6 +1947,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } else if (menu.getConfigCode().equals(MENU_STK_ORD)
                 || menu.getConfigCode().equals(MENU_CATALOG_ORDER) && hasLink == 1) {
             StockCheckHelper.getInstance(HomeScreenTwo.this).loadStockCheckConfiguration(HomeScreenTwo.this, bmodel.retailerMasterBO.getSubchannelid());
+            DigitalContentHelper.getInstance(HomeScreenTwo.this).loadFloatingDgtConfig(HomeScreenTwo.this);
             new StockAndOrderTask(menu, this).execute();
             // moveToStockAndOrder(menu);
         } else if (menu.getConfigCode().equals(MENU_CLOSING) && hasLink == 1) {

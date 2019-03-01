@@ -280,6 +280,11 @@ public class TimeTrackPresenterTest {
 
     @After
     public void tearDown() {
+        mockConfigurationHelper.IS_REALTIME_LOCATION_CAPTURE = false;
+        mockConfigurationHelper.IS_UPLOAD_ATTENDANCE = false;
+        mockConfigurationHelper.SHOW_CAPTURED_LOCATION = false;
+        mockConfigurationHelper.IS_ATTENDANCE_REMARK = false;
+        mockConfigurationHelper.IS_IN_OUT_MANDATE = false;
         mPresenter.onDetach();
     }
 
