@@ -3918,9 +3918,9 @@ public class ConfigurationMasterHelper {
 
             IS_LOAD_STOCK_COMPETITOR = false;
             LOAD_STOCK_COMPETITOR = 0;
-            DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 0;
-            MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
-            MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
+            DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 1;
+            MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 1;
+            MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 1;
             LOAD_REMARKS_FIELD_STRING = "";
             SHOW_INCLUDE_BILL_TAX = false;
 
