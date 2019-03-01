@@ -322,7 +322,7 @@ public class SalesFundamentalHelper {
      */
     private void loadCompetitors(String moduleName) {
         DBUtil db;
-        ArrayList<Integer> lstCompetitiorPids;
+        ArrayList<String> lstCompetitiorPids;
         try {
             Cursor cursor;
             db = new DBUtil(mContext, DataMembers.DB_NAME);
@@ -340,7 +340,7 @@ public class SalesFundamentalHelper {
                     lstCompetitiorPids = new ArrayList<>();
                     while (cursor.moveToNext()) {
 
-                        if (!lstCompetitiorPids.contains(cursor.getInt(1))) {
+                        if (!lstCompetitiorPids.contains(cursor.getInt(1) + ","+ cursor.getInt(0))) {
                             for (SOSBO prodBO : getSOSList()) {
 
                                 if (prodBO.getProductID() == cursor.getInt(0)) {
@@ -353,7 +353,7 @@ public class SalesFundamentalHelper {
                                     comLevel.setNorm(cursor.getInt(4));
                                     comLevel.setLocations(cloneLocationList(getLocationList()));
                                     comLevel.setParentHierarchy(cursor.getString(5));
-                                    lstCompetitiorPids.add(cursor.getInt(1));
+                                    lstCompetitiorPids.add(cursor.getInt(1) + ","+ cursor.getInt(0));
                                     getSOSList().add(comLevel);
                                     break;
                                 }
@@ -395,7 +395,7 @@ public class SalesFundamentalHelper {
                 if (cursor != null) {
                     lstCompetitiorPids = new ArrayList<>();
                     while (cursor.moveToNext()) {
-                        if (!lstCompetitiorPids.contains(cursor.getInt(1))) {
+                        if (!lstCompetitiorPids.contains(cursor.getInt(1) + ","+ cursor.getInt(0))) {
                             for (SOSKUBO prodBO : getSOSKUList()) {
 
                                 if (prodBO.getProductID() == cursor.getInt(0)) {
@@ -406,7 +406,7 @@ public class SalesFundamentalHelper {
                                     comLevel.setProductName(cursor.getString(2));
                                     comLevel.setIsOwn(cursor.getInt(3));
                                     comLevel.setNorm(cursor.getInt(4));
-                                    lstCompetitiorPids.add(cursor.getInt(1));
+                                    lstCompetitiorPids.add(cursor.getInt(1) + ","+ cursor.getInt(0));
                                     getSOSKUList().add(comLevel);
                                     break;
                                 }
