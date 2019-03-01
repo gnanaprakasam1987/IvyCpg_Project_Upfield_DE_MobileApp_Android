@@ -50,6 +50,9 @@ public class CommonReasonDialog extends Dialog {
     private ReasonMaster temp;
     private DeviationHelper deviationHelper;
 
+    private static final String NONVISIT = "nonVisit";
+    private static final String DEVIATE = "deviate";
+
     public CommonReasonDialog(Context context) {
         super(context);
 
@@ -97,7 +100,7 @@ public class CommonReasonDialog extends Dialog {
             public void onClick(View v) {
                 hideKeyboard();
                 try {
-                    if (listLoad.equals("nonVisit")) {
+                    if (listLoad.equals(NONVISIT)) {
                         temp = selected_reason;
                         NonproductivereasonBO nonproductive = new NonproductivereasonBO();
                         nonproductive.setReasonid(temp.getReasonID());
@@ -108,7 +111,7 @@ public class CommonReasonDialog extends Dialog {
                         bmodel.getRetailerMasterBO().setHasNoVisitReason(true);
                         addNonVisitListener.addReatailerReason();
                         dismiss();
-                    } else if (listLoad.equals("deviate")) {
+                    } else if (listLoad.equals(DEVIATE)) {
                         if (isReasonRemarksNA()) {
                             if (selected_reason.getReasonID().equals("0"))
                                 remarks = "NA";
@@ -142,11 +145,11 @@ public class CommonReasonDialog extends Dialog {
 
         RecyclerView reason_recycler = findViewById(R.id.reason_recycler);
         reason_recycler.setLayoutManager(new GridLayoutManager(context, 2));
-        if (listLoad.equals("nonVisit")) {
+        if (listLoad.equals(NONVISIT)) {
             headerText.setText(context.getResources().getString(R.string.reason_non_visit));
             reasonVisitTxt.setVisibility(View.GONE);
             reason_recycler.setAdapter(new ReasonAdapter(bmodel.reasonHelper.getNonVisitReasonMaster()));
-        } else if (listLoad.equals("deviate")) {
+        } else if (listLoad.equals(DEVIATE)) {
             if (!isReasonRemarksNA()) {
                 ArrayList<ReasonMaster> deviateReasons = new ArrayList<>();
                 deviateReasons.addAll(bmodel.reasonHelper.getDeviatedReturnMaster());
@@ -241,7 +244,9 @@ public class CommonReasonDialog extends Dialog {
                 }
             });
 
-            CommonReasonDialog.this.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            if (listLoad.equals(DEVIATE)) {
+                CommonReasonDialog.this.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            }
         }
 
         @Override
