@@ -908,9 +908,8 @@ public class InvoiceReportDetail extends IvyBaseActivityNoActionBar implements
         @Override
         public int getChildrenCount(int groupPosition) {
 
-            if (mProductsForAdapter.get(groupPosition).isPromo()
-                    && (mProductsForAdapter.get(groupPosition).getSchemeProducts() != null
-                    && mProductsForAdapter.get(groupPosition).getSchemeProducts().size() > 0)) {
+            if (mProductsForAdapter.get(groupPosition).getSchemeProducts() != null
+                    && mProductsForAdapter.get(groupPosition).getSchemeProducts().size() > 0) {
 
                 //if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).getSchemeById().get(mProductsForAdapter.get(groupPosition).getSchemeProducts().get(0).getSchemeId()).isOffScheme()) {
                     return mProductsForAdapter.get(groupPosition).getSchemeProducts().size();
