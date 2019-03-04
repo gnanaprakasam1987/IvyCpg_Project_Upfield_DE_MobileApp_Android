@@ -43,6 +43,8 @@ public class CommonReasonDialog extends Dialog {
     private BusinessModel bmodel;
     private Context context;
 
+    private String listLoad;
+
     private Button addReason;
     private Button addReason1;
     private AddNonVisitListener addNonVisitListener;
@@ -62,6 +64,7 @@ public class CommonReasonDialog extends Dialog {
         super(context);
 
         this.context = context;
+        this.listLoad = listLoad;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
         bmodel = (BusinessModel) context.getApplicationContext();
