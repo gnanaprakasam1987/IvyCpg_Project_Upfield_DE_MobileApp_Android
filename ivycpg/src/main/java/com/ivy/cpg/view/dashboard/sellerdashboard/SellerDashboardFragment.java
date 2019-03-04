@@ -1006,7 +1006,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                         weekSpinner.setSelection(dashBoardHelper.getCurrentWeek());
                     } else {
                         weekSpinner.setVisibility(View.GONE);
-                        dashBoardHelper.loadSellerDashBoardforWeek(Integer.toString(mSelectedUserId));
+                        //dashBoardHelper.loadSellerDashBoardforWeek(Integer.toString(mSelectedUserId));
                         updateWeek("");
                     }
                 } else {

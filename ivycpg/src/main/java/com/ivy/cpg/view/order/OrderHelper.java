@@ -158,12 +158,11 @@ public class OrderHelper {
 
             String timeStampId = "";
             int flag = 0; // flag for joint call
-            isVanSales = 1;
+            isVanSales = businessModel.getRetailerMasterBO().getIsVansales();
             int indicativeFlag = 0;
 
             if (businessModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                 if (!businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                    isVanSales = 0;
                     if (businessModel.configurationMasterHelper.IS_INDICATIVE_ORDER)
                         indicativeFlag = 1;
 
