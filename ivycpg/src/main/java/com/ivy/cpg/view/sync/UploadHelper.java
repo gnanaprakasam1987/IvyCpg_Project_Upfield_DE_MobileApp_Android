@@ -26,6 +26,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
@@ -555,20 +556,97 @@ public class UploadHelper {
         try {
 
             jsonObjectRequest = new MyjsonarrayPostRequest(
-                    Request.Method.POST, sb.toString(), data,
+                    Request.Method.POST, sb.toString(),data,
                     new Response.Listener<JSONArray>() {
                         @Override
                         public void onResponse(JSONArray jsonObject) {
                             Commons.print(" RES: " + jsonObject);
                             System.gc();
 
-                            updateProgress(flag,handler);
+                            try {
+
+                                int response = 0;
+                                if (jsonObject.toString().contains("Response")) {
+                                    response= jsonObject.getJSONObject(0).getInt("Response");
+                                }
+
+                                int responseMsg = 0;
+                                if (response == 1) {
+
+                                    if (flag == DataMembers.SYNCUPLOADRETAILERWISE) {
+                                        updateUploadFlagRetailerWise(mContext);
+                                        getVisitedRetailerIds().delete(0,
+                                                getVisitedRetailerIds().length());
+                                        responseMsg = 1;
+                                    } else if (flag == DataMembers.SYNCSIHUPLOAD) {
+                                        updateUploadFlag(DataMembers.uploadSIHTable,mContext);
+
+                                        responseMsg = 2;
+                                    } else if (flag == DataMembers.SYNCLYTYPTUPLOAD) {
+                                        updateUploadFlag(DataMembers.uploadLPTable,mContext);
+
+                                        responseMsg = 2;
+                                    } else if (flag == DataMembers.SYNCSTKAPPLYUPLOAD) {
+
+                                        updateUploadFlag(DataMembers.uploadStockApplyTable,mContext);
+                                        responseMsg = 2;
+                                    } else if (flag == DataMembers.SYNC_REALLOC_UPLOAD) {
+                                        updateUploadFlag(DataMembers.uploadReallocTable,mContext);
+                                        responseMsg = 1;
+                                    } else if (flag == DataMembers.ATTENDANCE_UPLOAD) {
+                                        updateUploadFlag(DataMembers.uploadAttendanceColumn,mContext);
+                                        responseMsg = 1;
+                                    } else {
+                                        updateUploadFlag(DataMembers.uploadColumn,mContext);
+                                        responseMsg = 1;
+                                    }
+
+                                } else if (response == 0) {
+                                    if (DataMembers.SYNCUPLOADRETAILERWISE == 1) {
+                                        getVisitedRetailerIds().delete(0,
+                                                getVisitedRetailerIds().length());
+                                        responseMsg = 0;
+                                    }
+                                }else if(response==2){
+                                    updateProgress(flag,handler);
+                                    responseMsg = 3;
+                                }
+                                // Upload Transaction Sequence Table Separate , the above method
+                                // successfully upload. This Method also doing same work, but server
+                                // need the data while replicate this data while download instantly.
+                                if ((businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO || businessModel.configurationMasterHelper.SHOW_COLLECTION_SEQ_NO)
+                                        && businessModel.orderAndInvoiceHelper.hasTransactionSequence()) {
+                                    if (responseMsg == 1) {
+                                        responseMsg = uploadInvoiceSequenceNo(handler,mContext);
+                                    }
+                                }
+                                Commons.print("After Responce");
+
+                                if (responseMsg == 1) {
+                                    handler.sendEmptyMessage(
+                                            DataMembers.NOTIFY_UPLOADED);
+                                } else if (responseMsg == -1) {
+                                    handler.sendEmptyMessage(
+                                            DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
+
+
+                                } else if (responseMsg == 0) {
+                                    handler.sendEmptyMessage(
+                                            DataMembers.NOTIFY_UPLOAD_ERROR);
+                                }
+                            } catch (JSONException e) {
+                                //error.getMessage();
+                                handler.sendEmptyMessage(
+                                        DataMembers.NOTIFY_UPLOAD_ERROR);
+                            }
+
                         }
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    System.gc();
+
                     Commons.print("AuthFailureError 5");
+                    System.gc();
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOAD_ERROR);
 
@@ -592,11 +670,13 @@ public class UploadHelper {
                                     businessModel.synchronizationHelper.getLastTransactedDate());
                         }
                     }
+
                     return headers;
                 }
 
                 @Override
                 protected Map<String, String> getParams() throws AuthFailureError {
+                    //Map<String, String> params = new HashMap<String, String>();
                     return new HashMap<>();
                 }
 
