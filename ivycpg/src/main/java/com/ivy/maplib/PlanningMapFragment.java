@@ -310,9 +310,54 @@ public class PlanningMapFragment extends SupportMapFragment implements
 //        tvStoreLbl.setTypeface(bmodel.configurationMasterHelper
 //                .getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
+        TextView tv_areaLoc = (TextView) rootView.findViewById(R.id.daytv);
+        tv_areaLoc.setTypeface(bmodel.configurationMasterHelper
+                .getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        tv_areaLoc.setText(bmodel.getDay(bmodel.userMasterHelper
+                .getUserMasterBO().getDownloadDate()));
+
         TextView lbl_BeatLoc = (TextView) rootView.findViewById(R.id.label_BeatLoc);
         lbl_BeatLoc.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+        ImageView img_beatloc = rootView.findViewById(R.id.img_beatloc);
+
+        ArrayList<String> weekdays = new ArrayList<>();
+        weekdays.add("Sunday");
+        weekdays.add("Monday");
+        weekdays.add("Tuesday");
+        weekdays.add("Wednesday");
+        weekdays.add("Thursday");
+        weekdays.add("Friday");
+        weekdays.add("Saturday");
+
+        if (weekdays.contains(tv_areaLoc.getText().toString())) {
+            lbl_BeatLoc.setText(getResources().getString(R.string.day_plan));
+            img_beatloc.setImageResource(R.drawable.ic_calendar_visit);
+        } else {
+            lbl_BeatLoc.setText(getResources().getString(R.string.beat_loc));
+            img_beatloc.setImageResource(R.drawable.arealocation);
+        }
+
+
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(rootView.findViewById(
+                    R.id.label_BeatLoc).getTag()) != null)
+                ((TextView) rootView.findViewById(R.id.label_BeatLoc))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(rootView.findViewById(
+                                        R.id.label_BeatLoc)
+                                        .getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+            if (weekdays.contains(tv_areaLoc.getText().toString())) {
+                lbl_BeatLoc.setText(getResources().getString(R.string.day_plan));
+                img_beatloc.setImageResource(R.drawable.ic_calendar_visit);
+            } else {
+                lbl_BeatLoc.setText(getResources().getString(R.string.beat_loc));
+                img_beatloc.setImageResource(R.drawable.arealocation);
+            }
+        }
 
         TextView lbl_StoreToVisit = (TextView) rootView.findViewById(R.id.label_StoreToVisit);
         lbl_StoreToVisit.setTypeface(bmodel.configurationMasterHelper
@@ -324,11 +369,6 @@ public class PlanningMapFragment extends SupportMapFragment implements
         TextView spinnerLabel = (TextView) rootView.findViewById(R.id.spinnerLabel);
         spinnerLabel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        TextView tv_areaLoc = (TextView) rootView.findViewById(R.id.daytv);
-        tv_areaLoc.setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        tv_areaLoc.setText(bmodel.getDay(bmodel.userMasterHelper
-                .getUserMasterBO().getDownloadDate()));
 
         tv_storeVisit = (TextView) rootView.findViewById(R.id.tv_store_visit);
         tv_storeVisit.setTypeface(bmodel.configurationMasterHelper

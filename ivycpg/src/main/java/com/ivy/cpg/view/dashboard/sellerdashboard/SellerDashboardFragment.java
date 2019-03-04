@@ -499,7 +499,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
                 }
             });
 
-            if (dashboardData.getSubDataCount() > 0) {
+            if (dashboardData.getSubDataCount() > 0&&bmodel.configurationMasterHelper.SHOW_NOR_DASHBOARD) {
                 SpannableString str = new SpannableString(holder.tvSkuWise
                         .getText().toString());
                 str.setSpan(new UnderlineSpan(), 0, str.length(),
