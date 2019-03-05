@@ -1774,6 +1774,8 @@ public class SchemeDetailsMasterHelper {
 
         int totalQty = 0;
         double totalValue = 0;
+        // for Minimum Product count to be ordered -Mansoor
+        int count = 0;
 
         List<SchemeProductBO> schemeBuyProducts = schemeBO.getBuyingProducts();
 
@@ -1788,7 +1790,6 @@ public class SchemeDetailsMasterHelper {
                 break;
             }
 
-
             if (schemeProductBo.getGroupName().equals(groupName)) {
 
                 if (schemeBO.getBuyType().equals(QUANTITY_TYPE)) {
@@ -1797,8 +1798,7 @@ public class SchemeDetailsMasterHelper {
 
                     orderedTotalQuantityByUOMWise = getTotalOrderedQuantity(schemeProductBo.getProductId(), schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeProductBo.getUomID(), schemeBO.getParentId(), schemeBO.isAccumulationScheme());
 
-                    // for Min Order Varaint count-Mansoor
-                    int count = 0;
+
                     if (schemeBO.getVariantCount() > 0) {
                         if (orderedTotalQuantityByUOMWise > 0)
                             count++;
@@ -1825,6 +1825,10 @@ public class SchemeDetailsMasterHelper {
                     double totalProductValue;
                     totalProductValue = getTotalOrderedValue(schemeProductBo.getProductId(), schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(), schemeBO.isAccumulationScheme(), IS_CHECK_SCHEME_WITH_ASRP);
 
+                    if (schemeBO.getVariantCount() > 0) {
+                        if (totalProductValue > 0)
+                            count++;
+                    }
                     //Just reducing value which is used already for applying scheme.
                     if (mAchieved_qty_or_salesValue_by_schemeId_nd_productid != null && mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(mParentId + schemeProductBo.getProductId()) != null) {
                         int totalAppliedQty = mAchieved_qty_or_salesValue_by_schemeId_nd_productid.get(mParentId + schemeProductBo.getProductId());
@@ -1834,7 +1838,12 @@ public class SchemeDetailsMasterHelper {
 
                     totalValue += totalProductValue;
 
-                    if (schemeProductBo.getBuyQty() <= totalValue) {
+                    if (schemeBO.getVariantCount() > 0) {
+                        if (count >= schemeBO.getVariantCount())
+                            if (schemeProductBo.getBuyQty() <= totalValue) {
+                                return true;
+                            }
+                    } else if (schemeProductBo.getBuyQty() <= totalValue) {
                         return true;
                     }
                 }
