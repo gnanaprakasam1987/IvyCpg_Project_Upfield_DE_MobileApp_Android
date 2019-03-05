@@ -473,17 +473,14 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                         R.id.label_TodayTgt)
                                         .getTag()));
 
-
-            if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME) {
-                lbl_TodayTgt.setText(getString(R.string.total_vol));
-            }
-
-
         } catch (Exception e) {
             Commons.printException(e);
-            if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT) {
+            if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
                 lbl_TodayTgt.setText(getResources().getString(R.string.store_visited));
-            }
+            if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME)
+                lbl_TodayTgt.setText(getString(R.string.total_vol));
+            if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME_WGT)
+                lbl_TodayTgt.setText(getString(R.string.total_weight));
         }
 
         try {
@@ -719,6 +716,10 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
         if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
             tv_target.setText(String.valueOf(getStoreVisited()));
+
+            //cpg137 - Tid18
+        else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME_WGT)
+            tv_target.setText(String.valueOf(getTotalWeight()));
 
             //cpg132-task13
         else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME)
@@ -1354,6 +1355,30 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         return "";
     }
 
+    private String getTotalWeight() {
+        double weight = 0;
+        try {
+
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME);
+            db.openDataBase();
+
+            Cursor c = db.selectSQL("select pieceqty,caseQty,outerQty,uomcount,dOuomQty,weight from OrderDetail");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    int qty = c.getInt(0) +
+                            (c.getInt(1) * c.getInt(3) +
+                                    (c.getInt(2) * c.getInt(4)));
+                    weight = weight + (qty * c.getDouble(5));
+                }
+                c.close();
+            }
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return bmodel.formatValue(weight);
+    }
 
     public interface MapViewListener {
         void switchMapView();
@@ -1867,10 +1892,9 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     } catch (Exception ex) {
                         holder.ll_iv_outlet_color.setVisibility(View.GONE);
                     }
-                } else {
+                } else
                     holder.ll_iv_outlet_color.setVisibility(View.GONE);
 
-                }
 
                 if (mRetailerProp.get("RTPRTY07") != null) {
                     if (SDUtil.convertToInt(holder.retailerObjectHolder.getCredit_invoice_count()) > 0) {
