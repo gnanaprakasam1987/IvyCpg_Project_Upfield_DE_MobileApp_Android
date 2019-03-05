@@ -1577,8 +1577,6 @@ public class SynchronizationFragment extends IvyBaseFragment
                     if (alertDialog != null)
                         alertDialog.dismiss();
                 }
-                if (alertDialog != null)
-                    alertDialog.dismiss();
             }
 
         }
