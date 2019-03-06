@@ -13,6 +13,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -117,7 +118,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                                     + " , RC2.contactname as sc_name, RC2.ContactName_LName as sc_LName, RC2.ContactNumber as sc_Number,"
                                                     + " RC2.CPID as sc_CPID, IFNULL(RC2.DOB,'') as sc_DOB, RC2.contact_title as sc_title, RC2.contact_title_lovid as sc_title_lovid,"
 
-                                                    + " IFNULL(RPG.GroupId,0) as retgroupID, RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
+                                                    + " RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
 
                                                     + " IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RField8,RField9,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
                                                     + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,RA.District,"
@@ -139,8 +140,6 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                                     + " LEFT JOIN (SELECT RetailerId,contactname,ContactName_LName,ContactNumber,CPID,DOB,contact_title,contact_title_lovid from RetailerContact WHERE IsPrimary=0 LIMIT 1) AS RC2 ON RC2.RetailerId=A.RetailerId"
 
                                                     + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? " left join SupplierMaster SM ON SM.rid = A.RetailerID" : "")
-
-                                                    + " LEFT JOIN RetailerPriceGroup RPG ON RPG.RetailerID = A.RetailerID and (RPG.distributorid=RetDistributorId OR RPG.distributorid = 0)"
 
                                                     + " LEFT JOIN RetailerVisit RV ON RV.RetailerID = A.RetailerID"
 
@@ -273,9 +272,6 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                             retailer.setContact2_title(c.getString(c.getColumnIndex("sc_title")));
                                             retailer.setContact2_titlelovid(c.getString(c.getColumnIndex("sc_title_lovid")));
 
-                                            //temp_retailer_pricegroup
-                                            retailer.setGroupId(c.getInt(c.getColumnIndex("retgroupID")));
-
                                             //temp_retailervisit
                                             retailer.setPlannedVisitCount(c.getInt(c
                                                     .getColumnIndex("PlannedVisitCount")));
@@ -319,6 +315,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                             retailer.setHangingOrder(false);
                                             retailer.setIndicateFlag(0);
                                             retailer.setIsCollectionView("N");
+
+                                            updateRetailerPriceGRP(retailer);
 
                                             if (retailer.getIsNew().equalsIgnoreCase("Y")) {
                                                 retailer.setWeekNo(retailer.getVisitday() + "");
@@ -697,6 +695,43 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 return retailerMasterBOS;
             }
         });
+    }
+
+    /**
+     * update retailer price group
+     *
+     * @param retObj
+     */
+    private void updateRetailerPriceGRP(RetailerMasterBO retObj) {
+
+        try {
+            if (mDbUtil.isDbNullOrClosed())
+                initDb();
+
+            Cursor c;
+            int distId = 0;
+            c = mDbUtil.selectSQL("select DistributorID From RetailerPriceGroup where DistributorID<>0 AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()));
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext())
+                    distId = c.getInt(0);
+
+                c.close();
+            }
+
+
+            c = mDbUtil.selectSQL("SELECT IFNULL(GroupId,0) From RetailerPriceGroup WHERE DistributorID=" + distId + " AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext())
+                    retObj.setGroupId(c.getInt(0));
+
+                c.close();
+            }
+        } catch (Exception ignore) {
+
+        }
+
     }
 
     public void updateIndicativeOrderedRetailer(RetailerMasterBO retObj, ArrayList<IndicativeBO> indicativeBOS) {

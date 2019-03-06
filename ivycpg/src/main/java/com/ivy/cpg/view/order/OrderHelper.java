@@ -355,7 +355,7 @@ public class OrderHelper {
 
 
             // Save order details
-            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP,UpSellingQty";
+            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP,UpSellingQty,ASRP";
 
             Set<String> parentHierarchyIds = new HashSet<>();
             //get entry level discount value
@@ -665,7 +665,7 @@ public class OrderHelper {
 
                 // Save order details
                 Vector<ProductMasterBO> finalProductList;
-                columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP,UpSellingQty";
+                columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP,UpSellingQty,ASRP";
 
                 finalProductList = productList;
 
@@ -1151,6 +1151,7 @@ public class OrderHelper {
         double line_total_price;
         double totalValue;
         String rfield;
+        float priceWithTax;
 
         if (isBatchWise) {
             pieceCount = batchProductBO.getOrderedPcsQty()
@@ -1161,6 +1162,7 @@ public class OrderHelper {
             srp = batchProductBO.getSrp();
             csrp = batchProductBO.getCsrp();
             osrp = batchProductBO.getOsrp();
+            priceWithTax = batchProductBO.getASRP();
             orderPieceQty = batchProductBO.getOrderedPcsQty();
             orderCaseQty = batchProductBO.getOrderedCaseQty();
             orderOuterQty = batchProductBO.getOrderedOuterQty();
@@ -1183,6 +1185,7 @@ public class OrderHelper {
             srp = productBo.getSrp();
             csrp = productBo.getCsrp();
             osrp = productBo.getOsrp();
+            priceWithTax = productBo.getASRP();
             orderPieceQty = productBo.getOrderedPcsQty();
             orderCaseQty = productBo.getOrderedCaseQty();
             orderOuterQty = productBo.getOrderedOuterQty();
@@ -1232,6 +1235,7 @@ public class OrderHelper {
         sb.append("," + totalValue);
         sb.append("," + productBo.getMRP());
         sb.append("," + productBo.getIncreasedPcs());
+        sb.append("," + priceWithTax);
         return sb;
 
     }
