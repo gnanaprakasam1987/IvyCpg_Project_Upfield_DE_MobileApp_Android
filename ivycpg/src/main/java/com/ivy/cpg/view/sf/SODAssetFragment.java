@@ -62,7 +62,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.SODBO;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
+import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;

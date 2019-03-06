@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -185,7 +184,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
             public void afterTextChanged(Editable s) {
                 String qty = s.toString();
                 double value = 0;
-                if (bmodel.validDecimalValue(qty, 16, 2)) {
+                if (SDUtil.isValidDecimal(qty, 16, 2)) {
                     if (!qty.equals("")) {
                         value = SDUtil.convertToDouble(qty);
                     }

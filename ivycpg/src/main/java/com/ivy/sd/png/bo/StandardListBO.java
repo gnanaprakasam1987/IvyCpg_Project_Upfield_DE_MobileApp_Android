@@ -1,7 +1,7 @@
 package com.ivy.sd.png.bo;
 
 import com.ivy.cpg.view.promotion.PromotionBO;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
+import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 
 
 

@@ -188,7 +188,7 @@ public class AttendanceHelper {
             String columns = "Tid,DateIn,Atd_ID,ReasonID,Timezone,FromDate,ToDate,TimeIn,timespent,status,userid";
             String values = bmodel.QT(tid) + "," + bmodel.QT(date) + ","
                     + atdID + ", " + reasonid + ","
-                    + bmodel.QT(bmodel.getTimeZone()) + ","
+                    + bmodel.QT(DateTimeUtils.getTimeZone()) + ","
                     + bmodel.QT(fromDate) + "," + bmodel.QT(toDate) + ","
                     + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME)) + ",'0:0'," + (atdCode != null && atdCode.equals("LEAVE") ? "'S'" : "'R'" + "," + bmodel.userMasterHelper.getUserMasterBO().getUserid());
 

@@ -70,10 +70,9 @@ public class BatchAllocationHelper {
         mBatchListByproductID = new HashMap<String, ArrayList<ProductMasterBO>>();
         mFreeProductListByProductID = new HashMap<String, ArrayList<ProductMasterBO>>();
         ProductMasterBO productBO;
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
-        );
-        try {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
 
+        try {
             String str = "Price.srp1,Price1.srp1";
             String csrp = "Price.csrp1,Price1.csrp1";
             String osrp = "Price.osrp1,Price1.osrp1";
@@ -214,17 +213,6 @@ public class BatchAllocationHelper {
 
                     productBO.setBatchNo(c.getString(14));
 
-					/*productBO.setSrp(c.getFloat(10));
-                    productBO.setCsrp(c.getFloat(11));
-					productBO.setOsrp(c.getFloat(12));
-					productBO.setBatchId(c.getString(13));
-					productBO.setBatchNo(c.getString(14));
-					productBO.setMfgDate(c.getString(15));
-					productBO.setExpDate(c.getString(16));
-					productBO.setSIH(c.getInt(17));
-					productBO.setPriceoffvalue(c.getDouble(19));
-					productBO.setPriceOffId(c.getInt(20));*/
-
                     if (!productid.equals(productBO.getProductID())) {
                         if (productid != "") {
                             mBatchListByproductID.put(productid, batchList);
@@ -241,8 +229,6 @@ public class BatchAllocationHelper {
                         }
                     } else {
                         batchList.add(productBO);
-
-
                     }
 
                 }
@@ -519,11 +505,14 @@ public class BatchAllocationHelper {
                     currentStockinhand = product.getSIH() - totalQty;
                 }
 
+                schemeProductBatchBO.setBatchid(SDUtil.convertToInt(product
+                        .getBatchid()));
                 //If stock not enough to give free then remaining quantity will be given from next batch
                 if (currentStockinhand < pieceQty) {
                     // stock not enough
                     schemeProductBatchBO.setQty(currentStockinhand);
                     pieceQty = pieceQty - currentStockinhand;
+                    schemeProductBatchList.add(schemeProductBatchBO);
                 } else {
                     // stock available
                     if (productBo.getCaseUomId() == schemeProductBO.getUomID()) {
@@ -539,13 +528,11 @@ public class BatchAllocationHelper {
                         schemeProductBatchBO.setQty(pieceQty);
                         pieceQty = 0;
                     }
-
+                    schemeProductBatchList.add(schemeProductBatchBO);
                     //Breaking loop as all free qty delivered
                     break;
                 }
-                schemeProductBatchBO.setBatchid(SDUtil.convertToInt(product
-                        .getBatchid()));
-                schemeProductBatchList.add(schemeProductBatchBO);
+
 
             }
             schemeProductBO.setBatchWiseQty(schemeProductBatchList);

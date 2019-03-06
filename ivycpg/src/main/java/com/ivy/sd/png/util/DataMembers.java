@@ -382,7 +382,7 @@ public class DataMembers {
     private static final String tbl_delivery_detail_cols = "OrderId,PId,OrderedQty,DeliveredQty,UOMId,Price";
 
     private static final String tbl_orderHeader_cols = "OrderID,RetailerID,RouteId,OrderValue,LinesPerCall,OrderDate,DeliveryDate,IsToday,po,remark,discount,is_splitted_order,is_processed,latitude,longitude,ReturnValue,CrownCount,IndicativeOrderID,IFlag,sid,stype,timestampid,JFlag,totalTaxValue,invoicestatus,imagename,SalesType,totalweight,isApproval,PrintFilePath,RField1,RField2,ordertime,SParentID,RemarksType,RField3,orderImagePath,ParentHierarchy,AddressId,ridSF,VisitId,LevelCode";
-    private static final String tbl_orderDetails_cols = "OrderID,ProductID,Qty,uomid,Rate,uomcount,msqqty,pieceqty,caseqty,d1,d2,d3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,casePrice,outerPrice,pcsUOMId,totalamount,batchid,PriceOffId,PriceOffValue,isFreeProduct,weight,ReasonId,HsnCode,RField1,NetAmount,UpsellingQty";
+    private static final String tbl_orderDetails_cols = "OrderID,ProductID,Qty,uomid,Rate,uomcount,msqqty,pieceqty,caseqty,d1,d2,d3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,casePrice,outerPrice,pcsUOMId,totalamount,batchid,PriceOffId,PriceOffValue,isFreeProduct,weight,ReasonId,HsnCode,RField1,NetAmount,UpsellingQty,ASRP";
     private static final String tbl_orderReturnDetails_cols = "OrderID,Pid,UomID,TypeID,Qty,Price,LineValue,LiableQty,ReturnQty";
     private static final String tbl_closingStockHeader_cols = "StockID,Date,RetailerID,remark,latitude,longitude,DistributorID,Weightage,Score,AvailabilityShare,ridSF,VisitId";
 
@@ -676,6 +676,9 @@ public class DataMembers {
     public static final String tbl_picklist_invoice = "PickListInvoiceStatus";
     public static final String tbl_picklist_invoice_cols = "PickListId,InvoiceId,Status";
 
+    private static final String tbl_AnswerScoreDetails = "AnswerScoreDetail";
+    private static final String tbl_AnswerScoreDetails_cols = "Uid,SurveyId,qid,score";
+
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
     static {
@@ -859,6 +862,7 @@ public class DataMembers {
 
         uploadColumn.put(tbl_DigitalContent_Tracking_Header, tbl_DigitalContent_Tracking_Header_cols);
         uploadColumn.put(tbl_DigitalContent_Tracking_Detail, tbl_DigitalContent_Tracking_Detail_cols);
+        uploadColumn.put(tbl_AnswerScoreDetails,tbl_AnswerScoreDetails_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -1003,6 +1007,7 @@ public class DataMembers {
 
         uploadColumnWithRetailer.put(tbl_DigitalContent_Tracking_Header, tbl_DigitalContent_Tracking_Header_cols);
         uploadColumnWithRetailer.put(tbl_DigitalContent_Tracking_Detail, tbl_DigitalContent_Tracking_Detail_cols);
+        uploadColumnWithRetailer.put(tbl_AnswerScoreDetails, tbl_AnswerScoreDetails_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();

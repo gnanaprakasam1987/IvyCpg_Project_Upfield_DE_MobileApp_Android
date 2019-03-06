@@ -9,8 +9,8 @@ import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.bo.asset.AssetAddDetailBO;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
+import com.ivy.cpg.view.asset.bo.AssetAddDetailBO;
+import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -146,7 +146,7 @@ public class AssetTrackingHelper {
     /*
     Download Master Data needed for Asset Screen
      */
-    public void loadDataForAssetPOSM(Context mContext, String mMenuCode) {
+    public boolean loadDataForAssetPOSM(Context mContext, String mMenuCode) {
         if (mBusinessModel.configurationMasterHelper
                 .downloadFloatingSurveyConfig(mMenuCode)) {
             SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(mContext);
@@ -184,7 +184,7 @@ public class AssetTrackingHelper {
 
 
         // Load data from transaction
-        loadAssetData(mContext, mBusinessModel
+        return loadAssetData(mContext, mBusinessModel
                 .getRetailerMasterBO().getRetailerID(), mMenuCode);
     }
 
@@ -633,7 +633,7 @@ public class AssetTrackingHelper {
      * @param mRetailerId Retailer ID
      * @param moduleName  Module Name
      */
-    private void loadAssetData(Context mContext, String mRetailerId, String moduleName) {
+    private boolean loadAssetData(Context mContext, String mRetailerId, String moduleName) {
         String type;
         if (MENU_ASSET.equals(moduleName))
             type = MERCH;
@@ -661,6 +661,12 @@ public class AssetTrackingHelper {
                 }
             } else {
                 mBusinessModel.setAssetRemark("");
+            }
+
+            if(mBusinessModel.configurationMasterHelper.isAuditEnabled() && uid.trim().isEmpty()){
+                c.close();
+                db.closeDB();
+                return false;
             }
 
             String sb2 = "select assetid,availqty,imagename,reasonid,SerialNumber,conditionId,installdate,servicedate,isAuditDone,Productid,CompQty,Locid,PosmGroupLovId,isExecuted,imgName,MappingId  from assetDetail where uid=" +
@@ -711,6 +717,7 @@ public class AssetTrackingHelper {
             Commons.printException("" + e);
             db.closeDB();
         }
+        return true;
     }
 
     /**

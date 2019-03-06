@@ -57,7 +57,7 @@ import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
+import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -72,6 +72,7 @@ import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 
@@ -1682,7 +1683,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 }
             }
         } else if (mAttributeProducts == null && mProductId != 0) {// product filter alone selected
-            if (mSelectedIdByLevelId.size() == 0 || mBModel.isMapEmpty(mSelectedIdByLevelId)) {
+            if (mSelectedIdByLevelId.size() == 0 || AppUtils.isMapEmpty(mSelectedIdByLevelId)) {
                 if (mBModel.configurationMasterHelper.IS_GLOBAL_CATEGORY)
 
                     for (AssetTrackingBO assetBO : mAssetTrackingList) {

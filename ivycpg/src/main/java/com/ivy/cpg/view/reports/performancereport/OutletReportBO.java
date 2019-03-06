@@ -14,6 +14,8 @@ public class OutletReportBO implements Parcelable {
     String timeIn, timeOut, duration;
     String fitScore;
 
+    int compliance =0;
+
     public int getUserId() {
         return userId;
     }
@@ -79,7 +81,7 @@ public class OutletReportBO implements Parcelable {
         this.isPlanned = isPlanned;
     }
 
-    public int getIsVisited() {
+    public int isVisited() {
         return isVisited;
     }
 
@@ -199,5 +201,13 @@ public class OutletReportBO implements Parcelable {
 
     public void setFitScore(String fitScore) {
         this.fitScore = fitScore;
+    }
+
+    public int getCompliance() {
+        return compliance;
+    }
+
+    public void setCompliance(int compliance) {
+        this.compliance = compliance;
     }
 }

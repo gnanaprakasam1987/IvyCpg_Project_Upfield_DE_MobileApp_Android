@@ -108,7 +108,6 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
         rvTimeTrack.setHasFixedSize(false);
         rvTimeTrack.setNestedScrollingEnabled(false);
         rvTimeTrack.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvTimeTrack.addItemDecoration(new DividerItemDecoration(rvTimeTrack.getContext(), DividerItemDecoration.HORIZONTAL));
 
         presenter.fetchData(false);
         if (presenter.isRealTimeLocationOn()) {

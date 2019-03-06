@@ -328,4 +328,14 @@ public class DateTimeUtils {
     public static SimpleDateFormat getDateFormat (String format){
         return new SimpleDateFormat(format,Locale.US);
     }
+
+    public static String getTimeZone() {
+        try {
+            return TimeZone.getDefault().getDisplayName(false, TimeZone.SHORT,
+                    Locale.ENGLISH);
+        } catch (Exception e) {
+
+        }
+        return "UTC";
+    }
 }

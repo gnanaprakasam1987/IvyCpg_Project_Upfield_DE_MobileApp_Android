@@ -40,7 +40,7 @@
             android:id="@+id/iv_deviate"
             android:layout_width="@dimen/ret_image_size"
             android:layout_height="@dimen/ret_image_size"
-            android:src="@drawable/ic_dashboard_deviated"
+            android:background="@drawable/ic_dashboard_deviated"
             android:visibility="gone"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true" />

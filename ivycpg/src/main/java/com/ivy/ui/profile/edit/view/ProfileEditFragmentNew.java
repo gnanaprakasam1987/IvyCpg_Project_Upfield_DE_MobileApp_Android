@@ -833,8 +833,9 @@ public class ProfileEditFragmentNew extends BaseFragment
         assert inflater != null;
         view = inflater.inflate(R.layout.profile_edit_image_view, null);
         mProfileImageView = (ImageView) view.findViewById(R.id.profile_edit_image);
+        ImageView ivEdit = view.findViewById(R.id.iv_edit);
 
-        mProfileImageView.setOnLongClickListener(new View.OnLongClickListener() {
+       /* mProfileImageView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 //Dont allow if Fun57 is enabled and mandatory,
@@ -842,7 +843,14 @@ public class ProfileEditFragmentNew extends BaseFragment
                 profileEditPresenter.getImageLongClickListener(false);
                 return true;
             }
-        });
+        });*/
+
+        ivEdit.setOnClickListener(new View.OnClickListener() {
+           @Override
+           public void onClick(View v) {
+               profileEditPresenter.getImageLongClickListener(false);
+           }
+       });
         mProfileImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

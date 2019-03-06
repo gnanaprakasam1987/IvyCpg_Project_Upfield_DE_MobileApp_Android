@@ -391,7 +391,7 @@ public class DeliveryManagementHelper {
 
                                     db.insertSQL("EmptyReconciliationHeader", headerColumns,
                                             bmodel.QT(tid) + "," + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-                                                    + bmodel.QT(bmodel.getTimeZone()) + "," + 0);
+                                                    + bmodel.QT(DateTimeUtils.getTimeZone()) + "," + 0);
                                 }
 
                                 db.insertSQL("EmptyReconciliationDetail", detailColumns, bmodel.QT(tid) + "," + c.getInt(0) + ","

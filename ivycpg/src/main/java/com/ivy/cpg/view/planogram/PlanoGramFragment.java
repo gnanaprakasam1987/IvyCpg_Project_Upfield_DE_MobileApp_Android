@@ -1228,7 +1228,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     for(int i=0;i<planoObj.getPlanoGramCameraImgList().size();i++){
                         String path = photoNamePath
                                 + planoObj.getPlanoGramCameraImgList().get(i);
-                        if (mBModel.isImagePresent(path)) {
+                        if (FileUtils.isFileExisting(path)) {
                             isImgPresent = true;
                         }
                     }

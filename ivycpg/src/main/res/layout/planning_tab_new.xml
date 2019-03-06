@@ -109,6 +109,19 @@
             android:background="@color/screen_bg_color"
             android:cacheColorHint="@null"
             android:divider="@null"
+            android:visibility="gone"
+            android:dividerHeight="@dimen/ret_list_div"
+            android:fitsSystemWindows="true"
+            android:scrollbars="none" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvList"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/dimen_10dp"
+            android:background="@color/screen_bg_color"
+            android:cacheColorHint="@null"
+            android:divider="@null"
             android:dividerHeight="@dimen/ret_list_div"
             android:fitsSystemWindows="true"
             android:scrollbars="none" />

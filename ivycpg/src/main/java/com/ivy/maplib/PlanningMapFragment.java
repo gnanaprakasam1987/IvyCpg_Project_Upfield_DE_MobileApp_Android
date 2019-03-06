@@ -63,7 +63,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.profile.ProfileActivity;
+import com.ivy.cpg.view.profile.ProfileActivity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -123,7 +123,6 @@ public class PlanningMapFragment extends SupportMapFragment implements
     FloatingActionButton fab1, fab2, fab3, fab4;
     private LinearLayout bottomLayout;
     private Marker rmarker;
-    private Map<String, String> mRetailerProp;
     private Map<String, String> mRetTgtAchv;
     private String calledBy;
     CardView cardView, cardView1;
@@ -297,7 +296,6 @@ public class PlanningMapFragment extends SupportMapFragment implements
             }
         });
         /** End of show all routes **/
-        mRetailerProp = new HashMap<>();
         mRetTgtAchv = new HashMap<>();
         if (getArguments() != null)
             calledBy = getArguments().getString("From");
@@ -306,16 +304,60 @@ public class PlanningMapFragment extends SupportMapFragment implements
             calledBy = MENU_VISIT;
 
         updateRetailerAttributes();
-        updateRetailerProperty();
         bmodel.mRetailerHelper.IsRetailerGivenNoVisitReason();
 
 //        TextView tvStoreLbl = (TextView)rootView.findViewById(R.id.tv_label);
 //        tvStoreLbl.setTypeface(bmodel.configurationMasterHelper
 //                .getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
 
+        TextView tv_areaLoc = (TextView) rootView.findViewById(R.id.daytv);
+        tv_areaLoc.setTypeface(bmodel.configurationMasterHelper
+                .getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+        tv_areaLoc.setText(bmodel.getDay(bmodel.userMasterHelper
+                .getUserMasterBO().getDownloadDate()));
+
         TextView lbl_BeatLoc = (TextView) rootView.findViewById(R.id.label_BeatLoc);
         lbl_BeatLoc.setTypeface(bmodel.configurationMasterHelper
                 .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
+        ImageView img_beatloc = rootView.findViewById(R.id.img_beatloc);
+
+        ArrayList<String> weekdays = new ArrayList<>();
+        weekdays.add("Sunday");
+        weekdays.add("Monday");
+        weekdays.add("Tuesday");
+        weekdays.add("Wednesday");
+        weekdays.add("Thursday");
+        weekdays.add("Friday");
+        weekdays.add("Saturday");
+
+        if (weekdays.contains(tv_areaLoc.getText().toString())) {
+            lbl_BeatLoc.setText(getResources().getString(R.string.day_plan));
+            img_beatloc.setImageResource(R.drawable.ic_calendar_visit);
+        } else {
+            lbl_BeatLoc.setText(getResources().getString(R.string.beat_loc));
+            img_beatloc.setImageResource(R.drawable.arealocation);
+        }
+
+
+        try {
+            if (bmodel.labelsMasterHelper.applyLabels(rootView.findViewById(
+                    R.id.label_BeatLoc).getTag()) != null)
+                ((TextView) rootView.findViewById(R.id.label_BeatLoc))
+                        .setText(bmodel.labelsMasterHelper
+                                .applyLabels(rootView.findViewById(
+                                        R.id.label_BeatLoc)
+                                        .getTag()));
+        } catch (Exception e) {
+            Commons.printException(e);
+            if (weekdays.contains(tv_areaLoc.getText().toString())) {
+                lbl_BeatLoc.setText(getResources().getString(R.string.day_plan));
+                img_beatloc.setImageResource(R.drawable.ic_calendar_visit);
+            } else {
+                lbl_BeatLoc.setText(getResources().getString(R.string.beat_loc));
+                img_beatloc.setImageResource(R.drawable.arealocation);
+            }
+        }
 
         TextView lbl_StoreToVisit = (TextView) rootView.findViewById(R.id.label_StoreToVisit);
         lbl_StoreToVisit.setTypeface(bmodel.configurationMasterHelper
@@ -327,11 +369,6 @@ public class PlanningMapFragment extends SupportMapFragment implements
         TextView spinnerLabel = (TextView) rootView.findViewById(R.id.spinnerLabel);
         spinnerLabel.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
-        TextView tv_areaLoc = (TextView) rootView.findViewById(R.id.daytv);
-        tv_areaLoc.setTypeface(bmodel.configurationMasterHelper
-                .getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        tv_areaLoc.setText(bmodel.getDay(bmodel.userMasterHelper
-                .getUserMasterBO().getDownloadDate()));
 
         tv_storeVisit = (TextView) rootView.findViewById(R.id.tv_store_visit);
         tv_storeVisit.setTypeface(bmodel.configurationMasterHelper
@@ -1306,15 +1343,6 @@ public class PlanningMapFragment extends SupportMapFragment implements
         }
         strAchieved = bmodel.formatValue(value);
         return strAchieved;
-    }
-
-    public void updateRetailerProperty() {
-
-        mRetailerProp = new HashMap<>();
-        for (String code : bmodel.configurationMasterHelper
-                .getRetailerPropertyList()) {
-            mRetailerProp.put(code, "1");
-        }
     }
 
     private void updateRetailerAttributes() {

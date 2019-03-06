@@ -26,10 +26,9 @@ import com.ivy.cpg.view.asset.assetservicedi.AssetServiceModule;
 import com.ivy.cpg.view.asset.assetservicedi.DaggerAssetServiceComponent;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
+import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
-import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
 import java.util.Vector;

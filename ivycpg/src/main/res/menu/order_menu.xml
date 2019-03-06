@@ -15,6 +15,7 @@
         android:title="@string/fivefilter"
         ivydist:showAsAction="always" />
 
+
     <item
         android:id="@+id/menu_remarks"
         android:icon="@drawable/ic_remark"
@@ -85,6 +86,14 @@
         android:icon="@drawable/ic_action_calculator"
         android:orderInCategory="105"
         android:title="Calculator"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_digtal_content"
+        android:icon="@drawable/ic_action_content_picture"
+        android:orderInCategory="101"
+        android:title="@string/digital_content"
         android:visible="false"
         ivydist:showAsAction="ifRoom" />
 

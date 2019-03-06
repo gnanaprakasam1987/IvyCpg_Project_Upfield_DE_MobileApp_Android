@@ -459,7 +459,7 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
                     dismissCurrentProgressDialog();
 
                     LoginHelper.getInstance(LoginBaseActivity.this).deleteAllValues(getApplicationContext());
-                    businessModel.activationHelper.clearAppUrl();
+                    clearAppUrl();
                     businessModel.userMasterHelper.getUserMasterBO().setUserid(0);
                     businessModel.codeCleanUpUtil.setUserId(0);
                     try {

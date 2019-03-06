@@ -470,7 +470,7 @@ public class NearExpiryTrackingHelper {
                         + mBModel.getRetailerMasterBO().getRetailerID()
                         + ","
                         + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-                        + QT(mBModel.getTimeZone()) + "," + QT(refId);
+                        + QT(DateTimeUtils.getTimeZone()) + "," + QT(refId);
 
                 db.insertSQL(mTrackingHeader, headerColumns, values);
             }

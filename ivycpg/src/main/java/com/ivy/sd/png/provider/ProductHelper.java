@@ -793,7 +793,7 @@ public class ProductHelper {
                             + " PL.LevelID =CA.ProductFilter3 OR  "
                             + " PL.LevelID =CA.ProductFilter4 OR  "
                             + " PL.LevelID =CA.ProductFilter5  "
-                            + " WHERE  CA.ActivityCode='" + moduleName + "'");
+                            + " WHERE  CA.ActivityCode='" + moduleName + "' order by PL.Sequence");
 
             LevelBO mLevelBO;
             while (listCursor.moveToNext()) {

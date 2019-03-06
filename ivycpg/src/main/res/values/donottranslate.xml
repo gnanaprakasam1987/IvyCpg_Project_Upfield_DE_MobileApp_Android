@@ -145,6 +145,8 @@
     <string name="amount_mismatch">Amount mismatch</string>
     <string name="privacy_policy">Privacy Policy</string>
     <string name="ivy_mobility_privacy">Ivy Mobility Privacy Policy</string>
+
+    <string name="non_stock_products"> Non Stock Products</string>
     <string name="terms_conditions">Terms &amp; Conditions</string>
     <string name="accept">Accept</string>
     <string name="select_valid_destination">Select Valid Destination Outlet</string>
@@ -157,6 +159,10 @@
     <string name="vendor">Vendor</string>
     <string name="capacity">Capacity</string>
     <string name="model">Model</string>
+    <string name="digital_content">Digital Content</string>
+    <string name="logout_joint_user_dayclose">Please logout JointCall User before Closing the day</string>
+
+    <string name="condition_mandatory">Plases select Condition</string>
     <string name="nfc_code">NFC Code</string>
     <string name="serial_no_not_captured_kindly_choose_reason">Some problem in serial no capture so kindly choose reason for not captured…</string>
 </resources>

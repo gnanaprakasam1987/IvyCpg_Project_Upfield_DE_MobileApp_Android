@@ -270,7 +270,7 @@ public class NonFieldHelper {
                         + bmodel.QT(nonFieldList.get(i).getToDate())
                         + "," + nonFieldList.get(i).getsessionID() + ","
                         + bmodel.QT(nonFieldList.get(i).getDescription()) + ","
-                        + bmodel.QT(bmodel.getTimeZone()) + "," + "'R'," + nonFieldList.get(i).getJointUserId() + ","
+                        + bmodel.QT(DateTimeUtils.getTimeZone()) + "," + "'R'," + nonFieldList.get(i).getJointUserId() + ","
                         + nonFieldList.get(i).getLeaveLovId() + "," + nonFieldList.get(i).getTotalDays() + "," + bmodel.QT(nonFieldList.get(i).getTimeSpent()) + "," + userid;
 
                 db.insertSQL("AttendanceDetail", columns, values);
@@ -740,7 +740,7 @@ public class NonFieldHelper {
                         + bmodel.QT(nonFieldList.get(i).getToDate())
                         + "," + nonFieldList.get(i).getsessionID() + ","
                         + bmodel.QT(nonFieldList.get(i).getDescription()) + ","
-                        + bmodel.QT(bmodel.getTimeZone()) + "," + bmodel.QT(status) + "," + nonFieldList.get(i).getJointUserId() + ","
+                        + bmodel.QT(DateTimeUtils.getTimeZone()) + "," + bmodel.QT(status) + "," + nonFieldList.get(i).getJointUserId() + ","
                         + lovid + "," + totaldays + "," + userid;
 
 

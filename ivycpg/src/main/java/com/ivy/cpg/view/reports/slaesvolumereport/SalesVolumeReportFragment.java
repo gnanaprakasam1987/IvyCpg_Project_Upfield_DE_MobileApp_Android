@@ -26,6 +26,7 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -311,7 +312,7 @@ public class SalesVolumeReportFragment extends Fragment implements BrandDialogIn
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
-        if (bmodel.isMapEmpty(mSelectedIdByLevelId)) {
+        if (AppUtils.isMapEmpty(mSelectedIdByLevelId)) {
             updateList(-1);
         } else
             updateList(mProductId);

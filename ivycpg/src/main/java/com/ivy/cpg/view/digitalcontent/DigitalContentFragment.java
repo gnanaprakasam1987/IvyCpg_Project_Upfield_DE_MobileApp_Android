@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -31,8 +32,13 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.cpg.view.initiative.InitiativeActivity;
 import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
+import com.ivy.cpg.view.order.catalog.CatalogOrder;
+import com.ivy.cpg.view.order.scheme.SchemeApply;
+import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DigitalContentBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -40,17 +46,12 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.cpg.view.order.catalog.CatalogOrder;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
-import com.ivy.cpg.view.initiative.InitiativeActivity;
 import com.ivy.sd.png.view.OrderDiscount;
-import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
@@ -58,6 +59,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Vector;
 
 /**
@@ -90,7 +92,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel = (BusinessModel) Objects.requireNonNull(getActivity()).getApplicationContext();
         mBModel.setContext(getActivity());
         mDigitalContentHelper = DigitalContentHelper.getInstance(getActivity());
     }
@@ -102,13 +104,13 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_digital_content, container, false);
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        Objects.requireNonNull(getActivity()).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         mScreenWidth = displaymetrics.widthPixels;
         mScreenHeight = displaymetrics.heightPixels;
 
@@ -154,7 +156,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
         ) {
             public void onDrawerClosed(View view) {
 
-                if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+                if (((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar() != null) {
                     setScreenTitle(mScreenTitle);
                     getActivity().supportInvalidateOptionsMenu();
                 }
@@ -162,7 +164,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
 
             public void onDrawerOpened(View drawerView) {
 
-                if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
+                if (((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar() != null) {
                     setScreenTitle(getResources().getString(R.string.filter));
                     getActivity().supportInvalidateOptionsMenu();
                 }
@@ -182,7 +184,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             btnClose.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+                    new CommonDialog(Objects.requireNonNull(getActivity()).getApplicationContext(), getActivity(),
                             "", getActivity().getResources().getString(R.string.move_next_activity),
                             false, getActivity().getResources().getString(R.string.ok),
                             getActivity().getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
@@ -420,6 +422,9 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                         getActivity().finish();
                         break;
                     }
+                    case "FloatDigi":
+                        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                        getActivity().finish();
                 }
             } else if (action == 2) {
                 mDigitalContentHelper.setIsDigitalContent();
@@ -705,7 +710,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
             return mFragmentTitleList.get(position);
         }
 
-        public void addFragment(Fragment fragment, String title) {
+        void addFragment(Fragment fragment, String title) {
             mFragmentList.add(fragment);
             mFragmentTitleList.add(title);
         }
@@ -746,7 +751,7 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
     }
 
     private ActionBar getActionBar() {
-        return ((AppCompatActivity) getActivity()).getSupportActionBar();
+        return ((AppCompatActivity) Objects.requireNonNull(getActivity())).getSupportActionBar();
     }
 
 }

@@ -24,12 +24,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ivy.cpg.view.asset.bo.AssetAddDetailBO;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.asset.AssetAddDetailBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -756,6 +757,8 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                             .asBitmap()
                             .centerCrop()
                             .placeholder(R.drawable.ic_photo_camera)
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)
+                            .skipMemoryCache(true)
                             .transform(mBModel.circleTransform)
                             .into(new BitmapImageViewTarget(iv_photo));
 
@@ -801,6 +804,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                 boolean nFilesThere = mBModel.checkForNFilesInFolder(photoPath, 1,
                         fileNameStarts);
                 if (nFilesThere) {
+                    imageName = assetBo.getImgName();
                     showFileDeleteAlertWithImage(fileNameStarts, imageName);
 
                 } else {

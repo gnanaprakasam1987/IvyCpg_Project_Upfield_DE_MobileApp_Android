@@ -250,6 +250,9 @@ public class SynchronizationFragment extends IvyBaseFragment
             }
 
         }
+
+        if (!bmodel.configurationMasterHelper.IS_ALLOW_SURVEY_WITHOUT_JOINTCALL)
+            bmodel.userMasterHelper.downloadJoinCallusers();
         withPhotosCheckBox
                 .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -296,6 +299,15 @@ public class SynchronizationFragment extends IvyBaseFragment
                     public void onCheckedChanged(CompoundButton buttonView,
                                                  boolean isChecked) {
                         if (isChecked) {
+                            if (bmodel.outletTimeStampHelper
+                                    .isJointCall(bmodel.userMasterHelper.getUserMasterBO()
+                                            .getJoinCallUserList())) {
+                                bmodel.showAlert(
+                                        getResources().getString(
+                                                R.string.logout_joint_user_dayclose), 0);
+                                dayCloseCheckBox.setChecked(false);
+                                return;
+                            }
                             presenter.updateDayCloseStatus(true);
                             if (DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
                                     "yyyy/MM/dd") >= 0) {
@@ -466,8 +478,6 @@ public class SynchronizationFragment extends IvyBaseFragment
                 }
 
                 isSwitchUser = false;
-                if (!bmodel.configurationMasterHelper.IS_ALLOW_SURVEY_WITHOUT_JOINTCALL)
-                    bmodel.userMasterHelper.downloadJoinCallusers();
                 if (bmodel.outletTimeStampHelper
                         .isJointCall(bmodel.userMasterHelper.getUserMasterBO()
                                 .getJoinCallUserList())) {
@@ -1567,8 +1577,6 @@ public class SynchronizationFragment extends IvyBaseFragment
                     if (alertDialog != null)
                         alertDialog.dismiss();
                 }
-                if (alertDialog != null)
-                    alertDialog.dismiss();
             }
 
         }
