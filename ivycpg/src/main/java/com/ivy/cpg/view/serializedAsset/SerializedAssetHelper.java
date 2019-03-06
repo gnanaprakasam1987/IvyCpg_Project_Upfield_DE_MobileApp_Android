@@ -992,10 +992,7 @@ public class SerializedAssetHelper {
         if (mUniqueSerialNo == null || mUniqueSerialNo.size() == 0)
             return false;
         else {
-            if (mUniqueSerialNo.get(serialNo) == null)
-                return false;
-            else
-                return true;
+            return mUniqueSerialNo.get(serialNo) != null;
         }
     }
 

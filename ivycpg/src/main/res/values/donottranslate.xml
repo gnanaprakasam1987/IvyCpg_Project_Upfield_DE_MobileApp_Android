@@ -157,4 +157,6 @@
     <string name="vendor">Vendor</string>
     <string name="capacity">Capacity</string>
     <string name="model">Model</string>
+    <string name="nfc_code">NFC Code</string>
+    <string name="serial_no_not_captured_kindly_choose_reason">Some problem in serial no capture so kindly choose reason for not captured…</string>
 </resources>
