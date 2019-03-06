@@ -31,7 +31,7 @@ public class NetworkUtils {
                 (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         assert cm != null;
         NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        return activeNetwork != null && activeNetwork.isConnectedOrConnecting() && isInternetWorking();
+        return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
 
