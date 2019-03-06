@@ -297,9 +297,9 @@
     <string name="no_data_tosave">No Data to Save</string>
     <string name="please_fill_all_mandatory_fields">ค่ากลาง%</string>
     <string name="gap">Gap</string>
-    <string name="cases_label">Cases</string>
-    <string name="pieces_label">Pieces</string>
-    <string name="outer_label">Outer</string>
+    <string name="cases_label">กรณี</string>
+    <string name="pieces_label">ชิ้น</string>
+    <string name="outer_label">ด้านนอก</string>
     <string name="delivery_date_label">ความเหนเพิมเติม</string>
     <string name="remarks_label">เสร็จสิ้น</string>
     <string name="lock">เรียง</string>
