@@ -415,12 +415,12 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
                 mSelectedScanReasonId = noBarCodeReasonList.get(position).getAssetBarCodeId();
 
-                /*if (!mSelectedScanReasonId.equals("0")) {
-                    mSNO.setText("0");
+                if (!mSelectedScanReasonId.equals("0")) {
+                   // mSNO.setText("0");
                     mSNO.setEnabled(false);
                 } else {
                     mSNO.setEnabled(true);
-                }*/
+                }
 
             }
 
