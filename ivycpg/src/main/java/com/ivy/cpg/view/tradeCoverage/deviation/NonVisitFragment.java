@@ -838,9 +838,11 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
                                             R.string.select_reason))) {
 
                                 for (RetailerMasterBO tempBo : retailer) {
-                                    deviationHelper.setDeviate(
-                                            tempBo.getRetailerID(), r,
-                                            tempBo.getBeatID(), "");
+                                    if(tempBo.getIsToday() !=1 && ("N".equals(tempBo.getIsDeviated()))){
+                                        deviationHelper.setDeviate(
+                                                tempBo.getRetailerID(), r,
+                                                tempBo.getBeatID(), "");
+                                    }
                                 }
 
                                 retailer = new ArrayList<>();
