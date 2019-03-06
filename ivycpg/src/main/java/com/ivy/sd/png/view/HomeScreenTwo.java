@@ -4897,6 +4897,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 .getIndicativeList())
             indicativeOrderAdapter.add(temp);
 
+        DiscountHelper discountHelper = DiscountHelper.getInstance(this);
+        if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
+
+            discountHelper.downloadBillWiseDiscount(this);
+            discountHelper.loadExistingBillWiseRangeDiscount(this);
+        }
+        // apply bill wise pay term discount
+        discountHelper.downloadBillWisePayTermDiscount(this);
+
         if (bmodel.configurationMasterHelper.SHOW_INVOICE_CREDIT_BALANCE &&
                 "CREDIT".equals(bmodel.getRetailerMasterBO().getRpTypeCode())) {
             if (bmodel.getRetailerMasterBO()
