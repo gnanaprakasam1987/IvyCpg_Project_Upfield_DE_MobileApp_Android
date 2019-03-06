@@ -695,7 +695,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 Window window = comReasonDialog.getWindow();
                 lp.copyFrom(window != null ? window.getAttributes() : null);
                 lp.width = displaymetrics.widthPixels - 100;
-                lp.height = (int) (displaymetrics.heightPixels / 2.5);//WindowManager.LayoutParams.WRAP_CONTENT;
+                lp.height = (int) (displaymetrics.heightPixels / 2);//WindowManager.LayoutParams.WRAP_CONTENT;
                 if (window != null) {
                     window.setAttributes(lp);
                 }
