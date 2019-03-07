@@ -40,7 +40,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -992,23 +992,23 @@ public class ReturnFragment extends IvyBaseFragment {
             if (holder.reasonBO.getCaseQty() == 0 && holder.reasonBO.getPieceQty() == 0
                     && holder.reasonBO.getOuterQty() == 0) {
 
-                holder.mfgDate.setText(DateUtil.convertFromServerDateToRequestedFormat(
-                        SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
-                holder.expDate.setText(DateUtil.convertFromServerDateToRequestedFormat(
-                        SDUtil.now(SDUtil.DATE_GLOBAL), outPutDateFormat));
+                holder.mfgDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                holder.expDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
             } else {
                 holder.mfgDate
-                        .setText((holder.reasonBO.getMfgDate() == null) ? DateUtil
+                        .setText((holder.reasonBO.getMfgDate() == null) ? DateTimeUtils
                                 .convertFromServerDateToRequestedFormat(
-                                        SDUtil.now(SDUtil.DATE_GLOBAL),
-                                        outPutDateFormat) : DateUtil.convertFromServerDateToRequestedFormat(
+                                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                        outPutDateFormat) : DateTimeUtils.convertFromServerDateToRequestedFormat(
                                 holder.reasonBO.getMfgDate(),
                                 ConfigurationMasterHelper.outDateFormat));
                 holder.expDate
-                        .setText((holder.reasonBO.getExpDate() == null) ? DateUtil
+                        .setText((holder.reasonBO.getExpDate() == null) ? DateTimeUtils
                                 .convertFromServerDateToRequestedFormat(
-                                        SDUtil.now(SDUtil.DATE_GLOBAL),
-                                        outPutDateFormat) : DateUtil.convertFromServerDateToRequestedFormat(
+                                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                        outPutDateFormat) : DateTimeUtils.convertFromServerDateToRequestedFormat(
                                 holder.reasonBO.getExpDate(),
                                 ConfigurationMasterHelper.outDateFormat));
             }
@@ -1180,19 +1180,19 @@ public class ReturnFragment extends IvyBaseFragment {
                     Toast.makeText(getActivity(),
                             R.string.future_date_not_allowed,
                             Toast.LENGTH_SHORT).show();
-                    bo.setMfgDate(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    bo.setMfgDate(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), ConfigurationMasterHelper.outDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    dateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), ConfigurationMasterHelper.outDateFormat));
                 } else {
-                    bo.setMfgDate(DateUtil.convertDateObjectToRequestedFormat(
+                    bo.setMfgDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), ConfigurationMasterHelper.outDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    dateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), ConfigurationMasterHelper.outDateFormat));
                 }
             } else if ("datePicker2".equals(this.getTag())) {
                 if (bo.getMfgDate() != null && bo.getMfgDate().length() > 0) {
-                    Date dateMfg = DateUtil.convertStringToDateObject(
+                    Date dateMfg = DateTimeUtils.convertStringToDateObject(
                             bo.getMfgDate(), ConfigurationMasterHelper.outDateFormat);
                     if (dateMfg != null && selectedDate.getTime() != null
                             && dateMfg.after(selectedDate.getTime())) {
@@ -1200,15 +1200,15 @@ public class ReturnFragment extends IvyBaseFragment {
                                 R.string.expdate_set_after_mfgdate,
                                 Toast.LENGTH_SHORT).show();
                     } else {
-                        bo.setExpDate(DateUtil.convertDateObjectToRequestedFormat(
+                        bo.setExpDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), ConfigurationMasterHelper.outDateFormat));
-                        dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                        dateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                                 selectedDate.getTime(), ConfigurationMasterHelper.outDateFormat));
                     }
                 } else {
-                    bo.setExpDate(DateUtil.convertDateObjectToRequestedFormat(
+                    bo.setExpDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), ConfigurationMasterHelper.outDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    dateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), ConfigurationMasterHelper.outDateFormat));
                 }
             }

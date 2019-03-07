@@ -29,7 +29,8 @@
             android:layout_below="@+id/pname"
             android:layout_gravity="center"
             android:padding="3dp"
-            android:text="@string/prod_code" />
+            android:text="@string/prod_code"
+            android:tag="pcode"/>
 
         <TextView
             android:id="@+id/batchnumber"

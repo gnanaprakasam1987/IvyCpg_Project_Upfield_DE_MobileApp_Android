@@ -25,7 +25,8 @@ import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.ReportUtil;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.DeviceUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -158,7 +159,7 @@ public class DynamicReportFragment extends Fragment {
             while (it.hasNext()) {
                 int recordId = it.next();
                 LinearLayout linearLayout = new LinearLayout(getActivity());
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ReportUtil.dpToPixel(getActivity(), 45));
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, DeviceUtils.dpToPixel(getActivity(), 45));
                 linearLayout.setLayoutParams(params);
                 linearLayout.setOrientation(LinearLayout.HORIZONTAL);
                 linearLayout.setBackgroundResource(R.drawable.list_selector);
@@ -168,7 +169,7 @@ public class DynamicReportFragment extends Fragment {
                     DynamicReportHeaderBO dynamicReportHeaderBO = headers.get(j);
 
                     int length = (dynamicReportHeaderBO.getLength() > 0) ? dynamicReportHeaderBO.getLength() : 0;
-                    int pixelLength = ReportUtil.dpToPixel(getActivity(), length);
+                    int pixelLength = DeviceUtils.dpToPixel(getActivity(), length);
                     String value = (dynamicReportHeaderBO.getColumnName() != null) ? dynamicReportHeaderBO.getColumnName() : "";
                     int textSizeSmall = (int) (getResources().getDimension(R.dimen.font_small) / getResources().getDisplayMetrics().density);
                     int textSizeMedium = (int) (getResources().getDimension(R.dimen.font_small) / getResources().getDisplayMetrics().density);
@@ -202,7 +203,7 @@ public class DynamicReportFragment extends Fragment {
 
                     TextView textViewF = new TextView(getActivity(), null, R.style.TextViewListTitle);
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                        textViewF.setId(ReportUtil.generateViewId());
+                        textViewF.setId(AppUtils.generateViewId());
                     } else {
                         textViewF.setId(View.generateViewId());
                     }
@@ -241,7 +242,7 @@ public class DynamicReportFragment extends Fragment {
                 detailsLayout.addView(linearLayout);
 
                 View dividerView = new View(getActivity());
-                dividerView.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, ReportUtil.dpToPixel(getActivity(), 1)));
+                dividerView.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, DeviceUtils.dpToPixel(getActivity(), 1)));
                 dividerView.setBackgroundColor(Color.rgb(168, 168, 168));
                 detailsLayout.addView(dividerView);
 

@@ -35,6 +35,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.view.OnSingleClickListener;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -1142,8 +1143,8 @@ public class OrderDeliveryDetailActivity extends IvyBaseActivityNoActionBar impl
     public void updateSaveStatus(boolean isSuccess) {
         if (isSuccess) {
 
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
 
             Intent i = new Intent(this,
                     CommonPrintPreviewActivity.class);

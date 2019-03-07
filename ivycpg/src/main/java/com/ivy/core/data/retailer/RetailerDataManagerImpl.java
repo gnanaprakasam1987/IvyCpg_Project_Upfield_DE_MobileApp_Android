@@ -12,6 +12,8 @@ import com.ivy.sd.png.bo.RetailerMissedVisitBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -22,7 +24,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Vector;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -34,7 +35,7 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 
 import static com.ivy.sd.png.provider.ConfigurationMasterHelper.CODE_SHOW_ALL_ROUTE_FILTER;
-import static com.ivy.utils.AppUtils.QT;
+import static com.ivy.utils.StringUtils.QT;
 
 public class RetailerDataManagerImpl implements RetailerDataManager {
 
@@ -95,7 +96,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                                     + " (select count (sbdid) from SbdMerchandisingMaster where ChannelId = A.ChannelId"
                                                     + " and TypeListId = (select ListId from StandardListMaster where ListCode='MERCH')) as rpstgt,"
                                                     + " ifnull(A.RPS_Merch_Achieved,0) as RPS_Merch_Achieved, ifnull(RC.weekNo,0) as weekNo,A.isDeadStore,A.isPlanned,"
-                                                    + " ifnull((select ListCode from StandardListMaster where ListID=A.RpTypeId),'') as RpTypeCode, A.sptgt, A.isOrderMerch,"
+                                                    + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? " ifnull((select ListCode from StandardListMaster where ListID=SM.RpTypeId),'') as RpTypeCode," : " ifnull((select ListCode from StandardListMaster where ListID=A.RpTypeId),'') as RpTypeCode,")
+                                                    + "A.sptgt, A.isOrderMerch,"
                                                     + " A.PastVisitStatus, A.isMerchandisingDone, A.isInitMerchandisingDone,"
                                                     + " case when RC.WalkingSeq='' then 9999 else RC.WalkingSeq end as WalkingSeq,"
                                                     + " A.sbd_dist_stock,A.RField1,"
@@ -116,10 +118,10 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                                     + " , RC2.contactname as sc_name, RC2.ContactName_LName as sc_LName, RC2.ContactNumber as sc_Number,"
                                                     + " RC2.CPID as sc_CPID, IFNULL(RC2.DOB,'') as sc_DOB, RC2.contact_title as sc_title, RC2.contact_title_lovid as sc_title_lovid,"
 
-                                                    + " IFNULL(RPG.GroupId,0) as retgroupID, RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
+                                                    + " RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
 
-                                                    + " IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
-                                                    + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,"
+                                                    + " IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RField8,RField9,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
+                                                    + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,RA.District,"
                                                     + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                                                     + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                                                     + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
@@ -130,7 +132,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
                                                     + " LEFT JOIN RetailerClientMappingMaster RC " + (configurationMasterHelper.IS_BEAT_WISE_RETAILER_MAPPING ? " on RC.beatID=RBM.beatId" : " on RC.Rid = A.RetailerId")
 
-                                                    + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) : "")
+                                                    + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) : "")
 
                                                     + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID AND RA.IsPrimary=1"
 
@@ -138,8 +140,6 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                                     + " LEFT JOIN (SELECT RetailerId,contactname,ContactName_LName,ContactNumber,CPID,DOB,contact_title,contact_title_lovid from RetailerContact WHERE IsPrimary=0 LIMIT 1) AS RC2 ON RC2.RetailerId=A.RetailerId"
 
                                                     + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? " left join SupplierMaster SM ON SM.rid = A.RetailerID" : "")
-
-                                                    + " LEFT JOIN RetailerPriceGroup RPG ON RPG.RetailerID = A.RetailerID and (RPG.distributorid=RetDistributorId OR RPG.distributorid = 0)"
 
                                                     + " LEFT JOIN RetailerVisit RV ON RV.RetailerID = A.RetailerID"
 
@@ -272,9 +272,6 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                             retailer.setContact2_title(c.getString(c.getColumnIndex("sc_title")));
                                             retailer.setContact2_titlelovid(c.getString(c.getColumnIndex("sc_title_lovid")));
 
-                                            //temp_retailer_pricegroup
-                                            retailer.setGroupId(c.getInt(c.getColumnIndex("retgroupID")));
-
                                             //temp_retailervisit
                                             retailer.setPlannedVisitCount(c.getInt(c
                                                     .getColumnIndex("PlannedVisitCount")));
@@ -288,6 +285,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                             retailer.setRField5(c.getString(c.getColumnIndex("RField5")));
                                             retailer.setRField6(c.getString(c.getColumnIndex("RField6")));
                                             retailer.setRField7(c.getString(c.getColumnIndex("RField7")));
+                                            retailer.setRField8(c.getString(c.getColumnIndex("RField8")));
+                                            retailer.setRField9(c.getString(c.getColumnIndex("RField9")));
 
                                             retailer.setPrioriryProductId(c.getInt(c.getColumnIndex("priorityBrand")));
                                             retailer.setSalesTypeId(c.getInt(c.getColumnIndex("SalesType")));
@@ -310,11 +309,14 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                             retailer.setRetailerTaxLocId(c.getInt(c.getColumnIndex("RetailerTaxLocId")));
                                             retailer.setSupplierTaxLocId(c.getInt(c.getColumnIndex("SupplierTaxLocId")));
                                             retailer.setRidSF(c.getString(c.getColumnIndex("ridSF")));
+                                            retailer.setDistrict(c.getString(c.getColumnIndex("District")));
 
                                             retailer.setIsToday(0);
                                             retailer.setHangingOrder(false);
                                             retailer.setIndicateFlag(0);
                                             retailer.setIsCollectionView("N");
+
+                                            updateRetailerPriceGRP(retailer);
 
                                             if (retailer.getIsNew().equalsIgnoreCase("Y")) {
                                                 retailer.setWeekNo(retailer.getVisitday() + "");
@@ -521,7 +523,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                             HashSet<DateWisePlanBO> plannedRetailerList = retailerBO.getPlannedDates();
                             if (plannedRetailerList != null) {
                                 for (DateWisePlanBO dateWisePlanBO : plannedRetailerList) {
-                                    int isToday = SDUtil.compareDate(dateWisePlanBO.getDate(),
+                                    int isToday = DateTimeUtils.compareDate(dateWisePlanBO.getDate(),
                                             appDataProvider.getUser().getDownloadDate(), "yyyy/MM/dd");
                                     if (isToday == 0) {
                                         retailerBO.setWalkingSequence(dateWisePlanBO.getWalkingSequence());
@@ -620,7 +622,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         initDb();
 
                     Cursor c = mDbUtil
-                            .selectSQL("select distinct SL.ListCode from AttendanceDetail AD INNER JOIN StandardListMaster SL ON SL.Listid=AD.session where AD.upload='X' and " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " between AD.fromdate and AD.todate");
+                            .selectSQL("select distinct SL.ListCode from AttendanceDetail AD INNER JOIN StandardListMaster SL ON SL.Listid=AD.session where AD.upload='X' and " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " between AD.fromdate and AD.todate");
                     if (c != null) {
                         while (c.moveToNext()) {
                             session = c.getString(0);
@@ -693,6 +695,43 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 return retailerMasterBOS;
             }
         });
+    }
+
+    /**
+     * update retailer price group
+     *
+     * @param retObj
+     */
+    private void updateRetailerPriceGRP(RetailerMasterBO retObj) {
+
+        try {
+            if (mDbUtil.isDbNullOrClosed())
+                initDb();
+
+            Cursor c;
+            int distId = 0;
+            c = mDbUtil.selectSQL("select DistributorID From RetailerPriceGroup where DistributorID<>0 AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()));
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext())
+                    distId = c.getInt(0);
+
+                c.close();
+            }
+
+
+            c = mDbUtil.selectSQL("SELECT IFNULL(GroupId,0) From RetailerPriceGroup WHERE DistributorID=" + distId + " AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext())
+                    retObj.setGroupId(c.getInt(0));
+
+                c.close();
+            }
+        } catch (Exception ignore) {
+
+        }
+
     }
 
     public void updateIndicativeOrderedRetailer(RetailerMasterBO retObj, ArrayList<IndicativeBO> indicativeBOS) {

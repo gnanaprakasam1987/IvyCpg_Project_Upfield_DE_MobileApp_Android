@@ -6,10 +6,10 @@ import android.database.Cursor;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +60,27 @@ public class PriceTrackingHelper {
         return instance;
     }
 
+    private  String checkDecimalValue(String value, int wholeValueCount,
+                                           int decimalValueCount) {
+        if (!value.contains("."))
+            return value;
+        else {
+            String fString = "", lString = "";
+            value = value.startsWith(".") ? "0" + value : value;
+            value = value.endsWith(".") ? value + "0" : value;
+            String[] valArr = value.split("\\.");
+            if (valArr[0].length() > wholeValueCount)
+                fString = valArr[0].substring(0, valArr[0].length() - 1);
+            if (valArr[1].length() > decimalValueCount)
+                lString = valArr[1].substring(0, valArr[0].length() - 1);
+            if (valArr[0].length() <= wholeValueCount && valArr[1].length() <= decimalValueCount) {
+                fString = valArr[0];
+                lString = valArr[1];
+            }
+            return fString + "." + lString;
+        }
+    }
+
     public void prepareAdapters() {
         mSearchTypeArray = new ArrayList<>();
         mSearchTypeArray.add(context.getResources().getString(R.string.all));
@@ -108,7 +129,7 @@ public class PriceTrackingHelper {
             sb.append(" AND distributorid=" + bmodel.getRetailerMasterBO().getDistributorId());
             if (!bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN) {
                 sb.append(" AND date = ");
-                sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                sb.append(QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
                 sb.append(" and upload= 'N'");
             }
 
@@ -238,13 +259,13 @@ public class PriceTrackingHelper {
 
             tid = bmodel.getAppDataProvider().getUser().getUserid() + ""
                     + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + ""
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             // delete transaction if exist
             sql = "SELECT Tid FROM " + mPriceChangeHeader
                     + " WHERE RetailerId = "
                     + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
-                    + " AND Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                    + " AND Date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
                     //+ " AND upload='N'";
 
 
@@ -269,8 +290,8 @@ public class PriceTrackingHelper {
 
             values = QT(tid) + ","
                     + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + ","
-                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                    + QT(bmodel.getTimeZone()) + ","
+                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                    + QT(DateTimeUtils.getTimeZone()) + ","
                     + bmodel.retailerMasterBO.getDistributorId() + ","
                     + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
                     + bmodel.getAppDataProvider().getUniqueId();
@@ -316,9 +337,9 @@ public class PriceTrackingHelper {
                     else if(sku.getPrice_oo().trim().endsWith(".") && sku.getPrice_oo().trim().length()>1)
                         sku.setPrice_oo(sku.getPrice_oo()+"0");
 
-                    sku.setPrice_ca(bmodel.checkDecimalValue(sku.getPrice_ca(), 8, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION));
-                    sku.setPrice_oo(bmodel.checkDecimalValue(sku.getPrice_oo(), 8, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION));
-                    sku.setPrice_pc(bmodel.checkDecimalValue(sku.getPrice_pc(), 8, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION));
+                    sku.setPrice_ca(checkDecimalValue(sku.getPrice_ca(), 8, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION));
+                    sku.setPrice_oo(checkDecimalValue(sku.getPrice_oo(), 8, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION));
+                    sku.setPrice_pc(checkDecimalValue(sku.getPrice_pc(), 8, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION));
 
                     if ((!sku.getPrice_ca().equals("0") && !sku.getPrice_ca().equals("0.0")) || (!sku.getMrp_ca().equals("0") && !sku.getMrp_ca().equals("0.0"))) {
                         values = QT(tid) + "," + sku.getProductID() + ","

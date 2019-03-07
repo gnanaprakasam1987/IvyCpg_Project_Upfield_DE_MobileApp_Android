@@ -23,12 +23,11 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.baidu.platform.comapi.map.A;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -122,7 +121,7 @@ public class AcknowledgementDetailFragment extends IvyBaseFragment {
 
             holder.invoiceHeaderBO = joinCallAcknowledgementList.get(position);
             txtUser.setText(holder.invoiceHeaderBO.getUsername());
-            holder.txtDate.setText(DateUtil.convertFromServerDateToRequestedFormat(holder.invoiceHeaderBO.getDate(),
+            holder.txtDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.invoiceHeaderBO.getDate(),
                     ConfigurationMasterHelper.outDateFormat));
             holder.txtBeat.setText(holder.invoiceHeaderBO.getBeat());
             holder.txtValue.setText(holder.invoiceHeaderBO.getValue());

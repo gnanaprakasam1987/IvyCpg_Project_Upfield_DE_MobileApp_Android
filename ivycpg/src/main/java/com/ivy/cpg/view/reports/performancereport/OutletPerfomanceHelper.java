@@ -39,7 +39,7 @@ public class OutletPerfomanceHelper {
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
             sb.append("select distinct UseriD,UserName,Retailerid,RetailerName,LocationName,Address,isPlanned,isVisited");
-            sb.append(",TimeIn,TimeOut,Duration,SalesValue,VisitedLat,VisitedLong,SalesVolume,FitScore from OutletPerfomanceReport order by UseriD,timein,timeout");
+            sb.append(",TimeIn,TimeOut,Duration,SalesValue,VisitedLat,VisitedLong,SalesVolume,FitScore,gpsCompliance from OutletPerfomanceReport order by UseriD,timein,timeout");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
@@ -62,8 +62,8 @@ public class OutletPerfomanceHelper {
                     outletReportBO.setLongitude(c.getDouble(13));
                     outletReportBO.setSalesVolume(c.getString(14));
                     outletReportBO.setFitScore(c.getString(15));
+                    outletReportBO.setCompliance(c.getInt(16));
                     lst.add(outletReportBO);
-
                 }
             }
         } catch (Exception ex) {

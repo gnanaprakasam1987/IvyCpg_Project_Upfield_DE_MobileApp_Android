@@ -314,9 +314,6 @@ public class StockProposalFragment extends IvyBaseFragment implements
                 public void beforeTextChanged(CharSequence s, int start,
                                               int count, int after) {
 
-                    if (mEdt_searchproductName.getText().toString().length() < 3) {
-                        stockPropMylist.clear();
-                    }
                     if (searchAsync.getStatus() == AsyncTask.Status.RUNNING) {
                         searchAsync.cancel(true);
                     }

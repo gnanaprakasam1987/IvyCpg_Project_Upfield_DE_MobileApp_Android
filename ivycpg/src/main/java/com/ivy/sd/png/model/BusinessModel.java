@@ -15,20 +15,15 @@ import android.content.res.TypedArray;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.database.SQLException;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.StatFs;
-import android.provider.Settings;
 import android.support.multidex.MultiDex;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.FileProvider;
 import android.text.Html;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -72,7 +67,8 @@ import com.ivy.cpg.view.callanalysis.CallAnalysisActivity;
 import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.collection.CollectionScreen;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
-import com.ivy.cpg.view.emptyreturn.EmptyReturnHelper;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.cpg.view.initiative.InitiativeHelper;
 import com.ivy.cpg.view.login.LoginScreen;
 import com.ivy.cpg.view.order.OrderHelper;
@@ -80,15 +76,12 @@ import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.cpg.view.photocapture.Gallery;
-import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
 import com.ivy.cpg.view.reports.invoicereport.InvoiceReportDetail;
-import com.ivy.cpg.view.reports.orderstatusreport.OrderStatusReportHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.supervisor.chat.BaseInterfaceAdapter;
 import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
-import com.ivy.cpg.view.van.stockproposal.StockProposalModuleHelper;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -114,7 +107,6 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.provider.ActivationHelper;
 import com.ivy.sd.png.provider.BatchAllocationHelper;
 import com.ivy.sd.png.provider.BeatMasterHelper;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
@@ -133,7 +125,6 @@ import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.provider.ProfileHelper;
 import com.ivy.sd.png.provider.ReasonHelper;
 import com.ivy.sd.png.provider.RemarksHelper;
-import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
@@ -142,12 +133,9 @@ import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.TimerCount;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CircleTransform;
-import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.NewOutlet;
 import com.ivy.sd.png.view.ReAllocationActivity;
@@ -157,8 +145,12 @@ import com.ivy.sd.print.EODStockReportPreviewScreen;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 import com.ivy.ui.activation.view.ActivationActivity;
 import com.ivy.ui.dashboard.data.SellerDashboardDataManagerImpl;
+import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
+import com.ivy.utils.StringUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -186,7 +178,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.TimeZone;
 import java.util.Vector;
 
 import javax.inject.Inject;
@@ -241,7 +232,6 @@ public class BusinessModel extends Application {
     public ConfigurationMasterHelper configurationMasterHelper;
     public ProductHelper productHelper;
     public UserMasterHelper userMasterHelper;
-    public ActivationHelper activationHelper;
 
     public SynchronizationHelper synchronizationHelper;
     public VanLoadStockApplyHelper stockreportmasterhelper;
@@ -380,7 +370,6 @@ public class BusinessModel extends Application {
         configurationMasterHelper = ConfigurationMasterHelper.getInstance(this);
         productHelper = ProductHelper.getInstance(this);
         userMasterHelper = UserMasterHelper.getInstance(this);
-        activationHelper = ActivationHelper.getInstance(this);
         synchronizationHelper = SynchronizationHelper.getInstance(this);
         stockreportmasterhelper = VanLoadStockApplyHelper.getInstance(this);
         labelsMasterHelper = LabelsMasterHelper.getInstance(this);
@@ -422,7 +411,6 @@ public class BusinessModel extends Application {
         return mInstance;
 
     }
-
 
 
     private void loadActivity(Activity ctxx, String act) {
@@ -951,8 +939,8 @@ public class BusinessModel extends Application {
                     invocieHeaderBO.setAppliedDiscountAmount(c.getDouble(8));
                     invocieHeaderBO.setDocRefNo(c.getString(9));
 
-                    int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
-                            SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
+                    int count = DateTimeUtils.getDateCount(invocieHeaderBO.getInvoiceDate(),
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd");
                     final double discountpercentage = CollectionHelper.getInstance(ctx).getDiscountSlabPercent(count + 1);
 
                     double remaingAmount = (invocieHeaderBO.getInvoiceAmount() - (invocieHeaderBO.getAppliedDiscountAmount() + invocieHeaderBO.getPaidAmount())) * discountpercentage / 100;
@@ -975,7 +963,7 @@ public class BusinessModel extends Application {
                             calendar.add(Calendar.DAY_OF_YEAR, retailerMasterBO.getCreditDays());
                             Date dueDate = format.parse(format.format(calendar.getTime()));
 
-                            invocieHeaderBO.setDueDate(DateUtil.convertDateObjectToRequestedFormat(
+                            invocieHeaderBO.setDueDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                                     dueDate, configurationMasterHelper.outDateFormat));
 
                         }
@@ -1006,7 +994,7 @@ public class BusinessModel extends Application {
     /**
      * @param data
      * @return
-     * @See {@link AppUtils#QT(String)}
+     * @See {@link StringUtils#QT(String)}
      * @deprecated
      */
     public String QT(String data) {
@@ -1231,7 +1219,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select sum(invNetamount) from InvoiceMaster where retailerid="
-                            + QT(retailerMasterBO.getRetailerID()) + " and InvoiceDate = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                            + QT(retailerMasterBO.getRetailerID()) + " and InvoiceDate = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             if (c != null) {
                 if (c.moveToNext()) {
                     double i = c.getFloat(0);
@@ -1375,7 +1363,8 @@ public class BusinessModel extends Application {
                             + " (select count (sbdid) from SbdMerchandisingMaster where ChannelId = A.ChannelId"
                             + " and TypeListId = (select ListId from StandardListMaster where ListCode='MERCH')) as rpstgt,"
                             + " ifnull(A.RPS_Merch_Achieved,0) as RPS_Merch_Achieved, ifnull(RC.weekNo,0) as weekNo,A.isDeadStore,A.isPlanned,"
-                            + " ifnull((select ListCode from StandardListMaster where ListID=A.RpTypeId),'') as RpTypeCode, A.sptgt, A.isOrderMerch,"
+                            + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? " ifnull((select ListCode from StandardListMaster where ListID=SM.RpTypeId),'') as RpTypeCode," : " ifnull((select ListCode from StandardListMaster where ListID=A.RpTypeId),'') as RpTypeCode,")
+                            + "A.sptgt, A.isOrderMerch,"
                             + " A.PastVisitStatus, A.isMerchandisingDone, A.isInitMerchandisingDone,"
                             + " case when RC.WalkingSeq='' then 9999 else RC.WalkingSeq end as WalkingSeq,"
                             + " A.sbd_dist_stock,A.RField1,"
@@ -1396,10 +1385,10 @@ public class BusinessModel extends Application {
                             + " , IFNULL(RC2.contactname,'') as sc_name, IFNULL(RC2.ContactName_LName,'') as sc_LName, RC2.ContactNumber as sc_Number,"
                             + " RC2.CPID as sc_CPID, IFNULL(RC2.DOB,'') as sc_DOB, RC2.contact_title as sc_title, RC2.contact_title_lovid as sc_title_lovid,"
 
-                            + " IFNULL(RPG.GroupId,0) as retgroupID, RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
+                            + "RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
 
-                            + " IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
-                            + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,"
+                            + " IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RField8,RField9,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
+                            + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,RA.District,"
                             + "IFNULL((select EAM.AttributeCode from EntityAttributeMaster EAM where EAM.AttributeId = RAT.AttributeId and "
                             + "(select AttributeCode from EntityAttributeMaster where AttributeId = EAM.ParentId"
                             + " and IsSystemComputed = 1) = 'Golden_Type'),0) as AttributeCode,A.sbdDistPercent,A.retailerTaxLocId as RetailerTaxLocId,"
@@ -1410,7 +1399,7 @@ public class BusinessModel extends Application {
 
                             + " LEFT JOIN RetailerClientMappingMaster RC " + (configurationMasterHelper.IS_BEAT_WISE_RETAILER_MAPPING ? " on RC.beatID=RBM.beatId" : " on RC.Rid = A.RetailerId")
 
-                            + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) : "")
+                            + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) : "")
 
                             + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID AND RA.IsPrimary=1"
 
@@ -1418,8 +1407,6 @@ public class BusinessModel extends Application {
                             + " LEFT JOIN (SELECT RetailerId,contactname,ContactName_LName,ContactNumber,CPID,DOB,contact_title,contact_title_lovid from RetailerContact WHERE IsPrimary=0 LIMIT 1) AS RC2 ON RC2.RetailerId=A.RetailerId"
 
                             + (configurationMasterHelper.IS_DIST_SELECT_BY_SUPPLIER ? " left join SupplierMaster SM ON SM.rid = A.RetailerID" : "")
-
-                            + " LEFT JOIN RetailerPriceGroup RPG ON RPG.RetailerID = A.RetailerID and (RPG.distributorid=RetDistributorId OR RPG.distributorid = 0)"
 
                             + " LEFT JOIN RetailerVisit RV ON RV.RetailerID = A.RetailerID"
 
@@ -1556,7 +1543,7 @@ public class BusinessModel extends Application {
                     retailer.setContact2_titlelovid(c.getString(c.getColumnIndex("sc_title_lovid")));
 
                     //temp_retailer_pricegroup
-                    retailer.setGroupId(c.getInt(c.getColumnIndex("retgroupID")));
+                    //retailer.setGroupId(c.getInt(c.getColumnIndex("retgroupID")));
 
                     //temp_retailervisit
                     retailer.setPlannedVisitCount(c.getInt(c
@@ -1571,6 +1558,8 @@ public class BusinessModel extends Application {
                     retailer.setRField5(c.getString(c.getColumnIndex("RField5")));
                     retailer.setRField6(c.getString(c.getColumnIndex("RField6")));
                     retailer.setRField7(c.getString(c.getColumnIndex("RField7")));
+                    retailer.setRField8(c.getString(c.getColumnIndex("RField8")));
+                    retailer.setRField9(c.getString(c.getColumnIndex("RField9")));
 
                     retailer.setPrioriryProductId(c.getInt(c.getColumnIndex("priorityBrand")));
                     retailer.setSalesTypeId(c.getInt(c.getColumnIndex("SalesType")));
@@ -1593,11 +1582,15 @@ public class BusinessModel extends Application {
                     retailer.setRetailerTaxLocId(c.getInt(c.getColumnIndex("RetailerTaxLocId")));
                     retailer.setSupplierTaxLocId(c.getInt(c.getColumnIndex("SupplierTaxLocId")));
                     retailer.setRidSF(c.getString(c.getColumnIndex("ridSF")));
+                    retailer.setDistrict(c.getString(c.getColumnIndex("District")));
 
                     retailer.setIsToday(0);
                     retailer.setHangingOrder(false);
                     retailer.setIndicateFlag(0);
                     retailer.setIsCollectionView("N");
+
+                    updateRetailerPriceGRP(retailer, db);
+
                     if (configurationMasterHelper.IS_HANGINGORDER) {
                         OrderHelper.getInstance(getContext()).updateHangingOrder(getContext(), retailer);
                     }
@@ -1664,6 +1657,40 @@ public class BusinessModel extends Application {
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+    }
+
+    /**
+     * update retailer price group
+     * @param retObj
+     * @param db
+     */
+    private void updateRetailerPriceGRP(RetailerMasterBO retObj, DBUtil db) {
+
+        try {
+            Cursor c;
+            int distId = 0;
+            c = db.selectSQL("select DistributorID From RetailerPriceGroup where DistributorID<>0 AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()));
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext())
+                    distId = c.getInt(0);
+
+                c.close();
+            }
+
+
+            c = db.selectSQL("SELECT IFNULL(GroupId,0) From RetailerPriceGroup WHERE DistributorID=" + distId + " AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext())
+                    retObj.setGroupId(c.getInt(0));
+
+                c.close();
+            }
+        } catch (Exception e) {
+            Commons.printException("Exception ", e);
+        }
+
     }
 
     @Deprecated
@@ -1950,7 +1977,7 @@ public class BusinessModel extends Application {
 
             sql = "SELECT sum(ifnull(score,0)),rm.retailerid FROM retailermaster rm "
                     + " left  join SurveyScoreHistory s on rm.retailerid =s.retailerid and  s.Date >="
-                    + QT(Commons.getFirstDayOfCurrentMonth())
+                    + QT(DateTimeUtils.getFirstDayOfCurrentMonth())
                     + " group by rm.retailerid";
 
             c = db.selectSQL(sql);
@@ -1969,7 +1996,7 @@ public class BusinessModel extends Application {
             sql = "SELECT sum(AH.achscore),rm.retailerid  FROM  retailermaster rm"
                     + " join answerheader AH on rm.retailerid = ah.retailerid "
                     + " Left Join SurveyScoreHistory SSH on SSH.SurveyId=AH.SurveyId and ah.retailerid=ssh.retailerid and AH.Date = "
-                    + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " group by rm.retailerid";
             c = db.selectSQL(sql);
             if (c != null) {
@@ -2206,6 +2233,7 @@ public class BusinessModel extends Application {
      * @See {@link RetailerDataManagerImpl#getPlannedRetailers(ArrayList)}
      * @deprecated
      */
+    @Deprecated
     private void getPlannedRetailer() {
 
         try {
@@ -2500,20 +2528,20 @@ public class BusinessModel extends Application {
             String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID,ridSF";
 
             for (int i = 0; i < retailers.size(); i++) {
-                id = AppUtils.QT(getAppDataProvider().getUser().getDistributorid()
+                id = StringUtils.QT(getAppDataProvider().getUser().getDistributorid()
                         + "" + getAppDataProvider().getUser().getUserid()
-                        + "" + SDUtil.now(SDUtil.DATE_TIME_ID) + i);
+                        + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID) + i);
 
                 NonproductivereasonBO outlet = retailers.get(i);
 
                 if (!outlet.getReasonid().equals("0")) {
                     bool = true;
-                    values = id + "," + AppUtils.QT(outlet.getRetailerid()) + ","
-                            + outlet.getBeatId() + "," + AppUtils.QT(outlet.getDate())
-                            + "," + AppUtils.QT(outlet.getReasonid()) + ","
-                            + AppUtils.QT(getStandardListId(outlet.getReasontype()))
-                            + "," + AppUtils.QT("N") + "," + outlet.getDistributorID()
-                            + "," + AppUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
+                    values = id + "," + StringUtils.QT(outlet.getRetailerid()) + ","
+                            + outlet.getBeatId() + "," + StringUtils.QT(outlet.getDate())
+                            + "," + StringUtils.QT(outlet.getReasonid()) + ","
+                            + StringUtils.QT(getStandardListId(outlet.getReasontype()))
+                            + "," + StringUtils.QT("N") + "," + outlet.getDistributorID()
+                            + "," + StringUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
 
                     db.insertSQL("Nonproductivereasonmaster", columns, values);
                 }
@@ -2547,54 +2575,54 @@ public class BusinessModel extends Application {
                     + ""
                     + userMasterHelper.getUserMasterBO().getUserid()
                     + ""
-                    + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
 
             db.deleteSQL(
                     "Nonproductivereasonmaster",
-                    "RetailerID=" + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
+                    "RetailerID=" + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
                             + " and ReasonTypes="
-                            + AppUtils.QT(getStandardListId(outlet.getReasontype()))
+                            + StringUtils.QT(getStandardListId(outlet.getReasontype()))
                             + " and RouteID="
                             + getAppDataProvider().getRetailMaster().getBeatID(), false);
             db.deleteSQL(
                     "Nonproductivereasonmaster",
                     "RetailerID="
-                            + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
+                            + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
                             + " and ReasonTypes="
-                            + AppUtils.QT(getStandardListId(outlet
+                            + StringUtils.QT(getStandardListId(outlet
                             .getCollectionReasonType()))
                             + " and RouteID="
                             + getAppDataProvider().getRetailMaster().getBeatID(), false);
 
             String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,distributorID,imagepath,remarks,ridSF";
 
-            values = id + "," + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID()) + ","
+            values = id + "," + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID()) + ","
                     + getAppDataProvider().getRetailMaster().getBeatID() + ","
-                    + AppUtils.QT(outlet.getDate()) + "," + AppUtils.QT(outlet.getReasonid())
-                    + "," + AppUtils.QT(getStandardListId(outlet.getReasontype())) + ","
-                    + AppUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + AppUtils.QT(outlet.getImagePath()) + "," + AppUtils.QT(remarks);
+                    + StringUtils.QT(outlet.getDate()) + "," + StringUtils.QT(outlet.getReasonid())
+                    + "," + StringUtils.QT(getStandardListId(outlet.getReasontype())) + ","
+                    + StringUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + StringUtils.QT(outlet.getImagePath()) + "," + StringUtils.QT(remarks);
 
             db.insertSQL("Nonproductivereasonmaster", columns, values);
             if (!outlet.getCollectionReasonID().equals("0")) {
-                String uid = AppUtils.QT(getAppDataProvider().getUser()
+                String uid = StringUtils.QT(getAppDataProvider().getUser()
                         .getDistributorid()
                         + ""
                         + getAppDataProvider().getUser().getUserid()
                         + ""
-                        + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                        + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
                 values = uid
                         + ","
-                        + AppUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
+                        + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())
                         + ","
                         + getAppDataProvider().getRetailMaster().getBeatID()
                         + ","
-                        + AppUtils.QT(outlet.getDate())
+                        + StringUtils.QT(outlet.getDate())
                         + ","
-                        + AppUtils.QT(outlet.getCollectionReasonID())
+                        + StringUtils.QT(outlet.getCollectionReasonID())
                         + ","
-                        + AppUtils.QT(getStandardListId(outlet.getCollectionReasonType()))
-                        + "," + AppUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + AppUtils.QT(outlet.getImagePath()) + "," + AppUtils.QT(remarks)
-                        + "," + AppUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
+                        + StringUtils.QT(getStandardListId(outlet.getCollectionReasonType()))
+                        + "," + StringUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + StringUtils.QT(outlet.getImagePath()) + "," + StringUtils.QT(remarks)
+                        + "," + StringUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
                 db.insertSQL("Nonproductivereasonmaster", columns, values);
             }
 
@@ -2751,7 +2779,7 @@ public class BusinessModel extends Application {
             String sql = "select StockID from "
                     + DataMembers.tbl_closingstockheader + " where RetailerID="
                     + QT(retailerId) + " and DistributorID=" + getRetailerMasterBO().getDistributorId();
-            sql += " AND date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+            sql += " AND date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             sql += " and upload= 'N'";
             Cursor orderHeaderCursor = db.selectSQL(sql);
             if (orderHeaderCursor.getCount() > 0) {
@@ -2895,7 +2923,7 @@ public class BusinessModel extends Application {
             sb.append(DataMembers.tbl_closingstockheader + " where RetailerID=");
             sb.append(QT(retailerId));
             sb.append(" AND DistributorID=" + getRetailerMasterBO().getDistributorId());
-            sb.append(" AND date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sb.append(" AND date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             sb.append(" and upload= 'N'");
 
 
@@ -2914,7 +2942,7 @@ public class BusinessModel extends Application {
             // if (remarksHelper.getRemarksBO().getModuleCode()
             // .equals(StandardListMasterConstants.MENU_STOCK))
             // remarksHelper.getRemarksBO().setTid(stockID);
-            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,isDone,IsOwn,Facing,RField1,RField2,isAvailable from "
+            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,isAuditDone,IsOwn,Facing,RField1,RField2,isAvailable from "
                     + DataMembers.tbl_closingstockdetail
                     + " where stockId="
                     + QT(stockID) + "";
@@ -3314,6 +3342,10 @@ public class BusinessModel extends Application {
 
     }
 
+    /**
+     * @See {@link com.ivy.core.base.view.BaseActivity#showAlert(String, String)}
+     * @deprecated
+     */
     public void showAlert(String msg, int id) {
         showAlertWithImage("", msg, id, false);
     }
@@ -3354,6 +3386,11 @@ public class BusinessModel extends Application {
         return mRetailerBOByRetailerid;
     }
 
+    @Deprecated
+    /**
+     * @deprecated
+     * @see {@link AppUtils#getApplicationVersionName(Context)}
+     */
     public String getApplicationVersionName() {
         String versionName = "";
         try {
@@ -3368,6 +3405,11 @@ public class BusinessModel extends Application {
 
     // *****************************************************
 
+    @Deprecated
+    /**
+     * @deprecated
+     * @see {@link AppUtils#getApplicationVersionNumber(Context)}
+     */
     public String getApplicationVersionNumber() {
         int versionNumber = 0;
         try {
@@ -3714,102 +3756,6 @@ public class BusinessModel extends Application {
         db.closeDB();
     }
 
-    /**
-     * Get Gold Store acheived count from retailer master and Total number of
-     * retailer planned for today. Value used to display in VisitActivity Screen
-     *
-     * @return String goldStores/TotalStore
-     */
-
-    public double getStrikeRateValue() {
-
-        double strikeValue = 0, planned = 0, storesInvoiced = 0;
-
-        try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
-            );
-            db.createDataBase();
-            db.openDataBase();
-
-            Cursor c = db
-                    .selectSQL("SELECT COUNT(RM.RETAILERID) FROM RETAILERMASTER RM"
-                            + " inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid "
-                            + " WHERE (RMI.isToday=1)");
-            if (c != null) {
-                if (c.getCount() > 0) {
-                    c.moveToNext();
-                    planned = c.getFloat(0);
-                }
-            }
-            c.close();
-
-
-            Cursor c1 = null;
-            if (configurationMasterHelper.IS_INVOICE) {
-                c1 = db.selectSQL("select  COUNT(distinct RETAILERID)  from InvoiceMaster");
-            } else {
-                c1 = db.selectSQL("select  COUNT(distinct RETAILERID)  from OrderHeader");
-            }
-            if (c1 != null) {
-                if (c1.getCount() > 0) {
-                    c1.moveToNext();
-                    storesInvoiced = c1.getFloat(0);
-                }
-            }
-            c1.close();
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-
-        strikeValue = (storesInvoiced / planned);
-        return strikeValue;
-    }
-
-    /**
-     * this method will count number of today's retailer for which SBD Dist is
-     * Mapped vs number of retailers where SBDDistributionActual is equals to
-     * SBDDistributionTarget
-     *
-     * @return SBDDistributionActual/SBDDistributionTarget
-     */
-    public int[] getSDBDistTargteAndAcheived() {
-
-        int i[] = new int[2];
-        int target = 0;
-        int acheived = 0;
-        try {
-            for (RetailerMasterBO tempObj : retailerMaster) {
-                if (tempObj.getIsToday() == 1
-                        || (tempObj.getIsDeviated() != null && tempObj.getIsDeviated().equals("Y"))) {
-
-                    if (tempObj.getSbdDistributionTarget() > 0) {
-
-                        target = target + 1;
-
-                        float sbdDistTarget = (float) tempObj
-                                .getSbdDistributionTarget()
-                                * configurationMasterHelper
-                                .getSbdDistTargetPCent() / 100;
-                        Commons.print("Business model," +
-                                tempObj.getSbdDistributionAchieve()
-                                + "target : " + sbdDistTarget);
-                        if (tempObj.getSbdDistributionAchieve() != 0)
-                            if (sbdDistTarget <= (float) tempObj
-                                    .getSbdDistributionAchieve())
-                                acheived = acheived + 1;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        i[0] = acheived;
-        i[1] = target;
-        return i;
-    }
-
     /* ******* Invoice Number To Print End ******* */
 
     public float getCollectionValue() {
@@ -3820,7 +3766,7 @@ public class BusinessModel extends Application {
         float total = 0;
         Cursor c = db
                 .selectSQL("select ifnull(sum(Amount),0) from Payment where retailerid="
-                        + AppUtils.QT(getRetailerMasterBO().getRetailerID()) + " and Date = " + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                        + StringUtils.QT(getRetailerMasterBO().getRetailerID()) + " and Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         if (c != null) {
             if (c.getCount() > 0) {
                 c.moveToNext();
@@ -3848,7 +3794,7 @@ public class BusinessModel extends Application {
             );
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_RoadActivityDetail, "imgname ="
-                    + QT("RoadActivity" + "/" + SDUtil.now(SDUtil.DATE_GLOBAL_PLAIN)
+                    + QT("RoadActivity" + "/" + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_PLAIN)
                     + "/" + userMasterHelper.getUserMasterBO().getUserid()
                     + "/" + ImageName), false); // QT(ImageName));
 
@@ -3996,7 +3942,7 @@ public class BusinessModel extends Application {
 
         try {
             Cursor closingStockCursor = db
-                    .selectSQL("select Tid from RetailerScoreHeader where RetailerID=" + getRetailerMasterBO().getRetailerID() + " and Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                    .selectSQL("select Tid from RetailerScoreHeader where RetailerID=" + getRetailerMasterBO().getRetailerID() + " and Date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
             if (closingStockCursor.getCount() > 0) {
                 closingStockCursor.moveToNext();
@@ -4007,7 +3953,7 @@ public class BusinessModel extends Application {
             }
             closingStockCursor.close();
 
-            String tid = (headerID.trim().length() == 0) ? QT(userMasterHelper.getUserMasterBO().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID)) : headerID;
+            String tid = (headerID.trim().length() == 0) ? QT(userMasterHelper.getUserMasterBO().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)) : headerID;
             int moduleWeightage = fitscoreHelper.getModuleWeightage(module);
             double achieved = (((double) sum / (double) 100) * moduleWeightage);
             fitscoreDetailValues = (tid) + ", " + QT(module) + ", " + moduleWeightage + ", " + achieved + ", " + QT("N");
@@ -4015,13 +3961,13 @@ public class BusinessModel extends Application {
 
             if (headerID.trim().length() == 0) {
                 String retailerID = getRetailerMasterBO().getRetailerID();
-                String date = QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                String date = QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
                 fitscoreHeaderValues = (tid) + ", " + QT(retailerID) + ", " + date + ", " + achieved + ", " + QT("N");
                 db.insertSQL(DataMembers.tbl_retailerscoreheader, fitscoreHeaderColumns, fitscoreHeaderValues);
             } else {
                 Cursor achievedCursor = db
                         .selectSQL("select sum(0+ifnull(B.Score,0)) from RetailerScoreHeader A inner join RetailerScoreDetails B on A.Tid = B.Tid where A.RetailerID="
-                                + getRetailerMasterBO().getRetailerID() + " and A.Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                                + getRetailerMasterBO().getRetailerID() + " and A.Date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
                 if (achievedCursor.getCount() > 0) {
                     achievedCursor.moveToNext();
@@ -4029,7 +3975,7 @@ public class BusinessModel extends Application {
                 }
                 achievedCursor.close();
                 db.updateSQL("Update " + DataMembers.tbl_retailerscoreheader + " set Score = " + headerScore + " where " +
-                        " Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "" +
+                        " Date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "" +
                         " and RetailerID = " + QT(getRetailerMasterBO().getRetailerID()));
             }
         } catch (Exception e) {
@@ -4200,7 +4146,7 @@ public class BusinessModel extends Application {
             TransferUtility tm = new TransferUtility(ec2, getApplicationContext
                     ());
 
-            folder = new File(AppUtils.photoFolderPath + "/");
+            folder = new File(FileUtils.photoFolderPath + "/");
 
             sfFiles = folder.listFiles();
 
@@ -4246,7 +4192,7 @@ public class BusinessModel extends Application {
                     + userMasterHelper.getUserMasterBO().getUserid();
 
 
-            if (imageName.startsWith("AT_")) {
+            if (imageName.startsWith("AT_") || imageName.startsWith("NAT_")) {
                 mBucketName = mBucketDetails + "/" + "Asset" + path;
             } else if (imageName.startsWith("NO_")) {
                 mBucketName = mBucketDetails + "/" + "RetailerImages" +
@@ -4685,7 +4631,7 @@ public class BusinessModel extends Application {
 
     /**
      * @See {@link  com.ivy.utils.AppUtils;}
-     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils#isExternalStorageAvailable}
+     * @since CPG131 replaced by {@link FileUtils#isExternalStorageAvailable}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
      */
@@ -4733,7 +4679,7 @@ public class BusinessModel extends Application {
      * @param n
      * @param fNameStarts
      * @return
-     * @See {@link AppUtils#checkForNFilesInFolder(String, int, String)}
+     * @See {@link FileUtils#checkForNFilesInFolder(String, int, String)}
      * @deprecated
      */
     public boolean checkForNFilesInFolder(String folderPath, int n,
@@ -4781,7 +4727,7 @@ public class BusinessModel extends Application {
     /**
      * @param folderPath
      * @param fnamesStarts
-     * @See {@link AppUtils#deleteFiles(String, String)}
+     * @See {@link FileUtils#deleteFiles(String, String)}
      * @deprecated
      */
     public void deleteFiles(String folderPath, String fnamesStarts) {
@@ -4897,18 +4843,6 @@ public class BusinessModel extends Application {
     }
 
 
-    public String getTimeZone() {
-        try {
-            return TimeZone.getDefault().getDisplayName(false, TimeZone.SHORT,
-                    Locale.ENGLISH);
-        } catch (Exception e) {
-
-        }
-        return "UTC";
-    }
-
-
-
     public int getTotalLines() {
         try {
             boolean isVansales;
@@ -4933,10 +4867,10 @@ public class BusinessModel extends Application {
             Cursor c;
             if (isVansales) {
                 c = db.selectSQL("select ifnull(sum(LinesPerCall),0) from invoicemaster where retailerid="
-                        + AppUtils.QT(getRetailerMasterBO().getRetailerID()) + " and InvoiceDate = " + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                        + StringUtils.QT(getRetailerMasterBO().getRetailerID()) + " and InvoiceDate = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             } else {
                 c = db.selectSQL("select ifnull(sum(LinesPerCall),0) from orderHeader where retailerid="
-                        + AppUtils.QT(getRetailerMasterBO().getRetailerID())
+                        + StringUtils.QT(getRetailerMasterBO().getRetailerID())
                         + " and upload='N' and is_vansales = 0");
             }
             if (c.getCount() > 0) {
@@ -5146,37 +5080,6 @@ public class BusinessModel extends Application {
     }
 
 
-    public boolean validDecimalValue(String value, int wholeValueCount,
-                                     int decimalValueCount) {
-        String strPattern = "(^([0-9]{0," + wholeValueCount
-                + "})?)(\\.[0-9]{0," + decimalValueCount + "})?$";
-        if (value.matches(strPattern))
-            return true;
-        else
-            return false;
-    }
-
-    public String checkDecimalValue(String value, int wholeValueCount,
-                                    int decimalValueCount) {
-        if (!value.contains("."))
-            return value;
-        else {
-            String fString = "", lString = "";
-            value = value.startsWith(".") ? "0" + value : value;
-            value = value.endsWith(".") ? value + "0" : value;
-            String[] valArr = value.split("\\.");
-            if (valArr[0].length() > wholeValueCount)
-                fString = valArr[0].substring(0, valArr[0].length() - 1);
-            if (valArr[1].length() > decimalValueCount)
-                lString = valArr[1].substring(0, valArr[0].length() - 1);
-            if (valArr[0].length() <= wholeValueCount && valArr[1].length() <= decimalValueCount) {
-                fString = valArr[0];
-                lString = valArr[1];
-            }
-            return fString + "." + lString;
-        }
-    }
-
     /**
      * download retailer wise seller type
      */
@@ -5223,9 +5126,13 @@ public class BusinessModel extends Application {
                 sb.append("select did,dname,type,0,parentid from DistributorMaster ");
 
             } else {
-                sb.append("select sid,sname,stype,isPrimary,parentid,creditlimit,supplierTaxLocId,IsCompositionScheme from Suppliermaster ");
-                sb.append("where rid=" + QT(retailerMasterBO.getRetailerID()));
-                sb.append(" or rid= 0 order by isPrimary desc");
+                sb.append("select SM.sid,SM.sname,SM.stype,SM.isPrimary,SM.parentid," +
+                        "SM.creditlimit,SM.supplierTaxLocId,SM.IsCompositionScheme,IFNULL(SLM.ListCode,'') as RpTypeCode " +
+                        "from Suppliermaster SM ");
+                sb.append("LEFT JOIN StandardListMaster SLM ON SLM.ListId=SM.RpTypeId ");
+                sb.append("where rid=");
+                sb.append(StringUtils.QT(retailerMasterBO.getRetailerID()));
+                sb.append(" or SM.rid= 0 order by SM.isPrimary desc");
             }
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
@@ -5241,14 +5148,16 @@ public class BusinessModel extends Application {
                     supplierMasterBO.setIsPrimary(c.getInt(3));
                     supplierMasterBO.setDistParentID(c.getInt(4));
 
-                    if (c.getColumnCount() == 6)
+                    if (c.getColumnCount() == 8) {
                         supplierMasterBO.setCreditLimit(c.getFloat(5));
+                        supplierMasterBO.setSupplierTaxLocId(c.getInt(6));
 
-                    supplierMasterBO.setSupplierTaxLocId(c.getInt(6));
+                        if (c.getInt(7) == 1)
+                            supplierMasterBO.setCompositeRetailer(true);
+                        else supplierMasterBO.setCompositeRetailer(false);
 
-                    if (c.getInt(7) == 1)
-                        supplierMasterBO.setCompositeRetailer(true);
-                    else supplierMasterBO.setCompositeRetailer(false);
+                        supplierMasterBO.setRpTypeCode(c.getString(8));
+                    }
 
                     mSupplierList.add(supplierMasterBO);
                 }
@@ -5480,7 +5389,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             String columns = "Message, Imageurl, TimeStamp, Type";
 
-            values = QT(msg) + "," + url + QT(SDUtil.now(SDUtil.DATE_TIME)) + QT(type);
+            values = QT(msg) + "," + url + QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME)) + QT(type);
 
             db.insertSQL("Notification", columns, values);
 
@@ -5524,7 +5433,7 @@ public class BusinessModel extends Application {
                 .selectSQL("select RetailerID from OutletTimestamp where RetailerID="
                         + rid.getRetailerID()
                         + " and VisitDate="
-                        + this.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                        + this.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         if (c.getCount() > 0)
             while (c.moveToNext()) {
                 return 1;
@@ -5626,7 +5535,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             Calendar calendar = Calendar.getInstance();
             Cursor c = db
-                    .selectSQL("select distinct SL.ListCode from AttendanceDetail AD INNER JOIN StandardListMaster SL ON SL.Listid=AD.session where AD.upload='X' and " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " between AD.fromdate and AD.todate");
+                    .selectSQL("select distinct SL.ListCode from AttendanceDetail AD INNER JOIN StandardListMaster SL ON SL.Listid=AD.session where AD.upload='X' and " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " between AD.fromdate and AD.todate");
             if (c != null) {
                 while (c.moveToNext()) {
                     session = c.getString(0);
@@ -5660,8 +5569,12 @@ public class BusinessModel extends Application {
     protected static final int REQUEST_CHECK_SETTINGS = 1000;
     GoogleApiClient googleApiClient;
     private static final int UPDATE_INTERVAL = 1000 * 2;
-    private static final int FASTEST_INTERVAL = 1000 * 1;
+    private static final int FASTEST_INTERVAL = 1000;
 
+    /**
+     * @deprecated
+     * @see {@link com.ivy.core.base.view.BaseActivity#requestLocation(Activity)}
+     */
     public void requestLocation(final Activity ctxt) {
 
         if (googleApiClient == null) {
@@ -5821,7 +5734,8 @@ public class BusinessModel extends Application {
         }
     }
 
-    /* @See {@link com.ivy.utils.AppUtils}
+    /**
+     * @See {@link com.ivy.utils.AppUtils}
      * @since CPG131 replaced by {@link com.ivy.utils.AppUtils#validateInput}
      * Will be removed from @version CPG133 Release
      * @deprecated This has been Migrated to MVP pattern
@@ -6014,14 +5928,26 @@ public class BusinessModel extends Application {
 
                             mComputeID.append(appendZero(seqNo, "0000"));
                         }
+                    } //Retailer Type ID
+                    else if (mRules.get(i).contains("{RETAILER_TYPE,")) {
+
+                        String value = getTypeCodeByRPType(mRules.get(i).substring(mRules.get(i).lastIndexOf(",") + 1, mRules.get(i).lastIndexOf("}")).replace(" ", ""));
+                        mComputeID.append(value);
+                    } else if (mRules.get(i).contains("{SOURCE")) {
+
+                        mComputeID.append("M");
                     }
 
 
                     // Download Date
-                    if (mRules.get(i).contains("YYYY") || mRules.get(i).contains("yyyy")) {
+                    if (mRules.get(i).contains("YYYY") || mRules.get(i).contains("yyyy")
+                            || mRules.get(i).contains("YY") || mRules.get(i).contains("yy")) {
                         String str = mRules.get(i).replace("{", "").replace("}", "");
-                        str = str.replace("YYYY", "yyyy");
-                        mComputeID.append(DateUtil.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(), str));
+                        if (str.equalsIgnoreCase("YY"))
+                            str = str.replace("YY", "yy");
+                        else
+                            str = str.replace("YYYY", "yyyy");
+                        mComputeID.append(DateTimeUtils.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(), str));
                     }
                    /* else if (mRules.get(i).contains("yyyy")) {
                         mComputeID.append(DateUtil.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(),
@@ -6070,11 +5996,11 @@ public class BusinessModel extends Application {
                 if (type.equals("SR"))
                     mComputeID.append("SR"
                             + userMasterHelper.getUserMasterBO().getUserid()
-                            + SDUtil.now(SDUtil.DATE_TIME_ID));
+                            + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
                 else if (type.equals("CN"))
                     mComputeID.append("CR"
                             + userMasterHelper.getUserMasterBO().getUserid()
-                            + SDUtil.now(SDUtil.DATE_TIME_ID));
+                            + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
                 if (type.equals("ORD") || type.equals("INV") || type.equals("COL")) {
                     seqNo = 0L;
@@ -6091,7 +6017,7 @@ public class BusinessModel extends Application {
 
 
                     // Download Date
-                    mComputeID.append(DateUtil.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(), "MMddyyyy"));
+                    mComputeID.append(DateTimeUtils.convertFromServerDateToRequestedFormat(userMasterHelper.getUserMasterBO().getDownloadDate(), "MMddyyyy"));
                 }
                 seqNo = 0L;
 
@@ -6118,6 +6044,29 @@ public class BusinessModel extends Application {
         }
 
         return mComputeID.toString();
+    }
+
+    /**
+     *
+     * @param ruleString
+     * @return this method will return retailer type based Retailer Type Code
+     */
+    private String getTypeCodeByRPType(String ruleString) {
+        final String CASH_TYPE = "CASH";
+        final String CREDIT_TYPE = "CREDIT";
+        final String READY_TO_SALES_TYPE = "READYSALE";
+        String retType;
+
+        if (getRetailerMasterBO().getRpTypeCode().equalsIgnoreCase(CASH_TYPE)) {
+            retType = (ruleString.split("\\|")[0]).split("_")[1];
+        } else if (getRetailerMasterBO().getRpTypeCode().equalsIgnoreCase(CREDIT_TYPE)) {
+            retType = (ruleString.split("\\|")[1]).split("_")[1];
+        } else if (getRetailerMasterBO().getRpTypeCode().equalsIgnoreCase(READY_TO_SALES_TYPE)) {
+            retType = (ruleString.split("\\|")[1]).split("_")[1];
+        } else {
+            retType = "";
+        }
+        return retType;
     }
 
     /**
@@ -6869,68 +6818,6 @@ public class BusinessModel extends Application {
         this.selectedUserId = selectedUserId;
     }
 
-    /**
-     * DecodeFile is convert the large size image to fixed size which mentioned
-     * above
-     */
-    /**
-     * @See {@link com.ivy.utils.AppUtils}
-     * @since CPG131 replaced by {@link com.ivy.utils.AppUtils}
-     * Will be removed from @version CPG133 Release
-     * @deprecated This has been Migrated to MVP pattern
-     */
-    public Bitmap decodeFile(File f) {
-        int IMAGE_MAX_SIZE = 500;
-        Bitmap b = null;
-        try {
-            // Decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-
-            FileInputStream fis = new FileInputStream(f);
-            BitmapFactory.decodeStream(fis, null, o);
-            fis.close();
-
-            int scale = 1;
-            if (o.outHeight > IMAGE_MAX_SIZE || o.outWidth > IMAGE_MAX_SIZE) {
-                scale = (int) Math.pow(
-                        2,
-                        (int) Math.ceil(Math.log(IMAGE_MAX_SIZE
-                                / (double) Math.max(o.outHeight, o.outWidth))
-                                / Math.log(0.5)));
-            }
-
-            // Decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize = scale;
-            fis = new FileInputStream(f);
-            b = BitmapFactory.decodeStream(fis, null, o2);
-            fis.close();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-        return b;
-    }
-
-    public boolean isMockSettingsON() {
-        // returns true if mock location enabled, false if not enabled.
-        if (Settings.Secure.getString(getContentResolver(),
-                Settings.Secure.ALLOW_MOCK_LOCATION).equals("0"))
-            return false;
-        else
-            return true;
-    }
-
-    /* Checks if all values are null */
-    public boolean isMapEmpty(HashMap<Integer, Integer> aMap) {
-        for (Integer v : aMap.values()) {
-            if (v != 0) {
-                return false;
-            }
-        }
-        return true;
-    }
-
 
     //Pending invoice report
 
@@ -6967,8 +6854,8 @@ public class BusinessModel extends Application {
                     invocieHeaderBO.setAppliedDiscountAmount(c.getDouble(8));
                     invocieHeaderBO.setRetailerName(c.getString(c.getColumnIndex("RetailerName")));
 
-                    int count = DateUtil.getDateCount(invocieHeaderBO.getInvoiceDate(),
-                            SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
+                    int count = DateTimeUtils.getDateCount(invocieHeaderBO.getInvoiceDate(),
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd");
                     final double discountpercentage = CollectionHelper.getInstance(ctx).getDiscountSlabPercent(count + 1);
 
                     double remaingAmount = (invocieHeaderBO.getInvoiceAmount() - (invocieHeaderBO.getAppliedDiscountAmount() + invocieHeaderBO.getPaidAmount())) * discountpercentage / 100;
@@ -6991,7 +6878,7 @@ public class BusinessModel extends Application {
                             calendar.add(Calendar.DAY_OF_YEAR, crediiDays);
                             Date dueDate = format.parse(format.format(calendar.getTime()));
 
-                            invocieHeaderBO.setDueDate(DateUtil.convertDateObjectToRequestedFormat(
+                            invocieHeaderBO.setDueDate(DateTimeUtils.convertDateObjectToRequestedFormat(
                                     dueDate, configurationMasterHelper.outDateFormat));
 
                         }
@@ -7126,7 +7013,7 @@ public class BusinessModel extends Application {
                     + ""
                     + userMasterHelper.getUserMasterBO().getUserid()
                     + ""
-                    + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
 
 
             String columns = "UID,UserId,Date,ReasonID,Remarks,DistributorID";
@@ -7156,33 +7043,7 @@ public class BusinessModel extends Application {
         }
     }
 
-    /**
-     * To check file availability
-     *
-     * @param path File path
-     * @return Availability
-     */
-    public boolean isImagePresent(String path) {
-        File f = new File(path);
-        return f.exists();
-    }
 
-    /**
-     * Getting file URI
-     *
-     * @param path File path
-     * @return URI
-     */
-    public Uri getUriFromFile(String path) {
-        File f = new File(path);
-        if (Build.VERSION.SDK_INT >= 24) {
-            return FileProvider.getUriForFile(ctx, BuildConfig.APPLICATION_ID + ".provider", f);
-
-        } else {
-            return Uri.fromFile(f);
-        }
-
-    }
 
     /**
      * Returns email credentials given
@@ -7327,7 +7188,7 @@ public class BusinessModel extends Application {
             sb.append("SELECT Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt,");
             sb.append(" Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os ");
             sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
-            sb.append(" Where Inv.InvoiceDate = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sb.append(" Where Inv.InvoiceDate = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             Cursor c = db
                     .selectSQL(sb.toString());
 
@@ -7449,6 +7310,7 @@ public class BusinessModel extends Application {
 
         return "";
     }
+
     public void updateRetailersTotWgt() {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
@@ -7480,7 +7342,7 @@ public class BusinessModel extends Application {
             );
             db.openDataBase();
             Cursor c = db.selectSQL("select pieceqty,caseQty,outerQty,uomcount,dOuomQty,weight from OrderDetail " +
-                    "where retailerid =" + AppUtils.QT(bo.getRetailerID()));
+                    "where retailerid =" + StringUtils.QT(bo.getRetailerID()));
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
                     int qty = c.getInt(0) +
@@ -7495,6 +7357,7 @@ public class BusinessModel extends Application {
             Commons.printException(e);
         }
     }
+
     String newlyaddedRetailer = "";
 
     public String getNewlyaddedRetailer() {

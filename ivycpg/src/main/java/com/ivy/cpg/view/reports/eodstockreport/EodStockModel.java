@@ -14,6 +14,7 @@ public class EodStockModel implements IEodStockModelPresenter {
     private IEodStockView mEodStockView;
     private Context mContext;
     private BusinessModel mBusinessModel;
+    private ArrayList<StockReportBO> mStockReportList = new ArrayList<>();
 
     @Inject
     public EodReportHelper eodReportHelper;
@@ -189,7 +190,7 @@ public class EodStockModel implements IEodStockModelPresenter {
 
     @Override
     public void setAdapter() {
-        ArrayList<StockReportBO> mStockReportList = doDataLogic();
+        mStockReportList = doDataLogic();
         EodStockAdapter adapter = new EodStockAdapter(mStockReportList, mBusinessModel, mContext);
         mEodStockView.setAdapter(adapter);
     }
@@ -198,5 +199,10 @@ public class EodStockModel implements IEodStockModelPresenter {
     public void downloadEodReport() {
         eodReportHelper.downloadEODReport();
         eodReportHelper.updateBaseUOM("ORDER", 1);
+    }
+
+    @Override
+    public ArrayList<StockReportBO> getEODReportList() {
+        return mStockReportList;
     }
 }

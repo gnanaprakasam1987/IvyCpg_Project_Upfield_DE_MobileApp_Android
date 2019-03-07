@@ -7,6 +7,7 @@ import android.graphics.Typeface;
 import android.preference.PreferenceManager;
 
 import com.ivy.core.data.user.UserDataManagerImpl;
+import com.ivy.cpg.view.order.catalog.CatalogOrder;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
@@ -19,9 +20,8 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.cpg.view.order.catalog.CatalogOrder;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -315,6 +315,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_CAPTURE_LOCATION = "FUN14"; // Global GPS config
     private static final String CODE_SHOW_DGTC = "FUN16";
     private static final String CODE_INVOICE_SEQUENCE_NUMBER = "ORDB48";
+    private static final String CODE_ORDER_SEQUENCE_NUMBER = "ORDB78";
     private static final String CODE_SHOW_STOCK_IN_SUMMARY = "ORDB49";
     private static final String CODE_IS_TEAMLEAD = "ISTEAMLEAD"; // Code to validRegex whether the user is teamlead or not
     private static final String CODE_UPLOADUSERLOC = "UPLOADUSERLOC";
@@ -740,6 +741,7 @@ public class ConfigurationMasterHelper {
 
     public boolean SHOW_SAL_RET_REASON_DLG;
     public boolean SHOW_BATCH_ALLOCATION;// ORDB29
+    public boolean IS_ORD_BY_BATCH_EXPIRY_DATE_WISE;
     public boolean SHOW_VANGPS_VALIDATION;
     public boolean SHOW_RET_SKIP_VALIDATION;
     public boolean SHOW_SIGNATURE_SCREEN;// SIGN01
@@ -827,6 +829,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_CAPTURED_LOCATION; // FUN14 -> Global GPS config.
     public boolean SHOW_DGTC;
     public boolean SHOW_INVOICE_SEQUENCE_NO;
+    public boolean SHOW_ORDER_SEQUENCE_NO;
     public boolean SHOW_SR_SEQUENCE_NO;
     public boolean SHOW_CN_SEQUENCE_NO;
     public boolean SHOW_STOCK_IN_SUMMARY;
@@ -1057,7 +1060,7 @@ public class ConfigurationMasterHelper {
     public int endTime = 20;
     private Vector<ConfigureBO> genFilter, productdetails;
     private Vector<String> SIHApplyById = null;
-    private ArrayList<String> mRetailerProperty;
+    private ArrayList<ConfigureBO> mRetailerProperty;
     private Vector<ConfigureBO> profileConfig;
     private Vector<PasswordPolicyBO> passwordConfig;
     private Vector<ConfigureBO> storeCheckMenu;
@@ -1196,7 +1199,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_SF_NORM_CHECK;
     public static final String CODE_CHECK_NORM = "SFCHECK";
 
-    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED, SHOW_STOCK_RETURN, SHOW_STOCK_NON_SALABLE, SHOW_STOCK_VAN_UNLOAD,SHOW_FREE_STOCK_LOADED,SHOW_FREE_STOCK_IN_HAND;
+    public boolean SHOW_STOCK_REPLACE, SHOW_STOCK_EMPTY, SHOW_STOCK_FREE_ISSUED, SHOW_STOCK_RETURN, SHOW_STOCK_NON_SALABLE, SHOW_STOCK_VAN_UNLOAD, SHOW_FREE_STOCK_LOADED, SHOW_FREE_STOCK_IN_HAND;
 
     public boolean IS_PRINT_CREDIT_NOTE_REPORT;
     public static final String CODE_PRINT_CREDIT_NOTE_REPORT = "CDN01";
@@ -1319,7 +1322,6 @@ public class ConfigurationMasterHelper {
     private HashMap<String, Integer> hashMapHHTModuleOrder;
 
 
-
     public boolean SHOW_INVOICE_HISTORY_DETAIL = false;
 
 
@@ -1334,8 +1336,9 @@ public class ConfigurationMasterHelper {
 
 
     //cpg132-task 13
-    public boolean SHOW_TOTAL_ACHIEVED_VOLUME = true;
-    private static final String SHOW_TOTAL_ACHIEVEDVOLUME = "FUN70";
+    public boolean SHOW_TOTAL_ACHIEVED_VOLUME;
+    public boolean SHOW_TOTAL_ACHIEVED_VOLUME_WGT;
+    private static final String CODE_TOTAL_ACHIEVEDVOLUME = "FUN70";
 
     public static final String CODE_TAX_MODEL = "TAX_MODEL";
     public boolean IS_GST;
@@ -1351,10 +1354,6 @@ public class ConfigurationMasterHelper {
 
     public String CODE_PRODUCT_DISPLAY_FOR_PIRAMAL = "ORDB66";
     public boolean IS_PRODUCT_DISPLAY_FOR_PIRAMAL;
-
-    public String CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER = "RTPRTY06";
-    public boolean IS_PIRAMAL_COLOR_CODE_FOR_RETAILER;
-    public int COLOR_ICON = 0;
 
     private static final String CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS = "FUN56";
     public boolean IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS;
@@ -1410,6 +1409,7 @@ public class ConfigurationMasterHelper {
     public boolean COMPUTE_DUE_DAYS;
 
     public boolean SHOW_SALES_RETURN_IN_ORDER;
+    public boolean SHOW_SALES_RETURN_TV_IN_ORDER;
     public boolean SHOW_SALES_RETURN_IN_DELIVERY;
 
 
@@ -1543,6 +1543,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_SKIP_SCHEME_APPLY = "SCH12";
     public boolean IS_SKIP_SCHEME_APPLY;
+
+    private static final String CODE_SHOW_TERMS_COND = "FUN76";
+    public boolean IS_SHOW_TERMS_COND;
 
     private static final String CODE_VOICE_TO_TEXT = "VOICETXT";
     public int IS_VOICE_TO_TEXT = -1;
@@ -2189,6 +2192,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_INDICATIVE_ORDER_ICON = hashMapHHTModuleConfig.get(CODE_SHOW_INDICATIVE_ORDER_ICON) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_INDICATIVE_ORDER_ICON) : false;
         this.SHOW_DGTC = hashMapHHTModuleConfig.get(CODE_SHOW_DGTC) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DGTC) : false;
         this.SHOW_INVOICE_SEQUENCE_NO = hashMapHHTModuleConfig.get(CODE_INVOICE_SEQUENCE_NUMBER) != null ? hashMapHHTModuleConfig.get(CODE_INVOICE_SEQUENCE_NUMBER) : false;
+        this.SHOW_ORDER_SEQUENCE_NO = hashMapHHTModuleConfig.get(CODE_ORDER_SEQUENCE_NUMBER) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SEQUENCE_NUMBER) : false;
         this.SHOW_SR_SEQUENCE_NO = hashMapHHTModuleConfig.get(CODE_SR_SEQUENCE_NUMBER) != null ? hashMapHHTModuleConfig.get(CODE_SR_SEQUENCE_NUMBER) : false;
         this.SHOW_CN_SEQUENCE_NO = hashMapHHTModuleConfig.get(CODE_CN_SEQUENCE_NUMBER) != null ? hashMapHHTModuleConfig.get(CODE_CN_SEQUENCE_NUMBER) : false;
         this.SHOW_STOCK_IN_SUMMARY = hashMapHHTModuleConfig.get(CODE_SHOW_STOCK_IN_SUMMARY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STOCK_IN_SUMMARY) : false;
@@ -2489,7 +2493,11 @@ public class ConfigurationMasterHelper {
         this.SHOW_TOTAL_QTY_ORDER = hashMapHHTModuleConfig.get(CODE_SHOW_QTY_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_QTY_ORDER) : false;
         this.SHOW_STORE_VISITED_COUNT = hashMapHHTModuleConfig.get(CODE_SHOW_STORE_VISITED) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STORE_VISITED) : false;
 
-        this.SHOW_TOTAL_ACHIEVED_VOLUME = hashMapHHTModuleConfig.get(SHOW_TOTAL_ACHIEVEDVOLUME) != null ? hashMapHHTModuleConfig.get(SHOW_TOTAL_ACHIEVEDVOLUME) : false;
+        this.SHOW_TOTAL_ACHIEVED_VOLUME = hashMapHHTModuleConfig.get(CODE_TOTAL_ACHIEVEDVOLUME) != null ? hashMapHHTModuleConfig.get(CODE_TOTAL_ACHIEVEDVOLUME) : false;
+
+        if (hashMapHHTModuleOrder.get(CODE_TOTAL_ACHIEVEDVOLUME) != null)
+            if (hashMapHHTModuleOrder.get(CODE_TOTAL_ACHIEVEDVOLUME) == 1)
+                this.SHOW_TOTAL_ACHIEVED_VOLUME_WGT = true;
 
         this.IS_PROFILE_IMAGE = hashMapHHTModuleConfig.get(CODE_PROFILE_IMAGE) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_IMAGE) : false;
 
@@ -2509,8 +2517,6 @@ public class ConfigurationMasterHelper {
             }
         }
         this.IS_PRODUCT_DISPLAY_FOR_PIRAMAL = hashMapHHTModuleConfig.get(CODE_PRODUCT_DISPLAY_FOR_PIRAMAL) != null ? hashMapHHTModuleConfig.get(CODE_PRODUCT_DISPLAY_FOR_PIRAMAL) : false;
-        this.IS_PIRAMAL_COLOR_CODE_FOR_RETAILER = hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) != null ? hashMapHHTModuleConfig.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) : false;
-        this.COLOR_ICON = hashMapHHTModuleOrder.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) != null ? hashMapHHTModuleOrder.get(CODE_PIRAMAL_COLOR_CODE_FOR_RETAILER) : 0;
 
         this.IS_REASON_FOR_ALL_NON_STOCK_PRODUCTS = hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_REASON_FOR_ALL_NON_STOCK_PRODUCTS) : false;
         this.IS_LOAD_WAREHOUSE_PRD_ONLY = hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_WAREHOUSE_PRD_ONLY) : false;
@@ -2694,6 +2700,10 @@ public class ConfigurationMasterHelper {
         this.IS_LOAD_STK_CHECK_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_STK_CHECK_LAST_VISIT) : false;
 
         this.IS_SKIP_SCHEME_APPLY = hashMapHHTModuleConfig.get(CODE_SKIP_SCHEME_APPLY) != null ? hashMapHHTModuleConfig.get(CODE_SKIP_SCHEME_APPLY) : false;
+        if (hashMapHHTModuleConfig.get(CODE_BATCH_ALLOCATION) != null) {
+            IS_ORD_BY_BATCH_EXPIRY_DATE_WISE = hashMapHHTModuleOrder.get(CODE_BATCH_ALLOCATION) == 1;
+        }
+        this.IS_SHOW_TERMS_COND = hashMapHHTModuleConfig.get(CODE_SHOW_TERMS_COND) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TERMS_COND) : false;
 
         this.IS_VOICE_TO_TEXT = hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) != null ? hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) : -1;
     }
@@ -2954,12 +2964,11 @@ public class ConfigurationMasterHelper {
     }
 
     /**
-     * @deprecated
+     * @return sd
      * @See {@link com.ivy.core.data.db.AppDataManagerImpl#fetchNewActivityMenu(String)}
      * This method will download the Menu configured for this particular channel
      * type. This will also download the Menu Name,Number and hasLink attributes
-     *
-     * @return sd
+     * @deprecated
      */
     public Vector<ConfigureBO> downloadNewActivityMenu(String menuName) {
         activitymenuconfig = new Vector<>();
@@ -3914,9 +3923,9 @@ public class ConfigurationMasterHelper {
 
             IS_LOAD_STOCK_COMPETITOR = false;
             LOAD_STOCK_COMPETITOR = 0;
-            DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 0;
-            MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
-            MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 0;
+            DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 1;
+            MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 1;
+            MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 1;
             LOAD_REMARKS_FIELD_STRING = "";
             SHOW_INCLUDE_BILL_TAX = false;
 
@@ -3935,6 +3944,7 @@ public class ConfigurationMasterHelper {
             IS_STK_ORD_BS = false;
             IS_STK_ORD_PROJECT = false;
             SHOW_SALES_RETURN_IN_ORDER = false;
+            SHOW_SALES_RETURN_TV_IN_ORDER =false;
 
 
             IS_PRINT_SEQUENCE_REQUIRED = false;
@@ -3986,22 +3996,26 @@ public class ConfigurationMasterHelper {
 
                 String codeSplit[] = codeValue.split(",");
                 for (String temp : codeSplit)
-                   switch (temp) {
-                        case"REPPC":
-                        SHOW_REPLACED_QTY_PC = true;
-                    break;
-                        case"REPCS":
-                        SHOW_REPLACED_QTY_CS = true;
-                    break;
-                        case"REPOO":
-                        SHOW_REPLACED_QTY_OU = true;
-                    break;
-                        case"CSTK":
-                        IS_COMBINED_STOCK_CHECK_FROM_ORDER = true;
-                    break;
-                        case"SR":
-                        SHOW_SALES_RETURN_IN_ORDER = true;
-                break;}
+                    switch (temp) {
+                        case "REPPC":
+                            SHOW_REPLACED_QTY_PC = true;
+                            break;
+                        case "REPCS":
+                            SHOW_REPLACED_QTY_CS = true;
+                            break;
+                        case "REPOO":
+                            SHOW_REPLACED_QTY_OU = true;
+                            break;
+                        case "CSTK":
+                            IS_COMBINED_STOCK_CHECK_FROM_ORDER = true;
+                            break;
+                        case "SR":
+                            SHOW_SALES_RETURN_IN_ORDER = true;
+                            break;
+                        case "SRQTY":
+                            SHOW_SALES_RETURN_TV_IN_ORDER = true;
+                            break;
+                    }
             }
 
 
@@ -4217,17 +4231,23 @@ public class ConfigurationMasterHelper {
             }
             if (codeValue != null && !codeValue.equals("")) {
                 String codeSplit[] = codeValue.split(",");
-                if (codeSplit[0] != null && !codeSplit[0].equals(""))
-                    DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = SDUtil.convertToInt(codeSplit[0]);
-                if (codeSplit[1] != null && !codeSplit[1].equals(""))
-                    MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[1]);
-                if (codeSplit[2] != null && !codeSplit[2].equals(""))
-                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[2]);
-                if (DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER < MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER) {
-                    MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER;
-                }
-                if (DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER > MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER) {
-                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER;
+                if(codeSplit.length==3) {
+                    if (codeSplit[0] != null && !codeSplit[0].equals(""))
+                        DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = SDUtil.convertToInt(codeSplit[0]);
+                    if (codeSplit[1] != null && !codeSplit[1].equals(""))
+                        MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[1]);
+                    if (codeSplit[2] != null && !codeSplit[2].equals(""))
+                        MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = SDUtil.convertToInt(codeSplit[2]);
+                    if (DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER < MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER) {
+                        MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER;
+                    }
+                    if (DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER > MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER) {
+                        MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER;
+                    }
+                } else {
+                    DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = 1;
+                    MIN_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 1;
+                    MAX_NUMBER_OF_DAYS_ALLOWED_TO_DELIVER = 1;
                 }
             }
 
@@ -4567,8 +4587,8 @@ public class ConfigurationMasterHelper {
         SHOW_STOCK_FREE_ISSUED = false;
         SHOW_STOCK_NON_SALABLE = false;
         SHOW_STOCK_VAN_UNLOAD = false;
-        SHOW_FREE_STOCK_LOADED=false;
-        SHOW_FREE_STOCK_IN_HAND=false;
+        SHOW_FREE_STOCK_LOADED = false;
+        SHOW_FREE_STOCK_IN_HAND = false;
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
         );
@@ -5334,27 +5354,26 @@ public class ConfigurationMasterHelper {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.openDataBase();
-            String sb = "select  hhtCode  from hhtmodulemaster where menu_type='RETAILER_PROPERTY'" +
+            String sb = "select  hhtCode,ifnull(Rfield,'') from hhtmodulemaster where menu_type='RETAILER_PROPERTY'" +
                     " and flag=1 and  ForSwitchSeller = 0 order by Rfield LIMIT 4";
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
-                    mRetailerProperty.add(c.getString(0));
-                    if (c.getString(0).equals("RTPRTY07")) {
+
+                    ConfigureBO configureBO = new ConfigureBO();
+                    configureBO.setConfigCode(c.getString(0));
+                    configureBO.setRField(c.getString(1));
+                    mRetailerProperty.add(configureBO);
+
+                    if (c.getString(0).equals("RTPRTY07"))
                         isRetailerBOMEnabled = true;
-                    }
+
+                    if (c.getString(0).equals("RTPRTY03"))
+                        IS_HANGINGORDER = true;
 
                 }
             }
             c.close();
-
-            for (String code : getRetailerPropertyList()) {
-
-                if (code.equals("RTPRTY03")) {
-                    IS_HANGINGORDER = true;
-                }
-            }
-
 
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -5365,7 +5384,7 @@ public class ConfigurationMasterHelper {
 
     }
 
-    public ArrayList<String> getRetailerPropertyList() {
+    public ArrayList<ConfigureBO> getRetailerPropertyList() {
         if (mRetailerProperty != null) {
             return mRetailerProperty;
         }
@@ -6223,7 +6242,7 @@ public class ConfigurationMasterHelper {
             db.openDataBase();
 
             Cursor c = db.selectSQL("select RField from " + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + AppUtils.QT(ConfigurationMasterHelper.CODE_CHECK_DIGITAL_SIZE));
+                    + " where hhtCode=" + StringUtils.QT(ConfigurationMasterHelper.CODE_CHECK_DIGITAL_SIZE));
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     this.DIGITAL_CONTENT_SIZE = c.getLong(0);
@@ -6235,6 +6254,11 @@ public class ConfigurationMasterHelper {
         } catch (Exception e) {
             Commons.printException(e);
         }
+    }
+
+    public boolean isAuditEnabled() {
+
+        return IS_TEAMLEAD && IS_AUDIT_USER;
     }
 
 }

@@ -5,10 +5,10 @@ import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.StandardListBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -63,7 +63,7 @@ public class LoyalityHelper {
             sql = "SELECT UID FROM " + mLoyaltyRedemptionHeader
                     + " WHERE RetailerId = "
                     + bmodel.getRetailerMasterBO().getRetailerID()
-                    + " AND Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + " AND Date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " AND Upload='N'";
 
             headerCursor = db.selectSQL(sql);
@@ -80,15 +80,15 @@ public class LoyalityHelper {
             for (LoyaltyBO ltyBo : loyaltyitems) {
                 uid = bmodel.getRetailerMasterBO().getRetailerID() + ""
                         + ltyBo.getLoyaltyId() + ""
-                        + SDUtil.now(SDUtil.DATE_TIME_ID);
+                        + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
                 if (ltyBo.getSelectedPoints() > 0) {
                     values = QT(uid) + ","
                             + ltyBo.getRetailerId() + ","
                             + ltyBo.getLoyaltyId() + ","
                             + ltyBo.getSelectedPoints() + ","
-                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                            + QT(bmodel.getTimeZone()) + ","
+                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                            + QT(DateTimeUtils.getTimeZone()) + ","
                             + ltyBo.getPointTypeId();
 
                     db.insertSQL(mLoyaltyRedemptionHeader, headerColumns, values);//save into  LoyaltyRedemption Header Table
@@ -135,7 +135,7 @@ public class LoyalityHelper {
             String sql = "select UID from "
                     + mLoyaltyRedemptionHeader + " where RetailerID="
                     + QT(retailerId);
-            sql += " AND date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+            sql += " AND date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             sql += " and Upload= 'N'";
             Cursor loyaltyHeaderCursor = db.selectSQL(sql);
             if (loyaltyHeaderCursor.getCount() > 0) {
@@ -204,7 +204,7 @@ public class LoyalityHelper {
             Vector<LoyaltyBO> ltyBo = bmodel.productHelper.getProductloyalties();
             String sql1 = "SELECT Distinct LH.UID,LH.LoyaltyId,LH.TotalPoints,LD.BenefitId,LD.Qty,LH.PointsTypeID FROM LoyaltyRedemptionHeader LH INNER JOIN LoyaltyRedemptionDetail LD ON LH.UID = LD.UID"
                     + " WHERE LH.RetailerID =" + retailerId
-                    + " AND Date = " + QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + " AND Date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " AND LH.Upload='N'";
 
             Cursor cHeader = db.selectSQL(sql1);

@@ -7,7 +7,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.cpg.view.nonfield.NonFieldBO;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,10 +120,10 @@ public class OfflinePlanHelper {
             String values = offlineDateWisePlanBO.getPlanId() + ","
                     + offlineDateWisePlanBO.getDistributorId() + ","
                     + offlineDateWisePlanBO.getUserId() + ","
-                    + AppUtils.QT(offlineDateWisePlanBO.getDate()) + ","
+                    + StringUtils.QT(offlineDateWisePlanBO.getDate()) + ","
                     + offlineDateWisePlanBO.getEntityId() + ","
-                    + AppUtils.QT(offlineDateWisePlanBO.getEntityType()) + ","
-                    + AppUtils.QT(offlineDateWisePlanBO.getStatus()) + ","
+                    + StringUtils.QT(offlineDateWisePlanBO.getEntityType()) + ","
+                    + StringUtils.QT(offlineDateWisePlanBO.getStatus()) + ","
                     + offlineDateWisePlanBO.getSequence();
 
             db.insertSQL(DataMembers.tbl_date_wise_plan, DataMembers.tbl_date_wise_plan_cols, values);
@@ -144,10 +144,10 @@ public class OfflinePlanHelper {
                 db.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
                         + " SET status = 'D' "
                         + " , upload = 'N'"
-                        + " WHERE " + " PlanId =" + offlineDateWisePlanBO.getPlanId() + " and EntityType = " + AppUtils.QT(offlineDateWisePlanBO.getEntityType()));
+                        + " WHERE " + " PlanId =" + offlineDateWisePlanBO.getPlanId() + " and EntityType = " + StringUtils.QT(offlineDateWisePlanBO.getEntityType()));
             } else {
                 db.deleteSQL(DataMembers.tbl_date_wise_plan, "EntityId=" + offlineDateWisePlanBO.getEntityId() +
-                        " and Date = " + AppUtils.QT(offlineDateWisePlanBO.getDate()) + " and EntityType = " + AppUtils.QT(offlineDateWisePlanBO.getEntityType()), false);
+                        " and Date = " + StringUtils.QT(offlineDateWisePlanBO.getDate()) + " and EntityType = " + StringUtils.QT(offlineDateWisePlanBO.getEntityType()), false);
             }
 
             db.closeDB();

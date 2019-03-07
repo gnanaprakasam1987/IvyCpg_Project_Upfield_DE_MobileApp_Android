@@ -387,7 +387,7 @@
             android:name="com.ivy.cpg.view.roadactivity.AdhocGallery"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.UserSettingsActivity"
+            android:name="com.ivy.cpg.view.settings.UserSettingsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/PreferencesTheme" />
         <!-- android:theme="@android:style/Theme.NoTitleBar.Fullscreen" -->
@@ -535,7 +535,7 @@
             android:name="com.ivy.cpg.view.homescreen.userFeedback.UserFeedbackActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.profile.ProfileActivity"
+            android:name="com.ivy.cpg.view.profile.ProfileActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.journeyapps.barcodescanner.CaptureActivity"
@@ -557,7 +557,7 @@
             android:name="com.ivy.cpg.view.attendance.inout.TimeTrackingActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.TLAttendanceActivity"
+            android:name="com.ivy.cpg.view.attendance.TLAttendanceActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.ReAllocationActivity"
@@ -594,13 +594,13 @@
             android:name="com.ivy.sd.png.view.ToolBarwithFilter"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.About"
+            android:name="com.ivy.cpg.view.settings.About"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.nonfield.NonFieldFragment"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.profile.ProfileEditActivity"
+            android:name="com.ivy.cpg.view.profile.ProfileEditActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.collection.BillPaymentActivity"
@@ -620,7 +620,7 @@
             android:name="com.ivy.sd.png.view.PlanningVisitActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.profile.orderandinvoicehistory.HistoryDetailActivity"
+            android:name="com.ivy.cpg.view.profile.orderandinvoicehistory.HistoryDetailActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.survey.DragDropPictureActivity"
@@ -803,7 +803,7 @@
             android:name="com.ivy.cpg.view.reports.orderfulfillmentreport.OrderFulfillmentDetailReportActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.sd.png.view.LicenseActivity"
+            android:name="com.ivy.cpg.view.settings.LicenseActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.supervisor.chat.StartChatActivity"
@@ -829,11 +829,6 @@
         <activity
             android:name="com.ivy.cpg.view.serializedAsset.AddSerializedAssetActivity"
             android:screenOrientation="portrait" />
-
-        <service
-            android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"
-            android:enabled="true"
-            android:exported="false" />
 
         <activity
             android:name="com.ivy.cpg.view.order.moq.MOQHighlightActivity"

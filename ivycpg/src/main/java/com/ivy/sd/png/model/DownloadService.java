@@ -7,6 +7,7 @@ import android.os.Bundle;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.DateTimeUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -549,7 +550,7 @@ public class DownloadService extends IntentService {
                             Commons.print("Download service, " + "total Count :" + totalListCount);
                             Commons.print("Download Service, " + "update Count :" + updateCount);
                             if (totalListCount == updateCount) {
-                                Commons.print("Stop time, " + Utils.getTime());
+                                Commons.print("Stop time, " + DateTimeUtils.now(DateTimeUtils.TIME));
 
 
                                 downloadUserRetailerInsertIntent = new Intent(this, com.ivy.sd.png.model.DownloadReceiver.class);
@@ -581,6 +582,9 @@ public class DownloadService extends IntentService {
                         downloadUserRetailerInsertIntent.putExtras(insertBundle);
                         sendBroadcast(downloadUserRetailerInsertIntent);
 
+                    }catch (NullPointerException e){
+
+                        Commons.printException(e);
                     }
 
                 } else if (response == SynchronizationHelper.VOLLEY_FAILURE_RESPONSE) {

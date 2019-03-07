@@ -10,8 +10,8 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.cpg.view.tradeCoverage.adhocPlanning.AdhocPlanningFragment;
 import com.ivy.sd.png.view.NewOutletFragment.NewRetailerReceiver;
 import com.ivy.sd.png.view.SynchronizationFragment;
-import com.ivy.sd.png.view.TLAttendanceActivity;
-import com.ivy.sd.png.view.profile.ProfileActivity;
+import com.ivy.cpg.view.attendance.TLAttendanceActivity;
+import com.ivy.cpg.view.profile.ProfileActivity;
 
 
 public class DownloadReceiver extends BroadcastReceiver {

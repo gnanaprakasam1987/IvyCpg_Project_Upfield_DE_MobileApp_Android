@@ -8,7 +8,7 @@ import android.widget.DatePicker;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -49,7 +49,7 @@ public class DataPickerDialogFragment extends DialogFragment implements DatePick
             }
 
             if (mSelectedDate != null && mSelectedDateFormat != null && !mSelectedDate.equals("") && !mSelectedDateFormat.equals("")) {
-                Date selected = DateUtil.convertStringToDateObject(mSelectedDate, mSelectedDateFormat);
+                Date selected = DateTimeUtils.convertStringToDateObject(mSelectedDate, mSelectedDateFormat);
                 c.setTime(selected);
             }
         } catch (Exception e) {

@@ -29,11 +29,11 @@ import android.widget.Toast;
 import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.text.SimpleDateFormat;
@@ -109,7 +109,7 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
         leaveReasonTextView = view.findViewById(R.id.leavereasonTextViewId);
 
 
-        currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
+        currentDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
 
         fromDate = currentDate;
         toDate = currentDate;
@@ -312,7 +312,7 @@ public class AttendanceFragment extends IvyBaseFragment implements View.OnClickL
 
                         if (idd == -1) {
                             attendanceHelper.saveAttendanceDetails(
-                                    SDUtil.now(SDUtil.DATE_GLOBAL), atd_id,
+                                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), atd_id,
                                     reason_id, tvFromDate.getText().toString(),
                                     tvToDate.getText().toString(), atd_code, getActivity());
 

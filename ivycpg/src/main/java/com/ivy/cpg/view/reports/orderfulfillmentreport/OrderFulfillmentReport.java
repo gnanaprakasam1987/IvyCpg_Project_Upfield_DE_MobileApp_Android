@@ -26,7 +26,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -79,7 +79,7 @@ public class OrderFulfillmentReport extends IvyBaseFragment implements View.OnCl
     private void getTodaysDate() {
         try {
             Calendar origDay = Calendar.getInstance();
-            currentDate = DateUtil.convertDateObjectToRequestedFormat(origDay.getTime(),
+            currentDate = DateTimeUtils.convertDateObjectToRequestedFormat(origDay.getTime(),
                     ConfigurationMasterHelper.outDateFormat);
             orderfulfillmentdate.setText(currentDate);
             loadOrderList();
@@ -95,7 +95,7 @@ public class OrderFulfillmentReport extends IvyBaseFragment implements View.OnCl
     }
 
     private static void loadOrderList() {
-        orderFullfillmentHelper.downloadOrderFullfillmentReport(DateUtil.convertFromServerDateToRequestedFormat(
+        orderFullfillmentHelper.downloadOrderFullfillmentReport(DateTimeUtils.convertFromServerDateToRequestedFormat(
                 orderfulfillmentdate.getText().toString(), "yyyy-MM-dd"));
         orderFulfillmentReportList = orderFullfillmentHelper.getOrderFulfillmentList();
 
@@ -117,7 +117,7 @@ public class OrderFulfillmentReport extends IvyBaseFragment implements View.OnCl
 
         public void onDateSet(DatePicker view, int year, int month, int day) {
             Calendar selectedDate = new GregorianCalendar(year, month, day);
-            orderfulfillmentdate.setText(DateUtil.convertDateObjectToRequestedFormat(
+            orderfulfillmentdate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                     selectedDate.getTime(), ConfigurationMasterHelper.outDateFormat));
             loadOrderList();
         }
@@ -202,7 +202,7 @@ public class OrderFulfillmentReport extends IvyBaseFragment implements View.OnCl
                     Intent i = new Intent(context, OrderFulfillmentDetailReportActivity.class);
                     i.putExtra("retid", holder.orderFulfillmentObjectHolder.getRetailerID());
                     i.putExtra("orderid", holder.orderFulfillmentObjectHolder.getOrderID());
-                    i.putExtra("date", DateUtil.convertFromServerDateToRequestedFormat(
+                    i.putExtra("date", DateTimeUtils.convertFromServerDateToRequestedFormat(
                             orderfulfillmentdate.getText().toString(), "yyyy-MM-dd"));
                     context.startActivity(i);
                 }

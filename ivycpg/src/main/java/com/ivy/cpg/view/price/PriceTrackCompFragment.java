@@ -53,6 +53,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -166,8 +167,8 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 if (isFromChild)
                     startActivity(new Intent(getActivity(), HomeScreenTwo.class)
                             .putExtra("isStoreMenu", true));
@@ -378,8 +379,8 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
             try {
                 priceTrackingHelper.savePriceTransaction(getContext().getApplicationContext(), bmodel.productHelper.getTaggedProducts());
                 bmodel.saveModuleCompletion(HomeScreenTwo.MENU_PRICE_COMP);
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
 
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -721,7 +722,7 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
                         String qty = s.toString();
                         if (qty.length() > 0)
                             holder.mCaPrice.setSelection(qty.length());
-                        if (bmodel.validDecimalValue(qty, 8, 2)) {
+                        if (SDUtil.isValidDecimal(qty, 8, 2)) {
                             holder.mSKUBO.setPrice_ca(qty);
                         } else {
                             Toast.makeText(
@@ -770,7 +771,7 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
                         String qty = s.toString();
                         if (qty.length() > 0)
                             holder.mPcPrice.setSelection(qty.length());
-                        if (bmodel.validDecimalValue(qty, 8, 2)) {
+                        if (SDUtil.isValidDecimal(qty, 8, 2)) {
                             holder.mSKUBO.setPrice_pc(qty);
                         } else {
                             Toast.makeText(
@@ -818,7 +819,7 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
                         String qty = s.toString();
                         if (qty.length() > 0)
                             holder.mOoPrice.setSelection(qty.length());
-                        if (bmodel.validDecimalValue(qty, 8, 2)) {
+                        if (SDUtil.isValidDecimal(qty, 8, 2)) {
                             holder.mSKUBO.setPrice_oo(qty);
                         } else {
                             Toast.makeText(

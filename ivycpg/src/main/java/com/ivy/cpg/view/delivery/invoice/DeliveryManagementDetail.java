@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -39,10 +38,10 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.Properties;
@@ -522,22 +521,22 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
         int i1 = item.getItemId();
         if (i1 == android.R.id.home) {
 
-            if (bmodel.checkForNFilesInFolder(AppUtils.photoFolderPath, 1, signName))
-                bmodel.deleteFiles(AppUtils.photoFolderPath,
+            if (bmodel.checkForNFilesInFolder(FileUtils.photoFolderPath, 1, signName))
+                bmodel.deleteFiles(FileUtils.photoFolderPath,
                         signName);
 
             ArrayList<InvoiceHeaderBO> invoiceList = deliveryManagementHelper.getInvoiceList();
             if (invoiceList.size() == 1) {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 if (getIntent().getStringExtra("From") == null) {
                     Intent i = new Intent(DeliveryManagementDetail.this, HomeScreenTwo.class);
                     startActivity(i);
                 }
                 finish();
             } else {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
 
                 Intent i = new Intent(DeliveryManagementDetail.this, DeliveryManagement.class);
                 i.putExtra("screentitle", getIntent().getStringExtra("screentitle"));
@@ -550,7 +549,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
         } else if (i1 == R.id.menu_save) {
             saveReject();
         } else if (i1 == R.id.menu_signature) {
-            if (bmodel.checkForNFilesInFolder(AppUtils.photoFolderPath, 1, signName)) {
+            if (bmodel.checkForNFilesInFolder(FileUtils.photoFolderPath, 1, signName)) {
                 final CommonDialog commonDialog = new CommonDialog(getApplicationContext(),
                         this,
                         "",
@@ -563,7 +562,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                         new CommonDialog.PositiveClickListener() {
                             @Override
                             public void onPositiveButtonClick() {
-                                bmodel.deleteFiles(AppUtils.photoFolderPath,
+                                bmodel.deleteFiles(FileUtils.photoFolderPath,
                                         signName);
                                 Intent i = new Intent(DeliveryManagementDetail.this,
                                         CaptureSignatureActivity.class);
@@ -898,7 +897,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
                 multiPart.addBodyPart(bodyPart);
 
                 boolean isImageAvailable = false;
-                if (bmodel.checkForNFilesInFolder(AppUtils.photoFolderPath, 1, signName))
+                if (bmodel.checkForNFilesInFolder(FileUtils.photoFolderPath, 1, signName))
                     isImageAvailable = true;
 
                 if (isImageAvailable) {

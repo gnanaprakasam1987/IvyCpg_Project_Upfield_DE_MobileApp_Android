@@ -18,7 +18,7 @@ import android.widget.Toast;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.text.SimpleDateFormat;
@@ -111,7 +111,7 @@ public class RenewContractDialog extends DialogFragment {
     public String getNextDate(String curDate) {
         String nextDate ;
         try {
-            final SimpleDateFormat format = DateUtil.getDateFormat("yyyy/MM/dd");
+            final SimpleDateFormat format = DateTimeUtils.getDateFormat("yyyy/MM/dd");
             final Date date = format.parse(curDate);
             final Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);
@@ -129,7 +129,7 @@ public class RenewContractDialog extends DialogFragment {
     public long getNextDateMills(String curDate) {
         long nextDate;
         try {
-            final SimpleDateFormat format = DateUtil.getDateFormat("yyyy/MM/dd");
+            final SimpleDateFormat format = DateTimeUtils.getDateFormat("yyyy/MM/dd");
             final Date date = format.parse(curDate);
             final Calendar calendar = Calendar.getInstance();
             calendar.setTime(date);

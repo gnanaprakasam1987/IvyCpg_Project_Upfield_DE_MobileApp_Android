@@ -57,10 +57,10 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -385,7 +385,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
 
                             boolean nFilesthere = mBModel
                                     .checkForNFilesInFolder(
-                                            AppUtils.photoFolderPath,
+                                            FileUtils.photoFolderPath,
                                             1, fnameStarts);
                             if (nFilesthere) {
 
@@ -395,7 +395,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
                                 Intent intent = new Intent(getActivity(),
                                         CameraActivity.class);
                                 intent.putExtra(CameraActivity.QUALITY, 40);
-                                String path = AppUtils.photoFolderPath + "/"
+                                String path = FileUtils.photoFolderPath + "/"
                                         + mImageName;
                                 intent.putExtra(CameraActivity.PATH, path);
                                 startActivityForResult(intent,
@@ -448,7 +448,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
                     && (!"".equals(holder.mSOSKU.getImageName()))
                     && (!"null".equals(holder.mSOSKU.getImageName()))) {
                 Glide.with(getActivity())
-                        .load(AppUtils.photoFolderPath + "/" + holder.mSOSKU.getImgName())
+                        .load(FileUtils.photoFolderPath + "/" + holder.mSOSKU.getImgName())
                         .asBitmap()
                         .centerCrop()
                         .placeholder(R.drawable.ic_photo_camera)
@@ -610,8 +610,8 @@ public class SOSKUFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 if (isFromChild)
                     startActivity(new Intent(getActivity(), HomeScreenTwo.class)
                             .putExtra("isStoreMenu", true));
@@ -744,8 +744,8 @@ public class SOSKUFragment extends IvyBaseFragment implements
                 mSFHelper
                         .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOSKU);
                 mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOSKU);
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
 
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -829,13 +829,13 @@ public class SOSKUFragment extends IvyBaseFragment implements
                                 sosku.setImgName("");
                             }
                         }
-                        mBModel.deleteFiles(AppUtils.photoFolderPath,
+                        mBModel.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra(CameraActivity.QUALITY, 40);
-                        String path = AppUtils.photoFolderPath + "/" + mImageName;
+                        String path = FileUtils.photoFolderPath + "/" + mImageName;
                         intent.putExtra(CameraActivity.PATH, path);
                         startActivityForResult(intent,
                                 mBModel.CAMERA_REQUEST_CODE);
@@ -881,6 +881,12 @@ public class SOSKUFragment extends IvyBaseFragment implements
         }
 
         mParentTotal = dialog.findViewById(R.id.et_total);
+        if (mBModel.labelsMasterHelper.applyLabels(dialog.findViewById(
+                R.id.dialog_title).getTag()) != null)
+            ((TextView) dialog.findViewById(R.id.dialog_title))
+                    .setText(mBModel.labelsMasterHelper
+                            .applyLabels(dialog.findViewById(
+                                    R.id.dialog_title).getTag()));
 
         mCategoryForDialog.clear();
 

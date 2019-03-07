@@ -161,7 +161,9 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:id="@+id/audit_layout"
+                android:layout_marginLeft="@dimen/plano_img_margin_left">
 
                 <ImageView
                     android:id="@+id/btn_audit"
@@ -184,7 +186,7 @@
                     android:contentDescription="@string/image_desc"
                     android:scaleType="fitXY"
                     android:src="@drawable/no_image_available"
-                    android:visibility="visible" />
+                    android:visibility="gone" />
             </LinearLayout>
 
             <RelativeLayout

@@ -43,13 +43,13 @@ import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.MyHttpConnectionNew;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.NetworkUtils;
 
 import org.json.JSONException;
@@ -974,7 +974,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     }
 
     boolean isToday(){
-        return convertPlaneDateToGlobal(getSelectedDate()).equals(SDUtil.now(SDUtil.DATE_GLOBAL));
+        return convertPlaneDateToGlobal(getSelectedDate()).equals(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
     }
 
     boolean isSameDateSelected(String selectedDate){

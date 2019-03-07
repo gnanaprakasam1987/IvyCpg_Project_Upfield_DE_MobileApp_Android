@@ -22,8 +22,7 @@ import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -72,7 +71,7 @@ public class ExpenseProofDialog extends DialogFragment {
             }
         });
 
-        photoNamePath = AppUtils.photoFolderPath + "/";
+        photoNamePath = FileUtils.photoFolderPath + "/";
 
         imgGrid.setAdapter(new MyAdapter(expenseSheetHelper.getImagesList(refID)));
 

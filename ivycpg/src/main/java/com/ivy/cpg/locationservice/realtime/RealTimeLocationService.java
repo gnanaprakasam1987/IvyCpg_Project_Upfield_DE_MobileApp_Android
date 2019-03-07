@@ -70,7 +70,7 @@ public class RealTimeLocationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
 
-        if(intent.getExtras() != null) {
+        if(intent != null && intent.getExtras() != null) {
             Bundle bundle = intent.getExtras();
             realTimeLocation = (RealTimeLocation) bundle.getSerializable("REALTIME");
 

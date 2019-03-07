@@ -41,7 +41,6 @@ import com.ivy.cpg.view.webview.WebViewActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
@@ -49,6 +48,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.PlanningVisitActivity;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
@@ -693,7 +693,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
      * @param menuCode
      */
     private void updateModuleWiseTimeStampDetails(String menuCode) {
-        bmodel.moduleTimeStampHelper.setTid("MTS" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID));
+        bmodel.moduleTimeStampHelper.setTid("MTS" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
         bmodel.moduleTimeStampHelper.setModuleCode(menuCode);
         bmodel.moduleTimeStampHelper.saveModuleTimeStamp("In");
 
@@ -704,6 +704,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
      */
     private void vanLoadSubRoutine() {
         bmodel.configurationMasterHelper.downloadSIHAppliedById();
+        bmodel.configurationMasterHelper.loadVanStockUOMConfiguration();
         bmodel.stockreportmasterhelper.downloadStockReportMaster();
         bmodel.stockreportmasterhelper.downloadBatchwiseVanlod();
     }

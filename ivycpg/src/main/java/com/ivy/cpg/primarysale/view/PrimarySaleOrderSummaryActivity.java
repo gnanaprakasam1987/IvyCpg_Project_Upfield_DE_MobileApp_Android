@@ -30,8 +30,8 @@ import com.ivy.sd.png.model.MyThread;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.MyDatePickerDialog;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -102,7 +102,7 @@ public class PrimarySaleOrderSummaryActivity extends IvyBaseActivityNoActionBar 
         getNextDate();
         if (bmodel.distributorMasterHelper.isEditDistributorOrder()) {
             Commons.print("bmodel.getOrderHeaderBO().getDeliveryDate()" + bmodel.distributorMasterHelper.getDeliveryDate());
-            deliveryDate.setText(DateUtil.convertFromServerDateToRequestedFormat(bmodel.distributorMasterHelper.getDeliveryDate(),
+            deliveryDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(bmodel.distributorMasterHelper.getDeliveryDate(),
                     bmodel.configurationMasterHelper.outDateFormat));
         } else
             deliveryDate.setText(nextDate);
@@ -163,7 +163,7 @@ public class PrimarySaleOrderSummaryActivity extends IvyBaseActivityNoActionBar 
                             SDUtil.convertToInt((String) linestv.getText()));
                     bmodel.getOrderHeaderBO()
                             .setDeliveryDate(
-                                    DateUtil.convertToServerDateFormat(
+                                    DateTimeUtils.convertToServerDateFormat(
                                             deliveryDate.getText().toString(),
                                             bmodel.configurationMasterHelper.outDateFormat));
                     build = new AlertDialog.Builder(PrimarySaleOrderSummaryActivity.this);
@@ -317,7 +317,7 @@ public class PrimarySaleOrderSummaryActivity extends IvyBaseActivityNoActionBar 
         try {
             Calendar origDay = Calendar.getInstance();
             origDay.add(Calendar.DAY_OF_YEAR, 1);
-            nextDate = DateUtil.convertDateObjectToRequestedFormat(origDay.getTime(),
+            nextDate = DateTimeUtils.convertDateObjectToRequestedFormat(origDay.getTime(),
                     bmodel.configurationMasterHelper.outDateFormat);
         } catch (Exception e) {
             Commons.printException(e);// TODO: handle exception
@@ -329,7 +329,7 @@ public class PrimarySaleOrderSummaryActivity extends IvyBaseActivityNoActionBar 
                               int dayOfMonth) {
             Calendar selectedDate = new GregorianCalendar(year, monthOfYear,
                     dayOfMonth);
-            deliveryDate.setText(DateUtil.convertDateObjectToRequestedFormat(
+            deliveryDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                     selectedDate.getTime(),
                     bmodel.configurationMasterHelper.outDateFormat));
 
@@ -360,7 +360,7 @@ public class PrimarySaleOrderSummaryActivity extends IvyBaseActivityNoActionBar 
                 int cday = c.get(Calendar.DAY_OF_MONTH);
 
                 // todayDate = cday + "/" + cmonth + "/" + cyear;
-                nextDate = DateUtil.convertDateObjectToRequestedFormat(c.getTime(),
+                nextDate = DateTimeUtils.convertDateObjectToRequestedFormat(c.getTime(),
                         bmodel.configurationMasterHelper.outDateFormat);
                 MyDatePickerDialog d = new MyDatePickerDialog(this,R.style.DatePickerDialogStyle,
                         mDateSetListener, cyear, cmonth, cday);
@@ -429,7 +429,7 @@ public class PrimarySaleOrderSummaryActivity extends IvyBaseActivityNoActionBar 
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        bmodel.distTimeStampHeaderHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                                        bmodel.distTimeStampHeaderHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                                         bmodel.productHelper.clearOrderTable();
                                         PrimarySaleOrderSummaryActivity.this.setResult(PrimarySaleOrderSummaryActivity.this.RESULT_OK);
                                         finish();

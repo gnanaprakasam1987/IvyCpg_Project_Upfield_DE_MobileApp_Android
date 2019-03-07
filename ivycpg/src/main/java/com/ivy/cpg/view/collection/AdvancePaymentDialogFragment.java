@@ -42,15 +42,14 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.CustomKeyBoard;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.print.DemoSleeper;
 import com.ivy.sd.print.SettingsHelper;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -222,7 +221,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
             mChequeDateBTN.setText(mSelectedPaymentBO.getChequeDate());
             mSelectedPaymentBO.setChequeDate(mSelectedPaymentBO.getChequeDate());
         } else {
-            String todayDate = SDUtil.now(SDUtil.DATE_GLOBAL);
+            String todayDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
             updateDate(new Date(todayDate), "");
         }
 
@@ -444,13 +443,13 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
 
 
                         nfiles_there = bmodel.checkForNFilesInFolder(
-                                AppUtils.photoFolderPath, mImageCount, fnameStarts);
+                                FileUtils.photoFolderPath, mImageCount, fnameStarts);
                         if (nfiles_there) {
                             showFileDeleteAlert(fnameStarts);
                         } else {
                             Intent intent = new Intent(getActivity(), CameraActivity.class);
                             intent.putExtra(CameraActivity.QUALITY, 40);
-                            String path = AppUtils.photoFolderPath + "/" + mImageName;
+                            String path = FileUtils.photoFolderPath + "/" + mImageName;
                             intent.putExtra(CameraActivity.PATH, path);
                             startActivityForResult(intent,
                                     bmodel.CAMERA_REQUEST_CODE);
@@ -582,10 +581,10 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
 
     @Override
     public void updateDate(Date date, String tag) {
-        String paidDate = DateUtil.convertDateObjectToRequestedFormat(
+        String paidDate = DateTimeUtils.convertDateObjectToRequestedFormat(
                 date, "yyyy/MM/dd");
         try {
-            if (!SDUtil.now(SDUtil.DATE_GLOBAL).equals(paidDate))//this for checking today date since before method not woking for today date
+            if (!DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equals(paidDate))//this for checking today date since before method not woking for today date
                 if (date.before(new Date())) {
 
                     if (mSelectedPaymentBO.getCashMode().equals(StandardListMasterConstants.DEMAND_DRAFT))
@@ -608,7 +607,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
             return;
         }
 
-        mChequeDateBTN.setText(DateUtil.convertDateObjectToRequestedFormat(
+        mChequeDateBTN.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                 date, ConfigurationMasterHelper.outDateFormat));
         mSelectedPaymentBO.setChequeDate(paidDate);
     }
@@ -640,7 +639,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
             mChequeDateBTN.setText(mSelectedPaymentBO.getChequeDate());
             mSelectedPaymentBO.setChequeDate(mSelectedPaymentBO.getChequeDate());
         } else {
-            String todayDate = SDUtil.now(SDUtil.DATE_GLOBAL);
+            String todayDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
             updateDate(new Date(todayDate), "");
         }
 
@@ -740,13 +739,13 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        bmodel.deleteFiles(AppUtils.photoFolderPath,
+                        bmodel.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra(CameraActivity.QUALITY, 40);
-                        String _path = AppUtils.photoFolderPath + "/" + mImageName;
+                        String _path = FileUtils.photoFolderPath + "/" + mImageName;
                         Commons.print("PhotoPAth:  -      " + _path);
                         intent.putExtra(CameraActivity.PATH, _path);
                         startActivityForResult(intent,
@@ -966,8 +965,8 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
         int i = item.getItemId();
         if (i == android.R.id.home) {
             collectionHelper.setCollectionView(false);
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
             getActivity().finish();
             Intent  myIntent = new Intent(getActivity(), HomeScreenTwo.class);
             startActivityForResult(myIntent, 0);

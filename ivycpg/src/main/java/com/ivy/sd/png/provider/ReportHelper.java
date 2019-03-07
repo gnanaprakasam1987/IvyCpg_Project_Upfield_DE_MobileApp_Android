@@ -25,7 +25,8 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -427,7 +428,7 @@ public class ReportHelper {
                             " inner join Payment PM on PM.uid=CN.refno" +
                             " left join StandardListMaster SM on PM.cashMode=SM.listid" +
                             " left join RetailerMaster RM on RM.retailerid=CN.retailerID" +
-                            " where id like 'AP%' and CN.date=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                            " where id like 'AP%' and CN.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             if (c != null) {
                 PaymentBO bo;
                 lstAdvancePayment = new ArrayList<>();
@@ -1910,9 +1911,9 @@ public class ReportHelper {
 
         if (isInvoice) {
             sb.append("inner join SchemeMaster SM ON SM.SchemeID = SFP.SchemeID ");
-            sb.append("where invoiceid=" + AppUtils.QT(id) + " and SM.IsOnInvoice = '1'");
+            sb.append("where invoiceid=" + StringUtils.QT(id) + " and SM.IsOnInvoice = '1'");
         } else // Order Report
-            sb.append("where OrderID=" + AppUtils.QT(id));
+            sb.append("where OrderID=" + StringUtils.QT(id));
         Cursor c = db.selectSQL(sb.toString());
         if (c != null) {
             SchemeProductBO schemeProductBO;

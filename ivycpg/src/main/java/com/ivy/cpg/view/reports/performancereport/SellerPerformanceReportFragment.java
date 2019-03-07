@@ -29,6 +29,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -109,7 +110,7 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
         SharedPreferences sharedPrefs = PreferenceManager
                 .getDefaultSharedPreferences(getActivity());
         String rptDownload = sharedPrefs.getString("rpt_dwntime", "");
-        if (TimeUnit.MILLISECONDS.toMinutes(getDiffDurationMenu(rptDownload, SDUtil.now(SDUtil.DATE_TIME_NEW))) > bmodel.configurationMasterHelper.refreshMin)
+        if (TimeUnit.MILLISECONDS.toMinutes(getDiffDurationMenu(rptDownload, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))) > bmodel.configurationMasterHelper.refreshMin)
             menu.findItem(R.id.menu_refresh).setVisible(true);
         else
             menu.findItem(R.id.menu_refresh).setVisible(false);
@@ -160,11 +161,11 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
                             fitScore += SDUtil.convertToDouble(outletReport.getFitScore());
                             if (outletReport.getIsPlanned() == 1)
                                 plannedCall += 1;
-                            if (outletReport.getIsPlanned() == 0 && outletReport.getIsVisited() == 1)
+                            if (outletReport.getIsPlanned() == 0 && outletReport.isVisited() == 1)
                                 deviateCall += 1;
-                            if (outletReport.getIsVisited() == 1)
+                            if (outletReport.isVisited() == 1)
                                 actualCall += 1;
-                            if (outletReport.getIsVisited() == 1 && SDUtil.convertToDouble(outletReport.getSalesValue()) > 0)
+                            if (outletReport.isVisited() == 1 && SDUtil.convertToDouble(outletReport.getSalesValue()) > 0)
                                 productiveCall += 1;
 
                             //parse date and sum up intervals
@@ -173,7 +174,7 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
                             if (lastSync.length() == 0) {
                                 lastSync = outletReport.getTimeOut();
                             } else {
-                                if (SDUtil.compareDate(outletReport.getTimeOut(), lastSync, "yyyy/MM/dd HH:mm:ss") > 0) {
+                                if (DateTimeUtils.compareDate(outletReport.getTimeOut(), lastSync, "yyyy/MM/dd HH:mm:ss") > 0) {
                                     lastSync = outletReport.getTimeOut();
                                 }
                             }
@@ -395,7 +396,7 @@ public class SellerPerformanceReportFragment extends IvyBaseFragment {
                                     .getDefaultSharedPreferences(getActivity())
                                     .edit();
                             editor.putString("rpt_dwntime",
-                                    SDUtil.now(SDUtil.DATE_TIME_NEW));
+                                    DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
                             editor.commit();
 
                         }

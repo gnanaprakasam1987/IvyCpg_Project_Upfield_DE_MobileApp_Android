@@ -4,10 +4,10 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -45,7 +45,7 @@ public class InventoryReportHelper {
                     "inner join ClosingStockHeader CH ON CD.stockid=CH.stockid " +
                     "LEFT JOIN StandardListMaster SM ON SM.listid=CD.reasonid " +
                     "LEFT JOIN Productmaster PM ON PM.pid=CD.productid " +
-                    "where CH.retailerid=" + retailerId + " and CH.date=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    "where CH.retailerid=" + retailerId + " and CH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " and CD.productid in(" + focusBrandIds + ")";
 
             Cursor c = db.selectSQL(s);

@@ -62,6 +62,7 @@ public class ProfileConstant {
     public static final String FAX = "PROFILE86";//FAX,length validation=Y,Has Edit=1,RetailerAddress;
     public static final String REGION = "PROFILE87";//REGION,length validation=Y,Has Edit=1,RetailerAddress;
     public static final String COUNTRY = "PROFILE88";//COUNTRY,length validation=Y,Has Edit=1,RetailerAddress;
+   public static final String DISTRICT = "PROFILE89";//DISTRICT,length validation=Y,Has Edit=1,RetailerAddress;
 
     /*Configuration RField id's List */
     public static final String RFIELD_4 = "RFIELD4";

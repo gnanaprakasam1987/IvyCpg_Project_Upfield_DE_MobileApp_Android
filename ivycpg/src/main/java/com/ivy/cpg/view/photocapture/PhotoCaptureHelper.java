@@ -10,12 +10,12 @@ import android.support.v4.content.FileProvider;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -183,7 +183,7 @@ public class PhotoCaptureHelper {
                     + " AND DistributorID="
                     + mBModel.getRetailerMasterBO().getDistributorId()
                     + " AND Date = "
-                    + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                    + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
             if (cursor.getCount() > 0) {
                 cursor.moveToNext();
@@ -196,7 +196,7 @@ public class PhotoCaptureHelper {
                     .getDistributorid()
                     + ""
                     + mBModel.userMasterHelper.getUserMasterBO().getUserid()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID));
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
             for (PhotoTypeMasterBO photoTypeBo : getPhotoTypeMaster()) {
                 ArrayList<PhotoCaptureProductBO> tempPhotoBo = photoTypeBo
@@ -209,7 +209,7 @@ public class PhotoCaptureHelper {
 
                             sBuffer.append(uid);
                             sBuffer.append(",");
-                            sBuffer.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                            sBuffer.append(QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
                             sBuffer.append(",");
                             sBuffer.append(photoTypeBo.getPhotoTypeId());
                             sBuffer.append(",");
@@ -226,11 +226,11 @@ public class PhotoCaptureHelper {
                             sBuffer.append("1");
                             sBuffer.append(",");
                             if (mBModel.configurationMasterHelper.SHOW_DATE_BTN) {
-                                sBuffer.append(QT(DateUtil.convertToServerDateFormat(
+                                sBuffer.append(QT(DateTimeUtils.convertToServerDateFormat(
                                         lbo.getFromDate(),
                                         ConfigurationMasterHelper.outDateFormat)));
                                 sBuffer.append(",");
-                                sBuffer.append(QT(DateUtil.convertToServerDateFormat(
+                                sBuffer.append(QT(DateTimeUtils.convertToServerDateFormat(
                                         lbo.getToDate(),
                                         ConfigurationMasterHelper.outDateFormat)));
                                 sBuffer.append(",");
@@ -326,10 +326,10 @@ public class PhotoCaptureHelper {
                                         && tempTypeBO.getPhotoTypeId() == cursor
                                         .getInt(0) && lbo.getLocationId() == cursor.getInt(5)) {
                                     lbo.setImagePath(cursor.getString(2));
-                                    lbo.setFromDate(DateUtil.convertFromServerDateToRequestedFormat(
+                                    lbo.setFromDate(DateTimeUtils.convertFromServerDateToRequestedFormat(
                                             cursor.getString(3),
                                             ConfigurationMasterHelper.outDateFormat));
-                                    lbo.setToDate(DateUtil.convertFromServerDateToRequestedFormat(
+                                    lbo.setToDate(DateTimeUtils.convertFromServerDateToRequestedFormat(
                                             cursor.getString(4),
                                             ConfigurationMasterHelper.outDateFormat));
                                     lbo.setSKUName(cursor.getString(6));
@@ -447,7 +447,7 @@ public class PhotoCaptureHelper {
     /**
      * @param path File path
      * @return Availability
-     * @See {@link com.ivy.utils.AppUtils#isFileExisting(String)}
+     * @See {@link FileUtils#isFileExisting(String)}
      * To check file availability
      * @deprecated
      */
@@ -459,7 +459,7 @@ public class PhotoCaptureHelper {
     /**
      * @param path File path
      * @return URI
-     * @See {@link com.ivy.utils.AppUtils#getUriFromFile(Context, String)}
+     * @See {@link FileUtils#getUriFromFile(Context, String)}
      * Getting file URI
      * @deprecated
      */
