@@ -248,36 +248,32 @@
                 android:padding="@dimen/dimens_4dp"
                 android:tag="asset_barcode"
                 android:text="@string/barcode"
-                android:visibility="gone" />
+                android:visibility="visible" />
 
-            <LinearLayout
-                android:id="@+id/img_layout"
-                android:layout_width="@dimen/dimen_60dp"
-                android:layout_height="@dimen/dimen_60dp"
-                android:layout_below="@+id/label_barcode"
-                android:layout_alignParentTop="true"
-                android:gravity="center"
-                android:background="@drawable/dot_circle_blue"
-                android:layout_centerInParent="true">
 
                 <ImageView
                     android:id="@+id/imageView_barcode_scan"
-                    android:layout_width="@dimen/dimens_50dp"
-                    android:layout_height="@dimen/dimens_50dp"
+                    android:layout_width="@dimen/dimen_40dp"
+                    android:layout_height="@dimen/dimen_40dp"
+                    android:layout_centerInParent="true"
+                    android:background="@drawable/dot_circle_blue"
                     android:layout_gravity="center"
+                    android:layout_below="@+id/label_barcode"
+                    android:scaleType="center"
                     android:src="@drawable/barcode_scan" />
-            </LinearLayout>
+
 
             <LinearLayout
                 android:id="@+id/layout_two"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/img_layout"
+                android:layout_below="@+id/imageView_barcode_scan"
                 android:layout_marginTop="@dimen/dimens_12dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
                 <LinearLayout
+                    android:id="@+id/barcode_reason_layout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimens_10dp"
