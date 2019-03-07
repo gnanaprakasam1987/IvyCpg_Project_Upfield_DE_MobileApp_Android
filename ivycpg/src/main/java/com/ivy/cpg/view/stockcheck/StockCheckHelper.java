@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -333,26 +334,15 @@ public class StockCheckHelper {
     }
 
     boolean isReasonSelectedForAllProducts(boolean isCombinedStock) {
-
-        Vector<ProductMasterBO> productList = new Vector<>();
-        if (isCombinedStock)
-            productList = bmodel.productHelper.getTaggedProducts();
-        else
-            productList = bmodel.productHelper.getProductMaster();
-
-        if (productList.size() == 0)
-            return false;
-
-        for (ProductMasterBO productMasterBO : productList) {
-
-            int siz1 = productMasterBO.getLocations().size();
-            for (int j = 0; j < siz1; j++) {
-                if ((SHOW_STOCK_SP && productMasterBO.getLocations().get(j).getShelfPiece() == 0)
-                        && (SHOW_STOCK_SC && productMasterBO.getLocations().get(j).getShelfCase() == 0)
-                        && (SHOW_SHELF_OUTER && productMasterBO.getLocations().get(j).getShelfOuter() == 0)
-                        && (SHOW_STOCK_CB && productMasterBO.getLocations().get(j).getAvailability() == 0)
-                        && productMasterBO.getLocations().get(j).getReasonId() == 0)
-                    return false;
+        Vector<ProductMasterBO> productList = (isCombinedStock)? bmodel.productHelper.getTaggedProducts():bmodel.productHelper.getProductMaster();
+        if(productList.size()==0) return false;
+        for (ProductMasterBO product : productList) {
+            for (LocationBO location : product.getLocations()) {
+                return !((SHOW_STOCK_SP && location.getShelfPiece() == 0)
+                        && (SHOW_STOCK_SC && location.getShelfCase() == 0)
+                        && (SHOW_SHELF_OUTER && location.getShelfOuter() == 0)
+                        && (SHOW_STOCK_CB && location.getAvailability() == 0)
+                        && location.getReasonId() == 0);
             }
         }
         return true;
