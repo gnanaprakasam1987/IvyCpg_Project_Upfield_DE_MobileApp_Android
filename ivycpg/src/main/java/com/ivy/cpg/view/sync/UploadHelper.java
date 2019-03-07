@@ -500,7 +500,8 @@ public class UploadHelper {
             // Upload Transaction Sequence Table Separate , the above method
             // successfully upload. This Method also doing same work, but server
             // need the data while replicate this data while download instantly.
-            if ((businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO || businessModel.configurationMasterHelper.SHOW_COLLECTION_SEQ_NO)
+            if ((businessModel.configurationMasterHelper.SHOW_ORDER_SEQUENCE_NO || businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO
+                    || businessModel.configurationMasterHelper.SHOW_COLLECTION_SEQ_NO)
                     && businessModel.orderAndInvoiceHelper.hasTransactionSequence()) {
                 if (responseMessage == 1) {
                     responseMessage = uploadInvoiceSequenceNo(this.handler, context.getApplicationContext());
@@ -614,7 +615,8 @@ public class UploadHelper {
                                 // Upload Transaction Sequence Table Separate , the above method
                                 // successfully upload. This Method also doing same work, but server
                                 // need the data while replicate this data while download instantly.
-                                if ((businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO || businessModel.configurationMasterHelper.SHOW_COLLECTION_SEQ_NO)
+                                if ((businessModel.configurationMasterHelper.SHOW_ORDER_SEQUENCE_NO || businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO
+                                        || businessModel.configurationMasterHelper.SHOW_COLLECTION_SEQ_NO)
                                         && businessModel.orderAndInvoiceHelper.hasTransactionSequence()) {
                                     if (responseMsg == 1) {
                                         responseMsg = uploadInvoiceSequenceNo(handler,mContext);
@@ -816,7 +818,8 @@ public class UploadHelper {
                                 // Upload Transaction Sequence Table Separate , the above method
                                 // successfully upload. This Method also doing same work, but server
                                 // need the data while replicate this data while download instantly.
-                                if ((businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO || businessModel.configurationMasterHelper.SHOW_COLLECTION_SEQ_NO)
+                                if ((businessModel.configurationMasterHelper.SHOW_ORDER_SEQUENCE_NO || businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO
+                                        || businessModel.configurationMasterHelper.SHOW_COLLECTION_SEQ_NO)
                                         && businessModel.orderAndInvoiceHelper.hasTransactionSequence()) {
                                     if (responseMsg == 1) {
                                         responseMsg = uploadInvoiceSequenceNo(handler,mContext);

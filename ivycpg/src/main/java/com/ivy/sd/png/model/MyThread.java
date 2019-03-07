@@ -278,7 +278,7 @@ public class MyThread extends Thread {
 
                 }
                 orderHelper.setOrderId(null);
-                if ( orderHelper.saveOrder(ctx, bill1Products, false) && orderHelper.saveOrder(ctx, bill2Products,false)) {
+                if ( orderHelper.saveSplitOrder(ctx, bill1Products, false) && orderHelper.saveSplitOrder(ctx, bill2Products,false)) {
 
 
                     // Update review plan in DB
