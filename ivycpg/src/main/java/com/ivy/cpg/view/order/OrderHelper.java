@@ -188,15 +188,10 @@ public class OrderHelper {
 
             if ((!hasAlreadyOrdered(mContext, businessModel.getAppDataProvider().getRetailMaster().getRetailerID()) ||
                     businessModel.configurationMasterHelper.IS_MULTI_STOCKORDER) &&
-                    businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
+                    businessModel.configurationMasterHelper.SHOW_ORDER_SEQUENCE_NO) {
 
                 businessModel.insertSeqNumber("ORD");
                 uid = businessModel.downloadSequenceNo("ORD");
-
-                if (uid.length() > 16) {
-                    //Toast.makeText(mContext, mContext.getResources().getString(R.string.not_able_to_generate_invoice), Toast.LENGTH_LONG).show();
-                    return false;
-                }
 
                 uid = StringUtils.QT(uid);
 
@@ -565,7 +560,7 @@ public class OrderHelper {
      * @param productList
      * @return
      */
-    public boolean saveOrder(Context mContext, Vector<ProductMasterBO> productList, boolean isInvoice) {
+    public boolean saveSplitOrder(Context mContext, Vector<ProductMasterBO> productList, boolean isInvoice) {
         DBUtil db = null;
         int isVanSales = 1;
         String uid = null;
@@ -617,13 +612,9 @@ public class OrderHelper {
                         + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS);
                 uid = StringUtils.QT(id);
 
-                if (businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
+                if (businessModel.configurationMasterHelper.SHOW_ORDER_SEQUENCE_NO) {
                     businessModel.insertSeqNumber("ORD");
                     uid = StringUtils.QT(businessModel.downloadSequenceNo("ORD"));
-
-                    if (uid.length() > 16) {
-                        return false;
-                    }
                 }
 
                 // It can be used to show in OrderSummary alert
