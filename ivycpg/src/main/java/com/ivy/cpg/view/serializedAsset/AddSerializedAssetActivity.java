@@ -31,6 +31,7 @@ import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.asset.bo.AssetAddDetailBO;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -81,7 +82,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
     private ArrayList<SerializedAssetBO> vendorList;
     private ArrayList<SerializedAssetBO> typeList;
     private ArrayList<String> capacityList;
-    private ArrayList<SerializedAssetBO> noBarCodeReasonList;
+    private ArrayList<ReasonMaster> noBarCodeReasonList;
 
     private Spinner modelSpinner;
     private Spinner capacitySpinner;
@@ -217,6 +218,11 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             findViewById(R.id.ll_asset_model).setVisibility(View.GONE);
         if (!assetTrackingHelper.SHOW_ASSET_VENDOR)
             findViewById(R.id.ll_asset_vendor).setVisibility(View.GONE);
+        if (!assetTrackingHelper.SHOW_ASSET_BARCODE) {
+            findViewById(R.id.label_barcode).setVisibility(View.GONE);
+            imageView_barcode_scan.setVisibility(View.GONE);
+            findViewById(R.id.barcode_reason_layout).setVisibility(View.GONE);
+        }
 
         loadData();
 
@@ -289,7 +295,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         vendorList = assetTrackingHelper.getAssetVendors(this);
         typeList = assetTrackingHelper.getAssetTypes(this);
         capacityList = assetTrackingHelper.getAssetCapacity(this);
-        noBarCodeReasonList = assetTrackingHelper.getNoBarCodeAssetReasonList(this);
+        noBarCodeReasonList = assetTrackingHelper.getmAssetBCReasonList();
 
         SerializedAssetBO tempBO = new SerializedAssetBO(1);
         tempBO.setVendorName(ALL);
@@ -308,10 +314,10 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
         capacityList.add(0, ALL);
 
-        tempBO = new SerializedAssetBO(4);
-        tempBO.setAssetBarCodeReason(getString(R.string.select_reason));
-        tempBO.setAssetBarCodeId("0");
-        noBarCodeReasonList.add(0, tempBO);
+        ReasonMaster reasonMaster = new ReasonMaster();
+        reasonMaster.setReasonDesc(getString(R.string.select_reason));
+        reasonMaster.setReasonID("0");
+        noBarCodeReasonList.add(0, reasonMaster);
 
         ArrayAdapter<SerializedAssetBO> mModelAdapter = new ArrayAdapter<>(this,
                 R.layout.spinner_bluetext_layout, modelList);
@@ -333,14 +339,14 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         mAssetTypeAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
-        ArrayAdapter<SerializedAssetBO> mBarcodeReasonAdapter = new ArrayAdapter<>(this,
+        ArrayAdapter<ReasonMaster> mBarcodeReasonAdapter = new ArrayAdapter<>(this,
                 R.layout.spinner_bluetext_layout, noBarCodeReasonList);
-        mAssetTypeAdapter
+        mBarcodeReasonAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
-        ArrayAdapter<SerializedAssetBO> mNFCCodeReasonAdapter = new ArrayAdapter<>(this,
+        ArrayAdapter<ReasonMaster> mNFCCodeReasonAdapter = new ArrayAdapter<>(this,
                 R.layout.spinner_bluetext_layout, noBarCodeReasonList);
-        mAssetTypeAdapter
+        mNFCCodeReasonAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
 
         capacitySpinner.setAdapter(mCapacityAdapter);
@@ -413,14 +419,13 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
 
-                mSelectedScanReasonId = noBarCodeReasonList.get(position).getAssetBarCodeId();
+                mSelectedScanReasonId = noBarCodeReasonList.get(position).getReasonID();
 
                 if (!mSelectedScanReasonId.equals("0")) {
-                   // mSNO.setText("0");
-                    mSNO.setEnabled(false);
-                } else {
                     mSNO.setEnabled(true);
-                }
+                } /*else {
+                    mSNO.setEnabled(true);
+                }*/
 
             }
 
@@ -435,7 +440,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
 
-                mSelectedScanReasonId = noBarCodeReasonList.get(position).getAssetBarCodeId();
+                mSelectedScanReasonId = noBarCodeReasonList.get(position).getReasonID();
             }
 
             @Override
@@ -563,7 +568,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
             try {
                 if (mAsset.getSelectedItemPosition() != 0
-                        && (!mSNO.getText().toString().equals("") || !assetBo.getReasonId().equals("0"))) {
+                        && (!mSNO.getText().toString().isEmpty() || !mSelectedScanReasonId.equals("0"))) {
                     if (!assetTrackingHelper
                             .getUniqueSerialNo(mSNO.getText()
                                     .toString())) {
@@ -613,7 +618,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             scanBarCode();
         } else if (view.getId() == R.id.iv_photo) {
             if (mAsset.getSelectedItemPosition() != 0
-                    && !mSNO.getText().toString().equals("")) {
+                    && (!mSNO.getText().toString().isEmpty() || !mSelectedScanReasonId.equals("0"))) {
                 if (!assetTrackingHelper
                         .getUniqueSerialNo(mSNO.getText()
                                 .toString())) {
@@ -730,14 +735,12 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                         Toast.makeText(this, getResources().getString(R.string.serial_no_not_captured_kindly_choose_reason), Toast.LENGTH_LONG).show();
                         barcodeNoReasonSpinner.setSelection(0);
                         barcodeNoReasonSpinner.setEnabled(true);
-                        imageView_barcode_scan.setEnabled(false);
                         mSNO.setEnabled(true);
                     } else {
-                        mSNO.setEnabled(true);
                         mSNO.setText(result.getContents());
                         mSNO.setEnabled(false);
+                        barcodeNoReasonSpinner.setEnabled(false);
                         barcodeNoReasonSpinner.setSelection(0);
-                        imageView_barcode_scan.setEnabled(true);
                     }
                 }
             }
