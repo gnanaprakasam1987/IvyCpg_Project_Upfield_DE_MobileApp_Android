@@ -85,6 +85,7 @@ import com.ivy.cpg.view.planogram.PlanoGramHelper;
 import com.ivy.cpg.view.price.PriceTrackActivity;
 import com.ivy.cpg.view.price.PriceTrackCompActivity;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
+import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.cpg.view.promotion.PromotionHelper;
 import com.ivy.cpg.view.promotion.PromotionTrackingActivity;
 import com.ivy.cpg.view.retailercontract.RetailerContractActivity;
@@ -124,12 +125,10 @@ import com.ivy.sd.png.provider.DownloadProductsAndPrice;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.cpg.view.profile.ProfileActivity;
-import com.ivy.utils.AppUtils;
 import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
+import com.ivy.ui.task.view.TaskActivity;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
-import com.ivy.ui.task.view.TaskActivity;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import java.io.File;
@@ -808,12 +807,14 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } else if (i1 == R.id.menu_reminder) {
             if (!isClick) {
                 isClick = true;
-                bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                        DateTimeUtils.now(DateTimeUtils.TIME), MENU_TASK);
-                Intent intent = new Intent(getApplicationContext(), TaskActivity.class);
-                intent.putExtra("IsRetailerwisetask", true);
-                startActivity(intent);
+                if (TaskHelper.getInstance(this).getTaskData(bmodel.getRetailerMasterBO().getRetailerID()).size() > 0) {
+                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), MENU_TASK);
+                    Intent intent = new Intent(getApplicationContext(), TaskActivity.class);
+                    intent.putExtra("IsRetailerwisetask", true);
+                    startActivity(intent);
+                }
 
             }
             return true;
@@ -2168,20 +2169,19 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } else if (menu.getConfigCode().equals(MENU_TASK) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
-                    ) {
+            ) {
                 if (!isClick) {
                     isClick = true;
                     // finish();
-                    if (TaskHelper.getInstance(this).getTaskData(bmodel.getRetailerMasterBO().getRetailerID()).size() > 0) {
-                        bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_TASK);
-                        bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                                DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
-                        Intent intent = new Intent(getApplicationContext(),
-                                TaskActivity.class);
-                        intent.putExtra("CurrentActivityCode", menu.getConfigCode());
-                        intent.putExtra("IsRetailerwisetask", true);
-                        intent.putExtra("screentitle", menu.getMenuName());
+                    bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_TASK);
+                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
+                    Intent intent = new Intent(getApplicationContext(),
+                            TaskActivity.class);
+                    intent.putExtra("CurrentActivityCode", menu.getConfigCode());
+                    intent.putExtra("IsRetailerwisetask", true);
+                    intent.putExtra("screentitle", menu.getMenuName());
 
                     startActivity(intent);
                     isCreated = false;
