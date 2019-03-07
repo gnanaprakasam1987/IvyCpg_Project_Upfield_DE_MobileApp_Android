@@ -992,10 +992,7 @@ public class SerializedAssetHelper {
         if (mUniqueSerialNo == null || mUniqueSerialNo.size() == 0)
             return false;
         else {
-            if (mUniqueSerialNo.get(serialNo) == null)
-                return false;
-            else
-                return true;
+            return mUniqueSerialNo.get(serialNo) != null;
         }
     }
 
@@ -1491,5 +1488,27 @@ public class SerializedAssetHelper {
         return capacityList;
     }
 
+    public ArrayList<SerializedAssetBO> getNoBarCodeAssetReasonList(Context context) {
+        ArrayList<SerializedAssetBO> typeList = new ArrayList<>();
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        try {
+            db.openDataBase();
+            Cursor cursor = db.selectSQL("select listid,listname from standardlistmaster where listtype='ASSET_BAR_CODE'");
+            if (cursor.getCount() > 0) {
+                while (cursor.moveToNext()) {
+                    SerializedAssetBO serializedAssetBO = new SerializedAssetBO(4);
+                    serializedAssetBO.setAssetBarCodeId(cursor.getString(0));
+                    serializedAssetBO.setAssetBarCodeReason(cursor.getString(1));
+                    typeList.add(serializedAssetBO);
+                }
+            }
+        } catch (Exception e) {
+            db.closeDB();
+            e.printStackTrace();
+        }
+        db.closeDB();
+
+        return typeList;
+    }
 
 }
