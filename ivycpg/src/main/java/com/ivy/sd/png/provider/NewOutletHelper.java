@@ -2410,10 +2410,11 @@ public class NewOutletHelper {
                         + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
                 String uid = QT(id);
 
-                if (bmodel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
-                    bmodel.insertSeqNumber("ORD");
-                    uid = QT(bmodel.downloadSequenceNo("ORD"));
-                }
+                // Commented after discussing it with Abbas.
+                // if (bmodel.configurationMasterHelper.SHOW_ORDER_SEQUENCE_NO) {
+                //   bmodel.insertSeqNumber("ORD");
+                //   uid = QT(bmodel.downloadSequenceNo("ORD"));
+                // }
 
                 column = "OrderID, OrderDate, RetailerID, DistributorId, OrderValue,LinesPerCall,TotalWeight,Remarks,OrderTime";
                 value = uid
