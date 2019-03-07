@@ -277,4 +277,10 @@ public class SDUtil {
     }
 
 
+    public static boolean isValidDecimal(String value, int wholeValueCount,
+                                  int decimalValueCount) {
+        String strPattern = "(^([0-9]{0," + wholeValueCount
+                + "})?)(\\.[0-9]{0," + decimalValueCount + "})?$";
+        return value.matches(strPattern);
+    }
 }

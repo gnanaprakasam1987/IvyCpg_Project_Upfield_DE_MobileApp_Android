@@ -24,7 +24,7 @@ import com.ivy.cpg.view.callanalysis.CallAnalysisActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.ReAllocationActivity;
 import com.ivy.cpg.view.subd.SubDStockOrderActivity;
-import com.ivy.sd.png.view.UserSettingsActivity;
+import com.ivy.cpg.view.settings.UserSettingsActivity;
 import com.ivy.sd.print.PrintPreviewScreenTitan;
 import com.ivy.utils.FileUtils;
 
@@ -278,7 +278,7 @@ public class MyThread extends Thread {
 
                 }
                 orderHelper.setOrderId(null);
-                if ( orderHelper.saveOrder(ctx, bill1Products, false) && orderHelper.saveOrder(ctx, bill2Products,false)) {
+                if ( orderHelper.saveSplitOrder(ctx, bill1Products, false) && orderHelper.saveSplitOrder(ctx, bill2Products,false)) {
 
 
                     // Update review plan in DB

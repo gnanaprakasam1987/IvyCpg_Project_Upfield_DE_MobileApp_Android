@@ -72,7 +72,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.AmountSplitUpDialog;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -2063,7 +2062,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 discountValue = discount;
 
             }
-            if (bModel.getOrderHeaderBO() != null)
+            if (bModel.getOrderHeaderBO() != null && !bModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG)
                 bModel.getOrderHeaderBO().setBillLevelDiscountValue(discountValue);
         } catch (Exception e) {
             Commons.printException(e);

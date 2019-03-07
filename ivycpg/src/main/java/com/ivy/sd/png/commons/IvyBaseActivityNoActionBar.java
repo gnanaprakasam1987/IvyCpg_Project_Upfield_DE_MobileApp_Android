@@ -378,4 +378,14 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         dialog.setCancelable(false);
         dialog.show();
     }
+
+    public void clearAppUrl() {
+        SharedPreferences.Editor editor = PreferenceManager
+                .getDefaultSharedPreferences(this)
+                .edit();
+        editor.putString("appUrlNew", "");
+        editor.putString("application", "");
+        editor.putString("activationKey", "");
+        editor.commit();
+    }
 }

@@ -65,6 +65,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CompetitorFilterFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
@@ -558,7 +559,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             if (frag != null)
                 ft.detach(frag);
 
-            if (mSelectedIdByLevelId != null && businessModel.isMapEmpty(mSelectedIdByLevelId) == false) {
+            if (mSelectedIdByLevelId != null && AppUtils.isMapEmpty(mSelectedIdByLevelId) == false) {
                 mCompetitorSelectedIdByLevelId = new HashMap<>();
             }
 
@@ -895,7 +896,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         }
         MyAdapter adapter = new MyAdapter(mylist);
         lv.setAdapter(adapter);
-        if (mSelectedIdByLevelId != null && businessModel.isMapEmpty(mSelectedIdByLevelId) == false) {
+        if (mSelectedIdByLevelId != null && AppUtils.isMapEmpty(mSelectedIdByLevelId) == false) {
             mCompetitorSelectedIdByLevelId = new HashMap<>();
         }
 
@@ -1223,7 +1224,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         String qty = s.toString();
                         if (qty.length() > 0)
                             holder.mCaPrice.setSelection(qty.length());
-                        if (businessModel.validDecimalValue(qty, 8, businessModel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION)) {
+                        if (SDUtil.isValidDecimal(qty, 8, businessModel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION)) {
                             holder.mSKUBO.setPrice_ca(qty);
                         } else {
                             Toast.makeText(
@@ -1271,7 +1272,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         String qty = s.toString();
                         if (qty.length() > 0)
                             holder.mPcPrice.setSelection(qty.length());
-                        if (businessModel.validDecimalValue(qty, 8, businessModel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION)) {
+                        if (SDUtil.isValidDecimal(qty, 8, businessModel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION)) {
                             holder.mSKUBO.setPrice_pc(qty);
                         } else {
                             Toast.makeText(
@@ -1320,7 +1321,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         if (qty.length() > 0)
                             holder.mOoPrice.setSelection(qty.length());
 
-                        if (businessModel.validDecimalValue(qty, 8, businessModel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION)) {
+                        if (SDUtil.isValidDecimal(qty, 8, businessModel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION)) {
                             holder.mSKUBO.setPrice_oo(qty);
                         } else {
                             Toast.makeText(

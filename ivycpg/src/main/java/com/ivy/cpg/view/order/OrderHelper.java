@@ -158,12 +158,11 @@ public class OrderHelper {
 
             String timeStampId = "";
             int flag = 0; // flag for joint call
-            isVanSales = 1;
+            isVanSales = businessModel.getRetailerMasterBO().getIsVansales();
             int indicativeFlag = 0;
 
             if (businessModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
                 if (!businessModel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                    isVanSales = 0;
                     if (businessModel.configurationMasterHelper.IS_INDICATIVE_ORDER)
                         indicativeFlag = 1;
 
@@ -189,15 +188,10 @@ public class OrderHelper {
 
             if ((!hasAlreadyOrdered(mContext, businessModel.getAppDataProvider().getRetailMaster().getRetailerID()) ||
                     businessModel.configurationMasterHelper.IS_MULTI_STOCKORDER) &&
-                    businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
+                    businessModel.configurationMasterHelper.SHOW_ORDER_SEQUENCE_NO) {
 
                 businessModel.insertSeqNumber("ORD");
                 uid = businessModel.downloadSequenceNo("ORD");
-
-                if (uid.length() > 16) {
-                    //Toast.makeText(mContext, mContext.getResources().getString(R.string.not_able_to_generate_invoice), Toast.LENGTH_LONG).show();
-                    return false;
-                }
 
                 uid = StringUtils.QT(uid);
 
@@ -356,7 +350,7 @@ public class OrderHelper {
 
 
             // Save order details
-            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP,UpSellingQty";
+            columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP,UpSellingQty,ASRP";
 
             Set<String> parentHierarchyIds = new HashSet<>();
             //get entry level discount value
@@ -566,7 +560,7 @@ public class OrderHelper {
      * @param productList
      * @return
      */
-    public boolean saveOrder(Context mContext, Vector<ProductMasterBO> productList, boolean isInvoice) {
+    public boolean saveSplitOrder(Context mContext, Vector<ProductMasterBO> productList, boolean isInvoice) {
         DBUtil db = null;
         int isVanSales = 1;
         String uid = null;
@@ -618,13 +612,9 @@ public class OrderHelper {
                         + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS);
                 uid = StringUtils.QT(id);
 
-                if (businessModel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
+                if (businessModel.configurationMasterHelper.SHOW_ORDER_SEQUENCE_NO) {
                     businessModel.insertSeqNumber("ORD");
                     uid = StringUtils.QT(businessModel.downloadSequenceNo("ORD"));
-
-                    if (uid.length() > 16) {
-                        return false;
-                    }
                 }
 
                 // It can be used to show in OrderSummary alert
@@ -666,7 +656,7 @@ public class OrderHelper {
 
                 // Save order details
                 Vector<ProductMasterBO> finalProductList;
-                columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP,UpSellingQty";
+                columns = "orderid,productid,qty,rate,uomcount,pieceqty,caseqty,RField1,uomid,retailerid, msqqty, totalamount,ProductName,ProductshortName,pcode, D1,D2,D3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,CasePrice,OuterPrice,PcsUOMId,batchid,priceoffvalue,PriceOffId,weight,reasonId,HsnCode,NetAmount,MRP,UpSellingQty,ASRP";
 
                 finalProductList = productList;
 
@@ -1152,6 +1142,7 @@ public class OrderHelper {
         double line_total_price;
         double totalValue;
         String rfield;
+        float priceWithTax;
 
         if (isBatchWise) {
             pieceCount = batchProductBO.getOrderedPcsQty()
@@ -1162,6 +1153,7 @@ public class OrderHelper {
             srp = batchProductBO.getSrp();
             csrp = batchProductBO.getCsrp();
             osrp = batchProductBO.getOsrp();
+            priceWithTax = batchProductBO.getASRP();
             orderPieceQty = batchProductBO.getOrderedPcsQty();
             orderCaseQty = batchProductBO.getOrderedCaseQty();
             orderOuterQty = batchProductBO.getOrderedOuterQty();
@@ -1184,6 +1176,7 @@ public class OrderHelper {
             srp = productBo.getSrp();
             csrp = productBo.getCsrp();
             osrp = productBo.getOsrp();
+            priceWithTax = productBo.getASRP();
             orderPieceQty = productBo.getOrderedPcsQty();
             orderCaseQty = productBo.getOrderedCaseQty();
             orderOuterQty = productBo.getOrderedOuterQty();
@@ -1233,6 +1226,7 @@ public class OrderHelper {
         sb.append("," + totalValue);
         sb.append("," + productBo.getMRP());
         sb.append("," + productBo.getIncreasedPcs());
+        sb.append("," + priceWithTax);
         return sb;
 
     }

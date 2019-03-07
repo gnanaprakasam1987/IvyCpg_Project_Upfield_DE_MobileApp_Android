@@ -284,7 +284,7 @@ public class CompetitorTrackingHelper {
                             + ","
                             + QT(competitor.getImagePath())
                             + ","
-                            + QT(bmodel.getTimeZone())
+                            + QT(DateTimeUtils.getTimeZone())
                             + ","
                             + competitor.getCompetitorpid()
                             + ","

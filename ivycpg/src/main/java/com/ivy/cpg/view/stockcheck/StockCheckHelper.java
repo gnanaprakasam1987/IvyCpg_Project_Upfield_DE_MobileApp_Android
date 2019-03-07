@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -18,6 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.Vector;
 
 /**
  * Created by mansoor on 03/10/2018
@@ -331,25 +333,16 @@ public class StockCheckHelper {
         return false;
     }
 
-    public boolean isReasonSelectedForAllProducts() {
-
-        int siz = bmodel.productHelper.getProductMaster().size();
-        if (siz == 0)
-            return false;
-        for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = bmodel.productHelper
-                    .getProductMaster().get(i);
-
-            int siz1 = product.getLocations().size();
-            for (int j = 0; j < siz1; j++) {
-                if (product.getIsFocusBrand() == 1 || product.getIsFocusBrand() == 2) {
-                    if ((SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() == -1)
-                            && (SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() == -1)
-                            && (SHOW_SHELF_OUTER && product.getLocations().get(j).getShelfOuter() == -1)
-                            && (SHOW_STOCK_CB && product.getLocations().get(j).getAvailability() == 0)
-                            && product.getLocations().get(j).getReasonId() == 0)
-                        return false;
-                }
+    boolean isReasonSelectedForAllProducts(boolean isCombinedStock) {
+        Vector<ProductMasterBO> productList = (isCombinedStock)? bmodel.productHelper.getTaggedProducts():bmodel.productHelper.getProductMaster();
+        if(productList.size()==0) return false;
+        for (ProductMasterBO product : productList) {
+            for (LocationBO location : product.getLocations()) {
+                return !((SHOW_STOCK_SP && location.getShelfPiece() == 0)
+                        && (SHOW_STOCK_SC && location.getShelfCase() == 0)
+                        && (SHOW_SHELF_OUTER && location.getShelfOuter() == 0)
+                        && (SHOW_STOCK_CB && location.getAvailability() == 0)
+                        && location.getReasonId() == 0);
             }
         }
         return true;

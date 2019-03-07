@@ -2,7 +2,7 @@ package com.ivy.ui.activation.presenter;
 
 import com.ivy.ui.activation.ActivationDataFactory;
 import com.ivy.core.data.datamanager.DataManager;
-import com.ivy.sd.png.bo.ActivationBO;
+import com.ivy.ui.activation.bo.ActivationBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.activation.ActivationContract;

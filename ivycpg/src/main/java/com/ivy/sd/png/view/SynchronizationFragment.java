@@ -88,6 +88,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.LabelsKey;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
+import com.ivy.utils.NetworkUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import org.json.JSONArray;
@@ -250,6 +251,9 @@ public class SynchronizationFragment extends IvyBaseFragment
             }
 
         }
+
+        if (!bmodel.configurationMasterHelper.IS_ALLOW_SURVEY_WITHOUT_JOINTCALL)
+            bmodel.userMasterHelper.downloadJoinCallusers();
         withPhotosCheckBox
                 .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -296,6 +300,15 @@ public class SynchronizationFragment extends IvyBaseFragment
                     public void onCheckedChanged(CompoundButton buttonView,
                                                  boolean isChecked) {
                         if (isChecked) {
+                            if (bmodel.outletTimeStampHelper
+                                    .isJointCall(bmodel.userMasterHelper.getUserMasterBO()
+                                            .getJoinCallUserList())) {
+                                bmodel.showAlert(
+                                        getResources().getString(
+                                                R.string.logout_joint_user_dayclose), 0);
+                                dayCloseCheckBox.setChecked(false);
+                                return;
+                            }
                             presenter.updateDayCloseStatus(true);
                             if (DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
                                     "yyyy/MM/dd") >= 0) {
@@ -466,8 +479,6 @@ public class SynchronizationFragment extends IvyBaseFragment
                 }
 
                 isSwitchUser = false;
-                if (!bmodel.configurationMasterHelper.IS_ALLOW_SURVEY_WITHOUT_JOINTCALL)
-                    bmodel.userMasterHelper.downloadJoinCallusers();
                 if (bmodel.outletTimeStampHelper
                         .isJointCall(bmodel.userMasterHelper.getUserMasterBO()
                                 .getJoinCallUserList())) {
@@ -476,7 +487,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                     R.string.logout_joint_user), 0);
                     return;
                 }
-                if (bmodel.isOnline()) {
+                if (NetworkUtils.isNetworkConnected(getActivity())) {
                     if (bmodel.synchronizationHelper.checkDataForSync()) {
 
                         try {
@@ -600,7 +611,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                         ConfigurationMasterHelper.outDateFormat));//changed bcz close_date shows current date, replaced to show downloaded date
 
         Button gprsAvailablityButton = view.findViewById(R.id.gprsAvailablityButton);
-        if (isOnline())
+        if (NetworkUtils.isNetworkConnected(getActivity()))
             gprsAvailablityButton.setBackgroundDrawable(ContextCompat
                     .getDrawable(getActivity(), R.drawable.greenball));
         else
@@ -793,18 +804,12 @@ public class SynchronizationFragment extends IvyBaseFragment
         }
     }
 
-    private boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_sync, menu);
 
         MenuItem menuItem = menu.getItem(0);
 
-        if (bmodel.isOnline()) {
+        if (NetworkUtils.isNetworkConnected(getActivity())) {
             menuItem.setIcon(R.drawable.greenball);
         } else {
             menuItem.setIcon(R.drawable.redball);
@@ -856,7 +861,7 @@ public class SynchronizationFragment extends IvyBaseFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.menu_gps_available) {
-            if (bmodel.isOnline()) {
+            if (NetworkUtils.isNetworkConnected(getActivity())) {
                 item.setIcon(R.drawable.greenball);
                 Toast.makeText(getActivity(), getResources().getString(R.string.network_connectionC_Avail),
                         Toast.LENGTH_SHORT).show();
@@ -1496,7 +1501,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                if (bmodel.isOnline()) {
+                if (NetworkUtils.isNetworkConnected(getActivity())) {
                     if (!aws)
                         return false;
 
@@ -1567,8 +1572,6 @@ public class SynchronizationFragment extends IvyBaseFragment
                     if (alertDialog != null)
                         alertDialog.dismiss();
                 }
-                if (alertDialog != null)
-                    alertDialog.dismiss();
             }
 
         }
@@ -2357,7 +2360,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         this.password = password;
         isSwitchUser = true;
 
-        if (bmodel.isOnline()) {
+        if (NetworkUtils.isNetworkConnected(getActivity())) {
             builder = new AlertDialog.Builder(getActivity());
 
             customProgressDialog(builder, getResources().getString(R.string.auth_and_downloading_masters));

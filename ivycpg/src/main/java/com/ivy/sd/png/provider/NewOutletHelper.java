@@ -28,7 +28,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.profile.ProfileConstant;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 
-import com.ivy.sd.png.view.profile.RetailerContactBo;
+import com.ivy.cpg.view.retailercontact.RetailerContactBo;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 
@@ -2410,10 +2410,11 @@ public class NewOutletHelper {
                         + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
                 String uid = QT(id);
 
-                if (bmodel.configurationMasterHelper.SHOW_INVOICE_SEQUENCE_NO) {
-                    bmodel.insertSeqNumber("ORD");
-                    uid = QT(bmodel.downloadSequenceNo("ORD"));
-                }
+                // Commented after discussing it with Abbas.
+                // if (bmodel.configurationMasterHelper.SHOW_ORDER_SEQUENCE_NO) {
+                //   bmodel.insertSeqNumber("ORD");
+                //   uid = QT(bmodel.downloadSequenceNo("ORD"));
+                // }
 
                 column = "OrderID, OrderDate, RetailerID, DistributorId, OrderValue,LinesPerCall,TotalWeight,Remarks,OrderTime";
                 value = uid
