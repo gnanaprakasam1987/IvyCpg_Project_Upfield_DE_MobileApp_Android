@@ -598,7 +598,7 @@
             android:name="com.ivy.cpg.view.nonfield.NonFieldFragment"
             android:screenOrientation="portrait" />
         <activity
-            android:name="com.ivy.cpg.view.profile.ProfileEditActivity"
+            android:name="com.ivy.ui.profile.edit.view.ProfileEditActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.collection.BillPaymentActivity"
