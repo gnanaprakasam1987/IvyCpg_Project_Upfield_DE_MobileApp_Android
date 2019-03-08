@@ -97,10 +97,11 @@ public class SpecialFilterFragment extends Fragment implements OnItemClickListen
         allButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                brandInterface.updateGeneralText(GENERAL);
                 mselectedFilterMap.put(GENERAL, "All");
                 mselectedFilterMap.put(BRAND, "All");
                 mselectedFilterMap.put(CATEGORY, "All");
+                brandInterface.updateGeneralText(GENERAL);
+
 
 
             }
@@ -221,14 +222,15 @@ public class SpecialFilterFragment extends Fragment implements OnItemClickListen
         try {
             ViewHolder holder = (ViewHolder) arg1.getTag();
 
-            holder.cbFiltered.setChecked(true);
+           // holder.cbFiltered.setChecked(true);
 
             mselectedFilterMap.put(GENERAL, holder.speFiltID);
+            mselectedFilterMap.put(BRAND, "All");
+            mselectedFilterMap.put(CATEGORY, "All");
 
             brandInterface.updateGeneralText(holder.speFiltID);
 
-            mselectedFilterMap.put(BRAND, "All");
-            mselectedFilterMap.put(CATEGORY, "All");
+
 
 
         } catch (Exception e) {
