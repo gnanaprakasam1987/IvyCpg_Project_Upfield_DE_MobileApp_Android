@@ -39,18 +39,36 @@ public class SerializedAssetBO {
     private String modelName;
     private String assetType;
     private String assetTypeId;
+    private String assetBarCodeId;
+    private String assetBarCodeReason;
+
+    public String getAssetBarCodeId() {
+        return assetBarCodeId;
+    }
+
+    public void setAssetBarCodeId(String assetBarCodeId) {
+        this.assetBarCodeId = assetBarCodeId;
+    }
+
+    public String getAssetBarCodeReason() {
+        return assetBarCodeReason;
+    }
+
+    public void setAssetBarCodeReason(String assetBarCodeReason) {
+        this.assetBarCodeReason = assetBarCodeReason;
+    }
+
     private int flag = 0;
 
 
-
-    private int referenceId=0;
+    private int referenceId = 0;
 
 
     public SerializedAssetBO() {
 
     }
 
-    public SerializedAssetBO(int flag){
+    public SerializedAssetBO(int flag) {
         this.flag = flag;
     }
 
@@ -93,6 +111,8 @@ public class SerializedAssetBO {
         this.modelName = serializedAssetBO.getModelName();
         this.assetType = serializedAssetBO.getAssetType();
         this.assetTypeId = serializedAssetBO.getAssetTypeId();
+        this.assetBarCodeId = serializedAssetBO.getAssetBarCodeId();
+        this.assetBarCodeReason = serializedAssetBO.getAssetBarCodeReason();
     }
 
     public int getExecutorQty() {
@@ -507,6 +527,8 @@ public class SerializedAssetBO {
             return modelName;
         else if (flag == 3)
             return assetType;
+        else if (flag == 4)
+            return assetBarCodeReason;
         else
             return AssetName;
     }

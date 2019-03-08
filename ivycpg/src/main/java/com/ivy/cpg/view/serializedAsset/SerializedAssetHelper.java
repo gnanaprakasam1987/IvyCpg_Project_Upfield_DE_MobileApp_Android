@@ -41,6 +41,7 @@ public class SerializedAssetHelper {
     private static final String ASSET_REASON = "AR";
     private static final String ASSET_REMARK = "ARR";
     private static final String ASSET_CONDITION = "CD";
+    private static final String ASSET_BARCODE_REASON = "BARCODE_REASON";
     private static final String CODE_ASSET_SERVICE = "SAT11";
     private static final String CODE_NEW_ASSET_PHOTO = "SAT12";
     public boolean SHOW_ASSET_REASON;
@@ -70,6 +71,7 @@ public class SerializedAssetHelper {
 
     private ArrayList<ReasonMaster> mAssetReasonList = new ArrayList<>();
     private ArrayList<ReasonMaster> mAssetConditionList = new ArrayList<>();
+    private ArrayList<ReasonMaster> mAssetBCReasonList = new ArrayList<>();
     private HashMap<String, String> mUniqueSerialNo;
     private ArrayList<SerializedAssetBO> mAssetTrackingList = new ArrayList<>();
     private Vector<SerializedAssetBO> mRemovableAssets = null;
@@ -215,6 +217,8 @@ public class SerializedAssetHelper {
                 downloadReasons(mContext, ASSET_CONDITION);
             if (SHOW_REMARKS_ASSET)
                 downloadReasons(mContext, ASSET_REMARK);
+            if (SHOW_ASSET_BARCODE)
+                downloadReasons(mContext, ASSET_BARCODE_REASON);
 
         } catch (Exception e) {
             Commons.printException("downloadConfigs " + e);
@@ -275,6 +279,10 @@ public class SerializedAssetHelper {
             case ASSET_CONDITION:
                 mAssetConditionList = new ArrayList<>();
                 break;
+            case ASSET_BARCODE_REASON:
+                mAssetBCReasonList = new ArrayList<>();
+                break;
+
 
         }
         ReasonMaster reasonBO;
@@ -297,6 +305,9 @@ public class SerializedAssetHelper {
                             break;
                         case ASSET_CONDITION:
                             mAssetConditionList.add(reasonBO);
+                            break;
+                        case ASSET_BARCODE_REASON:
+                            mAssetBCReasonList.add(reasonBO);
                             break;
 
 
@@ -717,6 +728,13 @@ public class SerializedAssetHelper {
         return new ArrayList<>();
     }
 
+    public ArrayList<ReasonMaster> getmAssetBCReasonList() {
+        if (mAssetBCReasonList != null) {
+            return mAssetBCReasonList;
+        }
+        return new ArrayList<>();
+    }
+
 
     public void deleteImageProof(Context mContext, String ImageName) {
         try {
@@ -938,7 +956,6 @@ public class SerializedAssetHelper {
 
     /**
      * Download unique POSM available
-     *
      */
     public ArrayList<AssetAddDetailBO> downloadUniqueAssets(Context mContext) {
 
@@ -992,10 +1009,7 @@ public class SerializedAssetHelper {
         if (mUniqueSerialNo == null || mUniqueSerialNo.size() == 0)
             return false;
         else {
-            if (mUniqueSerialNo.get(serialNo) == null)
-                return false;
-            else
-                return true;
+            return mUniqueSerialNo.get(serialNo) != null;
         }
     }
 
@@ -1490,6 +1504,5 @@ public class SerializedAssetHelper {
 
         return capacityList;
     }
-
 
 }
