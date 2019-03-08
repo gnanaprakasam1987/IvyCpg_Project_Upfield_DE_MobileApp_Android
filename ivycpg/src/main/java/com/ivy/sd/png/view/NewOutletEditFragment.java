@@ -60,7 +60,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
     private Button okBtn, cancelBtn;
     private AlertDialog alertDialog;
     private View view;
-    private static final String MENU_NEW_RETAILER = "MENU_NEW_RET";
+    private static final String MENU_NEW_RETAILER = "MENU_NEWRET_EDT";
     private ChannelSelectionDialog dialogFragment;
     NewOutletEditSortDialog sortDialog;
     private int lastCheckedPosition = -1;
@@ -99,12 +99,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
             gridLayoutManager = new GridLayoutManager(getActivity(), 1);
 
         recyclerView.setLayoutManager(gridLayoutManager);
-        retailerEditList = new ArrayList<>();
-        retailerEditList = bmodel.newOutletHelper.getNewRetailers();
-        if (retailerEditList.size() > 0) {
-            recycleradapter = new RecyclerViewAdapter(retailerEditList);
-            recyclerView.setAdapter(recycleradapter);
-        }
+
         return view;
     }
 
@@ -112,6 +107,12 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
     public void onStart() {
         super.onStart();
         setHasOptionsMenu(true);
+        retailerEditList = new ArrayList<>();
+        retailerEditList = bmodel.newOutletHelper.getNewRetailers();
+        if (retailerEditList.size() > 0) {
+            recycleradapter = new RecyclerViewAdapter(retailerEditList);
+            recyclerView.setAdapter(recycleradapter);
+        }
     }
 
     @Override
@@ -195,6 +196,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     i.putExtra("screenMode", 1);
                     i.putExtra("retailerId", retailer.getRetailerId());
+                    i.putExtra("isNewRetailerEdit", true);
                     startActivity(i);
                     //getActivity().finish();
                 }
@@ -479,6 +481,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
                     i.putExtra("screenMode", 4);
                     fromHomeScreen = true;
                 }
+                i.putExtra("isNewRetailerEdit", true);
                 startActivity(i);
                 // getActivity().finish();
 
