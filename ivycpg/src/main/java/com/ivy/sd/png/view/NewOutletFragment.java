@@ -126,6 +126,7 @@ public class NewOutletFragment extends IvyBaseFragment
     private double longitude = 0;
 
     private final String MENU_NEW_RETAILER = "MENU_NEW_RET";
+    private final String MENU_NEW_RETAILER_EDT = "MENU_NEWRET_EDT";
 
     private boolean isLatLong;
     private String imageName;
@@ -225,6 +226,8 @@ public class NewOutletFragment extends IvyBaseFragment
     ArrayList<StandardListBO> priorityProductIDList;
     Vector<RetailerMasterBO> mselectedRetailers;
     int screenMode;
+    boolean isFromNewRetailerEdit;
+
     String retailerId_edit = "";
 
     private final int VIEW = 1;
@@ -362,6 +365,7 @@ public class NewOutletFragment extends IvyBaseFragment
         mLocationMasterList3 = new ArrayList<>();
 
         screenMode = getActivity().getIntent().getIntExtra("screenMode", 0);
+        isFromNewRetailerEdit = getActivity().getIntent().getBooleanExtra("isNewRetailerEdit", false);
 
         if (screenMode == VIEW)
             linearLayout.setVisibility(View.GONE);
@@ -5005,14 +5009,14 @@ public class NewOutletFragment extends IvyBaseFragment
             menu.findItem(R.id.menu_capture).setVisible(false);
         }
         if (!bmodel.configurationMasterHelper
-                .downloadFloatingSurveyConfig(MENU_NEW_RETAILER))
+                .downloadFloatingSurveyConfig(isFromNewRetailerEdit ? MENU_NEW_RETAILER_EDT : MENU_NEW_RETAILER))
             menu.findItem(R.id.menu_survey).setVisible(false);
 
         menu.findItem(R.id.menu_oppr).setVisible(bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR);
         menu.findItem(R.id.menu_order).setVisible(bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_ORDER);
 
         if (bmodel.configurationMasterHelper.IS_NEWOUTLET_IMAGETYPE
-                && screenMode == EDIT)
+                && (screenMode == EDIT || screenMode == CREATE_FRM_EDT_SCREEN))
             menu.findItem(R.id.menu_capture).setVisible(true);
         else if (screenMode == VIEW) {
             menu.findItem(R.id.menu_capture).setVisible(false);
@@ -5043,7 +5047,7 @@ public class NewOutletFragment extends IvyBaseFragment
             boolean validated = validateProfile();
             if (validated) {
                 if (bmodel.configurationMasterHelper
-                        .downloadFloatingSurveyConfig(MENU_NEW_RETAILER)) {
+                        .downloadFloatingSurveyConfig(isFromNewRetailerEdit ? MENU_NEW_RETAILER_EDT : MENU_NEW_RETAILER)) {
                     surveyHelperNew.setFromHomeScreen(true);
                     surveyHelperNew.downloadModuleId("NEW_RETAILER");
                     surveyHelperNew.downloadQuestionDetails(MENU_NEW_RETAILER);
