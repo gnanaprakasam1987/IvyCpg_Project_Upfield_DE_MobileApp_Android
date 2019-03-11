@@ -16,6 +16,9 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.microsoft.azure.storage.blob.BlobRequestOptions;
+import com.microsoft.azure.storage.blob.CloudBlobContainer;
+import com.microsoft.azure.storage.blob.CloudBlockBlob;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -49,6 +52,7 @@ public class DownloaderThreadNew extends Thread {
     Message msg;
     TransferUtility tm = null;
 
+    private CloudBlobContainer cloudBlobContainer;
 
     private boolean alertshown = false;
 
@@ -72,6 +76,16 @@ public class DownloaderThreadNew extends Thread {
         tm = transferUtility;
     }
 
+    public DownloaderThreadNew(Context context, Handler handler,  HashMap<String, String> imgUrls,int userID, CloudBlobContainer cloudBlobContainer) {
+        parentActivity = context;
+        activityHandler = handler;
+        this.userID = userID;
+        this.cloudBlobContainer = cloudBlobContainer;
+        if (imgUrls != null) {
+            downloadUrls = imgUrls;
+        }
+    }
+
     /**
      * Connects to the URL of the file, begins the download, and notifies the
      * HomeScreen activity of changes in state. Writes the file to the root of
@@ -90,6 +104,7 @@ public class DownloaderThreadNew extends Thread {
             try {
 
                 boolean isAmazonUpload = false;
+                boolean isAzureUpload = false;
                 DBUtil db = new DBUtil(parentActivity, DataMembers.DB_NAME
                 );
                 db.createDataBase();
@@ -102,6 +117,15 @@ public class DownloaderThreadNew extends Thread {
                     }
                 }
                 c.close();
+
+                c = db.selectSQL("Select flag FROM HHTModuleMaster where hhtCode = 'IS_AZURE_UPLOAD' and flag = 1");
+                if (c != null) {
+                    while (c.moveToNext()) {
+                        isAzureUpload = true;
+                    }
+                }
+                c.close();
+
                 db.closeDB();
                 msg = Message.obtain(activityHandler,
                         DataMembers.MESSAGE_DOWNLOAD_STARTED, downloadUrls.size(), 0,
@@ -170,30 +194,12 @@ public class DownloaderThreadNew extends Thread {
                 File mfile, appfile, mPrintFile,mPrintFormatFile;
                 // AmazonS3Client s3 = null;
 
-                if (isAmazonUpload) {
-                    System.setProperty("org.xml.sax.driver", "org.xmlpull.v1.sax2.Driver");
-                    try {
-                        org.xml.sax.XMLReader reader = org.xml.sax.helpers.XMLReaderFactory.createXMLReader();
-                    } catch (org.xml.sax.SAXException e) {
-                        Commons.printException("Unable to load XMLReader " + e.getMessage(), e);
-                    }
-                    System.setProperty(SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
-
-//                    Commons.print(ConfigurationMasterHelper.ACCESS_KEY_ID);
-//                    Commons.print(ConfigurationMasterHelper.SECRET_KEY);
-//                    Commons.print("Buket>>>>" + DataMembers.S3_BUCKET);
-                   /* BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                            ConfigurationMasterHelper.SECRET_KEY);
-                    s3 = new AmazonS3Client(myCredentials);
-                     tm = new TransferUtility(s3,parentActivity.getApplicationContext());*/
-                }
-
-                for (Entry<String, String> imageurl : downloadUrls.entrySet()) {
-                    try {
+                if (isAzureUpload) {
+                    for (Entry<String, String> imageurl : downloadUrls.entrySet()) {
                         String imagurl = imageurl.getKey();
                         String folderName = imageurl.getValue();
 
-                        if (isAmazonUpload) {
+                        try {
                             // get the filename
                             mFileName = "file.bin";
 
@@ -235,7 +241,7 @@ public class DownloaderThreadNew extends Thread {
                             mfile = new File(mTranDevicePath + "/" + folderName + "/" + mFileName);
                             appfile = new File(mAppDevicePath + "/" + mFileName);
                             mPrintFile = new File(mPrintDevicePath + "/" + mFileName);
-                            mPrintFormatFile=new File(mPrintFileDevicePath + "/" + mFileName);
+                            mPrintFormatFile = new File(mPrintFileDevicePath + "/" + mFileName);
 
                             if (mfile.exists()) {
                                 availe_flag = true;
@@ -245,48 +251,180 @@ public class DownloaderThreadNew extends Thread {
                                 availe_flag = true;
                             } else if (mPrintFormatFile.exists()) {
                                 availe_flag = true;
-                            }else {
+                            } else {
                                 availe_flag = false;
                             }
+
                             if (!availe_flag) {
-                                TransferObserver observer = tm.download(DataMembers.S3_BUCKET, imagurl, outFile);
-                                observer.setTransferListener(new TransferListener() {
-                                    @Override
-                                    public void onStateChanged(int i, TransferState transferState) {
+                                BlobRequestOptions options = new BlobRequestOptions();
+                                options.setDisableContentMD5Validation(true);
+                                options.setStoreBlobContentMD5(false);
 
-                                        if (transferState == TransferState.COMPLETED) {
-                                            responseCount++;
-                                            downloadPercentage = (int) (((float) responseCount / (float) mTotalSize) * 100);
-                                        } else if (transferState == TransferState.FAILED) {
-                                            responseCount++;
-                                            downloadPercentage = (int) (((float) responseCount / (float) mTotalSize) * 100);
-                                        } else if (transferState == TransferState.CANCELED) {
-                                            isImageDownloadCancelled = true;
-                                            responseCount++;
-                                            downloadPercentage = (int) (((float) responseCount / (float) mTotalSize) * 100);
-                                        }
+                                CloudBlockBlob blob;
+                                if (imagurl.equalsIgnoreCase("")) {
+                                    blob = cloudBlobContainer.getBlockBlobReference(mFileName);
+                                } else {
+                                    blob = cloudBlobContainer.getBlockBlobReference(imagurl);
+                                }
 
-                                        msg = Message.obtain(activityHandler,
-                                                DataMembers.MESSAGE_UPDATE_PROGRESS_BAR,
-                                                responseCount, 0);
-                                        activityHandler.sendMessage(msg);
-                                        if (responseCount >= mTotalSize && !alertshown && !isImageDownloadCancelled) {
+                                if (blob.exists()) {
+                                    blob.downloadAttributes();
+                                    blob.downloadToFile(outFile.getAbsolutePath(), null, options, null);
+                                    i++;
+                                    a = (float) i / (float) mTotalSize;
+                                    b = a * 100;
+                                    downloadPercentage = (int) b;
 
-                                            alertshown = true;
+                                    msg = Message.obtain(activityHandler,
+                                            DataMembers.MESSAGE_UPDATE_PROGRESS_BAR,
+                                            downloadPercentage, 0);
+                                    activityHandler.sendMessage(msg);
+                                }
+                                else {
+                                    Commons.print(mFileName + " not Present in the Blob");
+                                    i++;
+                                    a = (float) i / (float) mTotalSize;
+                                    b = a * 100;
+                                    downloadPercentage = (int) b;
+
+                                    msg = Message.obtain(activityHandler,
+                                            DataMembers.MESSAGE_UPDATE_PROGRESS_BAR,
+                                            downloadPercentage, 0);
+                                    activityHandler.sendMessage(msg);
+                                }
+                            } else {
+                                i++;
+                                a = (float) i / (float) mTotalSize;
+                                b = a * 100;
+                                downloadPercentage = (int) b;
+
+                                msg = Message.obtain(activityHandler,
+                                        DataMembers.MESSAGE_UPDATE_PROGRESS_BAR,
+                                        downloadPercentage, 0);
+                                activityHandler.sendMessage(msg);
+                            }
+                        } catch (Exception e) {
+                            Commons.printException(e);
+                        }
+                    }
+                }else {
+                    if (isAmazonUpload) {
+                        System.setProperty("org.xml.sax.driver", "org.xmlpull.v1.sax2.Driver");
+                        try {
+                            org.xml.sax.XMLReader reader = org.xml.sax.helpers.XMLReaderFactory.createXMLReader();
+                        } catch (org.xml.sax.SAXException e) {
+                            Commons.printException("Unable to load XMLReader " + e.getMessage(), e);
+                        }
+                        System.setProperty(SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
+
+//                    Commons.print(ConfigurationMasterHelper.ACCESS_KEY_ID);
+//                    Commons.print(ConfigurationMasterHelper.SECRET_KEY);
+//                    Commons.print("Buket>>>>" + DataMembers.S3_BUCKET);
+                   /* BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
+                            ConfigurationMasterHelper.SECRET_KEY);
+                    s3 = new AmazonS3Client(myCredentials);
+                     tm = new TransferUtility(s3,parentActivity.getApplicationContext());*/
+                    }
+
+                    for (Entry<String, String> imageurl : downloadUrls.entrySet()) {
+                        try {
+                            String imagurl = imageurl.getKey();
+                            String folderName = imageurl.getValue();
+
+                            if (isAmazonUpload) {
+                                // get the filename
+                                mFileName = "file.bin";
+
+                                index = imagurl.lastIndexOf('/');
+
+                                if (index >= 0) {
+                                    mFileName = imagurl.substring(index + 1);
+                                }
+                                if (mFileName.equals("")) {
+                                    mFileName = "file.bin";
+                                }
+                                // read and write the content
+
+                                if (folderName
+                                        .equalsIgnoreCase(DataMembers.APP_DIGITAL_CONTENT)) {
+                                    outFile = new File(mAppDevicePath + "/"
+                                            + mFileName.replaceAll("%20", " "));
+                                } else if (folderName
+                                        .equalsIgnoreCase(DataMembers.PRINT)) {
+                                    outFile = new File(mPrintDevicePath + "/"
+                                            + mFileName.replaceAll("%20", " "));
+
+                                } else if (folderName
+                                        .equalsIgnoreCase(DataMembers.PRINTFILE)) {
+                                    outFile = new File(mPrintFileDevicePath + "/"
+                                            + mFileName.replaceAll("%20", " "));
+
+                                } else {
+
+                                    mFolderPath = new File(mTranDevicePath + "/"
+                                            + folderName);
+
+                                    if (!mFolderPath.exists())
+                                        mFolderPath.mkdir();
+
+                                    outFile = new File(mFolderPath + "/"
+                                            + mFileName.replaceAll("%20", " "));
+                                }
+                                mfile = new File(mTranDevicePath + "/" + folderName + "/" + mFileName);
+                                appfile = new File(mAppDevicePath + "/" + mFileName);
+                                mPrintFile = new File(mPrintDevicePath + "/" + mFileName);
+                                mPrintFormatFile = new File(mPrintFileDevicePath + "/" + mFileName);
+
+                                if (mfile.exists()) {
+                                    availe_flag = true;
+                                } else if (appfile.exists()) {
+                                    availe_flag = true;
+                                } else if (mPrintFile.exists()) {
+                                    availe_flag = true;
+                                } else if (mPrintFormatFile.exists()) {
+                                    availe_flag = true;
+                                } else {
+                                    availe_flag = false;
+                                }
+                                if (!availe_flag) {
+                                    TransferObserver observer = tm.download(DataMembers.S3_BUCKET, imagurl, outFile);
+                                    observer.setTransferListener(new TransferListener() {
+                                        @Override
+                                        public void onStateChanged(int i, TransferState transferState) {
+
+                                            if (transferState == TransferState.COMPLETED) {
+                                                responseCount++;
+                                                downloadPercentage = (int) (((float) responseCount / (float) mTotalSize) * 100);
+                                            } else if (transferState == TransferState.FAILED) {
+                                                responseCount++;
+                                                downloadPercentage = (int) (((float) responseCount / (float) mTotalSize) * 100);
+                                            } else if (transferState == TransferState.CANCELED) {
+                                                isImageDownloadCancelled = true;
+                                                responseCount++;
+                                                downloadPercentage = (int) (((float) responseCount / (float) mTotalSize) * 100);
+                                            }
+
                                             msg = Message.obtain(activityHandler,
-                                                    DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC, 0, 0);
+                                                    DataMembers.MESSAGE_UPDATE_PROGRESS_BAR,
+                                                    responseCount, 0);
                                             activityHandler.sendMessage(msg);
+                                            if (responseCount >= mTotalSize && !alertshown && !isImageDownloadCancelled) {
+
+                                                alertshown = true;
+                                                msg = Message.obtain(activityHandler,
+                                                        DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC, 0, 0);
+                                                activityHandler.sendMessage(msg);
+                                            }
+
                                         }
 
-                                    }
+                                        @Override
+                                        public void onProgressChanged(int i, long l, long l1) {
+                                        }
 
-                                    @Override
-                                    public void onProgressChanged(int i, long l, long l1) {
-                                    }
-
-                                    @Override
-                                    public void onError(int i, Exception e) {
-                                        Commons.printException("onError: ," + e + "");
+                                        @Override
+                                        public void onError(int i, Exception e) {
+                                            Commons.printException("onError: ," + e + "");
                                        /* responseCount++;
                                         if (responseCount >= mTotalSize) {
                                            *//* Commons.print("responseCount >= mTotalSize error");
@@ -295,110 +433,111 @@ public class DownloaderThreadNew extends Thread {
                                             activityHandler.sendMessage(msg);*//*
 
                                         }*/
+                                        }
+                                    });
+
+                                } else {
+                                    responseCount++;
+                                    downloadPercentage = (int) (((float) responseCount / (float) mTotalSize) * 100);
+                                    msg = Message.obtain(activityHandler,
+                                            DataMembers.MESSAGE_UPDATE_PROGRESS_BAR,
+                                            responseCount, 0);
+                                    activityHandler.sendMessage(msg);
+                                    if (responseCount >= mTotalSize && !alertshown && !isImageDownloadCancelled) {
+
+                                        alertshown = true;
+                                        msg = Message.obtain(activityHandler,
+                                                DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC, 0, 0);
+                                        activityHandler.sendMessage(msg);
                                     }
-                                });
+                                }
 
                             } else {
-                                responseCount++;
-                                downloadPercentage = (int) (((float) responseCount / (float) mTotalSize) * 100);
+
+                                // make connection
+                                url = new URL(imagurl.replaceAll(" ", "%20"));
+                                conn = url.openConnection();
+                                conn.setDoInput(true);
+                                conn.setConnectTimeout(CONNECTION_TIME_OUT);
+                                conn.setUseCaches(false);
+
+                                // get the filename
+                                mFileName = "file.bin";
+
+                                index = url.toString().lastIndexOf('/');
+
+                                if (index >= 0) {
+                                    mFileName = url.toString().substring(index + 1);
+                                }
+                                if (mFileName.equals("")) {
+                                    mFileName = "file.bin";
+                                }
+                                // read and write the content
+
+                                if (folderName
+                                        .equalsIgnoreCase(DataMembers.APP_DIGITAL_CONTENT)) {
+                                    outFile = new File(mAppDevicePath + "/"
+                                            + mFileName.replaceAll("%20", " "));
+                                } else {
+
+                                    mFolderPath = new File(mTranDevicePath + "/"
+                                            + folderName);
+
+                                    if (!mFolderPath.exists())
+                                        mFolderPath.mkdir();
+
+                                    outFile = new File(mFolderPath + "/"
+                                            + mFileName.replaceAll("%20", " "));
+                                }
+
+                                if (!outFile.exists()) {
+
+                                    inStream = new BufferedInputStream(
+                                            conn.getInputStream(), DOWNLOAD_BUFFER_SIZE);
+
+                                    fileStream = new FileOutputStream(outFile);
+
+                                    outStream = new BufferedOutputStream(fileStream,
+                                            DOWNLOAD_BUFFER_SIZE);
+
+                                    byte[] data = new byte[DOWNLOAD_BUFFER_SIZE];
+
+                                    int bytesRead = 0;
+
+                                    while (!isInterrupted()
+                                            && (bytesRead = inStream.read(data, 0,
+                                            data.length)) >= 0) {
+                                        outStream.write(data, 0, bytesRead);
+                                    }
+
+                                    outStream.close();
+                                    fileStream.close();
+                                    inStream.close();
+                                }
+                                if (isInterrupted()) {
+                                    outFile.delete();
+                                    break;
+                                }
+
+                                i++;
+
+                                a = (float) i / (float) mTotalSize;
+                                b = a * 100;
+                                downloadPercentage = (int) b;
+
                                 msg = Message.obtain(activityHandler,
                                         DataMembers.MESSAGE_UPDATE_PROGRESS_BAR,
-                                        responseCount, 0);
+                                        i, 0);
                                 activityHandler.sendMessage(msg);
-                                if (responseCount >= mTotalSize && !alertshown && !isImageDownloadCancelled) {
 
-                                    alertshown = true;
-                                    msg = Message.obtain(activityHandler,
-                                            DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC, 0, 0);
-                                    activityHandler.sendMessage(msg);
-                                }
                             }
+                        } catch (Exception e) {
 
-                        } else {
-
-                            // make connection
-                            url = new URL(imagurl.replaceAll(" ", "%20"));
-                            conn = url.openConnection();
-                            conn.setDoInput(true);
-                            conn.setConnectTimeout(CONNECTION_TIME_OUT);
-                            conn.setUseCaches(false);
-
-                            // get the filename
-                            mFileName = "file.bin";
-
-                            index = url.toString().lastIndexOf('/');
-
-                            if (index >= 0) {
-                                mFileName = url.toString().substring(index + 1);
-                            }
-                            if (mFileName.equals("")) {
-                                mFileName = "file.bin";
-                            }
-                            // read and write the content
-
-                            if (folderName
-                                    .equalsIgnoreCase(DataMembers.APP_DIGITAL_CONTENT)) {
-                                outFile = new File(mAppDevicePath + "/"
-                                        + mFileName.replaceAll("%20", " "));
-                            } else {
-
-                                mFolderPath = new File(mTranDevicePath + "/"
-                                        + folderName);
-
-                                if (!mFolderPath.exists())
-                                    mFolderPath.mkdir();
-
-                                outFile = new File(mFolderPath + "/"
-                                        + mFileName.replaceAll("%20", " "));
-                            }
-
-                            if (!outFile.exists()) {
-
-                                inStream = new BufferedInputStream(
-                                        conn.getInputStream(), DOWNLOAD_BUFFER_SIZE);
-
-                                fileStream = new FileOutputStream(outFile);
-
-                                outStream = new BufferedOutputStream(fileStream,
-                                        DOWNLOAD_BUFFER_SIZE);
-
-                                byte[] data = new byte[DOWNLOAD_BUFFER_SIZE];
-
-                                int bytesRead = 0;
-
-                                while (!isInterrupted()
-                                        && (bytesRead = inStream.read(data, 0,
-                                        data.length)) >= 0) {
-                                    outStream.write(data, 0, bytesRead);
-                                }
-
-                                outStream.close();
-                                fileStream.close();
-                                inStream.close();
-                            }
-                            if (isInterrupted()) {
-                                outFile.delete();
-                                break;
-                            }
-
-                            i++;
-
-                            a = (float) i / (float) mTotalSize;
-                            b = a * 100;
-                            downloadPercentage = (int) b;
-
-                            msg = Message.obtain(activityHandler,
-                                    DataMembers.MESSAGE_UPDATE_PROGRESS_BAR,
-                                    i, 0);
-                            activityHandler.sendMessage(msg);
-
+                            Commons.printException("Error in URL," + "" + e);
+                            continue;
                         }
-                    } catch (Exception e) {
 
-                        Commons.printException("Error in URL," + "" + e);
-                        continue;
                     }
-
                 }
                 if (!isInterrupted() && !isAmazonUpload) {
                     msg = Message.obtain(activityHandler,

@@ -1547,6 +1547,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_TERMS_COND = "FUN76";
     public boolean IS_SHOW_TERMS_COND;
 
+    //Image upload through Azure Storage
+    private static final String CODE_AZURE_UPLOAD = "IS_AZURE_UPLOAD";
+    public boolean IS_AZURE_UPLOAD = false;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2701,6 +2705,8 @@ public class ConfigurationMasterHelper {
             IS_ORD_BY_BATCH_EXPIRY_DATE_WISE = hashMapHHTModuleOrder.get(CODE_BATCH_ALLOCATION) == 1;
         }
         this.IS_SHOW_TERMS_COND = hashMapHHTModuleConfig.get(CODE_SHOW_TERMS_COND) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TERMS_COND) : false;
+
+        this.IS_AZURE_UPLOAD = hashMapHHTModuleConfig.get(CODE_AZURE_UPLOAD) != null ? hashMapHHTModuleConfig.get(CODE_AZURE_UPLOAD) : true;
     }
 
     private boolean isInOutModule() {
@@ -6254,6 +6260,34 @@ public class ConfigurationMasterHelper {
     public boolean isAuditEnabled() {
 
         return IS_TEAMLEAD && IS_AUDIT_USER;
+    }
+
+    public void setAzureCredentials() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        try {
+            db.openDataBase();
+            String sql = "Select ListCode,ListName from StandardListMaster where ListType='Azure_Configuration'";
+            Cursor c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    if (c.getString(0).equals("AS_TYPE")) {
+                        DataMembers.AZURE_TYPE = c.getString(1);
+                    } else if (c.getString(0).equals("AS_STORAGE_CONTAINER")) {
+                        DataMembers.AZURE_CONTAINER = c.getString(1);
+                    } else if (c.getString(0).equals("AS_CONNECTION_STRING")) {
+                        DataMembers.AZURE_CONNECTION_STRING = c.getString(1);
+                    } else if (c.getString(0).equals("AS_STORAGE_SAS")) {
+                        DataMembers.AZURE_SAS = c.getString(1);
+                    }
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+        }
     }
 
 }

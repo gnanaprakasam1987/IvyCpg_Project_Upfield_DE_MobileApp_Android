@@ -17,6 +17,7 @@ import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -151,6 +152,10 @@ import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.StringUtils;
+import com.microsoft.azure.storage.CloudStorageAccount;
+import com.microsoft.azure.storage.blob.CloudBlobClient;
+import com.microsoft.azure.storage.blob.CloudBlobContainer;
+import com.microsoft.azure.storage.blob.CloudBlockBlob;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -7408,6 +7413,138 @@ public class BusinessModel extends Application {
 
     public AppDataProvider getAppDataProvider() {
         return appDataProvider;
+    }
+
+    //Azure ImageUpload
+    void uploadImageToAzureCloud(Handler handler) {
+        configurationMasterHelper.setAzureCredentials();
+        try {
+
+            folder = new File(FileUtils.photoFolderPath + "/");
+
+            sfFiles = folder.listFiles();
+
+            uploadFileSize = sfFiles.length;
+            isErrorOccured = false;
+            for (int i = 0; i < uploadFileSize; i++) {
+
+                String filename = sfFiles[i].getName();
+                //  print invoice file not upload to server
+
+                getResponseForUploadImageToAzureStorageCloud(filename, initializeAzureStorageConnection(), handler);
+
+            }
+            if (successCount == uploadFileSize) {
+                fileDeleteAfterUpload();
+                successCount = 0;
+                sentMessageToHandler
+                        (DataMembers.NOTIFY_WEB_UPLOAD_SUCCESS,
+                                "Images uploaded Successfully",
+                                handler);
+
+            } else {
+                sentMessageToHandler
+                        (DataMembers.NOTIFY_WEB_UPLOAD_ERROR,
+                                "Image Upload Failed!", handler);
+            }
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    public CloudBlobContainer initializeAzureStorageConnection() throws Exception {
+        CloudStorageAccount storageAccount = CloudStorageAccount.parse(DataMembers.AZURE_CONNECTION_STRING);
+        CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
+        return blobClient.getContainerReference(DataMembers.AZURE_CONTAINER);
+    }
+
+    private void getResponseForUploadImageToAzureStorageCloud(String imageName, CloudBlobContainer cloudBlobContainer, final Handler mHandler) {
+        try {
+            final File image = new File(folder, "/" + imageName);
+            InputStream fileInputStream = getContentResolver().openInputStream(Uri.fromFile(image));
+            String mBucketName;
+
+            String path = "/"
+                    + userMasterHelper.getUserMasterBO().getDownloadDate()
+                    .replace("/", "") + "/"
+                    + userMasterHelper.getUserMasterBO().getUserid()+ "/";
+
+
+            if (imageName.startsWith("AT_") || imageName.startsWith("NAT_")) {
+                mBucketName = "Asset" + path + imageName;
+            } else if (imageName.startsWith("NO_")) {
+                mBucketName = "RetailerImages" + path + imageName;
+            } else if (imageName.startsWith("SGN_")) {
+                mBucketName = "Invoice" + path + imageName;
+            } else if (imageName.startsWith("INIT_")) {
+                mBucketName = "Initiative" + path  + imageName;
+            } else if (imageName.startsWith("PT_")) {
+                mBucketName = "Promotion" + path + imageName;
+            } else if (imageName.startsWith("SOD_")) {
+                mBucketName = "SOD" + path + imageName;
+            } else if (imageName.startsWith("SOS_")) {
+                mBucketName = "SOS" + path + imageName;
+            } else if (imageName.startsWith("SOSKU_")) {
+                mBucketName = "SOSKU" + path + imageName;
+            } else if (imageName.startsWith("PL_")) {
+                mBucketName = "Planogram" + path + imageName;
+            } else if (imageName.startsWith("VPL_")) {
+                mBucketName = "VanPlanogram" + path + imageName;
+            } else if (imageName.startsWith("CPL_")) {
+                mBucketName = "CounterPlanogram" + path + imageName;
+            } else if (imageName.startsWith("CT_")) {
+                mBucketName = "Competitor" + path + imageName;
+            } else if (imageName.startsWith("SVY_")) {
+                mBucketName = "Survey" + path + imageName;
+            } else if (imageName.startsWith("RA_")) {
+                mBucketName = "RoadActivity" + path + imageName;
+            } else if (imageName.startsWith("COL_")) {
+                mBucketName = "Collection" + path + imageName;
+            } else if (imageName.startsWith("RT_")) {
+                mBucketName = "Retail" + path + imageName;
+            } else if (imageName.startsWith("EXP_")) {
+                mBucketName = "Expense" + path + imageName;
+            } else if (imageName.startsWith("DV_")) {
+                mBucketName = "Delivery" + path + imageName;
+            } else if (imageName.startsWith("NP_")) {
+                mBucketName = "NonProductive" + path + imageName;
+            } else if (imageName.startsWith("PF_")) {
+                mBucketName = "PrintFile" + path + imageName;
+            } else if (imageName.startsWith("GROM_")) {
+                mBucketName = "Grooming" + path + imageName;
+            } else if (imageName.startsWith("PRO_")) {
+                mBucketName = "Profile" + path + imageName;
+            } else if (imageName.startsWith("USER_")) {
+                mBucketName = "User" + path + imageName;
+            } else if (imageName.startsWith("SR_SGN_")) {
+                mBucketName = "SalesReturn" + path + imageName;
+            } else if (imageName.startsWith("ORD_")) {
+                mBucketName = "Order" + path + imageName;
+            } else {
+                if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
+                    mBucketName = "PhotoCapture" + path + imageName;
+                } else {
+
+                    mBucketName =
+                            + userMasterHelper.getUserMasterBO
+                            ().getDistributorid()
+                            + "/"
+                            + userMasterHelper.getUserMasterBO().getUserid()
+                            + "/"
+                            + userMasterHelper.getUserMasterBO
+                            ().getDownloadDate()
+                            .replace("/", "");
+                }
+            }
+
+            CloudBlockBlob cloudBlockBlob = cloudBlobContainer.getBlockBlobReference(mBucketName);
+
+            if (fileInputStream != null)
+                cloudBlockBlob.upload(fileInputStream, fileInputStream.available());
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
     }
 }
 

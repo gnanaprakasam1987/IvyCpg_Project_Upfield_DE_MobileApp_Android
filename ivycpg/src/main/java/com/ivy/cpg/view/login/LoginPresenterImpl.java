@@ -31,6 +31,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
+import com.microsoft.azure.storage.blob.CloudBlobContainer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -1018,9 +1019,22 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
             super.onPostExecute(response);
             loginView.dismissAlertDialog();
             if (response == SynchronizationHelper.NEXT_METHOD.DIGITAL_CONTENT_AVALILABLE) {
-                businessModel.configurationMasterHelper.setAmazonS3Credentials();
-                initializeTransferUtility();
-                downloadDigitalContents();
+
+                if (businessModel.configurationMasterHelper.IS_AZURE_UPLOAD) {
+                    businessModel.configurationMasterHelper.setAzureCredentials();
+                    try {
+
+                        CloudBlobContainer cloudBlobContainer = businessModel.initializeAzureStorageConnection();
+                        downloadDigitalContents(true,cloudBlobContainer,null);
+
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                        businessModel.showAlert(context.getString(R.string.error_message_general), 0);
+                    }
+                } else if (businessModel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
+                    businessModel.configurationMasterHelper.setAmazonS3Credentials();
+                    initializeTransferUtility();
+                }
             } else {
 
                 if (businessModel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD) {
@@ -1032,18 +1046,24 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
         }
     }
 
-    public void downloadDigitalContents() {
-        loginView.downloadImagesThreadStart(businessModel.getDigitalContentURLS(), transferUtility);
+    private void downloadDigitalContents(boolean isAzureDownload, CloudBlobContainer container,TransferUtility transferUtility) {
+
+        if (isAzureDownload)
+            loginView.downloadImagesThreadStartFromAzure(businessModel.getDigitalContentURLS(), container);
+        else
+            loginView.downloadImagesThreadStart(businessModel.getDigitalContentURLS(), transferUtility);
     }
 
-    public void initializeTransferUtility() {
+    private void initializeTransferUtility() {
         System.setProperty
                 (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
         BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
                 ConfigurationMasterHelper.SECRET_KEY);
         AmazonS3Client s3 = new AmazonS3Client(myCredentials);
         s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
-        transferUtility = new TransferUtility(s3, context);
+        TransferUtility transferUtility = new TransferUtility(s3, context);
+
+        downloadDigitalContents(false,null,transferUtility); //not Azure Download
     }
 
     public void callDistributorDownload() {

@@ -304,5 +304,8 @@ dependencies {
     sfdcImplementation 'com.salesforce.mobilesdk:SmartSync:5.0.0'
 
     implementation 'com.mindorks.android:prdownloader:0.4.0'
+
+    // SFDC - Microsoft Azure Storage
+    implementation 'com.microsoft.azure.android:azure-storage-android:0.8.0@aar'
 }
 apply plugin: 'com.google.gms.google-services'

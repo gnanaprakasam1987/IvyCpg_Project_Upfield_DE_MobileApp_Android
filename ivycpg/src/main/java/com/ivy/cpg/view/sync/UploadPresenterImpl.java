@@ -254,8 +254,8 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
             if (mBModel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
                 new MyThread((Activity) mContext,
                         DataMembers.AMAZONIMAGE_UPLOAD, isFromCallAnalysis).start();
-            } else {
-                // Other uplaod is not supported.
+            } else if (mBModel.configurationMasterHelper.IS_AZURE_UPLOAD) {
+                new MyThread((Activity) mContext,DataMembers.AZURE_IMAGE_UPLOAD).start();
             }
         } else if (callFlag == UPLOAD_STOCK_IN_HAND)
             new MyThread((Activity) mContext, DataMembers.SYNCSIHUPLOAD, isFromCallAnalysis).start();

@@ -1404,12 +1404,28 @@ public class SynchronizationFragment extends IvyBaseFragment
                     }
 
                     if (bmodel.isDigitalContentAvailable()) {
-                        bmodel.configurationMasterHelper.setAmazonS3Credentials();
-                        initializeTransferUtility();
-                        downloaderThread = new DownloaderThreadNew(getActivity(),
-                                activityHandler, bmodel.getDigitalContentURLS(),
-                                bmodel.userMasterHelper.getUserMasterBO()
-                                        .getUserid(), transferUtility);
+
+
+                        if (bmodel.configurationMasterHelper.IS_AZURE_UPLOAD) {
+                            bmodel.configurationMasterHelper.setAzureCredentials();
+                            try {
+                                downloaderThread = new DownloaderThreadNew(getActivity(),activityHandler,bmodel.getDigitalContentURLS(),
+                                        bmodel.userMasterHelper.getUserMasterBO().getUserid(),
+                                        bmodel.initializeAzureStorageConnection());
+                            } catch (Exception e) {
+                                Commons.printException(e);
+                                bmodel.showAlert(context.getString(R.string.error_message_general), 0);
+                            }
+                        } else if (bmodel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
+                            bmodel.configurationMasterHelper.setAmazonS3Credentials();
+                            initializeTransferUtility();
+
+                            downloaderThread = new DownloaderThreadNew(getActivity(),
+                                    activityHandler, bmodel.getDigitalContentURLS(),
+                                    bmodel.userMasterHelper.getUserMasterBO()
+                                            .getUserid(), transferUtility);
+
+                        }
                         downloaderThread.start();
                     }
 
@@ -2268,12 +2284,27 @@ public class SynchronizationFragment extends IvyBaseFragment
 
 
             if (response == SynchronizationHelper.NEXT_METHOD.DIGITAL_CONTENT_AVALILABLE) {
-                bmodel.configurationMasterHelper.setAmazonS3Credentials();
-                initializeTransferUtility();
-                downloaderThread = new DownloaderThreadNew(getActivity(),
-                        activityHandler, bmodel.getDigitalContentURLS(),
-                        bmodel.userMasterHelper.getUserMasterBO()
-                                .getUserid(), transferUtility);
+
+                if (bmodel.configurationMasterHelper.IS_AZURE_UPLOAD) {
+                    bmodel.configurationMasterHelper.setAzureCredentials();
+                    try {
+                        downloaderThread = new DownloaderThreadNew(getActivity(),activityHandler,bmodel.getDigitalContentURLS(),
+                                bmodel.userMasterHelper.getUserMasterBO().getUserid(),
+                                bmodel.initializeAzureStorageConnection());
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                        bmodel.showAlert(context.getString(R.string.error_message_general), 0);
+                    }
+                } else if (bmodel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
+                    bmodel.configurationMasterHelper.setAmazonS3Credentials();
+                    initializeTransferUtility();
+
+                    downloaderThread = new DownloaderThreadNew(getActivity(),
+                            activityHandler, bmodel.getDigitalContentURLS(),
+                            bmodel.userMasterHelper.getUserMasterBO()
+                                    .getUserid(), transferUtility);
+
+                }
                 downloaderThread.start();
             } else {
                 if (isSwitchUser) {
