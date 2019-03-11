@@ -276,13 +276,15 @@ public class TaxHelper implements TaxInterface {
                 false);
         if (mBillTaxList != null) {
             String columns = "RetailerId,orderid,taxRate,taxType,taxValue,pid,taxName,parentType,groupId";
+            StringBuffer sb;
             for (TaxBO taxBO : mBillTaxList) {
-                String sb = (StringUtils.QT(mBusinessModel.getRetailerMasterBO()
-                        .getRetailerID()) + ",") +
-                        orderId + "," + taxBO.getTaxRate() + "," +
-                        StringUtils.QT(taxBO.getTaxType()) + ","
-                        + taxBO.getTotalTaxAmount();
-                db.insertSQL("OrderTaxDetails", columns, sb);
+                sb = new StringBuffer();
+                sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO()
+                        .getRetailerID()) + ",");
+                sb.append(orderId + "," + taxBO.getTaxRate() + ",");
+                sb.append(mBusinessModel.QT(taxBO.getTaxType()) + ","
+                        + taxBO.getTotalTaxAmount()+",0,'"+taxBO.getTaxDesc2()+"',"+taxBO.getParentType()+","+taxBO.getGroupId());
+                db.insertSQL("OrderTaxDetails", columns, sb.toString());
 
             }
         }
