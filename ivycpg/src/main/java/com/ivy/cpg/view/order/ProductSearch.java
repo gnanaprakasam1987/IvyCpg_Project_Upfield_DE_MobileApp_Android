@@ -2,14 +2,8 @@ package com.ivy.cpg.view.order;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.view.KeyEvent;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.TextView;
-import android.widget.Toast;
 
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -21,8 +15,6 @@ import com.ivy.sd.png.util.Commons;
 import java.util.ArrayList;
 import java.util.Vector;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
-
 public class ProductSearch {
 
     private Context context;
@@ -31,7 +23,8 @@ public class ProductSearch {
     private BusinessModel bModel;
     private int loadStockedProduct=-1;
     private SearchAsync searchAsync;
-    private String stringToFilter;
+    private String selectedSpecialFilter;
+    private String userEnteredText;
     private static ProductSearch instance=null;
     private ProductSearchCallBack productSearchCallBack;
     public static String SCREEN_CODE_ORDER="ORDER";
@@ -41,6 +34,8 @@ public class ProductSearch {
     private static int SEARCH_BY_GIVEN_PRODUCT_ID_AND_ATTRIBUTE=3;
     private static int SEARCH_BY_SPECIAL_FILTER=4;
     private static int SHOW_ALL_PRODUCTS=5;
+
+    private static final String ALL = "ALL";
 
     private ProductHelper productHelper;
 
@@ -75,6 +70,9 @@ public class ProductSearch {
     final String mNearExpiryTag = "Filt19";
     final String mShelf = "Filt24";
 
+    final String GENERAL = "General";
+
+    private boolean isSpecialFilter,isProductFilter,isUserEntryFilter;
     public ProductSearch(Context context,BusinessModel bModel,String current_screen_code){
         this.context=context;
         this.bModel=bModel;
@@ -96,52 +94,61 @@ public class ProductSearch {
         return instance;
     }
 
+
     public void startSearch(Vector<ProductMasterBO> masterList,String stringToFilter)
     {
-        this.masterList=masterList;
 
-        this.stringToFilter=stringToFilter;
+        isUserEntryFilter=true;
+
+        this.masterList=masterList;
+        this.userEnteredText =stringToFilter;
 
         searchAsync = new SearchAsync();
-        searchAsync.execute(SEARCH_BY_GIVEN_TEXT);
+        searchAsync.execute();
 
     }
 
-    public void startSearch(Vector<ProductMasterBO> masterList, int productId,ArrayList<Integer> attributeProductIds)
-    {
-        this.masterList=masterList;
 
+    public void startSearch(Vector<ProductMasterBO> masterList,int productId, ArrayList<Integer> attributeProductIds)
+    {
+        if (bModel.configurationMasterHelper.IS_UNLINK_FILTERS) {
+            isSpecialFilter = false;
+        }
+        isProductFilter=true;
+
+        this.masterList=masterList;
         this.attributeProductIds=attributeProductIds;
         this.productId=productId;
 
-        if(attributeProductIds==null) {
             searchAsync = new SearchAsync();
-            searchAsync.execute(SEARCH_BY_GIVEN_PRODUCT_ID);
-        }
-        else {
-            searchAsync = new SearchAsync();
-            searchAsync.execute(SEARCH_BY_GIVEN_PRODUCT_ID_AND_ATTRIBUTE);
-        }
+            searchAsync.execute();
 
     }
 
     public void startSpecialFilterSearch(Vector<ProductMasterBO> masterList,String selectedSpecialFilter){
 
-        this.masterList=masterList;
+        isSpecialFilter=true;
+         isProductFilter=false;// clearing other filter
 
-        this.stringToFilter=selectedSpecialFilter;
+        if(selectedSpecialFilter.equalsIgnoreCase(GENERAL))
+            isSpecialFilter=false;
+
+        this.masterList=masterList;
+        this.selectedSpecialFilter =selectedSpecialFilter;
 
         searchAsync = new SearchAsync();
-        searchAsync.execute(SEARCH_BY_SPECIAL_FILTER);
+        searchAsync.execute();
 
     }
 
     public void getAllProducts(Vector<ProductMasterBO> masterList){
 
+        isUserEntryFilter=false;
+
         this.masterList=masterList;
 
         searchAsync = new SearchAsync();
-        searchAsync.execute(SHOW_ALL_PRODUCTS);
+        searchAsync.execute();
     }
 
 
@@ -165,7 +172,7 @@ public class ProductSearch {
         @Override
         protected Boolean doInBackground(Integer... params) {
 
-            loadSearchedList(params[0]);
+            loadSearchedList();
 
             return true;
         }
@@ -176,7 +183,7 @@ public class ProductSearch {
         }
     }
 
-    private void loadSearchedList(int searchType) {
+    private void loadSearchedList() {
         try {
 
             searchedList=new Vector<>();
@@ -190,59 +197,21 @@ public class ProductSearch {
 
                 if(productMasterBO.getIsSaleable() == 1&&isValidProductForCurrentScreen(productMasterBO)) {
 
-                    if (searchType == SEARCH_BY_GIVEN_TEXT) {
-                        boolean isMatched = false;
+                    if(!isSpecialFilter|| (isSpecialFilter&&isSpecialFilterAppliedProduct(selectedSpecialFilter,productMasterBO))){
 
-                        if (productMasterBO.getProductShortName() != null && productMasterBO.getProductShortName()
-                                .toLowerCase()
-                                .contains(stringToFilter)) {
-                            isMatched = true;
-                        } else if (productMasterBO.getBarCode() != null && (productMasterBO.getBarCode().toLowerCase().contains(stringToFilter.toLowerCase())
-                                || productMasterBO.getCasebarcode().toLowerCase().contains(stringToFilter.toLowerCase())
-                                || productMasterBO.getOuterbarcode().toLowerCase().contains(stringToFilter.toLowerCase()))) {
+                        if(!isProductFilter ||(isProductFilter&&isParentHierarchyMatches(productMasterBO))){
 
-                            if (SCREEN_CODE_ORDER.equals(current_screen_code) && bModel.configurationMasterHelper.IS_QTY_INCREASE) {
-                                increaseOrderQty(productMasterBO);
+                            if(!isUserEntryFilter||(isUserEntryFilter&&isUserEntryFilterMatches(productMasterBO))){
+
+                                searchedList.add(productMasterBO);
+
                             }
 
-                            isMatched = true;
-
-                        } else if (((productMasterBO.getRField1() != null && productMasterBO.getRField1().toLowerCase().contains(stringToFilter.toLowerCase()))
-                                || (productMasterBO.getProductCode() != null && productMasterBO.getProductCode().toLowerCase().contains(stringToFilter.toLowerCase())))) {
-                            isMatched = true;
-                        }
-
-
-                        if (isMatched)
-                            searchedList.add(productMasterBO);
-
-                    }
-                    else if(searchType==SEARCH_BY_GIVEN_PRODUCT_ID){
-
-                        if (productMasterBO.getParentHierarchy().contains("/" + productId + "/")) {
-
-                            searchedList.add(productMasterBO);
 
                         }
-                    }
-                    else if(searchType==SEARCH_BY_GIVEN_PRODUCT_ID_AND_ATTRIBUTE){
-
-                        if ((productId!=0||productMasterBO.getParentHierarchy().contains("/" + productId + "/"))
-                                &&attributeProductIds.contains(SDUtil.convertToInt(productMasterBO.getProductID()))) {
-
-                            searchedList.add(productMasterBO);
-
-                        }
-                    }
-                    else if(searchType==SEARCH_BY_SPECIAL_FILTER){
-
-                        if(isSpecialFilterAppliedProduct(stringToFilter,productMasterBO))
-                            searchedList.add(productMasterBO);
 
                     }
-                    else {
-                        searchedList.add(productMasterBO);
-                    }
+
 
                 }
 
@@ -357,5 +326,58 @@ public class ProductSearch {
 
 
     }
+
+    private boolean isParentHierarchyMatches(ProductMasterBO productMasterBO){
+        if ((productId!=0||productMasterBO.getParentHierarchy().contains("/" + productId + "/"))
+                &&attributeProductIds!=null&&attributeProductIds.contains(SDUtil.convertToInt(productMasterBO.getProductID()))) {
+
+            return true;
+
+        }
+        else if (productMasterBO.getParentHierarchy().contains("/" + productId + "/")) {
+
+            return true;
+
+        }
+
+        return false;
+    }
+
+    private boolean isUserEntryFilterMatches(ProductMasterBO productMasterBO){
+        if (productMasterBO.getProductShortName() != null && productMasterBO.getProductShortName()
+                .toLowerCase()
+                .contains(userEnteredText)) {
+            return true;
+        } else if (productMasterBO.getBarCode() != null && (productMasterBO.getBarCode().toLowerCase().contains(userEnteredText.toLowerCase())
+                || productMasterBO.getCasebarcode().toLowerCase().contains(userEnteredText.toLowerCase())
+                || productMasterBO.getOuterbarcode().toLowerCase().contains(userEnteredText.toLowerCase()))) {
+
+            if (SCREEN_CODE_ORDER.equals(current_screen_code) && bModel.configurationMasterHelper.IS_QTY_INCREASE) {
+                increaseOrderQty(productMasterBO);
+            }
+
+            return true;
+
+        } else if (((productMasterBO.getRField1() != null && productMasterBO.getRField1().toLowerCase().contains(userEnteredText.toLowerCase()))
+                || (productMasterBO.getProductCode() != null && productMasterBO.getProductCode().toLowerCase().contains(userEnteredText.toLowerCase())))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean isSpecialFilter() {
+        return isSpecialFilter;
+    }
+
+    public boolean isProductFilter() {
+        return isProductFilter;
+    }
+
+
+    public boolean isUserEntryFilter() {
+        return isUserEntryFilter;
+    }
+
 
 }

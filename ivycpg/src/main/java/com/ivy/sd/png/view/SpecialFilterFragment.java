@@ -39,8 +39,6 @@ public class SpecialFilterFragment extends Fragment implements OnItemClickListen
     private final HashMap<String, String> mselectedFilterMap;
 
     private static final String GENERAL = "General";
-    private static final String BRAND = "Brand";
-    private static final String CATEGORY = "Category";
 
     private BusinessModel bmodel;
 
@@ -98,8 +96,6 @@ public class SpecialFilterFragment extends Fragment implements OnItemClickListen
             public void onClick(View v) {
 
                 mselectedFilterMap.put(GENERAL, "All");
-                mselectedFilterMap.put(BRAND, "All");
-                mselectedFilterMap.put(CATEGORY, "All");
                 brandInterface.updateGeneralText(GENERAL);
 
 
@@ -225,8 +221,6 @@ public class SpecialFilterFragment extends Fragment implements OnItemClickListen
            // holder.cbFiltered.setChecked(true);
 
             mselectedFilterMap.put(GENERAL, holder.speFiltID);
-            mselectedFilterMap.put(BRAND, "All");
-            mselectedFilterMap.put(CATEGORY, "All");
 
             brandInterface.updateGeneralText(holder.speFiltID);
 

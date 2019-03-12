@@ -149,8 +149,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private EditText QUANTITY;
     private EditText mEdt_searchproductName;
     private String append = "";
-    private String brandbutton;
-    private String generalbutton;
     LinearLayout ll_spl_filter, ll_tab_selection;
     private DrawerLayout mDrawerLayout;
     private ViewFlipper viewFlipper;
@@ -225,7 +223,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private double totalvalue = 0;
 
 
-    private String mSelectedFiltertext = "Brand";
 
     private ArrayAdapter<StandardListBO> mLocationAdapter;
     private int mSelectedLocationIndex;
@@ -251,7 +248,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private Toolbar toolbar;
 
-    private ArrayList<String> fiveFilter_productIDs;
 
     private LinkedList<String> mProductList = new LinkedList<>();
 
@@ -597,7 +593,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 public void afterTextChanged(Editable s) {
                     if (s.length() >= 3) {
 
-                        productSearch.startSearch(mylist,mEdt_searchproductName.getText().toString());
+                        productSearch.startSearch(productList,mEdt_searchproductName.getText().toString());
                     }
                 }
 
@@ -1044,48 +1040,22 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private void updateScreenTitle() {
         String title;
-        if (generalbutton.equals(GENERAL)) {
-            if ("MENU_ORDER".equals(screenCode))
-                title = bmodel.configurationMasterHelper
-                        .getHomescreentwomenutitle("MENU_ORDER");
-            else
-                title = bmodel.configurationMasterHelper
-                        .getHomescreentwomenutitle("MENU_STK_ORD");
 
-            if (title.isEmpty())
-                title = getResources().getString(R.string.order);
+        if ("MENU_ORDER".equals(screenCode))
+            title = bmodel.configurationMasterHelper
+                    .getHomescreentwomenutitle("MENU_ORDER");
+        else
+            title = bmodel.configurationMasterHelper
+                    .getHomescreentwomenutitle("MENU_STK_ORD");
 
-            if (mSelectedFiltertext.equals("Brand")) {
-                if (totalOrdCount.equals("0"))
-                    setScreenTitle(title + " ("
-                            + mylist.size() + ")");
-                else
-                    setScreenTitle(title + " ("
-                            + totalOrdCount + "/" + mylist.size() + ")");
+        if (totalOrdCount.equals("0"))
+            setScreenTitle(title + " ("
+                    + mylist.size() + ")");
+        else
+            setScreenTitle(title + " ("
+                    + totalOrdCount + "/" + mylist.size() + ")");
 
-            } else if (!mSelectedFiltertext.equals("Brand")) {
-                String strPname = mSelectedFiltertext + " (" + mylist.size() + ")";
-                if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
-                    if (totalOrdCount.equals("0"))
-                        setScreenTitle(strPname);
-                    else
-                        setScreenTitle(mSelectedFiltertext + " (" + totalOrdCount + "/" + mylist.size() + ")");
 
-                }
-            }
-        } else if (!generalbutton.equals(GENERAL)) {
-            String strPname = getFilterName(generalbutton) + " ("
-                    + mylist.size() + ")";
-
-            if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
-                if (totalOrdCount.equals("0"))
-                    setScreenTitle(strPname);
-                else
-                    setScreenTitle(getFilterName(generalbutton) + " ("
-                            + totalOrdCount + "/" + mylist.size() + ")");
-            }
-
-        }
     }
 
 
@@ -4891,7 +4861,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     strBarCodeSearch = result.getContents();
                     if (strBarCodeSearch != null && !"".equals(strBarCodeSearch)) {
 
-                        productSearch.startSearch(mylist,strBarCodeSearch);
+                        productSearch.startSearch(productList,strBarCodeSearch);
 
                         if (viewFlipper.getDisplayedChild() == 0) {
                             viewFlipper.showNext();
@@ -4989,13 +4959,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
         // clearing five filter List
-        fiveFilter_productIDs = null;
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
-        mSelectedFiltertext =  BRAND;
 
         // set the spl filter name on the button for display
-        generalbutton = mFilterText;
         productSearch.startSpecialFilterSearch(productList,mFilterText);
 
         // Clear the productName
@@ -5114,7 +5081,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     public boolean onPrepareOptionsMenu(Menu menu) {
 
         // Change color if Filter is selected
-        if (generalbutton != null && !generalbutton.equals(GENERAL))
+        if (productSearch.isSpecialFilter())
             menu.findItem(R.id.menu_spl_filter).setIcon(
                     R.drawable.ic_action_star_select);
 
@@ -5281,7 +5248,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         } else if (i == R.id.menu_fivefilter) {
 
             if (bmodel.configurationMasterHelper.IS_UNLINK_FILTERS) {
-                generalbutton = GENERAL;
                 mSelectedFilterMap.put("General", GENERAL);
             }
             FiveFilterFragment();
@@ -5472,7 +5438,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         if (arg1 == EditorInfo.IME_ACTION_DONE) {
             if (mEdt_searchproductName.getText().length() >= 3) {
 
-                productSearch.startSearch(mylist,mEdt_searchproductName.getText().toString());
+                productSearch.startSearch(productList,mEdt_searchproductName.getText().toString());
             } else {
                 Toast.makeText(this, "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
                         .show();
@@ -5635,17 +5601,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        String filtertext = getResources().getString(R.string.product_name);
-        if (!mFilterText.equals("")) {
-            filtertext = mFilterText;
-            mSelectedFiltertext = mFilterText;
-        } else
-            mSelectedFiltertext = BRAND;
 
-        brandbutton = filtertext;
-        fiveFilter_productIDs = new ArrayList<>();
 
-        productSearch.startSearch(mylist,mProductId,mAttributeProducts);
+        productSearch.startSearch(productList,mProductId,mAttributeProducts);
 
         strBarCodeSearch = "ALL";
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
@@ -5759,7 +5717,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if (view.getTag().toString().equalsIgnoreCase("ALL")) {
                         updateGeneralText(GENERAL);
                     } else {
-                        generalbutton = view.getTag().toString();
                         updateBrandText(BRAND, -1);
                     }
                     if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
