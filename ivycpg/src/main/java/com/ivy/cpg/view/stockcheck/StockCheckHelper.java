@@ -339,9 +339,9 @@ public class StockCheckHelper {
         for (ProductMasterBO product : productList) {
             for (LocationBO location : product.getLocations()) {
                 return !((SHOW_STOCK_SP && location.getShelfPiece() == 0)
-                        && (SHOW_STOCK_SC && location.getShelfCase() == 0)
-                        && (SHOW_SHELF_OUTER && location.getShelfOuter() == 0)
-                        && (SHOW_STOCK_CB && location.getAvailability() == 0)
+                        || (SHOW_STOCK_SC && location.getShelfCase() == 0)
+                        || (SHOW_SHELF_OUTER && location.getShelfOuter() == 0)
+                        || (SHOW_STOCK_CB && location.getAvailability() == 0)
                         && location.getReasonId() == 0);
             }
         }
