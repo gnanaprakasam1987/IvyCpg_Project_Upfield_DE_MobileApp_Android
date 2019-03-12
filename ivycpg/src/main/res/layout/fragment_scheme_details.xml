@@ -1,7 +1,9 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/TabHost01"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent">
+<android.support.v4.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical">
+
 
     <LinearLayout
         android:id="@+id/main_layout"
@@ -30,43 +32,37 @@
                 android:orientation="vertical"
                 android:padding="3dp"
                 >
-                   <TextView
-                        android:id="@+id/scheme_info_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:background="@color/white"
-                        android:gravity="center|start"
-                        android:text=""
-                        android:textColor="@android:color/black"
-                        android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/scheme_info_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:background="@color/white"
+                    android:gravity="center|start"
+                    android:text=""
+                    android:textColor="@android:color/black"
+                    android:textStyle="bold" />
             </LinearLayout>
 
 
 
-                    <HorizontalScrollView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:scrollbars="horizontal"
-                        android:layout_gravity="center"
-                        android:fillViewport="true">
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="horizontal"
+                android:layout_gravity="center"
+                android:fillViewport="true">
 
-                        <ScrollView
-                            android:id="@+id/scheme_sv_widget"
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:scrollbars="none">
 
-                            <LinearLayout
-                                android:id="@+id/schemeDialogwidget"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:orientation="vertical" />
-                        </ScrollView>
-                    </HorizontalScrollView>
+                <LinearLayout
+                    android:id="@+id/schemeDialogwidget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+            </HorizontalScrollView>
 
         </LinearLayout>
 
     </LinearLayout>
 
-</LinearLayout>
+</android.support.v4.widget.NestedScrollView>
