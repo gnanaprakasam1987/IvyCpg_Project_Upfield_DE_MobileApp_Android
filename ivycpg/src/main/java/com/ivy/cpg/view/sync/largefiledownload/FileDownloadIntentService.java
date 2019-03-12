@@ -20,12 +20,27 @@ import com.downloader.Progress;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.microsoft.azure.storage.CloudStorageAccount;
+import com.microsoft.azure.storage.SharedAccessAccountPermissions;
+import com.microsoft.azure.storage.SharedAccessAccountPolicy;
+import com.microsoft.azure.storage.StorageException;
+import com.microsoft.azure.storage.blob.CloudBlobClient;
+import com.microsoft.azure.storage.blob.CloudBlobContainer;
+import com.microsoft.azure.storage.blob.CloudBlockBlob;
+import com.microsoft.azure.storage.blob.SharedAccessBlobPermissions;
+import com.microsoft.azure.storage.blob.SharedAccessBlobPolicy;
 
 import java.io.File;
+import java.net.URI;
 import java.net.URL;
+import java.security.InvalidKeyException;
 import java.text.DecimalFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.EnumSet;
 
 public class FileDownloadIntentService extends IntentService {
 
@@ -34,6 +49,8 @@ public class FileDownloadIntentService extends IntentService {
     private ArrayList<DigitalContentModel> downloadUrlList = new ArrayList<>();
     private int count = 0;
     private DecimalFormat df = new DecimalFormat("0.000");
+
+    private String downloadType= "AWS";
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -52,6 +69,9 @@ public class FileDownloadIntentService extends IntentService {
 
             isServiceRunning = true;
             downloadUrlList = intent.getParcelableArrayListExtra("DigiContent");
+
+            downloadType = intent.getExtras()!= null?intent.getExtras().getString("DownloadType","AWS"):"AWS";
+
             createFileStartDownload(downloadUrlList.get(count));
         }
     }
@@ -64,7 +84,7 @@ public class FileDownloadIntentService extends IntentService {
             count = count + 1;
             createFileStartDownload(downloadUrlList.get(count));
         } else if (count == downloadUrlList.size() - 1) {
-            Commons.print("FileDownloadIntentService isServiceRunning "+isServiceRunning);
+            Commons.print("FileDownloadIntentService isServiceRunning " + isServiceRunning);
             isServiceRunning = false;
             stopSelf();
         }
@@ -89,11 +109,11 @@ public class FileDownloadIntentService extends IntentService {
 
     /**
      * Creates the file and start download the file download using PRdownload
-     *  If File already found and within the expiry time then it will resume the download.
+     * If File already found and within the expiry time then it will resume the download.
      */
     private void createFileStartDownload(DigitalContentModel digitalContentBO) {
 
-        Commons.print("FileDownloadIntentService url "+digitalContentBO.getImgUrl());
+        Commons.print("FileDownloadIntentService url " + digitalContentBO.getImgUrl());
 
         if (digitalContentBO.getStatus() != null && digitalContentBO.getStatus().equals(FileDownloadProvider.DONE)) {
             startProcess();
@@ -144,7 +164,7 @@ public class FileDownloadIntentService extends IntentService {
 
             String mFileName;
             int index;
-            File  outFile;
+            File outFile;
 
             mFileName = "file.bin";
 
@@ -181,10 +201,13 @@ public class FileDownloadIntentService extends IntentService {
             }
 
             String signedUrl;
-            if (digitalContentBO.getSignedUrl() != null && digitalContentBO.getSignedUrl().length() > 0){
+            if (digitalContentBO.getSignedUrl() != null && digitalContentBO.getSignedUrl().length() > 0) {
                 signedUrl = digitalContentBO.getSignedUrl();
-            }else {
-                signedUrl = getSignedUrl(digitalContentBO.getImgUrl());
+            } else {
+                if (downloadType.equalsIgnoreCase("AWS"))
+                    signedUrl = getSignedUrl(digitalContentBO.getImgUrl());
+                else
+                    signedUrl = getSignedAzureUrl(digitalContentBO.getImgUrl());
                 digitalContentBO.setSignedUrl(signedUrl);
             }
 
@@ -285,6 +308,68 @@ public class FileDownloadIntentService extends IntentService {
         }
 
         return "";
+    }
+
+    private String getSignedAzureUrl(String fileUrl) {
+
+        try {
+
+            //Get a reference to a container to use for the sample code, and create it if it does not exist.
+            CloudBlobContainer container = initializeAzureStorageConnection();
+
+            // define rights you want to bake into the SAS
+            SharedAccessBlobPolicy itemPolicy = new SharedAccessBlobPolicy();
+
+
+            Date expirationTime = new Date(new Date().getTime() + 1000 * 60 * 300);
+
+            itemPolicy.setSharedAccessExpiryTime(expirationTime);
+
+            // get reference to the Blob you want to generate the SAS for:
+            CloudBlockBlob blob = container.getBlockBlobReference(fileUrl);
+
+            // generate Download SAS
+            String sasToken = blob.generateSharedAccessSignature(itemPolicy, "DownloadPolicy");
+            // the SAS URL is actually concatentation of the blob URI and the generated token:
+            String sasUri = String.format("%s?%s", blob.getUri(), sasToken);
+
+            URI url = new URI(sasUri);
+
+            return url.toString();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return "";
+    }
+
+    private String getContainerSasUri(CloudBlobContainer container) {
+        try {
+            //Set the expiry time and permissions for the container.
+            //In this case no start time is specified, so the shared access signature becomes valid immediately.
+            SharedAccessBlobPolicy sasConstraints = new SharedAccessBlobPolicy();
+            sasConstraints.setSharedAccessExpiryTime(new Date(new Date().getTime() + 1000 * 60 * 300));
+            sasConstraints.setPermissions(EnumSet.of(SharedAccessBlobPermissions.LIST, SharedAccessBlobPermissions.WRITE));
+
+            //Generate the shared access signature on the container, setting the constraints directly on the signature.
+            String sasContainerToken = container.generateSharedAccessSignature(sasConstraints, null);
+
+            //Return the URI string for the container, including the SAS token.
+            return container.getUri() + sasContainerToken;
+
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (StorageException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public CloudBlobContainer initializeAzureStorageConnection() throws Exception {
+        CloudStorageAccount storageAccount = CloudStorageAccount.parse(DataMembers.AZURE_CONNECTION_STRING);
+        CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
+        return blobClient.getContainerReference(DataMembers.AZURE_CONTAINER);
     }
 
 }
