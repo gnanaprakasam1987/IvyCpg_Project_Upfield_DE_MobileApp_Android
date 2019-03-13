@@ -198,7 +198,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_ORD_DELIVERY = "MENU_DELIVERY_MGMT_ORD";
     public static final String MENU_SALES_RET_DELIVERY = "MENU_SALES_RET_DELIVERY";
     public static final String MENU_SERIALIZED_ASSET = "MENU_SERIALIZED_ASSET";
-    public static final String MENU_PLANORMA = "MENU_PLANORMA";
+    public static final String MENU_PLANORMA = "MENU_PLANORAMA";
 
     private final int INVOICE_CREDIT_BALANCE = 1;// Order Not Allowed when credit balance is 0
     private final int SALES_TYPES = 2;// show preVan seller dialog
@@ -738,7 +738,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             }
         }
 
-        mTempMenuList.add(new ConfigureBO(MENU_PLANORMA,"Planorama","1",1,1,1));
 
         mActivityAdapter = new ActivityAdapter(mTempMenuList);
         activityView.setAdapter(mActivityAdapter);
