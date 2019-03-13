@@ -13,6 +13,7 @@ import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.Vector;
 
 public class ProductSearch {
@@ -38,7 +39,7 @@ public class ProductSearch {
 
     private final String mSbd = "Filt02";
     private final String mSbdGaps = "Filt03";
-    private final String mOrdered = "Filt04";
+    public final String mOrdered = "Filt04";
     private final String mPurchased = "Filt05";
     private final String mInitiative = "Filt06";
     private final String mOnAllocation = "Filt07";
@@ -52,12 +53,12 @@ public class ProductSearch {
     private final String mNMustSell = "Filt16";
     private final String mStock = "Filt17";
     private final String mDiscount = "Filt18";
-    private final String mSuggestedOrder = "Filt25";
-    private final String mDrugProducts = "Filt28";
+    public final String mSuggestedOrder = "Filt25";
     private final String mDeadProducts = "Filt15";
     private final String mCommon = "Filt01";
     private final String mCompertior = "Filt23";
     private final String mFocusBrand3 = "Filt20";
+    private final String mDrugProducts = "Filt28";
     private final String mFocusBrand4 = "Filt21";
     private final String mSMP = "Filt22";
     private final String mNearExpiryTag = "Filt19";
@@ -166,6 +167,9 @@ public class ProductSearch {
         protected Boolean doInBackground(Integer... params) {
 
             loadSearchedList();
+
+            if (bModel.configurationMasterHelper.IS_PRODUCT_SEQUENCE_UNIPAL)
+                getProductInUnipalSequence();
 
             return true;
         }
@@ -367,6 +371,89 @@ public class ProductSearch {
         }
 
         return false;
+    }
+
+    //Product sequence for Unipal
+    private void getProductInUnipalSequence() {
+        if(searchedList.size()>0) {
+            ArrayList<String> seqIDList = new ArrayList<>();
+            LinkedHashSet<String> hs = new LinkedHashSet<>();
+            Vector<ProductMasterBO> items = searchedList;
+            Vector<ProductMasterBO> newProductList = new Vector<>();
+            for (ProductMasterBO productMasterBO : items) {
+                for (int j = 0; j < productMasterBO.getLocations().size(); j++) {
+                    if (productMasterBO.isRPS() && (productMasterBO.getLocations().get(j).getShelfPiece() == -1
+                            || productMasterBO.getLocations().get(j).getShelfCase() == -1
+                            || productMasterBO.getLocations().get(j).getShelfOuter() == -1
+                            || productMasterBO.getLocations().get(j).getAvailability() == -1)) {
+                        hs.add(productMasterBO.getProductID());
+                    }
+                }
+                if (productMasterBO.isRPS() && productMasterBO.isSBDAcheived())
+                    hs.add(productMasterBO.getProductID());
+                if (productMasterBO.getIsInitiativeProduct() == 1)
+                    hs.add(productMasterBO.getProductID());
+                if (productMasterBO.isPromo())
+                    hs.add(productMasterBO.getProductID());
+            }
+            seqIDList.addAll(hs);
+
+            for (int i = 0; i < seqIDList.size(); i++) {
+                String tempId = seqIDList.get(i);
+                for (int j = 0; j < items.size(); j++) {
+                    ProductMasterBO productMasterBO = items.get(j);
+                    String prodID = productMasterBO.getProductID();
+                    if (prodID.equals(tempId)) {
+                        newProductList.add(i, productMasterBO);
+                    }
+                }
+            }
+
+            for (ProductMasterBO productMasterBO : items) {
+                if (!newProductList.contains(productMasterBO)) {
+                    newProductList.add(productMasterBO);
+                }
+            }
+            searchedList.clear();
+            searchedList.addAll(newProductList);
+        }
+    }
+
+    public String getDefaultSpecialFilter() {
+        String defaultFilter = "";
+        try {
+            Vector<ConfigureBO> specialFilterList = bModel.configurationMasterHelper
+                    .getGenFilter();
+            for (int i = 0; i < specialFilterList.size(); i++) {
+                if (specialFilterList.get(i).getHasLink() == 1) {
+                    if (!bModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
+                        defaultFilter = specialFilterList.get(i).getConfigCode();
+                        break;
+                    } else {
+                        if (bModel.getRetailerMasterBO().getIsVansales() == 1) {
+                            if (specialFilterList.get(i).getConfigCode().equals(msih)) {
+                                defaultFilter = specialFilterList.get(i).getConfigCode();
+                                break;
+                            } else if (!specialFilterList.get(i).getConfigCode().equals(mInStock)) {
+                                defaultFilter = specialFilterList.get(i).getConfigCode();
+                                break;
+                            }
+                        } else {
+                            if (specialFilterList.get(i).getConfigCode().equals(mInStock)) {
+                                defaultFilter = specialFilterList.get(i).getConfigCode();
+                                break;
+                            } else if (!specialFilterList.get(i).getConfigCode().equals(msih)) {
+                                defaultFilter = specialFilterList.get(i).getConfigCode();
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
+        return defaultFilter;
     }
 
     public boolean isSpecialFilter() {
