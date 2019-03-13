@@ -443,6 +443,7 @@ public class BatchAllocation extends IvyBaseActivityNoActionBar implements OnCli
                     && schemeHelper.IS_SCHEME_SHOW_SCREEN) {
                 Intent init = new Intent(BatchAllocation.this, SchemeApply.class);
                 init.putExtra("ScreenCode", screenCode);
+                init.putExtra("ForScheme", screenCode);
                 startActivity(init);
 //                finish();
             } else if (bmodel.configurationMasterHelper.SHOW_DISCOUNT_ACTIVITY) {
