@@ -265,7 +265,7 @@ public class ProductSearch {
 
     }
 
-    private boolean isSpecialFilterAppliedProduct(String selectedFilter, ProductMasterBO ret) {
+    public boolean isSpecialFilterAppliedProduct(String selectedFilter, ProductMasterBO ret) {
 
         final String GENERAL = "General";
 

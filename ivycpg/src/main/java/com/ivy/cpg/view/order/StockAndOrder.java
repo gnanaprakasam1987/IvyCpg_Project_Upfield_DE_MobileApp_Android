@@ -162,44 +162,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     // Selected spl filter will be maintained in this hasmap. This will max one record.
     private final HashMap<String, String> mSelectedFilterMap = new HashMap<>();
 
-    private final String mSbd = "Filt02";
-    private final String mSbdGaps = "Filt03";
-    private final String mOrdered = "Filt04";
-    private final String mPurchased = "Filt05";
-    private final String mInitiative = "Filt06";
-    private final String mOnAllocation = "Filt07";
-    private final String mInStock = "Filt08";
-    private final String mPromo = "Filt09";
-    private final String mMustSell = "Filt10";
-    private final String mFocusBrand = "Filt11";
-    private final String mFocusBrand2 = "Filt12";
-    private final String msih = "Filt13";
-    private final String mOOS = "Filt14";
-    private final String mNMustSell = "Filt16";
-    private final String mStock = "Filt17";
-    private final String mDiscount = "Filt18";
-    private final String mSuggestedOrder = "Filt25";
-    private final String mDrugProducts = "Filt28";
-    private final String mDeadProducts = "Filt15";
-
-    private boolean isSbd;
-    private boolean isSbdGaps;
-    private boolean isOrdered;
-    private boolean isPurchased;
-    private boolean isInitiative;
-    private boolean isOnAllocation;
-    private boolean isInStock;
-    private boolean isPromo;
-    private boolean isMustSell;
-    private boolean isFocusBrand;
-    private boolean isFocusBrand2;
-    private boolean isSIH;
-    private boolean isOOS;
-    private boolean isNMustSell;
-    private boolean isStock;
-    private boolean isDiscount;
-    private boolean isDrugProducts;
-    private boolean isDeadProducts;
 
     private MustSellReasonDialog dialog;
     /**
@@ -271,7 +233,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private static final int SALES_RETURN = 3;
     private static final int REQUEST_CODE_UPSELLING = 4;
 
-    private int loadStockedProduct;
 
     private AlertDialog alertDialog;
 
@@ -495,16 +456,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
 
-        /**
-         * To check stock validation
-         * product will load based on loadStockedProduct
-         * -1  - load all products
-         *  1  - load SIH available products
-         *  0  - load WSIH available products
-         */
-        loadStockedProduct = -1;
-        if (bmodel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY)
-            loadStockedProduct = checkStockValidation();
 
         // ActionBarDrawerToggle ties together the the proper interactions
         // between the sliding drawer and the action bar app icon
@@ -631,7 +582,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.SHOW_SPL_FLIER_NOT_NEEDED
                         && !bmodel.configurationMasterHelper.IS_SHOW_ALL_SKU_ON_EDIT) {
 
-                    getMandatoryFilters();
                     mSelectedFilterMap.put("General", mOrdered);
                     if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
                         loadSpecialFilterView();
@@ -658,7 +608,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     updateGuidedSellingView(true, false);
                 } else {
                     if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.SHOW_SPL_FLIER_NOT_NEEDED) {
-                        getMandatoryFilters();
                         String defaultfilter = getDefaultFilter();
                         if (!"".equals(defaultfilter)) {
                             mSelectedFilterMap.put("General", defaultfilter);
@@ -794,18 +743,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
     }
 
-    private String getMenuName(String mFilterCode) {
-        Vector<ConfigureBO> mFilterList
-                = bmodel.configurationMasterHelper
-                .getGenFilter();
-        for (int i = 0; i < mFilterList.size(); i++) {
-            ConfigureBO bo = mFilterList.get(i);
-            if (mFilterCode.equals(bo.getConfigCode())) {
-                return bo.getMenuName();
-            }
-        }
-        return "";
-    }
 
     private boolean isProductsAvailable(String filterCode) {
         try {
@@ -813,7 +750,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 return true;
             } else {
                 for (ProductMasterBO bo : bmodel.productHelper.getProductMaster()) {
-                    if (isSpecialFilterAppliedProduct(filterCode, bo)) {
+                    if (productSearch.isSpecialFilterAppliedProduct(filterCode, bo)) {
                         return true;
                     }
                 }
@@ -898,7 +835,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (applyLevel.equals("ALL")) {
                 boolean isStockChecked = true;
                 for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
-                    if (isSpecialFilterAppliedProduct(filterCode, product) && product.getIsSaleable() == 1) {
+                    if (productSearch.isSpecialFilterAppliedProduct(filterCode, product) && product.getIsSaleable() == 1) {
                         isStockChecked = false;
                         for (int j = 0; j < product.getLocations().size(); j++) {
                             if ((stockCheckHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
@@ -919,7 +856,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 //ANY
                 boolean isStockChecked = true;
                 for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
-                    if (isSpecialFilterAppliedProduct(filterCode, product) && product.getIsSaleable() == 1) {
+                    if (productSearch.isSpecialFilterAppliedProduct(filterCode, product) && product.getIsSaleable() == 1) {
                         isStockChecked = false;
                         for (int j = 0; j < product.getLocations().size(); j++) {
                             if ((stockCheckHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
@@ -969,7 +906,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         } else {
             if (applyLevel.equals("ALL")) {
                 for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
-                    if (isSpecialFilterAppliedProduct(filterCode, product)) {
+                    if (productSearch.isSpecialFilterAppliedProduct(filterCode, product)) {
                         if (product.getOrderedCaseQty() <= 0 && product.getOrderedPcsQty() <= 0 && product.getOrderedOuterQty() <= 0) {
                             return false;
                         }
@@ -983,7 +920,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             } else if (applyLevel.equals("ANY")) {
                 //ANY
                 for (ProductMasterBO product : bmodel.productHelper.getProductMaster()) {
-                    if (isSpecialFilterAppliedProduct(filterCode, product)) {
+                    if (productSearch.isSpecialFilterAppliedProduct(filterCode, product)) {
                         if (product.getOrderedCaseQty() > 0 || product.getOrderedPcsQty() > 0 || product.getOrderedOuterQty() > 0) {
                             if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION && !checkTaggingDetails(product)) {
                                 Toast.makeText(StockAndOrder.this, product.getProductName() + " exceeded Allocation", Toast.LENGTH_LONG).show();
@@ -3358,22 +3295,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         intent.putExtra("productId", holder.productId);
                         startActivity(intent);
 
-                        //}
-                        /*else {
-                            bmodel.productHelper.setPdname(holder.pname);
-                            bmodel.productHelper.setProdId(holder.productId);
-                            bmodel.productHelper.setProductObj(holder.productObj);
-                            bmodel.productHelper.setFlag(1);
-                            bmodel.productHelper.setTotalScreenSize(mTotalScreenWidth);
 
-                            SchemeDialog sc = new SchemeDialog(
-                                    StockAndOrder.this,
-                                    schemeHelper
-                                            .getSchemeList(), holder.pname,
-                                    holder.productId, holder.productObj, 1, mTotalScreenWidth);
-                            FragmentManager fm = getSupportFragmentManager();
-                            sc.show(fm, "");
-                        }*/
                     }
                 });
                 row.setTag(holder);
@@ -4881,48 +4803,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
 
-    private void getMandatoryFilters() {
-        for (ConfigureBO bo : bmodel.configurationMasterHelper.getGenFilter()) {
-            if (bo.getMandatory() == 1) {
-                if (bo.getConfigCode().equals(mSbd))
-                    isSbd = true;
-                else if (bo.getConfigCode().equals(mSbdGaps))
-                    isSbdGaps = true;
-                else if (bo.getConfigCode().equals(mOrdered))
-                    isOrdered = true;
-                else if (bo.getConfigCode().equals(mPurchased))
-                    isPurchased = true;
-                else if (bo.getConfigCode().equals(mInitiative))
-                    isInitiative = true;
-                else if (bo.getConfigCode().equals(mOnAllocation))
-                    isOnAllocation = true;
-                else if (bo.getConfigCode().equals(mInStock))
-                    isInStock = true;
-                else if (bo.getConfigCode().equals(mPromo))
-                    isPromo = true;
-                else if (bo.getConfigCode().equals(mMustSell))
-                    isMustSell = true;
-                else if (bo.getConfigCode().equals(mFocusBrand))
-                    isFocusBrand = true;
-                else if (bo.getConfigCode().equals(mFocusBrand2))
-                    isFocusBrand2 = true;
-                else if (bo.getConfigCode().equals(msih))
-                    isSIH = true;
-                else if (bo.getConfigCode().equals(mOOS))
-                    isOOS = true;
-                else if (bo.getConfigCode().equals(mNMustSell))
-                    isNMustSell = true;
-                else if (bo.getConfigCode().equals(mDiscount))
-                    isDiscount = true;
-                else if (bo.getConfigCode().equals(mStock))
-                    isStock = true;
-                else if (bo.getConfigCode().equals(mDrugProducts))
-                    isDrugProducts = true;
-                else if (bo.getConfigCode().equals(mDeadProducts))
-                    isDeadProducts = true;
-            }
-        }
-    }
+
 
     private int checkStockValidation() {
         int flag;
@@ -4979,53 +4860,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     }
 
 
-
-    private boolean isSpecialFilterAppliedProduct(String generaltxt, ProductMasterBO ret) {
-        final String mCommon = "Filt01";
-        final String mCompertior = "Filt23";
-        final String mFocusBrand3 = "Filt20";
-        final String mFocusBrand4 = "Filt21";
-        final String mSMP = "Filt22";
-        final String mNearExpiryTag = "Filt19";
-        final String mShelf = "Filt24";
-
-        return generaltxt.equalsIgnoreCase(mSbd) && ret.isRPS()
-                || (generaltxt.equalsIgnoreCase(mOrdered) && (ret.getOrderedPcsQty() > 0 || ret.getOrderedCaseQty() > 0 || ret.getOrderedOuterQty() > 0))
-                || (generaltxt.equalsIgnoreCase(mPurchased) && ret.getIsPurchased() == 1)
-                || (generaltxt.equalsIgnoreCase(mInitiative) && ret.getIsInitiativeProduct() == 1)
-                || (generaltxt.equalsIgnoreCase(mCommon) && applyCommonFilterConfig(ret))
-                || (generaltxt.equalsIgnoreCase(mSbdGaps) && (ret.isRPS() && !ret.isSBDAcheived()))
-                || (generaltxt.equalsIgnoreCase(mInStock) && ret.getWSIH() > 0)
-                || (generaltxt.equalsIgnoreCase(mOnAllocation) && ret.isAllocation() == 1 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION)
-                || (generaltxt.equalsIgnoreCase(mPromo) && ret.isPromo())
-                || (generaltxt.equalsIgnoreCase(mMustSell) && ret.getIsMustSell() == 1)
-                || (generaltxt.equalsIgnoreCase(mFocusBrand) && ret.getIsFocusBrand() == 1)
-                || (generaltxt.equalsIgnoreCase(mFocusBrand2) && ret.getIsFocusBrand2() == 1)
-                || (generaltxt.equalsIgnoreCase(msih) && ret.getSIH() > 0)
-                || (generaltxt.equalsIgnoreCase(mOOS) && ret.getOos() == 0)
-                || (generaltxt.equalsIgnoreCase(mNMustSell) && ret.getIsNMustSell() == 1)
-                || (generaltxt.equalsIgnoreCase(mDiscount) && ret.getIsDiscountable() == 1)
-                || (generaltxt.equalsIgnoreCase(mStock) && (ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > -1 || ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > -1 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > -1 || ret.getLocations().get(mSelectedLocationIndex).getWHPiece() > 0 || ret.getLocations().get(mSelectedLocationIndex).getWHCase() > 0 || ret.getLocations().get(mSelectedLocationIndex).getWHOuter() > 0 || ret.getLocations().get(mSelectedLocationIndex).getAvailability() > -1))
-                || (generaltxt.equalsIgnoreCase(mNearExpiryTag) && ret.getIsNearExpiryTaggedProduct() == 1)
-                || (generaltxt.equalsIgnoreCase(mFocusBrand3) && ret.getIsFocusBrand3() == 1)
-                || (generaltxt.equalsIgnoreCase(mFocusBrand4) && ret.getIsFocusBrand4() == 1)
-                || (generaltxt.equalsIgnoreCase(mSMP) && ret.getIsSMP() == 1)
-                || (generaltxt.equalsIgnoreCase(mCompertior) && ret.getOwn() == 0)
-                || (generaltxt.equalsIgnoreCase(mShelf) && (ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > -1 || ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > -1 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > -1 || ret.getLocations().get(mSelectedLocationIndex).getAvailability() > -1))
-                || (generaltxt.equalsIgnoreCase(mSuggestedOrder) && ret.getSoInventory() > 0)
-                || (generaltxt.equalsIgnoreCase(mDrugProducts) && ret.getIsDrug() == 1)
-                || (generaltxt.equalsIgnoreCase(mDeadProducts) && ret.getmDeadProduct() == 1);
-    }
-
-    private String getFilterName(String filtername) {
-        Vector<ConfigureBO> genfilter = bmodel.configurationMasterHelper
-                .getGenFilter();
-        for (int i = 0; i < genfilter.size(); i++) {
-            if (genfilter.get(i).getConfigCode().equals(filtername))
-                filtername = genfilter.get(i).getMenuName();
-        }
-        return filtername;
-    }
 
     private String getDefaultFilter() {
         String defaultfilter = "";
@@ -5493,17 +5327,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         this.sendBroadcast(i);
     }
 
-    private boolean applyCommonFilterConfig(ProductMasterBO ret) {
-        return (isSbd && ret.isRPS()) || (isSbdGaps && ret.isRPS() && !ret.isSBDAcheived()) || (isOrdered && (ret.getOrderedPcsQty() > 0 || ret.getOrderedCaseQty() > 0 || ret.getOrderedOuterQty() > 0))
-                || (isPurchased && ret.getIsPurchased() == 1) || (isInitiative && ret.getIsInitiativeProduct() == 1) || (isOnAllocation && ret.isAllocation() == 1 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION)
-                || (isInStock && ret.getWSIH() > 0) || (isPromo && ret.isPromo()) || (isMustSell && ret.getIsMustSell() == 1)
-                || (isFocusBrand && ret.getIsFocusBrand() == 1) || (isFocusBrand2 && ret.getIsFocusBrand2() == 1) || (isSIH && ret.getSIH() > 0) || (isOOS && ret.getOos() == 0)
-                || (isNMustSell && ret.getIsNMustSell() == 1) || (isStock && (ret.getLocations().get(mSelectedLocationIndex).getShelfPiece() > -1
-                || ret.getLocations().get(mSelectedLocationIndex).getShelfCase() > -1 || ret.getLocations().get(mSelectedLocationIndex).getShelfOuter() > -1 || ret.getLocations().get(mSelectedLocationIndex).getWHPiece() > 0
-                || ret.getLocations().get(mSelectedLocationIndex).getWHCase() > 0 || ret.getLocations().get(mSelectedLocationIndex).getWHOuter() > 0 || ret.getLocations().get(mSelectedLocationIndex).getAvailability() > -1))
-                || (isDiscount && ret.getIsDiscountable() == 1) || (isDrugProducts && ret.getIsDrug() == 1)
-                || (isDeadProducts && ret.getmDeadProduct() == 1);
-    }
 
     private boolean hasStockOnly() {
         int siz = productList.size();
@@ -5731,12 +5554,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             tv_selection_identifier.setTag(config.getConfigCode() + config.getMenuName());
             tv_selection_identifier.setWidth(width);
             tv_selection_identifier.setBackgroundColor(indicator_color);
-            /*if (i == 0) {
-                tv_selection_identifier.setVisibility(View.VISIBLE);
-                updateGeneralText(GENERAL);
-            } else {
-                tv_selection_identifier.setVisibility(View.GONE);
-            }*/
+
 
             ll_tab_selection.addView(tv_selection_identifier);
 
@@ -5999,69 +5817,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     }
 
 
-    private Vector<LevelBO> updateProductLoad(int pos) {
-
-        Vector<LevelBO> finalValuelist = new Vector<>();
-
-        if (isFilterContentSelected(pos)) {
-
-            int selectedGridLevelID = 0;
-            ArrayList<Integer> parentIdList = null;
-
-            for (int i = 0; i < pos; i++) {
-                LevelBO levelBO = sequence.get(i);
-
-                if (i != 0) {
-
-                    parentIdList = getParenIdList(selectedGridLevelID,
-                            parentIdList, levelBO);
-
-                }
-                selectedGridLevelID = mSelectedIdByLevelId.get(levelBO
-                        .getProductID());
-
-                if (i == pos - 1) {
-
-                    Vector<LevelBO> gridViewlist = loadedFilterValues
-                            .get(levelBO.getProductID());
-                    finalValuelist = new Vector<>();
-                    if (selectedGridLevelID != 0) {
-                        for (LevelBO gridViewBO : gridViewlist) {
-                            if (selectedGridLevelID == gridViewBO.getProductID()) {
-                                finalValuelist.add(gridViewBO);
-                            }
-
-                        }
-
-                    } else {
-                        if (parentIdList != null)
-                            if (!parentIdList.isEmpty()) {
-                                for (int productID : parentIdList) {
-                                    for (LevelBO gridViewBO : gridViewlist) {
-                                        if (productID == gridViewBO.getProductID()) {
-                                            finalValuelist.add(gridViewBO);
-                                        }
-
-                                    }
-                                }
-                            }
-                    }
-                }
-
-            }
-
-
-        } else {
-            if (pos > 0)
-                finalValuelist = loadedFilterValues.get(sequence.get(pos - 1)
-                        .getProductID());
-
-        }
-        return finalValuelist;
-
-
-    }
-
     private ArrayList<Integer> getParenIdList(int selectedGridLevelID,
                                               ArrayList<Integer> list, LevelBO levelBO) {
         ArrayList<Integer> parentIdList = new ArrayList<>();
@@ -6238,10 +5993,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         @Override
         protected Boolean doInBackground(String... arg0) {
             try {
-//              pname = CRISTAL ALTIN 20LI KUTU
-//                      barcode = 3086123446168
-//              pname = CRISTAL MED TUK 4LU PST MV
-//                barcode = 3086121601033
+
                 barcode = barcode.replace("\n", "");
                 if (barcode != null)
                     for (final ProductMasterBO p : mSchedule.items) {
@@ -6295,9 +6047,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         String strPname = getResources().getString(
                 R.string.product_name)
                 + " (" + mylist.size() + ")";
-        // OutletListAdapter lvwplist = new OutletListAdapter(mylist);
         lvwplist.setAdapter(new MyAdapter(mylist));
-//        salesReturnHelper = SalesReturnHelper.getInstance(this);
     }
 
 
@@ -6496,7 +6246,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             updateValue();
             updateOrderedCount();
 
-            //dismissProgressDialog();
 
         }
 
