@@ -21,7 +21,6 @@ public class ProductSearch {
     private EditText mEdt_searchproductName;
     private Vector<ProductMasterBO> masterList,searchedList;
     private BusinessModel bModel;
-    private int loadStockedProduct=-1;
     private SearchAsync searchAsync;
     private String selectedSpecialFilter;
     private String userEnteredText;
@@ -29,11 +28,6 @@ public class ProductSearch {
     private ProductSearchCallBack productSearchCallBack;
     public static String SCREEN_CODE_ORDER="ORDER";
     private String current_screen_code;
-    private static int SEARCH_BY_GIVEN_TEXT=1;
-    private static int SEARCH_BY_GIVEN_PRODUCT_ID=2;
-    private static int SEARCH_BY_GIVEN_PRODUCT_ID_AND_ATTRIBUTE=3;
-    private static int SEARCH_BY_SPECIAL_FILTER=4;
-    private static int SHOW_ALL_PRODUCTS=5;
 
     private static final String ALL = "ALL";
 
@@ -42,35 +36,34 @@ public class ProductSearch {
     private int productId;
     private ArrayList<Integer> attributeProductIds;
 
-    final String mSbd = "Filt02";
-    final String mSbdGaps = "Filt03";
-    final String mOrdered = "Filt04";
-    final String mPurchased = "Filt05";
-    final String mInitiative = "Filt06";
-    final String mOnAllocation = "Filt07";
-    final String mInStock = "Filt08";
-    final String mPromo = "Filt09";
-    final String mMustSell = "Filt10";
-    final String mFocusBrand = "Filt11";
-    final String mFocusBrand2 = "Filt12";
-    final String msih = "Filt13";
-    final String mOOS = "Filt14";
-    final String mNMustSell = "Filt16";
-    final String mStock = "Filt17";
-    final String mDiscount = "Filt18";
-    final String mSuggestedOrder = "Filt25";
-    final String mDrugProducts = "Filt28";
-    final String mDeadProducts = "Filt15";
+    private final String mSbd = "Filt02";
+    private final String mSbdGaps = "Filt03";
+    private final String mOrdered = "Filt04";
+    private final String mPurchased = "Filt05";
+    private final String mInitiative = "Filt06";
+    private final String mOnAllocation = "Filt07";
+    private final String mInStock = "Filt08";
+    private final String mPromo = "Filt09";
+    private final String mMustSell = "Filt10";
+    private final String mFocusBrand = "Filt11";
+    private final String mFocusBrand2 = "Filt12";
+    private final String msih = "Filt13";
+    private final String mOOS = "Filt14";
+    private final String mNMustSell = "Filt16";
+    private final String mStock = "Filt17";
+    private final String mDiscount = "Filt18";
+    private final String mSuggestedOrder = "Filt25";
+    private final String mDrugProducts = "Filt28";
+    private final String mDeadProducts = "Filt15";
+    private final String mCommon = "Filt01";
+    private final String mCompertior = "Filt23";
+    private final String mFocusBrand3 = "Filt20";
+    private final String mFocusBrand4 = "Filt21";
+    private final String mSMP = "Filt22";
+    private final String mNearExpiryTag = "Filt19";
+    private final String mShelf = "Filt24";
 
-    final String mCommon = "Filt01";
-    final String mCompertior = "Filt23";
-    final String mFocusBrand3 = "Filt20";
-    final String mFocusBrand4 = "Filt21";
-    final String mSMP = "Filt22";
-    final String mNearExpiryTag = "Filt19";
-    final String mShelf = "Filt24";
-
-    final String GENERAL = "General";
+    private final String GENERAL = "General";
 
     private boolean isSpecialFilter,isProductFilter,isUserEntryFilter;
     public ProductSearch(Context context,BusinessModel bModel,String current_screen_code){
@@ -328,13 +321,23 @@ public class ProductSearch {
     }
 
     private boolean isParentHierarchyMatches(ProductMasterBO productMasterBO){
-        if ((productId!=0||productMasterBO.getParentHierarchy().contains("/" + productId + "/"))
+        if (productMasterBO.getParentHierarchy().contains("/" + productId + "/")
                 &&attributeProductIds!=null&&attributeProductIds.contains(SDUtil.convertToInt(productMasterBO.getProductID()))) {
 
             return true;
 
         }
         else if (productMasterBO.getParentHierarchy().contains("/" + productId + "/")) {
+
+            return true;
+
+        }
+        else if (attributeProductIds!=null&&attributeProductIds.contains(SDUtil.convertToInt(productMasterBO.getProductID()))) {
+
+            return true;
+
+        }
+        else if (productId==0) {
 
             return true;
 
