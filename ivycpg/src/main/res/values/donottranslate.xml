@@ -163,4 +163,6 @@
     <string name="logout_joint_user_dayclose">Please logout JointCall User before Closing the day</string>
 
     <string name="condition_mandatory">Plases select Condition</string>
+    <string name="nfc_code">NFC Code</string>
+    <string name="serial_no_not_captured_kindly_choose_reason">Some problem in serial no capture so kindly choose reason for not captured…</string>
 </resources>
