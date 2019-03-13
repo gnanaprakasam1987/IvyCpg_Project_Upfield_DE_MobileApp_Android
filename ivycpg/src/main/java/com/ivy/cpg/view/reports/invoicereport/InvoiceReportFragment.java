@@ -73,6 +73,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
         businessModel = (BusinessModel) getActivity().getApplicationContext();
         businessModel.setContext(getActivity());
         orderHelper = OrderHelper.getInstance(getContext());
+        reportHelper = ReportHelper.getInstance(getContext());
 
         if (businessModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),

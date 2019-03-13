@@ -315,6 +315,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_CAPTURE_LOCATION = "FUN14"; // Global GPS config
     private static final String CODE_SHOW_DGTC = "FUN16";
     private static final String CODE_INVOICE_SEQUENCE_NUMBER = "ORDB48";
+    private static final String CODE_ORDER_SEQUENCE_NUMBER = "ORDB78";
     private static final String CODE_SHOW_STOCK_IN_SUMMARY = "ORDB49";
     private static final String CODE_IS_TEAMLEAD = "ISTEAMLEAD"; // Code to validRegex whether the user is teamlead or not
     private static final String CODE_UPLOADUSERLOC = "UPLOADUSERLOC";
@@ -828,6 +829,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_CAPTURED_LOCATION; // FUN14 -> Global GPS config.
     public boolean SHOW_DGTC;
     public boolean SHOW_INVOICE_SEQUENCE_NO;
+    public boolean SHOW_ORDER_SEQUENCE_NO;
     public boolean SHOW_SR_SEQUENCE_NO;
     public boolean SHOW_CN_SEQUENCE_NO;
     public boolean SHOW_STOCK_IN_SUMMARY;
@@ -2190,6 +2192,7 @@ public class ConfigurationMasterHelper {
         this.SHOW_INDICATIVE_ORDER_ICON = hashMapHHTModuleConfig.get(CODE_SHOW_INDICATIVE_ORDER_ICON) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_INDICATIVE_ORDER_ICON) : false;
         this.SHOW_DGTC = hashMapHHTModuleConfig.get(CODE_SHOW_DGTC) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DGTC) : false;
         this.SHOW_INVOICE_SEQUENCE_NO = hashMapHHTModuleConfig.get(CODE_INVOICE_SEQUENCE_NUMBER) != null ? hashMapHHTModuleConfig.get(CODE_INVOICE_SEQUENCE_NUMBER) : false;
+        this.SHOW_ORDER_SEQUENCE_NO = hashMapHHTModuleConfig.get(CODE_ORDER_SEQUENCE_NUMBER) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SEQUENCE_NUMBER) : false;
         this.SHOW_SR_SEQUENCE_NO = hashMapHHTModuleConfig.get(CODE_SR_SEQUENCE_NUMBER) != null ? hashMapHHTModuleConfig.get(CODE_SR_SEQUENCE_NUMBER) : false;
         this.SHOW_CN_SEQUENCE_NO = hashMapHHTModuleConfig.get(CODE_CN_SEQUENCE_NUMBER) != null ? hashMapHHTModuleConfig.get(CODE_CN_SEQUENCE_NUMBER) : false;
         this.SHOW_STOCK_IN_SUMMARY = hashMapHHTModuleConfig.get(CODE_SHOW_STOCK_IN_SUMMARY) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STOCK_IN_SUMMARY) : false;

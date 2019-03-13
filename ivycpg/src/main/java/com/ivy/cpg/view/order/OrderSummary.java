@@ -2062,7 +2062,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 discountValue = discount;
 
             }
-            if (bModel.getOrderHeaderBO() != null)
+            if (bModel.getOrderHeaderBO() != null && !bModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG)
                 bModel.getOrderHeaderBO().setBillLevelDiscountValue(discountValue);
         } catch (Exception e) {
             Commons.printException(e);
