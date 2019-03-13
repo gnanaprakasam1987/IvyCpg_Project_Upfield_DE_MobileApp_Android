@@ -283,7 +283,6 @@ public class SerializedAssetHelper {
                 mAssetBCReasonList = new ArrayList<>();
                 break;
 
-
         }
         ReasonMaster reasonBO;
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
@@ -735,7 +734,6 @@ public class SerializedAssetHelper {
         return new ArrayList<>();
     }
 
-
     public void deleteImageProof(Context mContext, String ImageName) {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
@@ -1009,7 +1007,10 @@ public class SerializedAssetHelper {
         if (mUniqueSerialNo == null || mUniqueSerialNo.size() == 0)
             return false;
         else {
-            return mUniqueSerialNo.get(serialNo) != null;
+            if (mUniqueSerialNo.get(serialNo) == null)
+                return false;
+            else
+                return true;
         }
     }
 
@@ -1504,5 +1505,6 @@ public class SerializedAssetHelper {
 
         return capacityList;
     }
+
 
 }

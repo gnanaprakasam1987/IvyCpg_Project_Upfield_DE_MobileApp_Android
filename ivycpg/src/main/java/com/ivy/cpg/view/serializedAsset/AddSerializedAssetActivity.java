@@ -82,6 +82,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
     private ArrayList<SerializedAssetBO> vendorList;
     private ArrayList<SerializedAssetBO> typeList;
     private ArrayList<String> capacityList;
+
     private ArrayList<ReasonMaster> noBarCodeReasonList;
 
     private Spinner modelSpinner;
@@ -118,27 +119,6 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             setScreenTitle(getResources().getString(R.string.addnewasset));
         }
 
-
-
-        /*--------------- Asset BarCode SCAN Field Labels-------------*/
-
-        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
-                R.id.txt_bar_code_sp_label).getTag()) != null)
-            ((TextView) findViewById(R.id.txt_bar_code_sp_label))
-                    .setText(mBModel.labelsMasterHelper
-                            .applyLabels(findViewById(
-                                    R.id.txt_bar_code_sp_label).getTag()));
-
-        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
-                R.id.label_scan).getTag()) != null)
-            ((TextView) findViewById(R.id.label_scan))
-                    .setText(mBModel.labelsMasterHelper
-                            .applyLabels(findViewById(
-                                    R.id.label_scan).getTag()));
-
-
-        /*--------------- Asset NFC SCAN Field Labels-------------*/
-
         if (mBModel.labelsMasterHelper.applyLabels(findViewById(
                 R.id.txtNFCLabel).getTag()) != null)
             ((TextView) findViewById(R.id.txtNFCLabel))
@@ -147,21 +127,12 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                                     R.id.txtNFCLabel).getTag()));
 
         if (mBModel.labelsMasterHelper.applyLabels(findViewById(
-                R.id.label_nfc_scan_reason).getTag()) != null)
-            ((TextView) findViewById(R.id.label_nfc_scan_reason))
+                R.id.label_scan).getTag()) != null)
+            ((TextView) findViewById(R.id.label_scan))
                     .setText(mBModel.labelsMasterHelper
                             .applyLabels(findViewById(
-                                    R.id.label_nfc_scan_reason).getTag()));
+                                    R.id.label_scan).getTag()));
 
-        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
-                R.id.label_nfccode).getTag()) != null)
-            ((TextView) findViewById(R.id.label_nfccode))
-                    .setText(mBModel.labelsMasterHelper
-                            .applyLabels(findViewById(
-                                    R.id.label_nfccode).getTag()));
-
-
-        /*--------------- Asset Type filter Labels-------------*/
         if (mBModel.labelsMasterHelper.applyLabels(findViewById(
                 R.id.label_asset_type).getTag()) != null)
             ((TextView) findViewById(R.id.label_asset_type))
@@ -169,7 +140,6 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                             .applyLabels(findViewById(
                                     R.id.label_asset_type).getTag()));
 
-        /*--------------- Asset Model filter Labels-------------*/
         if (mBModel.labelsMasterHelper.applyLabels(findViewById(
                 R.id.label_asset_model).getTag()) != null)
             ((TextView) findViewById(R.id.label_asset_model))
@@ -177,7 +147,6 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                             .applyLabels(findViewById(
                                     R.id.label_asset_model).getTag()));
 
-        /*--------------- Asset Vendor filter Labels-------------*/
         if (mBModel.labelsMasterHelper.applyLabels(findViewById(
                 R.id.label_asset_vendor).getTag()) != null)
             ((TextView) findViewById(R.id.label_asset_vendor))
@@ -185,7 +154,6 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                             .applyLabels(findViewById(
                                     R.id.label_asset_vendor).getTag()));
 
-        /*--------------- Asset Capacity filter Labels-------------*/
         if (mBModel.labelsMasterHelper.applyLabels(findViewById(
                 R.id.label_asset_capacity).getTag()) != null)
             ((TextView) findViewById(R.id.label_asset_capacity))
@@ -210,6 +178,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         barcodeNoReasonSpinner = findViewById(R.id.spinner_bar_code_reason);
         nfcNoReasonSpinner = findViewById(R.id.spinner_nfc_reason);
 
+
         if (!assetTrackingHelper.SHOW_ASSET_TYPE)
             findViewById(R.id.ll_asset_type).setVisibility(View.GONE);
         if (!assetTrackingHelper.SHOW_ASSET_CAPACITY)
@@ -218,11 +187,6 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             findViewById(R.id.ll_asset_model).setVisibility(View.GONE);
         if (!assetTrackingHelper.SHOW_ASSET_VENDOR)
             findViewById(R.id.ll_asset_vendor).setVisibility(View.GONE);
-        if (!assetTrackingHelper.SHOW_ASSET_BARCODE) {
-            findViewById(R.id.label_barcode).setVisibility(View.GONE);
-            imageView_barcode_scan.setVisibility(View.GONE);
-            findViewById(R.id.barcode_reason_layout).setVisibility(View.GONE);
-        }
 
         loadData();
 
@@ -312,12 +276,12 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         tempBO.setAssetTypeId("0");
         typeList.add(0, tempBO);
 
-        capacityList.add(0, ALL);
-
         ReasonMaster reasonMaster = new ReasonMaster();
         reasonMaster.setReasonDesc(getString(R.string.select_reason));
         reasonMaster.setReasonID("0");
         noBarCodeReasonList.add(0, reasonMaster);
+
+        capacityList.add(0,ALL);
 
         ArrayAdapter<SerializedAssetBO> mModelAdapter = new ArrayAdapter<>(this,
                 R.layout.spinner_bluetext_layout, modelList);
@@ -355,8 +319,8 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int position, long arg3) {
-                mSelectedCapacity = capacityList.get(position);
-                filterPosm();
+                    mSelectedCapacity = capacityList.get(position);
+                    filterPosm();
             }
 
             @Override
@@ -371,8 +335,8 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int position, long arg3) {
-                mSelectedVendor = vendorList.get(position).getVendorId();
-                filterPosm();
+                        mSelectedVendor = vendorList.get(position).getVendorId();
+                        filterPosm();
             }
 
             @Override
@@ -387,8 +351,8 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int position, long arg3) {
-                mSelectedModel = modelList.get(position).getModelId();
-                filterPosm();
+                        mSelectedModel = modelList.get(position).getModelId();
+                        filterPosm();
             }
 
             @Override
@@ -412,7 +376,6 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
             }
         });
-
 
         barcodeNoReasonSpinner.setAdapter(mBarcodeReasonAdapter);
         barcodeNoReasonSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -449,7 +412,8 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             }
         });
 
-        String todayDate = DateTimeUtils.convertFromServerDateToRequestedFormat(
+
+           String todayDate = DateTimeUtils.convertFromServerDateToRequestedFormat(
                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
 
@@ -526,15 +490,8 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             @Override
             public void afterTextChanged(Editable s) {
 
-                if (s.toString().length() > 0) {
+                if (s.toString().length() > 0)
                     mSNO.setSelection(s.toString().length());
-
-                    /*barcodeNoReasonSpinner.setSelection(0);
-                    barcodeNoReasonSpinner.setEnabled(false);*/
-                }/* else {
-                    barcodeNoReasonSpinner.setSelection(0);
-                    barcodeNoReasonSpinner.setEnabled(true);
-                }*/
             }
         });
     }

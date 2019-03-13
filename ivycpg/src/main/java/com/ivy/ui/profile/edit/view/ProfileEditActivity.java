@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.profile;
+package com.ivy.ui.profile.edit.view;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -14,7 +14,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.NewoutletContainerFragment;
-import com.ivy.ui.profile.edit.view.ProfileEditFragmentNew;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
@@ -29,8 +28,6 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
         implements NearByRetailerDialog.NearByRetailerInterface {
 
     private BusinessModel bmodel;
-    private Toolbar toolbar;
-    private AppSchedulerProvider appSchedulerProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +36,8 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
 
         bmodel = (BusinessModel) this.getApplicationContext();
         bmodel.setContext(this);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -49,13 +47,14 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
             getSupportActionBar().setTitle(null);
             setScreenTitle(getResources().getString(R.string.profile_edit_screen__title));
         }
+
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(ProfileEditActivity.this, getResources().getString(R.string.sessionout_loginagain), Toast.LENGTH_SHORT).show();
             finish();
         }
 
         if (bmodel.configurationMasterHelper.IS_CONTACT_TAB){
-            appSchedulerProvider = new AppSchedulerProvider();
+            AppSchedulerProvider appSchedulerProvider = new AppSchedulerProvider();
             ArrayList<RetailerContactBo> retailerContactList=new ArrayList<>();
             bmodel.newOutletHelper.setRetailerContactList(retailerContactList); //Just for clear the old contact list
             new CompositeDisposable().add((Disposable) bmodel.profilehelper.downloadRetailerContact(bmodel.getRetailerMasterBO().getRetailerID(), true)
