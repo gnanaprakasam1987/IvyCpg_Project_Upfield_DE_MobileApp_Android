@@ -1661,6 +1661,7 @@ public class BusinessModel extends Application {
 
     /**
      * update retailer price group
+     *
      * @param retObj
      * @param db
      */
@@ -3222,9 +3223,7 @@ public class BusinessModel extends Application {
 
         CommonDialog dialog = new CommonDialog(this, getContext(), title, msg, imgDisplay, getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
             @Override
-            public void onPositiveButtonClick()
-
-            {
+            public void onPositiveButtonClick() {
 
                 if (idd == DataMembers.NOTIFY_NEW_OUTLET_SAVED) {
 //                    NewOutlet frm = (NewOutlet) ctx;
@@ -5572,8 +5571,8 @@ public class BusinessModel extends Application {
     private static final int FASTEST_INTERVAL = 1000;
 
     /**
-     * @deprecated
      * @see {@link com.ivy.core.base.view.BaseActivity#requestLocation(Activity)}
+     * @deprecated
      */
     public void requestLocation(final Activity ctxt) {
 
@@ -6047,7 +6046,6 @@ public class BusinessModel extends Application {
     }
 
     /**
-     *
      * @param ruleString
      * @return this method will return retailer type based Retailer Type Code
      */
@@ -7042,7 +7040,6 @@ public class BusinessModel extends Application {
             Commons.printException(e);
         }
     }
-
 
 
     /**

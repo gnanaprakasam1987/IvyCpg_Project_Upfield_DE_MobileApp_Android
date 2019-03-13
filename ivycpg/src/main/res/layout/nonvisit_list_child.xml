@@ -28,7 +28,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_left_retailer_name"
             android:layout_marginLeft="@dimen/margin_left_retailer_name"
-            android:text="@string/outlet_name" />
+            android:text="@string/outlet_name"
+            android:textSize="@dimen/actionbar_subtitle_text_size" />
 
         <TextView
             android:id="@+id/rfield4_tv"
@@ -40,6 +41,42 @@
             android:layout_marginTop="@dimen/dimen_2dp"
             android:text="" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/margin_left_retailer_name"
+            android:layout_marginLeft="@dimen/margin_left_retailer_name"
+            android:layout_marginTop="@dimen/icons_top_margin"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/ll_iv_asset_mapped"
+                android:layout_width="@dimen/ret_image_size"
+                android:layout_height="@dimen/ret_image_size"
+                android:layout_marginEnd="@dimen/dimen_5dp"
+                android:layout_marginRight="@dimen/dimen_5dp"
+                android:background="@drawable/circle_transparent">
+
+
+                <ImageView
+                    android:id="@+id/iv_asset_mapped"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_action_star_select" />
+            </LinearLayout>
+
+
+            <TextView
+                android:id="@+id/tv_task_count"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/ret_image_size"
+                android:fontFamily="@font/roboto_light"
+                android:gravity="center"
+                android:text=""
+                android:textColor="@color/black_bg3"
+                android:textSize="@dimen/text_size_caption"
+                android:visibility="gone" />
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -66,10 +103,10 @@
                     android:id="@+id/outlet_address_tv"
                     style="@style/TextViewListItemValues"
                     android:layout_width="match_parent"
-                    android:singleLine="true"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_left_retailer_name"
                     android:layout_marginLeft="@dimen/margin_left_retailer_name"
+                    android:singleLine="true"
                     android:text="@string/Address" />
             </LinearLayout>
 
@@ -90,8 +127,8 @@
                     android:id="@+id/contact_name_tv"
                     style="@style/TextViewListItemValues"
                     android:layout_width="match_parent"
-                    android:singleLine="true"
                     android:layout_height="wrap_content"
+                    android:singleLine="true"
                     android:text="@string/contact_name" />
             </LinearLayout>
 
