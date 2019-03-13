@@ -1545,6 +1545,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_TERMS_COND = "FUN76";
     public boolean IS_SHOW_TERMS_COND;
 
+    private static final String CODE_SKIP_CALL_ANALYSIS = "FUN78";
+    public boolean IS_SKIP_CALL_ANALYSIS;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2698,6 +2701,7 @@ public class ConfigurationMasterHelper {
             IS_ORD_BY_BATCH_EXPIRY_DATE_WISE = hashMapHHTModuleOrder.get(CODE_BATCH_ALLOCATION) == 1;
         }
         this.IS_SHOW_TERMS_COND = hashMapHHTModuleConfig.get(CODE_SHOW_TERMS_COND) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TERMS_COND) : false;
+        this.IS_SKIP_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) : false;
     }
 
     private boolean isInOutModule() {
