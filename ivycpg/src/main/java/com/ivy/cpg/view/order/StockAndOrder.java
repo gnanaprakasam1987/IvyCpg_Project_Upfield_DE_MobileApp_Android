@@ -5221,7 +5221,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     " scanned barcode value :" + strBarCodeSearch,
                     Toast.LENGTH_SHORT).show();
 
-            updateBrandText(BRAND, -1);
+            productSearch.startSearch(productList,strBarCodeSearch);
             strBarCodeSearch = "ALL";
         }
     }
@@ -5449,7 +5449,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if (view.getTag().toString().equalsIgnoreCase("ALL")) {
                         updateGeneralText(GENERAL);
                     } else {
-                        updateBrandText(BRAND, -1);
+                        updateGeneralText(view.getTag().toString());
                     }
                     if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
                         selectTab(view.getTag());
@@ -5880,10 +5880,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     }
 
     public void refreshList() {
-        String strPname = getResources().getString(
-                R.string.product_name)
-                + " (" + mylist.size() + ")";
-        lvwplist.setAdapter(new MyAdapter(mylist));
+         lvwplist.setAdapter(new MyAdapter(mylist));
     }
 
 

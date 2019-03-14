@@ -37,8 +37,8 @@ public class ProductSearch {
     private int productId;
     private ArrayList<Integer> attributeProductIds;
 
-    private final String mSbd = "Filt02";
-    private final String mSbdGaps = "Filt03";
+    private final String FILTER_CODE_SBD = "Filt02";
+    private final String FILTER_CODE_SBD_GAPS = "Filt03";
     public final String mOrdered = "Filt04";
     private final String mPurchased = "Filt05";
     private final String mInitiative = "Filt06";
@@ -274,12 +274,12 @@ public class ProductSearch {
         final String GENERAL = "General";
 
         return selectedFilter.equalsIgnoreCase(GENERAL)
-                || (selectedFilter.equalsIgnoreCase(mSbd) && ret.isRPS())
+                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_SBD) && ret.isRPS())
                 || (selectedFilter.equalsIgnoreCase(mOrdered) && (ret.getOrderedPcsQty() > 0 || ret.getOrderedCaseQty() > 0 || ret.getOrderedOuterQty() > 0))
                 || (selectedFilter.equalsIgnoreCase(mPurchased) && ret.getIsPurchased() == 1)
                 || (selectedFilter.equalsIgnoreCase(mInitiative) && ret.getIsInitiativeProduct() == 1)
                 || (selectedFilter.equalsIgnoreCase(mCommon) && applyCommonFilterConfig(ret))
-                || (selectedFilter.equalsIgnoreCase(mSbdGaps) && (ret.isRPS() && !ret.isSBDAcheived()))
+                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_SBD_GAPS) && (ret.isRPS() && !ret.isSBDAcheived()))
                 || (selectedFilter.equalsIgnoreCase(mInStock) && ret.getWSIH() > 0)
                 || (selectedFilter.equalsIgnoreCase(mOnAllocation) && ret.isAllocation() == 1 && bModel.configurationMasterHelper.IS_SIH_VALIDATION)
                 || (selectedFilter.equalsIgnoreCase(mPromo) && ret.isPromo())
@@ -307,7 +307,7 @@ public class ProductSearch {
         for (ConfigureBO bo : bModel.configurationMasterHelper.getGenFilter()) {
             if (bo.getMandatory() == 1) {
 
-                return (bo.getConfigCode().equals(mSbd) && ret.isRPS()) || (bo.getConfigCode().equals(mSbdGaps) && ret.isRPS() && !ret.isSBDAcheived()) || (bo.getConfigCode().equals(mOrdered) && (ret.getOrderedPcsQty() > 0 || ret.getOrderedCaseQty() > 0 || ret.getOrderedOuterQty() > 0))
+                return (bo.getConfigCode().equals(FILTER_CODE_SBD) && ret.isRPS()) || (bo.getConfigCode().equals(FILTER_CODE_SBD_GAPS) && ret.isRPS() && !ret.isSBDAcheived()) || (bo.getConfigCode().equals(mOrdered) && (ret.getOrderedPcsQty() > 0 || ret.getOrderedCaseQty() > 0 || ret.getOrderedOuterQty() > 0))
                         || (bo.getConfigCode().equals(mPurchased) && ret.getIsPurchased() == 1) || (bo.getConfigCode().equals(mInitiative) && ret.getIsInitiativeProduct() == 1) || (bo.getConfigCode().equals(mOnAllocation) && ret.isAllocation() == 1 && bModel.configurationMasterHelper.IS_SIH_VALIDATION)
                         || (bo.getConfigCode().equals(mInStock) && ret.getWSIH() > 0) || (bo.getConfigCode().equals(mPromo) && ret.isPromo()) || (bo.getConfigCode().equals(mMustSell) && ret.getIsMustSell() == 1)
                         || (bo.getConfigCode().equals(mFocusBrand)) || (bo.getConfigCode().equals(mFocusBrand2) && ret.getIsFocusBrand2() == 1) || (bo.getConfigCode().equals(msih) && ret.getSIH() > 0) || (bo.getConfigCode().equals(mOOS) && ret.getOos() == 0)
