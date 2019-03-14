@@ -101,6 +101,22 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/font_small"
                 tools:text="Value : 0" />
+
+            <TextView
+                android:id="@+id/total_stock_keyboard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:fontFamily="sans-serif"
+                android:gravity="center"
+                android:paddingEnd="@dimen/padding_rb"
+                android:paddingRight="@dimen/padding_rb"
+                android:paddingLeft="@dimen/padding_rb"
+                android:paddingStart="@dimen/padding_rb"
+                android:textColor="@color/white"
+                android:textSize="@dimen/font_small"
+                android:tag="item_sr_piece"
+                tools:text="@string/zero" />
         </LinearLayout>
 
         <RelativeLayout

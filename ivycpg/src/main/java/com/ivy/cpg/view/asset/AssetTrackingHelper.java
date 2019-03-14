@@ -49,6 +49,7 @@ public class AssetTrackingHelper {
     public String mSelectedSerialNumber = "";
     public int mSelectedProductID = 0;
     public String mSelectedImageName = "";
+    public int mSelectedLocationID = 0;
 
     // Asset configuration
     private static final String CODE_ASSET_COLUMNS = "AT01";
@@ -564,7 +565,7 @@ public class AssetTrackingHelper {
                     //  for (AssetTrackingBO assetBO : mAssetTrackingList) {
                     //  clonedList.add(assetBO);
                     // }
-                    standardListBO.setAssetTrackingList(mAssetTrackingList);
+                    standardListBO.setAssetTrackingList(cloneAssetTrackingList(mAssetTrackingList));
                 }
 
             } else {
@@ -625,6 +626,20 @@ public class AssetTrackingHelper {
             db.closeDB();
 
         }
+    }
+
+    /**
+     * Duplicate the Location List
+     *
+     * @param list list
+     * @return clone list
+     */
+    public static ArrayList<AssetTrackingBO> cloneAssetTrackingList(
+            ArrayList<AssetTrackingBO> list) {
+        ArrayList<AssetTrackingBO> clone = new ArrayList<AssetTrackingBO>(list.size());
+        for (AssetTrackingBO item : list)
+            clone.add(new AssetTrackingBO(item));
+        return clone;
     }
 
     /**
@@ -1678,19 +1693,21 @@ public class AssetTrackingHelper {
 
                                 if (assetBo.getImageList().size() > 0) {
                                     for (String imageName : assetBo.getImageList()) {
-                                        StringBuffer assetImgInofValues = new StringBuffer();
-                                        assetImgInofValues.append(id);
-                                        assetImgInofValues.append(",");
-                                        assetImgInofValues.append(assetBo.getAssetID());
-                                        assetImgInofValues.append(",");
-                                        assetImgInofValues.append(QT(imageName));
-                                        assetImgInofValues.append(",");
-                                        assetImgInofValues.append(assetBo.getProductId());
-                                        assetImgInofValues.append(",");
-                                        assetImgInofValues.append((MENU_POSM.equals(moduleName) && SHOW_LOCATION_POSM) ? assetBo.getLocationID() : standardListBO.getListID());
-                                        db.insertSQL(DataMembers.tbl_AssetImgInfo,
-                                                AssetImageInfoColumns,
-                                                assetImgInofValues.toString());
+                                        if (standardListBO.getListID().equals(String.valueOf(assetBo.getLocationID()))) {
+                                            StringBuffer assetImgInofValues = new StringBuffer();
+                                            assetImgInofValues.append(id);
+                                            assetImgInofValues.append(",");
+                                            assetImgInofValues.append(assetBo.getAssetID());
+                                            assetImgInofValues.append(",");
+                                            assetImgInofValues.append(QT(imageName));
+                                            assetImgInofValues.append(",");
+                                            assetImgInofValues.append(assetBo.getProductId());
+                                            assetImgInofValues.append(",");
+                                            assetImgInofValues.append((MENU_POSM.equals(moduleName) && SHOW_LOCATION_POSM) ? assetBo.getLocationID() : standardListBO.getListID());
+                                            db.insertSQL(DataMembers.tbl_AssetImgInfo,
+                                                    AssetImageInfoColumns,
+                                                    assetImgInofValues.toString());
+                                        }
                                     }
                                 }
                             }
@@ -1814,19 +1831,21 @@ public class AssetTrackingHelper {
 
                                 if (assetBo.getImageList().size() > 0) {
                                     for (String imageName : assetBo.getImageList()) {
-                                        StringBuffer assetImgInofValues = new StringBuffer();
-                                        assetImgInofValues.append(id);
-                                        assetImgInofValues.append(",");
-                                        assetImgInofValues.append(assetBo.getAssetID());
-                                        assetImgInofValues.append(",");
-                                        assetImgInofValues.append(QT(imageName));
-                                        assetImgInofValues.append(",");
-                                        assetImgInofValues.append(assetBo.getProductId());
-                                        assetImgInofValues.append(",");
-                                        assetImgInofValues.append(assetBo.getLocationID());
-                                        db.insertSQL(DataMembers.tbl_AssetImgInfo,
-                                                AssetImageInfoColumns,
-                                                assetImgInofValues.toString());
+                                        if (standardListBO.getListID().equals(String.valueOf(assetBo.getLocationID()))) {
+                                            StringBuffer assetImgInofValues = new StringBuffer();
+                                            assetImgInofValues.append(id);
+                                            assetImgInofValues.append(",");
+                                            assetImgInofValues.append(assetBo.getAssetID());
+                                            assetImgInofValues.append(",");
+                                            assetImgInofValues.append(QT(imageName));
+                                            assetImgInofValues.append(",");
+                                            assetImgInofValues.append(assetBo.getProductId());
+                                            assetImgInofValues.append(",");
+                                            assetImgInofValues.append(assetBo.getLocationID());
+                                            db.insertSQL(DataMembers.tbl_AssetImgInfo,
+                                                    AssetImageInfoColumns,
+                                                    assetImgInofValues.toString());
+                                        }
                                     }
                                 }
 
@@ -1881,62 +1900,50 @@ public class AssetTrackingHelper {
                                  String mappingId, String moduleName) {
 
         AssetTrackingBO assetBO = null;
-        mAssetTrackingList = null;
         for (StandardListBO standardListBO : mBusinessModel.productHelper.getInStoreLocation()) {
-            if (standardListBO.getListID().equals(Integer.toString(locId)) && !SHOW_LOCATION_POSM) {
-                mAssetTrackingList = standardListBO.getAssetTrackingList();
-                break;
-            } else {// for jnj dubai changes to have location inside assert list by mansoor
-                mAssetTrackingList = standardListBO.getAssetTrackingList();
-                break;
-            }
-        }
-        if (mAssetTrackingList != null) {
-            int size = mAssetTrackingList.size();
+            ArrayList<AssetTrackingBO> mAssetTrackingList = standardListBO.getAssetTrackingList();
+            if (standardListBO.getListID().equals(Integer.toString(locId))) {
+                if (mAssetTrackingList != null) {
+                    for (AssetTrackingBO assetBOList :  mAssetTrackingList) {
+                        if (assetBOList.getProductId() == pid &&
+                                assetBOList.getAssetID() == assetID &&
+                                assetBOList.getSerialNo().equalsIgnoreCase(serialNo)) {
+                            if (MENU_POSM.equals(moduleName) && SHOW_ATTR_POSM) {
+                                if (assetBOList.getmMappingID().equalsIgnoreCase(mappingId))
+                                    assetBO = assetBOList;
+                            } else
+                                assetBO = assetBOList;
+                            if (assetBO != null) {
+                                assetBO.setAvailQty(qty);
+                                assetBO.setImageName(imageName);
+                                assetBO.setReason1ID(mReasonId);
+                                assetBO.setConditionID(conditionId);
+                                assetBO.setInstallDate(installDate);
+                                assetBO.setServiceDate(serviceDate);
+                                assetBO.setAudit(audit);
+                                if (!"null".equals(serialNo)) {
+                                    assetBO.setSerialNo(serialNo);
+                                } else {
+                                    assetBO.setSerialNo(Integer.toString(0));
+                                }
+                                assetBO.setCompetitorQty(compQty);
+                                assetBO.setExecutorQty(isExec);
+                                assetBO.setImgName(imgName);
+                                if (SHOW_LOCATION_POSM)
+                                    assetBO.setLocationID(locId);
 
-            for (int i = 0; i < size; i++) {
-                if (mAssetTrackingList.get(i).getProductId() == pid &&
-                        mAssetTrackingList.get(i).getAssetID() == assetID &&
-                        mAssetTrackingList.get(i).getSerialNo().equalsIgnoreCase(serialNo)) {
-                    if (MENU_POSM.equals(moduleName) && SHOW_ATTR_POSM) {
-                        if (mAssetTrackingList.get(i).getmMappingID().equalsIgnoreCase(mappingId))
-                            assetBO = mAssetTrackingList.get(i);
-                    } else
-                        assetBO = mAssetTrackingList.get(i);
-                    if (assetBO != null) {
+                                if (menuName.equals(MENU_ASSET))
+                                    assetBO.setImageList(getImagesList(mcontext, assetID, locId));
+                                else
+                                    assetBO.setImageList(getPosmImagesList(mcontext, assetID, pid, locId));
+                            }
 
-                        assetBO.setAvailQty(qty);
-                        assetBO.setImageName(imageName);
-                        assetBO.setReason1ID(mReasonId);
-                        assetBO.setConditionID(conditionId);
-                        assetBO.setInstallDate(installDate);
-                        assetBO.setServiceDate(serviceDate);
-
-                        assetBO.setAudit(audit);
-                        if (!"null".equals(serialNo)) {
-                            assetBO.setSerialNo(serialNo);
-                        } else {
-                            assetBO.setSerialNo(Integer.toString(0));
                         }
-
-                        assetBO.setCompetitorQty(compQty);
-
-                        assetBO.setExecutorQty(isExec);
-                        assetBO.setImgName(imgName);
-
-                        if (SHOW_LOCATION_POSM)
-                            assetBO.setLocationID(locId);
-
-                        if (menuName.equals(MENU_ASSET))
-                            assetBO.setImageList(getImagesList(mcontext, assetID, locId));
-                        else
-                            assetBO.setImageList(getPosmImagesList(mcontext, assetID, pid, locId));
-
                     }
 
                 }
             }
-
+            standardListBO.setAssetTrackingList(mAssetTrackingList);
         }
     }
 
