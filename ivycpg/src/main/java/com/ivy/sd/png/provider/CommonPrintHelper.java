@@ -1617,11 +1617,13 @@ public class CommonPrintHelper {
                             //print the text which is next to the product name into next line
                             if (product_name_single_line.equalsIgnoreCase("YES")) {
                                 mLengthUptoPName = mLengthUptoPName + attr.getAttributeLength() + attr.getAttributeSpace();
+                                if (firstColumnWidth == 0)
+                                    firstColumnWidth = attr.getAttributeLength() + attr.getAttributeSpace();
 
                                 if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
                                     sb.append("\n");
                                     char emptySpace = ' ';
-                                    for (int sp = 0; sp < mLengthUptoPName; sp++) {
+                                    for (int sp = 0; sp < firstColumnWidth; sp++) {
                                         sb.append(emptySpace);
                                     }
                                 }
