@@ -17,10 +17,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.ivy.core.base.presenter.BaseIvyPresenter;
-import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.base.view.BaseIvyView;
-import com.ivy.core.di.component.DaggerIvyAppComponent;
 import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
@@ -29,10 +27,9 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.photocapture.adapter.PhotoGalleryAdapter;
 import com.ivy.ui.photocapture.adapter.PhotoGridAdapter;
-import com.ivy.ui.photocapture.di.DaggerPhotoCaptureComponent;
 import com.ivy.ui.photocapture.di.DaggerPhotoGalleryComponent;
 import com.ivy.ui.photocapture.di.PhotoGalleryModule;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -153,7 +150,7 @@ public class PhotoGalleryActivity extends BaseActivity {
             public void onPositiveButtonClick() {
                 for (String item : selectedItemsList) {
                     if (photoCaptureMap.containsKey(item)) {
-                        AppUtils.deleteFiles(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
+                        FileUtils.deleteFiles(getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
                                 + DataMembers.photoFolderName, photoCaptureMap.get(item).getImageName());
 
                         photoCaptureMap.remove(item);

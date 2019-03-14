@@ -27,11 +27,11 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -337,13 +337,13 @@ public class JoinCallFragment extends IvyBaseFragment {
                 String columns = "Uid,UserId,JointCallUserId,TimeIn,TimeOut,Remarks,DateTime";
                 for (UserMasterBO userMasterBO : joinCallUserList) {
                     if (userMasterBO.getIsJointCall() == 1) {
-                        String date = SDUtil.now(SDUtil.DATE_GLOBAL);
-                        String time = SDUtil.now(SDUtil.TIME);
+                        String date = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
+                        String time = DateTimeUtils.now(DateTimeUtils.TIME);
 
-                        String uId = SDUtil.now(SDUtil.DATE_TIME_ID);
+                        String uId = DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
                         String values = uId + "," + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "," + userMasterBO.getUserid() + "," +
-                                QT(date + " " + time) + "," + QT(date + " " + time) + "," + QT(remarks) + "," + QT(SDUtil.now(SDUtil.DATE_TIME));
+                                QT(date + " " + time) + "," + QT(date + " " + time) + "," + QT(remarks) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME));
 
                         db.insertSQL("JointCallDetail", columns, values);
                     }
@@ -363,8 +363,8 @@ public class JoinCallFragment extends IvyBaseFragment {
             db.createDataBase();
             db.openDataBase();
 
-            String date = SDUtil.now(SDUtil.DATE_GLOBAL);
-            String time = SDUtil.now(SDUtil.TIME);
+            String date = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
+            String time = DateTimeUtils.now(DateTimeUtils.TIME);
             db.updateSQL("update JointCallDetail set upload='N',TimeOut=" + QT(date + " " + time)
                     + " where TimeIn=TimeOut and JointCallUserId=" + mSelectedUserBO.getUserid());
             db.closeDB();

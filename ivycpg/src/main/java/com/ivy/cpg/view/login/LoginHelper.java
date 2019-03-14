@@ -30,6 +30,7 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -453,7 +454,7 @@ public class LoginHelper {
             );
             db.createDataBase();
             db.openDataBase();
-            Cursor c = db.selectSQL("select UserPositionId from usermaster where userid =" + AppUtils.QT(businessModel.userMasterHelper.getUserMasterBO().getUserid() + ""));
+            Cursor c = db.selectSQL("select UserPositionId from usermaster where userid =" + StringUtils.QT(businessModel.userMasterHelper.getUserMasterBO().getUserid() + ""));
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
                     posId = c.getInt(0);

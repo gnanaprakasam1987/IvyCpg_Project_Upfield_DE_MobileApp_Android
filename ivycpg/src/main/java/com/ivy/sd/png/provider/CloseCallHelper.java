@@ -5,11 +5,11 @@ import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -165,34 +165,34 @@ public class CloseCallHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String id = AppUtils.QT(bmodel.getAppDataProvider().getUser()
+            String id = StringUtils.QT(bmodel.getAppDataProvider().getUser()
                     .getDistributorid()
                     + ""
                     + bmodel.getAppDataProvider().getUser().getUserid()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS));
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
 
             db.deleteSQL(
                     "Nonproductivereasonmaster",
                     "RetailerID="
-                            + AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster()
+                            + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster()
                             .getRetailerID())
                             + " and DistributorID="
                             +bmodel.getAppDataProvider().getRetailMaster()
                             .getDistributorId()
                             + " and ReasonTypes="
-                            + AppUtils.QT(getStandardListId(outlet
+                            + StringUtils.QT(getStandardListId(outlet
                             .getReasontype())) + " and RouteID="
                             + bmodel.getAppDataProvider().getRetailMaster().getBeatID(), false);
 
             String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID,ridSF";
             values = id + ","
-                    + AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID())
+                    + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID())
                     + "," + bmodel.getAppDataProvider().getRetailMaster().getBeatID() + ","
-                    + AppUtils.QT(outlet.getDate()) + ","
-                    + AppUtils.QT(outlet.getReasonid()) + ","
-                    + AppUtils.QT(getStandardListId(outlet.getReasontype()))
-                    + "," + AppUtils.QT("N")+ "," +outlet.getDistributorID()
-                    + "," + AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
+                    + StringUtils.QT(outlet.getDate()) + ","
+                    + StringUtils.QT(outlet.getReasonid()) + ","
+                    + StringUtils.QT(getStandardListId(outlet.getReasontype()))
+                    + "," + StringUtils.QT("N")+ "," +outlet.getDistributorID()
+                    + "," + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
 
             db.insertSQL("Nonproductivereasonmaster", columns, values);
             db.closeDB();

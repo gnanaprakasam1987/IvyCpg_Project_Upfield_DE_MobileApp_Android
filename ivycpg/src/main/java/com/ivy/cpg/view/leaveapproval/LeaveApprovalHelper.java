@@ -5,10 +5,10 @@ import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.LeaveApprovalBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -182,9 +182,9 @@ public class LeaveApprovalHelper {
                     // save
                     values = approvalBO.getRefId() + ","
                             + QT(approvalBO.getStatusCode()) + ","
-                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
-                            + QT(bmodel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
-                            .now(SDUtil.DATE_TIME_ID))+ ","
+                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                            + QT(bmodel.userMasterHelper.getUserMasterBO().getUserid() + DateTimeUtils
+                            .now(DateTimeUtils.DATE_TIME_ID))+ ","
                             +QT("N");
 
 

@@ -10,11 +10,10 @@ import com.ivy.sd.png.bo.DailyReportBO;
 import com.ivy.sd.png.bo.InvoiceReportBO;
 import com.ivy.sd.png.bo.OrderDetail;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -157,7 +156,7 @@ public class DayReportHelper {
                     .selectSQL("select OD.OrderID,OD.ProductID,OD.Qty,OD.Rate,OD.NetAmount from OrderDetail OD INNER JOIN OrderHeader OH ON OD.OrderID=OH.OrderID"
                             + " WHERE OD.ProductID IN (" + productIds + ")"
                             + " AND OH.upload!='X' and OH.OrderDate="
-                            + mBusinessModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                            + mBusinessModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
             if (c != null) {
                 reportOrderDetBooking = new ArrayList<>();
@@ -198,7 +197,7 @@ public class DayReportHelper {
         Cursor c = db
                 .selectSQL("SELECT COUNT(DISTINCT Retailerid) FROM InvoiceMaster"
                         + " WHERE InvoiceDate='"
-                        + SDUtil.now(SDUtil.DATE_GLOBAL)+"'");
+                        + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)+"'");
 
         if (c != null) {
             if (c.moveToNext()) {
@@ -274,7 +273,7 @@ public class DayReportHelper {
 
         if (!mBusinessModel.configurationMasterHelper.IS_INVOICE) {
             sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
-            sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sb.append("where upload!='X' and OrderDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             c = db
                     .selectSQL(sb.toString());
             if (c != null) {
@@ -288,7 +287,7 @@ public class DayReportHelper {
             }
         } else {
             sb.append("select  count(distinct retailerid),sum(linespercall),sum(invoiceAmount) from Invoicemaster ");
-            sb.append("where InvoiceDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            sb.append("where InvoiceDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             c = db
                     .selectSQL(sb.toString());
             if (c != null) {
@@ -302,7 +301,7 @@ public class DayReportHelper {
         }
         sb = new StringBuffer();
         sb.append("select  sum(mspvalues),count(distinct orderid) from OrderHeader ");
-        sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        sb.append("where upload!='X' and OrderDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
@@ -318,7 +317,7 @@ public class DayReportHelper {
         sb = new StringBuffer();
         sb.append("select sum(pieceQty),sum(caseQty),sum(outerQty) from OrderDetail OD ");
         sb.append("inner join OrderHeader oh on oh.orderid=od.orderid ");
-        sb.append("where oh.upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        sb.append("where oh.upload!='X' and OrderDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
@@ -348,7 +347,7 @@ public class DayReportHelper {
         sb.append("select count(oh.RetailerID) from OrderHeader oh ");
         sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
         sb.append("LEFT JOIN RetailerBeatMapping RBM ON RBM.RetailerID = rm.RetailerID ");
-        sb.append("where oh.upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RBM.isdeviated='Y'");
+        sb.append("where oh.upload!='X' and OrderDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " and RBM.isdeviated='Y'");
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
@@ -392,7 +391,7 @@ public class DayReportHelper {
         sb.append("select count(oh.RetailerID) from OrderHeader oh ");
         sb.append("left join RetailerMaster rm on rm.RetailerID=oh.RetailerID ");
         sb.append(" inner join Retailermasterinfo RMI on RMI.retailerid= RM.retailerid ");
-        sb.append("where oh.upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and RMI.isToday='1'");
+        sb.append("where oh.upload!='X' and OrderDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " and RMI.isToday='1'");
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
@@ -406,13 +405,13 @@ public class DayReportHelper {
 
         sb = new StringBuffer();
         sb.append("select timein,timeout from OutletTimestamp where VisitDate=");
-        sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        sb.append(QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         c = db.selectSQL(sb.toString());
         if (c != null) {
             long timespent = 0;
             while (c.moveToNext()) {
-                Date timein = DateUtil.convertStringToDateObject(c.getString(0), "yyyy/MM/dd HH:mm:ss");
-                Date timeout = DateUtil.convertStringToDateObject(c.getString(1), "yyyy/MM/dd HH:mm:ss");
+                Date timein = DateTimeUtils.convertStringToDateObject(c.getString(0), "yyyy/MM/dd HH:mm:ss");
+                Date timeout = DateTimeUtils.convertStringToDateObject(c.getString(1), "yyyy/MM/dd HH:mm:ss");
                 if (timein != null && timeout != null)
                 timespent += timeout.getTime() - timein.getTime();
             }
@@ -434,7 +433,7 @@ public class DayReportHelper {
 
         sb = new StringBuffer();
         sb.append("select count(distinct retailerid) from SOS_Tracking_Header where Date=");
-        sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        sb.append(QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         c = db.selectSQL(sb.toString());
         if (c != null) {
             if (c.moveToNext()) {
@@ -445,7 +444,7 @@ public class DayReportHelper {
 
         sb = new StringBuffer();
         sb.append("select count(distinct retailerid) from PriceCheckHeader where Date=");
-        sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        sb.append(QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         c = db.selectSQL(sb.toString());
         if (c != null) {
             if (c.moveToNext()) {
@@ -456,7 +455,7 @@ public class DayReportHelper {
 
         sb = new StringBuffer();
         sb.append("select count(distinct retailerid) from PlanogramHeader where Date=");
-        sb.append(QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        sb.append(QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         c = db.selectSQL(sb.toString());
         if (c != null) {
             if (c.moveToNext()) {
@@ -489,7 +488,7 @@ public class DayReportHelper {
         Cursor c = null;
 
         sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
-        sb.append("where upload!='X' and OrderDate=" + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+        sb.append("where upload!='X' and OrderDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {

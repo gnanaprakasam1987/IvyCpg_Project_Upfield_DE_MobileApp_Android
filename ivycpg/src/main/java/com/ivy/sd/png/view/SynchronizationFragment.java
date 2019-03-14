@@ -77,7 +77,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApkDownloaderThread;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.DownloaderThreadNew;
@@ -86,9 +85,10 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.LabelsKey;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
+import com.ivy.utils.NetworkUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import org.json.JSONArray;
@@ -103,6 +103,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
+
+import static com.ivy.utils.DateTimeUtils.DATE;
 
 public class SynchronizationFragment extends IvyBaseFragment
         implements SwitchUserDialog.onSwitchUser, SyncContractor.SyncView {
@@ -249,6 +251,9 @@ public class SynchronizationFragment extends IvyBaseFragment
             }
 
         }
+
+        if (!bmodel.configurationMasterHelper.IS_ALLOW_SURVEY_WITHOUT_JOINTCALL)
+            bmodel.userMasterHelper.downloadJoinCallusers();
         withPhotosCheckBox
                 .setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
@@ -295,8 +300,17 @@ public class SynchronizationFragment extends IvyBaseFragment
                     public void onCheckedChanged(CompoundButton buttonView,
                                                  boolean isChecked) {
                         if (isChecked) {
+                            if (bmodel.outletTimeStampHelper
+                                    .isJointCall(bmodel.userMasterHelper.getUserMasterBO()
+                                            .getJoinCallUserList())) {
+                                bmodel.showAlert(
+                                        getResources().getString(
+                                                R.string.logout_joint_user_dayclose), 0);
+                                dayCloseCheckBox.setChecked(false);
+                                return;
+                            }
                             presenter.updateDayCloseStatus(true);
-                            if (SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
+                            if (DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
                                     "yyyy/MM/dd") >= 0) {
 
                                 if (!presenter.isDayClosed()) {
@@ -348,12 +362,12 @@ public class SynchronizationFragment extends IvyBaseFragment
                                                                     .getString(
                                                                             R.string.you_are_closing)
                                                                     + " "
-                                                                    + bmodel.getDay(SDUtil.now(SDUtil.DATE_GLOBAL))
+                                                                    + bmodel.getDay(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                                                                     + " "
                                                                     + "("
-                                                                    + DateUtil
+                                                                    + DateTimeUtils
                                                                     .convertFromServerDateToRequestedFormat(
-                                                                            SDUtil.now(SDUtil.DATE_GLOBAL),
+                                                                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                                                             ConfigurationMasterHelper.outDateFormat)
                                                                     + ")" + ".", 0);
                                                 }
@@ -363,12 +377,12 @@ public class SynchronizationFragment extends IvyBaseFragment
                                                                 .getString(
                                                                         R.string.you_are_closing)
                                                                 + " "
-                                                                + bmodel.getDay(SDUtil.now(SDUtil.DATE_GLOBAL))
+                                                                + bmodel.getDay(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                                                                 + " "
                                                                 + "("
-                                                                + DateUtil
+                                                                + DateTimeUtils
                                                                 .convertFromServerDateToRequestedFormat(
-                                                                        SDUtil.now(SDUtil.DATE_GLOBAL),
+                                                                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                                                         ConfigurationMasterHelper.outDateFormat)
                                                                 + ")" + ".", 0);
                                             }
@@ -378,9 +392,9 @@ public class SynchronizationFragment extends IvyBaseFragment
                                                             R.string.you_are_closing)
                                                             + " today "
                                                             + "("
-                                                            + DateUtil
+                                                            + DateTimeUtils
                                                             .convertFromServerDateToRequestedFormat(
-                                                                    SDUtil.now(SDUtil.DATE_GLOBAL),
+                                                                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                                                     ConfigurationMasterHelper.outDateFormat)
                                                             + ")" + ".", 0);
                                         }
@@ -465,8 +479,6 @@ public class SynchronizationFragment extends IvyBaseFragment
                 }
 
                 isSwitchUser = false;
-                if (!bmodel.configurationMasterHelper.IS_ALLOW_SURVEY_WITHOUT_JOINTCALL)
-                    bmodel.userMasterHelper.downloadJoinCallusers();
                 if (bmodel.outletTimeStampHelper
                         .isJointCall(bmodel.userMasterHelper.getUserMasterBO()
                                 .getJoinCallUserList())) {
@@ -475,7 +487,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                     R.string.logout_joint_user), 0);
                     return;
                 }
-                if (bmodel.isOnline()) {
+                if (NetworkUtils.isNetworkConnected(getActivity())) {
                     if (bmodel.synchronizationHelper.checkDataForSync()) {
 
                         try {
@@ -562,10 +574,10 @@ public class SynchronizationFragment extends IvyBaseFragment
 
         backDateSelection.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         if (DataMembers.backDate.isEmpty()) {
-            backDateSelection.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+            backDateSelection.setText(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                     .getInstance().getTime(), ConfigurationMasterHelper.outDateFormat));
         } else {
-            backDateSelection.setText(SDUtil.now(SDUtil.DATE_GLOBAL_EIPHEN));
+            backDateSelection.setText(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_HYPHEN));
         }
         backDateSelection.setOnClickListener(new View.OnClickListener() {
 
@@ -593,13 +605,13 @@ public class SynchronizationFragment extends IvyBaseFragment
 
         TextView close_date = view.findViewById(R.id.closingDay);
         close_date.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        close_date.setText(DateUtil
+        close_date.setText(DateTimeUtils
                 .convertFromServerDateToRequestedFormat(
                         bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
                         ConfigurationMasterHelper.outDateFormat));//changed bcz close_date shows current date, replaced to show downloaded date
 
         Button gprsAvailablityButton = view.findViewById(R.id.gprsAvailablityButton);
-        if (isOnline())
+        if (NetworkUtils.isNetworkConnected(getActivity()))
             gprsAvailablityButton.setBackgroundDrawable(ContextCompat
                     .getDrawable(getActivity(), R.drawable.greenball));
         else
@@ -613,6 +625,10 @@ public class SynchronizationFragment extends IvyBaseFragment
                         .setText(bmodel.labelsMasterHelper
                                 .applyLabels(view.findViewById(R.id.startsync)
                                         .getTag()));
+
+            if (bmodel.labelsMasterHelper.applyLabels(closeDay_tv.getTag()) != null)
+                closeDay_tv.setText(bmodel.labelsMasterHelper
+                        .applyLabels(closeDay_tv.getTag()));
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -763,21 +779,21 @@ public class SynchronizationFragment extends IvyBaseFragment
                     Toast.makeText(getActivity(),
                             R.string.future_date_not_allowed,
                             Toast.LENGTH_SHORT).show();
-                    DataMembers.backDate = (DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    DataMembers.backDate = (DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), ConfigurationMasterHelper.outDateFormat));
-                    btn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    btn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), ConfigurationMasterHelper.outDateFormat));
                 } else {
-                    DataMembers.backDate = (DateUtil.convertDateObjectToRequestedFormat(
+                    DataMembers.backDate = (DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), ConfigurationMasterHelper.outDateFormat));
-                    btn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    btn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), ConfigurationMasterHelper.outDateFormat));
 
 
-                    if (DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), "MM/dd/yyyy").equals(Utils.getDate()))
+                    if (DateTimeUtils.convertDateObjectToRequestedFormat(selectedDate.getTime(), "MM/dd/yyyy").equals(DateTimeUtils.now(DATE)))
                         DataMembers.backDate = "";
                     else
-                        DataMembers.backDate = DateUtil.convertDateObjectToRequestedFormat(selectedDate.getTime(), "MM/dd/yyyy");
+                        DataMembers.backDate = DateTimeUtils.convertDateObjectToRequestedFormat(selectedDate.getTime(), "MM/dd/yyyy");
 
                     SharedPreferences.Editor editor = PreferenceManager
                             .getDefaultSharedPreferences(getActivity()).edit();
@@ -788,18 +804,12 @@ public class SynchronizationFragment extends IvyBaseFragment
         }
     }
 
-    private boolean isOnline() {
-        ConnectivityManager cm = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
-
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_sync, menu);
 
         MenuItem menuItem = menu.getItem(0);
 
-        if (bmodel.isOnline()) {
+        if (NetworkUtils.isNetworkConnected(getActivity())) {
             menuItem.setIcon(R.drawable.greenball);
         } else {
             menuItem.setIcon(R.drawable.redball);
@@ -851,7 +861,7 @@ public class SynchronizationFragment extends IvyBaseFragment
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == R.id.menu_gps_available) {
-            if (bmodel.isOnline()) {
+            if (NetworkUtils.isNetworkConnected(getActivity())) {
                 item.setIcon(R.drawable.greenball);
                 Toast.makeText(getActivity(), getResources().getString(R.string.network_connectionC_Avail),
                         Toast.LENGTH_SHORT).show();
@@ -1491,7 +1501,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         @Override
         protected Boolean doInBackground(Integer... params) {
             try {
-                if (bmodel.isOnline()) {
+                if (NetworkUtils.isNetworkConnected(getActivity())) {
                     if (!aws)
                         return false;
 
@@ -1562,8 +1572,6 @@ public class SynchronizationFragment extends IvyBaseFragment
                     if (alertDialog != null)
                         alertDialog.dismiss();
                 }
-                if (alertDialog != null)
-                    alertDialog.dismiss();
             }
 
         }
@@ -1692,10 +1700,10 @@ public class SynchronizationFragment extends IvyBaseFragment
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
-                        edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
+                        edt.putString("date", DateTimeUtils.convertFromServerDateToRequestedFormat(
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 ConfigurationMasterHelper.outDateFormat));
-                        edt.putString("time", SDUtil.now(SDUtil.TIME));
+                        edt.putString("time", DateTimeUtils.now(DateTimeUtils.TIME));
                         edt.apply();
                         lastSyncTimeHelper.updateDownloadTime();
                         updateLastTransactionTimeInView();
@@ -1707,7 +1715,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                 .getDefaultSharedPreferences(getActivity())
                                 .edit();
                         editor.putString("rpt_dwntime",
-                                SDUtil.now(SDUtil.DATE_TIME_NEW));
+                                DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
                         editor.commit();
                     }
                     new UpdateFinish().execute();
@@ -1724,10 +1732,10 @@ public class SynchronizationFragment extends IvyBaseFragment
                     if (totalTableCount == (updateTableCount + 1)) {
                         updaterProgressMsg(getResources().getString(R.string.updating_tables));
                         SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
-                        edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
-                                SDUtil.now(SDUtil.DATE_GLOBAL),
+                        edt.putString("date", DateTimeUtils.convertFromServerDateToRequestedFormat(
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 ConfigurationMasterHelper.outDateFormat));
-                        edt.putString("time", SDUtil.now(SDUtil.TIME));
+                        edt.putString("time", DateTimeUtils.now(DateTimeUtils.TIME));
                         edt.apply();
                         lastSyncTimeHelper.updateDownloadTime();
                         updateLastTransactionTimeInView();
@@ -1776,10 +1784,10 @@ public class SynchronizationFragment extends IvyBaseFragment
 
     private void updateLastSync() {
         SharedPreferences.Editor edt = mLastSyncSharedPref.edit();
-        edt.putString("date", DateUtil.convertFromServerDateToRequestedFormat(
-                SDUtil.now(SDUtil.DATE_GLOBAL),
+        edt.putString("date", DateTimeUtils.convertFromServerDateToRequestedFormat(
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat));
-        edt.putString("time", SDUtil.now(SDUtil.TIME));
+        edt.putString("time", DateTimeUtils.now(DateTimeUtils.TIME));
         edt.apply();
     }
 
@@ -2352,7 +2360,7 @@ public class SynchronizationFragment extends IvyBaseFragment
         this.password = password;
         isSwitchUser = true;
 
-        if (bmodel.isOnline()) {
+        if (NetworkUtils.isNetworkConnected(getActivity())) {
             builder = new AlertDialog.Builder(getActivity());
 
             customProgressDialog(builder, getResources().getString(R.string.auth_and_downloading_masters));
@@ -2411,7 +2419,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                         Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
                 if (!DataMembers.backDate.isEmpty())
                     jsonObj.put(SynchronizationHelper.REQUEST_MOBILE_DATE_TIME,
-                            SDUtil.now(SDUtil.DATE_TIME_NEW));
+                            DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
                 this.jsonObject = jsonObj;
             } catch (JSONException jsonException) {
                 Commons.print(jsonException.getMessage());
@@ -2602,14 +2610,14 @@ public class SynchronizationFragment extends IvyBaseFragment
             if (!lastSyncTimeHelper.getLastDownloadTime().equals("")) {
 
                 String download = getResources().getString(R.string.last_download_on) +
-                        DateUtil.convertFromServerDateToRequestedFormat(lastSyncTimeHelper.getLastDownloadDate(),
+                        DateTimeUtils.convertFromServerDateToRequestedFormat(lastSyncTimeHelper.getLastDownloadDate(),
                                 ConfigurationMasterHelper.outDateFormat)
                         + " " + lastSyncTimeHelper.getLastDownloadTime();
 
                 String upload = "";
                 if (!lastSyncTimeHelper.getLastUploadTime().equals("")) {
                     upload = getResources().getString(R.string.last_upload_on) +
-                            DateUtil.convertFromServerDateToRequestedFormat(lastSyncTimeHelper.getLastUplaodDate(),
+                            DateTimeUtils.convertFromServerDateToRequestedFormat(lastSyncTimeHelper.getLastUplaodDate(),
                                     ConfigurationMasterHelper.outDateFormat)
                             + " " + lastSyncTimeHelper.getLastUploadTime();
 

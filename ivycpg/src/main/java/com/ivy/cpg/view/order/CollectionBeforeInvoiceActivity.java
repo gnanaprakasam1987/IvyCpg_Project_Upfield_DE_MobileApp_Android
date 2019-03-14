@@ -52,11 +52,10 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 
 import java.math.BigDecimal;
@@ -128,8 +127,8 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
 
         bmodel = (BusinessModel) getApplicationContext();
 
-        todayDate = DateUtil.convertFromServerDateToRequestedFormat(
-                SDUtil.now(SDUtil.DATE_GLOBAL),
+        todayDate = DateTimeUtils.convertFromServerDateToRequestedFormat(
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
 
         Bundle bundle = getIntent().getExtras();
@@ -459,7 +458,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
         @Override
         public void onDateSet(DatePicker view, int year, int month, int day) {
             Calendar selectedDate = new GregorianCalendar(year, month, day);
-            chequedate.setText(DateUtil.convertDateObjectToRequestedFormat(
+            chequedate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                     selectedDate.getTime(), bmodel.configurationMasterHelper.outDateFormat));
             chequeDate = chequedate.getText().toString();
             Calendar currentcal = Calendar.getInstance();
@@ -470,9 +469,9 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
                             getResources().getString(
                                     R.string.post_dated_cheque_notallow),
                             Toast.LENGTH_SHORT).show();
-                    chequedate.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    chequedate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             currentcal.getTime(), bmodel.configurationMasterHelper.outDateFormat));
-                    chequeDate = DateUtil.convertDateObjectToRequestedFormat(
+                    chequeDate = DateTimeUtils.convertDateObjectToRequestedFormat(
                             currentcal.getTime(), outPutDateFormat).toString();
 
                 }
@@ -587,7 +586,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
             if (collectionbo.getChequeamt() > 0) {
                 collectionamount.setText(payment.get(0).getAmount() + "");
                 chequenumber.setText(payment.get(0).getChequeNumber());
-                chequedate.setText(DateUtil.convertFromServerDateToRequestedFormat(payment
+                chequedate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(payment
                         .get(0).getChequeDate(), outPutDateFormat));
                 // Bank.setSelection(getBankIndex(payment.get(0).getBankID()));
                 Bank.setSelection(bankIndex);
@@ -749,7 +748,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
                     collectionbo.getChequeamt(),
                     collectionbo.getBankId(),
                     collectionbo.getBranchId(),
-                    DateUtil.convertToServerDateFormat(chequedate.getText()
+                    DateTimeUtils.convertToServerDateFormat(chequedate.getText()
                                     + "",
                             bmodel.configurationMasterHelper.outDateFormat)
                             + "", chequenumber.getText().toString(),
@@ -955,7 +954,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
 
 
                         nfiles_there = bmodel.checkForNFilesInFolder(
-                                AppUtils.photoFolderPath, mImageCount, fnameStarts);
+                                FileUtils.photoFolderPath, mImageCount, fnameStarts);
                         if (nfiles_there) {
                             showFileDeleteAlert(fnameStarts);
                             return;
@@ -972,7 +971,7 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
                                     + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                                     + "/";
                             mImageName = mImagePath + mImageName;
-                            String path = AppUtils.photoFolderPath + "/" + mImageName;
+                            String path = FileUtils.photoFolderPath + "/" + mImageName;
 
                             intent.putExtra(CameraActivity.PATH, path);
                             startActivityForResult(intent,
@@ -1006,13 +1005,13 @@ public class CollectionBeforeInvoiceActivity extends IvyBaseActivityNoActionBar 
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        bmodel.deleteFiles(AppUtils.photoFolderPath,
+                        bmodel.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(CollectionBeforeInvoiceActivity.this,
                                 CameraActivity.class);
                         intent.putExtra(CameraActivity.QUALITY, 40);
-                        String _path = AppUtils.photoFolderPath + "/" + mImageName;
+                        String _path = FileUtils.photoFolderPath + "/" + mImageName;
                         intent.putExtra(CameraActivity.PATH, _path);
                         startActivityForResult(intent,
                                 bmodel.CAMERA_REQUEST_CODE);

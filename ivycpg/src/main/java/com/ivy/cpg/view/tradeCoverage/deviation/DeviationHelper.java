@@ -3,10 +3,10 @@ package com.ivy.cpg.view.tradeCoverage.deviation;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 public class DeviationHelper {
 
@@ -47,7 +47,7 @@ public class DeviationHelper {
                     " AND BeatId=" + beatid;
             db.executeQ(sql);
 
-            String uid = SDUtil.now(SDUtil.DATE_TIME_ID);
+            String uid = DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
             String values = QT(uid) + "," + retailerid + ","
                     + QT(bmodel.getAppDataProvider().getUser().getDownloadDate())
                     + "," + reasonMaster.getReasonID() + "," + beatid + "," + bmodel.getAppDataProvider().getRetailMaster().getDistributorId() + "," + QT(remarks)

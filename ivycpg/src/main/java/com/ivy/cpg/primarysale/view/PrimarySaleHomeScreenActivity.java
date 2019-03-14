@@ -25,11 +25,11 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.HashMap;
 import java.util.Vector;
@@ -200,8 +200,8 @@ public class PrimarySaleHomeScreenActivity extends IvyBaseActivityNoActionBar {
                 if (bmodel.disInvoiceDetailsHelper.getInvoices() != null
                         && bmodel.disInvoiceDetailsHelper.getInvoices().size() != 0) {
                     bmodel.reasonHelper.downloadPrimSaleReasonList();
-                    bmodel.distTimeStampHeaderHelper.saveTimeStampModuleWise(SDUtil.now(SDUtil.DATE_GLOBAL),
-                            SDUtil.now(SDUtil.TIME), menuName);
+                    bmodel.distTimeStampHeaderHelper.saveTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), menuName);
                     Intent i = new Intent(PrimarySaleHomeScreenActivity.this, InvoiceStatusActivity.class);
                     startActivityForResult(i, 998);
 
@@ -231,7 +231,7 @@ public class PrimarySaleHomeScreenActivity extends IvyBaseActivityNoActionBar {
         } else if (menuName.equals(MENU_PS_CLOSECALL)) // close call
         {
 
-            String time = SDUtil.now(SDUtil.TIME);
+            String time = DateTimeUtils.now(DateTimeUtils.TIME);
             bmodel.distTimeStampHeaderHelper.updateTimeStamp(time);
             /*startActivity(new Intent(PrimarySaleHomeScreenActivity.this,
                     PrimarySaleActivity.class));*/
@@ -392,8 +392,8 @@ public class PrimarySaleHomeScreenActivity extends IvyBaseActivityNoActionBar {
                 return;
 
             } else {
-                bmodel.distTimeStampHeaderHelper.saveTimeStampModuleWise(SDUtil.now(SDUtil.DATE_GLOBAL),
-                        SDUtil.now(SDUtil.TIME), menuName);
+                bmodel.distTimeStampHeaderHelper.saveTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.TIME), menuName);
 
                 Intent i = new Intent(PrimarySaleHomeScreenActivity.this,
                         PrimarySaleStockCheckFragmentActivity.class);
@@ -473,8 +473,8 @@ public class PrimarySaleHomeScreenActivity extends IvyBaseActivityNoActionBar {
                 isClicked = false;
                 return;
             } else {
-                bmodel.distTimeStampHeaderHelper.saveTimeStampModuleWise(SDUtil.now(SDUtil.DATE_GLOBAL),
-                        SDUtil.now(SDUtil.TIME), menuName);
+                bmodel.distTimeStampHeaderHelper.saveTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.TIME), menuName);
                 if (bmodel.distributorMasterHelper.isEditDistributorOrder()) {
                     Intent i = new Intent(PrimarySaleHomeScreenActivity.this,
                             PrimarySaleOrderSummaryActivity.class);

@@ -64,7 +64,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.attendance.AttendanceHelper;
-import com.ivy.cpg.view.photocapture.PhotoCaptureActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -77,13 +77,13 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.SlantView;
-import com.ivy.utils.AppUtils;
+import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -1604,7 +1604,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                     ? 0 : bmodel.retailerMasterBO.getRetailerID()) + "_"
                                     + questBO.getSurveyid() + "_"
                                     + questBO.getQuestionID() + "_"
-                                    + SDUtil.now(SDUtil.DATE_TIME_ID)
+                                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)
                                     + ".jpg";
                             try {
                                 if (i == 0) {
@@ -1616,7 +1616,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                 Intent intent = new Intent(
                                         getActivity(),
                                         CameraActivity.class);
-                                String path =AppUtils.photoFolderPath + "/" + imageName;
+                                String path =FileUtils.photoFolderPath + "/" + imageName;
                                 if (i == 0) {
                                     questBO.setImage1Path(path);
                                     questBO.setImage1Captured(true);
@@ -1818,7 +1818,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                             Calendar selectedDate = new GregorianCalendar(year, monthOfYear,
                                     dayOfMonth);
-                            et.setText(DateUtil.convertDateObjectToRequestedFormat(
+                            et.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                                     selectedDate.getTime(),
                                     ConfigurationMasterHelper.outDateFormat));
                         }
@@ -2220,7 +2220,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
         protected void onPostExecute(Boolean result) {
 
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
             alertDialog.dismiss();
             surveyHelperNew.remarkDone = "N";
             checkClicked = false;

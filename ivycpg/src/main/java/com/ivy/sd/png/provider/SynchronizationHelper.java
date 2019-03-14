@@ -59,9 +59,11 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.NetworkUtils;
+import com.ivy.utils.StringUtils;
 import com.ivy.utils.network.TLSSocketFactory;
 
 import org.json.JSONArray;
@@ -75,7 +77,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FilenameFilter;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.math.BigInteger;
@@ -422,7 +423,7 @@ SynchronizationHelper {
             db.openDataBase();
             db.deleteSQL(DataMembers.tbl_DayClose, null, true);
             db.insertSQL(DataMembers.tbl_DayClose,
-                    DataMembers.tbl_DayClose_cols, status + "," + bmodel.QT(SDUtil.now(SDUtil.DATE_TIME)));
+                    DataMembers.tbl_DayClose_cols, status + "," + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME)));
 
             db.closeDB();
         } catch (Exception e) {
@@ -864,7 +865,7 @@ SynchronizationHelper {
     private String getMaxDate(ArrayList<String> date) {
         String maxDate = date.get(0);
         for (String temp : date) {
-            int i = SDUtil.compareDate(maxDate, temp, "yyyy/MM/dd");
+            int i = DateTimeUtils.compareDate(maxDate, temp, "yyyy/MM/dd");
             if (i < 0)
                 maxDate = temp;
         }
@@ -873,7 +874,7 @@ SynchronizationHelper {
 
     public boolean checkForImageToUpload() {
         try {
-            File f = new File(AppUtils.photoFolderPath);
+            File f = new File(FileUtils.photoFolderPath);
             if (f.listFiles() != null) {
                 String fnames[] = f.list();
                 for (String str : fnames) {
@@ -1877,7 +1878,7 @@ SynchronizationHelper {
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
             if (!DataMembers.backDate.isEmpty())
                 headerInfo.put("RequestDate",
-                        SDUtil.now(SDUtil.DATE_TIME_NEW));
+                        DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -2709,7 +2710,7 @@ SynchronizationHelper {
         if (isChangePassword)
             updateAuthenticateToken(false);
         else
-            updateAuthenticateTokenWithoutPassword();
+            updateAuthenticateTokenWithoutPassword("");
 
         StringBuffer url = new StringBuffer();
         url.append(DataMembers.SERVER_URL + appendurl);
@@ -2737,7 +2738,7 @@ SynchronizationHelper {
 
     }
 
-    public String updateAuthenticateTokenWithoutPassword() {
+    public String updateAuthenticateTokenWithoutPassword(String loginId) {
         mSecurityKey = "";
 
         try {
@@ -2745,7 +2746,10 @@ SynchronizationHelper {
             downloadUrl.append(DataMembers.SERVER_URL
                     + "/UserMaster/SecureAuthorizeUser");
             JSONObject jsonObj = new JSONObject();
-            jsonObj.put("LoginId", bmodel.userNameTemp);
+            if (loginId.equals(""))
+                jsonObj.put("LoginId", bmodel.userNameTemp);
+            else
+                jsonObj.put("LoginId", loginId);
             //jsonObj.put("Password", getPlainPwd());
             jsonObj.put("Platform", "Android");
             jsonObj.put("OSVersion", android.os.Build.VERSION.RELEASE);
@@ -3395,15 +3399,19 @@ SynchronizationHelper {
 
     }
 
-    public void downloadFinishUpdate(FROM_SCREEN fromWhere, int updateWhere) {
+    public void downloadFinishUpdate(FROM_SCREEN fromWhere, int updateWhere, String userId) {
         mJsonObjectResponseByTableName = new HashMap<>();
         StringBuilder sb = new StringBuilder();
         sb.append(DataMembers.SERVER_URL);
         sb.append("/IncrementalSync/Finish");
         try {
             JSONObject json = new JSONObject();
-            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
-                    .getUserid());
+
+            if (userId.equals(""))
+                json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                        .getUserid());
+            else
+                json.put("UserId", userId);
             json.put("VersionCode", bmodel.getApplicationVersionNumber());
             json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
 
@@ -3631,7 +3639,7 @@ SynchronizationHelper {
                 jsonFormatter.addParameter("OrganisationId", bmodel.userMasterHelper
                         .getUserMasterBO().getOrganizationId());
                 if (isDayClosed()) {
-                    int varianceDwnDate = SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),
+                    int varianceDwnDate = DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
                             "yyyy/MM/dd");
                     if (varianceDwnDate == 0) {
@@ -3877,7 +3885,7 @@ SynchronizationHelper {
             db.openDataBase();
 
             String sql = "select pid,price,mrp,PH.retailerid,uomid,own from PriceCheckDetail PD"
-                    + " INNER JOIN PriceCheckHeader PH ON PD.tid=PH.tid where date=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                    + " INNER JOIN PriceCheckHeader PH ON PD.tid=PH.tid where date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor cur = db.selectSQL(sql);
             if (cur != null) {
                 while (cur.moveToNext()) {
@@ -3906,7 +3914,7 @@ SynchronizationHelper {
             db.openDataBase();
 
             String sql = "select SH.retailerid,productId,shelfpqty,shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,IsOwn,Facing"
-                    + " from ClosingStockDetail SD INNER JOIN ClosingStockHeader SH ON SD.stockId=SH.stockId where SH.date=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                    + " from ClosingStockDetail SD INNER JOIN ClosingStockHeader SH ON SD.stockId=SH.stockId where SH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor cur = db.selectSQL(sql);
             if (cur != null) {
                 while (cur.moveToNext()) {
@@ -3944,11 +3952,11 @@ SynchronizationHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String sql = "select NH.retailerId,pid,locId,expDate,uomId,uomQty,isOwn from NearExpiry_Tracking_Detail ND INNER JOIN NearExpiry_Tracking_Header NH ON ND.tid=NH.tid where NH.date=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+            String sql = "select NH.retailerId,pid,locId,expDate,uomId,uomQty,isOwn from NearExpiry_Tracking_Detail ND INNER JOIN NearExpiry_Tracking_Header NH ON ND.tid=NH.tid where NH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor cur = db.selectSQL(sql);
             if (cur != null) {
                 while (cur.moveToNext()) {
-                    sql = "Select productId from LastVisitNearExpiry where productId=" + cur.getString(1) + " and retailerid=" + cur.getString(0) + " and locid=" + cur.getString(2) + " and uomid=" + cur.getString(4) + " and expDate=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                    sql = "Select productId from LastVisitNearExpiry where productId=" + cur.getString(1) + " and retailerid=" + cur.getString(0) + " and locid=" + cur.getString(2) + " and uomid=" + cur.getString(4) + " and expDate=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
                     Cursor cur1 = db.selectSQL(sql);
                     if (cur1 != null && cur1.getCount() > 0) {
                         db.updateSQL("update LastVisitNearExpiry set expDate='" + cur.getString(3) + "',uomId=" + cur.getString(4) + ",Qty=" + cur.getString(5) + " where productId=" + cur.getString(1) + " and retailerid=" + cur.getString(0));
@@ -3974,7 +3982,7 @@ SynchronizationHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String sql = "select PH.retailerId,locId,promotionId,isExecuted,promoQty,ReasonId,ExecRatingLovId,Flag,BrandId from PromotionDetail PD INNER JOIN PromotionHeader PH ON PD.uid=PH.uid where PH.date=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + " and PD.flag='S'";
+            String sql = "select PH.retailerId,locId,promotionId,isExecuted,promoQty,ReasonId,ExecRatingLovId,Flag,BrandId from PromotionDetail PD INNER JOIN PromotionHeader PH ON PD.uid=PH.uid where PH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " and PD.flag='S'";
             Cursor cur = db.selectSQL(sql);
             if (cur != null) {
                 while (cur.moveToNext()) {
@@ -4005,7 +4013,7 @@ SynchronizationHelper {
             db.openDataBase();
 
             //delete data in LastVisitSurvey table
-            String sql = "select AH.retailerId,AH.surveyId,qid,answerId,answer,score,isExcluded from AnswerDetail AD INNER JOIN AnswerHeader AH ON AD.uid=AH.uid where AH.date=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+            String sql = "select AH.retailerId,AH.surveyId,qid,answerId,answer,score,isExcluded from AnswerDetail AD INNER JOIN AnswerHeader AH ON AD.uid=AH.uid where AH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor cur = db.selectSQL(sql);
             if (cur != null) {
                 while (cur.moveToNext()) {
@@ -4020,7 +4028,7 @@ SynchronizationHelper {
             }
 
             // re insert  transaction data from AnswerDetail records into LastVisitSurvey
-            String sql2 = "select AH.retailerId,AH.surveyId,qid,answerId,answer,score,isExcluded,isSubQuest from AnswerDetail AD INNER JOIN AnswerHeader AH ON AD.uid=AH.uid where AH.date=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+            String sql2 = "select AH.retailerId,AH.surveyId,qid,answerId,answer,score,isExcluded,isSubQuest from AnswerDetail AD INNER JOIN AnswerHeader AH ON AD.uid=AH.uid where AH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor cur2 = db.selectSQL(sql2);
             if (cur2 != null) {
                 while (cur2.moveToNext()) {
@@ -4051,7 +4059,7 @@ SynchronizationHelper {
             db.openDataBase();
 
             //delete data in LastVisitSOS table
-            String sql = "select STD.retailerid from SOS_Tracking_Detail STD INNER JOIN SOS_Tracking_Header STH ON STD.uid=STH.uid where STH.date=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+            String sql = "select STD.retailerid from SOS_Tracking_Detail STD INNER JOIN SOS_Tracking_Header STH ON STD.uid=STH.uid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor cur = db.selectSQL(sql);
             if (cur != null) {
                 while (cur.moveToNext()) {
@@ -4066,7 +4074,7 @@ SynchronizationHelper {
             }
 
             // re insert  transaction data from SOS_Tracking_Detail records into LastVisitSOS
-            String sql2 = "select STD.retailerid,STD.locid,STD.pid,STD.parentid,STD.actual,STD.reasonid,STD.isown,STD.parenttotal from SOS_Tracking_Detail STD INNER JOIN SOS_Tracking_Header STH ON STD.uid=STH.uid where STH.date=" + bmodel.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+            String sql2 = "select STD.retailerid,STD.locid,STD.pid,STD.parentid,STD.actual,STD.reasonid,STD.isown,STD.parenttotal from SOS_Tracking_Detail STD INNER JOIN SOS_Tracking_Header STH ON STD.uid=STH.uid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor cur2 = db.selectSQL(sql2);
             if (cur2 != null) {
                 while (cur2.moveToNext()) {
@@ -4446,7 +4454,7 @@ SynchronizationHelper {
                     Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
             if (!DataMembers.backDate.isEmpty())
                 json.put(SynchronizationHelper.REQUEST_MOBILE_DATE_TIME,
-                        SDUtil.now(SDUtil.DATE_TIME_NEW));
+                        DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -4504,7 +4512,7 @@ SynchronizationHelper {
             Commons.printException(e);
 
         }
-        if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(), date.split(" ")[0].toString(),
+        if ((DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(), date.split(" ")[0].toString(),
                 "yyyy/MM/dd")) == 1)
             date = bmodel.userMasterHelper.getUserMasterBO().getDownloadDate() + " " + "23:59:00";
 
@@ -4703,8 +4711,8 @@ SynchronizationHelper {
             if (pickListIdMap.size() > 0) {
                 for (Map.Entry<String, String> map : pickListIdMap.entrySet()) {
 
-                    String values = AppUtils.QT(map.getKey()) + ","
-                            + AppUtils.QT(map.getValue());
+                    String values = StringUtils.QT(map.getKey()) + ","
+                            + StringUtils.QT(map.getValue());
 
                     db.insertSQL(DataMembers.tbl_picklist, DataMembers.tbl_picklist_cols, values);
 
@@ -4719,6 +4727,30 @@ SynchronizationHelper {
             Commons.printException(e);
         }
 
+    }
+
+    public String getSelectedUserLoginId(String userId,Context context){
+        String loginId = "";
+        try {
+
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("select loginid from UserMaster where userid = '"+userId+"'");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    loginId = c.getString(0);
+                }
+                c.close();
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+
+            Commons.printException(e);
+        }
+
+        return loginId;
     }
 
 }

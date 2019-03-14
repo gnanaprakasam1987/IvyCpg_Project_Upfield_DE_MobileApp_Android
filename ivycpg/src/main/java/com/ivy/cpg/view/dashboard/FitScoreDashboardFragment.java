@@ -45,6 +45,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -213,8 +214,8 @@ public class FitScoreDashboardFragment extends IvyBaseFragment {
     };
 
     private void backClick() {
-        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME));
+        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                .now(DateTimeUtils.TIME));
         bmodel.saveModuleCompletion(menuCode);
         Intent intent = new Intent(getActivity(), HomeScreenTwo.class);//HomeScreenTwo.class);
         startActivity(intent);

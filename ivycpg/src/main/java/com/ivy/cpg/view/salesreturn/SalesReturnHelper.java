@@ -5,20 +5,20 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 
 import com.ivy.cpg.view.collection.CollectionHelper;
+import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.CreditNoteListBO;
 import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -431,12 +431,12 @@ public class SalesReturnHelper {
 
             setSalesReturnID(QT("SR"
                     + bmodel.getAppDataProvider().getUser().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID)));
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)));
 
             if (isSplitOrder)
                 setSalesReturnID(QT("SR"
                         + bmodel.getAppDataProvider().getUser().getUserid()
-                        + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS)));
+                        + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)));
 
             // To generate Seqno based Sales Return Id
             if (bmodel.configurationMasterHelper.SHOW_SR_SEQUENCE_NO) {
@@ -458,7 +458,7 @@ public class SalesReturnHelper {
             // transaction before saving new one.
             if (!bmodel.configurationMasterHelper.IS_INVOICE) {
                 String sb = "select uid from SalesReturnHeader where RetailerID=" +
-                        AppUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) +
+                        StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()) +
                         " and upload='N' and distributorid=" + bmodel.retailerMasterBO.getDistributorId() +
                         " and RefModule != 'ORDER'";
                 Cursor c = db.selectSQL(sb);
@@ -536,15 +536,15 @@ public class SalesReturnHelper {
                                 + DatabaseUtils
                                 .sqlEscapeString(SHOW_SAL_RET_MFG_DATE ?
                                         (bo.getMfgDate() == null || bo.getMfgDate().length() == 0) ?
-                                                SDUtil.now(SDUtil.DATE_GLOBAL)
-                                                : DateUtil.convertToServerDateFormat(bo.getMfgDate(), ConfigurationMasterHelper.outDateFormat)
+                                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)
+                                                : DateTimeUtils.convertToServerDateFormat(bo.getMfgDate(), ConfigurationMasterHelper.outDateFormat)
                                         : "")
                                 + ","
                                 + DatabaseUtils
                                 .sqlEscapeString(SHOW_SAL_RET_EXP_DATE ?
                                         (bo.getExpDate() == null || bo.getExpDate().length() == 0) ?
-                                                SDUtil.now(SDUtil.DATE_GLOBAL)
-                                                : DateUtil.convertToServerDateFormat(bo.getExpDate(), ConfigurationMasterHelper.outDateFormat)
+                                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)
+                                                : DateTimeUtils.convertToServerDateFormat(bo.getExpDate(), ConfigurationMasterHelper.outDateFormat)
                                         : "")
                                 + ","
                                 + bo.getOuterQty()
@@ -677,7 +677,7 @@ public class SalesReturnHelper {
                     columns = columns + ",invoiceid";
 
                 values = getSalesReturnID() + ","
-                        + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ","
+                        + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                         + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
                         + bmodel.retailerMasterBO.getBeatID() + ","
                         + bmodel.getAppDataProvider().getUser().getUserid()
@@ -698,7 +698,7 @@ public class SalesReturnHelper {
                 else
                     values = values + "," + QT("") + "," + QT("");
 
-               values = values + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                values = values + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
                         + bmodel.getAppDataProvider().getUniqueId();
 
                 if (bmodel.configurationMasterHelper.IS_INVOICE_SR)
@@ -716,8 +716,8 @@ public class SalesReturnHelper {
             if (bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION || bmodel.configurationMasterHelper.TAX_SHOW_INVOICE)
                 saveSalesReturnTaxAndCreditNoteDetail(mContext, db, getSalesReturnID(), module, bmodel.retailerMasterBO.getRpTypeCode(), isInvoice);
 
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
 
             db.closeDB();
             bmodel.setSaleReturnNote("");
@@ -868,7 +868,7 @@ public class SalesReturnHelper {
      * Load sales return transaction data into object.
      * If replacement is enbaled the replacement will also get loaded into memory.
      */
-    public void loadSalesReturnData(Context mContext, String module, String orderId) {
+    public void loadSalesReturnData(Context mContext, String module, String orderId, boolean isSRQty) {
         DBUtil db = null;
         try {
             String uId = "";
@@ -906,7 +906,7 @@ public class SalesReturnHelper {
                     if ("null".equals(lotNo)) {
                         lotNo = "";
                     }
-                    setSalesReturnObject(productid, condition, pqty, cqty, oqty, oldmrp, mfgDate, expDate, invoiceNo, srpEdited, lotNo, c.getString(13), module);
+                    setSalesReturnObject(productid, condition, pqty, cqty, oqty, oldmrp, mfgDate, expDate, invoiceNo, srpEdited, lotNo, c.getString(13), module, isSRQty);
                     Commons.print("inside sales return data load");
 
                     uId = c.getString(14);
@@ -926,10 +926,10 @@ public class SalesReturnHelper {
         }
     }
 
-    private void setSalesReturnObject(int pid, String condition, int pqty, int cqty, int oqty, double oldmrp, String mfgDate, String expDate, String invoiceNo, float srpEdited, String lotNo, String status, String module) {
+    private void setSalesReturnObject(int pid, String condition, int pqty, int cqty, int oqty, double oldmrp, String mfgDate, String expDate, String invoiceNo, float srpEdited, String lotNo, String status, String module, boolean isSRQty) {
 
         ProductMasterBO productBO;
-        if (module.equals("ORDER"))
+        if (module.equals("ORDER") || isSRQty)
             productBO = bmodel.productHelper.getProductMasterBOById(Integer.toString(pid));
         else
             productBO = getSalesReturnProductBOById(Integer.toString(pid));
@@ -1043,8 +1043,8 @@ public class SalesReturnHelper {
             );
             db.openDataBase();
             String sb = "select sum(SRH.Returnvalue) from SalesReturnHeader SRH inner join OrderHeader OH on OH.OrderID = SRH.RefModuleTId where SRH.RetailerId=" +
-                    AppUtils.QT(bmodel.retailerMasterBO.getRetailerID()) + " and SRH.upload='N' and SRH.distributorid=" + bmodel.retailerMasterBO.getDistributorId() +
-                    " and date = " + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL));
+                    StringUtils.QT(bmodel.retailerMasterBO.getRetailerID()) + " and SRH.upload='N' and SRH.distributorid=" + bmodel.retailerMasterBO.getDistributorId() +
+                    " and date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
             if (isVansales) {
                 sb += " and OH.invoicestatus = 1";
@@ -1354,7 +1354,7 @@ public class SalesReturnHelper {
             boolean checkType = false;
             if (((module.equals("ORDER") && code.equals(CREDIT_TYPE)) &&
                     ((bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED && bmodel.getRetailerMasterBO().getIsVansales() == 1) || bmodel.configurationMasterHelper.IS_INVOICE))
-                    ) {
+            ) {
                 // from order module
                 checkType = true;
             } else if (module.equals("")) {
@@ -1371,7 +1371,7 @@ public class SalesReturnHelper {
 
                 setCreditNoteId(QT("CR"
                         + bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                        + SDUtil.now(SDUtil.DATE_TIME_ID)));
+                        + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)));
 
                 if (bmodel.configurationMasterHelper.SHOW_CN_SEQUENCE_NO) {
                     String seqNo;
@@ -1386,7 +1386,7 @@ public class SalesReturnHelper {
 
                 creditNoteBuffer.append(getCreditNoteId() + "," + uid + ",");
                 creditNoteBuffer.append((getTotalValue() + totalTaxValue) + "," + bmodel.getRetailerMasterBO().getRetailerID());
-                creditNoteBuffer.append("," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + "," + QT(SDUtil.now(SDUtil.DATE_GLOBAL)) + ",'N'");
+                creditNoteBuffer.append("," + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ",'N'");
                 creditNoteBuffer.append("," + (getTotalValue() + totalTaxValue) + "," + QT(modeID));
                 db.insertSQL(DataMembers.tbl_credit_note,
                         creditNoteColumns,

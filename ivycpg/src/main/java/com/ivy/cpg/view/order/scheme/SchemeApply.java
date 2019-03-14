@@ -174,6 +174,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
             Intent i = new Intent(SchemeApply.this, OrderSummary.class);
             i.putExtra("ScreenCode", screenCode);
             startActivity(i);
+            finish();
         }
     }
 

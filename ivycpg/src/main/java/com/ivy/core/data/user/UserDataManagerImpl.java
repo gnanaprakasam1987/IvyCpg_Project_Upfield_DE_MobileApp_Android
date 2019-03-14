@@ -9,6 +9,7 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import org.mindrot.BCrypt;
 
@@ -19,14 +20,12 @@ import javax.inject.Inject;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
-import io.reactivex.Observer;
 import io.reactivex.Single;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 
 import static com.ivy.sd.png.provider.ConfigurationMasterHelper.CODE_ENABLE_USER_FILTER_DASHBOARD;
-import static com.ivy.utils.AppUtils.QT;
+import static com.ivy.utils.StringUtils.QT;
 
 public class UserDataManagerImpl implements UserDataManager {
 
@@ -617,7 +616,7 @@ public class UserDataManagerImpl implements UserDataManager {
 
                     String tid = appDataProvider.getUser().getUserid()
                             + "" + appDataProvider.getRetailMaster().getRetailerID()
-                            + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+                            + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
                     mDbUtil.deleteSQL(DataMembers.tbl_UserEditDetail, " Code =" + QT("ProfileImagePath") + "and UserID=" + appDataProvider.getUser().getUserid(), false);
 

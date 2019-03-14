@@ -34,7 +34,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.Map;
 import java.util.Vector;
@@ -73,6 +73,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
         businessModel = (BusinessModel) getActivity().getApplicationContext();
         businessModel.setContext(getActivity());
         orderHelper = OrderHelper.getInstance(getContext());
+        reportHelper = ReportHelper.getInstance(getContext());
 
         if (businessModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
@@ -501,7 +502,7 @@ public class InvoiceReportFragment extends IvyBaseFragment implements
 
                     mInvoiceId = inv.getInvoiceNumber();
                     schemeHelper.loadSchemeReportDetails(getActivity().getApplicationContext(), inv.getInvoiceNumber(), true);
-                    businessModel.setInvoiceDate(DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat));
+                    businessModel.setInvoiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat));
                     businessModel.batchAllocationHelper.loadOrderedBatchProducts(inv.getInvoiceNumber());
                     businessModel.batchAllocationHelper.downloadProductBatchCount();
                     if (businessModel.configurationMasterHelper.SHOW_DISCOUNT) {

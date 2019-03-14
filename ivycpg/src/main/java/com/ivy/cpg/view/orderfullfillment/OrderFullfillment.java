@@ -35,7 +35,7 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -504,14 +504,14 @@ public class OrderFullfillment extends IvyBaseActivityNoActionBar {
                     Toast.makeText(getActivity(),
                             R.string.future_date_not_allowed,
                             Toast.LENGTH_LONG).show();
-                    po.setDeliverydate(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    po.setDeliverydate(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), outPutDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(Calendar
+                    dateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(Calendar
                             .getInstance().getTime(), outPutDateFormat));
                 } else {
-                    po.setDeliverydate(DateUtil.convertDateObjectToRequestedFormat(
+                    po.setDeliverydate(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
-                    dateBtn.setText(DateUtil.convertDateObjectToRequestedFormat(
+                    dateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
                             selectedDate.getTime(), outPutDateFormat));
                 }
             }

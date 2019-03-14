@@ -44,6 +44,7 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -407,7 +408,7 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
                             public void onClick(DialogInterface dialog,
                                                 int whichButton) {
                                 bmodel.productHelper.clearOrderTable();
-                                bmodel.distTimeStampHeaderHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                                bmodel.distTimeStampHeaderHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                                 getActivity().setResult(getActivity().RESULT_OK);
                                 getActivity().finish();
                             }
@@ -432,7 +433,7 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
                 mDialog3();
             } else {
                 bmodel.productHelper.clearOrderTable();
-                bmodel.distTimeStampHeaderHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                bmodel.distTimeStampHeaderHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                 getActivity().setResult(getActivity().RESULT_OK);
                 getActivity().finish();
             }
@@ -1237,7 +1238,7 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
             alertDialog.dismiss();
             if (result == Boolean.TRUE) {
                 bmodel.productHelper.clearOrderTable();
-                bmodel.distTimeStampHeaderHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                bmodel.distTimeStampHeaderHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.saved_successfully),
                         Toast.LENGTH_SHORT).show();

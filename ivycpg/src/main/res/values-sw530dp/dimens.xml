@@ -265,12 +265,13 @@
     <dimen name="new_ret_width">56dp</dimen>
     <dimen name="beat_spinner_min">32dp</dimen>
     <dimen name="card_child_margin">3.2dp</dimen>
-    <dimen name="ret_image_size">20dp</dimen>
+    <dimen name="ret_image_size">23dp</dimen>
     <dimen name="ret_card_image">28dp</dimen>
     <dimen name="ret_list_div">1.6dp</dimen>
     <dimen name="fab1_bottom_margin">72dp</dimen>
     <dimen name="fab2_bottom_margin">120dp</dimen>
     <dimen name="fab3_bottom_margin">160dp</dimen>
+    <dimen name="fab4_bottom_margin">200dp</dimen>
     <dimen name="retailer_map_button_hegight">24.8dp</dimen>
     <dimen name="retailer_map_button_width">44.8dp</dimen>
     <dimen name="ratiler_map_bottomview_height">48dp</dimen>
@@ -321,7 +322,7 @@
     <dimen name="login_content_padding">39.2dp</dimen>
 
     <dimen name="edittext_height">48dp</dimen>
-    <dimen name="forgot_text_width">52dp</dimen>
+    <dimen name="forgot_text_width">82dp</dimen>
 
     <dimen name="login_btn_bottom_margin">8dp</dimen>
 

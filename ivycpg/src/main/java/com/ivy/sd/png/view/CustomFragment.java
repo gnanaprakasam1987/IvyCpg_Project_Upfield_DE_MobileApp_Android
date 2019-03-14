@@ -1,18 +1,16 @@
 package com.ivy.sd.png.view;
 
-import android.app.Activity;
-import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StandardListBO;
@@ -23,7 +21,6 @@ public class CustomFragment extends DialogFragment {
     private String mTitle = "";
 
 
-    private TextView mTitleTV;
     private Button mOkBtn;
     private Button mDismisBtn;
     private ListView mCountLV;
@@ -45,18 +42,16 @@ public class CustomFragment extends DialogFragment {
             getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         }
 
-        view = inflater.inflate(R.layout.custom_dialog_fragment, container, false);
+        view = inflater.inflate(R.layout.custom_dialog_fragment, container);
         mTitle = getArguments().getString("title");
         mRetailerSelectionList = (ArrayList<StandardListBO>) getArguments().getSerializable("mylist");
-        getDialog().setTitle(mTitle);
+      //  getDialog().setTitle(mTitle);
 
-        mTitleTV = view.findViewById(R.id.title);
         mOkBtn = view.findViewById(R.id.btn_ok);
         mDismisBtn = view.findViewById(R.id.btn_dismiss);
         mDismisBtn.setText(getActivity().getResources().getString(R.string.cancel));
         mCountLV = view.findViewById(R.id.lv_colletion_print);
 
-        mTitleTV.setVisibility(View.GONE);
 
         ArrayAdapter<StandardListBO> adapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_list_item_single_choice, mRetailerSelectionList);
         mCountLV.setAdapter(adapter);
@@ -84,6 +79,22 @@ public class CustomFragment extends DialogFragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        Window window = getDialog().getWindow();
+        if (window != null) {
+            //lp.copyFrom(window.getAttributes()); cmd for device alignment issue
+            window.setAttributes(lp);
+        }
+
+
     }
 
     public interface RetailerSelectionListener{

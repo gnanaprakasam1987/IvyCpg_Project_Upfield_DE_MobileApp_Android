@@ -40,6 +40,7 @@
                 android:layout_below="@+id/stock_and_order_listview_productname"
                 android:maxLines="1"
                 android:text="@string/prod_code"
+                android:tag="pcode"
                 android:layout_marginEnd="@dimen/dimen_4dp" />
 
             <TextView

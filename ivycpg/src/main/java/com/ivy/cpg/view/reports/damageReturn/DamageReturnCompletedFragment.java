@@ -12,8 +12,8 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 
@@ -50,7 +50,7 @@ public class DamageReturnCompletedFragment extends IvyBaseFragment {
         if (DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().size() > 0) {
             pandingDeliveryBOS=new ArrayList<>();
             for(int i=0;i<DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().size();i++){
-                if(!AppUtils.isEmptyString(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i).getStatus())){
+                if(!StringUtils.isEmptyString(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i).getStatus())){
                     pandingDeliveryBOS.add(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i));
                 }
             }
@@ -136,7 +136,7 @@ public class DamageReturnCompletedFragment extends IvyBaseFragment {
             }
             PendingDeliveryBO pandingDeliveryBO = arrayList.get(position);
 
-            if(!AppUtils.isEmptyString(pandingDeliveryBO.getStatus())){
+            if(!StringUtils.isEmptyString(pandingDeliveryBO.getStatus())){
                 holder.invoiceNo.setText(pandingDeliveryBO.getInvoiceRefNo());
                 holder.invoiceDate.setText(pandingDeliveryBO.getInvoiceDate());
                 holder.invNetamount.setText(pandingDeliveryBO.getInvNetamount());

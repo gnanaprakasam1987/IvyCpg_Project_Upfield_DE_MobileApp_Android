@@ -1,28 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/windowBackground"
-    android:orientation="vertical">
+    android:layout_height="300dp"
+    android:orientation="vertical"
+    >
 
-    <TextView
-        android:id="@+id/title"
-        style="@style/DialogTitleTextStyle"
+
+    <ListView
+        android:id="@+id/lv_colletion_print"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:gravity="center"
-        android:padding="@dimen/profile_header_txt_layout_marginleft"
-        android:text="@string/print_count_dialog_title" />
+        android:cacheColorHint="@null"
+        android:divider="@android:color/white"
+        android:dividerHeight="1dp"
+        android:paddingLeft="@dimen/dimens_10dp"
+        android:paddingRight="@dimen/dimens_10dp"
+        android:layout_above="@+id/footer"
+
+        />
 
     <LinearLayout
         android:id="@+id/footer"
         android:layout_width="match_parent"
         android:layout_height="@dimen/footer_height"
-        android:layout_alignParentBottom="true"
         android:background="?attr/customFooterBackgroundColor"
         android:gravity="center|end"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        >
 
 
         <Button
@@ -41,20 +46,6 @@
 
     </LinearLayout>
 
-    <ListView
-        android:id="@+id/lv_colletion_print"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/footer"
-        android:layout_below="@+id/title"
-        android:layout_marginBottom="@dimen/dimen_10dp"
-        android:cacheColorHint="@null"
-        android:divider="@android:color/white"
-        android:dividerHeight="1dp"
-        android:fitsSystemWindows="true"
-        android:paddingLeft="@dimen/dimens_10dp"
-        android:paddingRight="@dimen/dimens_10dp"
-        android:scrollbarAlwaysDrawHorizontalTrack="true"
-        android:scrollbarAlwaysDrawVerticalTrack="true" />
+
 
 </RelativeLayout>

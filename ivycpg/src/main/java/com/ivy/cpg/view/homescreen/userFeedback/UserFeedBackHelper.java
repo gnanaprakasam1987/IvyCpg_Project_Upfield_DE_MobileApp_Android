@@ -5,10 +5,10 @@ import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ReasonMaster;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -73,9 +73,9 @@ public class UserFeedBackHelper {
             String columns = "UId, DateTime, TypeLovId, Feedback, Rating";
             StringBuffer values = new StringBuffer();
             values.append(bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID));
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
             values.append(",");
-            values.append(bmodel.QT(SDUtil.now(SDUtil.DATE_TIME)));
+            values.append(bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME)));
             values.append(",");
             values.append(bmodel.QT(type));
             values.append(",");

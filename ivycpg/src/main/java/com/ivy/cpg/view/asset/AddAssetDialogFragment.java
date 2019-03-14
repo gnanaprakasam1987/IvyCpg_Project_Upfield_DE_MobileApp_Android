@@ -30,13 +30,13 @@ import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
+import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -166,8 +166,8 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
             }
         });
 
-        String todayDate = DateUtil.convertFromServerDateToRequestedFormat(
-                SDUtil.now(SDUtil.DATE_GLOBAL),
+        String todayDate = DateTimeUtils.convertFromServerDateToRequestedFormat(
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
 
 
@@ -198,7 +198,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                                     mDay = dayOfMonth;
                                     Calendar selectedDate = new GregorianCalendar(
                                             year, monthOfYear, dayOfMonth);
-                                    btnAddInstallDate.setText(DateUtil
+                                    btnAddInstallDate.setText(DateTimeUtils
                                             .convertDateObjectToRequestedFormat(
                                                     selectedDate.getTime(),
                                                     ConfigurationMasterHelper.outDateFormat));
@@ -209,7 +209,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                                                 getActivity(),
                                                 R.string.future_date_not_allowed,
                                                 Toast.LENGTH_SHORT).show();
-                                        btnAddInstallDate.setText(DateUtil
+                                        btnAddInstallDate.setText(DateTimeUtils
                                                 .convertDateObjectToRequestedFormat(
                                                         mCurrentCalendar.getTime(),
                                                         ConfigurationMasterHelper.outDateFormat));

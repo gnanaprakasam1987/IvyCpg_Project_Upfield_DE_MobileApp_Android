@@ -423,7 +423,7 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
                 if (errorCode != null) {
                     switch (errorCode) {
                         case SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE:
-                            bmodel.synchronizationHelper.downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.RETAILER_SELECTION, SynchronizationHelper.RETAILER_DOWNLOAD_FINISH_UPDATE);
+                            bmodel.synchronizationHelper.downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.RETAILER_SELECTION, SynchronizationHelper.RETAILER_DOWNLOAD_FINISH_UPDATE,"");
                             break;
                         case SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE:
                             int updateTableCount = bundle.getInt("updateCount");

@@ -6,6 +6,10 @@ import android.net.NetworkInfo;
 
 import com.amazonaws.com.google.gson.Gson;
 
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
 
 /**
  * All Network Level utilities are defined here
@@ -30,6 +34,20 @@ public class NetworkUtils {
         return activeNetwork != null && activeNetwork.isConnectedOrConnecting();
     }
 
+
+    public static boolean isInternetWorking() {
+        boolean success = false;
+        try {
+            URL url = new URL("https://google.com");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setConnectTimeout(10000);
+            connection.connect();
+            success = connection.getResponseCode() == 200;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return success;
+    }
 
 
 

@@ -3,14 +3,11 @@ package com.ivy.cpg.view.collection;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -32,9 +29,8 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.profile.HorizontalDividerItemDecoration;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
-import com.ivy.utils.FontUtils;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -551,8 +547,8 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
 
                 collectionHelper.downloadCollectionMethods();
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        SDUtil.now(SDUtil.DATE_GLOBAL),
-                        SDUtil.now(SDUtil.TIME), "MENU_COLLECTION");
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.TIME), "MENU_COLLECTION");
 
                 Intent intent = new Intent(getActivity(),
                         CollectionScreen.class);

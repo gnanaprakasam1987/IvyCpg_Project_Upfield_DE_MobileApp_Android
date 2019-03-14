@@ -30,10 +30,10 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.UserMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 
 import org.json.JSONArray;
@@ -50,7 +50,7 @@ import static com.ivy.cpg.locationservice.LocationConstants.GPS_NOTIFICATION_ID;
 import static com.ivy.cpg.locationservice.LocationConstants.MOCK_NOTIFICATION_ID;
 import static com.ivy.sd.png.util.DataMembers.tbl_movement_tracking_history;
 import static com.ivy.sd.png.util.DataMembers.tbl_movement_tracking_history_cols;
-import static com.ivy.utils.AppUtils.QT;
+import static com.ivy.utils.StringUtils.QT;
 import static com.ivy.utils.AppUtils.getApplicationVersionName;
 import static com.ivy.utils.AppUtils.getApplicationVersionNumber;
 
@@ -381,9 +381,9 @@ public class LocationServiceHelper {
 
             String columns = "Tid,Date,Latitude,Longtitude,Accuracy,Activity,Battery,LocationProvider,IsLocationEnabled";
 
-            String Tid = userMasterBO.getUserid() + ""+ SDUtil.now(SDUtil.DATE_TIME_ID);
+            String Tid = userMasterBO.getUserid() + ""+ DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
-            String values = QT(Tid) + "," + QT(SDUtil.now(SDUtil.DATE_TIME))
+            String values = QT(Tid) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME))
                     + "," + QT(String.valueOf(locationDetailBO.getLatitude()))
                     + "," + QT(String.valueOf(locationDetailBO.getLongitude()))
                     + "," + locationDetailBO.getAccuracy()

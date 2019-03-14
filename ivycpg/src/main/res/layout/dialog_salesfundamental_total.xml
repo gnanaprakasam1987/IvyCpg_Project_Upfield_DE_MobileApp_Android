@@ -39,6 +39,7 @@
                     android:text="@string/title_dialog"
                     android:textColor="?primarycolor"
                     android:textSize="@dimen/text_size_primary"
+                    android:tag="sosku_title"
                     android:textStyle="bold" />
 
                 <ListView

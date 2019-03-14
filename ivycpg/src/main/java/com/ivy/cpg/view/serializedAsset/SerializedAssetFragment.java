@@ -36,7 +36,6 @@ import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
@@ -47,6 +46,7 @@ import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -186,7 +186,7 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
         listview = view.findViewById(R.id.list);
         listview.setCacheColorHint(0);
 
-        if (mBModel.configurationMasterHelper.IS_TEAMLEAD) {
+        if (mBModel.configurationMasterHelper.isAuditEnabled()) {
             TextView tvAudit = view.findViewById(R.id.audit);
             tvAudit.setVisibility(View.VISIBLE);
 
@@ -386,7 +386,7 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
                 mDrawerLayout.closeDrawers();
             } else {
-                if (adapter.isEmpty()) {
+                if (assetTrackingHelper.getAssetTrackingList().size() == 0 && adapter.isEmpty()) {
                     save();
                 } else {
                     assetPresenter.updateTimeStamp();
@@ -459,7 +459,7 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
                         if (mBModel.reasonHelper.isNpReasonPhotoAvaiable(mBModel.retailerMasterBO.getRetailerID(), MENU_SERIALIZED_ASSET)) {
                             mBModel.saveModuleCompletion(MENU_SERIALIZED_ASSET);
                             mBModel.outletTimeStampHelper
-                                    .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                                    .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                             startActivity(new Intent(getActivity(),
                                     HomeScreenTwo.class));
                             getActivity().finish();

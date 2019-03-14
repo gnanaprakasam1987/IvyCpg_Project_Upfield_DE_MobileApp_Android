@@ -13,8 +13,8 @@ import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.DateUtil;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;
@@ -59,13 +59,13 @@ public class TimeTrackingAdapter extends RecyclerView.Adapter<TimeTrackingAdapte
         String time;
         StringTokenizer tokenizer;
 
-        if (!AppUtils.isNullOrEmpty(holder.nonFieldTwoBO.getOutTime())) {
+        if (!StringUtils.isNullOrEmpty(holder.nonFieldTwoBO.getOutTime())) {
             holder.btOutTime.setVisibility(View.GONE);
             holder.tvOutTime.setVisibility(View.VISIBLE);
             tokenizer = new StringTokenizer(outTime);
             date = tokenizer.nextToken();
             time = tokenizer.nextToken();
-            holder.tvOutTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
+            holder.tvOutTime.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(date,
                     DEFAULT_DATE_FORMAT) + "\n" + time);
         } else {
             holder.tvOutTime.setVisibility(View.GONE);
@@ -77,8 +77,8 @@ public class TimeTrackingAdapter extends RecyclerView.Adapter<TimeTrackingAdapte
         date = tokenizer.nextToken();
         time = tokenizer.nextToken();
 
-        if (!AppUtils.isNullOrEmpty(holder.nonFieldTwoBO.getInTime())) {
-            holder.tvInTime.setText(DateUtil.convertFromServerDateToRequestedFormat(date,
+        if (!StringUtils.isNullOrEmpty(holder.nonFieldTwoBO.getInTime())) {
+            holder.tvInTime.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(date,
                     DEFAULT_DATE_FORMAT) + "\n" + time);
         }
 
