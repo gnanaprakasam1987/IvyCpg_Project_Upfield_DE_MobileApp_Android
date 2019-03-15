@@ -678,7 +678,7 @@ public class AssetTrackingHelper {
                 mBusinessModel.setAssetRemark("");
             }
 
-            if(mBusinessModel.configurationMasterHelper.isAuditEnabled() && uid.trim().isEmpty()){
+            if (mBusinessModel.configurationMasterHelper.isAuditEnabled() && uid.trim().isEmpty()) {
                 c.close();
                 db.closeDB();
                 return false;
@@ -1676,8 +1676,8 @@ public class AssetTrackingHelper {
 
 
                                 if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    assetDetailValues.append("," + (assetBo.getAvailQty() > 0 ? productWeightAge : "0"));
-                                    if (assetBo.getAvailQty() > 0)
+                                    assetDetailValues.append("," + (assetBo.getAvailQty() > 0 || assetBo.getExecutorQty() > 0 ? productWeightAge : "0"));
+                                    if (assetBo.getAvailQty() > 0 || assetBo.getExecutorQty() > 0)
                                         sum = sum + productWeightAge;
                                 }
 
@@ -1816,8 +1816,8 @@ public class AssetTrackingHelper {
                                 }
 
                                 if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    assetDetailValues.append("," + (assetBo.getAvailQty() > 0 ? productWeightAge : "0"));
-                                    if (assetBo.getAvailQty() > 0)
+                                    assetDetailValues.append("," + (assetBo.getAvailQty() > 0 || assetBo.getExecutorQty() > 0? productWeightAge : "0"));
+                                    if (assetBo.getAvailQty() > 0|| assetBo.getExecutorQty() > 0)
                                         sum = sum + productWeightAge;
                                 }
                                 if (SHOW_LOCATION_POSM)
@@ -1962,11 +1962,10 @@ public class AssetTrackingHelper {
                                 || assetBO.getCompetitorQty() > 0
                                 || assetBO.getExecutorQty() > 0)
                                 && assetBO.getAudit() != 2)
-                                 || assetBO.getAudit() != 2) {
+                                || assetBO.getAudit() != 2) {
                             return true;
                         }
-                    }
-                    else if (assetBO.getAvailQty() > 0 || assetBO.getAudit() != 2 || assetBO.getCompetitorQty() > 0 || assetBO.getExecutorQty() > 0) {
+                    } else if (assetBO.getAvailQty() > 0 || assetBO.getAudit() != 2 || assetBO.getCompetitorQty() > 0 || assetBO.getExecutorQty() > 0) {
                         return true;
                     } else if (assetBO.getReason1ID() != null) {
                         if (!assetBO.getReason1ID().equals(Integer.toString(0))) {
