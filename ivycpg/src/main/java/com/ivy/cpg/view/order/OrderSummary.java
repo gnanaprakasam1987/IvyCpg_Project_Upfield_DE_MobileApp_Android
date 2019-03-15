@@ -2527,7 +2527,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                         Commons.printException(" " + e);
                     }
                 }
-
+                holder.rl_oos = row.findViewById(R.id.rl_oos);
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -2575,7 +2575,10 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             } else {
                 holder.text_total.setText("0");
             }
-
+            if (bModel.configurationMasterHelper.IS_SHOW_OOS && holder.productBO.getWSIH() == 0)
+                holder.rl_oos.setVisibility(View.VISIBLE);
+            else
+                holder.rl_oos.setVisibility(View.GONE);
 
             return row;
         }
