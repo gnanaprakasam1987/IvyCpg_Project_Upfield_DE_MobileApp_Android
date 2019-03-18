@@ -1,9 +1,27 @@
 package com.ivy.cpg.view.order;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
+import android.hardware.input.InputManager;
 import android.os.AsyncTask;
+import android.support.v4.content.ContextCompat;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
+import android.view.View;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ViewFlipper;
 
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -11,12 +29,13 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.ProductSearchCallBack;
 import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.Vector;
 
-public class ProductSearch {
+public class ProductSearch implements View.OnClickListener,TextView.OnEditorActionListener,SpeechResultListener {
 
     private Context context;
     private EditText mEdt_searchproductName;
@@ -66,9 +85,17 @@ public class ProductSearch {
 
     private final String GENERAL = "General";
 
+    private SpeechToVoiceDialog speechToVoiceDialog;
+    private ViewFlipper viewFlipper;
+    private Button mBtn_Search;
+    private Button mBtn_clear;
+
+    private TextView textView_productName;
+
     private boolean isSpecialFilter,isProductFilter,isUserEntryFilter;
-    public ProductSearch(Context context,BusinessModel bModel,String current_screen_code){
+    public ProductSearch(Context context,Vector<ProductMasterBO> masterList,BusinessModel bModel,String current_screen_code){
         this.context=context;
+        this.masterList=masterList;
         this.bModel=bModel;
         this.current_screen_code=current_screen_code;
         productHelper=ProductHelper.getInstance(context);
@@ -78,12 +105,78 @@ public class ProductSearch {
             }
         }
 
+        textView_productName = context.findViewById(R.id.productName);
+        textView_productName.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
+        mEdt_searchproductName =  context.findViewById(R.id.edt_searchproductName);
+        mBtn_Search =  context.findViewById(R.id.btn_search);
+        viewFlipper =  context.findViewById(R.id.view_flipper);
+        mBtn_clear =  context.findViewById(R.id.btn_clear);
+
+        if (bModel.configurationMasterHelper.IS_VOICE_TO_TEXT == -1)
+            context.findViewById(R.id.btn_speech).setVisibility(View.GONE);
+
+        mBtn_Search.setOnClickListener(this);
+        mBtn_clear.setOnClickListener(this);
+        mEdt_searchproductName.setOnEditorActionListener(this);
+        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
+
+
+        mEdt_searchproductName.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                if (s.length() >= 3) {
+
+                    startSearch(masterList,mEdt_searchproductName.getText().toString());
+                }
+            }
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+                cancelSearch();
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+
+            }
+        });
+
+        context.findViewById(R.id.btn_speech).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                int permissionStatus = ContextCompat.checkSelfPermission(context.getApplicationContext(),
+                        Manifest.permission.RECORD_AUDIO);
+                if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+
+
+                    speechToVoiceDialog = new SpeechToVoiceDialog();
+                    speechToVoiceDialog.setCancelable(true);
+                    speechToVoiceDialog.show(context.getSupportFragmentManager(), "SPEECH_TO_TEXT");
+
+                    if (viewFlipper.getDisplayedChild() == 0) {
+                        viewFlipper.showNext();
+                    };
+
+
+                } else {
+                    Toast.makeText(context,
+                            context.getResources().getString(R.string.permission_enable_msg)
+                                    + " " + context.getResources().getString(R.string.record_audio)
+                            , Toast.LENGTH_LONG).show();
+                }
+
+
+            }
+        });
+
     }
 
-      public static ProductSearch getInstance(Context context,BusinessModel bModel,String current_screen_code) {
+      public static ProductSearch getInstance(Context context,Vector<ProductMasterBO> masterList,BusinessModel bModel,String current_screen_code) {
 
         if (instance == null) {
-            instance = new ProductSearch(context,bModel,current_screen_code);
+            instance = new ProductSearch(context,masterList,bModel,current_screen_code);
         }
         return instance;
     }
@@ -92,10 +185,13 @@ public class ProductSearch {
     public void startSearch(Vector<ProductMasterBO> masterList,String stringToFilter)
     {
 
-        isUserEntryFilter=true;
+        if(!stringToFilter.equals("")) {
+            isUserEntryFilter = true;
 
-        this.masterList=masterList;
-        this.userEnteredText =stringToFilter;
+            this.masterList = masterList;
+            this.userEnteredText = stringToFilter;
+        }
+        else isUserEntryFilter=false;
 
         searchAsync = new SearchAsync();
         searchAsync.execute();
@@ -146,7 +242,7 @@ public class ProductSearch {
     }
 
 
-    public void cancelSearch(){
+    private void cancelSearch(){
         if (searchAsync!=null&&searchAsync.getStatus() == AsyncTask.Status.RUNNING) {
             searchAsync.cancel(true);
         }
@@ -469,5 +565,88 @@ public class ProductSearch {
         return isUserEntryFilter;
     }
 
+
+    public void onClick(View v) {
+        Button vw = (Button) v;
+
+        if (vw == mBtn_Search) {
+            viewFlipper.showNext();
+            mEdt_searchproductName.requestFocus();
+            try {
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(context.INPUT_METHOD_SERVICE);
+                if (imm != null)
+                    imm.showSoftInput(mEdt_searchproductName, InputMethodManager.SHOW_FORCED);
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
+        } else if (vw == mBtn_clear) {
+            viewFlipper.showPrevious();
+            mEdt_searchproductName.setText("");
+            //productName.setText("");
+            try {
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(context.getCurrentFocus().getWindowToken(), 0);
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
+            startSearch(masterList,"");
+
+        }
+    }
+
+    public void hideSoftInputFromWindow(){
+        InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(
+                mEdt_searchproductName.getWindowToken(), 0);
+    }
+
+    @Override
+    public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
+        if (arg1 == EditorInfo.IME_ACTION_DONE) {
+            if (mEdt_searchproductName.getText().length() >= 3) {
+
+                startSearch(masterList,mEdt_searchproductName.getText().toString());
+            } else {
+                Toast.makeText(context, "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
+                        .show();
+            }
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(context.getCurrentFocus().getWindowToken(), 0);
+            return true;
+        }
+        return false;
+    }
+
+
+    @Override
+    public void updateSpeechResult(String result) {
+
+        mEdt_searchproductName.setText(result);
+        dismissDialog();
+    }
+
+    @Override
+    public void updateSpeechPartialResult(String result) {
+
+    }
+
+    @Override
+    public void dismissDialog() {
+
+        if (speechToVoiceDialog != null && speechToVoiceDialog.isVisible())
+            speechToVoiceDialog.dismiss();
+    }
+
+    public void setProductNameOnBar(String text){
+
+        textView_productName.setText(text);
+
+        if (viewFlipper.getDisplayedChild() != 0) {
+            viewFlipper.showPrevious();
+
+        }
+    }
 
 }

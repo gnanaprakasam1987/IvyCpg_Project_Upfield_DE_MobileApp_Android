@@ -66,7 +66,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
@@ -136,24 +135,21 @@ import java.util.Vector;
 import static com.ivy.cpg.view.order.moq.MOQHighlightActivity.MOQ_RESULT_CODE;
 
 public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClickListener,
-        BrandDialogInterface, OnEditorActionListener, FiveLevelFilterCallBack, ProductSearchCallBack,SpeechResultListener {
+        BrandDialogInterface, FiveLevelFilterCallBack, ProductSearchCallBack {
 
     private ListView lvwplist;
-    private Button mBtn_Search;
-    private Button mBtnFilterPopup;
-    private Button mBtn_clear;
+
     private TextView totalValueText;
     private TextView lpcText;
     private TextView distValue;
-    private TextView productName;
     private BusinessModel bmodel;
     private Vector<ProductMasterBO> mylist;
     private EditText QUANTITY;
-    private EditText mEdt_searchproductName;
+
     private String append = "";
     LinearLayout ll_spl_filter, ll_tab_selection;
     private DrawerLayout mDrawerLayout;
-    private ViewFlipper viewFlipper;
+
 
     private ArrayList<String> mSearchTypeArray = new ArrayList<>();
     private InputMethodManager inputManager;
@@ -224,7 +220,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private TextView totalQtyTV;
     private TextView totalWeightTV;
 
-    private String title;
     private String totalOrdCount;
 
     private Vector<ProductMasterBO> productList = new Vector<>();
@@ -241,7 +236,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private wareHouseStockBroadCastReceiver mWareHouseStockReceiver;
     private StockCheckHelper stockCheckHelper;
     private ProductSearch productSearch;
-    private SpeechToVoiceDialog speechToVoiceDialog;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -332,54 +327,20 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 
-        viewFlipper = (ViewFlipper) findViewById(R.id.view_flipper);
 
-        mEdt_searchproductName = (EditText) findViewById(R.id.edt_searchproductName);
-        mBtn_Search = (Button) findViewById(R.id.btn_search);
-        mBtnFilterPopup = (Button) findViewById(R.id.btn_filter_popup);
-        mBtn_clear = (Button) findViewById(R.id.btn_clear);
+
+
         mBtnNext = (Button) findViewById(R.id.btn_next);
         mBtnGuidedSelling_next = (Button) findViewById(R.id.btn_guided_selling_next);
         mBtnGuidedSelling_prev = (Button) findViewById(R.id.btn_guided_selling_prev);
         mBtnGuidedSelling_next.setOnClickListener(this);
         mBtnGuidedSelling_prev.setOnClickListener(this);
 
-        /*if (bmodel.configurationMasterHelper.IS_VOICE_TO_TEXT == -1)
-            findViewById(R.id.btn_speech).setVisibility(View.GONE);*/
-
-        findViewById(R.id.btn_speech).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                int permissionStatus = ContextCompat.checkSelfPermission(getApplicationContext(),
-                        Manifest.permission.RECORD_AUDIO);
-                if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
 
 
-                    speechToVoiceDialog = new SpeechToVoiceDialog();
-                    speechToVoiceDialog.setCancelable(true);
-                    speechToVoiceDialog.show(getSupportFragmentManager(), "SPEECH_TO_TEXT");
-
-                    if (viewFlipper.getDisplayedChild() == 0) {
-                        viewFlipper.showNext();
-                    };
 
 
-                } else {
-                    Toast.makeText(StockAndOrder.this,
-                            getResources().getString(R.string.permission_enable_msg)
-                                    + " " + getResources().getString(R.string.record_audio)
-                            , Toast.LENGTH_LONG).show();
-                }
 
-
-            }
-        });
-
-        mBtn_Search.setOnClickListener(this);
-        mBtnFilterPopup.setOnClickListener(this);
-        mBtn_clear.setOnClickListener(this);
-        mEdt_searchproductName.setOnEditorActionListener(this);
 
         mBtnNext.setTypeface(FontUtils.getFontBalooHai(StockAndOrder.this, FontUtils.FontType.REGULAR));
         mBtnNext.setOnClickListener(new OnSingleClickListener() {
@@ -550,9 +511,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         (findViewById(R.id.calcdot))
                 .setVisibility(View.VISIBLE);
 
-        productName = (TextView) findViewById(R.id.productName);
-        productName.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-        mEdt_searchproductName.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
+
 
 
         lvwplist = (ListView) findViewById(R.id.list);
@@ -576,31 +535,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 R.string.order_dialog_barcode));
 
         prepareScreen();
-
-        try {
-            mEdt_searchproductName.addTextChangedListener(new TextWatcher() {
-                public void afterTextChanged(Editable s) {
-                    if (s.length() >= 3) {
-
-                        productSearch.startSearch(productList,mEdt_searchproductName.getText().toString());
-                    }
-                }
-
-                @Override
-                public void beforeTextChanged(CharSequence s, int start,
-                                              int count, int after) {
-                  productSearch.cancelSearch();
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start,
-                                          int before, int count) {
-
-                }
-            });
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
 
 
         DisplayMetrics dm = new DisplayMetrics();
@@ -1680,8 +1614,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     @Override
                     public void onClick(View view) {
 
-                        inputManager.hideSoftInputFromWindow(
-                                mEdt_searchproductName.getWindowToken(), 0);
+                        productSearch.hideSoftInputFromWindow();
 
                         bmodel.setEditStockCheck(false);
                         if ((holder.productObj.getLocations()
@@ -1902,9 +1835,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 strProductObj = "[SIH :"
                                         + holder.productObj.getSIH() + "] "
                                         + holder.pname;
-                                productName.setText(strProductObj);
+                                productSearch.setProductNameOnBar(strProductObj);
                             } else
-                                productName.setText(holder.pname);
+                                productSearch.setProductNameOnBar(holder.pname);
 
                             if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
                                 dialogCustomKeyBoard = new CustomKeyBoard(StockAndOrder.this, holder.shelfCaseQty);
@@ -1930,9 +1863,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 strProductObj = "[SIH :"
                                         + holder.productObj.getSIH() + "] "
                                         + holder.pname;
-                                productName.setText(strProductObj);
+                                productSearch.setProductNameOnBar(strProductObj);
                             } else
-                                productName.setText(holder.pname);
+                                productSearch.setProductNameOnBar(holder.pname);
 
                             QUANTITY = holder.shelfCaseQty;
                             QUANTITY.setTag(holder.productObj);
@@ -1943,8 +1876,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.shelfCaseQty.requestFocus();
                             if (holder.shelfCaseQty.getText().length() > 0)
                                 holder.shelfCaseQty.setSelection(holder.shelfCaseQty.getText().length());
-                            inputManager.hideSoftInputFromWindow(
-                                    mEdt_searchproductName.getWindowToken(), 0);
+                            productSearch.hideSoftInputFromWindow();
                             return true;
                         }
                     });
@@ -2037,9 +1969,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 strProductObj = "[SIH :"
                                         + holder.productObj.getSIH() + "] "
                                         + holder.pname;
-                                productName.setText(strProductObj);
+                                productSearch.setProductNameOnBar(strProductObj);
                             } else
-                                productName.setText(holder.pname);
+                                productSearch.setProductNameOnBar(holder.pname);
 
                             if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
                                 dialogCustomKeyBoard = new CustomKeyBoard(StockAndOrder.this, holder.shelfPcsQty);
@@ -2065,9 +1997,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 strProductObj = "[SIH :"
                                         + holder.productObj.getSIH() + "] "
                                         + holder.pname;
-                                productName.setText(strProductObj);
+                                productSearch.setProductNameOnBar(strProductObj);
                             } else
-                                productName.setText(holder.pname);
+                                productSearch.setProductNameOnBar(holder.pname);
 
                             QUANTITY = holder.shelfPcsQty;
                             QUANTITY.setTag(holder.productObj);
@@ -2078,8 +2010,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.shelfPcsQty.requestFocus();
                             if (holder.shelfPcsQty.getText().length() > 0)
                                 holder.shelfPcsQty.setSelection(holder.shelfPcsQty.getText().length());
-                            inputManager.hideSoftInputFromWindow(
-                                    mEdt_searchproductName.getWindowToken(), 0);
+                            productSearch.hideSoftInputFromWindow();
                             return true;
                         }
                     });
@@ -2172,9 +2103,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 strProductObj = "[SIH :"
                                         + holder.productObj.getSIH() + "] "
                                         + holder.pname;
-                                productName.setText(strProductObj);
+                                productSearch.setProductNameOnBar(strProductObj);
                             } else
-                                productName.setText(holder.pname);
+                                productSearch.setProductNameOnBar(holder.pname);
 
                             if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
                                 dialogCustomKeyBoard = new CustomKeyBoard(StockAndOrder.this, holder.shelfouter);
@@ -2201,9 +2132,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 strProductObj = "[SIH :"
                                         + holder.productObj.getSIH() + "] "
                                         + holder.pname;
-                                productName.setText(strProductObj);
+                                productSearch.setProductNameOnBar(strProductObj);
                             } else
-                                productName.setText(holder.pname);
+                                productSearch.setProductNameOnBar(holder.pname);
 
                             QUANTITY = holder.shelfouter;
                             QUANTITY.setTag(holder.productObj);
@@ -2214,8 +2145,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.shelfouter.requestFocus();
                             if (holder.shelfouter.getText().length() > 0)
                                 holder.shelfouter.setSelection(holder.shelfouter.getText().length());
-                            inputManager.hideSoftInputFromWindow(
-                                    mEdt_searchproductName.getWindowToken(), 0);
+                            productSearch.hideSoftInputFromWindow();
                             return true;
                         }
                     });
@@ -2384,9 +2314,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 strProductObj = "[SIH :"
                                         + holder.productObj.getSIH() + "] "
                                         + holder.pname;
-                                productName.setText(strProductObj);
+                                productSearch.setProductNameOnBar(strProductObj);
                             } else
-                                productName.setText(holder.pname);
+                                productSearch.setProductNameOnBar(holder.pname);
 
                             if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
                                 dialogCustomKeyBoard = new CustomKeyBoard(StockAndOrder.this, holder.caseQty);
@@ -2412,9 +2342,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 strProductObj = "[SIH :"
                                         + holder.productObj.getSIH() + "] "
                                         + holder.pname;
-                                productName.setText(strProductObj);
+                                productSearch.setProductNameOnBar(strProductObj);
                             } else
-                                productName.setText(holder.pname);
+                                productSearch.setProductNameOnBar(holder.pname);
 
                             QUANTITY = holder.caseQty;
                             QUANTITY.setTag(holder.productObj);
@@ -2425,8 +2355,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.caseQty.requestFocus();
                             if (holder.caseQty.getText().length() > 0)
                                 holder.caseQty.setSelection(holder.caseQty.getText().length());
-                            inputManager.hideSoftInputFromWindow(
-                                    mEdt_searchproductName.getWindowToken(), 0);
+                            productSearch.hideSoftInputFromWindow();
                             return true;
                         }
                     });
@@ -2467,9 +2396,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             if (bmodel.configurationMasterHelper.SHOW_SIH_IN_PNAME) {
                                 strProductObj = "[SIH :" + holder.productObj.getSIH() + "] "
                                         + holder.pname;
-                                productName.setText(strProductObj);
+                                productSearch.setProductNameOnBar(strProductObj);
                             } else
-                                productName.setText(holder.pname);
+                                productSearch.setProductNameOnBar(holder.pname);
 
                             if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
                                 dialogCustomKeyBoard = new CustomKeyBoard(StockAndOrder.this, holder.foc);
@@ -2495,9 +2424,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 strProductObj = "[SIH :"
                                         + holder.productObj.getSIH() + "] "
                                         + holder.pname;
-                                productName.setText(strProductObj);
+                                productSearch.setProductNameOnBar(strProductObj);
                             } else
-                                productName.setText(holder.pname);
+                                productSearch.setProductNameOnBar(holder.pname);
 
                             QUANTITY = holder.foc;
                             QUANTITY.setTag(holder.productObj);
@@ -2508,8 +2437,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.foc.requestFocus();
                             if (holder.foc.getText().length() > 0)
                                 holder.foc.setSelection(holder.foc.getText().length());
-                            inputManager.hideSoftInputFromWindow(
-                                    mEdt_searchproductName.getWindowToken(), 0);
+                            productSearch.hideSoftInputFromWindow();
                             return true;
                         }
                     });
@@ -2564,9 +2492,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             strProductObj = "[SIH :"
                                     + holder.productObj.getSIH() + "] "
                                     + holder.pname;
-                            productName.setText(strProductObj);
+                            productSearch.setProductNameOnBar(strProductObj);
                         } else
-                            productName.setText(holder.pname);
+                            productSearch.setProductNameOnBar(holder.pname);
 
                         QUANTITY = holder.uom_qty;
                         QUANTITY.setTag(holder.productObj);
@@ -2577,8 +2505,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         holder.uom_qty.requestFocus();
                         if (holder.uom_qty.getText().length() > 0)
                             holder.uom_qty.setSelection(holder.uom_qty.getText().length());
-                        inputManager.hideSoftInputFromWindow(
-                                mEdt_searchproductName.getWindowToken(), 0);
+
                         return true;
                     }
                 });
@@ -2724,9 +2651,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             if (bmodel.configurationMasterHelper.SHOW_SIH_IN_PNAME) {
                                 strProductObj = "[SIH :" + holder.productObj.getSIH() + "] "
                                         + holder.pname;
-                                productName.setText(strProductObj);
+                                productSearch.setProductNameOnBar(strProductObj);
                             } else
-                                productName.setText(holder.pname);
+                                productSearch.setProductNameOnBar(holder.pname);
 
                             if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
                                 dialogCustomKeyBoard = new CustomKeyBoard(StockAndOrder.this, holder.pcsQty);
@@ -2752,9 +2679,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 strProductObj = "[SIH :"
                                         + holder.productObj.getSIH() + "] "
                                         + holder.pname;
-                                productName.setText(strProductObj);
+                                productSearch.setProductNameOnBar(strProductObj);
                             } else
-                                productName.setText(holder.pname);
+                                productSearch.setProductNameOnBar(holder.pname);
 
                             QUANTITY = holder.pcsQty;
                             QUANTITY.setTag(holder.productObj);
@@ -2765,8 +2692,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.pcsQty.requestFocus();
                             if (holder.pcsQty.getText().length() > 0)
                                 holder.pcsQty.setSelection(holder.pcsQty.getText().length());
-                            inputManager.hideSoftInputFromWindow(
-                                    mEdt_searchproductName.getWindowToken(), 0);
+                            productSearch.hideSoftInputFromWindow();
                             return true;
                         }
                     });
@@ -2916,9 +2842,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 strProductObj = "[SIH :"
                                         + holder.productObj.getSIH() + "] "
                                         + holder.pname;
-                                productName.setText(strProductObj);
+                                productSearch.setProductNameOnBar(strProductObj);
                             } else
-                                productName.setText(holder.pname);
+                                productSearch.setProductNameOnBar(holder.pname);
 
                             if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
                                 dialogCustomKeyBoard = new CustomKeyBoard(StockAndOrder.this, holder.outerQty);
@@ -2944,9 +2870,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 strProductObj = "[SIH :"
                                         + holder.productObj.getSIH() + "] "
                                         + holder.pname;
-                                productName.setText(strProductObj);
+                                productSearch.setProductNameOnBar(strProductObj);
                             } else
-                                productName.setText(holder.pname);
+                                productSearch.setProductNameOnBar(holder.pname);
 
                             QUANTITY = holder.outerQty;
                             QUANTITY.setTag(holder.productObj);
@@ -2957,8 +2883,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.outerQty.requestFocus();
                             if (holder.outerQty.getText().length() > 0)
                                 holder.outerQty.setSelection(holder.outerQty.getText().length());
-                            inputManager.hideSoftInputFromWindow(
-                                    mEdt_searchproductName.getWindowToken(), 0);
+                            productSearch.hideSoftInputFromWindow();
                             return true;
                         }
                     });
@@ -2975,9 +2900,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 strProductObj = "[SIH :"
                                         + holder.productObj.getSIH() + "] "
                                         + holder.pname;
-                                productName.setText(strProductObj);
+                                productSearch.setProductNameOnBar(strProductObj);
                             } else
-                                productName.setText(holder.pname);
+                                productSearch.setProductNameOnBar(holder.pname);
 
                             if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
                                 dialogCustomKeyBoard = new CustomKeyBoard(StockAndOrder.this, holder.shelfPcsQty);
@@ -3003,9 +2928,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                                 strProductObj = "[SIH :"
                                         + holder.productObj.getSIH() + "] "
                                         + holder.pname;
-                                productName.setText(strProductObj);
+                                productSearch.setProductNameOnBar(strProductObj);
                             } else
-                                productName.setText(holder.pname);
+                                productSearch.setProductNameOnBar(holder.pname);
 
                             QUANTITY = holder.srpEdit;
                             QUANTITY.setTag(holder.productObj);
@@ -3016,8 +2941,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             holder.srpEdit.requestFocus();
                             if (holder.srpEdit.getText().length() > 0)
                                 holder.srpEdit.setSelection(holder.srpEdit.getText().length());
-                            inputManager.hideSoftInputFromWindow(
-                                    mEdt_searchproductName.getWindowToken(), 0);
+                            productSearch.hideSoftInputFromWindow();
                             return true;
                         }
                     });
@@ -3098,17 +3022,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 row.setOnClickListener(new OnClickListener() {
                     public void onClick(View v) {
                         if (bmodel.configurationMasterHelper.SHOW_SIH_IN_PNAME) {
-                            strProductObj = "[SIH :"
+                            productSearch.setProductNameOnBar(strProductObj = "[SIH :"
                                     + holder.productObj.getSIH() + "] "
-                                    + holder.pname;
-                            productName.setText(strProductObj);
+                                    + holder.pname);
                         } else
-                            productName.setText(holder.pname);
+                            productSearch.setProductNameOnBar(holder.pname);
 
-                        if (viewFlipper.getDisplayedChild() != 0) {
-                            viewFlipper.showPrevious();
 
-                        }
                     }
                 });
 
@@ -3120,7 +3040,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         int holderPosition = lvwplist.getFirstVisiblePosition();
                         int holderTop = (vChild == null) ? 0 : (vChild.getTop() - lvwplist.getPaddingTop());
 
-                        productName.setText(holder.pname);
+                        productSearch.setProductNameOnBar(holder.pname);
                         showSalesReturnDialog(holder.productObj.getProductID(), v, holderPosition, holderTop);
                     }
                 });
@@ -4014,65 +3934,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         Button vw = (Button) v;
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-        if (vw == mBtn_Search) {
-            viewFlipper.showNext();
-            mEdt_searchproductName.requestFocus();
-            try {
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                if (imm != null)
-                    imm.showSoftInput(mEdt_searchproductName, InputMethodManager.SHOW_FORCED);
-            } catch (Exception e) {
-                Commons.printException(e);
-            }
 
-        } else if (vw == mBtnFilterPopup) {
-            AlertDialog.Builder builderSingle = new AlertDialog.Builder(
-                    StockAndOrder.this);
-            final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
-                    StockAndOrder.this,
-                    android.R.layout.select_dialog_singlechoice,
-                    mSearchTypeArray);
-            builderSingle.setAdapter(arrayAdapter,
-                    new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            bmodel.setProductFilter(arrayAdapter.getItem(which));
-                        }
-                    });
-            int selectedFiltPos = mSearchTypeArray.indexOf(bmodel
-                    .getProductFilter());
-            builderSingle.setSingleChoiceItems(arrayAdapter, selectedFiltPos,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            bmodel.setProductFilter(arrayAdapter.getItem(which));
-                        }
-
-                    });
-            builderSingle.setPositiveButton(
-                    getResources().getString(R.string.ok),
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog,
-                                            int whichButton) {
-                        }
-                    });
-            bmodel.applyAlertDialogTheme(builderSingle);
-
-        } else if (vw == mBtn_clear) {
-            viewFlipper.showPrevious();
-            mEdt_searchproductName.setText("");
-            productName.setText("");
-            try {
-                InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-            } catch (Exception e) {
-                Commons.printException(e);
-            }
-
-            productSearch.getAllProducts(productList);
-
-        } else if (vw == mBtnGuidedSelling_next) {
+        if (vw == mBtnGuidedSelling_next) {
             boolean isAllDone = true;
             boolean isCurrentLogicDone = false;
             QUANTITY = null;
@@ -4750,9 +4613,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                         productSearch.startSearch(productList,strBarCodeSearch);
 
-                        if (viewFlipper.getDisplayedChild() == 0) {
-                            viewFlipper.showNext();
-                        }
                     }
                 }
             } else {
@@ -4797,7 +4657,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         productSearch.startSpecialFilterSearch(productList,mFilterText);
 
         // Clear the productName
-        productName.setText("");
+        productSearch.setProductNameOnBar("");
 
         // Close the drawer
         mDrawerLayout.closeDrawers();
@@ -5185,22 +5045,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
     }
 
-    @Override
-    public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
-        if (arg1 == EditorInfo.IME_ACTION_DONE) {
-            if (mEdt_searchproductName.getText().length() >= 3) {
 
-                productSearch.startSearch(productList,mEdt_searchproductName.getText().toString());
-            } else {
-                Toast.makeText(this, "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
-                        .show();
-            }
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-            return true;
-        }
-        return false;
-    }
 
     /**
      * while click button in motorola ET1 device,this onNewIntent method called
@@ -6097,34 +5942,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     }
 
-    private boolean isSpeechOn = false;
-    @Override
-    public void updateSpeechResult(String result) {
 
-        mEdt_searchproductName.setText(result);
-        dismissDialog();
-    }
-
-    @Override
-    public void updateSpeechPartialResult(String result) {
-
-    }
-
-    @Override
-    public void dismissDialog() {
-
-        if (speechToVoiceDialog != null && speechToVoiceDialog.isVisible())
-            speechToVoiceDialog.dismiss();
-    }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        isSpeechOn = false;
-
-        if (speechToVoiceDialog != null && speechToVoiceDialog.isVisible())
-            speechToVoiceDialog.dismiss();
+        productSearch.dismissDialog();
     }
 
     private void prepareTopOrderFilter(){
