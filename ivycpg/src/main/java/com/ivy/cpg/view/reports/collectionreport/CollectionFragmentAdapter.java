@@ -466,7 +466,7 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
         final CommonDialog commonDialog = new CommonDialog(mContext.getApplicationContext(),
                 mContext,
                 "",
-                "Are you sure want to delete?",
+                mContext.getResources().getString(R.string.delete_alert_common),
                 false,
                 mContext.getResources().getString(R.string.yes),
                 mContext.getResources().getString(R.string.no),
@@ -484,10 +484,10 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
                                 collectionReportHelper.getParentPaymentList().remove(groupPos);
                             }
 
-                            notifyDataSetChanged();
-
                             if (collectionReportHelper.getParentPaymentList().isEmpty())
                                 ((Activity)mContext).finish();
+                            else
+                                notifyDataSetChanged();
 
                         }
                     }

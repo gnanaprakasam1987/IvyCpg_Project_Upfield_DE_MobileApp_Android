@@ -57,7 +57,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
                 android:gravity="end"
-                android:text="Total Collected"/>
+                android:text="@string/total_collected"/>
 
             <TextView
                 style="@style/TextViewFooterValue"
@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
                 android:gravity="end"
-                android:text="Total Cash" />
+                android:text="@string/total_cash" />
 
             <TextView
                 style="@style/TextViewFooterValue"
@@ -109,7 +109,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
                 android:gravity="end"
-                android:text="Total Cheque" />
+                android:text="@string/total_cheque" />
 
             <TextView
                 style="@style/TextViewFooterValue"
@@ -136,7 +136,7 @@
                 android:layout_weight="1.5"
                 android:gravity="end"
                 android:tag="dd"
-                android:text="Total DD" />
+                android:text="@string/total_dd" />
 
             <TextView
                 style="@style/TextViewFooterValue"
@@ -162,7 +162,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
                 android:gravity="end"
-                android:text="Total Advance Payment" />
+                android:text="@string/total_advance_payment" />
 
             <TextView
                 android:id="@+id/totAd"
@@ -188,7 +188,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1.5"
                 android:gravity="end"
-                android:text="Total Credit Note" />
+                android:text="@string/total_credit_note" />
 
             <TextView
                 style="@style/TextViewFooterValue"
@@ -215,7 +215,7 @@
                 android:layout_weight="1.5"
                 android:gravity="end"
                 android:tag="dd"
-                android:text="Total RTGS" />
+                android:text="@string/total_rtgs" />
 
             <TextView
                 style="@style/TextViewFooterValue"
@@ -242,7 +242,7 @@
                 android:layout_weight="1.5"
                 android:gravity="end"
                 android:tag="dd"
-                android:text="Total Mobile Payment" />
+                android:text="@string/total_mobile_payment" />
 
             <TextView
                 style="@style/TextViewFooterValue"

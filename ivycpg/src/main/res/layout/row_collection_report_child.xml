@@ -44,7 +44,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:text="mode" />
+            android:text="" />
         </LinearLayout>
 
         <View
@@ -76,7 +76,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:text="03-05-2017" />
+            android:text="" />
         </LinearLayout>
     </LinearLayout>
 
@@ -100,7 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
-                android:text="Ref No" />
+                android:text="@string/ref_no" />
 
             <TextView
                 style="@style/TextViewListItemValues"
@@ -108,7 +108,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
-                android:text="12345" />
+                android:text="" />
         </LinearLayout>
 
         <LinearLayout
@@ -144,7 +144,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
-                android:text="0000.00" />
+                android:text="" />
         </LinearLayout>
 
         <LinearLayout
@@ -183,7 +183,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="start"
-                android:text="0000.00" />
+                android:text="" />
         </LinearLayout>
     </LinearLayout>
     </LinearLayout>
