@@ -20,8 +20,6 @@ public class ManagerialBO {
 
     private int level;
 
-    private int position;
-
     public ManagerialBO(int level) {
         this.level = level;
     }
@@ -64,14 +62,6 @@ public class ManagerialBO {
 
     public void setExpanded(boolean expanded) {
         isExpanded = expanded;
-    }
-
-    public int getPosition() {
-        return position;
-    }
-
-    public void setPosition(int position) {
-        this.position = position;
     }
 
     public void setLevel(int level) {

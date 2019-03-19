@@ -722,7 +722,7 @@ public class UserMasterHelper {
             db.openDataBase();
             String query = "select UM.userpositionid,UM.username,UM.userlevelid,UM.Parentid" +
                     ",(select userlevelname from userhierarchy where userlevelid = UM.userlevelid) as userlevelname" +
-                    " from UserMaster UM where UM.userlevelid >" + getUserMasterBO().getUserlevelId() +" order by UM.userlevelid";
+                    " from UserMaster UM where UM.userlevelid >" + bmodel.getAppDataProvider().getUser().getUserlevelId() +" order by UM.userlevelid";
             Cursor c = db.selectSQL(query);
             ArrayList<ManagerialBO> userList = new ArrayList<>();
             if (c != null) {
@@ -737,8 +737,6 @@ public class UserMasterHelper {
                     managerialBO.setLevelId(c.getString(2));
                     managerialBO.setUserId(c.getString(0));
                     managerialBO.setUserLevel(c.getString(1) + (c.getString(4) == null ? "" : " - " + c.getString(4)));
-                    managerialBO.setExpanded(false);
-                    managerialBO.setSelected(false);
                     managerialBO.setParentId(c.getString(3));
                     userList.add(managerialBO);
 
@@ -789,7 +787,7 @@ public class UserMasterHelper {
             else
                 managerialBO.setChild(false);
 
-            if (getUserMasterBO().getUserPositionId().equals(managerialBO.getParentId()))
+            if (bmodel.getAppDataProvider().getUser().getUserPositionId().equals(managerialBO.getParentId()))
                 userHierarchy.add(managerialBO);
         }
 

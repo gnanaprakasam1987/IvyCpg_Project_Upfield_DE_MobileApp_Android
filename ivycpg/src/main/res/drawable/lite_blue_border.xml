@@ -2,9 +2,9 @@
 
 <shape xmlns:android="http://schemas.android.com/apk/res/android"
     android:shape="rectangle">
-    <solid android:color="#ECF5FF" />
+    <solid android:color="@color/user_hierarchy_bg_fill" />
     <stroke
         android:width="2dip"
 
-        android:color="#D1E7FF" />
+        android:color="@color/user_hierarchy_bg_border" />
 </shape>

@@ -99,7 +99,7 @@ public class MultiLevelRecyclerView extends RecyclerView implements OnRecyclerIt
             if (i.isExpanded()) {
                 i.setExpanded(false);
                 removeAllChildren(i.getChildren());
-                removePrevItems(mMultiLevelAdapter.getRecyclerViewItemList(), i.getPosition(), i.getChildren().size());
+                removePrevItems(mMultiLevelAdapter.getRecyclerViewItemList(), list.indexOf(i), i.getChildren().size());
             }
         }
     }
@@ -174,7 +174,7 @@ public class MultiLevelRecyclerView extends RecyclerView implements OnRecyclerIt
 
                     adapterList.get(i).setExpanded(false);
 
-                    if (clickedItem.getPosition() > adapterList.get(i).getPosition()) {
+                    if (adapterList.indexOf(clickedItem) > adapterList.indexOf(adapterList.get(i))) {
                         addItems(clickedItem, adapterList, position - itemsToRemove);
                     } else {
                         addItems(clickedItem, adapterList, position);
@@ -193,7 +193,7 @@ public class MultiLevelRecyclerView extends RecyclerView implements OnRecyclerIt
             } else {
                 if (clickedItem.isExpanded()) {
                     removePrevItems(adapterList, prevClickedPosition, numberOfItemsAdded);
-                    addItems(clickedItem, adapterList, clickedItem.getPosition());
+                    addItems(clickedItem, adapterList, adapterList.indexOf(clickedItem));
                 } else {
                     addItems(clickedItem, adapterList, position);
                 }
@@ -219,14 +219,6 @@ public class MultiLevelRecyclerView extends RecyclerView implements OnRecyclerIt
         mMultiLevelAdapter.setRecyclerViewItemList(tempList);
         mMultiLevelAdapter.notifyItemRangeRemoved(position + 1, numberOfItemsAdded);
 
-        refreshPosition();
-    }
-
-    public void refreshPosition() {
-        int position = 0;
-        for (ManagerialBO i : mMultiLevelAdapter.getRecyclerViewItemList()) {
-            i.setPosition(position++);
-        }
     }
 
     public ManagerialBO getParentOfItem(ManagerialBO item) {
@@ -234,10 +226,10 @@ public class MultiLevelRecyclerView extends RecyclerView implements OnRecyclerIt
             int i;
             List<ManagerialBO> list = mMultiLevelAdapter.getRecyclerViewItemList();
             if (item.getLevel() == 0) {
-                return list.get(item.getPosition());
+                return list.get(list.indexOf(item));
             } else {
                 int l;
-                for (i = item.getPosition(); ; i--) {
+                for (i = list.indexOf(item); ; i--) {
                     l = list.get(i).getLevel();
                     if (l == item.getLevel() - 1) {
                         break;
@@ -267,7 +259,6 @@ public class MultiLevelRecyclerView extends RecyclerView implements OnRecyclerIt
             mMultiLevelAdapter.notifyItemRangeInserted(position + 1, clickedItem.getChildren().size());
 
             smoothScrollToPosition(position);
-            refreshPosition();
 
         }
     }
