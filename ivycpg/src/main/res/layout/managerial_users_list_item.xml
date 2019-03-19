@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/parent_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/dimens_10dp"
+    android:background="@drawable/lite_blue_border">
+
+    <ImageView
+        android:id="@+id/img_dropdown"
+        android:layout_width="@dimen/dimens_30dp"
+        android:layout_height="@dimen/dimens_30dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginStart="@dimen/dimens_10dp"
+        android:layout_marginTop="@dimen/dimens_10dp"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:background="@color/colorAccent"
+        android:src="@drawable/arrow_right_white" />
+
+    <TextView
+        style="@style/TextViewListItemPrimary"
+        android:id="@+id/tv_user"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginStart="@dimen/dimens_10dp"
+        android:layout_marginTop="@dimen/dimens_14dp"
+        android:layout_marginBottom="@dimen/dimens_14dp"
+        android:layout_toEndOf="@+id/img_dropdown"
+        android:layout_toRightOf="@+id/img_dropdown"
+        android:layout_toLeftOf="@+id/img_selected"
+        android:layout_toStartOf="@+id/img_selected"
+        android:text="DSM USers 1" />
+
+    <ImageView
+        android:id="@+id/img_selected"
+        android:layout_width="@dimen/dimens_30dp"
+        android:layout_height="@dimen/dimens_30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginStart="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:layout_marginEnd="@dimen/dimens_10dp"
+        android:layout_marginTop="@dimen/dimens_10dp"
+        android:layout_marginBottom="@dimen/dimens_10dp"
+        android:visibility="gone"
+        android:src="@drawable/blue_tick" />
+</RelativeLayout>
