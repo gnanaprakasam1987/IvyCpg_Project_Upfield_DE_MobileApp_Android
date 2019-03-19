@@ -6,14 +6,19 @@ import android.database.Cursor;
 import com.ivy.core.data.app.AppDataProviderImpl;
 import com.ivy.core.data.user.UserDataManagerImpl;
 import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.cpg.view.supervisor.mvp.models.ManagerialBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class UserMasterHelper {
 
@@ -22,6 +27,8 @@ public class UserMasterHelper {
     private final BusinessModel bmodel;
     private UserMasterBO userMasterBO;
     private ArrayList<UserMasterBO> backupSellerList;
+    private ArrayList<ManagerialBO> userHierarchyList;
+    private ManagerialBO mPrevSelectedItem;
 
     public UserMasterHelper(Context context) {
         this.context = context;
@@ -102,6 +109,10 @@ public class UserMasterHelper {
                     userMasterBO.setBackupSellerID(c.getString(c
                             .getColumnIndex("BackupUserId")));
                     userMasterBO.setBackup(false);
+                    userMasterBO.setUserlevelId(c.getString(c
+                            .getColumnIndex("UserLevelId")));
+                    userMasterBO.setUserPositionId(c.getString(c
+                            .getColumnIndex("UserPositionId")));
 
 
                     bmodel.codeCleanUpUtil.setUserData(userMasterBO);
@@ -110,6 +121,7 @@ public class UserMasterHelper {
                 c.close();
             }
             db.closeDB();
+            downloadManagerialUsers();
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -585,7 +597,7 @@ public class UserMasterHelper {
             db.openDataBase();
             String tid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + "" + bmodel.getRetailerMasterBO().getRetailerID()
-                    + "" + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
             deleteQuery(userMasterBO.getUserid());
             String imagePath = "User" + "/" + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate().replace("/", "")
                     + "/"
@@ -693,5 +705,93 @@ public class UserMasterHelper {
         } finally {
             db.closeDB();
         }
+    }
+
+    public ArrayList<ManagerialBO> getUserHierarchyList() {
+        return userHierarchyList;
+    }
+
+    public void setUserHierarchyList(ArrayList<ManagerialBO> userHierarchyList) {
+        this.userHierarchyList = userHierarchyList;
+    }
+
+    public void downloadManagerialUsers() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        try {
+            db.createDataBase();
+            db.openDataBase();
+            String query = "select UM.userpositionid,UM.username,UM.userlevelid,UM.Parentid" +
+                    ",(select userlevelname from userhierarchy where userlevelid = UM.userlevelid) as userlevelname" +
+                    " from UserMaster UM where UM.userlevelid >" + bmodel.getAppDataProvider().getUser().getUserlevelId() +" order by UM.userlevelid";
+            Cursor c = db.selectSQL(query);
+            ArrayList<ManagerialBO> userList = new ArrayList<>();
+            if (c != null) {
+
+                int level = -1;
+                String tempLevel = "";
+
+                while (c.moveToNext()) {
+                    if (!tempLevel.equals(c.getString(2)))
+                        level++;
+                    ManagerialBO managerialBO = new ManagerialBO(level);
+                    managerialBO.setLevelId(c.getString(2));
+                    managerialBO.setUserId(c.getString(0));
+                    managerialBO.setUserLevel(c.getString(1) + (c.getString(4) == null ? "" : " - " + c.getString(4)));
+                    managerialBO.setParentId(c.getString(3));
+                    userList.add(managerialBO);
+
+                    tempLevel = c.getString(2);
+                }
+                c.close();
+            }
+            createTree(userList);
+        } catch (Exception e) {
+            Commons.printException(e);
+        } finally {
+            db.closeDB();
+        }
+    }
+
+    public ManagerialBO getmPrevSelectedItem() {
+        return mPrevSelectedItem;
+    }
+
+    public void setmPrevSelectedItem(ManagerialBO mPrevSelectedItem) {
+        this.mPrevSelectedItem = mPrevSelectedItem;
+    }
+
+    private void createTree(List<ManagerialBO> nodes) {
+
+        Map<String,  ArrayList<ManagerialBO>> mapTmp = new HashMap<>();
+        ArrayList<ManagerialBO> userHierarchy = new ArrayList<>();
+
+        for (ManagerialBO current : nodes) {
+            mapTmp.put(current.getParentId(), new ArrayList<>());
+        }
+
+        for (String parent : mapTmp.keySet()) {
+            for (ManagerialBO current : nodes) {
+                if (parent.equals(current.getParentId()))
+                    mapTmp.get(parent).add(current);
+            }
+        }
+
+        for (ManagerialBO current : nodes) {
+            if (mapTmp.containsKey(current.getUserId()) && mapTmp.get(current.getUserId()) != null && current.getLevel() <= 8)
+                current.addChildren(mapTmp.get(current.getUserId()));
+        }
+
+        for (ManagerialBO managerialBO : nodes) {
+            if (managerialBO.getChildren() == null || managerialBO.getChildren().isEmpty())
+                managerialBO.setChild(true);
+            else
+                managerialBO.setChild(false);
+
+            if (bmodel.getAppDataProvider().getUser().getUserPositionId().equals(managerialBO.getParentId()))
+                userHierarchy.add(managerialBO);
+        }
+
+        setUserHierarchyList(userHierarchy);
+
     }
 }

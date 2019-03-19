@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 
 import com.ivy.core.di.scope.DataBaseInfo;
+import com.ivy.cpg.view.retailercontact.RetailerContactBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletAttributeBO;
@@ -15,8 +16,8 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.view.profile.RetailerContactBo;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -175,16 +176,16 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                     Cursor c, headerCursor;
                     String tid = "";
                     String currentDate;
-                    currentDate = SDUtil.now(SDUtil.DATE_GLOBAL);
+                    currentDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
                     headerCursor = dbUtil.selectSQL("SELECT Tid FROM RetailerEditHeader" + " WHERE RetailerId = "
-                            + RetailerID + " AND Date = " + AppUtils.QT(currentDate) + " AND Upload = " + AppUtils.QT("N"));
+                            + RetailerID + " AND Date = " + StringUtils.QT(currentDate) + " AND Upload = " + StringUtils.QT("N"));
                     if (headerCursor.getCount() > 0) {
                         headerCursor.moveToNext();
                         tid = headerCursor.getString(0);
                         headerCursor.close();
                     }
                     c = dbUtil.selectSQL("select code, value from RetailerEditDetail RED INNER JOIN RetailerEditHeader REH ON REH.tid=RED.tid where REH.retailerid="
-                            + RetailerID + " and REH.tid=" + AppUtils.QT(tid));
+                            + RetailerID + " and REH.tid=" + StringUtils.QT(tid));
                     if (c != null) {
                         while (c.moveToNext()) {
                             mPreviousProfileChangesList.put(c.getString(0), c.getString(1));
@@ -295,7 +296,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public ArrayList<RetailerFlexBO> call() throws Exception {
                 ArrayList<RetailerFlexBO> flexValues = new ArrayList<>();
                 try {
-                    String sql = "select id,name from RetailerFlexValues where type = " + AppUtils.QT(type);
+                    String sql = "select id,name from RetailerFlexValues where type = " + StringUtils.QT(type);
                     Cursor c = dbUtil.selectSQL(sql);
                     RetailerFlexBO retailerFlexBO;
                     if (c.getCount() > 0) {
@@ -324,7 +325,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             String columnsNew = "rid,nearbyrid,upload";
             String values;
             for (int j = 0; j < NearByRetailers.size(); j++) {
-                values = AppUtils.QT(id) + "," + NearByRetailers.get(j).getRetailerID() + "," + AppUtils.QT("N");
+                values = StringUtils.QT(id) + "," + NearByRetailers.get(j).getRetailerID() + "," + StringUtils.QT("N");
                 dbUtil.insertSQL("NearByRetailers", columnsNew, values);
             }
 
@@ -420,7 +421,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public ArrayList<String> call() throws Exception {
                 ArrayList<String> priorityproductList = new ArrayList<>();
                 try {
-                    String sql = "select  ProductId from RetailerPriorityProducts where retailerId=" + AppUtils.QT(retailerId);
+                    String sql = "select  ProductId from RetailerPriorityProducts where retailerId=" + StringUtils.QT(retailerId);
                     Cursor c = dbUtil.selectSQL(sql);
                     if (c.getCount() > 0) {
                         priorityproductList = new ArrayList<>();
@@ -443,7 +444,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public ArrayList<String> call() throws Exception {
                 ArrayList<String> priorityproductList = null;
                 try {
-                    String sql = "select  ProductId from RetailerPriorityProducts where retailerId=" + AppUtils.QT(retailerId);
+                    String sql = "select  ProductId from RetailerPriorityProducts where retailerId=" + StringUtils.QT(retailerId);
                     Cursor c = dbUtil.selectSQL(sql);
                     if (c.getCount() > 0) {
                         priorityproductList = new ArrayList<>();
@@ -467,7 +468,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                         if (strings == null) {
                             ArrayList<String> priorityproductList = null;
                             try {
-                                String sql = "select ProductId from RetailerEditPriorityProducts where status = 'N' and retailerId=" + AppUtils.QT(retailerId);
+                                String sql = "select ProductId from RetailerEditPriorityProducts where status = 'N' and retailerId=" + StringUtils.QT(retailerId);
                                 Cursor c = dbUtil.selectSQL(sql);
                                 if (c.getCount() > 0) {
                                     priorityproductList = new ArrayList<>();
@@ -796,9 +797,9 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             + " WHERE RetailerId = "
                             + RetailerID
                             + " AND Date = "
-                            + AppUtils.QT(currentDate)
+                            + StringUtils.QT(currentDate)
                             + " AND Upload = "
-                            + AppUtils.QT("N"));
+                            + StringUtils.QT("N"));
 
                     if (headerCursor.getCount() > 0) {
                         headerCursor.moveToNext();
@@ -821,7 +822,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public Boolean call() throws Exception {
                 try {
-                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + AppUtils.QT(configCode) + "and RetailerId=" + RetailerID, false);
+                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + StringUtils.QT(configCode) + "and RetailerId=" + RetailerID, false);
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -834,13 +835,13 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
     @Override
     public Single<Boolean> insertNewRow(final String configCode, final String RetailerID, String mTid, String mCustomQuery) {
 
-        final String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)" + "values (" + AppUtils.QT(mTid) + "," + mCustomQuery;
+        final String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)" + "values (" + StringUtils.QT(mTid) + "," + mCustomQuery;
 
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 try {
-                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + AppUtils.QT(configCode) + "and RetailerId=" + RetailerID, false);
+                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditDetail, " Code =" + StringUtils.QT(configCode) + "and RetailerId=" + RetailerID, false);
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -873,7 +874,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public Boolean call() throws Exception {
                 try {
-                    dbUtil.deleteSQL("RrtNearByEditRequest", " tid =" + AppUtils.QT(mTid), false);
+                    dbUtil.deleteSQL("RrtNearByEditRequest", " tid =" + StringUtils.QT(mTid), false);
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -890,8 +891,8 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             if (temp != null)
                                 for (String id : temp.keySet()) {
                                     String Q = "insert into RrtNearByEditRequest (tid,rid,nearbyrid,status,upload)" +
-                                            "values (" + AppUtils.QT(mTid) + "," + RetailerID + "," + id
-                                            + "," + AppUtils.QT(temp.get(id)) + ",'N')";
+                                            "values (" + StringUtils.QT(mTid) + "," + RetailerID + "," + id
+                                            + "," + StringUtils.QT(temp.get(id)) + ",'N')";
                                     dbUtil.executeQ(Q);
                                 }
                         } catch (Exception e) {
@@ -912,7 +913,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             public Boolean call() throws Exception {
                 try {
                     dbUtil.deleteSQL("RetailerEditPriorityProducts", " RetailerId ="
-                            + AppUtils.QT(RetailerID), false);
+                            + StringUtils.QT(RetailerID), false);
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -928,11 +929,11 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                             if (selectedPrioProducts != null)
                                 for (StandardListBO bo : selectedPrioProducts) {
                                     String Q = "insert into RetailerEditPriorityProducts (tid,RetailerId,productId,levelid,status,upload)" +
-                                            "values (" + AppUtils.QT(mTid)
-                                            + "," + AppUtils.QT(RetailerID)
+                                            "values (" + StringUtils.QT(mTid)
+                                            + "," + StringUtils.QT(RetailerID)
                                             + "," + SDUtil.convertToInt(bo.getListID())
-                                            + "," + AppUtils.QT(bo.getListCode())
-                                            + "," + AppUtils.QT(bo.getStatus()) + ",'N')";
+                                            + "," + StringUtils.QT(bo.getListCode())
+                                            + "," + StringUtils.QT(bo.getStatus()) + ",'N')";
                                     dbUtil.executeQ(Q);
                                 }
                             return true;
@@ -954,7 +955,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public Boolean call() throws Exception {
                 try {
-                    dbUtil.deleteSQL("RetailerEditAttribute", " tid =" + AppUtils.QT(mTid), false);
+                    dbUtil.deleteSQL("RetailerEditAttribute", " tid =" + StringUtils.QT(mTid), false);
 
                 } catch (Exception e) {
                     Commons.printException("" + e);
@@ -971,11 +972,11 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                         try {
                             for (NewOutletAttributeBO id : tempList) {
                                 String Q = "insert into RetailerEditAttribute (tid,retailerid,attributeid,levelid,status,upload)" +
-                                        "values (" + AppUtils.QT(mTid)
+                                        "values (" + StringUtils.QT(mTid)
                                         + "," + RetailerID
                                         + "," + id.getAttrId()
                                         + "," + id.getLevelId()
-                                        + "," + AppUtils.QT(id.getStatus()) + ",'N')";
+                                        + "," + StringUtils.QT(id.getStatus()) + ",'N')";
                                 dbUtil.executeQ(Q);
                             }
                         } catch (Exception e) {
@@ -992,13 +993,13 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
     public Single<Boolean> updateRetailer(final String tid, final String RetailerID, final String currentDate) {
 
         final String insertHeader = "insert into RetailerEditHeader (tid,RetailerId,date)" +
-                "values (" + AppUtils.QT(tid) + "," + RetailerID + "," + AppUtils.QT(currentDate) + ")";
+                "values (" + StringUtils.QT(tid) + "," + RetailerID + "," + StringUtils.QT(currentDate) + ")";
 
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 try {
-                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditHeader, " Tid=" + AppUtils.QT(tid), false);
+                    dbUtil.deleteSQL(DataMembers.tbl_RetailerEditHeader, " Tid=" + StringUtils.QT(tid), false);
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -1072,17 +1073,17 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                                 if (retailerContactBo.getStatus().equalsIgnoreCase("U")
                                         || retailerContactBo.getStatus().equalsIgnoreCase("I")
                                         || retailerContactBo.getStatus().equalsIgnoreCase("D")) {
-                                    String value = AppUtils.QT(retailerContactBo.getTitle()) + ","
-                                            + AppUtils.QT(retailerContactBo.getContactTitleLovId()) + ","
-                                            + AppUtils.QT(retailerContactBo.getFistname()) + ","
-                                            + AppUtils.QT(retailerContactBo.getLastname()) + ","
-                                            + AppUtils.QT(retailerContactBo.getContactNumber()) + ","
-                                            + AppUtils.QT(retailerContactBo.getContactMail()) + ","
+                                    String value = StringUtils.QT(retailerContactBo.getTitle()) + ","
+                                            + StringUtils.QT(retailerContactBo.getContactTitleLovId()) + ","
+                                            + StringUtils.QT(retailerContactBo.getFistname()) + ","
+                                            + StringUtils.QT(retailerContactBo.getLastname()) + ","
+                                            + StringUtils.QT(retailerContactBo.getContactNumber()) + ","
+                                            + StringUtils.QT(retailerContactBo.getContactMail()) + ","
                                             + retailerContactBo.getIsPrimary() + ","
-                                            + AppUtils.QT(retailerContactBo.getStatus()) + ","
-                                            + AppUtils.QT(retailerContactBo.getCpId()) + ","
-                                            + AppUtils.QT(RetailerID) + ","
-                                            + AppUtils.QT(mTid);
+                                            + StringUtils.QT(retailerContactBo.getStatus()) + ","
+                                            + StringUtils.QT(retailerContactBo.getCpId()) + ","
+                                            + StringUtils.QT(RetailerID) + ","
+                                            + StringUtils.QT(mTid);
                                     dbUtil.insertSQL("RetailerContactEdit", column, value);
                                 }
                             }
@@ -1104,7 +1105,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public Integer call() throws Exception {
                 try {
-                    Cursor c = dbUtil.selectSQL("SELECT code FROM " + DataMembers.tbl_RetailerEditDetail + " where Tid=" + AppUtils.QT(tid));
+                    Cursor c = dbUtil.selectSQL("SELECT code FROM " + DataMembers.tbl_RetailerEditDetail + " where Tid=" + StringUtils.QT(tid));
                     if (c != null)
                         return c.getCount();
                 } catch (Exception e) {
@@ -1120,7 +1121,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public Integer call() throws Exception {
                 try {
-                    Cursor c = dbUtil.selectSQL("SELECT status FROM " + DataMembers.tbl_nearbyEditRequest + " where Tid=" + AppUtils.QT(tid));
+                    Cursor c = dbUtil.selectSQL("SELECT status FROM " + DataMembers.tbl_nearbyEditRequest + " where Tid=" + StringUtils.QT(tid));
                     if (c != null)
                         return c.getCount();
                 } catch (Exception e) {
@@ -1136,7 +1137,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public Integer call() throws Exception {
                 try {
-                    Cursor c = dbUtil.selectSQL("SELECT status FROM " + DataMembers.tbl_RetailerEditPriorityProducts + " where Tid=" + AppUtils.QT(tid));
+                    Cursor c = dbUtil.selectSQL("SELECT status FROM " + DataMembers.tbl_RetailerEditPriorityProducts + " where Tid=" + StringUtils.QT(tid));
                     if (c != null)
                         return c.getCount();
                 } catch (Exception e) {
@@ -1152,7 +1153,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public Integer call() throws Exception {
                 try {
-                    Cursor c = dbUtil.selectSQL("SELECT status FROM RetailerEditAttribute" + " where Tid=" + AppUtils.QT(tid));
+                    Cursor c = dbUtil.selectSQL("SELECT status FROM RetailerEditAttribute" + " where Tid=" + StringUtils.QT(tid));
                     if (c != null)
                         return c.getCount();
                 } catch (Exception e) {

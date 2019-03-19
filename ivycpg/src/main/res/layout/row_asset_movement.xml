@@ -13,32 +13,35 @@
     android:paddingBottom="@dimen/list_item_padding_top_nd_bottom"
     android:weightSum="9">
 
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen_4dp"
+        android:orientation="vertical"
+        android:layout_weight="7">
     <TextView
         android:id="@+id/txt_move_assetName"
         style="@style/TextViewListItemPrimary"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="4"
         android:maxLines="1"
-        android:padding="@dimen/dimen_4dp"
         android:text="@string/app_name" />
 
     <TextView
         android:id="@+id/txt_move_serialNumber"
-        style="@style/TextViewListItemValues"
-        android:layout_width="0dp"
+        style="@style/TextViewListItemSecondaryHighlight"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="4"
-        android:maxLines="1"
-        android:padding="@dimen/dimen_4dp"
         android:text="@string/app_name" />
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/iv_move_icon"
         android:layout_width="@dimen/dimen_0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_weight="2"
         android:padding="@dimen/dimen_4dp"
+        android:layout_gravity="center"
         android:src="@drawable/ic_compare_arrows_black_24dp"
         tools:ignore="ContentDescription" />
 

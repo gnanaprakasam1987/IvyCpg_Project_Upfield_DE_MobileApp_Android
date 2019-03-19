@@ -10,7 +10,7 @@ import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.Vector;
 
@@ -88,7 +88,7 @@ public class CurrentReportManagerImpl implements CurrentReportManager {
 
             c = db.selectSQL("SELECT productId, productLevelId, uomid from ActivityGroupMapping AGM" +
                     " INNER JOIN ActivityGroupProductMapping APM ON APM.groupid=AGM.groupid" +
-                    " where AGM.activity=" + AppUtils.QT(activity));
+                    " where AGM.activity=" + StringUtils.QT(activity));
             if (c != null) {
                 if (c.getCount() > 0) {
                     initializeUOMmapping(reportType);

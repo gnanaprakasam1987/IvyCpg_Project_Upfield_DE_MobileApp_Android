@@ -28,6 +28,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -108,7 +109,7 @@ public class DigitalContentOthersFragment extends IvyBaseFragment {
 
             if (otherList.size() > 0) {
                 Collections.sort(otherList, DigitalContentBO.dateCompartor);
-                String today = SDUtil.now(SDUtil.DATE_GLOBAL);
+                String today = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
                 String mCurrentDay = today.split("/")[2];
                 String current_month_year = today.split(mCurrentDay)[0];
                 String current_month = today.split("/")[1];

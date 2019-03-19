@@ -6,11 +6,11 @@ import android.database.DatabaseUtils;
 
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
@@ -61,7 +61,7 @@ public class RetailerContractHelper {
             db.createDataBase();
             db.openDataBase();
             String sb ="select contractid,ContractDesc,ContractType,StartDate,EndDate,RetailerId,Status,templateid,typelovid,cs_id " +
-                    "from RetailerContract where retailerid= " + AppUtils.QT(retailerid);
+                    "from RetailerContract where retailerid= " + StringUtils.QT(retailerid);
 
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
@@ -97,8 +97,8 @@ public class RetailerContractHelper {
             db.createDataBase();
             db.openDataBase();
             String sb ="select upload from RetailerContractRenewalDetails  " +
-                    "where Retailerid= " + AppUtils.QT(mRetailerContractBO.getRetailerid()) +
-                    "AND ContractID= " + AppUtils.QT(mRetailerContractBO.getCs_id());
+                    "where Retailerid= " + StringUtils.QT(mRetailerContractBO.getRetailerid()) +
+                    "AND ContractID= " + StringUtils.QT(mRetailerContractBO.getCs_id());
 
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
@@ -127,8 +127,8 @@ public class RetailerContractHelper {
             db.createDataBase();
             db.openDataBase();
             String sb = "select RetailerId,ContractId,Tid,startdate,enddate,description,typelovid,ContractType "
-                    +"from RetailerContractRenewalDetails where retailerid=" + AppUtils.QT(retailerid)
-                    +" AND upload =" + AppUtils.QT("N");
+                    +"from RetailerContractRenewalDetails where retailerid=" + StringUtils.QT(retailerid)
+                    +" AND upload =" + StringUtils.QT("N");
 
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
@@ -162,21 +162,21 @@ public class RetailerContractHelper {
             db.openDataBase();
 
             db.deleteSQL("RetailerContractRenewalDetails", "ContractId="
-                    + AppUtils.QT(retailerContractBO.getContractid()), false);
+                    + StringUtils.QT(retailerContractBO.getContractid()), false);
 
             String columnsNew = "Retailerid,ContractID,Tid,startdate,enddate,utcDate,templateid,description,typelovid,ContractType";
             String values;
 
-            values = AppUtils.QT(retailerContractBO.getRetailerid()) + "," +
-                    AppUtils.QT(retailerContractBO.getCs_id()) + "," +
-                    AppUtils.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil.now(SDUtil.DATE_TIME_ID)) + "," +
-                    AppUtils.QT(retailerContractBO.getStartdate()) + "," +
-                    AppUtils.QT(retailerContractBO.getEnddate()) + "," +
+            values = StringUtils.QT(retailerContractBO.getRetailerid()) + "," +
+                    StringUtils.QT(retailerContractBO.getCs_id()) + "," +
+                    StringUtils.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)) + "," +
+                    StringUtils.QT(retailerContractBO.getStartdate()) + "," +
+                    StringUtils.QT(retailerContractBO.getEnddate()) + "," +
                     DatabaseUtils.sqlEscapeString( Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")) + "," +
-                    AppUtils.QT(retailerContractBO.getTemplateId()) + "," +
-                    AppUtils.QT(retailerContractBO.getContractname()) + "," +
-                    AppUtils.QT(retailerContractBO.getTypelovid()) + "," +
-                    AppUtils.QT(retailerContractBO.getContracttype());
+                    StringUtils.QT(retailerContractBO.getTemplateId()) + "," +
+                    StringUtils.QT(retailerContractBO.getContractname()) + "," +
+                    StringUtils.QT(retailerContractBO.getTypelovid()) + "," +
+                    StringUtils.QT(retailerContractBO.getContracttype());
 
             db.insertSQL("RetailerContractRenewalDetails", columnsNew, values);
             db.closeDB();
@@ -193,7 +193,7 @@ public class RetailerContractHelper {
             db.openDataBase();
 
             db.deleteSQL("RetailerContractRenewalDetails", "Tid="
-                    + AppUtils.QT(Tid), false);
+                    + StringUtils.QT(Tid), false);
 
 
             db.closeDB();

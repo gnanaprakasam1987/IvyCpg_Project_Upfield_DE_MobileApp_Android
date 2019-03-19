@@ -29,14 +29,13 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/retailer_margin_right"
             android:layout_marginRight="@dimen/retailer_margin_right"
-            android:layout_weight="54.9"
-            android:gravity="center"
+            android:layout_weight="5"
+            android:gravity="center_vertical"
             android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/icons_left_margin"
                 android:layout_marginLeft="@dimen/icons_left_margin"
                 android:gravity="center"
@@ -49,8 +48,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/outlet_left_margin"
-                    android:layout_marginLeft="@dimen/outlet_left_margin"
                     android:text="Outlet name" />
 
                 <TextView
@@ -59,11 +56,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginStart="@dimen/outlet_left_margin"
-                    android:layout_marginLeft="@dimen/outlet_left_margin"
                     android:text="Outlet Location"
                     android:textColor="?attr/accentcolor"
-                    android:textSize="@dimen/text_size_primary" />
+                    android:textSize="@dimen/text_size_primary"
+                    android:visibility="gone" />
             </LinearLayout>
 
             <LinearLayout
@@ -74,76 +70,153 @@
                 android:layout_marginTop="@dimen/icons_top_margin"
                 android:orientation="horizontal">
 
-                <ImageView
-                    android:id="@+id/iv_outlet_color"
+                <LinearLayout
+                    android:id="@+id/ll_iv_outlet_color"
                     android:layout_width="@dimen/ret_image_size"
                     android:layout_height="@dimen/ret_image_size"
-                    android:layout_marginEnd="@dimen/dimen_10dp"
-                    android:layout_marginRight="@dimen/dimen_10dp"
-                    android:src="@drawable/ic_dashboard_golden_store"
-                    android:visibility="visible" />
+                    android:layout_marginEnd="@dimen/dimen_5dp"
+                    android:layout_marginRight="@dimen/dimen_5dp"
+                    android:background="@drawable/circle_transparent">
 
-                <ImageView
-                    android:id="@+id/iv_gold_dead"
-                    android:layout_width="@dimen/ret_image_size"
-                    android:layout_height="@dimen/ret_image_size"
-                    android:layout_marginEnd="@dimen/dimen_10dp"
-                    android:layout_marginRight="@dimen/dimen_10dp"
-                    android:src="@drawable/ic_dashboard_golden_store"
-                    android:visibility="visible" />
+                    <ImageView
+                        android:id="@+id/iv_outlet_color"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_action_star_select" />
+                </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/iv_invoice"
+                <LinearLayout
+                    android:id="@+id/ll_iv_gold_dead"
                     android:layout_width="@dimen/ret_image_size"
                     android:layout_height="@dimen/ret_image_size"
-                    android:layout_marginEnd="@dimen/dimen_10dp"
-                    android:layout_marginRight="@dimen/dimen_10dp"
-                    android:src="@drawable/ic_dashboard_invoice"
-                    android:visibility="visible" />
+                    android:layout_marginEnd="@dimen/dimen_5dp"
+                    android:layout_marginRight="@dimen/dimen_5dp"
+                    android:background="@drawable/circle_transparent">
 
-                <ImageView
-                    android:id="@+id/iv_indicative"
-                    android:layout_width="@dimen/ret_image_size"
-                    android:layout_height="@dimen/ret_image_size"
-                    android:layout_marginEnd="@dimen/dimen_10dp"
-                    android:layout_marginRight="@dimen/dimen_10dp"
-                    android:src="@drawable/ic_dashboard_indicative"
-                    android:visibility="visible" />
+                    <ImageView
+                        android:id="@+id/iv_gold_dead"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_action_star_select" />
+                </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/iv_dead_gold_store"
+                <LinearLayout
+                    android:id="@+id/ll_iv_invoice"
                     android:layout_width="@dimen/ret_image_size"
                     android:layout_height="@dimen/ret_image_size"
-                    android:layout_marginEnd="@dimen/dimen_10dp"
-                    android:layout_marginRight="@dimen/dimen_10dp"
-                    android:src="@drawable/ic_dashboard_golden_store"
-                    android:visibility="visible" />
+                    android:layout_marginEnd="@dimen/dimen_5dp"
+                    android:layout_marginRight="@dimen/dimen_5dp"
+                    android:background="@drawable/circle_transparent">
 
-                <ImageView
-                    android:id="@+id/iv_asset_mapped"
-                    android:layout_width="@dimen/ret_image_size"
-                    android:layout_height="@dimen/ret_image_size"
-                    android:layout_marginEnd="@dimen/dimen_10dp"
-                    android:layout_marginRight="@dimen/dimen_10dp"
-                    android:src="@drawable/ic_action_star_select"
-                    android:visibility="visible" />
+                    <ImageView
+                        android:id="@+id/iv_invoice"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_action_star_select" />
+                </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/iv_deviate"
+                <LinearLayout
+                    android:id="@+id/ll_iv_indicative"
                     android:layout_width="@dimen/ret_image_size"
                     android:layout_height="@dimen/ret_image_size"
-                    android:src="@drawable/ic_dashboard_deviated"
-                    android:visibility="visible" />
+                    android:layout_marginEnd="@dimen/dimen_5dp"
+                    android:layout_marginRight="@dimen/dimen_5dp"
+                    android:background="@drawable/circle_transparent">
+
+                    <ImageView
+                        android:id="@+id/iv_indicative"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_action_star_select" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_iv_dead_gold_store"
+                    android:layout_width="@dimen/ret_image_size"
+                    android:layout_height="@dimen/ret_image_size"
+                    android:layout_marginEnd="@dimen/dimen_5dp"
+                    android:layout_marginRight="@dimen/dimen_5dp"
+                    android:background="@drawable/circle_transparent">
+
+                    <ImageView
+                        android:id="@+id/iv_dead_gold_store"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_action_star_select" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_iv_asset_mapped"
+                    android:layout_width="@dimen/ret_image_size"
+                    android:layout_height="@dimen/ret_image_size"
+                    android:layout_marginEnd="@dimen/dimen_5dp"
+                    android:layout_marginRight="@dimen/dimen_5dp"
+                    android:background="@drawable/circle_transparent">
+
+
+                    <ImageView
+                        android:id="@+id/iv_asset_mapped"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_action_star_select" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_iv_deviate"
+                    android:layout_width="@dimen/ret_image_size"
+                    android:layout_height="@dimen/ret_image_size"
+                    android:layout_marginEnd="@dimen/dimen_5dp"
+                    android:layout_marginRight="@dimen/dimen_5dp"
+                    android:background="@drawable/circle_transparent">
+
+                    <ImageView
+                        android:id="@+id/iv_deviate"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_dashboard_deviated" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_iv_cooler"
+                    android:layout_width="@dimen/ret_image_size"
+                    android:layout_height="@dimen/ret_image_size"
+                    android:layout_marginEnd="@dimen/dimen_5dp"
+                    android:layout_marginRight="@dimen/dimen_5dp"
+                    android:background="@drawable/circle_transparent">
+
+                    <ImageView
+                        android:id="@+id/iv_cooler"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_freeze" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_iv_loyality"
+                    android:layout_width="@dimen/ret_image_size"
+                    android:layout_height="@dimen/ret_image_size"
+                    android:layout_marginEnd="@dimen/dimen_5dp"
+                    android:layout_marginRight="@dimen/dimen_5dp"
+                    android:background="@drawable/circle_transparent">
+
+                    <ImageView
+                        android:id="@+id/iv_loyality"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_loyalty" />
+                </LinearLayout>
 
                 <TextView
-                    android:id="@+id/tv_freq"
-                    android:layout_width="@dimen/ret_image_size"
+                    android:id="@+id/tv_task_count"
+                    android:layout_width="wrap_content"
                     android:layout_height="@dimen/ret_image_size"
+                    android:fontFamily="@font/roboto_light"
                     android:gravity="center"
                     android:text=""
                     android:textColor="@color/black_bg3"
                     android:textSize="@dimen/text_size_caption"
                     android:visibility="gone" />
+
             </LinearLayout>
         </LinearLayout>
 
@@ -152,7 +225,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
-            android:layout_weight="44.6"
+            android:layout_weight="4"
             android:orientation="horizontal"
             android:visibility="visible">
 
@@ -181,6 +254,8 @@
                     android:id="@+id/labelTgt1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_medium"
+                    android:singleLine="true"
                     android:text="@string/achv_tgt"
                     android:textColor="?attr/colorAccent"
                     android:textSize="@dimen/text_size_caption" />
@@ -196,6 +271,7 @@
                         style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_light"
                         android:text=""
                         android:textSize="@dimen/text_size_primary" />
 
@@ -206,6 +282,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_5px"
                         android:layout_marginLeft="@dimen/margin_5px"
+                        android:fontFamily="@font/roboto_light"
                         android:text=""
                         android:textSize="@dimen/text_size_caption" />
                 </LinearLayout>
@@ -238,6 +315,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
+                    android:fontFamily="@font/roboto_medium"
+                    android:singleLine="true"
                     android:text="@string/achv_tgt"
                     android:textColor="?attr/colorAccent"
                     android:textSize="@dimen/text_size_caption" />
@@ -252,6 +331,7 @@
                         style="@style/TextViewListItemValues"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/roboto_light"
                         android:text=""
                         android:textSize="@dimen/text_size_primary" />
 
@@ -262,23 +342,11 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/margin_5px"
                         android:layout_marginLeft="@dimen/margin_5px"
+                        android:fontFamily="@font/roboto_light"
                         android:text=""
                         android:textSize="@dimen/text_size_caption" />
                 </LinearLayout>
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/outlet_new"
-        android:layout_width="@dimen/new_ret_width"
-        android:layout_height="@dimen/new_ret_height"
-        android:layout_gravity="end|bottom"
-        android:background="@drawable/new_ret_tag"
-        android:gravity="center"
-        android:paddingBottom="@dimen/margin_10px"
-        android:text="@string/new1"
-        android:textColor="?attr/accentcolor"
-        android:textSize="8sp"
-        android:visibility="visible" />
 </android.support.v7.widget.CardView>

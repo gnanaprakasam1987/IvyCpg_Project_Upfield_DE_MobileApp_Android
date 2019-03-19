@@ -18,7 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ActivationBO;
+import com.ivy.ui.activation.bo.ActivationBO;
 import com.ivy.utils.FontUtils;
 
 import java.util.List;

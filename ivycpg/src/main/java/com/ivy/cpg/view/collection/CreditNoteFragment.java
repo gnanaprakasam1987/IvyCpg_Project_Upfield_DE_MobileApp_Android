@@ -20,7 +20,6 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -35,6 +34,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.UpdatePaymentByDateInterface;
 import com.ivy.sd.png.model.UpdatePaymentsInterface;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -124,7 +124,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
             numKeyLayout.setVisibility(View.GONE);
             cardViewLayout.setVisibility(View.GONE);
         }
-        mUpdatePaymentInterface.updatePaymentDetails(SDUtil.now(SDUtil.DATE_GLOBAL));
+        mUpdatePaymentInterface.updatePaymentDetails(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
         tempCreditNoteValue = mPaymentBO.getAmount();
         String modeID = bmodel.getStandardListIdAndType(
                 "CNAP",
@@ -184,7 +184,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
             public void afterTextChanged(Editable s) {
                 String qty = s.toString();
                 double value = 0;
-                if (bmodel.validDecimalValue(qty, 16, 2)) {
+                if (SDUtil.isValidDecimal(qty, 16, 2)) {
                     if (!qty.equals("")) {
                         value = SDUtil.convertToDouble(qty);
                     }
@@ -238,7 +238,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
     public void onClick(View v) {
         Button btn = (Button) v;
         if (btn == applyBtn) {
-            mUpdatePaymentInterface.updatePaymentDetails(SDUtil.now(SDUtil.DATE_GLOBAL));
+            mUpdatePaymentInterface.updatePaymentDetails(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             mPaymentBO.setAmount(currentCollectionValue);
 
             checkFromCollectionScreen();
@@ -275,6 +275,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
                 row = inflater.inflate(R.layout.row_credit_note, parent, false);
                 holder = new ViewHolder();
 
+                holder.creditNoteIDTxt = (TextView) row.findViewById(R.id.creditNoteIDTxt);
                 holder.refNoTxt = row.findViewById(R.id.refNoTxt);
                 holder.crdNoteAmtTxt = row
                         .findViewById(R.id.crdNoteAmtTxt);
@@ -328,6 +329,7 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
             }
 
             holder.creditNoteListBO = mCreditNoteList.get(position);
+            holder.creditNoteIDTxt.setText(holder.creditNoteListBO.getId());
             holder.refNoTxt.setText(holder.creditNoteListBO.getRefno());
             String strCreditAmt = bmodel.formatValue(holder.creditNoteListBO
                     .getAmount()) + "";
@@ -347,12 +349,13 @@ public class CreditNoteFragment extends IvyBaseFragment implements UpdatePayment
     }
 
     class ViewHolder {
+        private TextView creditNoteIDTxt;
         private TextView refNoTxt;
         private TextView crdNoteAmtTxt;
         private TextView totCrdNoteAmtTxt;
         private CheckBox creditNoteCheckBox;
         private CreditNoteListBO creditNoteListBO;
-        private FrameLayout parentLayout;
+        private LinearLayout parentLayout;
     }
 
     private void updateCreditNotePayment() {

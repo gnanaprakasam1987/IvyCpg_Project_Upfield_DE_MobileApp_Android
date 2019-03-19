@@ -93,6 +93,7 @@ import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SpecialFilterFragment;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
@@ -2447,8 +2448,8 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
     };
 
     private void nextBtnSubTask() {
-        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                .now(SDUtil.TIME));
+        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                .now(DateTimeUtils.TIME));
         SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
         if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
@@ -2521,7 +2522,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 bmodel.productHelper.clearOrderTable();
 
                 bmodel.outletTimeStampHelper
-                        .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                        .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                 startActivity(new Intent(SubDStockOrderActivity.this,
                         SubDHomeActivity.class));
                 finish();
@@ -3468,7 +3469,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                     if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), OrderedFlag)) {
                         bmodel.saveModuleCompletion("MENU_SUBD_ORD");
                         bmodel.outletTimeStampHelper
-                                .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                                .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                         startActivity(new Intent(SubDStockOrderActivity.this,
                                 SubDHomeActivity.class));
                         finish();
@@ -4664,7 +4665,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 try {
 
                     alertDialog.dismiss();
-                    bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                    bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
 
                     showDialog(DIALOG_ORDER_SAVED);
 

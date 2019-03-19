@@ -31,10 +31,10 @@ import com.ivy.sd.png.bo.NewOutletBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -60,7 +60,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
     private Button okBtn, cancelBtn;
     private AlertDialog alertDialog;
     private View view;
-    private static final String MENU_NEW_RETAILER = "MENU_NEW_RET";
+    private static final String MENU_NEW_RETAILER = "MENU_NEWRET_EDT";
     private ChannelSelectionDialog dialogFragment;
     NewOutletEditSortDialog sortDialog;
     private int lastCheckedPosition = -1;
@@ -99,12 +99,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
             gridLayoutManager = new GridLayoutManager(getActivity(), 1);
 
         recyclerView.setLayoutManager(gridLayoutManager);
-        retailerEditList = new ArrayList<>();
-        retailerEditList = bmodel.newOutletHelper.getNewRetailers();
-        if (retailerEditList.size() > 0) {
-            recycleradapter = new RecyclerViewAdapter(retailerEditList);
-            recyclerView.setAdapter(recycleradapter);
-        }
+
         return view;
     }
 
@@ -112,6 +107,12 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
     public void onStart() {
         super.onStart();
         setHasOptionsMenu(true);
+        retailerEditList = new ArrayList<>();
+        retailerEditList = bmodel.newOutletHelper.getNewRetailers();
+        if (retailerEditList.size() > 0) {
+            recycleradapter = new RecyclerViewAdapter(retailerEditList);
+            recyclerView.setAdapter(recycleradapter);
+        }
     }
 
     @Override
@@ -195,6 +196,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     i.putExtra("screenMode", 1);
                     i.putExtra("retailerId", retailer.getRetailerId());
+                    i.putExtra("isNewRetailerEdit", true);
                     startActivity(i);
                     //getActivity().finish();
                 }
@@ -326,8 +328,8 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
             //progressDialogue.dismiss();
             if (result == Boolean.TRUE) {
 
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.deleted_sucessfully),
                         Toast.LENGTH_SHORT).show();
@@ -362,8 +364,8 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
             return true;
         } else if (i == R.id.menu_add) {
 
-            if ((SDUtil.compareDate(bmodel.userMasterHelper.getUserMasterBO()
-                            .getDownloadDate(), SDUtil.now(SDUtil.DATE_GLOBAL),
+            if ((DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
+                            .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                     "yyyy/MM/dd") != 0)
                     && bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED) {
                 Toast.makeText(getActivity(),
@@ -479,6 +481,7 @@ public class NewOutletEditFragment extends IvyBaseFragment implements ChannelSel
                     i.putExtra("screenMode", 4);
                     fromHomeScreen = true;
                 }
+                i.putExtra("isNewRetailerEdit", true);
                 startActivity(i);
                 // getActivity().finish();
 

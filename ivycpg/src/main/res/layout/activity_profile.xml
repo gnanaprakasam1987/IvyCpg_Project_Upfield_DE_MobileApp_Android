@@ -140,11 +140,30 @@
                             android:tint="@color/white" />
 
                         <ImageView
+                            android:id="@+id/profile_mapswitch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="bottom|end"
+                            android:layout_marginTop="@dimen/dimens_22dp"
+                            android:layout_marginBottom="@dimen/dimens_22dp"
+                            android:layout_marginEnd="@dimen/dimens_10dp"
+                            android:layout_marginRight="@dimen/dimens_10dp"
+                            android:contentDescription="@null"
+                            android:src="@drawable/ic_gps"
+                            android:tint="@color/white"
+                            app:borderWidth="0dp"
+                            app:fabSize="mini"
+                            app:layout_anchor="@id/appbar"
+                            app:layout_anchorGravity="bottom|end"
+                            tools:ignore="MissingPrefix" />
+
+                        <ImageView
                             android:id="@+id/profile_edit_click"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_gravity="bottom|end"
-                            android:layout_margin="@dimen/dimens_22dp"
+                            android:layout_marginTop="@dimen/dimens_22dp"
+                            android:layout_marginBottom="@dimen/dimens_22dp"
                             android:layout_marginEnd="@dimen/dimens_10dp"
                             android:layout_marginRight="@dimen/dimens_10dp"
                             android:contentDescription="@null"

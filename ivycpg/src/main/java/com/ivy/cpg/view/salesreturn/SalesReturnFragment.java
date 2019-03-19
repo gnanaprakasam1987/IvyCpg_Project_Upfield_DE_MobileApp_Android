@@ -59,6 +59,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.CustomKeyBoard;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
@@ -635,8 +636,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                         salesReturnHelper
                                 .clearSalesReturnTable(false);
                         bmodel.outletTimeStampHelper
-                                .updateTimeStampModuleWise(SDUtil
-                                        .now(SDUtil.TIME));
+                                .updateTimeStampModuleWise(DateTimeUtils
+                                        .now(DateTimeUtils.TIME));
                         getActivity().finish();
                         //BusinessModel.loadActivity(
                         // getActivity(),
@@ -828,8 +829,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
                         showCustomDialog();
                     else {
                         salesReturnHelper.clearSalesReturnTable(false);
-                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                                .now(SDUtil.TIME));
+                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                                .now(DateTimeUtils.TIME));
                         Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
                         startActivity(intent);
                         getActivity().finish();
@@ -1014,8 +1015,8 @@ public class SalesReturnFragment extends IvyBaseFragment implements
             @Override
             public void onPositiveButtonClick() {
                 salesReturnHelper.clearSalesReturnTable(false);
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
                 startActivity(intent);
                 getActivity().finish();

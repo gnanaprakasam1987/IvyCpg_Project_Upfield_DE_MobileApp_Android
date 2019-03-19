@@ -20,12 +20,11 @@ import com.ivy.sd.png.bo.CreditNoteListBO;
 import com.ivy.sd.png.bo.InvoiceHeaderBO;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.UpdatePaymentByDateInterface;
 import com.ivy.sd.png.model.UpdatePaymentsInterface;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.sd.png.view.CustomKeyBoard;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -92,7 +91,7 @@ public class AdvancePaymentFragment extends IvyBaseFragment implements UpdatePay
             llEnterCreditNote.setVisibility(View.VISIBLE);
         }
 
-        mUpdatePaymentInterface.updatePaymentDetails(SDUtil.now(SDUtil.DATE_GLOBAL));
+        mUpdatePaymentInterface.updatePaymentDetails(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
         String modeID = bmodel.getStandardListIdAndType(
                 "CNAP",

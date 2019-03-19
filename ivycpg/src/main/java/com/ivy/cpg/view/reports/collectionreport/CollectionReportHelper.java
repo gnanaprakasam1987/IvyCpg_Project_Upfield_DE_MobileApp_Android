@@ -9,6 +9,8 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,6 +84,7 @@ public class CollectionReportHelper {
                         paybo.setInvoiceDate(c.getString(10));
                         paybo.setListName(c.getString(11));
                         paybo.setPreviousPaidAmount(c.getDouble(12));
+                        paybo.setUid(c.getString(13));
                         paybo.setAppliedDiscountAmount(c.getDouble(14));
                         paybo.setGroupId(c.getString(15));
                         paybo.setRetailerCode(c.getString(16));
@@ -205,6 +208,9 @@ public class CollectionReportHelper {
         return childPaymentList;
     }
 
+    public ArrayList<PaymentBO> getPaymentList() {
+        return paymentList;
+    }
 
     private HashMap<String, ArrayList<PaymentBO>> lstPaymentBObyGroupId;
 
@@ -220,7 +226,7 @@ public class CollectionReportHelper {
                             " inner join Payment PM on PM.uid=CN.refno" +
                             " left join StandardListMaster SM on PM.cashMode=SM.listid" +
                             " left join RetailerMaster RM on RM.retailerid=CN.retailerID" +
-                            " where id like 'AP%' and CN.date=" + bModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                            " where id like 'AP%' and CN.date=" + bModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             if (c != null) {
                 PaymentBO bo;
                 lstAdvancePayment = new ArrayList<>();
@@ -292,5 +298,55 @@ public class CollectionReportHelper {
             if (db != null)
                 db.closeDB();
         }
+    }
+
+    public int getPaymentPrintCount(String groupId) {
+        int count = 0;
+        try {
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            Cursor c = db.selectSQL("select print_count from Payment where groupid='" + groupId + "'");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    count = c.getInt(0);
+
+                }
+                c.close();
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return count;
+    }
+
+    public void updatePaymentPrintCount(String groupId, int count) {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            db.updateSQL("update Payment set print_count=" + count + " where groupid = '" + groupId + "'");
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    public boolean deletePayment(String uid) {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+            db.openDataBase();
+            db.deleteSQL(DataMembers.tbl_Payment, "uid =" + StringUtils.QT(uid), false);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+            return false;
+        }
+
+        return true;
     }
 }

@@ -31,7 +31,6 @@ import android.widget.Toast;
 
 import com.aem.api.AEMPrinter;
 import com.aem.api.AEMScrybeDevice;
-import com.baidu.platform.comapi.map.C;
 import com.bixolon.printer.BixolonPrinter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CreditNoteListBO;
@@ -45,13 +44,13 @@ import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.print.DemoSleeper;
 import com.ivy.sd.print.ScribePrinter;
 import com.ivy.sd.print.SettingsHelper;
+import com.ivy.utils.DateTimeUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -313,8 +312,8 @@ public class CollectionFragmentNew extends IvyBaseFragment
         int i = item.getItemId();
         if (i == android.R.id.home) {
             collectionHelper.setCollectionView(false);
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                    .now(SDUtil.TIME));
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
             getActivity().finish();
 
             Intent myIntent = new Intent(getActivity(), HomeScreenTwo.class);
@@ -434,6 +433,8 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 holder.tvDueDateTitle = row.findViewById(R.id.tv_duedate_title);
                 holder.tvDocRef = row.findViewById(R.id.tv_docRef);
                 holder.tvDocRefTitle = row.findViewById(R.id.tv_docRef_title);
+                holder.tvComments = row.findViewById(R.id.tv_comments);
+                holder.tvCommentsTitle = row.findViewById(R.id.tv_comments_title);
 
                 if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
                     holder.tvPayableAmtTitle.setVisibility(View.VISIBLE);
@@ -522,7 +523,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
             holder.tvInvAmt.setText(bmodel.formatValue(holder.invoiceHeaderBO
                     .getInvoiceAmount()));
 
-            holder.tvInvDate.setText(DateUtil.convertFromServerDateToRequestedFormat(
+            holder.tvInvDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
                     holder.invoiceHeaderBO.getInvoiceDate(),
                     ConfigurationMasterHelper.outDateFormat));
 //            final int count = DateUtil.getDateCount(holder.invoiceHeaderBO.getInvoiceDate(),
@@ -531,11 +532,11 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 int count = 0;
                 if (bmodel.retailerMasterBO.getCreditDays() != 0) {
                     if (holder.invoiceHeaderBO.getDueDate() != null)
-                        count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
+                        count = DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 holder.invoiceHeaderBO.getDueDate(), "yyyy/MM/dd");
                 } else {
                     if (holder.invoiceHeaderBO.getInvoiceDate() != null)
-                        count = DateUtil.getDateCount(SDUtil.now(SDUtil.DATE_GLOBAL),
+                        count = DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 holder.invoiceHeaderBO.getInvoiceDate(), "yyyy/MM/dd");
                 }
                 if (count < 0)
@@ -579,6 +580,26 @@ public class CollectionFragmentNew extends IvyBaseFragment
 
             holder.tvDocRef.setText((holder.invoiceHeaderBO.getDocRefNo() != null) ? holder.invoiceHeaderBO.getDocRefNo() : "-");
 
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                        R.id.tv_comments_title).getTag()) != null)
+                    ((TextView) row.findViewById(R.id.tv_comments_title))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(row.findViewById(
+                                            R.id.tv_comments_title).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
+            if (holder.invoiceHeaderBO.isDebitNote()) {
+                holder.tvComments.setVisibility(View.VISIBLE);
+                holder.tvCommentsTitle.setVisibility(View.VISIBLE);
+            } else {
+                holder.tvComments.setVisibility(View.GONE);
+                holder.tvCommentsTitle.setVisibility(View.GONE);
+            }
+            holder.tvComments.setText(holder.invoiceHeaderBO.getComments());
+
             return row;
         }
     }
@@ -598,6 +619,8 @@ public class CollectionFragmentNew extends IvyBaseFragment
         TextView tvDueDateTitle;
         TextView tvDocRef;
         TextView tvDocRefTitle;
+        TextView tvComments;
+        TextView tvCommentsTitle;
 
         ImageView imgInvSelected;
         InvoiceHeaderBO invoiceHeaderBO;

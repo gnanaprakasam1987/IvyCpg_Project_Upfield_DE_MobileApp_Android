@@ -10,7 +10,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.Vector;
 
@@ -117,7 +117,7 @@ public class OrderStatusAdapter extends RecyclerView.Adapter<OrderStatusAdapter.
 
         holder.tvRetailerName.setText(items.get(position).getRetailerName());
         holder.tvOutletCode.setText(items.get(position).getRetailerCode());
-        holder.tvOrderDate.setText(DateUtil.convertFromServerDateToRequestedFormat(items.get(position).getOrderDate(), ConfigurationMasterHelper.outDateFormat));
+        holder.tvOrderDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(items.get(position).getOrderDate(), ConfigurationMasterHelper.outDateFormat));
         holder.tvOrderValue.setText(items.get(position).getOrderValue());
         holder.tvStatus.setText(items.get(position).getListName());
         holder.tvOrderId.setText(items.get(position).getOrderID());

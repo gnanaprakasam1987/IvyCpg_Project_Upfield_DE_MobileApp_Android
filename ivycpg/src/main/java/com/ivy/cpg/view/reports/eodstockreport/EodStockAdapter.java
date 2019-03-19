@@ -191,6 +191,10 @@ public class EodStockAdapter extends ArrayAdapter<StockReportBO> {
         if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
             String prodCode = parent.getContext().getResources().getString(R.string.prod_code)
                     + ": " + holder.mSKUBO.getProductCode() + " ";
+            if (bmodel.labelsMasterHelper.applyLabels(holder.mProductCode.getTag()) != null)
+                prodCode = bmodel.labelsMasterHelper
+                        .applyLabels(holder.mProductCode.getTag()) + ": " +
+                        holder.mSKUBO.getProductCode() + " ";
             holder.mProductCode.setText(prodCode);
         }
 

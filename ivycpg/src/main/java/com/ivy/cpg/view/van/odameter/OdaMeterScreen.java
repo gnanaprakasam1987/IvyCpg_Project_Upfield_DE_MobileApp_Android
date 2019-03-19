@@ -37,7 +37,6 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.ivy.cpg.view.van.LoadManagementHelper;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.VanLoadMasterBO;
@@ -48,8 +47,8 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.regex.Pattern;
 
@@ -152,7 +151,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             Commons.printException(e + "");
         }
 
-        photoNamePath = AppUtils.photoFolderPath + "/";
+        photoNamePath = FileUtils.photoFolderPath + "/";
         Commons.print("Photo Path, " + "" + photoNamePath);
 
         startjourney.setOnClickListener(this);
@@ -181,12 +180,12 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
         }
 
 
-        datevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL),
+        datevalue.setText("" + DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat));
-        timevalue.setText("" + SDUtil.now(SDUtil.TIME));
-        enddatevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(SDUtil.now(SDUtil.DATE_GLOBAL),
+        timevalue.setText("" + DateTimeUtils.now(DateTimeUtils.TIME));
+        enddatevalue.setText("" + DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat));
-        endtimevalue.setText("" + SDUtil.now(SDUtil.TIME));
+        endtimevalue.setText("" + DateTimeUtils.now(DateTimeUtils.TIME));
         vannovalue.setText(" " + bmodel.userMasterHelper.getUserMasterBO().getVanno());
         //findViewById(R.id.calcdot).setVisibility(View.VISIBLE);
 
@@ -266,7 +265,7 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             String[] CurrentString = product.getStartdatetime().split(" ");
 
             timevaluestart.setText(CurrentString[1]);
-            datevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(CurrentString[0],
+            datevalue.setText("" + DateTimeUtils.convertFromServerDateToRequestedFormat(CurrentString[0],
                     ConfigurationMasterHelper.outDateFormat));
 
             timevaluestart.setVisibility(View.VISIBLE);
@@ -314,11 +313,11 @@ public class OdaMeterScreen extends IvyBaseActivityNoActionBar implements OnClic
             String CurrentString1 = product.getEndtime();
             String[] separated = CurrentString.split(" ");
             timevaluestart.setText(separated[1]);
-            datevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(separated[0],
+            datevalue.setText("" + DateTimeUtils.convertFromServerDateToRequestedFormat(separated[0],
                     ConfigurationMasterHelper.outDateFormat));
             String[] separated1 = CurrentString1.split(" ");
             timeend.setText(separated1[1]);
-            enddatevalue.setText("" + DateUtil.convertFromServerDateToRequestedFormat(separated[0],
+            enddatevalue.setText("" + DateTimeUtils.convertFromServerDateToRequestedFormat(separated[0],
                     ConfigurationMasterHelper.outDateFormat));
 
 

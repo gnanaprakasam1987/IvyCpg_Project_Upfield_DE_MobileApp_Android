@@ -38,6 +38,8 @@ public class Commons {
     }
 
     /**
+     * @deprecated
+     * @see {{@link com.ivy.utils.DateTimeUtils#now(int)}}
      * @param dateFormat - to be converted
      * @return formatted date
      */
@@ -54,19 +56,5 @@ public class Commons {
         return sdf.format(cal.getTime());
     }
 
-    //Get First Day of the month
-    public static String getFirstDayOfCurrentMonth() {
-        Calendar cal = Calendar.getInstance();
-        cal.set(Calendar.DAY_OF_MONTH,
-                Calendar.getInstance().getActualMinimum(Calendar.DAY_OF_MONTH));
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd",
-                Locale.ENGLISH);
-        return sdf.format(cal.getTime());
-    }
 
-
-    public static int getCurrentMonth() {
-        Calendar cal = Calendar.getInstance();
-        return cal.get(Calendar.MONTH) + 1;
-    }
 }

@@ -16,7 +16,8 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/sr_list_view_margin_left"
         android:layout_weight="1"
-        android:text="@string/prod_code"/>
+        android:text="@string/prod_code"
+        android:tag="pcode"/>
 
     <TextView
         android:id="@+id/skuname"

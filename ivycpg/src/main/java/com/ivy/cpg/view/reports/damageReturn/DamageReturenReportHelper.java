@@ -8,7 +8,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,7 +102,7 @@ public class DamageReturenReportHelper {
 
                     db.openDataBase();
 
-                    if (AppUtils.isEmptyString(status)) {
+                    if (StringUtils.isEmptyString(status)) {
                         sql = "select productid,pm.pname,pm.psname,PM.piece_uomid as pieceUomID,PM.duomid as caseUomId,Pm.dOuomid as outerUomId,uomid as orderedUomId,qty as orderedQty,PM.dUomQty as caseSize,PM.dOuomQty as outerSize " +
                                 "from InvoiceDetailUOMWise ID Left join ProductMaster pm on pm.pid=ID.productid " +
                                 "where invoiceid in(select InvoiceNo from InvoiceDeliveryMaster " +

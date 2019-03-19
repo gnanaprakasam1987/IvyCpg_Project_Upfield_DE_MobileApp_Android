@@ -9,10 +9,9 @@ import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
 import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
 import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,7 +25,7 @@ import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.functions.Function;
 
-import static com.ivy.utils.AppUtils.QT;
+import static com.ivy.utils.StringUtils.QT;
 
 public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
 
@@ -105,10 +104,10 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                                     .getInt(0));
                             lbo.setProductID(cursor.getInt(1));
                             lbo.setImagePath(cursor.getString(2));
-                            lbo.setFromDate(DateUtil.convertFromServerDateToRequestedFormat(
+                            lbo.setFromDate(DateTimeUtils.convertFromServerDateToRequestedFormat(
                                     cursor.getString(3),
                                     ConfigurationMasterHelper.outDateFormat));
-                            lbo.setToDate(DateUtil.convertFromServerDateToRequestedFormat(
+                            lbo.setToDate(DateTimeUtils.convertFromServerDateToRequestedFormat(
                                     cursor.getString(4),
                                     ConfigurationMasterHelper.outDateFormat));
                             lbo.setLocationId(cursor.getInt(5));
@@ -234,7 +233,7 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                             + " AND DistributorID="
                             + appDataProvider.getRetailMaster().getDistributorId()
                             + " AND Date = "
-                            + QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
                     if (cursor.getCount() > 0) {
                         cursor.moveToNext();
@@ -261,7 +260,7 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                                 .getDistributorid()
                                 + ""
                                 + appDataProvider.getUser().getUserid()
-                                + "" + SDUtil.now(SDUtil.DATE_TIME_ID));
+                                + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
                         try {
                             for (Map.Entry<String, PhotoCaptureLocationBO> entry : updatedData.entrySet()) {
@@ -270,7 +269,7 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
 
                                 String sBuffer = uid +
                                         "," +
-                                        QT(SDUtil.now(SDUtil.DATE_GLOBAL)) +
+                                        QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) +
                                         "," +
                                         photoCaptureLocationBO.getPhotoTypeId() +
                                         "," +

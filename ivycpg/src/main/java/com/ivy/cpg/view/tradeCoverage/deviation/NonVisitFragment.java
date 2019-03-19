@@ -5,11 +5,10 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.TypedArray;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.SearchView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
@@ -25,6 +24,7 @@ import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RadioButton;
@@ -34,28 +34,29 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.cpg.view.tradeCoverage.deviation.PlanningActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
+import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.DateWisePlanBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.PlanningVisitActivity;
-import com.ivy.sd.png.view.profile.CommonReasonDialog;
-import com.ivy.sd.png.view.profile.ProfileActivity;
+import com.ivy.cpg.view.profile.CommonReasonDialog;
+import com.ivy.cpg.view.profile.ProfileActivity;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInterface,
         SearchView.OnQueryTextListener, FiveLevelFilterCallBack {
@@ -90,6 +91,15 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
 
     private DeviationHelper deviationHelper;
 
+    private Map<String, String> mRetailerProp;
+    //image icon constants
+    private static final String ICON_COOLER = "COOLER";
+    private static final String ICON_LOYALITY = "LOYALITY";
+    private static final String ICON_CROWN = "CROWN";
+    private static final String ICON_DEAD = "DEAD";
+    private static final String ICON_ALIVE = "ALIVE";
+    private static final String ICON_SKULL = "SKULL";
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -120,6 +130,9 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
 
         displaymetrics = new DisplayMetrics();
         getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+
+        mRetailerProp = new HashMap<>();
+        updateRetailerProperty();
 
         fab.setOnClickListener(new OnClickListener() {
             @Override
@@ -273,6 +286,15 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
 
 
         return mview;
+    }
+
+    private void updateRetailerProperty() {
+
+        mRetailerProp = new HashMap<>();
+        for (ConfigureBO configureBO : bmodel.configurationMasterHelper
+                .getRetailerPropertyList()) {
+            mRetailerProp.put(configureBO.getConfigCode(), configureBO.getRField());
+        }
     }
 
     @Override
@@ -471,7 +493,7 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
 
                     if (plannedDateList != null) {
                         for (DateWisePlanBO dateWisePlanBO : plannedDateList) {
-                            int result = SDUtil.compareDate(date,
+                            int result = DateTimeUtils.compareDate(date,
                                     dateWisePlanBO.getDate(), "yyyy/MM/dd");
                             if (result == 0) {
                                 if (searchStr != null) {
@@ -841,9 +863,11 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
                                             R.string.select_reason))) {
 
                                 for (RetailerMasterBO tempBo : retailer) {
-                                    deviationHelper.setDeviate(
-                                            tempBo.getRetailerID(), r,
-                                            tempBo.getBeatID(), "");
+                                    if (tempBo.getIsToday() != 1 && ("N".equals(tempBo.getIsDeviated()))) {
+                                        deviationHelper.setDeviate(
+                                                tempBo.getRetailerID(), r,
+                                                tempBo.getBeatID(), "");
+                                    }
                                 }
 
                                 retailer = new ArrayList<>();
@@ -1029,11 +1053,14 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
                         .findViewById(R.id.outletName_tv);
                 holder.rField4 = convertView
                         .findViewById(R.id.rfield4_tv);
-                holder.rField4.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
 
 
                 holder.outletAddress = convertView.findViewById(R.id.outlet_address_tv);
                 holder.contactName = convertView.findViewById(R.id.contact_name_tv);
+
+                holder.ll_iv_asset_mapped = convertView.findViewById(R.id.ll_iv_asset_mapped);
+                holder.iv_asset_mapped = convertView.findViewById(R.id.iv_asset_mapped);
+                holder.tvTaskCount = convertView.findViewById(R.id.tv_task_count);
 
 
                 convertView.setOnClickListener(new OnClickListener() {
@@ -1115,6 +1142,41 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
 
 
                 });
+
+                if (mRetailerProp.get("RTPRTY08") != null) {
+                    if (("1").equals(retailerObj.getRField4())) {
+                        holder.ll_iv_asset_mapped.setVisibility(View.VISIBLE);
+                        holder.iv_asset_mapped.setImageResource(R.drawable.ic_action_star_select);
+                    }
+                    if (mRetailerProp.get("RTPRTY08").length() > 0 && mRetailerProp.get("RTPRTY08").split("/").length == 2) {
+                        holder.ll_iv_asset_mapped.setVisibility(View.VISIBLE);
+                        holder.iv_asset_mapped.setImageResource(getMappedDrawableId(mRetailerProp.get("RTPRTY08")));
+                        holder.iv_asset_mapped.setColorFilter(Color.parseColor(getMappedColorCode(mRetailerProp.get("RTPRTY08"),
+                                ("1").equals(retailerObj.getRField4()))));
+                    }
+                    if (retailerObj.getRField4() == null)
+                        holder.ll_iv_asset_mapped.setVisibility(View.GONE);
+                } else {
+                    holder.ll_iv_asset_mapped.setVisibility(View.GONE);
+                }
+
+                if (mRetailerProp.get("RTPRTY09") != null) {
+                    if (retailerObj.getRField8() == null)
+                        holder.tvTaskCount.setVisibility(View.GONE);
+                    else {
+                        if (mRetailerProp.get("RTPRTY09").length() > 0) {
+                            if (mRetailerProp.get("RTPRTY09").equalsIgnoreCase("Task")) {
+                                holder.tvTaskCount.setVisibility(View.VISIBLE);
+                                holder.tvTaskCount.setText(getResources().getString(R.string.task) + ":" + retailerObj.getRField8());
+                            } else
+                                holder.tvTaskCount.setVisibility(View.GONE);
+                        }
+                    }
+
+                } else {
+                    holder.tvTaskCount.setVisibility(View.GONE);
+                }
+
 
                 convertView.setTag(holder);
             } else {
@@ -1238,10 +1300,73 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
             TextView rField4;
             TextView outletAddress;
             TextView contactName;
+            TextView tvTaskCount;
             String retailerId;
             int ref;
-            LinearLayout llFirst;
+            ImageView iv_asset_mapped;
+            LinearLayout llFirst, ll_iv_asset_mapped;
         }
 
+    }
+
+
+    private String getMappedColorCode(String Rfield, boolean isPostive) {
+        String colorCode = "#000000";
+        String parts[] = Rfield.split("/");
+        if (parts.length == 2) {
+            try {
+                if (parts[1] != null && parts[1].length() > 0) {
+                    String colors[] = parts[1].split("~");
+                    if (isPostive)
+                        colorCode = colors[0];
+                    else
+                        colorCode = colors[1];
+                }
+
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+        }
+        Commons.print("color" + colorCode);
+        return colorCode;
+    }
+
+    private int getMappedDrawableId(String Rfield) {
+        int resid = R.drawable.ic_action_star_select;
+        String parts[] = Rfield.split("/");
+        String iconName = "";
+        if (parts.length == 2) {
+            try {
+                if (parts[0] != null && parts[0].length() > 0) {
+                    iconName = parts[0];
+                    switch (iconName) {
+                        case ICON_COOLER:
+                            resid = R.drawable.ic_freeze;
+                            break;
+                        case ICON_LOYALITY:
+                            resid = R.drawable.ic_loyalty;
+                            break;
+                        case ICON_CROWN:
+                            resid = R.drawable.ic_crown;
+                            break;
+                        case ICON_DEAD:
+                            resid = R.drawable.ic_dead;
+                            break;
+                        case ICON_SKULL:
+                            resid = R.drawable.ic_dashboard_dead_store;
+                            break;
+                        case ICON_ALIVE:
+                            resid = R.drawable.ic_alive;
+                            break;
+                        default:
+                            resid = R.drawable.ic_action_star_select;
+                            break;
+                    }
+                }
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+        }
+        return resid;
     }
 }

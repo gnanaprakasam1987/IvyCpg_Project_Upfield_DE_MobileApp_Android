@@ -29,14 +29,13 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.order.OrderSummary;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -123,26 +122,26 @@ public class CaptureSignatureActivity extends IvyBaseActivityNoActionBar {
             contact_name = (TextInputEditText) findViewById(R.id.contact_name);
         }
         if (module.equals("DELIVERY")) {
-            imageName = "DV__SGN_" + bmodel.getRetailerMasterBO().getRetailerID() + "_" + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + ".jpg";
+            imageName = "DV__SGN_" + bmodel.getRetailerMasterBO().getRetailerID() + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS) + ".jpg";
             serverPath = "Delivery/"
                     + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
                     .replace("/", "") + "/"
                     + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imageName;
         } else if (module.equals("COL_REF")) {
-            imageName = "CSign_" + bmodel.getRetailerMasterBO().getRetailerID() + "_" + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + ".jpg";
+            imageName = "CSign_" + bmodel.getRetailerMasterBO().getRetailerID() + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS) + ".jpg";
             serverPath = "CollectionSignature/"
                     + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
                     .replace("/", "") + "/"
                     + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imageName;
         } else if (module.equals("ORDER")) {
-            imageName = "SGN_" + bmodel.getRetailerMasterBO().getRetailerID() + "_" + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + ".jpg";
+            imageName = "SGN_" + bmodel.getRetailerMasterBO().getRetailerID() + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS) + ".jpg";
             serverPath = "Invoice/"
                     + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
                     .replace("/", "") + "/"
                     + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "/" + imageName;
         } else if (module.equals("SALES_RETURN")) {
             salesReturnHelper = SalesReturnHelper.getInstance(this);
-            imageName = "SR_SGN_" + bmodel.getRetailerMasterBO().getRetailerID() + "_" + SDUtil.now(SDUtil.DATE_TIME_ID_MILLIS) + ".jpg";
+            imageName = "SR_SGN_" + bmodel.getRetailerMasterBO().getRetailerID() + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS) + ".jpg";
             serverPath = "SalesReturn/"
                     + bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()
                     .replace("/", "") + "/"

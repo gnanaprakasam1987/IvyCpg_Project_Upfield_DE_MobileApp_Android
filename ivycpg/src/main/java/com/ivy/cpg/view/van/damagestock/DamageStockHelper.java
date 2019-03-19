@@ -6,11 +6,11 @@ import android.database.SQLException;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.SalesReturnReportBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,7 +89,7 @@ public class DamageStockHelper {
         try {
             SalesReturnReportBO bo;
             String uid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
-                    + SDUtil.now(SDUtil.DATE_TIME_ID);
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
             );
             db.createDataBase();
@@ -97,15 +97,15 @@ public class DamageStockHelper {
             String columns = "uid,pid,pname,batchid,batchno,sih,caseqty,pcsqty,outerqty,duomqty,dUomId,douomqty,dOuomid,date,type";
             for (int i = 0; i < damageList.size(); i++) {
                 bo = damageList.get(i);
-                String values = AppUtils.QT(uid)
+                String values = StringUtils.QT(uid)
                         + ","
-                        + AppUtils.QT(bo.getProductid())
+                        + StringUtils.QT(bo.getProductid())
                         + ","
-                        + AppUtils.QT(bo.getProductName())
+                        + StringUtils.QT(bo.getProductName())
                         + ","
                         + bo.getBatchId()
                         + ","
-                        + AppUtils.QT(bo.getBatchNumber())
+                        + StringUtils.QT(bo.getBatchNumber())
                         + ","
                         + bo.getSih()
                         + ","
@@ -123,7 +123,7 @@ public class DamageStockHelper {
                         + ","
                         + bo.getdOuomid()
                         + ","
-                        + AppUtils.QT(bmodel.userMasterHelper.getUserMasterBO()
+                        + StringUtils.QT(bmodel.userMasterHelper.getUserMasterBO()
                         .getDownloadDate()) + "," + 0;
                 db.insertSQL(DataMembers.tbl_vanunload_details, columns, values);
                 db.executeQ("update SalesReturnHeader set unload=1 where upload!='X'");

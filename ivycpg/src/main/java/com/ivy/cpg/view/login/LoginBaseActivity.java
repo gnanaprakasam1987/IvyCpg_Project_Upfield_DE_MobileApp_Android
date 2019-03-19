@@ -148,13 +148,21 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
 
     @Override
     public void goToHomeScreen() {
-       // BusinessModel.loadActivity(LoginScreen.this,
-               // DataMembers.actHomeScreen);
 
-       Intent myIntent = new Intent(this, HomeScreenActivity.class);
-        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivityForResult(myIntent, 0);
+        LoginHelper loginHelper = LoginHelper.getInstance(this);
+        loginHelper.downloadTermsAndConditions(this);
+
+        if (businessModel.configurationMasterHelper.IS_SHOW_TERMS_COND && !loginHelper.isTermsAccepted()) {
+            Intent intent = new Intent(this, TermsAndConditionsActivity.class);
+            intent.putExtra("fromScreen", "login");
+            startActivity(intent);
+            overridePendingTransition(R.anim.zoom_enter, R.anim.hold);
+        } else {
+            Intent myIntent = new Intent(this, HomeScreenActivity.class);
+            myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivityForResult(myIntent, 0);
+        }
 
     }
 
@@ -451,7 +459,7 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
                     dismissCurrentProgressDialog();
 
                     LoginHelper.getInstance(LoginBaseActivity.this).deleteAllValues(getApplicationContext());
-                    businessModel.activationHelper.clearAppUrl();
+                    clearAppUrl();
                     businessModel.userMasterHelper.getUserMasterBO().setUserid(0);
                     businessModel.codeCleanUpUtil.setUserId(0);
                     try {

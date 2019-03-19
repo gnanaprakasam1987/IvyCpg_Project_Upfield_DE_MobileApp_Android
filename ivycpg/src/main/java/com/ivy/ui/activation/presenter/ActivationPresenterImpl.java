@@ -5,7 +5,7 @@ import com.ivy.core.IvyConstants;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ActivationBO;
+import com.ivy.ui.activation.bo.ActivationBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;

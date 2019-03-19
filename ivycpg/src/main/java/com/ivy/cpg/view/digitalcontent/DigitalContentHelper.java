@@ -6,11 +6,11 @@ import android.database.Cursor;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.DigitalContentBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -27,6 +27,10 @@ public class DigitalContentHelper {
     private Vector<DigitalContentBO> digitalMaster;
     private ArrayList<DigitalContentBO> filteredDigitalMaster;
     public String mSelectedActivityName;
+
+
+    private static final String CODE_FLOAT_DGT_CONTENT = "FUN77";
+    public boolean SHOW_FLT_DGT_CONTENT;
 
     private DigitalContentHelper(Context context) {
         mBModel = (BusinessModel) context.getApplicationContext();
@@ -71,8 +75,8 @@ public class DigitalContentHelper {
         ArrayList<String> mappingIdList = new ArrayList<>();
 
         /* Get location id and its parent id */
-        String locationHierarchy=mBModel.channelMasterHelper.getLocationHierarchy(mContext);
-        if (locationHierarchy != null&&!"".equals(locationHierarchy) ) {
+        String locationHierarchy = mBModel.channelMasterHelper.getLocationHierarchy(mContext);
+        if (locationHierarchy != null && !"".equals(locationHierarchy)) {
             locIdScheme = "," + locationHierarchy;
         }
 
@@ -170,9 +174,7 @@ public class DigitalContentHelper {
             else
                 mMappedImageIds = getDigitalContentTaggingDetails(mContext);
 
-            if ("SELLER".equals(value))
-
-            {
+            if ("SELLER".equals(value)) {
                 sBuffer.append("SELECT DISTINCT DC.Imageid  ,DC.ImageName ,DC.ImageDesc,DC.ImageDate,");
                 sBuffer.append(" IFNULL(DCPM.Pid,0),IFNULL(PM.psname,''),IFNULL(SLM.ListName,'NA'),");
                 sBuffer.append(" IFNULL(DC.GroupSequence,0),IFNULL(PM.ParentHierarchy,'')");
@@ -335,21 +337,21 @@ public class DigitalContentHelper {
         return str;
     }
 
-    public void saveDigitalContentDetails(Context context,String digiContentId,String productID,String startTime,String endTime,
-                                          boolean isFastForward){
+    public void saveDigitalContentDetails(Context context, String digiContentId, String productID, String startTime, String endTime,
+                                          boolean isFastForward) {
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
         );
         db.openDataBase();
 
         try {
-            String tid ="";
+            String tid = "";
             String content;
-            String retailerId = mBModel.getRetailerMasterBO().getRetailerID()!=null?mBModel.getRetailerMasterBO().getRetailerID():"0";
+            String retailerId = mBModel.getRetailerMasterBO().getRetailerID() != null ? mBModel.getRetailerMasterBO().getRetailerID() : "0";
 
-            Cursor c = db.selectSQL("select UId from DigitalContentTrackingHeader where DId ="+
-                    digiContentId+" and RetailerId = "+AppUtils.QT(retailerId) +
-                    " and upload='N' and Date="+AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL)));
+            Cursor c = db.selectSQL("select UId from DigitalContentTrackingHeader where DId =" +
+                    digiContentId + " and RetailerId = " + StringUtils.QT(retailerId) +
+                    " and upload='N' and Date=" + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
             if (c != null && c.getCount() > 0 && c.moveToNext()) {
                 tid = c.getString(0);
@@ -358,13 +360,13 @@ public class DigitalContentHelper {
 
             if (tid.equals("")) {
                 tid = mBModel.userMasterHelper.getUserMasterBO().getUserid()
-                        + SDUtil.now(SDUtil.DATE_TIME_ID) + "";
+                        + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID) + "";
 
                 // UId,DId,RetailerId,Date
-                content = AppUtils.QT(tid)+","
-                        + AppUtils.QT(digiContentId)+","
-                        + AppUtils.QT(retailerId)+","
-                        + AppUtils.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                content = StringUtils.QT(tid) + ","
+                        + StringUtils.QT(digiContentId) + ","
+                        + StringUtils.QT(retailerId) + ","
+                        + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                 ;
 
                 db.insertSQL(DataMembers.tbl_DigitalContent_Tracking_Header,
@@ -372,12 +374,12 @@ public class DigitalContentHelper {
             }
 
             // UId,DId,UserID,RetailerId,StartTime,EndTime,PId,isFastForwarded
-            content = AppUtils.QT(tid)+","
-                    + AppUtils.QT(startTime)+","//startTime
-                    + AppUtils.QT(endTime)+","//EndTime
-                    + AppUtils.QT(productID)+","//Product Id
-                    + "'"+isFastForward+"'"
-                    ;
+            content = StringUtils.QT(tid) + ","
+                    + StringUtils.QT(startTime) + ","//startTime
+                    + StringUtils.QT(endTime) + ","//EndTime
+                    + StringUtils.QT(productID) + ","//Product Id
+                    + "'" + isFastForward + "'"
+            ;
 
             db.insertSQL(DataMembers.tbl_DigitalContent_Tracking_Detail,
                     DataMembers.tbl_DigitalContent_Tracking_Detail_cols, content);
@@ -385,6 +387,26 @@ public class DigitalContentHelper {
             db.closeDB();
         } catch (Exception e) {
             e.printStackTrace();
+            db.closeDB();
+        }
+    }
+
+    public void loadFloatingDgtConfig(Context context) {
+        SHOW_FLT_DGT_CONTENT = false;
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        try {
+            db.openDataBase();
+            Cursor c = db.selectSQL("select Flag from HhtModuleMaster where hhtcode = " + StringUtils.QT(CODE_FLOAT_DGT_CONTENT) + " and  " +
+                    "menu_type= 'FLT_DGT_CNT'and ForSwitchSeller = 0");
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    SHOW_FLT_DGT_CONTENT = c.getInt(0) == 1;
+
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
             db.closeDB();
         }
     }

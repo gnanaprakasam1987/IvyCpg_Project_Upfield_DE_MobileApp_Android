@@ -33,11 +33,11 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.CaptureSignatureActivity;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
@@ -389,15 +389,15 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
             }
 
             holder.mfgDate
-                    .setText((holder.productBO.getMfgDate() == null) ? DateUtil
+                    .setText((holder.productBO.getMfgDate() == null) ? DateTimeUtils
                             .convertFromServerDateToRequestedFormat(
-                                    SDUtil.now(SDUtil.DATE_GLOBAL),
+                                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                     outPutDateFormat) : holder.productBO
                             .getMfgDate());
             holder.expDate
-                    .setText((holder.productBO.getExpDate() == null) ? DateUtil
+                    .setText((holder.productBO.getExpDate() == null) ? DateTimeUtils
                             .convertFromServerDateToRequestedFormat(
-                                    SDUtil.now(SDUtil.DATE_GLOBAL),
+                                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                     outPutDateFormat) : holder.productBO.getExpDate());
             String strOldMrp = bmodel.formatValue(holder.productBO
                     .getOldMrp()) + "";
@@ -638,8 +638,8 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                 updateCreditNoteprintList();
 
             try {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(SDUtil
-                        .now(SDUtil.TIME));
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
                 salesReturnHelper.saveSalesReturn(getApplicationContext(), "", "", false, false);
                 salesReturnHelper.clearSalesReturnTable(false);
                 return Boolean.TRUE;

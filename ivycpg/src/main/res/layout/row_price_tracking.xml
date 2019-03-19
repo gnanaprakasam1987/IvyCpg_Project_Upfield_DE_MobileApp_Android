@@ -56,7 +56,8 @@
                     android:layout_marginRight="@dimen/dimen_2dp"
                     android:ellipsize="marquee"
                     android:singleLine="true"
-                    android:text="@string/prod_code" />
+                    android:text="@string/prod_code"
+                    android:tag="pcode"/>
 
                 <TextView
                     android:id="@+id/tv_srp"

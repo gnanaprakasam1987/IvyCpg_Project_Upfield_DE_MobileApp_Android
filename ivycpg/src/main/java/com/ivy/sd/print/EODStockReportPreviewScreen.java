@@ -36,6 +36,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 import com.zebra.sdk.comm.BluetoothConnection;
 import com.zebra.sdk.comm.Connection;
 import com.zebra.sdk.comm.ConnectionException;
@@ -750,7 +751,7 @@ public class EODStockReportPreviewScreen extends IvyBaseActivityNoActionBar {
                         .getUserName() + "\r\n";
                 heightlenth = heightlenth + heightspace;
                 Printitem += "T 5 0 10 " + (heightlenth)
-                        + " " + SDUtil.now(SDUtil.DATE_TIME)
+                        + " " + DateTimeUtils.now(DateTimeUtils.DATE_TIME)
                         + "\r\n";
                 heightlenth = heightlenth + heightspace;
                 // T- Text // // Font Size // Spacing // height between lines

@@ -8,12 +8,13 @@ import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SODBO;
-import com.ivy.sd.png.bo.asset.AssetTrackingBO;
+import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenTwo;
+import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 
@@ -266,7 +267,7 @@ public class SODAssetHelper {
                 stringBuilder.append(" and SFN.ChId=" + mBModel.productHelper.getMappingChannelId(ChId, mBModel.getRetailerMasterBO().getSubchannelid()));
 
             stringBuilder.append(" LEFT JOIN " + moduleName.replace("MENU_", "") + "_NormMaster   SF ON SF.HId = SFN.HId");
-            stringBuilder.append(" AND " + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+            stringBuilder.append(" AND " + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " BETWEEN SF.StartDate AND SF.EndDate");
             stringBuilder.append(" WHERE A.PLID IN (" + mContentLevelId + ")");
 
@@ -374,8 +375,8 @@ public class SODAssetHelper {
             );
             db.openDataBase();
 
-            String uid = (mBModel.userMasterHelper.getUserMasterBO().getUserid() + SDUtil
-                    .now(SDUtil.DATE_TIME_ID));
+            String uid = (mBModel.userMasterHelper.getUserMasterBO().getUserid() + DateTimeUtils
+                    .now(DateTimeUtils.DATE_TIME_ID));
 
             String query = "select Uid,refid from " + modName
                     + "_Tracking_Header  where RetailerId="
@@ -401,7 +402,7 @@ public class SODAssetHelper {
 
             headerValues = mBModel.QT(uid)
                     + "," + mBModel.getRetailerMasterBO().getRetailerID()
-                    + "," + mBModel.QT(SDUtil.now(SDUtil.DATE_GLOBAL))
+                    + "," + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + "," + mBModel.QT(mBModel.getNote())
                     + "," + mBModel.QT(refId);
 

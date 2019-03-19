@@ -16,22 +16,21 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
+        <ImageButton
+            android:id="@+id/btn_audit"
+            android:layout_width="@dimen/audit_width"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"
+            android:contentDescription="@string/image_desc"
+            android:gravity="center"
+            android:visibility="gone" />
+
         <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="4"
             android:gravity="center_vertical">
-
-
-            <ImageButton
-                android:id="@+id/btn_audit"
-                android:layout_width="@dimen/audit_width"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@android:color/transparent"
-                android:contentDescription="@string/image_desc"
-                android:gravity="center"
-                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/stock_and_order_listview_productname"
@@ -55,6 +54,7 @@
                 android:layout_marginRight="@dimen/dimens_4dp"
                 android:maxLines="1"
                 android:text="@string/prod_code"
+                android:tag="pcode"
                 android:visibility="visible" />
 
             <TextView

@@ -832,4 +832,14 @@ public class SchemeBO {
     public void setToDate(String toDate) {
         this.toDate = toDate;
     }
+
+    private int variantCount;
+
+    public int getVariantCount() {
+        return variantCount;
+    }
+
+    public void setVariantCount(int variantCount) {
+        this.variantCount = variantCount;
+    }
 }

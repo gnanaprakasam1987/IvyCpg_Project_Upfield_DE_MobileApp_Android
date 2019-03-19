@@ -32,6 +32,14 @@ public class SerializedAssetBO {
     private int targetLocId;
     private String locationName;
     private ArrayList<String> imageList;
+    private int capacity;
+    private String vendorId;
+    private String vendorName;
+    private String modelId;
+    private String modelName;
+    private String assetType;
+    private String assetTypeId;
+    private int flag = 0;
 
 
 
@@ -40,6 +48,10 @@ public class SerializedAssetBO {
 
     public SerializedAssetBO() {
 
+    }
+
+    public SerializedAssetBO(int flag){
+        this.flag = flag;
     }
 
     public SerializedAssetBO(SerializedAssetBO serializedAssetBO) {
@@ -74,6 +86,13 @@ public class SerializedAssetBO {
         this.locationName = serializedAssetBO.getLocationName();
         this.imageList = serializedAssetBO.getImageList();
         this.isSelectedReason = serializedAssetBO.isSelectedReason();
+        this.capacity = serializedAssetBO.getCapacity();
+        this.vendorId = serializedAssetBO.getVendorId();
+        this.vendorName = serializedAssetBO.getVendorName();
+        this.modelId = serializedAssetBO.getModelId();
+        this.modelName = serializedAssetBO.getModelName();
+        this.assetType = serializedAssetBO.getAssetType();
+        this.assetTypeId = serializedAssetBO.getAssetTypeId();
     }
 
     public int getExecutorQty() {
@@ -422,5 +441,73 @@ public class SerializedAssetBO {
 
     public void setReferenceId(int referenceId) {
         this.referenceId = referenceId;
+    }
+
+    public int getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
+
+    public String getVendorId() {
+        return vendorId;
+    }
+
+    public void setVendorId(String vendorId) {
+        this.vendorId = vendorId;
+    }
+
+    public String getVendorName() {
+        return vendorName;
+    }
+
+    public void setVendorName(String vendorName) {
+        this.vendorName = vendorName;
+    }
+
+    public String getModelId() {
+        return modelId;
+    }
+
+    public void setModelId(String modelId) {
+        this.modelId = modelId;
+    }
+
+    public String getModelName() {
+        return modelName;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
+    }
+
+    public String getAssetType() {
+        return assetType;
+    }
+
+    public void setAssetType(String assetType) {
+        this.assetType = assetType;
+    }
+
+    public String getAssetTypeId() {
+        return assetTypeId;
+    }
+
+    public void setAssetTypeId(String assetTypeId) {
+        this.assetTypeId = assetTypeId;
+    }
+
+    @Override
+    public String toString() {
+        if (flag == 1)
+            return vendorName;
+        else if (flag == 2)
+            return modelName;
+        else if (flag == 3)
+            return assetType;
+        else
+            return AssetName;
     }
 }

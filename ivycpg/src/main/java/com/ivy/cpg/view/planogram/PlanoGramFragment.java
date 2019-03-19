@@ -44,6 +44,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
@@ -60,11 +61,11 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -136,7 +137,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             calledBy = i.getStringExtra("from");
             menuCode = i.getStringExtra("CurrentActivityCode");
             isDialogPopup = false;
-            photoNamePath = AppUtils.photoFolderPath + "/";
+            photoNamePath = FileUtils.photoFolderPath + "/";
 
             loadReason();
             //mSelectedLocationId = Integer.parseInt(mPlanoGramHelper.getInStoreLocation().get(0).getListID());
@@ -370,7 +371,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1 && mPlanoGramList != null) {
                 for (PlanoGramBO planBo : mPlanoGramList) {
-                    if (planBo.getPid() == productId) {
+                    if (planBo.getPid() == productId && planBo.getLocationID() == mSelectedLocationId) {
 //                        planBo.setPlanogramCameraImgName(imageFileName);
                         if(planBo.getPlanoGramCameraImgList().size()>0)
                             planBo.getPlanoGramCameraImgList().add(imageFileName);
@@ -617,7 +618,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 }
                 if ("2".equals(calledBy)) {
                     mBModel.outletTimeStampHelper
-                            .updateTimeStampModuleWise(SDUtil.now(SDUtil.TIME));
+                            .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                     startActivity(new Intent(getActivity(), HomeScreenTwo.class));
                     getActivity().finish();
                 }
@@ -735,8 +736,8 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         }
                         if ("2".equals(calledBy)) {
                             mBModel.outletTimeStampHelper
-                                    .updateTimeStampModuleWise(SDUtil
-                                            .now(SDUtil.TIME));
+                                    .updateTimeStampModuleWise(DateTimeUtils
+                                            .now(DateTimeUtils.TIME));
                             Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
                             Bundle extras = getActivity().getIntent().getExtras();
                             if (extras != null) {
@@ -922,7 +923,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         planoAdapter.notifyDataSetChanged();
 
                         Intent intent = new Intent(getActivity(),CameraActivity.class);
-                        String _path = AppUtils.photoFolderPath + "/" + imageName;
+                        String _path = FileUtils.photoFolderPath + "/" + imageName;
                         intent.putExtra(CameraActivity.QUALITY, 40);
                         intent.putExtra(CameraActivity.PATH, _path);
                         intent.putExtra(CameraActivity.ISSAVEREQUIRED,
@@ -969,7 +970,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
         @Override
         public void onBindViewHolder(final ViewHolder holder, int position) {
-            photoNamePath = AppUtils.photoFolderPath + "/";
+            photoNamePath = FileUtils.photoFolderPath + "/";
             holder.planoObj = items.get(position);
             holder.productName.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
             holder.tvAdherence.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -1071,7 +1072,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             holder.layout_cameraImage.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    photoNamePath = AppUtils.photoFolderPath + "/";
+                    photoNamePath = FileUtils.photoFolderPath + "/";
                     if ("1".equals(calledBy)) {
                         imageFileName = "VPL_" + "0" + "_" + selectedCategory + "_"
                                 + mSelectedLocationId + "_" + Commons.now(Commons.DATE) + "_img.jpg";
@@ -1123,10 +1124,53 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
             holder.indicator.setViewPager(holder.imageViewPager);
 
+            if (holder.planoObj.getAudit() == IvyConstants.AUDIT_DEFAULT)
+                holder.audit.setImageResource(R.drawable.ic_audit_none);
+            else if (holder.planoObj.getAudit() == IvyConstants.AUDIT_OK)
+                holder.audit.setImageResource(R.drawable.ic_audit_yes);
+            else if (holder.planoObj.getAudit() == IvyConstants.AUDIT_NOT_OK)
+                holder.audit.setImageResource(R.drawable.ic_audit_no);
+
+            holder.audit.setOnClickListener(new OnClickListener() {
+
+                @Override
+                public void onClick(View view) {
+
+                    if (holder.planoObj.getAudit() == IvyConstants.AUDIT_DEFAULT) {
+
+                        holder.planoObj.setAudit(IvyConstants.AUDIT_OK);
+                        holder.audit.setImageResource(R.drawable.ic_audit_yes);
+
+                    } else if (holder.planoObj.getAudit() == IvyConstants.AUDIT_OK) {
+
+                        holder.planoObj.setAudit(IvyConstants.AUDIT_NOT_OK);
+                        holder.audit.setImageResource(R.drawable.ic_audit_no);
+
+                    } else if (holder.planoObj.getAudit() == IvyConstants.AUDIT_NOT_OK) {
+
+                        holder.planoObj.setAudit(IvyConstants.AUDIT_DEFAULT);
+                        holder.audit.setImageResource(R.drawable.ic_audit_none);
+                    }
+
+                }
+            });
+
 //            if(holder.planoObj.getPlanoGramCameraImgList().size() < 2)
 //                holder.indicator.setVisibility(View.GONE);
 //            else
 //                holder.indicator.setVisibility(View.VISIBLE);
+
+            if (mBModel.configurationMasterHelper.isAuditEnabled()) {
+                holder.auditLayout.setVisibility(View.VISIBLE);
+                holder.imgFromCamera.setEnabled(false);
+                holder.layout_cameraImage.setEnabled(false);
+                holder.rdYes.setEnabled(false);
+                holder.rdNo.setEnabled(false);
+                holder.adherence_reason.setEnabled(false);
+            }
+            else
+                holder.auditLayout.setVisibility(View.GONE);
+
 
             adapter.registerDataSetObserver(holder.indicator.getDataSetObserver());
         }
@@ -1155,6 +1199,8 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             LinearLayout layout_cameraImage;
             android.support.v4.view.ViewPager imageViewPager;
             CircleIndicator indicator;
+            LinearLayout auditLayout;
+            ImageView audit;
 
             public ViewHolder(View v) {
                 super(v);
@@ -1170,6 +1216,8 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 layout_cameraImage =  v.findViewById(R.id.ll_cameraImage);
                 imageViewPager = v.findViewById(R.id.image_view_pager);
                 indicator = v.findViewById(R.id.indicator);
+                auditLayout = v.findViewById(R.id.audit_layout);
+                audit = v.findViewById(R.id.btn_audit);
             }
 
             private void setImageFromCamera() {
@@ -1180,7 +1228,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     for(int i=0;i<planoObj.getPlanoGramCameraImgList().size();i++){
                         String path = photoNamePath
                                 + planoObj.getPlanoGramCameraImgList().get(i);
-                        if (mBModel.isImagePresent(path)) {
+                        if (FileUtils.isFileExisting(path)) {
                             isImgPresent = true;
                         }
                     }

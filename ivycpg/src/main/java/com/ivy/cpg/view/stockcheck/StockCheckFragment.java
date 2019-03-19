@@ -59,6 +59,7 @@ import android.widget.ViewFlipper;
 
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
@@ -320,6 +321,12 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
         ll_stockCheck_SharePercent = view.findViewById(R.id.llstockCheckSharePercent);
         tv_sharePercent = view.findViewById(R.id.tv_sharePercent);
+
+        if (businessModel.configurationMasterHelper.isAuditEnabled()) {
+            TextView tvAudit = view.findViewById(R.id.audit);
+            tvAudit.setVisibility(View.VISIBLE);
+
+        }
     }
 
     private ActionBar getActionBar() {
@@ -611,24 +618,24 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
                         @Override
                         public void onClick(View view) {
-                            if (holder.productObj.getLocations()
-                                    .get(stockCheckPresenter.mSelectedLocationIndex).getAudit() == 2) {
-                                holder.productObj.getLocations()
-                                        .get(stockCheckPresenter.mSelectedLocationIndex).setAudit(1);
-                                holder.audit
-                                        .setImageResource(R.drawable.ic_audit_yes);
-                            } else if (holder.productObj.getLocations()
-                                    .get(stockCheckPresenter.mSelectedLocationIndex).getAudit() == 1) {
-                                holder.productObj.getLocations()
-                                        .get(stockCheckPresenter.mSelectedLocationIndex).setAudit(0);
-                                holder.audit
-                                        .setImageResource(R.drawable.ic_audit_no);
-                            } else if (holder.productObj.getLocations()
-                                    .get(stockCheckPresenter.mSelectedLocationIndex).getAudit() == 0) {
-                                holder.productObj.getLocations()
-                                        .get(stockCheckPresenter.mSelectedLocationIndex).setAudit(2);
-                                holder.audit
-                                        .setImageResource(R.drawable.ic_audit_none);
+                            if (holder.productObj.getLocations().get(stockCheckPresenter.mSelectedLocationIndex).getAudit()
+                                    == IvyConstants.AUDIT_DEFAULT) {
+
+                                holder.productObj.getLocations().get(stockCheckPresenter.mSelectedLocationIndex)
+                                        .setAudit(IvyConstants.AUDIT_OK);
+                                holder.audit.setImageResource(R.drawable.ic_audit_yes);
+                            } else if (holder.productObj.getLocations().get(stockCheckPresenter.mSelectedLocationIndex).getAudit()
+                                    == IvyConstants.AUDIT_OK) {
+
+                                holder.productObj.getLocations().get(stockCheckPresenter.mSelectedLocationIndex)
+                                        .setAudit(IvyConstants.AUDIT_NOT_OK);
+                                holder.audit.setImageResource(R.drawable.ic_audit_no);
+                            } else if (holder.productObj.getLocations().get(stockCheckPresenter.mSelectedLocationIndex).getAudit()
+                                    == IvyConstants.AUDIT_NOT_OK) {
+
+                                holder.productObj.getLocations().get(stockCheckPresenter.mSelectedLocationIndex)
+                                        .setAudit(IvyConstants.AUDIT_DEFAULT);
+                                holder.audit.setImageResource(R.drawable.ic_audit_none);
                             }
                         }
                     });
@@ -1272,17 +1279,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         }
                     });
 
-                    if (businessModel.configurationMasterHelper.IS_TEAMLEAD) {
-                        holder.audit.setVisibility(View.VISIBLE);
-                        // holder.avail_cb.setEnabled(false);
-
-                        holder.shelfPcsQty.setEnabled(false);
-                        holder.shelfCaseQty.setEnabled(false);
-
-                        holder.mReason.setEnabled(false);
-
-
-                    }
                     row.setTag(holder);
                 } else {
                     holder = (ViewHolder) row.getTag();
@@ -1303,17 +1299,17 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 if (holder.productObj
                         .getLocations()
                         .get(stockCheckPresenter.mSelectedLocationIndex)
-                        .getAudit() == 2)
+                        .getAudit() == IvyConstants.AUDIT_DEFAULT)
                     holder.audit.setImageResource(R.drawable.ic_audit_none);
                 else if (holder.productObj
                         .getLocations()
                         .get(stockCheckPresenter.mSelectedLocationIndex)
-                        .getAudit() == 1)
+                        .getAudit() == IvyConstants.AUDIT_OK)
                     holder.audit.setImageResource(R.drawable.ic_audit_yes);
                 else if (holder.productObj
                         .getLocations()
                         .get(stockCheckPresenter.mSelectedLocationIndex)
-                        .getAudit() == 0)
+                        .getAudit() == IvyConstants.AUDIT_NOT_OK)
                     holder.audit.setImageResource(R.drawable.ic_audit_no);
 
                 holder.pname = holder.productObj.getProductName();
@@ -1324,6 +1320,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     holder.productCode.setVisibility(View.VISIBLE);
                     String prodCode = getResources().getString(R.string.prod_code) + ": " +
                             holder.productObj.getProductCode() + " ";
+                    if (businessModel.labelsMasterHelper.applyLabels(holder.productCode.getTag()) != null)
+                        prodCode = businessModel.labelsMasterHelper
+                                .applyLabels(holder.productCode.getTag()) + ": " +
+                                holder.productObj.getProductCode() + " ";
                     holder.productCode.setText(prodCode);
                 }
 
@@ -1431,6 +1431,22 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 } else {
                     holder.imageButton_availability.setEnabled(true);
                     holder.facingQty.setEnabled(true);
+                }
+
+                if (businessModel.configurationMasterHelper.isAuditEnabled()){
+
+                    holder.audit.setVisibility(View.VISIBLE);
+
+                    // holder.avail_cb.setEnabled(false);
+
+                    holder.shelfPcsQty.setEnabled(false);
+                    holder.shelfCaseQty.setEnabled(false);
+                    holder.shelfouter.setEnabled(false);
+                    holder.imageButton_availability.setEnabled(false);
+
+                    holder.mReason.setEnabled(false);
+
+
                 }
 
 
@@ -1752,7 +1768,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     .setIcon(null)
                     .setCancelable(false)
 
-                    .setTitle(getResources().getString(R.string.reason_required_for) + text)
+                    .setTitle(getResources().getString(R.string.reason_required_for) + getResources().getString(R.string.non_stock_products))
                     .setPositiveButton(getResources().getString(R.string.ok),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,

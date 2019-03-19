@@ -28,8 +28,7 @@ import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
-import com.ivy.utils.AppUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.Vector;
 
@@ -261,7 +260,7 @@ public class RoadFragment extends IvyBaseFragment {
                                     moduleMaxCount),
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    if (AppUtils.isExternalStorageAvailable()) {
+                    if (FileUtils.isExternalStorageAvailable()) {
                         mImageName = "RA_"
                                 + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                                 + "_" + Commons.now(Commons.DATE_TIME)
@@ -269,7 +268,7 @@ public class RoadFragment extends IvyBaseFragment {
 
                         Intent intent = new Intent(getActivity(), CameraActivity.class);
                         intent.putExtra(CameraActivity.QUALITY, 40);
-                        String mImagePath = AppUtils.photoFolderPath + "/" + mImageName;
+                        String mImagePath = FileUtils.photoFolderPath + "/" + mImageName;
                         Commons.print("photoPath : " + mImagePath);
                         intent.putExtra(CameraActivity.PATH, mImagePath);
                         startActivityForResult(intent,
@@ -414,13 +413,13 @@ public class RoadFragment extends IvyBaseFragment {
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        bmodel.deleteFiles(AppUtils.photoFolderPath,
+                        bmodel.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
                         dialog.dismiss();
                         Intent intent = new Intent(getActivity(),
                                 CameraActivity.class);
                         intent.putExtra(CameraActivity.QUALITY, 40);
-                        String _path = AppUtils.photoFolderPath + "/" + mImageName;
+                        String _path = FileUtils.photoFolderPath + "/" + mImageName;
                         Commons.print("PhotoPAth:  -      " + _path);
                         intent.putExtra(CameraActivity.PATH, _path);
                         startActivityForResult(intent,

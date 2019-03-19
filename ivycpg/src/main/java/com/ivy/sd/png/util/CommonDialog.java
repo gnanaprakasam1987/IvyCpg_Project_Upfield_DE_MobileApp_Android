@@ -220,6 +220,8 @@ public class CommonDialog extends Dialog {
                     .error(R.drawable.no_image_available)
                     .override(300, 300)
                     .dontAnimate()
+                    .diskCacheStrategy(DiskCacheStrategy.NONE)
+                    .skipMemoryCache(true)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into(dialog_img);
             if (txtTitle.getVisibility() == View.GONE)
