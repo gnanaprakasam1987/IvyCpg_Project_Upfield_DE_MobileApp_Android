@@ -433,6 +433,8 @@ public class CollectionFragmentNew extends IvyBaseFragment
                 holder.tvDueDateTitle = row.findViewById(R.id.tv_duedate_title);
                 holder.tvDocRef = row.findViewById(R.id.tv_docRef);
                 holder.tvDocRefTitle = row.findViewById(R.id.tv_docRef_title);
+                holder.tvComments = row.findViewById(R.id.tv_comments);
+                holder.tvCommentsTitle = row.findViewById(R.id.tv_comments_title);
 
                 if (bmodel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
                     holder.tvPayableAmtTitle.setVisibility(View.VISIBLE);
@@ -578,6 +580,26 @@ public class CollectionFragmentNew extends IvyBaseFragment
 
             holder.tvDocRef.setText((holder.invoiceHeaderBO.getDocRefNo() != null) ? holder.invoiceHeaderBO.getDocRefNo() : "-");
 
+            try {
+                if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                        R.id.tv_comments_title).getTag()) != null)
+                    ((TextView) row.findViewById(R.id.tv_comments_title))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(row.findViewById(
+                                            R.id.tv_comments_title).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
+            if (holder.invoiceHeaderBO.isDebitNote()) {
+                holder.tvComments.setVisibility(View.VISIBLE);
+                holder.tvCommentsTitle.setVisibility(View.VISIBLE);
+            } else {
+                holder.tvComments.setVisibility(View.GONE);
+                holder.tvCommentsTitle.setVisibility(View.GONE);
+            }
+            holder.tvComments.setText(holder.invoiceHeaderBO.getComments());
+
             return row;
         }
     }
@@ -597,6 +619,8 @@ public class CollectionFragmentNew extends IvyBaseFragment
         TextView tvDueDateTitle;
         TextView tvDocRef;
         TextView tvDocRefTitle;
+        TextView tvComments;
+        TextView tvCommentsTitle;
 
         ImageView imgInvSelected;
         InvoiceHeaderBO invoiceHeaderBO;

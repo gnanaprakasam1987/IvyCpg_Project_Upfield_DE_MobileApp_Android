@@ -165,4 +165,13 @@
     <string name="condition_mandatory">Plases select Condition</string>
     <string name="nfc_code">NFC Code</string>
     <string name="serial_no_not_captured_kindly_choose_reason">Some problem in serial no capture so kindly choose reason for not captured…</string>
+    <string name="delete_alert_common">Are you sure want to delete?</string>
+    <string name="total_collected">Total Collected</string>
+    <string name="total_cash">Total Cash</string>
+    <string name="total_cheque">Total Cheque</string>
+    <string name="total_dd">Total DD</string>
+    <string name="total_advance_payment">Total Advance Payment</string>
+    <string name="total_credit_note">Total Credit Note</string>
+    <string name="total_rtgs">Total RTGS</string>
+    <string name="total_mobile_payment">Total Mobile Payment</string>
 </resources>

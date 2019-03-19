@@ -6491,8 +6491,8 @@ public class BusinessModel extends Application {
         sb.append("select debitnoteno,inv.date,debitnoteamount,");
 
         sb.append(" Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.DebitNoteNo),0),2) as RcvdAmt,");
-        sb.append(" Round(inv.BalanceAmount - IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.DebitNoteNo),0),2) as os");
-        sb.append(" FROM DebitNoteMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.DebitNoteNo");
+        sb.append(" Round(inv.BalanceAmount - IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.DebitNoteNo),0),2) as os,");
+        sb.append(" Inv.comments FROM DebitNoteMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.DebitNoteNo");
         sb.append(" LEFT OUTER JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid");
         sb.append(" WHERE inv.Retailerid = ");
         sb.append(QT(getRetailerMasterBO().getRetailerID()));
@@ -6509,6 +6509,7 @@ public class BusinessModel extends Application {
                 invoiceHeaderBO.setInvoiceAmount(c.getDouble(2));
                 invoiceHeaderBO.setPaidAmount(c.getDouble(3));
                 invoiceHeaderBO.setBalance(c.getDouble(4));
+                invoiceHeaderBO.setComments(c.getString(5));
                 invoiceHeaderBO.setDebitNote(true);
                 invoiceHeader.add(invoiceHeaderBO);
             }
