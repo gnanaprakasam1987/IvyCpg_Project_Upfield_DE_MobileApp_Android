@@ -334,15 +334,18 @@ public class StockCheckHelper {
     }
 
     boolean isReasonSelectedForAllProducts(boolean isCombinedStock) {
-        Vector<ProductMasterBO> productList = (isCombinedStock)? bmodel.productHelper.getTaggedProducts():bmodel.productHelper.getProductMaster();
-        if(productList.size()==0) return false;
+        Vector<ProductMasterBO> productList = (isCombinedStock) ? bmodel.productHelper.getTaggedProducts() : bmodel.productHelper.getProductMaster();
+        if (productList.size() == 0) return false;
         for (ProductMasterBO product : productList) {
             for (LocationBO location : product.getLocations()) {
-                return !((SHOW_STOCK_SP && location.getShelfPiece() == 0)
-                        || (SHOW_STOCK_SC && location.getShelfCase() == 0)
-                        || (SHOW_SHELF_OUTER && location.getShelfOuter() == 0)
-                        || (SHOW_STOCK_CB && location.getAvailability() == 0)
-                        && location.getReasonId() == 0);
+                if (SHOW_STOCK_CB && location.getAvailability() == 0) {
+                    boolean isQtyAvaiable = ((SHOW_STOCK_SP && location.getShelfPiece() > 0) ||
+                            (SHOW_STOCK_SC && location.getShelfCase() > 0) ||
+                            (SHOW_SHELF_OUTER && location.getShelfOuter() > 0));
+                    if (!isQtyAvaiable && location.getReasonId() == 0) {
+                        return false;
+                    }
+                }
             }
         }
         return true;
