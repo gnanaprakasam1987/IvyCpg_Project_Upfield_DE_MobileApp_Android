@@ -2438,6 +2438,8 @@ public class CommonPrintHelper {
                     mProductValue = "";
                     if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_NAME)) {
                         mProductValue = (prod.getProductShortName() != null ? prod.getProductShortName() : prod.getProductName());
+                    } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_CODE)) {
+                        mProductValue = prod.getProductCode();
                     } else if (attr.getAttributeName().equalsIgnoreCase(TAG_PRODUCT_LOADING_STOCK)) {
                         int vanloadQty = 0;
                         if (isSplitConfigEnable) {
