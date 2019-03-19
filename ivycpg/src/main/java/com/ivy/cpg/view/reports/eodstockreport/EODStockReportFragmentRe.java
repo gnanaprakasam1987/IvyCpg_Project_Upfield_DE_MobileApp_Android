@@ -79,7 +79,7 @@ public class EODStockReportFragmentRe extends Fragment implements IEodStockView 
 
         btnPrint.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                bmodel.mCommonPrintHelper.xmlRead("eod", false, null, null, null, ReportHelper.getInstance(getActivity()).getEODStockReport(),null);
+                bmodel.mCommonPrintHelper.xmlRead("eod", false, null, null, null, modelPresenter.getEODReportList(),null);
 
                 Intent intent = new Intent(getActivity(),
                         CommonPrintPreviewActivity.class);

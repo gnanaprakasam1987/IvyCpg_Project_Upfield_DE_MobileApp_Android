@@ -474,7 +474,7 @@ public class DownloadService extends IntentService {
                                 bmodel.downloadRetailerMaster();
                                 if (bmodel.configurationMasterHelper.CALC_QDVP3)
                                     bmodel.updateSurveyScoreHistoryRetailerWise();
-
+                                bmodel.updateIsTodayAndIsVanSalesInRetailerMasterInfo();
 
                                 downloadRetailerInsertIntent = new Intent(this, com.ivy.sd.png.model.DownloadReceiver.class);
                                 //downloadRetailerInsertIntent.setAction("android.intent.action.DOWNLOAD");
