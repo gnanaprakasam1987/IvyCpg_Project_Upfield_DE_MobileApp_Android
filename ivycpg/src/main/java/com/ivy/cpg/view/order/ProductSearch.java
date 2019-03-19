@@ -1,12 +1,14 @@
 package com.ivy.cpg.view.order;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.hardware.input.InputManager;
 import android.os.AsyncTask;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -48,8 +50,6 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
     private ProductSearchCallBack productSearchCallBack;
     public static String SCREEN_CODE_ORDER="ORDER";
     private String current_screen_code;
-
-    private static final String ALL = "ALL";
 
     private ProductHelper productHelper;
 
@@ -105,15 +105,15 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
             }
         }
 
-        textView_productName = context.findViewById(R.id.productName);
+        textView_productName = ((Activity)context).findViewById(R.id.productName);
         textView_productName.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.LIGHT));
-        mEdt_searchproductName =  context.findViewById(R.id.edt_searchproductName);
-        mBtn_Search =  context.findViewById(R.id.btn_search);
-        viewFlipper =  context.findViewById(R.id.view_flipper);
-        mBtn_clear =  context.findViewById(R.id.btn_clear);
+        mEdt_searchproductName =  ((Activity)context).findViewById(R.id.edt_searchproductName);
+        mBtn_Search =  ((Activity)context).findViewById(R.id.btn_search);
+        viewFlipper =  ((Activity)context).findViewById(R.id.view_flipper);
+        mBtn_clear =  ((Activity)context).findViewById(R.id.btn_clear);
 
         if (bModel.configurationMasterHelper.IS_VOICE_TO_TEXT == -1)
-            context.findViewById(R.id.btn_speech).setVisibility(View.GONE);
+            ((Activity)context).findViewById(R.id.btn_speech).setVisibility(View.GONE);
 
         mBtn_Search.setOnClickListener(this);
         mBtn_clear.setOnClickListener(this);
@@ -142,7 +142,7 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
             }
         });
 
-        context.findViewById(R.id.btn_speech).setOnClickListener(new View.OnClickListener() {
+        ((Activity)context).findViewById(R.id.btn_speech).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -153,7 +153,7 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
 
                     speechToVoiceDialog = new SpeechToVoiceDialog();
                     speechToVoiceDialog.setCancelable(true);
-                    speechToVoiceDialog.show(context.getSupportFragmentManager(), "SPEECH_TO_TEXT");
+                    speechToVoiceDialog.show(((FragmentActivity)context).getSupportFragmentManager(), "SPEECH_TO_TEXT");
 
                     if (viewFlipper.getDisplayedChild() == 0) {
                         viewFlipper.showNext();
@@ -231,15 +231,6 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
 
     }
 
-    public void getAllProducts(Vector<ProductMasterBO> masterList){
-
-        isUserEntryFilter=false;
-
-        this.masterList=masterList;
-
-        searchAsync = new SearchAsync();
-        searchAsync.execute();
-    }
 
 
     private void cancelSearch(){
@@ -586,7 +577,7 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
             //productName.setText("");
             try {
                 InputMethodManager imm = (InputMethodManager) context.getSystemService(context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(context.getCurrentFocus().getWindowToken(), 0);
+                imm.hideSoftInputFromWindow(((Activity)context).getCurrentFocus().getWindowToken(), 0);
             } catch (Exception e) {
                 Commons.printException(e);
             }
@@ -613,7 +604,7 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
                         .show();
             }
             InputMethodManager imm = (InputMethodManager) context.getSystemService(context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(context.getCurrentFocus().getWindowToken(), 0);
+            imm.hideSoftInputFromWindow(((Activity)context).getCurrentFocus().getWindowToken(), 0);
             return true;
         }
         return false;

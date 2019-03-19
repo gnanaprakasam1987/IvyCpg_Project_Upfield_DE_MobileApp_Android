@@ -250,7 +250,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         orderHelper = OrderHelper.getInstance(this);
         stockCheckHelper = StockCheckHelper.getInstance(this);
-        productSearch=ProductSearch.getInstance(this,bmodel,ProductSearch.SCREEN_CODE_ORDER);
+        productSearch=ProductSearch.getInstance(this,productList,bmodel,ProductSearch.SCREEN_CODE_ORDER);
 
         if (bmodel.configurationMasterHelper.SHOW_BARCODE)
             checkAndRequestPermissionAtRunTime(2);
