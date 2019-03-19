@@ -40,6 +40,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.Planorama.PlanoramaActivity;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.cpg.view.asset.PosmTrackingActivity;
@@ -198,6 +199,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_ORD_DELIVERY = "MENU_DELIVERY_MGMT_ORD";
     public static final String MENU_SALES_RET_DELIVERY = "MENU_SALES_RET_DELIVERY";
     public static final String MENU_SERIALIZED_ASSET = "MENU_SERIALIZED_ASSET";
+    public static final String MENU_PLANORMA = "MENU_PLANORAMA";
 
     private final int INVOICE_CREDIT_BALANCE = 1;// Order Not Allowed when credit balance is 0
     private final int SALES_TYPES = 2;// show preVan seller dialog
@@ -715,6 +717,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         updateMenuVisitStatus(menuDB);
         updateMenuVisitStatus(mInStoreMenu);
 
+
+
         mSchedule = new IconicAdapter(mInStoreMenu);
 
         mTempMenuList = new Vector<>(menuDB);
@@ -734,6 +738,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 mTempMenuStoreList.remove(storeMenu);
             }
         }
+
 
         mActivityAdapter = new ActivityAdapter(mTempMenuList);
         activityView.setAdapter(mActivityAdapter);
@@ -3767,6 +3772,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             Toast.LENGTH_SHORT).show();
                     isCreated = false;
                 }
+            }
+        }else if(menu.getConfigCode().equals(MENU_PLANORMA) && hasLink == 1){
+            if (isPreviousDone(menu)
+                    || bmodel.configurationMasterHelper.IS_JUMP) {
+                Intent i = new Intent(this,
+                        PlanoramaActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(i);
+                finish();
             }
         } else {
             Toast.makeText(

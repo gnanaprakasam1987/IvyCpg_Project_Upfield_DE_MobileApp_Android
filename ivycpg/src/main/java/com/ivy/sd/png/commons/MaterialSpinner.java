@@ -311,6 +311,10 @@ public class MaterialSpinner extends AppCompatSpinner implements ValueAnimator.A
      * **********************************************************************************
     */
 
+    /*
+    This method is available in AppUtil
+     */
+    @Deprecated
     private int dpToPx(float dp) {
         final DisplayMetrics displayMetrics = getContext().getResources().getDisplayMetrics();
         float px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, displayMetrics);
