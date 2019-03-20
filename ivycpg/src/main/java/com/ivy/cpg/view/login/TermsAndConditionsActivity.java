@@ -25,6 +25,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.NetworkUtils;
+import com.ivy.utils.StringUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -69,15 +70,19 @@ public class TermsAndConditionsActivity extends IvyBaseActivityNoActionBar {
 
         fromScreen = getIntent().getStringExtra("fromScreen");
         TextView tv_content = findViewById(R.id.tv_terms_cond);
-        String htmlContent;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            htmlContent = Html.fromHtml(LoginHelper.getInstance(this).getTermsContent(), Html.FROM_HTML_MODE_COMPACT).toString();
-            tv_content.setText(Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_COMPACT));
-        } else {
-            htmlContent = Html.fromHtml(LoginHelper.getInstance(this).getTermsContent()).toString();
-            tv_content.setText(Html.fromHtml(htmlContent));
+
+        if (!StringUtils.isEmptyString(LoginHelper.getInstance(this).getTermsContent())) {
+
+            String htmlContent = LoginHelper.getInstance(this).getTermsContent();
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                htmlContent = Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_COMPACT).toString();
+                tv_content.setText(Html.fromHtml(htmlContent, Html.FROM_HTML_MODE_COMPACT));
+            } else {
+                tv_content.setText(Html.fromHtml(htmlContent));
+            }
+            tv_content.setMovementMethod(LinkMovementMethod.getInstance());//For auto-link clickable
         }
-        tv_content.setMovementMethod(LinkMovementMethod.getInstance());//For auto-link clickable
 
         Button btn_cancel = findViewById(R.id.btn_cancel);
         btn_cancel.setOnClickListener(new View.OnClickListener() {
@@ -91,32 +96,32 @@ public class TermsAndConditionsActivity extends IvyBaseActivityNoActionBar {
             @Override
             public void onClick(View v) {
                 btn_accept.setEnabled(false);
-                    if (NetworkUtils.isNetworkConnected(TermsAndConditionsActivity.this)) {
-                        new Thread(new Runnable() {
-                            public void run() {
-                                Looper.prepare();
-                                uploadTermsAccepted();
-                                Looper.loop();
-                                Looper myLooper = Looper.myLooper();
-                                if (myLooper != null)
-                                    myLooper.quit();
-                            }
-                        }).start();
-                        updateTermsAccepted();
-                        if ("login".equals(fromScreen)) {
-                            Intent myIntent = new Intent(TermsAndConditionsActivity.this, HomeScreenActivity.class);
-                            myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                            myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(myIntent);
+                if (NetworkUtils.isNetworkConnected(TermsAndConditionsActivity.this)) {
+                    new Thread(new Runnable() {
+                        public void run() {
+                            Looper.prepare();
+                            uploadTermsAccepted();
+                            Looper.loop();
+                            Looper myLooper = Looper.myLooper();
+                            if (myLooper != null)
+                                myLooper.quit();
                         }
-                        overridePendingTransition(0, R.anim.zoom_exit);
-                        finish();
-                    } else {
-                        bmodel.showAlert(getResources().getString(
-                                R.string.please_connect_to_internet), 0);
-                        btn_accept.setEnabled(true);
+                    }).start();
+                    updateTermsAccepted();
+                    if ("login".equals(fromScreen)) {
+                        Intent myIntent = new Intent(TermsAndConditionsActivity.this, HomeScreenActivity.class);
+                        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        myIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(myIntent);
                     }
+                    overridePendingTransition(0, R.anim.zoom_exit);
+                    finish();
+                } else {
+                    bmodel.showAlert(getResources().getString(
+                            R.string.please_connect_to_internet), 0);
+                    btn_accept.setEnabled(true);
                 }
+            }
         });
     }
 
