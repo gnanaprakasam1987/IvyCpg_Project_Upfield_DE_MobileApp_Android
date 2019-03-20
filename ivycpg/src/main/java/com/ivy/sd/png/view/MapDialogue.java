@@ -1,8 +1,10 @@
 package com.ivy.sd.png.view;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Point;
 import android.location.Address;
 import android.location.Geocoder;
@@ -10,6 +12,7 @@ import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -207,7 +210,13 @@ public class MapDialogue extends IvyBaseActivityNoActionBar implements OnDragLis
     private void setMap(){
         if (mMap != null) {
             mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-            mMap.setMyLocationEnabled(true);
+
+            int permissionStatus = ContextCompat.checkSelfPermission(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION);
+            if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                mMap.setMyLocationEnabled(true);
+            }
+
             if (mMarkerParentView != null &&
                     mMarkerParentView.findViewById(SDUtil.convertToInt("1")) != null) {
                 // Get the button view
