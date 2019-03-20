@@ -206,17 +206,17 @@
                         android:src="@drawable/ic_loyalty" />
                 </LinearLayout>
 
-
                 <TextView
-                    android:id="@+id/tv_freq"
-                    android:layout_width="@dimen/ret_image_size"
+                    android:id="@+id/tv_task_count"
+                    android:layout_width="wrap_content"
                     android:layout_height="@dimen/ret_image_size"
-                    android:fontFamily="@font/roboto_medium"
+                    android:fontFamily="@font/roboto_light"
                     android:gravity="center"
                     android:text=""
                     android:textColor="@color/black_bg3"
                     android:textSize="@dimen/text_size_caption"
                     android:visibility="gone" />
+
             </LinearLayout>
         </LinearLayout>
 

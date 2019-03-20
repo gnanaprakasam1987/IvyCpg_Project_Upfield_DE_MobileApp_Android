@@ -13,24 +13,17 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="@dimen/dimens_10dp">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal" >
 
         <TextView
+            style="@style/TextViewListItemPrimary"
             android:id="@+id/retailerNameTv"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="start"
             android:paddingStart="3dp"
             android:singleLine="true"
             android:text=""
-            android:textColor="@android:color/black"
-            android:textSize="@dimen/text_size_primary"
             android:paddingLeft="3dp" />
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -46,17 +39,17 @@
             android:layout_gravity="center_vertical">
 
             <TextView
+                style="@style/TextViewListItemCaption"
                 android:id="@+id/advTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:paddingStart="3dp"
                 android:text="@string/advance_payment"
-                android:textColor="@color/half_Black"
-                android:textSize="@dimen/text_size_caption"
                 android:paddingLeft="3dp" />
 
             <TextView
+                style="@style/TextViewListItemValues"
                 android:id="@+id/cashMode"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -64,8 +57,6 @@
                 android:gravity="center_vertical"
                 android:paddingStart="3dp"
                 android:text=""
-                android:textColor="?attr/primarycolor"
-                android:textSize="@dimen/text_size_secondary"
                 android:paddingLeft="3dp" />
         </LinearLayout>
 
@@ -87,24 +78,22 @@
             android:paddingLeft="@dimen/dimens_10dp">
 
             <TextView
+                style="@style/TextViewListItemCaption"
                 android:id="@+id/date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="4dp"
                 android:text="@string/date"
-                android:textColor="@color/half_Black"
-                android:textSize="@dimen/text_size_caption"
                 android:paddingLeft="4dp" />
 
             <TextView
+                style="@style/TextViewListItemValues"
                 android:id="@+id/invDateTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:paddingStart="4dp"
                 android:text=""
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/text_size_secondary"
                 android:paddingLeft="4dp" />
         </LinearLayout>
 
@@ -126,25 +115,28 @@
             android:paddingLeft="@dimen/dimens_10dp">
 
             <TextView
+                style="@style/TextViewListItemCaption"
                 android:id="@+id/invoiceAmt"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/amount"
-                android:textColor="@color/half_Black"
-                android:textSize="@dimen/text_size_caption"/>
+                android:text="@string/amount"/>
 
             <TextView
+                style="@style/TextViewListItemValues"
                 android:id="@+id/adv_amount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
                 android:paddingEnd="4dp"
                 android:text="0000"
-                android:textColor="@android:color/black"
-                android:textSize="@dimen/font_small"
                 android:paddingRight="4dp" />
         </LinearLayout>
     </LinearLayout>
+    <View
+        android:id="@+id/bottom_line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimen_5dp"
+        android:background="@color/grey_odd" />
 </LinearLayout>
 
 </LinearLayout>

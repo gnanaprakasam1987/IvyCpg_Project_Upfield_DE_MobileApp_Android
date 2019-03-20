@@ -1,4 +1,4 @@
-IvyCPG is a native android offline supported application. VanSales, Presales, Primary Sales, Team Leader , Auditing are main modules. Application will work based on configuration sent from backend.
+IvyCPG is a native android offline application. VanSales, Presales, Primary Sales, Team Leader , Auditing, Sub-D and Supervisor are the main modules. Application will work based on configuration sent from backend.
 
 Pre-Requsite to compile
 
@@ -28,5 +28,6 @@ Coading Style
 
 1. Strings should be created only in donottranslate.xml. If other lanaguage translation is required then same string should be moved to all language folders.
 2. MVP Pattern should be followed for new modules.
-3. Font size and style should be reused for any new screens.
+3. Font size and style should be reffered from common Styles.
+
 

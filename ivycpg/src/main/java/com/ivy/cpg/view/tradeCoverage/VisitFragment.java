@@ -97,7 +97,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
     private static final String RETAILER_FILTER_MENU_TYPE = "MENU_VISIT";
 
     //image icon constants
-    private static final String ICON_STAR = "STAR";
     private static final String ICON_COOLER = "COOLER";
     private static final String ICON_LOYALITY = "LOYALITY";
     private static final String ICON_CROWN = "CROWN";
@@ -1932,11 +1931,17 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                         holder.ll_iv_cooler.setVisibility(View.VISIBLE);
                         holder.iv_cooler.setImageResource(R.drawable.ic_freeze);
                     }
-                    if (mRetailerProp.get("RTPRTY09").length() > 0 && mRetailerProp.get("RTPRTY09").split("/").length == 2) {
-                        holder.ll_iv_cooler.setVisibility(View.VISIBLE);
-                        holder.iv_cooler.setImageResource(getMappedDrawableId(mRetailerProp.get("RTPRTY09")));
-                        holder.iv_cooler.setColorFilter(Color.parseColor(getMappedColorCode(mRetailerProp.get("RTPRTY09"),
-                                ("1").equals(holder.retailerObjectHolder.getRField8()))));
+                    if (mRetailerProp.get("RTPRTY09").length() > 0) {
+                        if (mRetailerProp.get("RTPRTY09").split("/").length == 2) {
+                            holder.ll_iv_cooler.setVisibility(View.VISIBLE);
+                            holder.iv_cooler.setImageResource(getMappedDrawableId(mRetailerProp.get("RTPRTY09")));
+                            holder.iv_cooler.setColorFilter(Color.parseColor(getMappedColorCode(mRetailerProp.get("RTPRTY09"),
+                                    ("1").equals(holder.retailerObjectHolder.getRField8()))));
+                        } else if (mRetailerProp.get("RTPRTY09").equalsIgnoreCase("Task")) {
+                            holder.ll_iv_cooler.setVisibility(View.GONE);
+                            holder.tvTaskCount.setVisibility(View.VISIBLE);
+                            holder.tvTaskCount.setText(getResources().getString(R.string.task) + ":" + holder.retailerObjectHolder.getRField8());
+                        }
                     }
                     if (holder.retailerObjectHolder.getRField8() == null)
                         holder.ll_iv_cooler.setVisibility(View.GONE);
@@ -2079,7 +2084,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             private TextView tv_labelTgt2;
             private TextView tv_actualTgt2;
             private TextView tv_achvTgt2;
-            private TextView tv_freq;
+            private TextView tvTaskCount;
 
             private ImageView line_order_without_invoice;
             LinearLayout ll_score1;
@@ -2148,14 +2153,14 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                             .findViewById(R.id.tv_actualTgt2);
                     tv_achvTgt2 = itemView
                             .findViewById(R.id.tv_achvTgt2);
+                    tvTaskCount = itemView
+                            .findViewById(R.id.tv_task_count);
 
                     ll_score1 = itemView.findViewById(R.id.ll_score1);
                     ll_score2 = itemView.findViewById(R.id.ll_score2);
                     ll_scoreParent = itemView.findViewById(R.id.ll_scoreParent);
                     imgLine2 = itemView.findViewById(R.id.img_line2);
 
-                    tv_freq = itemView
-                            .findViewById(R.id.tv_freq);
 
                     iv_outlet_color = itemView.findViewById(R.id.iv_outlet_color);
 

@@ -25,6 +25,7 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -49,6 +50,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -60,6 +62,7 @@ import android.widget.ViewFlipper;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.core.IvyConstants;
+import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
@@ -138,6 +141,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
     MyAdapter mSchedule;
 
     private StockCheckHelper stockCheckHelper;
+    private int mTotalScreenWidth = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -203,6 +207,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
         super.onCreate(savedInstanceState);
         ((IvyBaseActivityNoActionBar) getActivity()).checkAndRequestPermissionAtRunTime(3);
         setHasOptionsMenu(true);
+
+        DisplayMetrics dm = new DisplayMetrics();
+        getActivity().getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        mTotalScreenWidth = dm.widthPixels;
     }
 
     @Override
@@ -1276,6 +1284,41 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 sc.show(fm, "");
                             }
                             return true;
+                        }
+                    });
+
+                    holder.psname.setOnClickListener(new OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            businessModel = (BusinessModel) getActivity().getApplicationContext();
+                            businessModel.setContext(getActivity());
+
+                            SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext());
+
+                            //if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_SCHEME_DIALOG) {
+                            if (schemeHelper
+                                    .getSchemeList() == null
+                                    || schemeHelper
+                                    .getSchemeList().size() == 0) {
+                                Toast.makeText(getActivity(),
+                                        R.string.scheme_not_available,
+                                        Toast.LENGTH_SHORT).show();
+                            }
+
+                            //This objects reference is used only in Product Detail screen.
+                            // This should be removed while cleaning product detail screen
+                            businessModel.productHelper.setSchemes(schemeHelper.getSchemeList());
+                            businessModel.productHelper.setPdname(holder.pname);
+                            businessModel.productHelper.setProdId(holder.productId);
+                            businessModel.productHelper.setProductObj(holder.productObj);
+                            businessModel.productHelper.setFlag(1);
+                            businessModel.productHelper.setTotalScreenSize(mTotalScreenWidth);
+
+                            Intent intent = new Intent(getActivity(), ProductSchemeDetailsActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            intent.putExtra("isFromStockCheck", true);
+                            intent.putExtra("productId", holder.productId);
+                            startActivity(intent);
                         }
                     });
 

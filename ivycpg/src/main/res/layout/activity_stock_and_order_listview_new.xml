@@ -53,14 +53,6 @@
                     android:src="@drawable/activity_icon_stock_check"
                     android:tint="@color/black_bg1" />
 
-                <ImageView
-                    android:id="@+id/ivInfoicon"
-                    android:layout_width="@dimen/info_icon"
-                    android:layout_height="@dimen/info_icon"
-                    android:padding="@dimen/list_item_padding"
-                    android:src="@drawable/ic_info_new"
-                    android:tint="@color/black_bg1" />
-
                 <com.ivy.sd.png.view.SlantView
                     android:id="@+id/slant_view_bg"
                     android:layout_width="@dimen/info_icon"

@@ -12,6 +12,8 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,6 +42,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager;
 import com.ivy.cpg.view.supervisor.customviews.ticker.TickerView;
+import com.ivy.cpg.view.supervisor.mvp.ManagerialUsersFragment;
 import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity;
@@ -437,6 +440,8 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
             }
         } else if (item.getItemId() == R.id.menu_date) {
             showDatePicker();
+        } else if (item.getItemId() == R.id.menu_user) {
+            displayUsers();
         }
 
         return false;
@@ -746,5 +751,30 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
                 .getDisplayMetrics()
                 .density;
         return dp * density;
+    }
+
+    private void displayUsers() {
+        try {
+
+            FragmentManager fm = getActivity().getSupportFragmentManager();
+            SupportMapFragment frag = (SupportMapFragment) fm
+                    .findFragmentById(R.id.map);
+            FragmentTransaction ft = fm
+                    .beginTransaction();
+            if (frag != null)
+                ft.remove(frag);
+
+            ManagerialUsersFragment fragment = (ManagerialUsersFragment) fm
+                    .findFragmentByTag("userfragment");
+            if (fragment != null)
+                ft.detach(fragment);
+
+            ManagerialUsersFragment fragobj = new ManagerialUsersFragment();
+            ft.add(R.id.map_wrap_layout, fragobj, "userfragment");
+            ft.commitAllowingStateLoss();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
     }
 }

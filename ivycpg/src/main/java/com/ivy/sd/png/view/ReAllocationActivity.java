@@ -837,6 +837,10 @@ public class ReAllocationActivity extends IvyBaseActivityNoActionBar implements
         }
     }
 
+    /*
+    This method is available in AppUtil
+     */
+    @Deprecated
     private int dpToPx(int dp) {
         DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
         int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));

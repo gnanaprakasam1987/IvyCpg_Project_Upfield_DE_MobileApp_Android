@@ -10,6 +10,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -83,6 +84,7 @@ public class CollectionReportHelper {
                         paybo.setInvoiceDate(c.getString(10));
                         paybo.setListName(c.getString(11));
                         paybo.setPreviousPaidAmount(c.getDouble(12));
+                        paybo.setUid(c.getString(13));
                         paybo.setAppliedDiscountAmount(c.getDouble(14));
                         paybo.setGroupId(c.getString(15));
                         paybo.setRetailerCode(c.getString(16));
@@ -332,5 +334,19 @@ public class CollectionReportHelper {
         } catch (Exception e) {
             Commons.printException(e);
         }
+    }
+
+    public boolean deletePayment(String uid) {
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+            db.openDataBase();
+            db.deleteSQL(DataMembers.tbl_Payment, "uid =" + StringUtils.QT(uid), false);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+            return false;
+        }
+
+        return true;
     }
 }
