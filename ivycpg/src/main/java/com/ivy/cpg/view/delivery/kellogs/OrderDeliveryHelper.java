@@ -738,8 +738,8 @@ public class OrderDeliveryHelper {
 
                 db.updateSQL("update SchemeFreeProductDetail set upload='N',InvoiceID = " + StringUtils.QT(invoiceId) + " where orderId = " + StringUtils.QT(orderId));
 
-                String invoiceTaxDetail = "Insert into InvoiceTaxDetails (orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct,invoiceid) " +
-                        " select orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct," + invoiceId + " from OrderTaxDetails where OrderId = " + StringUtils.QT(orderId);
+                String invoiceTaxDetail = "Insert into InvoiceTaxDetails (orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct,invoiceid,applyLevelId) " +
+                        " select orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct," + invoiceId + ",applyLevelId from OrderTaxDetails where OrderId = " + StringUtils.QT(orderId);
 
                 db.executeQ(invoiceTaxDetail);
 
@@ -859,7 +859,7 @@ public class OrderDeliveryHelper {
 
     private void insertProductLevelTax(String orderId, DBUtil db,
                                        ProductMasterBO productBO, TaxBO taxBO, String invoiceId) {
-        String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct,invoiceid";
+        String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct,invoiceid,applyLevelId";
         StringBuffer values;
         values = new StringBuffer();
 
@@ -871,8 +871,12 @@ public class OrderDeliveryHelper {
                 .append(businessModel.getRetailerMasterBO().getRetailerID());
         values.append(",")
                 .append(taxBO.getGroupId())
-                .append(",0").append(",")
-                .append(StringUtils.QT(invoiceId));
+                .append(",0")
+                .append(",")
+                .append(StringUtils.QT(invoiceId))
+                .append(",")
+                .append(taxBO.getApplyLevelId());
+
         db.insertSQL("InvoiceTaxDetails", columns, values.toString());
     }
 
