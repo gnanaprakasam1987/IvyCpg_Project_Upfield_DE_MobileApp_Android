@@ -47,6 +47,7 @@ import com.ivy.ui.dashboard.chart.smp.SMPChartFragment;
 import com.ivy.ui.dashboard.di.DaggerSellerDashboardComponent;
 import com.ivy.ui.dashboard.di.SellerDashboardModule;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.StringUtils;
 import com.ivy.utils.event.DashBoardEventData;
 
 import org.greenrobot.eventbus.EventBus;
@@ -65,7 +66,7 @@ import static com.ivy.ui.dashboard.SellerDashboardConstants.P3M;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.ROUTE;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.WEEK;
 import static com.ivy.utils.StringUtils.QT;
-import static com.ivy.utils.StringUtils.isNullOrEmpty;
+
 
 public class SellerDashboardFragment extends BaseFragment implements SellerDashboardContract.SellerDashboardView, DashboardClickListener {
 
@@ -451,7 +452,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
 
 
     private void getDashSpinnerData() {
-        if (!isNullOrEmpty(type) && type.equalsIgnoreCase(SellerDashboardConstants.ROUTE)) {
+        if (!StringUtils.isEmptyString(type) && type.equalsIgnoreCase(SellerDashboardConstants.ROUTE)) {
             presenter.fetchSellerDashList(SellerDashboardConstants.DashBoardType.ROUTE);
         } else if (!isFromRetailer) {
             presenter.fetchSellerDashList(SellerDashboardConstants.DashBoardType.SELLER);

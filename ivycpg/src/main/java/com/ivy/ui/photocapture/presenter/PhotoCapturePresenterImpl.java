@@ -22,6 +22,8 @@ import com.ivy.ui.photocapture.data.PhotoCaptureDataManager;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.rx.SchedulerProvider;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -219,8 +221,12 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
         photoCaptureLocationBO.setLocationName(locationName);
 
         if (isDateEnabled()) {
-            photoCaptureLocationBO.setFromDate(getIvyView().getFromDate());
-            photoCaptureLocationBO.setToDate(getIvyView().getToDate());
+
+            if(getIvyView().getFromDate().length()!=0)
+                photoCaptureLocationBO.setFromDate(getIvyView().getFromDate());
+
+            if(getIvyView().getToDate().length()!=0)
+                photoCaptureLocationBO.setToDate(getIvyView().getToDate());
         }
 
         editedData.put(productId + "_" + typeId + "_" + locationId, photoCaptureLocationBO);

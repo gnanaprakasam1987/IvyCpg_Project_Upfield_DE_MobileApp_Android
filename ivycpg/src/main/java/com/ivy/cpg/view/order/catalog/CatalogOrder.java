@@ -1195,6 +1195,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
             }
         }
         else if (i == R.id.menu_digtal_content) {
+            DigitalContentHelper.getInstance(this).downloadDigitalContent(this, "RETAILER");
             Intent i1 = new Intent(CatalogOrder.this,
                     DigitalContentActivity.class);
             i1.putExtra("ScreenCode", screenCode);
