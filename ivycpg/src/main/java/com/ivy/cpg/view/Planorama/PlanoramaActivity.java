@@ -27,9 +27,10 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.sd.png.util.DateUtil;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 
 import org.joda.time.DateTime;
@@ -47,6 +48,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
+
+import static android.app.Activity.RESULT_OK;
 
 public class PlanoramaActivity extends IvyBaseActivityNoActionBar {
 
@@ -322,9 +325,9 @@ public class PlanoramaActivity extends IvyBaseActivityNoActionBar {
                     JSONObject jsonData=(JSONObject)jsonArray.get(i);
                     planoramaBO=new PlanoramaBO();
 
-                    String visitedTime=DateUtil.convertDateTimeObjectToRequestedFormat(jsonData.getString("visitedOn"),"yyyy-MM-dd'T'HH:mm:ss.SSSX","yyyy/MM/dd HH:mm:ss");
+                    String visitedTime=DateTimeUtils.convertDateTimeObjectToRequestedFormat(jsonData.getString("visitedOn"),"yyyy-MM-dd'T'HH:mm:ss.SSSX","yyyy/MM/dd HH:mm:ss");
                     planoramaBO.setVisitedTime(visitedTime);
-                    if(SDUtil.compareDate(SDUtil.now(SDUtil.DATE_GLOBAL),visitedTime,"yyyy/MM/dd")==0){
+                    if(DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),visitedTime,"yyyy/MM/dd")==0){
 
                         JSONObject json_StoreInfo=(JSONObject)jsonData.get("storeInfo");
                         planoramaBO.setRetailerName(json_StoreInfo.get("name").toString());
@@ -378,7 +381,7 @@ public class PlanoramaActivity extends IvyBaseActivityNoActionBar {
                 if (imgFile.exists()) {
                     try {
 
-                        Bitmap myBitmap = bModel.decodeFile(imgFile);
+                        Bitmap myBitmap = FileUtils.decodeFile(imgFile);
                         holder.imageView.setImageBitmap(myBitmap);
 
                     } catch (Exception e) {

@@ -23,6 +23,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.NetworkUtils;
 
 import org.json.JSONObject;
@@ -165,7 +166,7 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
                     ImageView imageView=new ImageView(this);
                     imageView.setScaleType(ImageView.ScaleType.FIT_XY);
                     imageView.setAdjustViewBounds(true);
-                    Bitmap myBitmap = mBModel.decodeFile(imgFile);
+                    Bitmap myBitmap = FileUtils.decodeFile(imgFile);
                     imageView.setImageBitmap(myBitmap);
                     imageView.setTag(imageName);
                     LinearLayout.LayoutParams layoutParams=new LinearLayout.LayoutParams(AppUtils.dpToPx(this,150), AppUtils.dpToPx(this,150));
