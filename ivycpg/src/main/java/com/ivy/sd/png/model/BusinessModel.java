@@ -406,13 +406,6 @@ public class BusinessModel extends Application {
     }
 
 
-    public static synchronized BusinessModel getInstance() {
-
-        return mInstance;
-
-    }
-
-
     private void loadActivity(Activity ctxx, String act) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
             if (ctxx.isDestroyed()) { // or call isFinishing() if min sdk version < 17
