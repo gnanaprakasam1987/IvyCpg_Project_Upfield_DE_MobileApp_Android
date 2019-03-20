@@ -338,7 +338,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                 textInputLayout2.setVisibility(View.GONE);
                 textInputLayout3.setVisibility(View.GONE);
                 lnrRField1.setVisibility(View.GONE);
-                if (!StringUtils.isNullOrEmpty(promotionBO.getRemarks()))
+                if (!StringUtils.isEmptyString(promotionBO.getRemarks()))
                     remarks.setText(promotionBO.getRemarks());
                 else
                     remarks.setText("");

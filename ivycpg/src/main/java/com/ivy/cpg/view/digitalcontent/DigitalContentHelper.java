@@ -165,8 +165,7 @@ public class DigitalContentHelper {
         DigitalContentBO product;
         String mMappedImageIds;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-            );
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             StringBuilder sBuffer = new StringBuilder();
             if ("SELLER".equals(value))

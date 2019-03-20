@@ -3808,7 +3808,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.rep_ou.setText(strRepOuterQty);
             }
             if (bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_PC) {
-                String strRepPcsQty = getString(R.string.rep_pcs);
+                String strRepPcsQty = getString(R.string.rep_pcs) + ": ";
 
                 if (bmodel.labelsMasterHelper.applyLabels(holder.rep_ou.getTag()) != null)
                     strRepPcsQty = bmodel.labelsMasterHelper
@@ -3821,6 +3821,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             if(hasStockChecked(holder.productObj)) {
                 String totSTKQty = getString(R.string.stock) + ": ";
+
+            if (bmodel.labelsMasterHelper.applyLabels(holder.text_stock.getTag()) != null) {
+                holder.text_stock.setText(bmodel.labelsMasterHelper.applyLabels(holder.text_stock.getTag()) + ": " + holder.productObj.getTotalStockQty() + "");
+            } else {
+                holder.text_stock.setText(getString(R.string.stock) + ": " + holder.productObj.getTotalStockQty() + "");
+            }
 
                 if (bmodel.labelsMasterHelper.applyLabels(holder.text_stock.getTag()) != null)
                     totSTKQty = bmodel.labelsMasterHelper
@@ -5790,6 +5796,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
         } else if (i == R.id.menu_digtal_content) {
+            DigitalContentHelper.getInstance(this).downloadDigitalContent(getApplicationContext(), "RETAILER");
             Intent i1 = new Intent(StockAndOrder.this,
                     DigitalContentActivity.class);
             i1.putExtra("ScreenCode", screenCode);

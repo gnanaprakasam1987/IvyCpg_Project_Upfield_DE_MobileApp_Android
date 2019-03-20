@@ -59,7 +59,7 @@ public class TimeTrackingAdapter extends RecyclerView.Adapter<TimeTrackingAdapte
         String time;
         StringTokenizer tokenizer;
 
-        if (!StringUtils.isNullOrEmpty(holder.nonFieldTwoBO.getOutTime())) {
+        if (!StringUtils.isEmptyString(holder.nonFieldTwoBO.getOutTime())) {
             holder.btOutTime.setVisibility(View.GONE);
             holder.tvOutTime.setVisibility(View.VISIBLE);
             tokenizer = new StringTokenizer(outTime);
@@ -77,7 +77,7 @@ public class TimeTrackingAdapter extends RecyclerView.Adapter<TimeTrackingAdapte
         date = tokenizer.nextToken();
         time = tokenizer.nextToken();
 
-        if (!StringUtils.isNullOrEmpty(holder.nonFieldTwoBO.getInTime())) {
+        if (!StringUtils.isEmptyString(holder.nonFieldTwoBO.getInTime())) {
             holder.tvInTime.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(date,
                     DEFAULT_DATE_FORMAT) + "\n" + time);
         }
