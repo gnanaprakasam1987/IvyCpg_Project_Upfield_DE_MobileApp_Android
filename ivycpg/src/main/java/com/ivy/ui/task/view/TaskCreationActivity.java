@@ -2,7 +2,11 @@ package com.ivy.ui.task.view;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatSpinner;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
@@ -11,7 +15,6 @@ import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
@@ -21,18 +24,27 @@ import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.task.TaskDataBO;
+import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
+import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.ui.task.TaskContract;
+import com.ivy.ui.task.adapter.TaskImgListAdapter;
 import com.ivy.ui.task.di.DaggerTaskComponent;
 import com.ivy.ui.task.di.TaskModule;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Vector;
 
 import javax.inject.Inject;
@@ -42,17 +54,25 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
 
-public class TaskCreationActivity extends BaseActivity implements TaskContract.TaskView {
+import static com.ivy.core.IvyConstants.DEFAULT_DATE_FORMAT;
+
+public class TaskCreationActivity extends BaseActivity implements TaskContract.TaskView, DataPickerDialogFragment.UpdateDateInterface {
 
     @Inject
     TaskContract.TaskPresenter<TaskContract.TaskView> taskPresenter;
 
-    private int channelId, retailerid;
+    private int mSelectedCategoryID = 0;
     private boolean fromHomeScreen = false;
     private boolean isRetailerTask = false;
+    private int isTyp = 0;
+    private TaskDataBO taskBo;
     private String screenTitle = "";
     private String mode = "seller";
-    private int mSelectedUserId = 0;
+    private int mSelectedSpinnerPos = 0;
+    private String imageName = "";
+    private static String folderPath;
+    private static final int CAMERA_REQUEST_CODE = 1;
+    private static final String TAG_DATE_PICKER_TO = "date_picker_to";
 
     @BindView(R.id.taskView)
     EditText taskView;
@@ -63,11 +83,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @BindView(R.id.spinner_seller)
     Spinner sellerSpinner;
 
-    @BindView(R.id.channel)
-    Spinner channelSpinner;
-
-    @BindView(R.id.retailer)
-    Spinner retailerSpinner;
+    @BindView(R.id.task_category_spinner)
+    AppCompatSpinner categorySpinner;
 
     @BindView(R.id.rg_selection)
     RadioGroup radioGroup;
@@ -90,14 +107,19 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @BindView(R.id.applicable_tv)
     TextView applicableTV;
 
-    @BindView(R.id.task_spinner_layouts)
-    LinearLayout spinnerLayout;
+    @BindView(R.id.task_img_recycler_view)
+    RecyclerView imgListRecyclerView;
+
+    @BindView(R.id.task_due_date_btn)
+    Button dueDateBtn;
 
     private ArrayAdapter<UserMasterBO> userMasterArrayAdapter;
 
     private ArrayAdapter<ChannelBO> channelArrayAdapter;
 
     private ArrayAdapter<RetailerMasterBO> retailerMasterArrayAdapter;
+
+    private ArrayAdapter<TaskDataBO> taskCategoryArrayAdapter;
 
 
     @Override
@@ -108,6 +130,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @Override
     protected void initVariables() {
 
+        folderPath = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/"
+                + DataMembers.photoFolderName;
     }
 
     @Override
@@ -132,28 +156,39 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             fromHomeScreen = getIntent().getExtras().getBoolean("fromHomeScreen", false);
             isRetailerTask = getIntent().getExtras().getBoolean("IsRetailerwisetask", false);
             screenTitle = getIntent().getExtras().getString("screentitle", getString(R.string.task_creation));
+            isTyp = getIntent().getExtras().getInt("isType", 0);
+            taskBo = getIntent().getExtras().getParcelable("taskObj");
         }
-        if (!isRetailerTask)
+        if (!isRetailerTask) {
             taskPresenter.fetchData();
+        }
+        taskPresenter.fetchTaskCategory(getIntent().getExtras().getString("menuCode", "MENU_TASK"));
+
     }
 
     @Override
     protected void setUpViews() {
         setUnBinder(ButterKnife.bind(this));
         setUpToolBar();
+        setUpRecyclerView();
         //allow only create task only for retailer if not from seller Task
         if (isRetailerTask) {
 
             radioGroup.setVisibility(View.GONE);
-            spinnerLayout.setVisibility(View.GONE);
+            sellerSpinner.setVisibility(View.GONE);
             applicableTV.setVisibility(View.GONE);
             mode = "retailer";
         } else {
-            setUpUserAdapter();
-            setUpChannelAdapter();
-            setUpRetailerAdapter();
+            setUpAdapter();
         }
+        setUpCategoryAdapter();
+
+        if (isTyp == 1)
+            taskPresenter.fetchTaskImageList(taskBo.getTaskId());
+        else
+            taskPresenter.addNewImage("");
     }
+
 
     @Override
     public void setTaskChannelListData(Vector<ChannelBO> channelList) {
@@ -181,13 +216,29 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     }
 
     @Override
+    public void setTaskCategoryListData(ArrayList<TaskDataBO> categoryList) {
+        taskCategoryArrayAdapter.clear();
+        taskCategoryArrayAdapter.add(new TaskDataBO(0, getString(R.string.plain_select), 1));
+        taskCategoryArrayAdapter.addAll(categoryList);
+        taskCategoryArrayAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void updateImageListAdapter(ArrayList<TaskDataBO> imageList) {
+        imgListRecyclerView.setAdapter(new TaskImgListAdapter(imageList, TaskCreationActivity.this, false, photoClickListener));
+    }
+
+    TaskImgListAdapter.PhotoClickListener photoClickListener = new TaskImgListAdapter.PhotoClickListener() {
+        @Override
+        public void onTakePhoto() {
+            prepareTaskPhotoCapture();
+        }
+    };
+
+    @Override
     public String getTaskMode() {
         return mode;
     }
-
-    /*TypedArray typearr = this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
-    final int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
-    final int secondary_color = typearr.getColor(R.styleable.MyTextView_textColorSecondary, 0);*/
 
     @OnClick({R.id.seller, R.id.Channelwise, R.id.Retailerwise})
     public void onTaskCheckChangedListener(RadioButton radioBtn) {
@@ -197,33 +248,21 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 seller_rb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
                 channelwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
                 retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
-                channelSpinner.setSelection(0);
-                channelSpinner.setEnabled(false);
-                retailerSpinner.setSelection(0);
-                retailerSpinner.setEnabled(false);
-                sellerSpinner.setEnabled(true);
+                setUpSpinnerData(0);
                 mode = "seller";
                 break;
             case R.id.Channelwise:
                 seller_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
                 channelwise_rb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
                 retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
-                channelSpinner.setEnabled(true);
-                retailerSpinner.setSelection(0);
-                retailerSpinner.setEnabled(false);
-                sellerSpinner.setSelection(0);
-                sellerSpinner.setEnabled(false);
+                setUpSpinnerData(1);
                 mode = "channel";
                 break;
             case R.id.Retailerwise:
                 seller_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
                 channelwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
                 retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
-                channelSpinner.setSelection(0);
-                channelSpinner.setEnabled(false);
-                retailerSpinner.setEnabled(true);
-                sellerSpinner.setSelection(0);
-                sellerSpinner.setEnabled(false);
+                setUpSpinnerData(2);
                 mode = "retailer";
                 break;
         }
@@ -232,33 +271,27 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @OnItemSelected(R.id.spinner_seller)
     public void onUserSpinnerSelected(Spinner spinner, int position) {
         ((TextView) spinner.getSelectedView().findViewById(android.R.id.text1)).setGravity(Gravity.START);
-        mSelectedUserId = position;
+        mSelectedSpinnerPos = position;
     }
 
-    @OnItemSelected(R.id.channel)
-    public void onChannelSpinnerSelected(Spinner spinner, int position) {
-        ((TextView) spinner.getSelectedView().findViewById(android.R.id.text1)).setGravity(Gravity.START);
-        ChannelBO chBo = (ChannelBO) spinner.getSelectedItem();
-        if (chBo.getChannelName().equalsIgnoreCase(getResources().getString(R.string.all_channel))) {
-            channelId = -1;
-        } else {
-            channelId = chBo.getChannelId();
+    @OnItemSelected(R.id.task_category_spinner)
+    public void onCategorySpinnerSelected(AppCompatSpinner categorySpinner, int position) {
+        ((TextView) categorySpinner.getSelectedView().findViewById(android.R.id.text1)).setGravity(Gravity.START);
+        TaskDataBO taskBo = (TaskDataBO) categorySpinner.getSelectedItem();
+        if (taskBo.getTaskCategoryID() != 0) {
+            mSelectedCategoryID = taskBo.getTaskCategoryID();
         }
-
     }
 
-    @OnItemSelected(R.id.retailer)
-    public void onRetailerSpinnerSelected(Spinner spinner, int position) {
-        ((TextView) spinner.getSelectedView().findViewById(android.R.id.text1)).setGravity(Gravity.START);
-        RetailerMasterBO reBo = (RetailerMasterBO) spinner.getSelectedItem();
-        if (reBo.getTretailerName().equalsIgnoreCase(getResources().getString(R.string.all_retailer))) {
-            retailerid = reBo.getTretailerId();
-        }
+    @OnClick(R.id.task_due_date_btn)
+    public void onDueDateClick() {
+        DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
+        newFragment.show(getSupportFragmentManager(), TAG_DATE_PICKER_TO);
     }
 
     @Override
-    public void showUpdatedDialog() {
-        showAlert("", getResources().getString(R.string.saved_successfully), new CommonDialog.PositiveClickListener() {
+    public void showUpdatedDialog(int msgResId) {
+        showAlert("", getString(msgResId), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
                 taskView.setText("");
@@ -279,7 +312,9 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     @Override
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
-
+        updatedList.add(0, new TaskDataBO());
+        imgListRecyclerView.setAdapter(new TaskImgListAdapter(updatedList, TaskCreationActivity.this, false, photoClickListener));
+        updateFieldsInEditMode(taskBo);
     }
 
 
@@ -287,48 +322,45 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     public void onSaveClickBtn() {
         String taskDetailDesc = AppUtils.validateInput(taskView.getText().toString());
         String taskTitleDec = AppUtils.validateInput(taskTitle.getText().toString());
+        String taskDuedate = dueDateBtn.getText().toString().isEmpty() ? null
+                : dueDateBtn.getText().toString();
         int taskChannelId;
-
         if (!taskPresenter.isValidate(taskTitle.getText().toString(), taskView.getText().toString()))
             return;
 
         switch (mode) {
             case "seller":
-                if (mSelectedUserId == 0)
+                if (mSelectedSpinnerPos == 0)
                     taskChannelId = taskPresenter.getUserID();
                 else
-                    taskChannelId = userMasterArrayAdapter.getItem(mSelectedUserId).getUserid();
+                    taskChannelId = userMasterArrayAdapter.getItem(mSelectedSpinnerPos).getUserid();
 
                 break;
             case "retailer":
                 if (fromHomeScreen)
-                    taskChannelId = retailerid;
+                    taskChannelId = retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getTretailerId();
                 else
                     taskChannelId = taskPresenter.getRetailerID();
                 break;
             default:
-                taskChannelId = channelId;
+                if (mSelectedSpinnerPos == 0)
+                    taskChannelId = -1;
+                else
+                    taskChannelId = channelArrayAdapter.getItem(mSelectedSpinnerPos).getChannelId();
                 break;
         }
-        taskPresenter.onSaveButtonClick(taskChannelId, taskTitleDec, taskDetailDesc);
+
+        if (isTyp == 0)
+            taskBo = new TaskDataBO();
+
+        taskBo.setTasktitle(taskTitleDec);
+        taskBo.setTaskDesc(taskDetailDesc);
+        taskBo.setTaskDueDate(taskDuedate);
+        taskBo.setTaskCategoryID(mSelectedCategoryID);
+
+        taskPresenter.onSaveButtonClick(taskChannelId, taskBo);
     }
 
-
-    /*private boolean validate() {
-
-        if (taskTitle.getText().toString().equals("")) {
-            Toast.makeText(this,
-                    getResources().getString(R.string.enter_task_title),
-                    Toast.LENGTH_SHORT).show();
-            return false;
-        } else if (taskView.getText().toString().equals("")) {
-            Toast.makeText(this,
-                    getResources().getString(R.string.enter_task_description),
-                    Toast.LENGTH_SHORT).show();
-            return false;
-        }
-        return true;
-    }*/
 
     private void setUpToolBar() {
         setSupportActionBar(toolbar);
@@ -346,25 +378,94 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         setScreenTitle(screenTitle);
     }
 
-    private void setUpUserAdapter() {
+    private void setUpRecyclerView() {
+        imgListRecyclerView.setHasFixedSize(true);
+        imgListRecyclerView.setNestedScrollingEnabled(false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(this);
+        layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
+        imgListRecyclerView.setLayoutManager(layoutManager);
+    }
+
+    private void setUpAdapter() {
         userMasterArrayAdapter = new ArrayAdapter<>(this,
-                R.layout.spinner_bluetext_layout);
-        userMasterArrayAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        sellerSpinner.setAdapter(userMasterArrayAdapter);
-    }
+                R.layout.spinner_blacktext_layout);
+        userMasterArrayAdapter.setDropDownViewResource(R.layout.spinner_blacktext_list_item);
 
-    private void setUpChannelAdapter() {
         channelArrayAdapter = new ArrayAdapter<>(this,
-                R.layout.spinner_bluetext_layout);
-        channelArrayAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        channelSpinner.setAdapter(channelArrayAdapter);
+                R.layout.spinner_blacktext_layout);
+        channelArrayAdapter.setDropDownViewResource(R.layout.spinner_blacktext_list_item);
+
+        retailerMasterArrayAdapter = new ArrayAdapter<>(this,
+                R.layout.spinner_blacktext_layout);
+        retailerMasterArrayAdapter.setDropDownViewResource(R.layout.spinner_blacktext_list_item);
+
+        if (isTyp == 0)
+            setUpSpinnerData(0);
+
     }
 
-    private void setUpRetailerAdapter() {
-        retailerMasterArrayAdapter = new ArrayAdapter<>(this,
-                R.layout.spinner_bluetext_layout);
-        retailerMasterArrayAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        retailerSpinner.setAdapter(retailerMasterArrayAdapter);
+    private void setUpSpinnerData(int isFrom) {
+        mSelectedSpinnerPos = 0;
+        switch (isFrom) {
+            case 0:
+                sellerSpinner.setAdapter(userMasterArrayAdapter);
+                if (isTyp == 1)
+                    sellerSpinner.setSelection(getAdapterPosition(userMasterArrayAdapter.getCount()));
+                break;
+            case 1:
+                sellerSpinner.setAdapter(channelArrayAdapter);
+                if (isTyp == 1)
+                    sellerSpinner.setSelection(getAdapterPosition(channelArrayAdapter.getCount()));
+                break;
+            case 2:
+                sellerSpinner.setAdapter(retailerMasterArrayAdapter);
+                if (isTyp == 1)
+                    sellerSpinner.setSelection(getAdapterPosition(retailerMasterArrayAdapter.getCount()));
+                break;
+        }
+
+
+    }
+
+    private void setUpCategoryAdapter() {
+        taskCategoryArrayAdapter = new ArrayAdapter<>(this,
+                R.layout.spinner_blacktext_layout);
+        taskCategoryArrayAdapter.setDropDownViewResource(R.layout.spinner_blacktext_list_item);
+        categorySpinner.setAdapter(taskCategoryArrayAdapter);
+        if (isTyp == 1)
+            categorySpinner.setSelection(getAdapterPosition(taskCategoryArrayAdapter.getCount()));
+    }
+
+    private void prepareTaskPhotoCapture() {
+        int id = 0;
+
+        if (seller_rb.isChecked()) {
+            if (mSelectedSpinnerPos == 0)
+                id = taskPresenter.getUserID();
+            else
+                id = userMasterArrayAdapter.getItem(mSelectedSpinnerPos).getUserid();
+        } else if (channelwise_rb.isChecked())
+            id = channelArrayAdapter.getItem(mSelectedSpinnerPos).getChannelId();
+        else if (retailerwise_rb.isChecked())
+            id = retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getTretailerId();
+
+        imageName = id + "_" + mSelectedCategoryID
+                + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)
+                + ".jpg";
+
+        navigateToCameraActivity();
+
+    }
+
+    private void navigateToCameraActivity() {
+        Intent intent = new Intent(
+                TaskCreationActivity.this,
+                CameraActivity.class);
+        String _path = FileUtils.photoFolderPath + "/" + imageName;
+        //  intent.putExtra("quality", 40);
+        intent.putExtra("path", _path);
+        startActivityForResult(intent,
+                CAMERA_REQUEST_CODE);
     }
 
 
@@ -386,16 +487,122 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            if (fromHomeScreen)
-                startActivity(new Intent(TaskCreationActivity.this,
-                        HomeScreenActivity.class).putExtra("menuCode", "MENU_TASK_NEW"));
+            if (!taskPresenter.getTaskImgList().isEmpty()
+                    && taskPresenter.getTaskImgList().size() > 1)
+                backButtonAlertDialog();
             else
-                startActivity(new Intent(TaskCreationActivity.this,
-                        TaskActivity.class).putExtra("IsRetailerwisetask", isRetailerTask)
-                        .putExtra("screentitle", screenTitle));
-            finish();
+                backNavigation();
+
+
             return true;
         }
         return false;
     }
+
+
+    private void backNavigation() {
+        if (fromHomeScreen)
+            startActivity(new Intent(TaskCreationActivity.this,
+                    HomeScreenActivity.class).putExtra("menuCode", "MENU_TASK_NEW"));
+        else
+            startActivity(new Intent(TaskCreationActivity.this,
+                    TaskActivity.class).putExtra("IsRetailerwisetask", isRetailerTask)
+                    .putExtra("screentitle", screenTitle));
+        finish();
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == CAMERA_REQUEST_CODE) {
+            if (resultCode == 1)
+                taskPresenter.addNewImage(imageName);
+
+        }
+    }
+
+    @Override
+    public void updateDate(Date date, String tag) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        Calendar selectedDate = new GregorianCalendar(year, month, day);
+
+        if (tag.equals(TAG_DATE_PICKER_TO)) {
+            dueDateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
+                    selectedDate.getTime(), DEFAULT_DATE_FORMAT));
+        }
+    }
+
+    /**
+     * Alert dialog while moving back
+     */
+    private void backButtonAlertDialog() {
+
+        showAlert("", getString(R.string.photo_capture_not_saved_go_back), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+
+                if (taskPresenter.getTaskImgList().size() > 0) {
+                    for (TaskDataBO imageBo : taskPresenter.getTaskImgList())
+                        FileUtils.deleteFiles(folderPath, imageBo.getTaskImg());
+                }
+
+                backNavigation();
+            }
+        }, new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+
+            }
+        });
+    }
+
+    private void updateFieldsInEditMode(TaskDataBO taskDataObj) {
+        taskTitle.setText(taskDataObj.getTasktitle());
+        categorySpinner.setSelection(0);
+        dueDateBtn.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
+                taskDataObj.getTaskDueDate(), taskPresenter.outDateFormat()));
+
+        if (taskDataObj.getMode().equalsIgnoreCase("seller"))
+            seller_rb.setChecked(true);
+        else if (taskDataObj.getMode().equalsIgnoreCase("retailer"))
+            retailerwise_rb.setChecked(true);
+        else
+            channelwise_rb.setChecked(true);
+
+
+        taskView.setText(taskDataObj.getTaskDesc());
+
+    }
+
+    private int getAdapterPosition(int length) {
+        for (int i = 0; i < length; i++) {
+            switch (taskBo.getMode()) {
+                case "seller":
+                    if (userMasterArrayAdapter.getItem(i).getUserid() == taskBo.getUserId())
+                        return i;
+                    break;
+                case "retailer":
+                    if (retailerMasterArrayAdapter.getItem(i).getTretailerId() == taskBo.getRid())
+                        return i;
+                    break;
+                case "channel":
+                    if (channelArrayAdapter.getItem(i).getChannelId() == taskBo.getChannelId())
+                        return i;
+                    break;
+                default:
+                    if (taskCategoryArrayAdapter.getItem(i).getChannelId() == taskBo.getTaskCategoryID())
+                        return i;
+                    break;
+            }
+        }
+        return 0;
+    }
+
 }

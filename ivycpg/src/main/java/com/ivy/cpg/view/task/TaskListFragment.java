@@ -293,7 +293,7 @@ public class TaskListFragment extends Fragment {
                 });
 
                 holder.taskDescription = v
-                        .findViewById(R.id.task_description_tv);
+                        .findViewById(R.id.task_category_tv);
                 holder.taskDescription.setText(task.getTaskDesc());
                 if (holder.taskBO.isUpload() && task.getIsdone().equals("1")) {
                     holder.taskCB.setEnabled(false);

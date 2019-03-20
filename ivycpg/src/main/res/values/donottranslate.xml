@@ -167,4 +167,10 @@
     <string name="serial_no_not_captured_kindly_choose_reason">Some problem in serial no capture so kindly choose reason for not captured…</string>
     <string name="select_seller">Select Seller</string>
     <string name="task_updated_successfully">Task updated successfully…</string>
+    <string name="add_img_content_description">Add new image</string>
+    <string name="clear_img_content_description">delete image</string>
+    <string name="task_detail">Task Detail</string>
+    <string name="task_evidence">Evidence</string>
+    <string name="server_task_can_not_be_edit">Server task can not be edit</string>
+    <string name="server_task_can_not_be_delete">Server task can not be delete</string>
 </resources>

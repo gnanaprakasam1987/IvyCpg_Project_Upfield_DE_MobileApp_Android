@@ -3,18 +3,21 @@ package com.ivy.ui.task.adapter;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Paint;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
@@ -26,13 +29,19 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
     private String outDateFormat;
     private TaskClickListener taskClickListener;
     private Boolean isFromProfileSrc;
+    private Boolean isFromHomeSrc;
+    private final ViewBinderHelper binderHelper = new ViewBinderHelper();
 
-    public TaskListAdapter(ArrayList<TaskDataBO> taskDatas, Context mContext, String outDateFormat, TaskClickListener taskClickListener, boolean isFromProfileSrc) {
+    public TaskListAdapter(ArrayList<TaskDataBO> taskDatas, Context mContext, String outDateFormat, TaskClickListener taskClickListener, boolean isFromProfileSrc, boolean fromHomeScreen) {
         this.taskDatas = taskDatas;
         this.mContext = mContext;
         this.outDateFormat = outDateFormat;
         this.taskClickListener = taskClickListener;
         this.isFromProfileSrc = isFromProfileSrc;
+        this.isFromHomeSrc = fromHomeScreen;
+
+        // to open only one row at a time
+        binderHelper.setOpenOnlyOne(true);
     }
 
 
@@ -50,14 +59,18 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
     public void onBindViewHolder(@NonNull TaskListAdapter.TaskListViewHolder holder, int position) {
         TaskDataBO taskBo = taskDatas.get(position);
 
+        // Use ViewBindHelper to restore and save the open/close state of the SwipeRevealView
+        // put an unique string id as value, can be any string which uniquely define the data
+        binderHelper.bind(holder.swipeLayout, taskBo.getTaskId());
+
         holder.taskTaskOwner.setText(" : " + taskBo.getTaskOwner());
         holder.taskCreatedDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
                 (taskBo.getCreatedDate(), outDateFormat) + ", ");
 
         holder.taskTitle.setText(taskBo.getTasktitle());
-        holder.taskDescription.setText(taskBo.getTaskDesc());
+        holder.taskProductLevel.setText(taskBo.getTaskCategoryDsc());
 
-        holder.layoutrow.setOnClickListener(new View.OnClickListener() {
+        holder.taskCB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (!holder.taskCB.isChecked()) {
@@ -67,18 +80,54 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
                     holder.taskCB.setChecked(false);
                     taskBo.setChecked(false);
                 }
-                taskClickListener.onRowClick(taskBo);
+                taskClickListener.onTaskExcutedClick(taskBo);
+            }
+        });
+
+        holder.layoutrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                taskClickListener.onTaskButtonClick(taskBo, 0);
+            }
+        });
+
+        holder.btnAttachFile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                taskClickListener.onAttachFile(taskBo.getTaskId(), taskBo.getTaskCategoryID());
+            }
+        });
+
+        holder.btnEditTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (taskBo.getUsercreated().equals("0"))
+                    ((BaseActivity) mContext).showMessage(R.string.server_task_can_not_be_edit);
+                else
+                    taskClickListener.onTaskButtonClick(taskBo, 1);
+
+            }
+        });
+
+        holder.btnDeleteTask.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (taskBo.getUsercreated().equals("0"))
+                    ((BaseActivity) mContext).showMessage(R.string.server_task_can_not_be_delete);
+                else {
+                    showDeleteAlert(holder.getAdapterPosition());
+                }
             }
         });
 
         if (taskBo.isUpload() && taskBo.getIsdone().equals("1")) {
             holder.taskCB.setEnabled(false);
             holder.taskTitle.setPaintFlags(holder.taskTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.taskDescription.setPaintFlags(holder.taskDescription.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            holder.taskProductLevel.setPaintFlags(holder.taskProductLevel.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
             holder.taskCB.setEnabled(true);
             holder.taskTitle.setPaintFlags(holder.taskTitle.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-            holder.taskDescription.setPaintFlags(holder.taskDescription.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+            holder.taskProductLevel.setPaintFlags(holder.taskProductLevel.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
 
         if (taskBo.getIsdone().equals("1") && !taskBo.isUpload()) {
@@ -91,40 +140,97 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
     }
 
     @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+
+    @Override
     public int getItemCount() {
         return taskDatas.size();
     }
 
     public class TaskListViewHolder extends RecyclerView.ViewHolder {
+        private SwipeRevealLayout swipeLayout;
         CheckBox taskCB;
         TextView taskTitle;
-        TextView taskDescription;
+        TextView taskProductLevel;
         TextView taskTaskOwner;
         TextView taskCreatedDate;
-        RelativeLayout layoutCB;
+        LinearLayout layoutCB;
         LinearLayout layoutrow;
+        ImageButton btnAttachFile;
+        TextView btnEditTask;
+        TextView btnDeleteTask;
 
         public TaskListViewHolder(View itemView) {
             super(itemView);
 
+            swipeLayout = itemView.findViewById(R.id.swipe_layout);
             taskCB = itemView.findViewById(R.id.task_title_CB);
             taskTitle = itemView.findViewById(R.id.task_title_tv);
-            taskDescription = itemView.findViewById(R.id.task_description_tv);
+            taskProductLevel = itemView.findViewById(R.id.task_category_tv);
             taskTaskOwner = itemView.findViewById(R.id.task_taskowner);
             taskCreatedDate = itemView.findViewById(R.id.task_createdOn);
             layoutCB = itemView.findViewById(R.id.layoutCB);
             layoutrow = itemView.findViewById(R.id.layoutBorder);
+            btnAttachFile = itemView.findViewById(R.id.btn_attach_photo);
+            btnDeleteTask = itemView.findViewById(R.id.delete_button);
+            btnEditTask = itemView.findViewById(R.id.edit_button);
 
             if (isFromProfileSrc) {
                 taskCB.setVisibility(View.GONE);
                 itemView.findViewById(R.id.rl_created_by).setVisibility(View.GONE);
             }
 
+            if (isFromHomeSrc)
+                taskProductLevel.setVisibility(View.GONE);
+
         }
     }
 
 
+    /*
+      Only if you need to restore open/close state when the orientation is changed.
+      Call this method in {@link android.app.Activity#onSaveInstanceState(Bundle)}
+     *//*
+    public void saveStates(Bundle outState) {
+        binderHelper.saveStates(outState);
+    }
+
+    */
+
+    /**
+     * Only if you need to restore open/close state when the orientation is changed.
+     * Call this method in {@link android.app.Activity#onRestoreInstanceState(Bundle)}
+     *//*
+    public void restoreStates(Bundle inState) {
+        binderHelper.restoreStates(inState);
+    }
+*/
+
     public interface TaskClickListener {
-        void onRowClick(TaskDataBO taskBO);
+        void onTaskExcutedClick(TaskDataBO taskDataBO);
+
+        void onTaskButtonClick(TaskDataBO taskBO, int isType);
+
+        void onAttachFile(String taskId, int prdLevelId);
+    }
+
+    private void showDeleteAlert(int position) {
+
+        ((BaseActivity) mContext).showAlert("", mContext.getString(R.string.do_you_want_to_delete_the_image), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                taskDatas.remove(position);
+                notifyItemRemoved(position);
+                notifyItemRangeChanged(position, taskDatas.size());
+                taskClickListener.onTaskButtonClick(taskDatas.get(position), 2);
+            }
+        }, new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+
+            }
+        });
     }
 }

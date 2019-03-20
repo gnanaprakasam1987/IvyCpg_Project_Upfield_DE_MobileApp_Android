@@ -1,5 +1,8 @@
 package com.ivy.ui.task;
 
+import android.support.annotation.StringRes;
+import android.widget.ArrayAdapter;
+
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
@@ -23,9 +26,13 @@ public interface TaskContract {
 
         String getTaskMode();
 
-        void showUpdatedDialog();
+        void showUpdatedDialog(@StringRes int msgResId);
 
         void updateListData(ArrayList<TaskDataBO> updatedList);
+
+        void setTaskCategoryListData(ArrayList<TaskDataBO> categoryList);
+
+        void updateImageListAdapter(ArrayList<TaskDataBO> imageList);
     }
 
 
@@ -34,13 +41,19 @@ public interface TaskContract {
 
         void fetchData();
 
-        void updateTaskList(int taskType,String retailerID,boolean isRetailerwise,boolean isSurveywise);
+        void fetchTaskCategory(String menuCode);
+
+        void fetchTaskImageList(String taskId);
+
+        void updateTaskList(int taskType, String retailerID, boolean isRetailerwise, boolean isSurveywise);
 
         String[] getChannelIdsForSurvey();
 
-        void onSaveButtonClick(int channelId, String taskTitleDesc, String taskDetailDesc);
+        void addNewImage(String imageName);
 
-        void updateTask(String retailerID,TaskDataBO taskDataBO);
+        void onSaveButtonClick(int channelId,TaskDataBO taskObj);
+
+        void updateTask(String retailerID, TaskDataBO taskDataBO);
 
         String getSelectedRetailerId();
 
@@ -51,6 +64,8 @@ public interface TaskContract {
         ArrayList<RetailerMasterBO> getTaskRetailerList();
 
         ArrayList<UserMasterBO> getTaskUserList();
+
+        ArrayList<TaskDataBO>getTaskList();
 
         int getUserID();
 
@@ -70,6 +85,11 @@ public interface TaskContract {
 
         void saveModuleCompletion(String menuCode);
 
-        boolean isNPPhotoReasonAvailable(String retailerID,String moduleName);
+        boolean isNPPhotoReasonAvailable(String retailerID, String moduleName);
+
+        ArrayList<TaskDataBO>getTaskImgList();
+
+        void deleteTask(String taskId);
+
     }
 }

@@ -14,6 +14,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import static com.ivy.core.IvyConstants.DEFAULT_DATE_FORMAT;
+
 public class DateTimeUtils {
 
     public static final int DATE_TIME = 2;
@@ -26,7 +28,7 @@ public class DateTimeUtils {
     public static final int DATE_DOB_FORMAT_PLAIN = 10;
     public static final int TIME = 0;
     public static final int DATE = 1;
-    public static  String defaultDateFormat = "MM/dd/yyyy";
+    public static String defaultDateFormat = "MM/dd/yyyy";
     private static final String serverDateFormat = "yyyy/MM/dd";
     public static int DATE_TIME_ID = 3;
 
@@ -112,22 +114,33 @@ public class DateTimeUtils {
         } else if (DATE_DOB_FORMAT_PLAIN == dateFormat) {
             SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);
             return sdf.format(cal.getTime());
-        }else {
+        } else {
             SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyyHHmmss", Locale.ENGLISH);
             return sdf.format(cal.getTime());
         }
 
     }
 
+    public static String addDateToYear(int noOfYears) {
+        Calendar cal = Calendar.getInstance();
+        Date today = cal.getTime();
+        cal.add(Calendar.YEAR, noOfYears); // to get previous year add -1
+        Date nextYear = cal.getTime();
+        // convert calendar to date
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+        return DateTimeUtils.convertDateObjectToRequestedFormat(
+                cal.getTime(), DEFAULT_DATE_FORMAT);
+    }
+
+
     /**
-     * @deprecated
-     * @see {@link #getDateCount(String, String, String)}
-     * an int < 0 if second Date is greater than the first Date, 0 if they are
-     * equal, and an int > 0 if this Date is greater.
-     *
      * @param firstDate
      * @param secondDate
      * @return
+     * @see {@link #getDateCount(String, String, String)}
+     * an int < 0 if second Date is greater than the first Date, 0 if they are
+     * equal, and an int > 0 if this Date is greater.
+     * @deprecated
      */
     public static int compareDate(String firstDate, String secondDate,
                                   String format) {
@@ -162,10 +175,10 @@ public class DateTimeUtils {
      * Add days to the Date provided
      *
      * @param dateInput Given Date
-     * @param noofDays   No of Days to be added
+     * @param noofDays  No of Days to be added
      * @return date
      */
-    public static Date addDaystoDate(Date dateInput, int noofDays){
+    public static Date addDaystoDate(Date dateInput, int noofDays) {
         Calendar c = Calendar.getInstance();
         c.setTime(dateInput);
         // manipulate date
@@ -300,7 +313,7 @@ public class DateTimeUtils {
      * convert date (yyyy/MM/dd) from server format to user requested format.
      * This method is use full to apply validations.
      *
-     * @param dateInput    date in String
+     * @param dateInput       date in String
      * @param dateInputFormat input date format
      * @return date object
      */
@@ -319,14 +332,13 @@ public class DateTimeUtils {
     }
 
     /**
-     *
      * @param format input date format
      * @return SimpleDateFormat
      */
 
     @NonNull
-    public static SimpleDateFormat getDateFormat (String format){
-        return new SimpleDateFormat(format,Locale.US);
+    public static SimpleDateFormat getDateFormat(String format) {
+        return new SimpleDateFormat(format, Locale.US);
     }
 
     public static String getTimeZone() {

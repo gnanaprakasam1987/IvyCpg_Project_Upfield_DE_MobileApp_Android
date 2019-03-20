@@ -1,6 +1,7 @@
 package com.ivy.ui.task.view;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -15,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,20 +26,27 @@ import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.task.TaskDataBO;
+import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.adapter.TaskListAdapter;
 import com.ivy.ui.task.di.DaggerTaskComponent;
 import com.ivy.ui.task.di.TaskModule;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.Vector;
 
@@ -54,6 +64,10 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     private boolean isFromSurvey;
     private boolean fromProfileScreen;
     private String mSelectedRetailerID = "0";
+    private String imageName = "";
+    private static final int CAMERA_REQUEST_CODE = 1;
+    private TextView sortTv;
+    ArrayList<TaskDataBO> taskDataBOArrayList = new ArrayList<>();
 
 
     @Inject
@@ -77,15 +91,17 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
     @Override
     public void initVariables(View view) {
-
         tabLayout = view.findViewById(R.id.tabs);
         tabLayout.addOnTabSelectedListener(this);
         footerLL = view.findViewById(R.id.footer);
         nxtBtn = view.findViewById(R.id.btn_close);
+        sortTv = view.findViewById(R.id.tv_sort);
         recyclerView = view.findViewById(R.id.task_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setHasFixedSize(true);
+        recyclerView.setHasFixedSize(false);
+        recyclerView.setNestedScrollingEnabled(false);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
     }
 
     @Override
@@ -115,7 +131,13 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     protected void setUpViews() {
         if (!fromProfileScreen)
             setUpActionBar();
-        addTabs();
+
+        sortTv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shortListOrder();
+            }
+        });
 
         if (taskPresenter.isMoveNextActivity()) {
             footerLL.setVisibility(View.VISIBLE);
@@ -135,7 +157,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             }
         }
 
-
+        addTabs();
         if (taskPresenter.isShowServerTaskOnly())
             taskPresenter.updateTaskList(1, mSelectedRetailerID, IsRetailerwisetask, isFromSurvey);
         else
@@ -181,18 +203,122 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
                 }, true);
     }
 
-    TaskListAdapter.TaskClickListener taskClickListener = new TaskListAdapter.TaskClickListener() {
+    final TaskListAdapter.TaskClickListener taskClickListener = new TaskListAdapter.TaskClickListener() {
         @Override
-        public void onRowClick(TaskDataBO taskBO) {
-
+        public void onTaskExcutedClick(TaskDataBO taskDataBO) {
             taskPresenter.updateModuleTime();
             if (IsRetailerwisetask) {
-                taskPresenter.updateTask(taskPresenter.getRetailerID() + "", taskBO);
+                taskPresenter.updateTask(taskPresenter.getRetailerID() + "", taskDataBO);
             } else {
-                taskPresenter.updateTask(0 + "", taskBO);
+                taskPresenter.updateTask(0 + "", taskDataBO);
             }
         }
+
+        /**
+         * this method used to screen navigation by isType
+         * @param taskBO
+         * @param isType 0- {@link TaskDetailActivity}
+         *               1- {@link TaskCreationActivity}
+         *
+         */
+        @Override
+        public void onTaskButtonClick(TaskDataBO taskBO, int isType) {
+
+            int TASK_VIEW_DETAIL = 0;
+            int TASK_EDIT = 1;
+            int TASK_DELETE = 2;
+            Intent i = null;
+            switch (isType) {
+                case 0:
+                    i = new Intent(getActivity(), TaskDetailActivity.class);
+                    i.putExtra("evidenceImg", imageName);
+                    break;
+                case 1:
+                    i = new Intent(getActivity(), TaskCreationActivity.class);
+                    i.putExtra("IsRetailerwisetask", IsRetailerwisetask);
+                    i.putExtra("menuCode", "MENU_TASK");
+                    i.putExtra("screentitle", bundle.containsKey("screentitle") ? bundle.getString("screentitle") : getResources().
+                            getString(R.string.task));
+                    i.putExtra("isType", isType);
+                    break;
+                case 2:
+                    taskPresenter.deleteTask(taskBO.getTaskId());
+                    break;
+            }
+
+            if (i != null) {
+                i.putExtra("fromHomeScreen", fromHomeScreen);
+                i.putExtra("taskObj", taskBO);
+                startActivity(i);
+            }
+        }
+
+        @Override
+        public void onAttachFile(String taskId, int productLevelId) {
+            imageName = "TE_" + taskId + "_" + productLevelId
+                    + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)
+                    + ".jpg";
+
+            String mFirstNameStarts = "TE_" + taskId
+                    + "_" + productLevelId
+                    + "_" + Commons.now(Commons.DATE);
+
+            boolean mIsFileAvailable = FileUtils.checkForNFilesInFolder(FileUtils.photoFolderPath, 1, mFirstNameStarts);
+
+            if (mIsFileAvailable)
+                showFileDeleteAlert(mFirstNameStarts);
+            else
+                navigateToCameraActivity();
+
+        }
     };
+
+    /**
+     * Alert dialog for deleting image
+     *
+     * @param imageNameStarts
+     */
+    private void showFileDeleteAlert(final String imageNameStarts) {
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                getActivity());
+        builder.setTitle("");
+        builder.setMessage(getResources().getString(
+                R.string.word_photocaptured_delete_retake));
+
+        builder.setPositiveButton(getResources().getString(R.string.ok),
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        FileUtils.deleteFiles(FileUtils.photoFolderPath,
+                                imageNameStarts);
+                        dialog.dismiss();
+                        navigateToCameraActivity();
+
+                    }
+                });
+
+        builder.setNegativeButton(getResources().getString(R.string.cancel),
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builder.setCancelable(false);
+        AppUtils.applyAlertDialogTheme(getActivity(), builder);
+    }
+
+
+    private void navigateToCameraActivity() {
+        Intent intent = new Intent(
+                getActivity(),
+                CameraActivity.class);
+        String _path = FileUtils.photoFolderPath + "/" + imageName;
+        intent.putExtra("path", _path);
+        startActivityForResult(intent,
+                CAMERA_REQUEST_CODE);
+    }
 
 
     private void setUpActionBar() {
@@ -225,15 +351,21 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
     }
 
-    @Override
-    public void showUpdatedDialog() {
-        showMessage(R.string.task_updated_successfully);
-    }
 
     @Override
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
 
-        recyclerView.setAdapter(new TaskListAdapter(updatedList, getActivity(), taskPresenter.outDateFormat(), taskClickListener, fromProfileScreen));
+        recyclerView.setAdapter(new TaskListAdapter(updatedList, getActivity(), taskPresenter.outDateFormat(), taskClickListener, fromProfileScreen, fromHomeScreen));
+    }
+
+    @Override
+    public void setTaskCategoryListData(ArrayList<TaskDataBO> categoryList) {
+
+    }
+
+    @Override
+    public void updateImageListAdapter(ArrayList<TaskDataBO> imageList) {
+
     }
 
     @Override
@@ -286,6 +418,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         Intent i = new Intent(getActivity(), TaskCreationActivity.class);
         i.putExtra("fromHomeScreen", fromHomeScreen);
         i.putExtra("IsRetailerwisetask", IsRetailerwisetask);
+        i.putExtra("menuCode", "MENU_TASK");
         i.putExtra("screentitle", bundle.containsKey("screentitle") ? bundle.getString("screentitle") : getResources().
                 getString(R.string.task));
         startActivity(i);
@@ -334,5 +467,77 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     @Override
     public String getTaskMode() {
         return null;
+    }
+
+    @Override
+    public void showUpdatedDialog(int msgResId) {
+        showMessage(getString(msgResId));
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == CAMERA_REQUEST_CODE) {
+            if (resultCode == 1)
+                addAttachedFiles(imageName);
+
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void addAttachedFiles(String imgName) {
+        /*if (!evidenceImgList.isEmpty()) {
+            TaskDataBO tskBo = new TaskDataBO();
+            tskBo.setTaskEvidenceImg(imgName);
+            evidenceImgList.add(tskBo);
+        }*/
+    }
+
+    int mSelectedLocationIndex = 0;
+
+    private void shortListOrder() {
+
+        ArrayList<String> listName = new ArrayList<>();
+        listName.add("A - Z");
+        listName.add("Z - A");
+        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
+                getActivity(),
+                android.R.layout.select_dialog_singlechoice,
+                listName);
+
+        AlertDialog.Builder builder;
+
+        builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(null);
+        builder.setSingleChoiceItems(arrayAdapter, mSelectedLocationIndex,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        mSelectedLocationIndex = item;
+
+                        if (arrayAdapter.getItem(item).equals("A - Z")) {
+                            Collections.sort(taskDataBOArrayList, new Comparator<TaskDataBO>() {
+                                @Override
+                                public int compare(TaskDataBO fstr, TaskDataBO sstr) {
+                                    return fstr.getTasktitle().compareToIgnoreCase(sstr.getTasktitle());
+                                }
+                            });
+                            updateListData(taskDataBOArrayList);
+
+                        } else if (arrayAdapter.getItem(item).equals("Z - A")) {
+                            Collections.sort(taskDataBOArrayList, new Comparator<TaskDataBO>() {
+                                @Override
+                                public int compare(TaskDataBO fstr, TaskDataBO sstr) {
+                                    return sstr.getTasktitle().compareToIgnoreCase(fstr.getTasktitle());
+                                }
+                            });
+                            updateListData(taskDataBOArrayList);
+
+                        }
+                        dialog.dismiss();
+                    }
+                });
+
+        AppUtils.applyAlertDialogTheme(getActivity(), builder);
+
     }
 }

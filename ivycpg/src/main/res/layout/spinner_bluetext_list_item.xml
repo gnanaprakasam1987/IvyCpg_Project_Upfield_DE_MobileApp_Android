@@ -8,4 +8,5 @@
     android:padding="@dimen/target_top_margin"
     android:textSize="@dimen/drop_down_text_font_size"
     android:textColor="?attr/primarycolor"
+    android:fontFamily="@font/roboto_regular"
     android:singleLine="true" />
