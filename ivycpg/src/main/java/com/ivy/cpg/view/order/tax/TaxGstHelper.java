@@ -238,14 +238,16 @@ public class TaxGstHelper implements TaxInterface {
     public void insertInvoiceTaxList(String invoiceid, DBUtil db) {
 
         if (mBillTaxList != null) {
-            String columns = "RetailerId,invoiceid,taxRate,taxType,taxValue";
+            String columns = "RetailerId,invoiceid,taxRate,taxType,taxValue,applyLevelId";
             StringBuffer sb;
             for (TaxBO taxBO : mBillTaxList) {
                 sb = new StringBuffer();
-                sb.append(StringUtils.QT(mBusinessModel.getRetailerMasterBO()
-                        .getRetailerID())).append(",");
-                sb.append(StringUtils.QT(invoiceid)).append(",").append(taxBO.getTaxRate()).append(",");
-                sb.append(StringUtils.QT(taxBO.getTaxType())).append(",").append(taxBO.getTotalTaxAmount());
+                sb.append(StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()))
+                        .append(",").append(StringUtils.QT(invoiceid))
+                        .append(",").append(taxBO.getTaxRate())
+                        .append(",").append(StringUtils.QT(taxBO.getTaxType()))
+                        .append(",").append(taxBO.getTotalTaxAmount())
+                        .append(",").append(taxBO.getApplyLevelId());
                 db.insertSQL("InvoiceTaxDetails", columns, sb.toString());
             }
         }
@@ -262,15 +264,20 @@ public class TaxGstHelper implements TaxInterface {
         db.deleteSQL("OrderTaxDetails", "OrderID=" + orderId,
                 false);
         if (mBillTaxList != null) {
-            String columns = "RetailerId,orderid,taxRate,taxType,taxValue,pid,taxName,parentType,groupId";
+            String columns = "RetailerId,orderid,taxRate,taxType,taxValue,pid,taxName,parentType,groupId,applyLevelId";
             StringBuffer sb;
             for (TaxBO taxBO : mBillTaxList) {
                 sb = new StringBuffer();
-                sb.append(StringUtils.QT(mBusinessModel.getRetailerMasterBO()
-                        .getRetailerID()) + ",");
-                sb.append(orderId + "," + taxBO.getTaxRate() + ",");
-                sb.append(StringUtils.QT(taxBO.getTaxType()) + ","
-                        + SDUtil.roundIt(taxBO.getTotalTaxAmount(), 2) + "," + "0,'" + taxBO.getTaxDesc2() + "'," + taxBO.getParentType() + "," + taxBO.getGroupId());
+                sb.append(StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()))
+                        .append(",").append(orderId)
+                        .append(",").append(taxBO.getTaxRate())
+                        .append(",").append(StringUtils.QT(taxBO.getTaxType()))
+                        .append(",").append(SDUtil.roundIt(taxBO.getTotalTaxAmount(), 2))
+                        .append(",").append("0,'").append(taxBO.getTaxDesc2())
+                        .append("',").append(taxBO.getParentType())
+                        .append(",").append(taxBO.getGroupId())
+                        .append(",").append(taxBO.getApplyLevelId());
+
                 db.insertSQL("OrderTaxDetails", columns, sb.toString());
 
             }
@@ -280,57 +287,55 @@ public class TaxGstHelper implements TaxInterface {
     @Override
     public HashMap<String, Double> prepareProductTaxForPrint(Context context, String orderId, boolean isFromInvoice) {
         DBUtil db = null;
-        HashMap<String,Double> mTaxesApplied=new HashMap<>();
+        HashMap<String, Double> mTaxesApplied = new HashMap<>();
         try {
-            String tableName="OrderTaxDetails";
-            if(isFromInvoice)
-                tableName="InvoiceTaxDetails";
+            String tableName = "OrderTaxDetails";
+            if (isFromInvoice)
+                tableName = "InvoiceTaxDetails";
 
             db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select taxType,taxRate,taxName,parentType,taxValue,pid from " + tableName + " IT" +
-                    " where orderid="+orderId+"  order by taxType,taxRate,taxName desc");
+                    " where orderid=" + orderId + "  order by taxType,taxRate,taxName desc");
             Cursor c = db.selectSQL(sb.toString());
-            String lastTaxType="",lastTaxRate="",lastTaxName="";
-            double totalTaxByType=0,totalTaxableAmountByType=0;
-            ArrayList<String> uniqueTaxTypeWithRate=new ArrayList<>();
-            while (c.moveToNext()){
+            String lastTaxType = "", lastTaxRate = "", lastTaxName = "";
+            double totalTaxByType = 0, totalTaxableAmountByType = 0;
+            ArrayList<String> uniqueTaxTypeWithRate = new ArrayList<>();
+            while (c.moveToNext()) {
 
-                String taxType=c.getString(0);
-                String taxRate=c.getString(1);
+                String taxType = c.getString(0);
+                String taxRate = c.getString(1);
                 String taxName = c.getString(2);
-                double taxAmount=c.getDouble(4);
-                double taxableAmount=mBusinessModel.productHelper.getProductMasterBOById(c.getString(5)).getTaxableAmount();
+                double taxAmount = c.getDouble(4);
+                double taxableAmount = mBusinessModel.productHelper.getProductMasterBOById(c.getString(5)).getTaxableAmount();
 
-                if(!lastTaxType.equals("") && (!lastTaxType.equals(taxType) || !lastTaxRate.equals(taxRate))){
+                if (!lastTaxType.equals("") && (!lastTaxType.equals(taxType) || !lastTaxRate.equals(taxRate))) {
 
                     if (!uniqueTaxTypeWithRate.contains(lastTaxType + lastTaxRate)) {
                         mTaxesApplied.put(lastTaxName + " " + lastTaxRate + "% " + context.getResources().getString(R.string.tax_on) + " " + totalTaxableAmountByType, totalTaxByType);
                         uniqueTaxTypeWithRate.add(lastTaxType + lastTaxRate);
                     }
 
-                    totalTaxByType=taxAmount;
-                    totalTaxableAmountByType=taxableAmount;
+                    totalTaxByType = taxAmount;
+                    totalTaxableAmountByType = taxableAmount;
 
-                }
-                else {
-                    totalTaxByType+=taxAmount;
-                    totalTaxableAmountByType+=taxableAmount;
+                } else {
+                    totalTaxByType += taxAmount;
+                    totalTaxableAmountByType += taxableAmount;
                 }
 
                 //
-                lastTaxName=taxName;
-                lastTaxRate=taxRate;
-                lastTaxType=taxType;
+                lastTaxName = taxName;
+                lastTaxRate = taxRate;
+                lastTaxType = taxType;
 
             }
             if (!uniqueTaxTypeWithRate.contains(lastTaxType + lastTaxRate)) {
                 mTaxesApplied.put(lastTaxName + " " + lastTaxRate + "% " + context.getResources().getString(R.string.tax_on) + " " + SDUtil.format(totalTaxableAmountByType, mBusinessModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0), totalTaxByType);
             }
-        }
-        catch (Exception ex){
+        } catch (Exception ex) {
             Commons.printException(ex);
         }
         return mTaxesApplied;
@@ -558,7 +563,7 @@ public class TaxGstHelper implements TaxInterface {
                             //  calculateTotalTaxForProduct(productBo);
                             calculateProductExcludeTax(productBo, taxRate);
 
-                            calculateandDistributeTax(productBo,taxRate,taxList);
+                            calculateandDistributeTax(productBo, taxRate, taxList);
                         }
                     }
                 }
@@ -737,8 +742,8 @@ public class TaxGstHelper implements TaxInterface {
                         double batchTaxValue = batchProductBO.getNetValue() / (1 + (taxRate / 100));
                         double appliedTaxValue = batchTaxValue * taxRate / 100;
 
-                        batchTaxValue=SDUtil.formatAsPerCalculationConfig(batchTaxValue);
-                        appliedTaxValue=SDUtil.formatAsPerCalculationConfig(appliedTaxValue);
+                        batchTaxValue = SDUtil.formatAsPerCalculationConfig(batchTaxValue);
+                        appliedTaxValue = SDUtil.formatAsPerCalculationConfig(appliedTaxValue);
 
                         taxValue = taxValue + batchTaxValue;
                         totalAppliedTaxValue = totalAppliedTaxValue + appliedTaxValue;
@@ -754,8 +759,8 @@ public class TaxGstHelper implements TaxInterface {
             taxValue = productBO.getNetValue() / (1 + (taxRate / 100));
             totalAppliedTaxValue = taxValue * taxRate / 100;
 
-            taxValue=SDUtil.formatAsPerCalculationConfig(taxValue);
-            totalAppliedTaxValue=SDUtil.formatAsPerCalculationConfig(totalAppliedTaxValue);
+            taxValue = SDUtil.formatAsPerCalculationConfig(taxValue);
+            totalAppliedTaxValue = SDUtil.formatAsPerCalculationConfig(totalAppliedTaxValue);
 
             productBO.setTaxAmount(totalAppliedTaxValue);
             productBO.setTaxableAmount(taxValue);
@@ -835,10 +840,10 @@ public class TaxGstHelper implements TaxInterface {
      */
     private void insertProductLevelTax(String orderId, DBUtil db,
                                        ProductMasterBO productBO, TaxBO taxBO) {
-        String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct";
+        String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct,applyLevelId";
         String values = orderId + "," + productBO.getProductID() + ","
                 + taxBO.getTaxRate() + "," + taxBO.getTaxType() + "," + taxBO.getTotalTaxAmount()
-                + "," + mBusinessModel.getRetailerMasterBO().getRetailerID() + "," + taxBO.getGroupId() + ",0";
+                + "," + mBusinessModel.getRetailerMasterBO().getRetailerID() + "," + taxBO.getGroupId() + ",0," + taxBO.getApplyLevelId();
 
         db.insertSQL("OrderTaxDetails", columns, values);
 
@@ -849,9 +854,9 @@ public class TaxGstHelper implements TaxInterface {
 
     public void insertProductLevelTaxForFreeProduct(String orderId, DBUtil db,
                                                     String productId, TaxBO taxBO) {
-        String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct";
+        String columns = "orderId,pid,taxRate,taxType,taxValue,retailerid,groupid,IsFreeProduct,applyLevelId";
         String values = orderId + "," + productId + "," + taxBO.getTaxRate() + "," + taxBO.getTaxType() + "," + taxBO.getTotalTaxAmount()
-                + "," + mBusinessModel.getRetailerMasterBO().getRetailerID() + "," + taxBO.getGroupId() + ",1";
+                + "," + mBusinessModel.getRetailerMasterBO().getRetailerID() + "," + taxBO.getGroupId() + ",1," + taxBO.getApplyLevelId();
 
         db.insertSQL("OrderTaxDetails", columns, values);
 
