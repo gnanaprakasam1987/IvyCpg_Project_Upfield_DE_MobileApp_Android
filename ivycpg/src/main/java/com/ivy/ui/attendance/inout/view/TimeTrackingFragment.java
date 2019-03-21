@@ -195,8 +195,8 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
 
         if (this.timeTrackList.size() > 0) {
             for (NonFieldTwoBo timeTrackBo : timeTrackList) {
-                if ((!StringUtils.isNullOrEmpty(timeTrackBo.getInTime())) &&
-                        (!StringUtils.isNullOrEmpty(timeTrackBo.getOutTime()))) {
+                if ((!StringUtils.isEmptyString(timeTrackBo.getInTime())) &&
+                        (!StringUtils.isEmptyString(timeTrackBo.getOutTime()))) {
                     timeTrackBo.setStatus(getResources().getString(R.string.in_complete));
                 } else {
                     timeTrackBo.setStatus(getResources().getString(R.string.in_partial));
