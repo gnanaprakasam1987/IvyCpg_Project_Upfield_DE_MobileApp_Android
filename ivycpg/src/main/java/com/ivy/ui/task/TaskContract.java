@@ -53,7 +53,9 @@ public interface TaskContract {
 
         void onSaveButtonClick(int channelId,TaskDataBO taskObj);
 
-        void updateTask(String retailerID, TaskDataBO taskDataBO);
+        void updateTaskExecution(String retailerID, TaskDataBO taskDataBO);
+
+        void updateTask(TaskDataBO taskObj);
 
         String getSelectedRetailerId();
 
@@ -89,7 +91,7 @@ public interface TaskContract {
 
         ArrayList<TaskDataBO>getTaskImgList();
 
-        void deleteTask(String taskId);
+        void deleteTask(String taskId,String taskOwner);
 
     }
 }

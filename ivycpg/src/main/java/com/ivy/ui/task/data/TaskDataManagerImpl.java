@@ -11,7 +11,6 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
-import com.ivy.utils.FileUtils;
 import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -63,7 +62,8 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             + " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid"
                             + " left join TaskExecutionDetails TD on TD.TaskId=A.taskid and TD.RetailerId = " + retailerId
                             + " left join ProductLevel PL on PL.LevelId=B.CategoryId"
-                            + " where A.TaskId not in (Select taskid from TaskHistory where RetailerId =" + retailerId + ")";
+                            + " where B.Status!='D'"
+                            + " and A.TaskId not in (Select taskid from TaskHistory where RetailerId =" + retailerId + ")";
 
                     Cursor c = mDbUtil
                             .selectSQL(query);
@@ -178,7 +178,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
     }
 
     @Override
-    public Single<Boolean> updateTask(TaskDataBO taskDataBO, String retailerId) {
+    public Single<Boolean> updateTaskExecutionData(TaskDataBO taskDataBO, String retailerId) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
@@ -243,25 +243,30 @@ public class TaskDataManagerImpl implements TaskDataManager {
     }
 
     @Override
-    public Single<Boolean> addNewTask(int selectedId, TaskDataBO taskObj, String mode, ArrayList<TaskDataBO> taskImgList) {
+    public Single<Boolean> addAndUpdateTask(int selectedId, TaskDataBO taskObj, String mode, ArrayList<TaskDataBO> taskImgList) {
 
         // Remove single quotes
         String name = taskObj.getTaskDesc().replaceAll("'", " ");
         String title = taskObj.getTasktitle().replaceAll("'", " ");
+        final String[] taskOwner = {StringUtils.QT("self")};
+        final String[] status = {StringUtils.QT("I")};
 
         // Generate Unique ID
-        String id = StringUtils.QT(appDataProvider.getUser()
-                .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
+        final String[] id = {StringUtils.QT(appDataProvider.getUser()
+                .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID))};
 
         String date = StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
-        Commons.print("date :: ," + date + "");
 
+        String endDate = StringUtils.QT(DateTimeUtils.addDateToYear(1));
 
         String uID = StringUtils.QT(selectedId
                 + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
 
-        String endDate = StringUtils.QT(DateTimeUtils.addDateToYear(1));
-
+        if (!taskObj.getTaskOwner().equalsIgnoreCase("Self")) {
+            id[0] = StringUtils.QT(taskObj.getTaskId());
+            taskOwner[0] = StringUtils.QT(taskObj.getTaskOwner());
+            status[0] = StringUtils.QT("U");
+        }
 
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
@@ -290,17 +295,18 @@ public class TaskDataManagerImpl implements TaskDataManager {
 
 
                     // Insert Task into TaskMaster
-                    columns_new = "taskid,taskcode,taskdesc,upload ,taskowner,date,usercreated,DueDate,CategoryId,EndDate";
+                    columns_new = "taskid,taskcode,taskdesc,upload ,taskowner,date,usercreated,DueDate,CategoryId,EndDate,Status";
 
-                    value_new = id + "," + StringUtils.QT(title) + "," + StringUtils.QT(name) + ","
-                            + "'N'," + StringUtils.QT("self") + ", " + date + ",1,"
-                            + StringUtils.QT(taskObj.getTaskDueDate()) + "," + taskObj.getTaskCategoryID() + "," + endDate;
+                    value_new = id[0] + "," + StringUtils.QT(title) + "," + StringUtils.QT(name) + ","
+                            + "'N'," + taskOwner[0] + ", " + date + ",1,"
+                            + StringUtils.QT(taskObj.getTaskDueDate()) + ","
+                            + taskObj.getTaskCategoryID() + "," + endDate + "," + status[0];
 
                     mDbUtil.insertSQL("TaskMaster", columns_new, value_new);
 
 
                     //add task created images into TaskImageDetails table
-                    columns_new = "TaskId,TaskImageId,TaskImageName,ImageType,Upload";
+                    columns_new = "TaskId,TaskImageId,TaskImageName,ImageType,Upload,Status";
                     String imgId;
                     for (TaskDataBO imgBO : taskImgList) {
                         if (!imgBO.getTaskImg().isEmpty()) {
@@ -308,8 +314,8 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             imgId = StringUtils.QT(appDataProvider.getUser()
                                     .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
-                            value_new = id + "," + imgId + "," + StringUtils.QT(imgBO.getTaskImg())
-                                    + "," + imgBO.getTaskImgType() + "," + "'N'";
+                            value_new = id[0] + "," + imgId + "," + StringUtils.QT(imgBO.getTaskImg())
+                                    + "," + imgBO.getTaskImgType() + "," + "'N'" + "," + status[0];
 
                             mDbUtil.insertSQL("TaskImageDetails", columns_new, value_new);
                         }
@@ -341,14 +347,14 @@ public class TaskDataManagerImpl implements TaskDataManager {
                                         String[] chrid = getChannelRetailerId(0);
                                         for (String aChrid : chrid) {
 
-                                            values = id + "," + aChrid + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0" + "," + "0";
+                                            values = id[0] + "," + aChrid + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0" + "," + "0";
                                             mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
                                                     columns, values);
                                         }
 
                                     } else if (mode.equals("seller")) {
 
-                                        values = id + "," + 0 + "," + "1" + "," + "'N'," + date + "," + uID + "," + selectedId + "," + "0";
+                                        values = id[0] + "," + 0 + "," + "1" + "," + "'N'," + date + "," + uID + "," + selectedId + "," + "0";
                                         mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster, columns,
                                                 values);
                                     } else if (mode.equals("retailer")) {
@@ -356,13 +362,13 @@ public class TaskDataManagerImpl implements TaskDataManager {
                                             String[] chrid = getRetailerIdlist();
                                             for (String aChrid : chrid) {
 
-                                                values = id + "," + aChrid + "," + "1" + ","
+                                                values = id[0] + "," + aChrid + "," + "1" + ","
                                                         + "'N'," + date + "," + uID + "," + "0" + "," + "0";
                                                 mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
                                                         columns, values);
                                             }
                                         } else {
-                                            values = id + "," + selectedId + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0" + "," + "0";
+                                            values = id[0] + "," + selectedId + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0" + "," + "0";
                                             mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
                                                     columns, values);
                                         }
@@ -370,7 +376,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
 
                                         String[] chrid = getChannelRetailerId(selectedId);
                                         for (String aChrid : chrid) {
-                                            values = id + "," + aChrid + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0" + "," + selectedId;
+                                            values = id[0] + "," + aChrid + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0" + "," + selectedId;
                                             mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
                                                     columns, values);
                                         }
@@ -491,71 +497,36 @@ public class TaskDataManagerImpl implements TaskDataManager {
     }
 
     @Override
-    public Single<Boolean> deleteTaskData(String taskId) {
-        ArrayList<String> taskImgList = new ArrayList<>();
+    public Single<Boolean> deleteTaskData(String taskId, String taskOwner) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
-                boolean isFlag = false;
                 try {
                     if (mDbUtil.isDbNullOrClosed())
                         initDb();
 
-                    String deleteQuery = "Select Count(taskid) from TaskMaster where=" +
-                            StringUtils.QT(taskId);
-                    Cursor c = mDbUtil.selectSQL(deleteQuery);
-                    if (c != null) {
-                        if (c.getCount() != 0) {
-                            isFlag = true;
-                        }
-                        c.close();
+                    if (!taskOwner.equalsIgnoreCase("self")) {
+
+                        mDbUtil.updateSQL("UPDATE TaskMaster " +
+                                "SET status='D' WHERE taskid=" + StringUtils.QT(taskId));
+
+                        mDbUtil.updateSQL("UPDATE TaskImageDetails " +
+                                "SET status='D' WHERE TaskId=" + StringUtils.QT(taskId));
+                    } else {
+                        mDbUtil.deleteSQL("TaskMaster", "taskid=" + StringUtils.QT(taskId), false);
+
+                        mDbUtil.deleteSQL(DataMembers.tbl_TaskConfigurationMaster, "taskid=" + StringUtils.QT(taskId), false);
+
+                        mDbUtil.deleteSQL("TaskImageDetails", "TaskId=" + StringUtils.QT(taskId), false);
+
                     }
-
-
-                    c = mDbUtil.selectSQL("Select TaskImageName From TaskImageDetails Where=" + StringUtils.QT(taskId));
-                    if (c != null) {
-                        while (c.moveToNext()) {
-                            taskImgList.add(c.getString(0));
-                        }
-                        c.close();
-                    }
-
+                    shutDownDb();
+                    return true;
                 } catch (Exception ignore) {
 
                 }
-                return isFlag;
-            }
-        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
-            @Override
-            public SingleSource<? extends Boolean> apply(Boolean aBoolean) {
-
-                return Single.fromCallable(new Callable<Boolean>() {
-                    @Override
-                    public Boolean call() {
-                        try {
-                            if (aBoolean) {
-                                // mDbUtil.updateSQL();
-
-                                mDbUtil.deleteSQL("TaskMaster", "taskid=" + StringUtils.QT(taskId), false);
-
-                                mDbUtil.deleteSQL(DataMembers.tbl_TaskConfigurationMaster, "taskid=" + StringUtils.QT(taskId), false);
-
-                                for (String img : taskImgList) {
-                                    FileUtils.deleteFiles(FileUtils.photoFolderPath, img);
-                                }
-                                mDbUtil.deleteSQL("TaskImageDetails", "TaskId=" + StringUtils.QT(taskId), false);
-
-                            }
-
-                            shutDownDb();
-                            return true;
-                        } catch (Exception e) {
-                            Commons.printException(e);
-                        }
-                        shutDownDb();
-                        return false;
-                    }
-                });
+                shutDownDb();
+                return false;
             }
         });
     }

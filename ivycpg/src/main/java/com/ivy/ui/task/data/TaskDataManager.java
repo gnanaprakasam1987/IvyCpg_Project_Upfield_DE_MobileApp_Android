@@ -17,9 +17,9 @@ public interface TaskDataManager extends AppDataManagerContract {
 
     Single<Integer> fetchTaskCount();
 
-    Single<Boolean> updateTask(TaskDataBO taskDataBO, String retailerId);
+    Single<Boolean> updateTaskExecutionData(TaskDataBO taskDataBO, String retailerId);
 
-    Single<Boolean> addNewTask(int channelId, TaskDataBO taskObj, String mode, ArrayList<TaskDataBO> taskImgList);
+    Single<Boolean> addAndUpdateTask(int channelId, TaskDataBO taskObj, String mode, ArrayList<TaskDataBO> taskImgList);
 
     Observable<ArrayList<RetailerMasterBO>> fetchRetailers();
 
@@ -27,5 +27,5 @@ public interface TaskDataManager extends AppDataManagerContract {
 
     Observable<ArrayList<TaskDataBO>> fetTaskImgData(String taskId);
 
-    Single<Boolean> deleteTaskData(String taskId);
+    Single<Boolean> deleteTaskData(String taskId,String taskOwner);
 }

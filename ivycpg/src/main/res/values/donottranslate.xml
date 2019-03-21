@@ -188,4 +188,6 @@
     <string name="task_evidence">Evidence</string>
     <string name="server_task_can_not_be_edit">Server task can not be edit</string>
     <string name="server_task_can_not_be_delete">Server task can not be delete</string>
+    <string name="asc_order">Name(A-Z)</string>
+    <string name="desc_order">Name(Z-A)</string>
 </resources>

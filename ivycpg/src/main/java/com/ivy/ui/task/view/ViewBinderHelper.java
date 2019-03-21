@@ -22,7 +22,7 @@
  * SOFTWARE.
  */
 
-package com.ivy.ui.task.adapter;
+package com.ivy.ui.task.view;
 
 import android.os.Bundle;
 

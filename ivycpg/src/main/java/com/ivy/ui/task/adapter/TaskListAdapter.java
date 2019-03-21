@@ -18,6 +18,8 @@ import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.CommonDialog;
+import com.ivy.ui.task.view.SwipeRevealLayout;
+import com.ivy.ui.task.view.ViewBinderHelper;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
@@ -65,10 +67,12 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
 
         holder.taskTaskOwner.setText(" : " + taskBo.getTaskOwner());
         holder.taskCreatedDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
-                (taskBo.getCreatedDate(), outDateFormat) + ", ");
+                (taskBo.getCreatedDate(), outDateFormat));
 
         holder.taskTitle.setText(taskBo.getTasktitle());
         holder.taskProductLevel.setText(taskBo.getTaskCategoryDsc());
+        holder.taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
+                (taskBo.getTaskDueDate(), outDateFormat));
 
         holder.taskCB.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -161,6 +165,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         ImageButton btnAttachFile;
         TextView btnEditTask;
         TextView btnDeleteTask;
+        TextView taskDueDateTv;
 
         public TaskListViewHolder(View itemView) {
             super(itemView);
@@ -176,6 +181,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             btnAttachFile = itemView.findViewById(R.id.btn_attach_photo);
             btnDeleteTask = itemView.findViewById(R.id.delete_button);
             btnEditTask = itemView.findViewById(R.id.edit_button);
+            taskDueDateTv = itemView.findViewById(R.id.task_due_date_tv);
 
             if (isFromProfileSrc) {
                 taskCB.setVisibility(View.GONE);

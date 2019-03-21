@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.ivy.ui.task.adapter.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.ivy.ui.task.view.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe_layout"
@@ -148,6 +148,16 @@
                 </RelativeLayout>
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/task_due_date_tv"
+                style="@style/TextViewListItemValues"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1.5"
+                android:gravity="center"
+                android:text="@string/dummy_txt" />
+
             <LinearLayout
                 android:id="@+id/layoutCB"
                 android:layout_width="wrap_content"
@@ -181,4 +191,4 @@
 
         </LinearLayout>
     </FrameLayout>
-</com.ivy.ui.task.adapter.SwipeRevealLayout>
+</com.ivy.ui.task.view.SwipeRevealLayout>

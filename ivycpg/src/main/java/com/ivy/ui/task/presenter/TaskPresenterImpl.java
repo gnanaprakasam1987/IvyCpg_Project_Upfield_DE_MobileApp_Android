@@ -272,6 +272,9 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
 
                     @Override
                     public void onComplete() {
+                        if (!taskList.isEmpty())
+                            taskList.clear();
+
                         taskList.addAll(taskPreparedList);
                         getIvyView().updateListData(taskPreparedList);
                         getIvyView().hideLoading();
@@ -297,7 +300,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                 && !imageName.isEmpty()) {
             imgBo.setTaskImg(imageName);
 
-            getTaskImgList().add(imgBo);
+            mTaskImgList.add(imgBo);
 
 
         } else {
@@ -310,10 +313,10 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
 
 
     @Override
-    public void onSaveButtonClick(int channelId,TaskDataBO taskObj) {
+    public void onSaveButtonClick(int channelId, TaskDataBO taskObj) {
         getIvyView().showLoading();
-        getCompositeDisposable().add(mTaskDataManager.addNewTask(channelId
-                ,taskObj,getIvyView().getTaskMode(), getTaskImgList()).subscribeOn(getSchedulerProvider().io())
+        getCompositeDisposable().add(mTaskDataManager.addAndUpdateTask(channelId
+                , taskObj, getIvyView().getTaskMode(), getTaskImgList()).subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {
                     @Override
@@ -327,9 +330,9 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
     @Override
-    public void updateTask(String retailerID, TaskDataBO taskDataBO) {
+    public void updateTaskExecution(String retailerID, TaskDataBO taskDataBO) {
 
-        getCompositeDisposable().add(mTaskDataManager.updateTask(taskDataBO, retailerID)
+        getCompositeDisposable().add(mTaskDataManager.updateTaskExecutionData(taskDataBO, retailerID)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {
@@ -341,6 +344,11 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                         }
                     }
                 }));
+    }
+
+    @Override
+    public void updateTask(TaskDataBO taskObj) {
+
     }
 
     @Override
@@ -459,9 +467,9 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
     @Override
-    public void deleteTask(String taskId) {
+    public void deleteTask(String taskId, String taskOwner) {
         getIvyView().showLoading();
-        getCompositeDisposable().add(mTaskDataManager.deleteTaskData(taskId).subscribeOn(getSchedulerProvider().io())
+        getCompositeDisposable().add(mTaskDataManager.deleteTaskData(taskId, taskOwner).subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {
                     @Override

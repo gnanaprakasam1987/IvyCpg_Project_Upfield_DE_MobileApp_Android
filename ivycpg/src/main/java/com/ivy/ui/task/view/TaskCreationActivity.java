@@ -41,6 +41,8 @@ import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -402,6 +404,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         if (isTyp == 0)
             setUpSpinnerData(0);
 
+
     }
 
     private void setUpSpinnerData(int isFrom) {
@@ -409,18 +412,12 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         switch (isFrom) {
             case 0:
                 sellerSpinner.setAdapter(userMasterArrayAdapter);
-                if (isTyp == 1)
-                    sellerSpinner.setSelection(getAdapterPosition(userMasterArrayAdapter.getCount()));
                 break;
             case 1:
                 sellerSpinner.setAdapter(channelArrayAdapter);
-                if (isTyp == 1)
-                    sellerSpinner.setSelection(getAdapterPosition(channelArrayAdapter.getCount()));
                 break;
             case 2:
                 sellerSpinner.setAdapter(retailerMasterArrayAdapter);
-                if (isTyp == 1)
-                    sellerSpinner.setSelection(getAdapterPosition(retailerMasterArrayAdapter.getCount()));
                 break;
         }
 
@@ -432,8 +429,6 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 R.layout.spinner_blacktext_layout);
         taskCategoryArrayAdapter.setDropDownViewResource(R.layout.spinner_blacktext_list_item);
         categorySpinner.setAdapter(taskCategoryArrayAdapter);
-        if (isTyp == 1)
-            categorySpinner.setSelection(getAdapterPosition(taskCategoryArrayAdapter.getCount()));
     }
 
     private void prepareTaskPhotoCapture() {
@@ -563,20 +558,25 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         });
     }
 
-    private void updateFieldsInEditMode(TaskDataBO taskDataObj) {
+    private void updateFieldsInEditMode(@NotNull TaskDataBO taskDataObj) {
         taskTitle.setText(taskDataObj.getTasktitle());
-        categorySpinner.setSelection(0);
+        categorySpinner.setSelection(getAdapterPosition(taskCategoryArrayAdapter.getCount()));
         dueDateBtn.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
                 taskDataObj.getTaskDueDate(), taskPresenter.outDateFormat()));
 
-        if (taskDataObj.getMode().equalsIgnoreCase("seller"))
+        if (taskDataObj.getMode().equalsIgnoreCase("seller")) {
             seller_rb.setChecked(true);
-        else if (taskDataObj.getMode().equalsIgnoreCase("retailer"))
+            setUpSpinnerData(0);
+            sellerSpinner.setSelection(getAdapterPosition(userMasterArrayAdapter.getCount()));
+        } else if (taskDataObj.getMode().equalsIgnoreCase("retailer")) {
             retailerwise_rb.setChecked(true);
-        else
+            setUpSpinnerData(1);
+            sellerSpinner.setSelection(getAdapterPosition(channelArrayAdapter.getCount()));
+        } else {
             channelwise_rb.setChecked(true);
-
-
+            setUpSpinnerData(2);
+            sellerSpinner.setSelection(getAdapterPosition(retailerMasterArrayAdapter.getCount()));
+        }
         taskView.setText(taskDataObj.getTaskDesc());
 
     }

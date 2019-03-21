@@ -1,89 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/root"
     android:layout_width="match_parent"
-    android:background="@color/white"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
-    <LinearLayout
-        android:id="@+id/footer"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/root"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:background="?attr/customFooterBackgroundColor"
-        android:minHeight="@dimen/footer_height"
-        android:orientation="vertical"
-        android:visibility="visible">
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
-        <Button
-            android:id="@+id/btn_close"
-            style="?attr/roundedCustomButtonSmall"
-            android:layout_gravity="end"
-            android:layout_margin="@dimen/target_top_margin"
-            android:gravity="center"
-            android:text="@string/close"
-            android:textAllCaps="false" />
+        <LinearLayout
+            android:id="@+id/footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="?attr/customFooterBackgroundColor"
+            android:minHeight="@dimen/footer_height"
+            android:orientation="vertical"
+            android:visibility="visible">
 
-    </LinearLayout>
+            <Button
+                android:id="@+id/btn_close"
+                style="?attr/roundedCustomButtonSmall"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/target_top_margin"
+                android:gravity="center"
+                android:text="@string/close"
+                android:textAllCaps="false" />
 
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tabs"
-        style="@style/AppTabLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_gravity="center_horizontal"
-        app:tabGravity="fill"
-        app:tabIndicatorHeight="4dp"
-        app:tabMaxWidth="1500dp"
-        app:tabMode="fixed" />
+        </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ListHeader"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/list_header_height"
-        android:layout_below="@+id/tabs"
-        android:background="?attr/customListTitleBackgroundColor"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="@dimen/list_padding_left_n_right"
-        android:paddingEnd="@dimen/list_padding_left_n_right">
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            style="@style/AppTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_horizontal"
+            app:tabGravity="fill"
+            app:tabIndicatorHeight="4dp"
+            app:tabMaxWidth="1500dp"
+            app:tabMode="fixed" />
 
-        <TextView
-            android:id="@+id/tv_task_title"
-            style="@style/TextViewListTitle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4"
-            android:gravity="start|center_vertical"
-            android:tag="task_title_label"
-            android:text="@string/product_name" />
+        <LinearLayout
+            android:id="@+id/ListHeader"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_header_height"
+            android:layout_below="@+id/tabs"
+            android:background="?attr/customListTitleBackgroundColor"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/list_padding_left_n_right"
+            android:paddingEnd="@dimen/list_padding_left_n_right">
 
-        <TextView
-            android:id="@+id/tv_sort"
-            style="@style/TextViewListTitle"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:drawableEnd="@drawable/ic_filter_icon"
-            android:drawableRight="@drawable/ic_filter_icon"
-            android:focusable="true"
-            android:tag="task_sort_title_label"
-            android:text="@string/sort_by" />
+            <TextView
+                android:id="@+id/tv_task_title"
+                style="@style/TextViewListTitle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:gravity="start|center_vertical"
+                android:tag="task_title_label"
+                android:text="@string/product_name" />
 
-    </LinearLayout>
+            <TextView
+                android:id="@+id/tv_due_date"
+                style="@style/TextViewListTitle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:clickable="true"
+                android:focusable="true"
+                android:tag="task_sort_title_label"
+                android:text="@string/due_date" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/task_recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/ListHeader"
-        android:clipToPadding="false"
-        android:orientation="horizontal"
-        android:layout_above="@+id/footer"
-        android:overScrollMode="never" />
+            <TextView
+                android:id="@+id/tv_sort"
+                style="@style/TextViewListTitle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:drawableEnd="@drawable/ic_filter_icon"
+                android:drawableRight="@drawable/ic_filter_icon"
+                android:focusable="true"
+                android:tag="task_sort_title_label"
+                android:text="@string/sort_by" />
 
-</RelativeLayout>
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/task_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/footer"
+            android:layout_below="@+id/ListHeader"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:overScrollMode="never" />
+
+    </RelativeLayout>
+
+    <include
+        layout="@layout/task_bottom_sheet"
+        android:visibility="visible" />
+</android.support.design.widget.CoordinatorLayout>
 

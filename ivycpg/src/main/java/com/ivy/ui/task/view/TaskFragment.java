@@ -5,6 +5,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -17,7 +19,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -67,7 +68,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     private String imageName = "";
     private static final int CAMERA_REQUEST_CODE = 1;
     private TextView sortTv;
-    ArrayList<TaskDataBO> taskDataBOArrayList = new ArrayList<>();
+    private BottomSheetBehavior bottomSheetBehavior;
 
 
     @Inject
@@ -102,6 +103,10 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         recyclerView.setHasFixedSize(false);
         recyclerView.setNestedScrollingEnabled(false);
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.bottomSheetLayout));
+        bottomSheetBehavior.setHideable(false);
+
+        setUpBottomSheet(view);
     }
 
     @Override
@@ -135,7 +140,11 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         sortTv.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shortListOrder();
+                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                    hideBottomSheet();
+                } else {
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                }
             }
         });
 
@@ -158,6 +167,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         }
 
         addTabs();
+
         if (taskPresenter.isShowServerTaskOnly())
             taskPresenter.updateTaskList(1, mSelectedRetailerID, IsRetailerwisetask, isFromSurvey);
         else
@@ -184,6 +194,71 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         }
     }
 
+    private void setUpBottomSheet(View view) {
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        if (recyclerView.getVisibility() == View.VISIBLE) {
+                            hideBottomSheet();
+                        }
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+
+        view.findViewById(R.id.asc_ord_tv).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shortListOrder(1, "A-Z");
+                hideBottomSheet();
+            }
+        });
+
+        view.findViewById(R.id.desc_ord_tv).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shortListOrder(2, "Z-A");
+                hideBottomSheet();
+            }
+        });
+
+        view.findViewById(R.id.level_ord_tv).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shortListOrder(3, "A-Z");
+                hideBottomSheet();
+            }
+        });
+
+        view.findViewById(R.id.due_date_ord_tv).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                shortListOrder(4, "A-Z");
+                hideBottomSheet();
+            }
+        });
+
+    }
+
+    private void hideBottomSheet() {
+        bottomSheetBehavior.setHideable(true);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+    }
+
     private void moveNextActivity() {
 
         showAlert(getString(R.string.move_next_activity)
@@ -208,9 +283,9 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         public void onTaskExcutedClick(TaskDataBO taskDataBO) {
             taskPresenter.updateModuleTime();
             if (IsRetailerwisetask) {
-                taskPresenter.updateTask(taskPresenter.getRetailerID() + "", taskDataBO);
+                taskPresenter.updateTaskExecution(taskPresenter.getRetailerID() + "", taskDataBO);
             } else {
-                taskPresenter.updateTask(0 + "", taskDataBO);
+                taskPresenter.updateTaskExecution(0 + "", taskDataBO);
             }
         }
 
@@ -242,7 +317,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
                     i.putExtra("isType", isType);
                     break;
                 case 2:
-                    taskPresenter.deleteTask(taskBO.getTaskId());
+                    taskPresenter.deleteTask(taskBO.getTaskId(), taskBO.getTaskOwner());
                     break;
             }
 
@@ -471,8 +546,10 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
     @Override
     public void showUpdatedDialog(int msgResId) {
+
         showMessage(getString(msgResId));
     }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -492,52 +569,31 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         }*/
     }
 
-    int mSelectedLocationIndex = 0;
+    private void shortListOrder(int sortType, String sortText) {
+        if (sortText.equals("A - Z")) {
+            Collections.sort(taskPresenter.getTaskList(), new Comparator<TaskDataBO>() {
+                @Override
+                public int compare(TaskDataBO fstr, TaskDataBO sstr) {
+                    if (sortType == 1)
+                        return fstr.getTasktitle().compareToIgnoreCase(sstr.getTasktitle());
+                    else if (sortType == 3)
+                        return fstr.getTaskCategoryDsc().compareToIgnoreCase(sstr.getTaskCategoryDsc());
+                    else
+                        return fstr.getTaskDueDate().compareToIgnoreCase(sstr.getTaskDueDate());
+                }
+            });
+            updateListData(taskPresenter.getTaskList());
 
-    private void shortListOrder() {
+        } else if (sortText.equals("Z - A")) {
+            Collections.sort(taskPresenter.getTaskList(), new Comparator<TaskDataBO>() {
+                @Override
+                public int compare(TaskDataBO fstr, TaskDataBO sstr) {
+                    return sstr.getTasktitle().compareToIgnoreCase(fstr.getTasktitle());
+                }
+            });
+            updateListData(taskPresenter.getTaskList());
 
-        ArrayList<String> listName = new ArrayList<>();
-        listName.add("A - Z");
-        listName.add("Z - A");
-        final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
-                getActivity(),
-                android.R.layout.select_dialog_singlechoice,
-                listName);
-
-        AlertDialog.Builder builder;
-
-        builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(null);
-        builder.setSingleChoiceItems(arrayAdapter, mSelectedLocationIndex,
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int item) {
-                        mSelectedLocationIndex = item;
-
-                        if (arrayAdapter.getItem(item).equals("A - Z")) {
-                            Collections.sort(taskDataBOArrayList, new Comparator<TaskDataBO>() {
-                                @Override
-                                public int compare(TaskDataBO fstr, TaskDataBO sstr) {
-                                    return fstr.getTasktitle().compareToIgnoreCase(sstr.getTasktitle());
-                                }
-                            });
-                            updateListData(taskDataBOArrayList);
-
-                        } else if (arrayAdapter.getItem(item).equals("Z - A")) {
-                            Collections.sort(taskDataBOArrayList, new Comparator<TaskDataBO>() {
-                                @Override
-                                public int compare(TaskDataBO fstr, TaskDataBO sstr) {
-                                    return sstr.getTasktitle().compareToIgnoreCase(fstr.getTasktitle());
-                                }
-                            });
-                            updateListData(taskDataBOArrayList);
-
-                        }
-                        dialog.dismiss();
-                    }
-                });
-
-        AppUtils.applyAlertDialogTheme(getActivity(), builder);
+        }
 
     }
 }
