@@ -458,7 +458,7 @@ public class VanUnLoadModuleHelper {
             db.openDataBase();
 
             Cursor c = db.selectSQL("select nsih.pid,p.PName,nsih.qty,p.dUomQty,p.dOuomQty,p.dUomId,p.dOuomid,p.piece_uomid,nsih.reasonid from " +
-                    "NonSalableSIHMaster nsih left join productmaster p on p.PID=nsih.pid where P.IsSalable=1 OR p.isreturnable = 1");
+                    "NonSalableSIHMaster nsih left join productmaster p on p.PID=nsih.pid");
 
             if (c != null) {
                 while (c.moveToNext()) {
@@ -524,8 +524,7 @@ public class VanUnLoadModuleHelper {
             db.openDataBase();
 
             Cursor c = db
-                    .selectSQL("select sih.pid,p.PName,sih.batchid,bt.batchNum,sih.qty,p.dUomQty,p.dOuomQty,p.dUomId,p.dOuomid,p.piece_uomid from FreeStockInHandMaster sih left join BatchMaster bt on bt.batchid=sih.batchid and sih.pid=bt.pid left join productmaster p on p.PID=sih.pid"
-                            + " where P.IsSalable=1");
+                    .selectSQL("select sih.pid,p.PName,sih.batchid,bt.batchNum,sih.qty,p.dUomQty,p.dOuomQty,p.dUomId,p.dOuomid,p.piece_uomid from FreeStockInHandMaster sih left join BatchMaster bt on bt.batchid=sih.batchid and sih.pid=bt.pid left join productmaster p on p.PID=sih.pid");
 
             if (c != null) {
                 while (c.moveToNext()) {
