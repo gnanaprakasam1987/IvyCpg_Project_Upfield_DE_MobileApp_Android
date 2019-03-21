@@ -107,7 +107,7 @@ public class OrderConfirmationDialog extends Dialog implements View.OnClickListe
                     businessModel.reasonHelper.downloadShipmentType();
                     shipment_adapter = new ArrayAdapter<>(context,
                             R.layout.spinner_bluetext_layout);
-                    shipment_adapter.add(new ReasonMaster(0 + "", context.getResources().getString(R.string.select_shipment_type)));
+                    shipment_adapter.add(new ReasonMaster(0 + "", context.getResources().getString(R.string.select_str)));
                     int count = 0, selectedPos = -1;
                     for (ReasonMaster temp : businessModel.reasonHelper
                             .getShipMentType()) {
