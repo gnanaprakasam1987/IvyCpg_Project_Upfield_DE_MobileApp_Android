@@ -1034,6 +1034,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
                 } else if (businessModel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
                     businessModel.configurationMasterHelper.setAmazonS3Credentials();
                     initializeTransferUtility();
+                    downloadDigitalContents(false,null,transferUtility); //not Azure Download
                 }
             } else {
 
@@ -1061,9 +1062,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
                 ConfigurationMasterHelper.SECRET_KEY);
         AmazonS3Client s3 = new AmazonS3Client(myCredentials);
         s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
-        TransferUtility transferUtility = new TransferUtility(s3, context);
-
-        downloadDigitalContents(false,null,transferUtility); //not Azure Download
+        transferUtility = new TransferUtility(s3, context);
     }
 
     public void callDistributorDownload() {

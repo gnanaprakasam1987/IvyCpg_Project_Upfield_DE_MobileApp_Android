@@ -4183,7 +4183,6 @@ public class BusinessModel extends Application {
 
     private void getResponseForUploadImageToAmazonCloud(String
                                                                 imageName, TransferUtility tm, final Handler mHandler) {
-        final int[] status = new int[1];
         try {
 
             final File image = new File(folder, "/" + imageName);
@@ -7433,6 +7432,8 @@ public class BusinessModel extends Application {
 
                 getResponseForUploadImageToAzureStorageCloud(filename, initializeAzureStorageConnection(), handler);
 
+                successCount = successCount + 1;
+
             }
             if (successCount == uploadFileSize) {
                 fileDeleteAfterUpload();
@@ -7534,7 +7535,7 @@ public class BusinessModel extends Application {
                             + "/"
                             + userMasterHelper.getUserMasterBO
                             ().getDownloadDate()
-                            .replace("/", "");
+                            .replace("/", "")+ imageName;
                 }
             }
 

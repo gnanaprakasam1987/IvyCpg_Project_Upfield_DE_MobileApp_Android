@@ -892,9 +892,6 @@ public class SynchronizationFragment extends IvyBaseFragment
         else if (i == R.id.menu_file_download){
             startActivity(new Intent(getActivity(), LargeFileDownloadActivity.class));
         }
-        else if (i == R.id.menu_file_download){
-            startActivity(new Intent(getActivity(), LargeFileDownloadActivity.class));
-        }
         return true;
     }
 

@@ -6278,6 +6278,14 @@ public class ConfigurationMasterHelper {
                         DataMembers.AZURE_CONNECTION_STRING = c.getString(1);
                     } else if (c.getString(0).equals("AS_STORAGE_SAS")) {
                         DataMembers.AZURE_SAS = c.getString(1);
+                    } else if (c.getString(0).equals("AS_STORAGE_ENDPOINT")) {
+                        DataMembers.AZURE_ENDPOINT = c.getString(1);
+                    } else if (c.getString(0).equals("AS_STORAGE_ACCOUNT_NAME")) {
+                        DataMembers.AZURE_ACCOUNT_NAME = c.getString(1);
+                    } else if (c.getString(0).equals("AS_STORAGE_KEY")) {
+                        DataMembers.AZURE_KEY = c.getString(1);
+                    } else if (c.getString(0).equals("AS_STORAGE_BASE_URL")) {
+                        DataMembers.AZURE_BASE_URL = c.getString(1);
                     }
                 }
                 c.close();

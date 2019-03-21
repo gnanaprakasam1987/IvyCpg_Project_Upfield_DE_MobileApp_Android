@@ -21,6 +21,11 @@ public class DataMembers {
     public static String AZURE_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=devappwestindiageo;AccountKey=whdcWLAMnbipdHseTeb6ifOWczAjOcoUjT0wXgnIm+F6cJYGIyumNsapX4IH2vBBMeh9/qVfxpxbAZGjlv1XLw==;EndpointSuffix=core.windows.net";
     public static String AZURE_SAS = "whdcWLAMnbipdHseTeb6ifOWczAjOcoUjT0wXgnIm+F6cJYGIyumNsapX4IH2vBBMeh9/qVfxpxbAZGjlv1XLw==";
 
+    public static String AZURE_ENDPOINT = "core.windows.net";
+    public static String AZURE_ACCOUNT_NAME = "devappwestindiageo";
+    public static String AZURE_KEY = "whdcWLAMnbipdHseTeb6ifOWczAjOcoUjT0wXgnIm+F6cJYGIyumNsapX4IH2vBBMeh9/qVfxpxbAZGjlv1XLw==";
+    public static String AZURE_BASE_URL = "https://devappwestindiageo.blob.core.windows.net";
+
 
     // For Cloud Image Upload Starts
     public static String S3_BUCKET_REGION = "s3-ap-southeast-1.amazonaws.com";// "Singapore";//

@@ -205,7 +205,7 @@ public class FileDownloadIntentService extends IntentService {
                 signedUrl = digitalContentBO.getSignedUrl();
             } else {
                 if (downloadType.equalsIgnoreCase("AWS"))
-                    signedUrl = getSignedUrl(digitalContentBO.getImgUrl());
+                    signedUrl = getSignedAwsUrl(digitalContentBO.getImgUrl());
                 else
                     signedUrl = getSignedAzureUrl(digitalContentBO.getImgUrl());
                 digitalContentBO.setSignedUrl(signedUrl);
@@ -289,7 +289,7 @@ public class FileDownloadIntentService extends IntentService {
     /**
      * Generate Signed Amazon Url with expiration time for 5 hours
      */
-    private String getSignedUrl(String downloadKey) {
+    private String getSignedAwsUrl(String downloadKey) {
         try {
             BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
                     ConfigurationMasterHelper.SECRET_KEY);
@@ -310,59 +310,39 @@ public class FileDownloadIntentService extends IntentService {
         return "";
     }
 
+
+    /**
+     * Generate Signed Azure Url with expiration time for 5 hours
+     */
     private String getSignedAzureUrl(String fileUrl) {
+
+//        fileUrl = "https://devappwestindiageo.blob.core.windows.net"
+//                +"/"+DataMembers.AZURE_CONTAINER
+//                +"/"+fileUrl
+//                +"?"+DataMembers.AZURE_SAS;
 
         try {
 
-            //Get a reference to a container to use for the sample code, and create it if it does not exist.
             CloudBlobContainer container = initializeAzureStorageConnection();
 
-            // define rights you want to bake into the SAS
             SharedAccessBlobPolicy itemPolicy = new SharedAccessBlobPolicy();
 
-
             Date expirationTime = new Date(new Date().getTime() + 1000 * 60 * 300);
-
             itemPolicy.setSharedAccessExpiryTime(expirationTime);
+            itemPolicy.setPermissions(EnumSet.of(SharedAccessBlobPermissions.WRITE,SharedAccessBlobPermissions.READ,SharedAccessBlobPermissions.LIST));
 
-            // get reference to the Blob you want to generate the SAS for:
             CloudBlockBlob blob = container.getBlockBlobReference(fileUrl);
+//            CloudBlockBlob blob = new CloudBlockBlob(new URI(fileUrl));
 
-            // generate Download SAS
-            String sasToken = blob.generateSharedAccessSignature(itemPolicy, "DownloadPolicy");
-            // the SAS URL is actually concatentation of the blob URI and the generated token:
-            String sasUri = String.format("%s?%s", blob.getUri(), sasToken);
+            String sasToken = blob.generateSharedAccessSignature(itemPolicy, null);
 
-            URI url = new URI(sasUri);
-
-            return url.toString();
+            return String.format("%s?%s", blob.getUri(), sasToken);
+//            return blob.getUri().toString();
 
         } catch (Exception e) {
             Commons.printException(e);
         }
 
-        return "";
-    }
-
-    private String getContainerSasUri(CloudBlobContainer container) {
-        try {
-            //Set the expiry time and permissions for the container.
-            //In this case no start time is specified, so the shared access signature becomes valid immediately.
-            SharedAccessBlobPolicy sasConstraints = new SharedAccessBlobPolicy();
-            sasConstraints.setSharedAccessExpiryTime(new Date(new Date().getTime() + 1000 * 60 * 300));
-            sasConstraints.setPermissions(EnumSet.of(SharedAccessBlobPermissions.LIST, SharedAccessBlobPermissions.WRITE));
-
-            //Generate the shared access signature on the container, setting the constraints directly on the signature.
-            String sasContainerToken = container.generateSharedAccessSignature(sasConstraints, null);
-
-            //Return the URI string for the container, including the SAS token.
-            return container.getUri() + sasContainerToken;
-
-        } catch (InvalidKeyException e) {
-            e.printStackTrace();
-        } catch (StorageException e) {
-            e.printStackTrace();
-        }
         return "";
     }
 

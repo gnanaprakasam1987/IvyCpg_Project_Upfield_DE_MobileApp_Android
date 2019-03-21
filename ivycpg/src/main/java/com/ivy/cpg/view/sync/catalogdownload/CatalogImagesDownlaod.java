@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StatFs;
 import android.os.StrictMode;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,14 +20,17 @@ import android.widget.Toast;
 
 import com.amazonaws.SDKGlobalConfiguration;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.downloader.Error;
+import com.downloader.OnCancelListener;
+import com.downloader.OnDownloadListener;
+import com.downloader.OnPauseListener;
+import com.downloader.OnProgressListener;
+import com.downloader.OnStartOrResumeListener;
+import com.downloader.PRDownloader;
+import com.downloader.Progress;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
@@ -34,10 +38,15 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FontUtils;
+import com.microsoft.azure.storage.blob.CloudBlobContainer;
+import com.microsoft.azure.storage.blob.CloudBlockBlob;
+import com.microsoft.azure.storage.blob.ListBlobItem;
 
 import java.io.File;
+import java.net.URL;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Date;
 
 public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
 
@@ -46,11 +55,14 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
     private Button catalogFullDownloadButton;
     private TextView tvDownloadStatus;
     private TextView last_download_time;
-    private TransferUtility transferUtility;
     private String lastDownloadTime;
     private CatalogImageDownloadProvider catalogImageDownloadProvider;
 
     private ImageDownloadReceiver receiver;
+
+    private ArrayList<String> stringUrlList = new ArrayList<>();
+    int filesCount = 0;
+    private int downloadIndex = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +74,8 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
 
         catalogImageDownloadProvider = CatalogImageDownloadProvider.getInstance(bmodel);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        if (toolbar != null) {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        if (toolbar != null && getSupportActionBar() != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(getResources().getString(R.string.catalog_images_download));
@@ -75,19 +87,19 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         //   lastDownloadTime = catalogImageDownloadProvider.getLastDownloadedDateTime();
         //   int totalDownloadedCount = getFilesCount();
 
-        tvDownloadStatus = (TextView) findViewById(R.id.tv_downloadStaus);
-        catalogRefreshButton = (Button) findViewById(R.id.refresh_catalog);
-        catalogFullDownloadButton = (Button) findViewById(R.id.full_download_catalog);
+        tvDownloadStatus = findViewById(R.id.tv_downloadStaus);
+        catalogRefreshButton = findViewById(R.id.refresh_catalog);
+        catalogFullDownloadButton = findViewById(R.id.full_download_catalog);
 
-        tvDownloadStatus.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        catalogRefreshButton.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        catalogFullDownloadButton.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        tvDownloadStatus.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+        catalogRefreshButton.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
+        catalogFullDownloadButton.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
 
 
         catalogRefreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new CatalogImagesRefresh().execute();
+                new CatalogImagesFolderRefresh().execute();
             }
         });
 
@@ -103,7 +115,8 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                     // Detete the folder.
                     catalogImageDownloadProvider.clearCatalogImages();
                     // Initiate full download.
-                    CatalogImageDownloadProvider.getInstance(bmodel).callCatalogImageDownload(new DownloadListener(bmodel.getApplicationContext()));
+//                    CatalogImageDownloadProvider.getInstance(bmodel).callCatalogImageDownload(new DownloadListener(bmodel.getApplicationContext()));
+                    CatalogImageDownloadProvider.getInstance(bmodel).callZipDownload(bmodel.getApplicationContext());
                 }
 
             }
@@ -114,7 +127,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
             tvDownloadStatus.setText(getResources().getString(R.string.external_storage_not_available));
         }
 
-        last_download_time = (TextView) findViewById(R.id.last_download_time);
+        last_download_time = findViewById(R.id.last_download_time);
         last_download_time.setText(getResources().getString(R.string.last_image_download_time) + " " +
                 lastDownloadTime);
 
@@ -133,16 +146,17 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                 tvDownloadStatus.setText(getResources().getString(R.string.external_storage_not_available));
             }
 
-            last_download_time = (TextView) findViewById(R.id.last_download_time);
+            last_download_time = findViewById(R.id.last_download_time);
             last_download_time.setText(getResources().getString(R.string.last_image_download_time) + " " +
                     lastDownloadTime);
         }
 
         resumeDownload();
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(downloadInfoReceiver,
+                new IntentFilter("com.ivy.cpg.view.sync.CatalogDownloadStatus"));
 
     }
-
 
     private void isServiceRunning() {
         if (CatalogImageDownloadService.isServiceRunning) {
@@ -153,7 +167,6 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
             catalogFullDownloadButton.setVisibility(View.VISIBLE);
         }
     }
-
 
     private boolean isExternalStorageAvailable() {
 
@@ -182,14 +195,13 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
             mExternalStorageAvailable = mExternalStorageWriteable = false;
         }
 
-        if (mExternalStorageAvailable == true
-                && mExternalStorageWriteable == true && mbAvailable > 10) {
+        if (mExternalStorageAvailable
+                && mExternalStorageWriteable && mbAvailable > 10) {
             return true;
         } else {
             return false;
         }
     }
-
 
     private void resumeDownload() {
         if (catalogImageDownloadProvider.getCatalogDownloadStatus().equals(CatalogDownloadConstants.DOWNLOADING)) {
@@ -198,22 +210,8 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
             catalogRefreshButton.setVisibility(View.INVISIBLE);
             last_download_time.setText("");
 
-            bmodel.configurationMasterHelper.setAmazonS3Credentials();
-            TransferUtility transferUtility = Util.getTransferUtility(getApplicationContext());
-            List<TransferObserver> observers = transferUtility.getTransfersWithType(TransferType.DOWNLOAD);
-            for (TransferObserver observer : observers) {
-                if (catalogImageDownloadProvider.getCatalogDownloadStatusId() == observer.getId()) {
-                    // Sets listeners to in progress transfers
-                    if (TransferState.WAITING.equals(observer.getState())
-                            || TransferState.WAITING_FOR_NETWORK.equals(observer.getState())
-                            || TransferState.IN_PROGRESS.equals(observer.getState())
-                            || TransferState.FAILED.equals(observer.getState())) {
-                        observer.cleanTransferListener();
-                        observer.setTransferListener(new DownloadListener(getApplicationContext()));
-                        TransferObserver resumed = transferUtility.resume(observer.getId());
-                    }
-                }
-            }
+            catalogImageDownloadProvider.downloadProcess(this);
+
         } else if (catalogImageDownloadProvider.getCatalogDownloadStatus().equals(CatalogDownloadConstants.UNZIP)) {
 
             catalogFullDownloadButton.setVisibility(View.INVISIBLE);
@@ -226,346 +224,8 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                 startService(intent);
             }
 
-        } else if (catalogImageDownloadProvider.getCatalogDownloadStatus().equals(CatalogDownloadConstants.DONE)) {
-            new UpdateStatus().execute();
         } else {
             new UpdateStatus().execute();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (receiver != null) {
-            unregisterReceiver(receiver);
-        }
-    }
-
-
-    public class ImageDownloadReceiver extends BroadcastReceiver {
-        public static final String PROCESS_RESPONSE = "com.ivy.intent.action.CatalogImageDownload";
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            updateDownloadStatus(intent);
-
-        }
-    }
-
-    public void updateDownloadStatus(Intent intent) {
-        if (intent != null) {
-            if (intent.getExtras() != null) {
-
-                catalogFullDownloadButton.setVisibility(View.INVISIBLE);
-                catalogRefreshButton.setVisibility(View.INVISIBLE);
-                Bundle b = intent.getExtras();
-                if (b.getString("Error") != null) {
-                    Toast.makeText(getApplicationContext(), b.getString("Error"), Toast.LENGTH_LONG).show();
-                } else if (b.getInt("errorCode") != 0) {
-                    if (b.getString("errorMessage") != null)
-                        tvDownloadStatus.setText(b.getString("errorMessage"));
-                } else if (b.getInt("Status") != 0) {
-                    if (b.getInt("Status") == DataMembers.MESSAGE_UNZIPPED) {
-                        new UpdateStatus().execute();
-                    }
-                }
-            }
-
-        }
-
-    }
-
-
-    public class CatalogImagesRefresh extends AsyncTask<String, Void, String> {
-
-        private List<S3ObjectSummary> summaries = new ArrayList<>();
-        private ProgressDialog progressDialogue;
-        int filesCount = 0;
-
-        protected void onPreExecute() {
-            catalogFullDownloadButton.setVisibility(View.INVISIBLE);
-            catalogRefreshButton.setVisibility(View.INVISIBLE);
-            last_download_time.setText("");
-            progressDialogue = ProgressDialog.show(CatalogImagesDownlaod.this,
-                    DataMembers.SD, getResources().getString(R.string.refreshing),
-                    true, false);
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-
-                if (android.os.Build.VERSION.SDK_INT > 9) {
-                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                    StrictMode.setThreadPolicy(policy);
-
-                    bmodel.getimageDownloadURL();
-
-                    bmodel.configurationMasterHelper.setAmazonS3Credentials();
-                    initializeTransferUtility();
-
-                    BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                            ConfigurationMasterHelper.SECRET_KEY);
-                    AmazonS3Client s3 = new AmazonS3Client(myCredentials);
-                    ObjectListing listing = s3.listObjects(DataMembers.S3_BUCKET, DataMembers.IMG_DOWN_URL + "Product/ProductCatalog");
-
-                    if (listing.getObjectSummaries().size() > 0) {
-                        for (S3ObjectSummary fileList : listing.getObjectSummaries()) {
-                            if (fileList.getLastModified()
-                                    .after(DateTimeUtils.convertStringToDateObject(lastDownloadTime, "MM/dd/yyyy HH:mm:ss"))) {
-                                summaries.add(fileList);
-                            }
-                        }
-                    }
-
-                    while (listing.isTruncated()) {
-                        listing = s3.listNextBatchOfObjects(listing);
-                        if (listing.getObjectSummaries().size() > 0) {
-                            for (S3ObjectSummary fileList : listing.getObjectSummaries()) {
-                                if (fileList.getLastModified()
-                                        .after(DateTimeUtils.convertStringToDateObject(lastDownloadTime, "MM/dd/yyyy HH:mm:ss"))) {
-                                    summaries.add(fileList);
-                                }
-                            }
-                        }
-
-                    }
-
-
-                    if (summaries != null && summaries.size() > 0) {
-
-
-                        deleteImages(summaries);
-
-
-                        for (S3ObjectSummary s3ObjectSummary : summaries) {
-                            String imagurl = s3ObjectSummary.getKey();
-                            String folderName = DataMembers.CATALOG;
-                            String mFileName = "file.bin";
-                            File mTranDevicePath = catalogImageDownloadProvider.getStorageDir(getResources().getString(R.string.app_name));
-
-                            int index = imagurl.lastIndexOf('/');
-
-                            if (index >= 0) {
-                                mFileName = imagurl.substring(index + 1);
-                            }
-                            if (mFileName.equals("")) {
-                                mFileName = "file.bin";
-                            }
-
-                            File mFolderPath = new File(mTranDevicePath, folderName);
-
-                            if (!mFolderPath.exists())
-                                mFolderPath.mkdirs();
-
-                            File mfile = new File(mTranDevicePath + "/" + folderName + "/" + mFileName);
-
-                            bmodel.configurationMasterHelper.setAmazonS3Credentials();
-
-                            transferUtility = Util.getTransferUtility(getApplicationContext());
-
-                            // Initiate the download
-                            TransferObserver observer = transferUtility.download(DataMembers.S3_BUCKET, imagurl, mfile);
-                            observer.setTransferListener(new RefreshListener());
-                        }
-                        return "Success";
-                    }
-                    filesCount = getFilesCount();
-                    catalogImageDownloadProvider.setCatalogImageDownloadFinishTime(filesCount + "", DateTimeUtils.now(DateTimeUtils.DATE_TIME));
-                    lastDownloadTime = catalogImageDownloadProvider.getLastDownloadedDateTime();
-
-                }
-            } catch (Exception e) {
-                Commons.printException(e);
-                return "Error";
-            }
-            return "";
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            progressDialogue.dismiss();
-            if (summaries.size() == 0) {
-                Toast.makeText(getApplicationContext(), "All images are upTo date", Toast.LENGTH_LONG).show();
-            }
-            tvDownloadStatus.setText("Downloaded " + filesCount + "/" + filesCount);
-            last_download_time.setText(getResources().getString(R.string.last_image_download_time) + lastDownloadTime);
-            catalogRefreshButton.setVisibility(View.VISIBLE);
-            catalogFullDownloadButton.setVisibility(View.VISIBLE);
-
-        }
-
-    }
-
-    /**
-     * Return number of files available under IvyCPG/CAT folder.
-     * Total number of imaged downloaded will be returned.
-     *
-     * @return count
-     */
-    private int getFilesCount() {
-        int count = 0;
-        if (Util.isExternalStorageAvailable(10)) {
-            try {
-                File folderImage = new File(
-                        catalogImageDownloadProvider.getStorageDir(getResources().getString(R.string.app_name))
-                                + "/"
-                                + DataMembers.CATALOG);
-
-                if (folderImage.exists()) {
-                    count = folderImage.listFiles().length;
-                }
-            } catch (Exception e) {
-                Commons.printException(e);
-                count = 0;
-            }
-        }
-        return count;
-    }
-
-
-    private void deleteImages(List<S3ObjectSummary> deleteList) {
-        if (Util.isExternalStorageAvailable(10)) {
-            try {
-                File folderImage = new File(catalogImageDownloadProvider.getStorageDir(getResources().getString(R.string.app_name))
-                        + "/"
-                        + DataMembers.CATALOG);
-
-                if (folderImage.exists()) {
-                    for (S3ObjectSummary s3ObjectSummary : deleteList) {
-
-                        String fileNames[] = s3ObjectSummary.getKey().split("/");
-                        String fileName = fileNames[fileNames.length - 1];
-
-                        File outFile = new File(folderImage + "/"
-                                + fileName);
-                        if (outFile.exists())
-                            outFile.delete();
-                    }
-                }
-            } catch (Exception e) {
-                Commons.printException(e);
-            }
-        }
-    }
-
-
-    private void initializeTransferUtility() {
-        System.setProperty
-                (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
-        BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                ConfigurationMasterHelper.SECRET_KEY);
-        AmazonS3Client s3 = new AmazonS3Client(myCredentials);
-        s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
-        transferUtility = new TransferUtility(s3, CatalogImagesDownlaod.this);
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-
-            case android.R.id.home:
-                finish();
-                break;
-        }
-        return true;
-    }
-
-
-    public class DownloadListener implements TransferListener {
-        Context context;
-
-        public DownloadListener(Context context) {
-            this.context = context;
-        }
-
-        // Simply updates the list when notified.
-        @Override
-        public void onError(int id, Exception e) {
-            Commons.print("IvyCPG" + "onError: " + id + "," + e);
-
-        }
-
-
-        @Override
-        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-
-            Commons.print("IvyCPG" + String.format("onProgressChanged: %d, total: %d, current: %d",
-                    id, bytesTotal, bytesCurrent));
-            if (tvDownloadStatus != null)
-                tvDownloadStatus.setText("Downlaoding " + Util.getBytesString(bytesCurrent) + "/" + Util.getBytesString(bytesTotal));
-
-        }
-
-        @Override
-        public void onStateChanged(int id, TransferState state) {
-            Commons.print("IvyCPG" + "onStateChanged: " + id + ", " + state);
-            if (state.equals(TransferState.COMPLETED)) {
-
-                // update log file with time.
-                catalogImageDownloadProvider.storeCatalogDownloadStatus(id, CatalogDownloadConstants.UNZIP);
-
-                // Update status in UI
-                if (tvDownloadStatus != null)
-                    tvDownloadStatus.setText(bmodel.getResources().getString(R.string.un_zip));
-
-                // Update time in UI
-                if (last_download_time != null)
-                    last_download_time.setText(getResources().getString(R.string.last_image_download_time) + " " +
-                            DateTimeUtils.now(DateTimeUtils.DATE_TIME));
-
-                int mb = 10;
-                try {
-                    File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + CatalogDownloadConstants.FILE_NAME);
-                    mb = (int) file.length() / 1048576;
-                } catch (Exception e) {
-                    Commons.printException(e);
-                }
-
-                if (Util.isExternalStorageAvailable(mb * 2)) {
-                    // Call UnZip service
-                    Intent intent = new Intent(CatalogImagesDownlaod.this, CatalogImageDownloadService.class);
-                    startService(intent);
-                } else {
-                    catalogImageDownloadProvider.storeCatalogDownloadStatusError(CatalogDownloadConstants.NO_SPACE);
-                    // Update status in UI
-                    if (tvDownloadStatus != null)
-                        tvDownloadStatus.setText(bmodel.getResources().getString(R.string.no_space));
-                }
-
-
-            } else if (state.equals(TransferState.CANCELED) || state.equals(TransferState.FAILED)) {
-                // Finish this activity so that, when user open it will automatically resume.
-                // Or we have to build a snackbar with retry option.
-                Toast.makeText(context, getResources().getString(R.string.connection_error_please_try_again), Toast.LENGTH_LONG).show();
-                finish();
-            }
-        }
-    }
-
-
-    public class RefreshListener implements TransferListener {
-
-
-        // Simply updates the list when notified.
-        @Override
-        public void onError(int id, Exception e) {
-            Commons.print("IvyCPG ref " + "onError: " + id + "," + e);
-
-        }
-
-
-        @Override
-        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-
-            Commons.print("IvyCPG ref " + String.format("onProgressChanged: %d, total: %d, current: %d",
-                    id, bytesTotal, bytesCurrent));
-
-        }
-
-        @Override
-        public void onStateChanged(int id, TransferState state) {
-            Commons.print("IvyCPG ref " + "onStateChanged: " + id + ", " + state);
-
         }
     }
 
@@ -600,6 +260,343 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
             catalogFullDownloadButton.setVisibility(View.VISIBLE);
         }
 
+    }
+
+    public class CatalogImagesFolderRefresh extends AsyncTask<String, Void, String> {
+
+        private ProgressDialog progressDialogue;
+
+        protected void onPreExecute() {
+            catalogFullDownloadButton.setVisibility(View.INVISIBLE);
+            catalogRefreshButton.setVisibility(View.INVISIBLE);
+            last_download_time.setText("");
+            progressDialogue = ProgressDialog.show(CatalogImagesDownlaod.this,
+                    DataMembers.SD, getResources().getString(R.string.refreshing),
+                    true, false);
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            bmodel.getimageDownloadURL();
+
+            if (bmodel.configurationMasterHelper.IS_AZURE_UPLOAD){
+                checkLastModifiedFileAzure();
+            }else{
+                checkLastModifiedFileAmazon();
+            }
+
+            return "";
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            progressDialogue.dismiss();
+
+            if (stringUrlList.size() == 0) {
+                Toast.makeText(getApplicationContext(), "All images are upTo date", Toast.LENGTH_LONG).show();
+            }
+            tvDownloadStatus.setText("Downloaded " + filesCount + "/" + filesCount);
+            last_download_time.setText(getResources().getString(R.string.last_image_download_time) + lastDownloadTime);
+            catalogRefreshButton.setVisibility(View.VISIBLE);
+            catalogFullDownloadButton.setVisibility(View.VISIBLE);
+        }
+
+    }
+
+    private void checkLastModifiedFileAzure(){
+
+        String path = "Product/ProductCatalog";
+
+        try {
+            CloudBlobContainer cloudBlobContainer = bmodel.initializeAzureStorageConnection();
+
+            Iterable<ListBlobItem> blobItems = cloudBlobContainer.getDirectoryReference(path).listBlobs();
+
+            for (ListBlobItem listBlobItem : blobItems){
+
+                CloudBlockBlob cloudBlockBlob = (CloudBlockBlob)listBlobItem;
+
+                Commons.print("listBlobItem = " + cloudBlockBlob.getUri().toString());
+                Commons.print("listBlobItem Time = " + cloudBlockBlob.getProperties().getLastModified());
+
+                if (cloudBlockBlob.getProperties().getLastModified().after(DateTimeUtils.convertStringToDateObject(lastDownloadTime, "MM/dd/yyyy HH:mm:ss"))) {
+
+                    String sasToken = listBlobItem.getContainer().generateSharedAccessSignature(catalogImageDownloadProvider.getAccessPolicy(), null);
+
+                    stringUrlList.add(String.format("%s?%s", listBlobItem.getUri(), sasToken));
+                }
+            }
+
+            if (stringUrlList.size() > 0)
+                startDownload();
+
+        }catch (Exception e){
+            Commons.printException(e);
+        }
+    }
+
+    private void checkLastModifiedFileAmazon() {
+        try {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+
+            bmodel.configurationMasterHelper.setAmazonS3Credentials();
+
+            AmazonS3Client s3 = initializeTransferUtility();
+
+            ObjectListing listing = s3.listObjects(DataMembers.S3_BUCKET, DataMembers.IMG_DOWN_URL + "Product/ProductCatalog");
+
+            if (listing.getObjectSummaries().size() > 0) {
+                for (S3ObjectSummary fileList : listing.getObjectSummaries()) {
+                    if (fileList.getLastModified()
+                            .after(DateTimeUtils.convertStringToDateObject(lastDownloadTime, "MM/dd/yyyy HH:mm:ss"))) {
+
+                        URL url = s3.generatePresignedUrl(DataMembers.S3_BUCKET, fileList.getKey(),
+                                new Date(new Date().getTime() + 1000 * 60 * 300));
+
+                        stringUrlList.add(url.toString());
+                    }
+                }
+            }
+
+            while (listing.isTruncated()) {
+                listing = s3.listNextBatchOfObjects(listing);
+                if (listing.getObjectSummaries().size() > 0) {
+                    for (S3ObjectSummary fileList : listing.getObjectSummaries()) {
+                        if (fileList.getLastModified()
+                                .after(DateTimeUtils.convertStringToDateObject(lastDownloadTime, "MM/dd/yyyy HH:mm:ss"))) {
+
+                            URL url = s3.generatePresignedUrl(DataMembers.S3_BUCKET, fileList.getKey(),
+                                    new Date(new Date().getTime() + 1000 * 60 * 300));
+
+                            stringUrlList.add(url.toString());
+                        }
+                    }
+                }
+            }
+
+            if (stringUrlList.size() > 0) {
+
+                deleteIfImagesExist(stringUrlList);
+
+                startDownload();
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    private void startDownload() {
+        PRDownloader.download(stringUrlList.get(downloadIndex)
+                , getFile().toString()
+                , getFileName(stringUrlList.get(downloadIndex))).build()
+                .setOnStartOrResumeListener(new OnStartOrResumeListener() {
+                    @Override
+                    public void onStartOrResume() {
+
+                    }
+                })
+                .setOnPauseListener(new OnPauseListener() {
+                    @Override
+                    public void onPause() {
+
+                    }
+                })
+                .setOnCancelListener(new OnCancelListener() {
+                    @Override
+                    public void onCancel() {
+
+                    }
+                })
+                .setOnProgressListener(new OnProgressListener() {
+                    @Override
+                    public void onProgress(Progress progress) {
+
+                    }
+                })
+                .start(new OnDownloadListener() {
+                    @Override
+                    public void onDownloadComplete() {
+                        downloadIndex = downloadIndex+1;
+                        if (downloadIndex < stringUrlList.size()) {
+                            startDownload();
+                        }else {
+                            downloadIndex = 0;
+                            stringUrlList.clear();
+
+                            filesCount = getFilesCount();
+                            catalogImageDownloadProvider.setCatalogImageDownloadFinishTime(filesCount + "", DateTimeUtils.now(DateTimeUtils.DATE_TIME));
+                            lastDownloadTime = catalogImageDownloadProvider.getLastDownloadedDateTime();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Error error) {
+                        downloadIndex = downloadIndex+1;
+                        if (downloadIndex < stringUrlList.size()) {
+                            startDownload();
+                        }else {
+                            downloadIndex = 0;
+                            stringUrlList.clear();
+                        }
+
+                    }
+                });
+
+    }
+
+    private File getFile(){
+        String folderName = DataMembers.CATALOG;
+
+        File mTranDevicePath = catalogImageDownloadProvider.getStorageDir(getResources().getString(R.string.app_name));
+        File mFolderPath = new File(mTranDevicePath, folderName);
+
+        if (!mFolderPath.exists())
+            mFolderPath.mkdirs();
+
+        return new File(mTranDevicePath + "/" + folderName + "/" );
+    }
+
+    private String getFileName(String imagurl){
+        String mFileName = "file.bin";
+
+        int index = imagurl.lastIndexOf('/');
+
+        if (index >= 0) {
+            mFileName = imagurl.substring(index + 1);
+
+            String[] file = mFileName.split("\\?");
+            if (file.length > 0)
+                mFileName = file[0];
+        }
+        if (mFileName.equals("")) {
+            mFileName = "file.bin";
+        }
+        return mFileName;
+    }
+
+    private void deleteIfImagesExist(ArrayList<String> deleteList) {
+        if (Util.isExternalStorageAvailable(10)) {
+            try {
+                File folderImage = new File(catalogImageDownloadProvider.getStorageDir(getResources().getString(R.string.app_name))
+                        + "/"
+                        + DataMembers.CATALOG);
+
+                if (folderImage.exists()) {
+                    for (String url : deleteList) {
+
+                        String fileNames[] = url.split("/");
+                        String fileName = fileNames[fileNames.length - 1];
+
+                        File outFile = new File(folderImage + "/"
+                                + fileName);
+                        if (outFile.exists())
+                            outFile.delete();
+                    }
+                }
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+        }
+    }
+
+    /**
+     * Return number of files available under IvyCPG/CAT folder.
+     * Total number of imaged downloaded will be returned.
+     *
+     * @return count
+     */
+    private int getFilesCount() {
+        int count = 0;
+        if (Util.isExternalStorageAvailable(10)) {
+            try {
+                File folderImage = new File(
+                        catalogImageDownloadProvider.getStorageDir(getResources().getString(R.string.app_name))
+                                + "/"
+                                + DataMembers.CATALOG);
+
+                if (folderImage.exists()) {
+                    count = folderImage.listFiles().length;
+                }
+            } catch (Exception e) {
+                Commons.printException(e);
+                count = 0;
+            }
+        }
+        return count;
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (receiver != null) {
+            unregisterReceiver(receiver);
+        }
+    }
+
+    public class ImageDownloadReceiver extends BroadcastReceiver {
+        public static final String PROCESS_RESPONSE = "com.ivy.intent.action.CatalogImageDownload";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateDownloadStatus(intent);
+
+        }
+    }
+
+    private BroadcastReceiver downloadInfoReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            String message = intent.getStringExtra("DownloadDetail");
+
+            tvDownloadStatus.setText("Downlaoding "+message);
+        }
+    };
+
+    public void updateDownloadStatus(Intent intent) {
+        if (intent != null) {
+            if (intent.getExtras() != null) {
+
+                catalogFullDownloadButton.setVisibility(View.INVISIBLE);
+                catalogRefreshButton.setVisibility(View.INVISIBLE);
+                Bundle b = intent.getExtras();
+                if (b.getString("Error") != null) {
+                    Toast.makeText(getApplicationContext(), b.getString("Error"), Toast.LENGTH_LONG).show();
+                } else if (b.getInt("errorCode") != 0) {
+                    if (b.getString("errorMessage") != null)
+                        tvDownloadStatus.setText(b.getString("errorMessage"));
+                } else if (b.getInt("Status") != 0) {
+                    if (b.getInt("Status") == DataMembers.MESSAGE_UNZIPPED) {
+                        new UpdateStatus().execute();
+                    }
+                }
+            }
+
+        }
+
+    }
+
+    private AmazonS3Client initializeTransferUtility() {
+        System.setProperty
+                (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
+        BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
+                ConfigurationMasterHelper.SECRET_KEY);
+        AmazonS3Client s3 = new AmazonS3Client(myCredentials);
+        s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
+
+        return s3;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return true;
     }
 
 }

@@ -862,6 +862,12 @@
             android:screenOrientation="portrait"/>
         <activity android:name="com.ivy.cpg.view.login.TermsAndConditionsActivity"
             android:screenOrientation="portrait"/>
+
+        <service
+            android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"
+            android:enabled="true"
+            android:exported="false" />
+
     </application>
 
 </manifest>
