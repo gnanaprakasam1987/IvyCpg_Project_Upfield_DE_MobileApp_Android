@@ -44,15 +44,6 @@
                     android:ellipsize="marquee"
                     android:text="@string/product_name" />
 
-                <ImageView
-                    android:id="@+id/ivInfoicon"
-                    android:layout_width="9dp"
-                    android:layout_height="0dp"
-                    android:layout_centerVertical="true"
-                    android:padding="@dimen/list_item_padding"
-                    android:src="@drawable/ic_info_new"
-                    android:tint="@color/black_bg1" />
-
                 <TextView
                     android:id="@+id/stock_and_order_listview_productbarcode"
                     style="@style/TextViewListItemPrimary"
@@ -370,9 +361,6 @@
                         android:id="@+id/iv_stock"
                         android:layout_width="@dimen/info_icon"
                         android:layout_height="@dimen/info_icon"
-                        android:layout_centerVertical="true"
-                        android:layout_toStartOf="@+id/ivInfoicon"
-                        android:layout_toLeftOf="@+id/ivInfoicon"
                         android:padding="@dimen/list_item_padding"
                         android:src="@drawable/activity_icon_stock_check"
                         android:tint="@color/black_bg1" />

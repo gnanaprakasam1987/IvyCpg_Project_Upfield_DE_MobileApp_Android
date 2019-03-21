@@ -32,6 +32,8 @@ public class PaymentBO {
     private String BankName;
     private String BranchName;
 
+    private String uid;
+
 
 	public String getReferenceNumber() {
 		return referenceNumber;
@@ -308,4 +310,11 @@ public class PaymentBO {
         BranchName = branchName;
     }
 
+	public String getUid() {
+		return uid;
+	}
+
+	public void setUid(String uid) {
+		this.uid = uid;
+	}
 }

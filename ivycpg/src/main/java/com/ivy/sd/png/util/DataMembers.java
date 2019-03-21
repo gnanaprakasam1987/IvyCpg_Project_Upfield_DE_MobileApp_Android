@@ -264,7 +264,7 @@ public class DataMembers {
 
 
     public static final String tbl_userMaster = "UserMaster";
-    public static final String tbl_userMaster_cols = "distributorid,distributorTinNumber,distributorName,branchid,vanid,userid,username,Password,loginid,distContactNo,OrganisationId,downloaddate,UserCode,custommsg,accountno,credit_limit,admincno,isJointCall,vanno,SchemeFactor,upliftFactor,usertype,ProfileImagePath,BackupUserId";
+    public static final String tbl_userMaster_cols = "distributorid,distributorTinNumber,distributorName,branchid,vanid,userid,username,Password,loginid,distContactNo,OrganisationId,downloaddate,UserCode,custommsg,accountno,credit_limit,admincno,isJointCall,vanno,SchemeFactor,upliftFactor,usertype,ProfileImagePath,BackupUserId,UserPositionId,UserLevelId";
 
     public static final String tbl_DTPMaster = "DTPMaster";
     public static final String tbl_retailerMaster = "RetailerMaster";
@@ -684,6 +684,12 @@ public class DataMembers {
     public static final String tbl_DigitalContent_Tracking_Detail = "DigitalContentTrackingDetail";
     public static final String tbl_DigitalContent_Tracking_Detail_cols = "UId,StartTime,EndTime,PId,isFastForwarded";
 
+    private static final String tbl_Planorama = "Planorama";
+    private static final String tbl_Planorama_cols = "uid,date,retailerId,comments,NoOfPhotos,ReferenceNo";
+
+    private static final String tbl_Planorama_image = "PlanoramaImages";
+    private static final String tbl_Planorama_image_cols = "uid,ImageName";
+
     public static final String tbl_picklist = "PickListStatus";
     public static final String tbl_picklist_cols = "PickListId,Status";
     public static final String tbl_picklist_invoice = "PickListInvoiceStatus";
@@ -876,6 +882,9 @@ public class DataMembers {
         uploadColumn.put(tbl_DigitalContent_Tracking_Header, tbl_DigitalContent_Tracking_Header_cols);
         uploadColumn.put(tbl_DigitalContent_Tracking_Detail, tbl_DigitalContent_Tracking_Detail_cols);
         uploadColumn.put(tbl_AnswerScoreDetails,tbl_AnswerScoreDetails_cols);
+
+        uploadColumn.put(tbl_Planorama, tbl_Planorama_cols);
+        uploadColumn.put(tbl_Planorama_image, tbl_Planorama_image_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -1021,6 +1030,8 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_DigitalContent_Tracking_Header, tbl_DigitalContent_Tracking_Header_cols);
         uploadColumnWithRetailer.put(tbl_DigitalContent_Tracking_Detail, tbl_DigitalContent_Tracking_Detail_cols);
         uploadColumnWithRetailer.put(tbl_AnswerScoreDetails, tbl_AnswerScoreDetails_cols);
+        uploadColumnWithRetailer.put(tbl_Planorama, tbl_Planorama_cols);
+        uploadColumnWithRetailer.put(tbl_Planorama_image, tbl_Planorama_image_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();

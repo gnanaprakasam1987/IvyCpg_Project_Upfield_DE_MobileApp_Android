@@ -2,6 +2,7 @@ package com.ivy.cpg.view.reports.collectionreport;
 
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -21,6 +22,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.PaymentBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.utils.DateTimeUtils;
@@ -32,14 +34,16 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
     private BusinessModel bModel;
     private Context mContext;
     public CollectionReportHelper collectionReportHelper;
+    private CollectionReportFragmentNew reportFragment;
 
-    public CollectionFragmentAdapter(Context context, BusinessModel businessModel) {
+    public CollectionFragmentAdapter(Context context, BusinessModel businessModel, CollectionReportFragmentNew reportFragment) {
         this.mContext = context;
         this.bModel = businessModel;
         CollectionComponent collectionComponent = DaggerCollectionComponent.builder().
                 collectionModule(new CollectionModule((BusinessModel) mContext.getApplicationContext())).build();
         collectionReportHelper = collectionComponent.provideCollectionReportHelper();
         collectionReportHelper.loadCollectionReport();
+        this.reportFragment = reportFragment;
     }
 
     @Override
@@ -83,15 +87,8 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
                 childHolder.line1 = row.findViewById(R.id.line1);
                 childHolder.line2 = row.findViewById(R.id.line2);
                 childHolder.top_line = row.findViewById(R.id.top_line);
-
-                childHolder.modeTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                childHolder.paymentOrChqDateTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                childHolder.chqRefTitleTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                childHolder.amountPaidTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                childHolder.discAmtTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                childHolder.chqRefTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                childHolder.paidAmtTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                childHolder.disAmtTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                childHolder.img_delete = row.findViewById(R.id.imgDelete);
+                childHolder.view_bottom_line = row.findViewById(R.id.bottom_line);
 
                 if (bModel.configurationMasterHelper.SHOW_DISC_AMOUNT_ALLOW) {
                     childHolder.collectionDiscLL.setVisibility(View.VISIBLE);
@@ -232,15 +229,13 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
                     childHolder.modeTv.setText(mContext.getResources()
                             .getString(R.string.advance_payment));
                 } else {
-                    String paid_mode = mContext.getResources()
-                            .getString(R.string.paid_by) + " " + childHolder.paymentChldObj.get(
+                    String paid_mode = childHolder.paymentChldObj.get(
                             childHolder.childpos).getListName();
                     childHolder.modeTv.setText(paid_mode);
                 }
 
             } else {
-                String paid_mode = mContext.getResources()
-                        .getString(R.string.paid_by) + " " + childHolder.paymentChldObj.get(
+                String paid_mode = childHolder.paymentChldObj.get(
                         childHolder.childpos).getListName();
                 childHolder.modeTv.setText(paid_mode);
             }
@@ -250,6 +245,26 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
             } else {
                 childHolder.top_line.setVisibility(View.VISIBLE);
             }
+
+            if (bModel.configurationMasterHelper.IS_COLLECTION_DELETE)
+                childHolder.img_delete.setVisibility(View.VISIBLE);
+            else
+                childHolder.img_delete.setVisibility(View.GONE);
+
+            childHolder.img_delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showDeleteAlert(childPosition, (PaymentBO) getGroup(groupPosition), groupPosition);
+                }
+            });
+
+            if (isLastChild && groupPosition != (collectionReportHelper
+                    .getParentPaymentList().size()-1))
+                childHolder.view_bottom_line.setVisibility(View.VISIBLE);
+            else
+                childHolder.view_bottom_line.setVisibility(View.GONE);
+
+            row.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));
         }
         return row;
     }
@@ -314,14 +329,7 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
                 holder.invoiceAmt = row.findViewById(R.id.invoiceAmt);
                 holder.invDateTv = row.findViewById(R.id.invDateTv);
                 holder.adv_amountTV = row.findViewById(R.id.adv_amount);
-
-                holder.retailerNameTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.advTitle.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.date.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.invoiceAmt.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.adv_cash_modeTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.invDateTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.adv_amountTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                holder.view_divider = row.findViewById(R.id.bottom_line);
             } else {
                 row = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_collection_report, parent,
                         false);
@@ -338,21 +346,12 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
                 holder.os_amt = row.findViewById(R.id.os_amt);
                 holder.down_arrow = row.findViewById(R.id.img_arrow);
                 holder.line = row.findViewById(R.id.line);
+                holder.view_divider = row.findViewById(R.id.bottom_line);
 
                 @SuppressLint("RestrictedApi")
                 Drawable drawable = AppCompatDrawableManager.get().getDrawable(mContext, R.drawable.activity_icon_next);
                 Bitmap imageBitmap = fromDrawableToBitmap(drawable);
                 holder.down_arrow.setImageBitmap(getRotatedBitmap(imageBitmap, 90));
-
-                holder.retailerNameTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.invoice.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.invNoTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.invoice_amt.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.invAmtTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.invoice_date.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.invDateTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-                holder.os_amt.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                holder.outAmtTv.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             }
             row.setTag(holder);
         } else {
@@ -366,12 +365,18 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
                 Bitmap imageBitmap = fromDrawableToBitmap(drawable);
                 holder.down_arrow.setImageBitmap(getRotatedBitmap(imageBitmap, -90));
                 holder.line.setVisibility(View.VISIBLE);
+                holder.view_divider.setVisibility(View.GONE);
             } else {
                 @SuppressLint("RestrictedApi")
                 Drawable drawable = AppCompatDrawableManager.get().getDrawable(mContext, R.drawable.activity_icon_next);
                 Bitmap imageBitmap = fromDrawableToBitmap(drawable);
                 holder.down_arrow.setImageBitmap(getRotatedBitmap(imageBitmap, 90));
                 holder.line.setVisibility(View.GONE);
+                if (groupPosition != (collectionReportHelper
+                        .getParentPaymentList().size()-1))
+                holder.view_divider.setVisibility(View.VISIBLE);
+                else
+                    holder.view_divider.setVisibility(View.GONE);
             }
         } catch (Exception e) {
             Commons.printException(e);
@@ -405,11 +410,7 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
             }
         }
 
-        if (groupPosition % 2 == 0) {
-            row.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));
-        } else {
-            row.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));
-        }
+        row.setBackgroundColor(ContextCompat.getColor(mContext, R.color.white));
         return row;
     }
 
@@ -446,15 +447,58 @@ public class CollectionFragmentAdapter extends BaseExpandableListAdapter {
         ImageView down_arrow;
         PaymentBO paymentObj;
         LinearLayout line;
+        View view_divider;
     }
 
     class ChildViewHolder {
         TextView modeTv, paymentOrChqDateTv, chqRefTitleTv, chqRefTv,
                 paidAmtTv, disAmtTV, amountPaidTv, discAmtTv;
         ImageView top_line;
+        ImageView img_delete;
         LinearLayout collectionDiscLL, line1, line2;
         List<PaymentBO> paymentChldObj;
+        View view_bottom_line;
         int childpos;
+    }
+
+    private void showDeleteAlert(int childpos, PaymentBO paymentBO, int groupPos) {
+
+        final CommonDialog commonDialog = new CommonDialog(mContext.getApplicationContext(),
+                mContext,
+                "",
+                mContext.getResources().getString(R.string.delete_alert_common),
+                false,
+                mContext.getResources().getString(R.string.yes),
+                mContext.getResources().getString(R.string.no),
+                new CommonDialog.PositiveClickListener() {
+                    @Override
+                    public void onPositiveButtonClick() {
+                        PaymentBO childBO = collectionReportHelper.getChildPaymentList().get(groupPos).get(childpos);
+                        if (collectionReportHelper.deletePayment(childBO.getUid())) {
+                            reportFragment.updateViews(childBO);
+                            paymentBO.setBalance(paymentBO.getBalance() + childBO.getAmount());
+                            collectionReportHelper.getChildPaymentList().get(groupPos).remove(childpos);
+
+                            if (collectionReportHelper.getChildPaymentList().get(groupPos).isEmpty()) {
+                                reportFragment.collectionListView.collapseGroup(groupPos);
+                                collectionReportHelper.getParentPaymentList().remove(groupPos);
+                            }
+
+                            if (collectionReportHelper.getParentPaymentList().isEmpty())
+                                ((Activity)mContext).finish();
+                            else
+                                notifyDataSetChanged();
+
+                        }
+                    }
+                }, new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+
+            }
+        });
+        commonDialog.show();
+        commonDialog.setCancelable(false);
     }
 
 }

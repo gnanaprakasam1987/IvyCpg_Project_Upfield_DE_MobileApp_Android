@@ -11,12 +11,14 @@ public class CollectionReportModel implements ICollectionReportModelPresenter {
     private ICollectionReportView mCollectionReportView;
 
     private CollectionReportHelper collectionReportHelper;
+    private CollectionReportFragmentNew collectionReportFragmentNew;
 
 
     public CollectionReportModel(Context activity,
                                  CollectionReportFragmentNew collectionReportFragmentNew) {
         this.mContext = activity;
         mCollectionReportView = collectionReportFragmentNew;
+        this.collectionReportFragmentNew = collectionReportFragmentNew;
         CollectionComponent collectionComponent = DaggerCollectionComponent.builder().
                 collectionModule(new CollectionModule((BusinessModel) mContext.getApplicationContext())).build();
         collectionReportHelper = collectionComponent.provideCollectionReportHelper();
@@ -25,7 +27,7 @@ public class CollectionReportModel implements ICollectionReportModelPresenter {
 
     @Override
     public void setUpAdapter() {
-        CollectionFragmentAdapter collectionAdapter = new CollectionFragmentAdapter(mContext, (BusinessModel) mContext.getApplicationContext());
+        CollectionFragmentAdapter collectionAdapter = new CollectionFragmentAdapter(mContext, (BusinessModel) mContext.getApplicationContext(), collectionReportFragmentNew);
         mCollectionReportView.setAdapter(collectionAdapter);
     }
 

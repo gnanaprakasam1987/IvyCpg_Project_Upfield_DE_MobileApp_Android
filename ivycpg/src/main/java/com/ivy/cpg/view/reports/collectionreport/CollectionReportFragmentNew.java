@@ -49,6 +49,17 @@ public class CollectionReportFragmentNew extends IvyBaseFragment implements ICol
     Double totalCn = 0.0;
     Double totalAd = 0.0;
 
+    TextView tv_collected;
+    TextView tv_cash;
+    TextView tv_cheque;
+    TextView tv_dd;
+    TextView tv_cn;
+    TextView tv_rtgs;
+    TextView tv_mob_pymt;
+    TextView tv_ad;
+
+    CollectionReportHelper reportHelper;
+
     @BindView(R.id.collection_listview)
     ExpandableListView collectionListView;
 
@@ -78,7 +89,7 @@ public class CollectionReportFragmentNew extends IvyBaseFragment implements ICol
         initializeModel();
         mCollectionReportModelPresenter.loadCollectionReport();
         mCollectionReportModelPresenter.setUpAdapter();
-        CollectionReportHelper reportHelper =  mCollectionReportModelPresenter.getReportHelper();
+        reportHelper =  mCollectionReportModelPresenter.getReportHelper();
         updateDetails(reportHelper);
         initFooter(view);
 
@@ -94,14 +105,14 @@ public class CollectionReportFragmentNew extends IvyBaseFragment implements ICol
         final LinearLayout ll_rtgs = view.findViewById(R.id.ll_rtgs);
         final LinearLayout ll_mob_pymt = view.findViewById(R.id.ll_mob_pymt);
         final ImageView imageView = view.findViewById(R.id.imageView);
-        TextView tv_collected = view.findViewById(R.id.tot);
-        TextView tv_cash = view.findViewById(R.id.totcash);
-        TextView tv_cheque = view.findViewById(R.id.tocheque);
-        TextView tv_dd = view.findViewById(R.id.total_dd);
-        TextView tv_cn = view.findViewById(R.id.totCn);
-        TextView tv_rtgs = view.findViewById(R.id.total_rtgs);
-        TextView tv_mob_pymt = view.findViewById(R.id.total_mob_payment);
-        TextView tv_ad = view.findViewById(R.id.totAd);
+        tv_collected = view.findViewById(R.id.tot);
+        tv_cash = view.findViewById(R.id.totcash);
+        tv_cheque = view.findViewById(R.id.tocheque);
+        tv_dd = view.findViewById(R.id.total_dd);
+        tv_cn = view.findViewById(R.id.totCn);
+        tv_rtgs = view.findViewById(R.id.total_rtgs);
+        tv_mob_pymt = view.findViewById(R.id.total_mob_payment);
+        tv_ad = view.findViewById(R.id.totAd);
 
         if (totalCash != null)
             tv_cash.setText(bModel.formatValue(totalCash));
@@ -247,5 +258,52 @@ public class CollectionReportFragmentNew extends IvyBaseFragment implements ICol
             }
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    public void updateViews(PaymentBO payBO) {
+
+
+        switch (payBO.getCashMode()) {
+            case StandardListMasterConstants.CASH:
+                totalCash = totalCash - payBO.getAmount();
+                break;
+            case StandardListMasterConstants.CHEQUE:
+                totalCheque = totalCheque - payBO.getAmount();
+                break;
+            case StandardListMasterConstants.DEMAND_DRAFT:
+                totalDD = totalDD - payBO.getAmount();
+                break;
+            case StandardListMasterConstants.RTGS:
+                totalRTGS = totalRTGS - payBO.getAmount();
+                break;
+            case StandardListMasterConstants.MOBILE_PAYMENT:
+                total_mob_payment = total_mob_payment - payBO.getAmount();
+                break;
+            case StandardListMasterConstants.CREDIT_NOTE:
+                if (payBO.getReferenceNumber().startsWith("AP"))
+                    totalAd = totalAd - payBO.getAmount();
+                else
+                    totalCn = totalCn - payBO.getAmount();
+                break;
+        }
+
+
+        totalColl = totalCash + totalCheque + totalDD + totalRTGS + total_mob_payment;
+
+        tv_cash.setText(bModel.formatValue(totalCash));
+        if (totalCheque != null)
+            tv_cheque.setText(bModel.formatValue(totalCheque));
+        if (totalDD != null)
+            tv_dd.setText(bModel.formatValue(totalDD));
+        if (totalRTGS != null)
+            tv_rtgs.setText(bModel.formatValue(totalRTGS));
+        if (total_mob_payment != null)
+            tv_mob_pymt.setText(bModel.formatValue(total_mob_payment));
+        if (totalCn != null)
+            tv_cn.setText(bModel.formatValue(totalCn));
+        if (totalAd != null)
+            tv_ad.setText(bModel.formatValue(totalAd));
+        if (totalColl != null)
+            tv_collected.setText(bModel.formatValue(totalColl));
     }
 }

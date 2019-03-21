@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.TypedArray;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
@@ -39,6 +40,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.Planorama.PlanoramaActivity;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
 import com.ivy.cpg.view.asset.PosmTrackingActivity;
@@ -130,6 +132,7 @@ import com.ivy.utils.AppUtils;
 import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
+import com.ivy.utils.StringUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import java.io.File;
@@ -196,6 +199,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_ORD_DELIVERY = "MENU_DELIVERY_MGMT_ORD";
     public static final String MENU_SALES_RET_DELIVERY = "MENU_SALES_RET_DELIVERY";
     public static final String MENU_SERIALIZED_ASSET = "MENU_SERIALIZED_ASSET";
+    public static final String MENU_PLANORMA = "MENU_PLANORAMA";
 
     private final int INVOICE_CREDIT_BALANCE = 1;// Order Not Allowed when credit balance is 0
     private final int SALES_TYPES = 2;// show preVan seller dialog
@@ -713,6 +717,8 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         updateMenuVisitStatus(menuDB);
         updateMenuVisitStatus(mInStoreMenu);
 
+
+
         mSchedule = new IconicAdapter(mInStoreMenu);
 
         mTempMenuList = new Vector<>(menuDB);
@@ -732,6 +738,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 mTempMenuStoreList.remove(storeMenu);
             }
         }
+
 
         mActivityAdapter = new ActivityAdapter(mTempMenuList);
         activityView.setAdapter(mActivityAdapter);
@@ -2596,7 +2603,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 isClick = false;
                 Toast.makeText(this, getString(R.string.invoice_with_no_collection), Toast.LENGTH_SHORT).show();
 
-            } else if ((bmodel.configurationMasterHelper.IS_JUMP ? false : isPreviousDone(menu))
+            } else if ((!bmodel.configurationMasterHelper.IS_JUMP && isPreviousDone(menu))
                     || (bmodel.configurationMasterHelper.IS_JUMP && isAllMandatoryMenuDone())
                     || !canAllowCallAnalysis()) {
                 bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
@@ -2605,17 +2612,21 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 // bmodel.productHelper.downloadIndicativeOrder();
 
-                if (bmodel.isEdit()) {
-                    OrderHelper.getInstance(this).loadOrderedProducts(this, bmodel.getRetailerMasterBO()
-                            .getRetailerID(), null);
-                    enableSchemeModule();
-                }
-                if (menuCodeList.size() > 0)
-                    menuCodeList.clear();
-                Intent in = new Intent(HomeScreenTwo.this,
-                        CallAnalysisActivity.class);
-                in.putExtra("screentitle", menu.getMenuName());
-                startActivity(in);
+                if (!bmodel.configurationMasterHelper.IS_SKIP_CALL_ANALYSIS) {
+                    if (bmodel.isEdit()) {
+                        OrderHelper.getInstance(this).loadOrderedProducts(this, bmodel.getRetailerMasterBO()
+                                .getRetailerID(), null);
+                        enableSchemeModule();
+                    }
+                    if (menuCodeList.size() > 0)
+                        menuCodeList.clear();
+                    Intent in = new Intent(HomeScreenTwo.this,
+                            CallAnalysisActivity.class);
+                    in.putExtra("screentitle", menu.getMenuName());
+                    startActivity(in);
+                } else
+                    doCloseCall();
+
                 finish();
             } else {
                 if (bmodel.configurationMasterHelper.IS_JUMP)
@@ -3407,7 +3418,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             }
         } else if (menu.getConfigCode().equals(MENU_CLOSE_CALL)
                 && hasLink == 1) {
-            if ((bmodel.configurationMasterHelper.IS_JUMP ? false : isPreviousDone(menu))
+            if ((!bmodel.configurationMasterHelper.IS_JUMP && isPreviousDone(menu))
                     || (bmodel.configurationMasterHelper.IS_JUMP && isAllMandatoryMenuDone())
                     || !canAllowCallAnalysis()) {
                 bmodel.reasonHelper.downloadClosecallReasonList();
@@ -3445,7 +3456,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } else if (menu.getConfigCode().equals(MENU_CLOSE_KLGS)
                 && hasLink == 1) {
             {
-                if ((bmodel.configurationMasterHelper.IS_JUMP ? false : isPreviousDone(menu))
+                if ((!bmodel.configurationMasterHelper.IS_JUMP && isPreviousDone(menu))
                         || (bmodel.configurationMasterHelper.IS_JUMP && isAllMandatoryMenuDone())
                         || !canAllowCallAnalysis()) {
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
@@ -3761,6 +3772,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             Toast.LENGTH_SHORT).show();
                     isCreated = false;
                 }
+            }
+        }else if(menu.getConfigCode().equals(MENU_PLANORMA) && hasLink == 1){
+            if (isPreviousDone(menu)
+                    || bmodel.configurationMasterHelper.IS_JUMP) {
+                Intent i = new Intent(this,
+                        PlanoramaActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(i);
+                finish();
             }
         } else {
             Toast.makeText(
@@ -5279,5 +5299,92 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 product.getLocations().get(j).setShelfOuter(-1);
             }
         }
+    }
+
+    private void doCloseCall() {
+        bmodel.updateIsVisitedFlag();
+
+        bmodel.outletTimeStampHelper.updateTimeStamp(DateTimeUtils
+                .now(DateTimeUtils.TIME), "");
+
+        if (!hasActivityDone() && !bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL && !bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON) {
+            bmodel.outletTimeStampHelper.deleteTimeStampAllModule();
+            bmodel.outletTimeStampHelper.deleteTimeStamp();
+            bmodel.outletTimeStampHelper.deleteTimeStampImages();
+            bmodel.outletTimeStampHelper.deleteImagesFromFolder();
+
+        } else {
+            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
+            bmodel.saveModuleCompletion("MENU_CALL_ANLYS");
+        }
+        resetRemarksBO();
+        if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
+            resetSellerConfiguration();
+        }
+
+        bmodel.productHelper.clearProductHelper();
+    }
+
+    private void resetSellerConfiguration() {
+        bmodel.configurationMasterHelper.IS_SIH_VALIDATION = bmodel.configurationMasterHelper.IS_SIH_VALIDATION_MASTER;
+        bmodel.configurationMasterHelper.IS_STOCK_IN_HAND = bmodel.configurationMasterHelper.IS_STOCK_IN_HAND_MASTER;
+        bmodel.configurationMasterHelper.IS_WSIH = bmodel.configurationMasterHelper.IS_WSIH_MASTER;
+        SchemeDetailsMasterHelper.getInstance(this).IS_SCHEME_ON = SchemeDetailsMasterHelper.getInstance(this).IS_SCHEME_ON_MASTER;
+        SchemeDetailsMasterHelper.getInstance(this).IS_SCHEME_SHOW_SCREEN = SchemeDetailsMasterHelper.getInstance(this).IS_SCHEME_SHOW_SCREEN_MASTER;
+        bmodel.configurationMasterHelper.SHOW_TAX = bmodel.configurationMasterHelper.SHOW_TAX_MASTER;
+        bmodel.configurationMasterHelper.IS_INVOICE = bmodel.configurationMasterHelper.IS_INVOICE_MASTER;
+    }
+
+    /**
+     * Check whether any activity is done on this call or not.
+     *
+     * @return boolean
+     */
+    private boolean hasActivityDone() {
+        try {
+            if (isClosingStockDone()) {
+                return true;
+            } else {
+                menuDB = bmodel.configurationMasterHelper.getActivityMenu();
+
+                for (ConfigureBO config : menuDB) {
+                    if (!config.getConfigCode().equals(MENU_CALL_ANLYS)
+                            && !config.getConfigCode().equals(StandardListMasterConstants.MENU_COLLECTION_VIEW)
+                            && !config.getConfigCode().equals(StandardListMasterConstants.MENU_REV)) {
+                        if (config.getHasLink() == 1 && config.isDone()) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return false;
+    }
+
+    public boolean isClosingStockDone() {
+        boolean flag = false;
+        try {
+            DBUtil db = new DBUtil(HomeScreenTwo.this, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            Cursor c = db.selectSQL("select stockid from "
+                    + DataMembers.tbl_closingstockheader + " where retailerid="
+                    + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID())
+                    + " AND DistributorID=" + bmodel.getAppDataProvider().getRetailMaster().getDistributorId());
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    flag = true;
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return flag;
     }
 }

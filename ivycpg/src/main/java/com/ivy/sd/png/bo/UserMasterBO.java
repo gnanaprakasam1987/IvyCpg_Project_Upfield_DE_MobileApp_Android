@@ -37,6 +37,8 @@ public class UserMasterBO {
     private String imagePath;
     private String backupSellerID;
     private boolean isBackup;
+    private String userlevelId;
+    private String userPositionId;
 
     public UserMasterBO() {
 
@@ -339,5 +341,21 @@ public class UserMasterBO {
 
     public void setBackup(boolean backup) {
         isBackup = backup;
+    }
+
+    public String getUserlevelId() {
+        return userlevelId;
+    }
+
+    public void setUserlevelId(String userlevelId) {
+        this.userlevelId = userlevelId;
+    }
+
+    public String getUserPositionId() {
+        return userPositionId;
+    }
+
+    public void setUserPositionId(String userPositionId) {
+        this.userPositionId = userPositionId;
     }
 }

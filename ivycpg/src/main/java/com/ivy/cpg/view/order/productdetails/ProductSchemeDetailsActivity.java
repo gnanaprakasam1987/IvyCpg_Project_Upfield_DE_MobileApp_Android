@@ -49,7 +49,8 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
     private Fragment mSelectedFragment;
     private ViewPager viewPager;
     private BusinessModel bmodel;
-    private String productId="0";
+    private String productId = "0";
+    boolean isFromStockCheck;
     private boolean isFromUpSelling;
     AppBarLayout appbar;
     NestedScrollView nestedScrollView;
@@ -76,7 +77,7 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
         bmodel.setContext(this);
 
         isFromUpSelling = getIntent().getBooleanExtra("isFromUpSelling", false);
-
+        isFromStockCheck = getIntent().getBooleanExtra("isFromStockCheck", false);
         if (getIntent() != null && getIntent().getStringExtra("productId") != null) {
             productId = String.valueOf(getIntent().getStringExtra("productId"));
         }
@@ -127,7 +128,7 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
 
         tabLayout.removeAllTabs();
 
-        if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_SCHEME_DIALOG) {
+        if ((bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_SCHEME_DIALOG) && !isFromStockCheck) {
             TabLayout.Tab schemeDetailsTab = tabLayout.newTab();
             try {
                 if (bmodel.labelsMasterHelper.applyLabels("scheme_details_tab") != null)
@@ -141,7 +142,8 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
             tabLayout.addTab(schemeDetailsTab);
         }
 
-        if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_PRODUCT_DIALOG) {
+        if (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG || bmodel.configurationMasterHelper.IS_PRODUCT_DIALOG
+                || isFromStockCheck) {
             TabLayout.Tab productDetailsTab = tabLayout.newTab();
             try {
                 if (bmodel.labelsMasterHelper.applyLabels("product_details_tab") != null)
@@ -172,24 +174,24 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
             }
         });
 
-        if(isFromUpSelling)
+        if (isFromUpSelling)
             tabLayout.setVisibility(View.GONE);
 
         try {
             ImageView pdt_image = findViewById(R.id.pdt_image);
             appbar = findViewById(R.id.appbar);
             nestedScrollView = findViewById(R.id.scrollView);
-            nestedScrollView.setFillViewport (true);
+            nestedScrollView.setFillViewport(true);
 
             File appImageFolderPath = bmodel.synchronizationHelper.getStorageDir(getResources().getString(R.string.app_name));
             if (pdt_image != null) {
                 Uri path;
                 if (Build.VERSION.SDK_INT >= 24) {
                     path = FileUtils.getUriFromFile(ProductSchemeDetailsActivity.this, appImageFolderPath + "/"
-                                    + DataMembers.CATALOG + "/" + bmodel.productHelper.getProductObj().getProductCode() + ".jpg");
+                            + DataMembers.CATALOG + "/" + bmodel.productHelper.getProductObj().getProductCode() + ".jpg");
                 } else {
                     path = FileUtils.getUriFromFile(ProductSchemeDetailsActivity.this, appImageFolderPath + "/"
-                                    + DataMembers.CATALOG + "/" + bmodel.productHelper.getProductObj().getProductCode() + ".jpg");
+                            + DataMembers.CATALOG + "/" + bmodel.productHelper.getProductObj().getProductCode() + ".jpg");
                 }
 
                 //Set Image in Imageview using Glide, on exception disable scrolling of ImageView
@@ -260,7 +262,7 @@ public class ProductSchemeDetailsActivity extends IvyBaseActivityNoActionBar {
         mFragmentList = new ArrayList<>();
 
         if (!isFromUpSelling && (bmodel.configurationMasterHelper.IS_PRODUCT_SCHEME_DIALOG
-                || bmodel.configurationMasterHelper.IS_SCHEME_DIALOG)) {
+                || bmodel.configurationMasterHelper.IS_SCHEME_DIALOG) && !isFromStockCheck) {
             Fragment mSelectFragment = new SchemeDetailsFragment();
             Bundle bundle = new Bundle();
             bundle.putString("productId", productId);

@@ -18,6 +18,13 @@
         android:visible="false"/>
 
     <item
+        android:id="@+id/menu_user"
+        android:icon="@drawable/ic_default_user"
+        android:title="@string/user"
+        android:visible="true"
+        ivydist:showAsAction="always" />
+
+    <item
         android:id="@+id/menu_date"
         android:icon="@drawable/ic_calendar"
         android:title="Today"
