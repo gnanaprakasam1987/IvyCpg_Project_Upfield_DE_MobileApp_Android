@@ -75,7 +75,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         catalogImageDownloadProvider = CatalogImageDownloadProvider.getInstance(bmodel);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
-        if (toolbar != null && getSupportActionBar() != null) {
+        if (toolbar != null) {
             setSupportActionBar(toolbar);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(getResources().getString(R.string.catalog_images_download));
@@ -208,9 +208,10 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
             tvDownloadStatus.setText(getResources().getString(R.string.loading));
             catalogFullDownloadButton.setVisibility(View.INVISIBLE);
             catalogRefreshButton.setVisibility(View.INVISIBLE);
-            last_download_time.setText("");
+            last_download_time.setText(getResources().getString(R.string.last_image_download_time));
 
-            catalogImageDownloadProvider.downloadProcess(this);
+            if (!catalogImageDownloadProvider.isDownloadInProgress)
+                catalogImageDownloadProvider.downloadProcess(this);
 
         } else if (catalogImageDownloadProvider.getCatalogDownloadStatus().equals(CatalogDownloadConstants.UNZIP)) {
 
@@ -286,6 +287,8 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                 checkLastModifiedFileAmazon();
             }
 
+            filesCount = getFilesCount();
+
             return "";
         }
 
@@ -295,11 +298,11 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
 
             if (stringUrlList.size() == 0) {
                 Toast.makeText(getApplicationContext(), "All images are upTo date", Toast.LENGTH_LONG).show();
+                tvDownloadStatus.setText("Downloaded " + filesCount + "/" + filesCount);
+                last_download_time.setText(getResources().getString(R.string.last_image_download_time) + lastDownloadTime);
+                catalogRefreshButton.setVisibility(View.VISIBLE);
+                catalogFullDownloadButton.setVisibility(View.VISIBLE);
             }
-            tvDownloadStatus.setText("Downloaded " + filesCount + "/" + filesCount);
-            last_download_time.setText(getResources().getString(R.string.last_image_download_time) + lastDownloadTime);
-            catalogRefreshButton.setVisibility(View.VISIBLE);
-            catalogFullDownloadButton.setVisibility(View.VISIBLE);
         }
 
     }
@@ -425,9 +428,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                             downloadIndex = 0;
                             stringUrlList.clear();
 
-                            filesCount = getFilesCount();
-                            catalogImageDownloadProvider.setCatalogImageDownloadFinishTime(filesCount + "", DateTimeUtils.now(DateTimeUtils.DATE_TIME));
-                            lastDownloadTime = catalogImageDownloadProvider.getLastDownloadedDateTime();
+                            new UpdateStatus().execute();
                         }
                     }
 
@@ -439,6 +440,8 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                         }else {
                             downloadIndex = 0;
                             stringUrlList.clear();
+
+                            new UpdateStatus().execute();
                         }
 
                     }
@@ -549,9 +552,25 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
-            String message = intent.getStringExtra("DownloadDetail");
 
-            tvDownloadStatus.setText("Downlaoding "+message);
+            if (intent.getStringExtra("DownloadDetail") != null) {
+
+                String message = intent.getStringExtra("DownloadDetail");
+                tvDownloadStatus.setText("Downlaoding " + message);
+
+            }else if(intent.getStringExtra("Status") != null
+                    && intent.getStringExtra("Status").equalsIgnoreCase("Error")){
+
+                Toast.makeText(context, getResources().getString(R.string.connection_error_please_try_again), Toast.LENGTH_SHORT).show();
+                finish();
+
+            }else if (intent.getStringExtra("Status") != null
+                    && intent.getStringExtra("Status").equalsIgnoreCase("Complete")) {
+
+                new UpdateStatus().execute();
+            }
+
+
         }
     };
 

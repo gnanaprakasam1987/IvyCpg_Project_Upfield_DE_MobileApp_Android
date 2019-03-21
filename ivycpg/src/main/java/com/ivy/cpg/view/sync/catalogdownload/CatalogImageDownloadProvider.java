@@ -59,6 +59,7 @@ public class CatalogImageDownloadProvider {
     private BusinessModel businessModel;
     private DecimalFormat df = new DecimalFormat("0.000");
     private int downloadId = -1;
+    public boolean isDownloadInProgress = false;
 
     private CatalogImageDownloadProvider(Context context) {
         this.businessModel = (BusinessModel) context.getApplicationContext();
@@ -242,6 +243,8 @@ public class CatalogImageDownloadProvider {
                     @Override
                     public void onStartOrResume() {
                         storeCatalogDownloadStatus(downloadId,CatalogDownloadConstants.DOWNLOADING);
+
+                        isDownloadInProgress = true;
                     }
                 })
                 .setOnPauseListener(new OnPauseListener() {
@@ -270,6 +273,7 @@ public class CatalogImageDownloadProvider {
                         // You can also include some extra data.
                         intent.putExtra("DownloadDetail", downloadDetail);
                         intent.putExtra("DownloadPercentage", downloadPercentage);
+                        intent.putExtra("Status", "InProgress");
                         LocalBroadcastManager.getInstance(businessModel.getContext()).sendBroadcast(intent);
 
                     }
@@ -295,14 +299,30 @@ public class CatalogImageDownloadProvider {
                         } catch (Exception e) {
                             Commons.printException(e);
                         }
+
+                        Intent intent = new Intent("com.ivy.cpg.view.sync.CatalogDownloadStatus");
+                        // You can also include some extra data.
+                        intent.putExtra("Status", "Complete");
+                        LocalBroadcastManager.getInstance(businessModel.getContext()).sendBroadcast(intent);
+
+                        isDownloadInProgress = false;
                     }
 
                     @Override
                     public void onError(Error error) {
 
+                        Intent intent = new Intent("com.ivy.cpg.view.sync.CatalogDownloadStatus");
+                        // You can also include some extra data.
+                        intent.putExtra("Status", "Error");
+                        LocalBroadcastManager.getInstance(businessModel.getContext()).sendBroadcast(intent);
+
+                        isDownloadInProgress = false;
+
                         //storeCatalogDownloadStatus(downloadId,CatalogDownloadConstants.STATUS_ERROR);
                     }
                 });
+
+        storeCatalogDownloadStatus(downloadId, "DOWNLOADING");
 
     }
 
@@ -311,7 +331,9 @@ public class CatalogImageDownloadProvider {
             String downloadURL = "Product/" + CatalogDownloadConstants.FILE_NAME;
             return getAzureFile(downloadURL);
         }else if (businessModel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
-            String downloadKey = DataMembers.IMG_DOWN_URL + "Product/" + CatalogDownloadConstants.FILE_NAME;
+
+            businessModel.getimageDownloadURL();
+            String downloadKey = DataMembers.IMG_DOWN_URL+"/"+ "Product/" + CatalogDownloadConstants.FILE_NAME;
             return getSignedAwsUrl(downloadKey);
         }
 
@@ -353,9 +375,6 @@ public class CatalogImageDownloadProvider {
      * Generate Signed Amazon Url with expiration time for 5 hours
      */
     private String getSignedAwsUrl(String downloadKey) {
-
-        businessModel.getimageDownloadURL();
-
         try {
             BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
                     ConfigurationMasterHelper.SECRET_KEY);

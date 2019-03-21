@@ -104,7 +104,7 @@ public class DownloaderThreadNew extends Thread {
             try {
 
                 boolean isAmazonUpload = false;
-                boolean isAzureUpload = false;
+                boolean isAzureUpload = true;
                 DBUtil db = new DBUtil(parentActivity, DataMembers.DB_NAME
                 );
                 db.createDataBase();
@@ -113,7 +113,7 @@ public class DownloaderThreadNew extends Thread {
                         .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'ISAMAZON_IMGUPLOAD' and flag = 1 and ForSwitchSeller = 0");
                 if (c != null) {
                     while (c.moveToNext()) {
-                        isAmazonUpload = true;
+//                        isAmazonUpload = true;
                     }
                 }
                 c.close();
