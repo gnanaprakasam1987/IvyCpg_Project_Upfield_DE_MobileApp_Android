@@ -73,7 +73,7 @@ public class CatalogImageDownloadProvider {
     }
 
     public void callCatalogImageDownload() {
-        callZipDownload(businessModel.getContext());
+        startZipDownload(businessModel.getContext());
     }
 
     /**
@@ -81,7 +81,17 @@ public class CatalogImageDownloadProvider {
      */
     public void checkCatalogDownload() {
 
-        checkZipDownload(businessModel.getContext());
+        if (getCatalogDownloadStatus().equals(CatalogDownloadConstants.DOWNLOADING)
+                || getCatalogDownloadStatus().isEmpty()) {
+            // Set Digital content download path.
+
+            downloadProcess(businessModel.getContext());
+
+        } else if (getCatalogDownloadStatus().equals(CatalogDownloadConstants.UNZIP)) {
+            //Call unzip.
+            Intent intent = new Intent(businessModel, CatalogImageDownloadService.class);
+            businessModel.startService(intent);
+        }
     }
 
     public void storeCatalogDownloadStatus(int id, String status) {
@@ -91,15 +101,21 @@ public class CatalogImageDownloadProvider {
         editor.apply();
     }
 
+    private void storeCatalogDownloadUrl(String url) {
+        SharedPreferences.Editor editor = businessModel.getSharedPreferences(CatalogDownloadConstants.CATLOG_PREF_NAME, MODE_PRIVATE).edit();
+        editor.putString(CatalogDownloadConstants.STATUS_URL, url);
+        editor.apply();
+    }
+
     public void storeCatalogDownloadStatusError(String error) {
         SharedPreferences.Editor editor = businessModel.getSharedPreferences(CatalogDownloadConstants.CATLOG_PREF_NAME, MODE_PRIVATE).edit();
         editor.putString(CatalogDownloadConstants.STATUS_ERROR, error);
         editor.apply();
     }
 
-    public int getCatalogDownloadStatusId() {
+    private String getCatalogDownloadUrl() {
         SharedPreferences editor = businessModel.getSharedPreferences(CatalogDownloadConstants.CATLOG_PREF_NAME, MODE_PRIVATE);
-        return editor.getInt(CatalogDownloadConstants.STATUS_ID, 0);
+        return editor.getString(CatalogDownloadConstants.STATUS_URL, "");
     }
 
     public String getCatalogDownloadStatus() {
@@ -198,25 +214,10 @@ public class CatalogImageDownloadProvider {
             return false;
     }
 
-    public void callZipDownload(Context context){
-
-        startZipDownload(context);
-    }
-
-    private void checkZipDownload(Context context) {
-        if (getCatalogDownloadStatus().equals(CatalogDownloadConstants.DOWNLOADING)
-                || getCatalogDownloadStatus().isEmpty()) {
-            // Set Digital content download path.
-
-            downloadProcess(context);
-
-        } else if (getCatalogDownloadStatus().equals(CatalogDownloadConstants.UNZIP)) {
-            //Call unzip.
-            Intent intent = new Intent(businessModel, CatalogImageDownloadService.class);
-            businessModel.startService(intent);
-        }
-    }
-
+    /**
+     * Check the log file whether date is
+     * @param ctx
+     */
     private void startZipDownload(Context ctx){
         String date = getLastDownloadedDateTime();
         Commons.print("date in log file : " + date);
@@ -225,14 +226,18 @@ public class CatalogImageDownloadProvider {
         if (date.isEmpty()) {
 
             initializePrDownloader(ctx);
-            checkZipDownload(ctx);
+            checkCatalogDownload();
         }
     }
 
     public void downloadProcess(Context ctx){
 
+        String downloadURL;
+        if (getCatalogDownloadUrl() == null || getCatalogDownloadUrl().isEmpty())
         // Prepare download URL path.
-        String downloadURL = getDownloadUrl();
+            downloadURL = getDownloadUrl();
+        else
+            downloadURL = getCatalogDownloadUrl();
 
         // Create location file path to store the downloaded file
         File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" );
@@ -243,7 +248,7 @@ public class CatalogImageDownloadProvider {
                     @Override
                     public void onStartOrResume() {
                         storeCatalogDownloadStatus(downloadId,CatalogDownloadConstants.DOWNLOADING);
-
+                        storeCatalogDownloadUrl(downloadURL);
                         isDownloadInProgress = true;
                     }
                 })
@@ -282,7 +287,7 @@ public class CatalogImageDownloadProvider {
                     @Override
                     public void onDownloadComplete() {
                         // update shared preference
-                        storeCatalogDownloadStatus(getCatalogDownloadStatusId(), CatalogDownloadConstants.UNZIP);
+                        storeCatalogDownloadStatus(downloadId, CatalogDownloadConstants.UNZIP);
 
                         try {
                             File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + CatalogDownloadConstants.FILE_NAME);
@@ -306,6 +311,7 @@ public class CatalogImageDownloadProvider {
                         LocalBroadcastManager.getInstance(businessModel.getContext()).sendBroadcast(intent);
 
                         isDownloadInProgress = false;
+                        storeCatalogDownloadUrl("");
                     }
 
                     @Override
@@ -317,6 +323,7 @@ public class CatalogImageDownloadProvider {
                         LocalBroadcastManager.getInstance(businessModel.getContext()).sendBroadcast(intent);
 
                         isDownloadInProgress = false;
+                        storeCatalogDownloadUrl("");
 
                         //storeCatalogDownloadStatus(downloadId,CatalogDownloadConstants.STATUS_ERROR);
                     }
@@ -328,23 +335,22 @@ public class CatalogImageDownloadProvider {
 
     private String getDownloadUrl(){
         if (businessModel.configurationMasterHelper.IS_AZURE_UPLOAD) {
-            String downloadURL = "Product/" + CatalogDownloadConstants.FILE_NAME;
-            return getAzureFile(downloadURL);
+            return getAzureFile();
         }else if (businessModel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
-
-            businessModel.getimageDownloadURL();
-            String downloadKey = DataMembers.IMG_DOWN_URL+"/"+ "Product/" + CatalogDownloadConstants.FILE_NAME;
-            return getSignedAwsUrl(downloadKey);
+            return getSignedAwsUrl();
         }
 
         return "";
     }
 
-    public String getAzureFile(String downloadURL){
+    /**
+     * Generate Signed Azure Url with expiration time for 5 hours
+     */
+    private String getAzureFile(){
 
         // Prepare download URL path.
 //        String downloadURL = DataMembers.AZURE_BASE_URL + "/"+DataMembers.AZURE_CONTAINER+"/"+"Product/" + CatalogDownloadConstants.FILE_NAME;
-
+        String downloadURL = "Product/" + CatalogDownloadConstants.FILE_NAME;
         try {
             CloudBlobContainer container = businessModel.initializeAzureStorageConnection();
 
@@ -374,8 +380,12 @@ public class CatalogImageDownloadProvider {
     /**
      * Generate Signed Amazon Url with expiration time for 5 hours
      */
-    private String getSignedAwsUrl(String downloadKey) {
+    private String getSignedAwsUrl() {
         try {
+            businessModel.configurationMasterHelper.setAmazonS3Credentials();
+            businessModel.getimageDownloadURL();
+            String downloadKey = DataMembers.IMG_DOWN_URL+ "Product/" + CatalogDownloadConstants.FILE_NAME;
+
             BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
                     ConfigurationMasterHelper.SECRET_KEY);
             AmazonS3Client s3 = new AmazonS3Client(myCredentials);

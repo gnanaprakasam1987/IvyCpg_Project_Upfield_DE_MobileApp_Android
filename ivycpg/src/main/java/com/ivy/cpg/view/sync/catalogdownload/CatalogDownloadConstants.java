@@ -14,6 +14,7 @@ public class CatalogDownloadConstants {
 
     public static String STATUS_KEY = "observer_status";
     public static String STATUS_ID = "observer_id";
+    public static String STATUS_URL = "observer_url";
     public static String STATUS_ERROR = "observer_error";
 
     public static String FOLDER_PATH = "IvyCPG/CAT";

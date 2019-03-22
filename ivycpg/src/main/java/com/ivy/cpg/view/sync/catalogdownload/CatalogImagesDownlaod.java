@@ -63,6 +63,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
     private ArrayList<String> stringUrlList = new ArrayList<>();
     int filesCount = 0;
     private int downloadIndex = 0;
+    private final String downloadPath = "Product/ProductCatalog";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,8 +107,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         catalogFullDownloadButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                catalogFullDownloadButton.setVisibility(View.INVISIBLE);
-                catalogRefreshButton.setVisibility(View.INVISIBLE);
+                changeButtonState(View.INVISIBLE);
                 last_download_time.setText("");
                 tvDownloadStatus.setText(getResources().getString(R.string.loading));
 
@@ -116,7 +116,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                     catalogImageDownloadProvider.clearCatalogImages();
                     // Initiate full download.
 //                    CatalogImageDownloadProvider.getInstance(bmodel).callCatalogImageDownload(new DownloadListener(bmodel.getApplicationContext()));
-                    CatalogImageDownloadProvider.getInstance(bmodel).callZipDownload(bmodel.getApplicationContext());
+                    CatalogImageDownloadProvider.getInstance(bmodel).callCatalogImageDownload();
                 }
 
             }
@@ -160,11 +160,9 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
 
     private void isServiceRunning() {
         if (CatalogImageDownloadService.isServiceRunning) {
-            catalogRefreshButton.setVisibility(View.INVISIBLE);
-            catalogFullDownloadButton.setVisibility(View.INVISIBLE);
+            changeButtonState(View.INVISIBLE);
         } else {
-            catalogRefreshButton.setVisibility(View.VISIBLE);
-            catalogFullDownloadButton.setVisibility(View.VISIBLE);
+            changeButtonState(View.VISIBLE);
         }
     }
 
@@ -206,8 +204,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
     private void resumeDownload() {
         if (catalogImageDownloadProvider.getCatalogDownloadStatus().equals(CatalogDownloadConstants.DOWNLOADING)) {
             tvDownloadStatus.setText(getResources().getString(R.string.loading));
-            catalogFullDownloadButton.setVisibility(View.INVISIBLE);
-            catalogRefreshButton.setVisibility(View.INVISIBLE);
+            changeButtonState(View.INVISIBLE);
             last_download_time.setText(getResources().getString(R.string.last_image_download_time));
 
             if (!catalogImageDownloadProvider.isDownloadInProgress)
@@ -215,8 +212,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
 
         } else if (catalogImageDownloadProvider.getCatalogDownloadStatus().equals(CatalogDownloadConstants.UNZIP)) {
 
-            catalogFullDownloadButton.setVisibility(View.INVISIBLE);
-            catalogRefreshButton.setVisibility(View.INVISIBLE);
+            changeButtonState(View.INVISIBLE);
 
             tvDownloadStatus.setText("UnZipping");
 
@@ -228,6 +224,11 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         } else {
             new UpdateStatus().execute();
         }
+    }
+
+    private void changeButtonState(int visibleState){
+        catalogFullDownloadButton.setVisibility(visibleState);
+        catalogRefreshButton.setVisibility(visibleState);
     }
 
     public class UpdateStatus extends AsyncTask<String, Void, String> {
@@ -257,8 +258,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         protected void onPostExecute(String s) {
             tvDownloadStatus.setText("Downloaded " + filesCount + "/" + filesCount);
             last_download_time.setText(getResources().getString(R.string.last_image_download_time) + lastDownloadTime);
-            catalogRefreshButton.setVisibility(View.VISIBLE);
-            catalogFullDownloadButton.setVisibility(View.VISIBLE);
+            changeButtonState(View.VISIBLE);
         }
 
     }
@@ -268,8 +268,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         private ProgressDialog progressDialogue;
 
         protected void onPreExecute() {
-            catalogFullDownloadButton.setVisibility(View.INVISIBLE);
-            catalogRefreshButton.setVisibility(View.INVISIBLE);
+            changeButtonState(View.INVISIBLE);
             last_download_time.setText("");
             progressDialogue = ProgressDialog.show(CatalogImagesDownlaod.this,
                     DataMembers.SD, getResources().getString(R.string.refreshing),
@@ -300,8 +299,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                 Toast.makeText(getApplicationContext(), "All images are upTo date", Toast.LENGTH_LONG).show();
                 tvDownloadStatus.setText("Downloaded " + filesCount + "/" + filesCount);
                 last_download_time.setText(getResources().getString(R.string.last_image_download_time) + lastDownloadTime);
-                catalogRefreshButton.setVisibility(View.VISIBLE);
-                catalogFullDownloadButton.setVisibility(View.VISIBLE);
+                changeButtonState(View.VISIBLE);
             }
         }
 
@@ -309,19 +307,14 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
 
     private void checkLastModifiedFileAzure(){
 
-        String path = "Product/ProductCatalog";
-
         try {
             CloudBlobContainer cloudBlobContainer = bmodel.initializeAzureStorageConnection();
 
-            Iterable<ListBlobItem> blobItems = cloudBlobContainer.getDirectoryReference(path).listBlobs();
+            Iterable<ListBlobItem> blobItems = cloudBlobContainer.getDirectoryReference(downloadPath).listBlobs();
 
             for (ListBlobItem listBlobItem : blobItems){
 
                 CloudBlockBlob cloudBlockBlob = (CloudBlockBlob)listBlobItem;
-
-                Commons.print("listBlobItem = " + cloudBlockBlob.getUri().toString());
-                Commons.print("listBlobItem Time = " + cloudBlockBlob.getProperties().getLastModified());
 
                 if (cloudBlockBlob.getProperties().getLastModified().after(DateTimeUtils.convertStringToDateObject(lastDownloadTime, "MM/dd/yyyy HH:mm:ss"))) {
 
@@ -344,11 +337,9 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
 
-            bmodel.configurationMasterHelper.setAmazonS3Credentials();
-
             AmazonS3Client s3 = initializeTransferUtility();
 
-            ObjectListing listing = s3.listObjects(DataMembers.S3_BUCKET, DataMembers.IMG_DOWN_URL + "Product/ProductCatalog");
+            ObjectListing listing = s3.listObjects(DataMembers.S3_BUCKET, DataMembers.IMG_DOWN_URL + downloadPath);
 
             if (listing.getObjectSummaries().size() > 0) {
                 for (S3ObjectSummary fileList : listing.getObjectSummaries()) {
@@ -427,6 +418,8 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                         }else {
                             downloadIndex = 0;
                             stringUrlList.clear();
+
+                            catalogImageDownloadProvider.setCatalogImageDownloadFinishTime(filesCount + "", DateTimeUtils.now(DateTimeUtils.DATE_TIME));
 
                             new UpdateStatus().execute();
                         }
@@ -578,8 +571,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         if (intent != null) {
             if (intent.getExtras() != null) {
 
-                catalogFullDownloadButton.setVisibility(View.INVISIBLE);
-                catalogRefreshButton.setVisibility(View.INVISIBLE);
+                changeButtonState(View.INVISIBLE);
                 Bundle b = intent.getExtras();
                 if (b.getString("Error") != null) {
                     Toast.makeText(getApplicationContext(), b.getString("Error"), Toast.LENGTH_LONG).show();
@@ -598,6 +590,10 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
     }
 
     private AmazonS3Client initializeTransferUtility() {
+
+        bmodel.getimageDownloadURL();
+        bmodel.configurationMasterHelper.setAmazonS3Credentials();
+
         System.setProperty
                 (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
         BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
