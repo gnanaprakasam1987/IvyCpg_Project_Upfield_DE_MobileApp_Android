@@ -2,11 +2,8 @@ package com.ivy.cpg.view.order;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
-import android.hardware.input.InputManager;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -16,7 +13,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -334,7 +330,7 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
 
             }
 
-            if (bModel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && productMasterBO.getIndicativeOrder_oc() <= 0)
+            if (bModel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && (productMasterBO.getIndicativeOrder_op()+productMasterBO.getIndicativeOrder_oc()+productMasterBO.getIndicativeOrder_oo()) <= 0)
                 return false;
 
         }

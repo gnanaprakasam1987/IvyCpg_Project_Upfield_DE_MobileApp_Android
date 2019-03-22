@@ -194,7 +194,8 @@
             android:name="com.ivy.cpg.view.order.StockAndOrder"
             android:exported="false"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:hardwareAccelerated="true">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
 

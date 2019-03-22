@@ -19,6 +19,7 @@ import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -237,6 +238,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private StockCheckHelper stockCheckHelper;
     private ProductSearch productSearch;
 
+    private String mSelectedSpecialFilter;
+    private int mSelectedProductId;
+    private ArrayList<Integer> mSelectedAttributeProductIds;
+    private int mSelectedFilter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -466,6 +471,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             public void onDrawerClosed(View view) {
 
                 supportInvalidateOptionsMenu();
+
+                if(mSelectedFilter==1)
+                    productSearch.startSpecialFilterSearch(productList,mSelectedSpecialFilter);
+                else if(mSelectedFilter==2)
+                productSearch.startSearch(productList,mSelectedProductId,mSelectedAttributeProductIds);
+
+
             }
 
             public void onDrawerOpened(View drawerView) {
@@ -564,7 +576,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 } else {
                     mSelectedFilterMap.put("General", GENERAL);
-                    updateGeneralText(GENERAL);
+                    productSearch.startSpecialFilterSearch(productList,GENERAL);
                 }
 
                 mBtnGuidedSelling_next.setVisibility(View.GONE);
@@ -585,10 +597,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             mSelectedFilterMap.put("General", defaultfilter);
                             if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
                                 loadSpecialFilterView();
-                                updateGeneralText(defaultfilter);
+                                productSearch.startSpecialFilterSearch(productList,defaultfilter);
                                 selectTab(defaultfilter);
                             } else {
-                                updateGeneralText(defaultfilter);
+                                productSearch.startSpecialFilterSearch(productList,defaultfilter);
+
                             }
 
 
@@ -596,10 +609,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             mSelectedFilterMap.put("General", GENERAL);
                             if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
                                 loadSpecialFilterView();
-                                updateGeneralText(GENERAL);
+                                productSearch.startSpecialFilterSearch(productList,GENERAL);
                                 selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
                             } else {
-                                updateGeneralText(GENERAL);
+                                productSearch.startSpecialFilterSearch(productList,GENERAL);
                             }
 
 
@@ -610,7 +623,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                     } else {
                         mSelectedFilterMap.put("General", GENERAL);
-                        updateGeneralText(GENERAL);
+                        productSearch.startSpecialFilterSearch(productList,GENERAL);
                     }
                 }
             }
@@ -658,12 +671,12 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                         if (bo.getFilterCode().equalsIgnoreCase("ALL")) {
                             mSelectedFilterMap.put("General", GENERAL);
-                            updateGeneralText(GENERAL);
+                            productSearch.startSpecialFilterSearch(productList,GENERAL);
                             if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
                                 selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
                         } else {
                             mSelectedFilterMap.put("General", bo.getFilterCode());
-                            updateGeneralText(bo.getFilterCode());
+                            productSearch.startSpecialFilterSearch(productList,bo.getFilterCode());
                             if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
                                 selectTab(bo.getFilterCode());
                         }
@@ -699,19 +712,19 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     mSelectedFilterMap.put("General", GENERAL);
                     if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
                         loadSpecialFilterView();
-                        updateGeneralText(GENERAL);
+                        productSearch.startSpecialFilterSearch(productList,GENERAL);
                         selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
                     } else {
-                        updateGeneralText(GENERAL);
+                        productSearch.startSpecialFilterSearch(productList,GENERAL);
                     }
                 } else {
                     mSelectedFilterMap.put("General", GENERAL);
-                    updateGeneralText(GENERAL);
+                    productSearch.startSpecialFilterSearch(productList,GENERAL);
                 }
             }
         } else {
             mSelectedFilterMap.put("General", GENERAL);
-            updateGeneralText(GENERAL);
+            productSearch.startSpecialFilterSearch(productList,GENERAL);
         }
     }
 
@@ -4631,7 +4644,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     public void updateGeneralText(String mFilterText) {
 
 
-       // showProgressDialog("Searching..");
+       mSelectedFilter=1;
+       mSelectedSpecialFilter=mFilterText;
 
         // This should moved ...
         if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
@@ -4648,18 +4662,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             return;
         }
 
-
-        // clearing five filter List
+// clearing five filter List
         if (mSelectedIdByLevelId != null)
             mSelectedIdByLevelId.clear();
 
-        // set the spl filter name on the button for display
-        productSearch.startSpecialFilterSearch(productList,mFilterText);
+
 
         // Clear the productName
         productSearch.setProductNameOnBar("");
 
-        // Close the drawer
         mDrawerLayout.closeDrawers();
 
 
@@ -5192,10 +5203,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
+        mSelectedFilter=2;
+        mSelectedProductId=mProductId;
+        mSelectedAttributeProductIds=mAttributeProducts;
 
-        productSearch.startSearch(productList,mProductId,mAttributeProducts);
-
-        strBarCodeSearch = "ALL";
         this.mSelectedIdByLevelId = mSelectedIdByLevelId;
 
         if (bmodel.configurationMasterHelper.IS_TOP_ORDER_FILTER) {
@@ -5305,9 +5316,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
                     if (view.getTag().toString().equalsIgnoreCase("ALL")) {
-                        updateGeneralText(GENERAL);
+                        productSearch.startSpecialFilterSearch(productList,GENERAL);
                     } else {
-                        updateGeneralText(view.getTag().toString());
+                        productSearch.startSpecialFilterSearch(productList,view.getTag().toString());
                     }
                     if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB)
                         selectTab(view.getTag());
@@ -5920,6 +5931,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     @Override
     public void productSearchResult(Vector<ProductMasterBO> searchedList) {
+
+        mSelectedFilter=-1;// clearing filter flag
 
         mylist=searchedList;
 
