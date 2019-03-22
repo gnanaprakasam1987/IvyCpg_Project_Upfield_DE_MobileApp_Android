@@ -29,9 +29,6 @@ public class StringUtils {
         return true;
     }
 
-    public static boolean isNullOrEmpty(String string) {
-        return string == null || string.length() == 0;
-    }
 
     public static String QT(String data) {
         return "'" + data + "'";
@@ -43,7 +40,7 @@ public class StringUtils {
     }
 
     public static boolean isValidEmail(CharSequence target) {
-        return !isNullOrEmpty(target.toString()) && Pattern.compile(
+        return !isEmptyString(target.toString()) && Pattern.compile(
                 "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
                         "\\@" +
                         "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +

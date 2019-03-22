@@ -1119,7 +1119,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 }
             });
 
-            if (!StringUtils.isNullOrEmpty(holder.mPromotionMasterBO.getRemarks()))
+            if (!StringUtils.isEmptyString(holder.mPromotionMasterBO.getRemarks()))
                 holder.img_remarks.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.feedback_promo, null));
             else
                 holder.img_remarks.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.feedback_no_promo, null));

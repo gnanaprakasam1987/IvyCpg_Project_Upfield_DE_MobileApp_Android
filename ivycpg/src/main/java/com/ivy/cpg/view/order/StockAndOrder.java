@@ -3544,7 +3544,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
             if (bmodel.configurationMasterHelper.IS_WSIH) {
-                String wSIH = getString(R.string.wsih_label);
+                String wSIH = getString(R.string.wsih_label) + ": ";
 
                 if (bmodel.labelsMasterHelper.applyLabels(holder.wsih.getTag()) != null) {
                     wSIH = bmodel.labelsMasterHelper.applyLabels(holder.wsih.getTag()) + ": ";
@@ -3678,7 +3678,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.rep_ou.setText(strRepOuterQty);
             }
             if (bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_PC) {
-                String strRepPcsQty = getString(R.string.rep_pcs);
+                String strRepPcsQty = getString(R.string.rep_pcs) + ": ";
 
                 if (bmodel.labelsMasterHelper.applyLabels(holder.rep_ou.getTag()) != null)
                     strRepPcsQty = bmodel.labelsMasterHelper
@@ -3689,8 +3689,21 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.rep_pcs.setText(strRepPcsQty);
             }
 
+            if(hasStockChecked(holder.productObj)) {
+                String totSTKQty = getString(R.string.stock) + ": ";
 
-            holder.text_stock.setText(hasStockChecked(holder.productObj) ? String.valueOf(holder.productObj.getTotalStockQty()) : " --");
+            if (bmodel.labelsMasterHelper.applyLabels(holder.text_stock.getTag()) != null) {
+                holder.text_stock.setText(bmodel.labelsMasterHelper.applyLabels(holder.text_stock.getTag()) + ": " + holder.productObj.getTotalStockQty() + "");
+            } else {
+                holder.text_stock.setText(getString(R.string.stock) + ": " + holder.productObj.getTotalStockQty() + "");
+            }
+
+                if (bmodel.labelsMasterHelper.applyLabels(holder.text_stock.getTag()) != null)
+                    totSTKQty = bmodel.labelsMasterHelper
+                            .applyLabels(holder.text_stock.getTag()) + ": ";
+                holder.text_stock.setText(totSTKQty + String.valueOf(holder.productObj.getTotalStockQty()));
+            }
+
             if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
 
                 String allocationTitle = getString(R.string.allocation) + ": ";
@@ -4935,6 +4948,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
         } else if (i == R.id.menu_digtal_content) {
+            DigitalContentHelper.getInstance(this).downloadDigitalContent(getApplicationContext(), "RETAILER");
             Intent i1 = new Intent(StockAndOrder.this,
                     DigitalContentActivity.class);
             i1.putExtra("ScreenCode", screenCode);

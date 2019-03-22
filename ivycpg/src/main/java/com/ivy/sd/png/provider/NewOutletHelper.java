@@ -2202,7 +2202,8 @@ public class NewOutletHelper {
                 db.deleteSQL("RetailerContact", "retailerId=" + bmodel.QT(outlet.getRetailerId()), false);
                 db.deleteSQL("RetailerAddress", "retailerId=" + bmodel.QT(outlet.getRetailerId()), false);
                 db.deleteSQL("RetailerAttribute", "retailerId=" + bmodel.QT(outlet.getRetailerId()), false);
-
+                db.updateSQL("Update NewRetailerSurveyResultHeader set retailerID = '" + getId() + "' where retailerID = '" + outlet.getRetailerId() + "'");
+                db.updateSQL("Update NewRetailerSurveyResultDetail set retailerID = '" + getId() + "' where retailerID = '" + outlet.getRetailerId() + "'");
             } else {
                 // edit option not allowed for image
                 for (int i = 0; i < outlet.ImageId.size(); i++) {
