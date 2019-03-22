@@ -214,24 +214,4 @@ public class FileUtils {
         }
         return false;
     }
-
-    /**
-     * This method used re
-     * @param context
-     * @param imageView
-     * @param radius
-     * @return
-     */
-    public static BitmapImageViewTarget getRoundedImageTarget(@NonNull final Context context, @NonNull final ImageView imageView,
-                                                              final float radius) {
-        return new BitmapImageViewTarget(imageView) {
-            @Override
-            protected void setResource(final Bitmap resource) {
-                RoundedBitmapDrawable circularBitmapDrawable =
-                        RoundedBitmapDrawableFactory.create(context.getResources(), resource);
-                circularBitmapDrawable.setCornerRadius(radius);
-                imageView.setImageDrawable(circularBitmapDrawable);
-            }
-        };
-    }
 }

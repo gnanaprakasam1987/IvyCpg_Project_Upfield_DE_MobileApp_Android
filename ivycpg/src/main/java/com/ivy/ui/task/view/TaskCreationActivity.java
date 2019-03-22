@@ -560,30 +560,30 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     private void updateFieldsInEditMode(@NotNull TaskDataBO taskDataObj) {
         taskTitle.setText(taskDataObj.getTasktitle());
-        categorySpinner.setSelection(getAdapterPosition(taskCategoryArrayAdapter.getCount()));
+        categorySpinner.setSelection(getAdapterPosition(taskCategoryArrayAdapter.getCount(), getString(R.string.category)));
         dueDateBtn.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
                 taskDataObj.getTaskDueDate(), taskPresenter.outDateFormat()));
 
         if (taskDataObj.getMode().equalsIgnoreCase("seller")) {
             seller_rb.setChecked(true);
             setUpSpinnerData(0);
-            sellerSpinner.setSelection(getAdapterPosition(userMasterArrayAdapter.getCount()));
+            sellerSpinner.setSelection(getAdapterPosition(userMasterArrayAdapter.getCount(), taskBo.getMode()));
         } else if (taskDataObj.getMode().equalsIgnoreCase("retailer")) {
             retailerwise_rb.setChecked(true);
             setUpSpinnerData(1);
-            sellerSpinner.setSelection(getAdapterPosition(channelArrayAdapter.getCount()));
+            sellerSpinner.setSelection(getAdapterPosition(channelArrayAdapter.getCount(), taskBo.getMode()));
         } else {
             channelwise_rb.setChecked(true);
             setUpSpinnerData(2);
-            sellerSpinner.setSelection(getAdapterPosition(retailerMasterArrayAdapter.getCount()));
+            sellerSpinner.setSelection(getAdapterPosition(retailerMasterArrayAdapter.getCount(), taskBo.getMode()));
         }
         taskView.setText(taskDataObj.getTaskDesc());
 
     }
 
-    private int getAdapterPosition(int length) {
+    private int getAdapterPosition(int length, String mode) {
         for (int i = 0; i < length; i++) {
-            switch (taskBo.getMode()) {
+            switch (mode) {
                 case "seller":
                     if (userMasterArrayAdapter.getItem(i).getUserid() == taskBo.getUserId())
                         return i;

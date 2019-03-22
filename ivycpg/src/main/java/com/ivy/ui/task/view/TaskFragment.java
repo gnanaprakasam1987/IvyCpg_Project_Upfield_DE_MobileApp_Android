@@ -67,8 +67,8 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     private String mSelectedRetailerID = "0";
     private String imageName = "";
     private static final int CAMERA_REQUEST_CODE = 1;
-    private TextView sortTv;
     private BottomSheetBehavior bottomSheetBehavior;
+    private View taskBgView;
 
 
     @Inject
@@ -92,11 +92,11 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
     @Override
     public void initVariables(View view) {
+        taskBgView = view.findViewById(R.id.task_bg_view);
         tabLayout = view.findViewById(R.id.tabs);
         tabLayout.addOnTabSelectedListener(this);
         footerLL = view.findViewById(R.id.footer);
         nxtBtn = view.findViewById(R.id.btn_close);
-        sortTv = view.findViewById(R.id.tv_sort);
         recyclerView = view.findViewById(R.id.task_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -136,17 +136,6 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     protected void setUpViews() {
         if (!fromProfileScreen)
             setUpActionBar();
-
-        sortTv.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-                    hideBottomSheet();
-                } else {
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                }
-            }
-        });
 
         if (taskPresenter.isMoveNextActivity()) {
             footerLL.setVisibility(View.VISIBLE);
@@ -209,6 +198,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
                     case BottomSheetBehavior.STATE_EXPANDED:
                         break;
                     case BottomSheetBehavior.STATE_HIDDEN:
+                        taskBgView.setVisibility(View.GONE);
                         break;
                     case BottomSheetBehavior.STATE_SETTLING:
                         break;
@@ -223,7 +213,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         view.findViewById(R.id.asc_ord_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shortListOrder(1, "A-Z");
+                shortListOrder(1, "A - Z");
                 hideBottomSheet();
             }
         });
@@ -231,7 +221,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         view.findViewById(R.id.desc_ord_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shortListOrder(2, "Z-A");
+                shortListOrder(2, "Z - A");
                 hideBottomSheet();
             }
         });
@@ -239,7 +229,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         view.findViewById(R.id.level_ord_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shortListOrder(3, "A-Z");
+                shortListOrder(3, "A - Z");
                 hideBottomSheet();
             }
         });
@@ -247,7 +237,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         view.findViewById(R.id.due_date_ord_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shortListOrder(4, "A-Z");
+                shortListOrder(4, "A - Z");
                 hideBottomSheet();
             }
         });
@@ -298,10 +288,6 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
          */
         @Override
         public void onTaskButtonClick(TaskDataBO taskBO, int isType) {
-
-            int TASK_VIEW_DETAIL = 0;
-            int TASK_EDIT = 1;
-            int TASK_DELETE = 2;
             Intent i = null;
             switch (isType) {
                 case 0:
@@ -412,6 +398,8 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+            hideBottomSheet();
 
         taskPresenter.updateTaskList(tab.getPosition(), mSelectedRetailerID, IsRetailerwisetask, isFromSurvey);
     }
@@ -452,6 +440,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.menu_save).setVisible(false);
+        menu.findItem(R.id.menu_sort).setVisible(true);
         if (!taskPresenter.isNewTask())
             menu.findItem(R.id.menu_new_task).setVisible(false);
 
@@ -470,6 +459,13 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             goToNewTaskActivity();
         } else if (i1 == R.id.menu_reason) {
             goToNoTaskReasonDialog();
+        } else if (i1 == R.id.menu_sort) {
+            if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                hideBottomSheet();
+            } else {
+                taskBgView.setVisibility(View.VISIBLE);
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
         }
         return super.onOptionsItemSelected(item);
     }

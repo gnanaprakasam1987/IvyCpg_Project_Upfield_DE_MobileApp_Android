@@ -346,10 +346,6 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                 }));
     }
 
-    @Override
-    public void updateTask(TaskDataBO taskObj) {
-
-    }
 
     @Override
     public String getSelectedRetailerId() {

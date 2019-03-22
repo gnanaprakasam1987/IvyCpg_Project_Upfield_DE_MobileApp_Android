@@ -18,7 +18,7 @@ public class TaskDataBO implements Parcelable {
     private int rid;
     private String isdone;
     private String usercreated;
-    private String taskOwner;
+    private String taskOwner = "";
     private String createdDate;
     private String plannedDate;
     private boolean isUpload;

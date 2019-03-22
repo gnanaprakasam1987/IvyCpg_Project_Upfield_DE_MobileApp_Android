@@ -1,7 +1,9 @@
 package com.ivy.ui.task.adapter;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -18,9 +20,12 @@ import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.CommonDialog;
+import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
 import com.ivy.ui.task.view.SwipeRevealLayout;
 import com.ivy.ui.task.view.ViewBinderHelper;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
 
@@ -224,19 +229,34 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
 
     private void showDeleteAlert(int position) {
 
-        ((BaseActivity) mContext).showAlert("", mContext.getString(R.string.do_you_want_to_delete_the_image), new CommonDialog.PositiveClickListener() {
-            @Override
-            public void onPositiveButtonClick() {
-                taskDatas.remove(position);
-                notifyItemRemoved(position);
-                notifyItemRangeChanged(position, taskDatas.size());
-                taskClickListener.onTaskButtonClick(taskDatas.get(position), 2);
-            }
-        }, new CommonDialog.negativeOnClickListener() {
-            @Override
-            public void onNegativeButtonClick() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(
+                mContext);
+        builder.setTitle("");
+        builder.setMessage(mContext.getString(
+                R.string.do_you_want_to_delete_the_image));
 
-            }
-        });
+        builder.setPositiveButton(mContext.getString(R.string.ok),
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+
+                        taskDatas.remove(position);
+                        notifyItemRemoved(position);
+                        notifyItemRangeChanged(position, taskDatas.size());
+                        taskClickListener.onTaskButtonClick(taskDatas.get(position), 2);
+                        dialog.dismiss();
+
+
+                    }
+                });
+
+        builder.setNegativeButton(mContext.getString(R.string.cancel),
+                new android.content.DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builder.setCancelable(false);
+        AppUtils.applyAlertDialogTheme(mContext, builder);
     }
 }

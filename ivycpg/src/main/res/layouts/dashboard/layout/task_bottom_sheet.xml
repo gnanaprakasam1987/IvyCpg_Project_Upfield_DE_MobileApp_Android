@@ -34,7 +34,8 @@
         android:layout_gravity="start|center"
         android:drawableStart="@drawable/ic_sort_by_alpha_black_24dp"
         android:drawableLeft="@drawable/ic_sort_by_alpha_black_24dp"
-        android:gravity="center"
+        android:drawablePadding="@dimen/_15sdp"
+        android:gravity="start|center"
         android:padding="@dimen/_10sdp"
         android:text="@string/asc_order" />
 
@@ -49,7 +50,8 @@
         android:layout_height="@dimen/list_item_height"
         android:drawableStart="@drawable/ic_sort_by_alpha_black_24dp"
         android:drawableLeft="@drawable/ic_sort_by_alpha_black_24dp"
-        android:gravity="center"
+        android:drawablePadding="@dimen/_15sdp"
+        android:gravity="start|center"
         android:padding="@dimen/_10sdp"
         android:text="@string/desc_order" />
 
@@ -64,7 +66,8 @@
         android:layout_height="@dimen/list_item_height"
         android:drawableStart="@drawable/ic_tag_black_24dp"
         android:drawableLeft="@drawable/btn_productfilter_"
-        android:gravity="center"
+        android:drawablePadding="@dimen/_15sdp"
+        android:gravity="start|center"
         android:padding="@dimen/_10sdp"
         android:text="@string/category" />
 
@@ -79,7 +82,44 @@
         android:layout_height="@dimen/list_item_height"
         android:drawableStart="@drawable/ic_date_picker"
         android:drawableLeft="@drawable/ic_date_picker"
-        android:gravity="center"
+        android:drawablePadding="@dimen/_15sdp"
+        android:gravity="start|center"
         android:padding="@dimen/_10sdp"
         android:text="@string/due_date" />
+
+    <!--<RadioGroup
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:weightSum="3" >
+
+        <RadioButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:button="@drawable/ic_sort_by_alpha_black_24dp"
+            android:checked="true"
+            android:paddingHorizontal="@dimen/_15sdp"
+            android:drawablePadding="@dimen/_15sdp"
+            android:text="@string/desc_order"
+            android:textColor="@android:color/black" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:button="@drawable/ic_tag_black_24dp"
+            android:text="B"
+            android:textColor="@android:color/black" />
+
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@android:color/transparent"
+            android:button="@drawable/ic_date_picker"
+            android:text="C"
+            android:textColor="@android:color/black" />
+    </RadioGroup>-->
 </LinearLayout>

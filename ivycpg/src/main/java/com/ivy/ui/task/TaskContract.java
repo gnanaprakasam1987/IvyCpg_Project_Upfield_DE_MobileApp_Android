@@ -1,7 +1,6 @@
 package com.ivy.ui.task;
 
 import android.support.annotation.StringRes;
-import android.widget.ArrayAdapter;
 
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
@@ -51,11 +50,13 @@ public interface TaskContract {
 
         void addNewImage(String imageName);
 
-        void onSaveButtonClick(int channelId,TaskDataBO taskObj);
+        void onSaveButtonClick(int channelId, TaskDataBO taskObj);
 
         void updateTaskExecution(String retailerID, TaskDataBO taskDataBO);
 
-        void updateTask(TaskDataBO taskObj);
+        ArrayList<TaskDataBO> getTaskImgList();
+
+        void deleteTask(String taskId, String taskOwner);
 
         String getSelectedRetailerId();
 
@@ -67,7 +68,7 @@ public interface TaskContract {
 
         ArrayList<UserMasterBO> getTaskUserList();
 
-        ArrayList<TaskDataBO>getTaskList();
+        ArrayList<TaskDataBO> getTaskList();
 
         int getUserID();
 
@@ -89,9 +90,6 @@ public interface TaskContract {
 
         boolean isNPPhotoReasonAvailable(String retailerID, String moduleName);
 
-        ArrayList<TaskDataBO>getTaskImgList();
-
-        void deleteTask(String taskId,String taskOwner);
 
     }
 }

@@ -30,6 +30,7 @@ import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.adapter.TaskImgListAdapter;
 import com.ivy.ui.task.di.DaggerTaskComponent;
 import com.ivy.ui.task.di.TaskModule;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 
@@ -239,7 +240,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
                     .centerCrop()
                     .placeholder(R.drawable.no_image_available)
                     .error(R.drawable.no_image_available)
-                    .into(FileUtils.getRoundedImageTarget(this, evidenceImgView, (float) 6));
+                    .into(AppUtils.getRoundedImageTarget(this, evidenceImgView, (float) 6));
         }
     }
 

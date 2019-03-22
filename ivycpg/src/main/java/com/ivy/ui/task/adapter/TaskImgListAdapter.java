@@ -15,6 +15,7 @@ import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.CommonDialog;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
@@ -65,7 +66,7 @@ public class TaskImgListAdapter extends RecyclerView.Adapter<TaskImgListAdapter.
                 .centerCrop()
                 .placeholder(R.drawable.bg_add_photo)
                 .error(R.drawable.bg_add_photo)
-                .into(FileUtils.getRoundedImageTarget(mContext, holder.taskImg, (float) 6));
+                .into(AppUtils.getRoundedImageTarget(mContext, holder.taskImg, (float) 6));
         //}
         holder.deleteImg.setOnClickListener(new View.OnClickListener() {
             @Override

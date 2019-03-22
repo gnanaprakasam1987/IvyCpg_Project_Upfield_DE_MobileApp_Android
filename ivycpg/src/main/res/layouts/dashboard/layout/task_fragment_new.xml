@@ -5,12 +5,12 @@
     android:layout_height="match_parent"
     android:background="@color/white">
 
+
+
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/root"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:id="@+id/footer"
@@ -64,7 +64,7 @@
                 android:layout_weight="4"
                 android:gravity="start|center_vertical"
                 android:tag="task_title_label"
-                android:text="@string/product_name" />
+                android:text="@string/task" />
 
             <TextView
                 android:id="@+id/tv_due_date"
@@ -73,6 +73,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1.5"
                 android:clickable="true"
+                android:gravity="center"
+                android:textAlignment="center"
                 android:focusable="true"
                 android:tag="task_sort_title_label"
                 android:text="@string/due_date" />
@@ -84,11 +86,9 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:clickable="true"
-                android:drawableEnd="@drawable/ic_filter_icon"
-                android:drawableRight="@drawable/ic_filter_icon"
                 android:focusable="true"
                 android:tag="task_sort_title_label"
-                android:text="@string/sort_by" />
+                android:text="@string/taskexecution" />
 
         </LinearLayout>
 
@@ -103,9 +103,14 @@
             android:overScrollMode="never" />
 
     </RelativeLayout>
-
+    <View
+        android:id="@+id/task_bg_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:background="#b1000000"
+        />
     <include
-        layout="@layout/task_bottom_sheet"
-        android:visibility="visible" />
+        layout="@layout/task_bottom_sheet" />
 </android.support.design.widget.CoordinatorLayout>
 
