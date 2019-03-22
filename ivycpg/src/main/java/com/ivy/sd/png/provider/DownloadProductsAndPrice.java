@@ -52,8 +52,8 @@ public class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolea
         try {
             if (!isCancelled()) {
 
+                bmodel.getRetailerWiseSellerType();
                 if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED && isProfile) {
-                    bmodel.getRetailerWiseSellerType();
                     bmodel.configurationMasterHelper.updateConfigurationSelectedSellerType(bmodel.getAppDataProvider().getRetailMaster().getIsVansales() != 1);
                 }
 
