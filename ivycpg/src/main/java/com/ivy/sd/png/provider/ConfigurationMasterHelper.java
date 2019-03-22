@@ -1550,6 +1550,12 @@ public class ConfigurationMasterHelper {
     private static final String CODE_VOICE_TO_TEXT = "VOICETXT";
     public int IS_VOICE_TO_TEXT = -1;
 
+    private static final String CODE_SKIP_CALL_ANALYSIS = "FUN78";
+    public boolean IS_SKIP_CALL_ANALYSIS;
+
+    private static final String CODE_COLLECTION_DELETE = "COLL20";
+    public boolean IS_COLLECTION_DELETE;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2706,6 +2712,8 @@ public class ConfigurationMasterHelper {
         this.IS_SHOW_TERMS_COND = hashMapHHTModuleConfig.get(CODE_SHOW_TERMS_COND) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TERMS_COND) : false;
 
         this.IS_VOICE_TO_TEXT = hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) != null ? hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) : -1;
+        this.IS_SKIP_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) : false;
+        this.IS_COLLECTION_DELETE = hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) != null ? hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) : false;
     }
 
     private boolean isInOutModule() {

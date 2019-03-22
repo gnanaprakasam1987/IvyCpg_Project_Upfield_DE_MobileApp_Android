@@ -36,29 +36,16 @@
                     style="@style/TextViewListItemPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/list_margin"
                     android:layout_marginRight="@dimen/list_margin"
                     android:layout_weight="1"
                     android:text="@string/product_name" />
-
-                <ImageView
-                    android:id="@+id/ivInfoicon"
-                    android:layout_width="9dp"
-                    android:layout_height="0dp"
-                    android:layout_centerVertical="true"
-                    android:padding="@dimen/list_item_padding"
-                    android:src="@drawable/ic_info_new"
-                    android:tint="@color/black_bg1" />
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_productbarcode"
                     style="@style/TextViewListItemPrimary"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
-                    android:layout_below="@+id/stock_and_order_listview_productname"
                     android:layout_gravity="end|center"
                     android:gravity="start|center"
                     android:maxLines="1"

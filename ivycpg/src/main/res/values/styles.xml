@@ -595,6 +595,12 @@ negative button and neutral button -->
         <item name="android:textColorSecondary">?attr/textColor</item>
     </style>
 
+    <style name="MyToolbarWhite" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:background">@color/white</item>
+        <!--For overflow icon -->
+        <item name="android:textColorSecondary">@color/FullBlack</item>
+    </style>
+
     <style name="DialogTitleTextStyle" parent="@android:style/Widget.TextView">
         <item name="android:background">?attr/primarycolor</item>
         <item name="android:textColor">@color/white</item>

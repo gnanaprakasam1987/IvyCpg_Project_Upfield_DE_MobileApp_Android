@@ -118,6 +118,28 @@
                 android:gravity="start|center_vertical"
                 android:text="@string/zero" />
 
+            <TextView
+                android:id="@+id/tv_comments_title"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_payableamt"
+                android:gravity="start|center_vertical"
+                android:tag="refno"
+                android:text="@string/comments"
+
+                />
+
+
+            <TextView
+                android:id="@+id/tv_comments"
+                style="@style/TextViewListItemValues"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/tv_comments_title"
+                android:gravity="start|center_vertical"
+                android:text="" />
+
 
         </RelativeLayout>
 

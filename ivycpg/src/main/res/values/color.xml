@@ -133,6 +133,8 @@
     <color name="chart_productivity_line">#1AE547</color>
     <color name="chart_covered_line">#007AFF</color>
     <color name="chart_horizontal_line_color">#33ffffff</color>
+    <color name="user_hierarchy_bg_fill">#ECF5FF</color>
+    <color name="user_hierarchy_bg_border">#D1E7FF</color>
 
 
     <color name="rippelColor">#0099CC</color>

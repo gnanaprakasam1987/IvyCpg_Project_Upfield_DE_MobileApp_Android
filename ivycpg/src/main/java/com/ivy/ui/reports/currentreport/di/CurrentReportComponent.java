@@ -11,4 +11,5 @@ import dagger.Component;
 @Component(dependencies = IvyAppComponent.class, modules = {CurrentReportModule.class})
 public interface CurrentReportComponent {
     void inject(CurrentReportViewFragment currentReportViewFragment);
+
 }

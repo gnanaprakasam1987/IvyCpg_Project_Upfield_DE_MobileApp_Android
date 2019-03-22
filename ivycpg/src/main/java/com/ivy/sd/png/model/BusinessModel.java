@@ -287,6 +287,7 @@ public class BusinessModel extends Application {
     private String rField2 = "";
     private String rField3 = "";
     private String saleReturnNote = "";
+    private String saleReturnRfValue = "";
     private String assetRemark = "";
     private String note = "";
     private String orderSplitScreenTitle = null;
@@ -403,13 +404,6 @@ public class BusinessModel extends Application {
 
         moduleTimeStampHelper = ModuleTimeStampHelper.getInstance(this);
         fitscoreHelper = FitScoreHelper.getInstance(this);
-    }
-
-
-    public static synchronized BusinessModel getInstance() {
-
-        return mInstance;
-
     }
 
 
@@ -555,6 +549,14 @@ public class BusinessModel extends Application {
 
     public void setSaleReturnNote(String saleReturnNote) {
         this.saleReturnNote = saleReturnNote;
+    }
+
+    public String getSaleReturnRfValue() {
+        return saleReturnRfValue;
+    }
+
+    public void setSaleReturnRfValue(String saleReturnRfValue) {
+        this.saleReturnRfValue = saleReturnRfValue;
     }
 
     public String getOrderHeaderNote() {
@@ -1661,6 +1663,7 @@ public class BusinessModel extends Application {
 
     /**
      * update retailer price group
+     *
      * @param retObj
      * @param db
      */
@@ -2600,7 +2603,8 @@ public class BusinessModel extends Application {
                     + getAppDataProvider().getRetailMaster().getBeatID() + ","
                     + StringUtils.QT(outlet.getDate()) + "," + StringUtils.QT(outlet.getReasonid())
                     + "," + StringUtils.QT(getStandardListId(outlet.getReasontype())) + ","
-                    + StringUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + StringUtils.QT(outlet.getImagePath()) + "," + StringUtils.QT(remarks);
+                    + StringUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + StringUtils.QT(outlet.getImagePath()) + "," + StringUtils.QT(remarks)
+                    + "," + StringUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
 
             db.insertSQL("Nonproductivereasonmaster", columns, values);
             if (!outlet.getCollectionReasonID().equals("0")) {
@@ -3222,9 +3226,7 @@ public class BusinessModel extends Application {
 
         CommonDialog dialog = new CommonDialog(this, getContext(), title, msg, imgDisplay, getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
             @Override
-            public void onPositiveButtonClick()
-
-            {
+            public void onPositiveButtonClick() {
 
                 if (idd == DataMembers.NOTIFY_NEW_OUTLET_SAVED) {
 //                    NewOutlet frm = (NewOutlet) ctx;
@@ -5572,8 +5574,8 @@ public class BusinessModel extends Application {
     private static final int FASTEST_INTERVAL = 1000;
 
     /**
-     * @deprecated
      * @see {@link com.ivy.core.base.view.BaseActivity#requestLocation(Activity)}
+     * @deprecated
      */
     public void requestLocation(final Activity ctxt) {
 
@@ -6047,7 +6049,6 @@ public class BusinessModel extends Application {
     }
 
     /**
-     *
      * @param ruleString
      * @return this method will return retailer type based Retailer Type Code
      */
@@ -6492,8 +6493,8 @@ public class BusinessModel extends Application {
         sb.append("select debitnoteno,inv.date,debitnoteamount,");
 
         sb.append(" Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.DebitNoteNo),0),2) as RcvdAmt,");
-        sb.append(" Round(inv.BalanceAmount - IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.DebitNoteNo),0),2) as os");
-        sb.append(" FROM DebitNoteMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.DebitNoteNo");
+        sb.append(" Round(inv.BalanceAmount - IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.DebitNoteNo),0),2) as os,");
+        sb.append(" Inv.comments FROM DebitNoteMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.DebitNoteNo");
         sb.append(" LEFT OUTER JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid");
         sb.append(" WHERE inv.Retailerid = ");
         sb.append(QT(getRetailerMasterBO().getRetailerID()));
@@ -6510,6 +6511,7 @@ public class BusinessModel extends Application {
                 invoiceHeaderBO.setInvoiceAmount(c.getDouble(2));
                 invoiceHeaderBO.setPaidAmount(c.getDouble(3));
                 invoiceHeaderBO.setBalance(c.getDouble(4));
+                invoiceHeaderBO.setComments(c.getString(5));
                 invoiceHeaderBO.setDebitNote(true);
                 invoiceHeader.add(invoiceHeaderBO);
             }
@@ -7042,7 +7044,6 @@ public class BusinessModel extends Application {
             Commons.printException(e);
         }
     }
-
 
 
     /**

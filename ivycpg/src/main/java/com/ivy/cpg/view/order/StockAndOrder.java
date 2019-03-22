@@ -1208,7 +1208,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.rep_cs = row.findViewById(R.id.rep_case);
                 holder.rep_ou = row.findViewById(R.id.rep_outer);
                 holder.rep_pcs = row.findViewById(R.id.rep_pcs);
-                holder.iv_info = row.findViewById(R.id.ivInfoicon);
                 holder.indicativeOrder_oc = row.findViewById(R.id.indicativeOrder_oc);
                 holder.cleanedOrder_oc = row.findViewById(R.id.cleanedOrder_oc);
 
@@ -3059,7 +3058,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 });
 
 
-                holder.iv_info.setOnClickListener(new OnClickListener() {
+                holder.psname.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         bmodel = (BusinessModel) getApplicationContext();
@@ -3755,7 +3754,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private TextView rep_pcs;
         private TextView rep_cs;
         private TextView rep_ou;
-        private ImageView iv_info, imageView_stock;
+        private ImageView imageView_stock;
         private EditText salesReturn;
         private TextView moq;
         private TextView text_stock;

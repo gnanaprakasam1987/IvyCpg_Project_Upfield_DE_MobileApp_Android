@@ -51,7 +51,7 @@ import com.ivy.utils.FileUtils;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class CheckModeFragment extends IvyBaseFragment
+public class ChequeModeFragment extends IvyBaseFragment
         implements DataPickerDialogFragment.UpdateDateInterface,
         UpdatePaymentsInterface, View.OnClickListener {
 
