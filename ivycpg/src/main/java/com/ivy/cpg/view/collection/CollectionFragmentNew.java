@@ -347,9 +347,9 @@ public class CollectionFragmentNew extends IvyBaseFragment
 
     @Override
     public void updateDate(Date date, String tag) {
-        CheckModeFragment checkModeFragment = (CheckModeFragment) mFragmentList.get(mSelectedPagePos);
-        if (checkModeFragment != null)
-            checkModeFragment.updateDate(date, "");
+        ChequeModeFragment chequeModeFragment = (ChequeModeFragment) mFragmentList.get(mSelectedPagePos);
+        if (chequeModeFragment != null)
+            chequeModeFragment.updateDate(date, "");
     }
 
     @Override

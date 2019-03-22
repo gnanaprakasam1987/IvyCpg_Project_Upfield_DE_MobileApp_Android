@@ -287,6 +287,7 @@ public class BusinessModel extends Application {
     private String rField2 = "";
     private String rField3 = "";
     private String saleReturnNote = "";
+    private String saleReturnRfValue = "";
     private String assetRemark = "";
     private String note = "";
     private String orderSplitScreenTitle = null;
@@ -548,6 +549,14 @@ public class BusinessModel extends Application {
 
     public void setSaleReturnNote(String saleReturnNote) {
         this.saleReturnNote = saleReturnNote;
+    }
+
+    public String getSaleReturnRfValue() {
+        return saleReturnRfValue;
+    }
+
+    public void setSaleReturnRfValue(String saleReturnRfValue) {
+        this.saleReturnRfValue = saleReturnRfValue;
     }
 
     public String getOrderHeaderNote() {

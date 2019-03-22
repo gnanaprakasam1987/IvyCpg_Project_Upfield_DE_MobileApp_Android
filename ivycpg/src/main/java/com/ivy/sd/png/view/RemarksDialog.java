@@ -23,6 +23,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.promotion.PromotionBO;
+import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.commons.SDUtil;
@@ -49,7 +50,9 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
     private PromotionBO promotionBO;
     private PromotionRemarks mCallback;
 
-    public interface PromotionRemarks{
+    boolean isSalesRetRfAvailable;
+
+    public interface PromotionRemarks {
         void updateRemarks();
     }
 
@@ -67,7 +70,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         if (getDialog().getWindow() != null)
             getDialog().getWindow()
@@ -133,19 +136,19 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
 
 
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                    R.id.remarks).getTag()) != null)
-                ((EditText) view.findViewById(R.id.remarks))
-                        .setHint(bmodel.labelsMasterHelper
+                    R.id.remark_title).getTag()) != null)
+                ((TextView) view.findViewById(R.id.remark_title))
+                        .setText(bmodel.labelsMasterHelper
                                 .applyLabels(view.findViewById(
-                                        R.id.remarks)
+                                        R.id.remark_title)
                                         .getTag()));
 
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
-                    R.id.rField1).getTag()) != null)
-                ((EditText) view.findViewById(R.id.rField1))
-                        .setHint(bmodel.labelsMasterHelper
+                    R.id.rfield1_title).getTag()) != null)
+                ((TextView) view.findViewById(R.id.rfield1_title))
+                        .setText(bmodel.labelsMasterHelper
                                 .applyLabels(view.findViewById(
-                                        R.id.rField1)
+                                        R.id.rfield1_title)
                                         .getTag()));
 
             if (bmodel.labelsMasterHelper.applyLabels(view.findViewById(
@@ -213,9 +216,8 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
 
                     } else if (token.contains("RF2")) {
                         textInputLayout3.setVisibility(View.VISIBLE);
-                    }
-                    else if (token.contains("REM")) {
-                        if(token.equalsIgnoreCase("REMD")){
+                    } else if (token.contains("REM")) {
+                        if (token.equalsIgnoreCase("REMD")) {
                             layout_remark.setVisibility(View.GONE);
                             layout_remark_type.setVisibility(View.VISIBLE);
 
@@ -245,8 +247,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
 
                                 }
                             });
-                        }
-                        else {
+                        } else {
                             layout_remark.setVisibility(View.VISIBLE);
 
                         }
@@ -283,6 +284,22 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                 } else {
                     remarks.setText("");
                 }
+
+                textInputLayout2.setVisibility(View.GONE);
+                SalesReturnHelper salesReturnHelper = SalesReturnHelper.getInstance(getActivity());
+                if (salesReturnHelper.REMARKS_SAL_RET_FILEDS.length() > 0) {
+                    if (salesReturnHelper.REMARKS_SAL_RET_FILEDS.equalsIgnoreCase("RF")) {
+                        isSalesRetRfAvailable = true;
+                        textInputLayout2.setVisibility(View.VISIBLE);
+                        if (bmodel.getSaleReturnRfValue() != null) {
+                            rField1.setText(bmodel.getSaleReturnRfValue());
+                        } else {
+                            rField1.setText("");
+                        }
+                    }
+
+                }
+
                 break;
             case "MENU_ASSET":
                 if (bmodel.getAssetRemark() != null) {
@@ -299,7 +316,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                 }
                 break;
             case HomeScreenTwo.MENU_PROMO:
-                if (bmodel.getSaleReturnNote() != null) {
+                if (bmodel.getNote() != null) {
                     remarks.setText(bmodel.getNote());
                 } else {
                     remarks.setText("");
@@ -374,6 +391,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                     break;
                 case "MENU_SALES_RET":
                     bmodel.setSaleReturnNote(remarks.getText().toString());
+                    bmodel.setSaleReturnRfValue((isSalesRetRfAvailable) ? rField1.getText().toString() : "");
                     break;
                 case "MENU_ASSET":
                     bmodel.setAssetRemark(remarks.getText().toString());
