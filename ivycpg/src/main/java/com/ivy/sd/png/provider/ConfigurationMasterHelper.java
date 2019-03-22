@@ -3939,7 +3939,7 @@ public class ConfigurationMasterHelper {
             IS_STK_ORD_BS = false;
             IS_STK_ORD_PROJECT = false;
             SHOW_SALES_RETURN_IN_ORDER = false;
-            SHOW_SALES_RETURN_TV_IN_ORDER =false;
+            SHOW_SALES_RETURN_TV_IN_ORDER = false;
 
 
             IS_PRINT_SEQUENCE_REQUIRED = false;
@@ -4226,7 +4226,7 @@ public class ConfigurationMasterHelper {
             }
             if (codeValue != null && !codeValue.equals("")) {
                 String codeSplit[] = codeValue.split(",");
-                if(codeSplit.length==3) {
+                if (codeSplit.length == 3) {
                     if (codeSplit[0] != null && !codeSplit[0].equals(""))
                         DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = SDUtil.convertToInt(codeSplit[0]);
                     if (codeSplit[1] != null && !codeSplit[1].equals(""))
@@ -5387,11 +5387,8 @@ public class ConfigurationMasterHelper {
     }
 
 
-    public void loadRouteConfig() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
-
+    public void loadRouteConfig(DBUtil db) {
         try {
-            db.openDataBase();
             String sb = "select Rfield from HhtModuleMaster where flag=1 and hhtcode=" +
                     bmodel.QT(CODE_SHOW_ALL_ROUTE_FILTER) + " and  ForSwitchSeller = 0";
             Cursor c = db.selectSQL(sb);
@@ -5410,8 +5407,6 @@ public class ConfigurationMasterHelper {
             c.close();
         } catch (Exception e) {
             Commons.printException("" + e);
-        } finally {
-            db.closeDB();
         }
     }
 
