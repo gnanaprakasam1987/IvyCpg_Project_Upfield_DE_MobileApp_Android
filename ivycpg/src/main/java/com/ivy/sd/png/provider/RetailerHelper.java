@@ -338,10 +338,8 @@ public class RetailerHelper {
      * @See {@link com.ivy.core.data.retailer.RetailerDataManagerImpl#updatePlannedDatesForRetailer(ArrayList)}
      * @deprecated
      */
-    public void updatePlannedDatesInRetailerObj() {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+    public void updatePlannedDatesInRetailerObj(DBUtil db) {
         try {
-            db.createDataBase();
             db.openDataBase();
             String sb = "Select Rid,Date,RCm.WalkingSeq from RetailerClientMappingMaster RCM " +
                     "inner join RetailerMaster RM on RCM.rid=RM.retailerid order by rid";
@@ -359,8 +357,6 @@ public class RetailerHelper {
 
         } catch (Exception e) {
             Commons.printException("" + e);
-        } finally {
-            db.closeDB();
         }
     }
 
@@ -390,12 +386,10 @@ public class RetailerHelper {
      * @See {@link RetailerDataManagerImpl#fetchMissedRetailers()}
      * @deprecated
      */
-    public void downloadMissedRetailer() {
+    public void downloadMissedRetailer(DBUtil db) {
         mMissedRetailerList = new ArrayList<>();
         RetailerMissedVisitBO missedRetailerBO;
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
-            db.createDataBase();
             db.openDataBase();
             String sb = "select distinct RMV.Retailerid,RM.RetailerName,RV.PlannedVisitCount,RBM.beatid from RetailerMissedVisit RMV" +
                     " inner join RetailerMaster RM on RM.RetailerId=RMV.RetailerId " +
@@ -418,8 +412,6 @@ public class RetailerHelper {
             c.close();
         } catch (Exception e) {
             Commons.printException("" + e);
-        } finally {
-            db.closeDB();
         }
     }
 
@@ -729,11 +721,9 @@ public class RetailerHelper {
         this.retailerTargetList = retailerTargetList;
     }
 
-    public void downloadRetailerTarget(String code) {
+    public void downloadRetailerTarget(String code,DBUtil db) {
 
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-            );
             db.openDataBase();
             String sb = "select rk.retailerid,rk.interval,rkd.target,rk.kpiid,rkd.kpiparamlovid,rkd.achievement from RetailerKPI rk" +
                     " inner join RetailerKPIDetail rkd on rk.kpiid = rkd.kpiid INNER JOIN StandardListMaster SM" +
