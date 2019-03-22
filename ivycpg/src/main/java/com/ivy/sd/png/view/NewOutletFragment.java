@@ -1744,8 +1744,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("LATLONG")
                         && mandatory == 1) {
-
-                    if (latlongtextview.getText().toString().startsWith("0.0")) {
+                    if(latlongtextview.getText().toString() == null || SDUtil.convertToDouble(latlongtextview.getText().toString()) == 0 ) {
                         validate = false;
                         latlongtextview.setFocusableInTouchMode(true);
                         latlongtextview.requestFocus();
