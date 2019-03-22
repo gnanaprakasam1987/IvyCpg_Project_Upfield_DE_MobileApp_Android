@@ -60,6 +60,7 @@ public class SalesReturnHelper {
     public boolean CHECK_MRP_VALUE;
     private String CODE_SHOW_REMARKS_SAL_RET = "REM4";
     public boolean SHOW_REMARKS_SAL_RET;
+    public String REMARKS_SAL_RET_FILEDS ="";
     private String CODE_SR_DISCOUNT = "SR10";
     private String CODE_SR_TAX = "SR11";
     public boolean IS_APPLY_DISCOUNT_IN_SR;
@@ -352,6 +353,8 @@ public class SalesReturnHelper {
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     this.SHOW_REMARKS_SAL_RET = true;
+                    if (c.getString(0) != null)
+                        this.REMARKS_SAL_RET_FILEDS = c.getString(0);
                 }
                 c.close();
             }
@@ -671,7 +674,7 @@ public class SalesReturnHelper {
 
             if (isData) {
                 // Preapre and save salesreturn header.
-                columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,ridSF,VisitId";
+                columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,Rfield,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,ridSF,VisitId";
 
                 if (bmodel.configurationMasterHelper.IS_INVOICE_SR)
                     columns = columns + ",invoiceid";
@@ -685,6 +688,7 @@ public class SalesReturnHelper {
                         bmodel.configurationMasterHelper.PERCENT_PRECISION_COUNT, 0)) + "," + lpcValue + ","
                         + QT(bmodel.retailerMasterBO.getRetailerCode()) + ","
                         + QT(bmodel.getSaleReturnNote()) + ","
+                        + QT(bmodel.getSaleReturnRfValue()) + ","
                         + QT(bmodel.mSelectedRetailerLatitude + "") + ","
                         + QT(bmodel.mSelectedRetailerLongitude + "") + ","
                         + bmodel.retailerMasterBO.getDistributorId() + ","
@@ -721,6 +725,7 @@ public class SalesReturnHelper {
 
             db.closeDB();
             bmodel.setSaleReturnNote("");
+            bmodel.setSaleReturnRfValue("");
         } catch (Exception e) {
             Commons.printException(e);
         }
