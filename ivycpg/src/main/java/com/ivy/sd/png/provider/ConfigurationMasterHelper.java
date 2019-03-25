@@ -2714,7 +2714,7 @@ public class ConfigurationMasterHelper {
         this.IS_SKIP_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) : false;
         this.IS_COLLECTION_DELETE = hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) != null ? hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) : false;
 
-        this.IS_AZURE_UPLOAD = hashMapHHTModuleConfig.get(CODE_AZURE_UPLOAD) != null ? hashMapHHTModuleConfig.get(CODE_AZURE_UPLOAD) : true;
+        this.IS_AZURE_UPLOAD = hashMapHHTModuleConfig.get(CODE_AZURE_UPLOAD) != null ? hashMapHHTModuleConfig.get(CODE_AZURE_UPLOAD) : false;
     }
 
     private boolean isInOutModule() {
