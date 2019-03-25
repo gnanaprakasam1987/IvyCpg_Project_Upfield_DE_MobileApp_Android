@@ -20,6 +20,7 @@ import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
@@ -406,6 +407,11 @@ public class OrderHelper {
 
                     }
 
+                }
+
+                if(!businessModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT&&product.getFoc()>0){
+                    db.insertSQL(DataMembers.tbl_OrderFreeIssues, DataMembers.tbl_OrderFreeIssues_cols,
+                            getOrderFreeIssues(product,uid,false).toString());
                 }
 
             }
@@ -1229,6 +1235,59 @@ public class OrderHelper {
         sb.append("," + priceWithTax);
         return sb;
 
+    }
+
+    private StringBuffer getOrderFreeIssues(ProductMasterBO productBo, String uid,boolean isInvoice){
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(uid+",");
+        sb.append(productBo.getProductID()+",");
+        sb.append(productBo.getPcUomid()+",");
+        sb.append(productBo.getFoc()+",");
+        sb.append(1+",");
+
+        String reasonId=downloadStockReasonType();
+        sb.append(reasonId+",");
+
+        sb.append(productBo.getSrp()+",");
+        sb.append(productBo.getASRP()+",");
+
+        double totalValue= productBo.getFoc()*productBo.getSrp();
+        sb.append(totalValue);
+
+        if(isInvoice){
+            sb.append(",0");
+        }
+
+        return sb;
+    }
+
+    public String  downloadStockReasonType() {
+        ArrayList<ReasonMaster> reasons=new ArrayList<>();
+        try {
+            ReasonMaster reason;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            Cursor c = db.selectSQL(businessModel.reasonHelper.getReasonFromStdListMaster(StandardListMasterConstants.STOCK_TYPE_REASON));
+            if (c != null) {
+                while (c.moveToNext()) {
+                    reason = new ReasonMaster();
+                    reason.setReasonID(c.getString(0));
+                    reason.setReasonDesc(c.getString(1));
+                    reasons.add(reason);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        // Now this type of reason is not captured from mobile so by default first reason id is passed. In future it will be changed.
+        if(reasons.size()>0)
+            return reasons.get(0).getReasonID();
+            else return "0";
     }
 
     /**
@@ -2066,6 +2125,11 @@ public class OrderHelper {
                             }
                         }
 
+                    }
+
+                    if(!businessModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT&&product.getFoc()>0){
+                        db.insertSQL(DataMembers.tbl_InvoiceFreeIssues, DataMembers.tbl_InvoiceFreeIssues_cols,
+                                getOrderFreeIssues(product,invoiceId,true).toString());
                     }
 
                     if (product.isAllocation() == 1) {

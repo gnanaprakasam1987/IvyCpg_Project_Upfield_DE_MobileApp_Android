@@ -275,7 +275,7 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
                     break;
                 }
 
-                if(productMasterBO.getIsSaleable() == 1&&isValidProductForCurrentScreen(productMasterBO)) {
+                if(isValidProductForCurrentScreen(productMasterBO)) {
 
                     if(!isSpecialFilter|| (isSpecialFilter&&isSpecialFilterAppliedProduct(selectedSpecialFilter,productMasterBO))){
 
@@ -307,34 +307,37 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
     private boolean isValidProductForCurrentScreen(ProductMasterBO productMasterBO){
 
 
-        if(SCREEN_CODE_ORDER.equals(current_screen_code)) {
+        if(true||bModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT||productMasterBO.getIsSaleable() == 1) {
 
-            if (bModel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productMasterBO.getGroupid() == 0)
-                return false;
+            if (SCREEN_CODE_ORDER.equals(current_screen_code)) {
 
-            OrderHelper orderHelper=OrderHelper.getInstance(context);
-            if (bModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
-                    !productMasterBO.getParentHierarchy().contains("/" + bModel.productHelper.getmSelectedGlobalProductId() + "/"))
-                return false;
+                if (bModel.configurationMasterHelper.IS_LOAD_PRICE_GROUP_PRD_OLY && productMasterBO.getGroupid() == 0)
+                    return false;
 
-            if (bModel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY){
-                int flag;
-                if (bModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
-                    flag = bModel.getRetailerMasterBO().getIsVansales() == 1 ? 1 : 0;
-                } else {
-                    flag = bModel.configurationMasterHelper.IS_INVOICE ? 1 : 0;
+                OrderHelper orderHelper = OrderHelper.getInstance(context);
+                if (bModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !orderHelper.isQuickCall &&
+                        !productMasterBO.getParentHierarchy().contains("/" + bModel.productHelper.getmSelectedGlobalProductId() + "/"))
+                    return false;
+
+                if (bModel.configurationMasterHelper.IS_STOCK_AVAILABLE_PRODUCTS_ONLY) {
+                    int flag;
+                    if (bModel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
+                        flag = bModel.getRetailerMasterBO().getIsVansales() == 1 ? 1 : 0;
+                    } else {
+                        flag = bModel.configurationMasterHelper.IS_INVOICE ? 1 : 0;
+                    }
+
+                    if ((flag == 1 && productMasterBO.getSIH() <= 0) || (flag == 0 && productMasterBO.getWSIH() <= 0))
+                        return false;
+
                 }
 
-                if((flag==1&&productMasterBO.getSIH()<=0)||(flag==0&&productMasterBO.getWSIH()<=0))
+                if (bModel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && (productMasterBO.getIndicativeOrder_op() + productMasterBO.getIndicativeOrder_oc() + productMasterBO.getIndicativeOrder_oo()) <= 0)
                     return false;
 
             }
 
-            if (bModel.configurationMasterHelper.IS_SHOW_ONLY_INDICATIVE_ORDER && (productMasterBO.getIndicativeOrder_op()+productMasterBO.getIndicativeOrder_oc()+productMasterBO.getIndicativeOrder_oo()) <= 0)
-                return false;
-
         }
-
 
         return true;
 

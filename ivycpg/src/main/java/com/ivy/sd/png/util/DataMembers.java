@@ -308,6 +308,8 @@ public class DataMembers {
 
     public static final String tbl_orderHeader = "OrderHeader";
     public static final String tbl_orderDetails = "OrderDetail";
+    public static final String tbl_OrderFreeIssues = "OrderFreeIssues";
+    public static final String tbl_InvoiceFreeIssues = "InvoiceFreeIssues";
     public static final String tbl_orderReturnDetails = "OrderReturnDetail";
     private static final String tbl_closingStockHeader = "ClosingStockHeader";
     private static final String tbl_closingStockDetails = "ClosingStockDetail";
@@ -385,6 +387,9 @@ public class DataMembers {
     private static final String tbl_orderDetails_cols = "OrderID,ProductID,Qty,uomid,Rate,uomcount,msqqty,pieceqty,caseqty,d1,d2,d3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,casePrice,outerPrice,pcsUOMId,totalamount,batchid,PriceOffId,PriceOffValue,isFreeProduct,weight,ReasonId,HsnCode,RField1,NetAmount,UpsellingQty,ASRP";
     private static final String tbl_orderReturnDetails_cols = "OrderID,Pid,UomID,TypeID,Qty,Price,LineValue,LiableQty,ReturnQty";
     private static final String tbl_closingStockHeader_cols = "StockID,Date,RetailerID,remark,latitude,longitude,DistributorID,Weightage,Score,AvailabilityShare,ridSF,VisitId";
+
+    public static final String tbl_OrderFreeIssues_cols = "Uid,productId,uomId,qty,conversionQty,reasonId,price,taxPrice,totalValue";
+    public static final String tbl_InvoiceFreeIssues_cols = "Uid,productId,uomId,qty,conversionQty,reasonId,price,taxPrice,totalValue,batchId";
 
     private static final String tbl_closingStockDetails_cols = "StockID,ProductID,Shelfpqty,whpqty,uomid,uomqty,msqqty,Shelfcqty,whcqty,whoqty,shelfoqty,ouomid,ouomqty,LocId,isDistributed,isListed,ReasonID,Facing,IsOwn,PcsUOMId,Rfield1,Rfield2,Rfield3,Score,isAvailable,isAuditDone";
     private static final String tbl_InvoiceHeaderUpload_cols = "InvoiceNo,RetailerId,InvoiceDate,InvoiceAmount,Discount,InvNetAmount,OrderId,remark,ImageName,latitude,longitude,return_amt,imgName,LinesPerCall,totalweight,SalesType,print_count,sid,stype,SchemeAmount,TaxAmount,creditPeriod,PrintFilePath,SParentID,timestampid,AddressId,ridSF,VisitId";

@@ -592,7 +592,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (productBO.getOrderedCaseQty() > 0
                         || productBO.getOrderedPcsQty() > 0
                         || productBO.getOrderedOuterQty() > 0
-                        || (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && isReturnDoneForProduct(productBO))) {
+                        || (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && isReturnDoneForProduct(productBO))
+                        || (!bModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT && productBO.getFoc()>0)) {
 
                     int totalQuantity = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
 
