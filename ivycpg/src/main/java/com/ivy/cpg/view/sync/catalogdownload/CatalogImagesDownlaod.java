@@ -151,11 +151,10 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                     lastDownloadTime);
         }
 
-        resumeDownload();
-
         LocalBroadcastManager.getInstance(this).registerReceiver(downloadInfoReceiver,
                 new IntentFilter("com.ivy.cpg.view.sync.CatalogDownloadStatus"));
 
+        resumeDownload();
     }
 
     private void isServiceRunning() {
