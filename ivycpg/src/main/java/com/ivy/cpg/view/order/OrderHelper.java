@@ -1744,6 +1744,28 @@ public class OrderHelper {
             }
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
                 SalesReturnHelper.getInstance(mContext).loadSalesReturnData(mContext, "ORDER", orderID, false);
+
+            if (!businessModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT) {
+
+                String sql2 = "select " +DataMembers.tbl_OrderFreeIssues_cols+" from "
+                        + DataMembers.tbl_OrderFreeIssues
+                        + " where uid="
+                        + StringUtils.QT(orderID);
+                Cursor c = db.selectSQL(sql2);
+                if (c != null) {
+                    while (c.moveToNext()) {
+                        for (ProductMasterBO temp : businessModel.productHelper
+                                .getProductMaster())
+                            if (temp.getProductID().equals(c.getString(1))) {
+                                temp.setFoc(c.getInt(3));
+                                break;
+                            }
+
+                    }
+                    c.close();
+                }
+            }
+
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);

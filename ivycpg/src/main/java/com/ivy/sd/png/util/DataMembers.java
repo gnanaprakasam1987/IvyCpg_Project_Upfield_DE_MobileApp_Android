@@ -697,6 +697,8 @@ public class DataMembers {
         uploadColumn.put(tbl_orderHeader, tbl_orderHeader_cols);
         uploadColumn.put(tbl_orderDetails, tbl_orderDetails_cols);
         uploadColumn.put(tbl_orderReturnDetails, tbl_orderReturnDetails_cols);
+        uploadColumn.put(tbl_OrderFreeIssues, tbl_OrderFreeIssues_cols);
+        uploadColumn.put(tbl_InvoiceFreeIssues, tbl_InvoiceFreeIssues_cols);
         uploadColumn.put(tbl_closingStockDetails, tbl_closingStockDetails_cols);
 
         uploadColumn.put(tbl_OutletTimestampupload,
@@ -1024,6 +1026,9 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_AnswerScoreDetails, tbl_AnswerScoreDetails_cols);
         uploadColumnWithRetailer.put(tbl_Planorama, tbl_Planorama_cols);
         uploadColumnWithRetailer.put(tbl_Planorama_image, tbl_Planorama_image_cols);
+
+        uploadColumnWithRetailer.put(tbl_OrderFreeIssues, tbl_OrderFreeIssues_cols);
+        uploadColumnWithRetailer.put(tbl_InvoiceFreeIssues, tbl_InvoiceFreeIssues_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();

@@ -22,19 +22,15 @@
             <LinearLayout
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:padding="3dp"
-                android:layout_weight="6">
+                android:layout_weight="7">
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_productname"
                     style="@style/TextViewListItemPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_centerVertical="true"
                     android:layout_marginEnd="@dimen/list_margin"
                     android:layout_marginRight="@dimen/list_margin"
                     android:layout_weight="1"
@@ -43,15 +39,13 @@
 
                 <TextView
                     android:id="@+id/stock_and_order_listview_productbarcode"
-                    style="@style/TextViewListItemPrimary"
+                    style="@style/TextViewListItemCaption"
                     android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_below="@+id/stock_and_order_listview_productname"
-                    android:layout_gravity="end|center"
+                    android:layout_height="wrap_content"
                     android:gravity="start|center"
                     android:maxLines="1"
                     android:text="@string/barcode"
-                    android:visibility="gone" />
+                    />
             </LinearLayout>
 
 

@@ -3749,100 +3749,121 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     .findViewById(R.id.stock_and_order_listview_foc);
             holder.foc.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
 
-            row.setOnClickListener(new OnClickListener() {
+
+
+        }
+
+
+        /////////// common fields ///////////////
+
+        row.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                if (bmodel.configurationMasterHelper.SHOW_SIH_IN_PNAME) {
+                    productSearch.setProductNameOnBar(strProductObj = "[SIH :"
+                            + holder.productObj.getSIH() + "] "
+                            + holder.pname);
+                } else
+                    productSearch.setProductNameOnBar(holder.pname);
+
+
+            }
+        });
+
+        if (!bmodel.configurationMasterHelper.SHOW_FOC)
+            (row.findViewById(R.id.llFoc)).setVisibility(View.GONE);
+        else {
+            try {
+                ((TextView) row.findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
+                if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                        R.id.focTitle).getTag()) != null)
+                    ((TextView) row.findViewById(R.id.focTitle))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(row.findViewById(
+                                            R.id.focTitle).getTag()));
+            } catch (Exception e) {
+                Commons.printException(e + "");
+            }
+        }
+
+        holder.foc.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+
+                String qty = s.toString();
+                if (qty.length() > 0) {
+                    holder.foc.setSelection(qty.length());
+                }
+                if (qty == null || qty.trim().equals(""))
+                    holder.productObj.setFoc(0);
+                else
+                    holder.productObj.setFoc(SDUtil.convertToInt(qty));
+
+            }
+
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+            }
+
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+            }
+        });
+
+        if (bmodel.configurationMasterHelper.SHOW_CUSTOM_KEYBOARD_NEW) {
+
+            holder.foc.setFocusable(false);
+
+            holder.foc.setOnClickListener(new View.OnClickListener() {
+                @Override
                 public void onClick(View v) {
+
                     if (bmodel.configurationMasterHelper.SHOW_SIH_IN_PNAME) {
-                        productSearch.setProductNameOnBar(strProductObj = "[SIH :"
-                                + holder.productObj.getSIH() + "] "
-                                + holder.pname);
+                        strProductObj = "[SIH :" + holder.productObj.getSIH() + "] "
+                                + holder.pname;
+                        productSearch.setProductNameOnBar(strProductObj);
                     } else
                         productSearch.setProductNameOnBar(holder.pname);
 
+                    if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
+                        dialogCustomKeyBoard = new CustomKeyBoard(StockAndOrder.this, holder.foc);
+                        dialogCustomKeyBoard.show();
+                        dialogCustomKeyBoard.setCancelable(false);
 
+                        //Grab the window of the dialog, and change the width
+                        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                        Window window = dialogCustomKeyBoard.getWindow();
+                        lp.copyFrom(window.getAttributes());
+                        lp.width = (int) getResources().getDimension(R.dimen.custom_keyboard_width);
+                        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+                        window.setAttributes(lp);
+                    }
                 }
             });
+        } else {
+            holder.foc.setFocusable(true);
 
-            holder.foc.addTextChangedListener(new TextWatcher() {
-                public void afterTextChanged(Editable s) {
+            holder.foc.setOnTouchListener(new OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (bmodel.configurationMasterHelper.SHOW_SIH_IN_PNAME) {
+                        strProductObj = "[SIH :"
+                                + holder.productObj.getSIH() + "] "
+                                + holder.pname;
+                        productSearch.setProductNameOnBar(strProductObj);
+                    } else
+                        productSearch.setProductNameOnBar(holder.pname);
 
-                    String qty = s.toString();
-                    if (qty.length() > 0) {
-                        holder.foc.setSelection(qty.length());
-                    }
-                    if (qty == null || qty.trim().equals(""))
-                        holder.productObj.setFoc(0);
-                    else
-                        holder.productObj.setFoc(SDUtil.convertToInt(qty));
-
-                }
-
-                public void beforeTextChanged(CharSequence s, int start,
-                                              int count, int after) {
-                }
-
-                public void onTextChanged(CharSequence s, int start,
-                                          int before, int count) {
+                    QUANTITY = holder.foc;
+                    QUANTITY.setTag(holder.productObj);
+                    int inType = holder.foc.getInputType();
+                    holder.foc.setInputType(InputType.TYPE_NULL);
+                    holder.foc.onTouchEvent(event);
+                    holder.foc.setInputType(inType);
+                    holder.foc.requestFocus();
+                    if (holder.foc.getText().length() > 0)
+                        holder.foc.setSelection(holder.foc.getText().length());
+                    productSearch.hideSoftInputFromWindow();
+                    return true;
                 }
             });
-
-            if (bmodel.configurationMasterHelper.SHOW_CUSTOM_KEYBOARD_NEW) {
-
-                holder.foc.setFocusable(false);
-
-                holder.foc.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-
-                        if (bmodel.configurationMasterHelper.SHOW_SIH_IN_PNAME) {
-                            strProductObj = "[SIH :" + holder.productObj.getSIH() + "] "
-                                    + holder.pname;
-                            productSearch.setProductNameOnBar(strProductObj);
-                        } else
-                            productSearch.setProductNameOnBar(holder.pname);
-
-                        if (dialogCustomKeyBoard == null || !dialogCustomKeyBoard.isDialogCreated()) {
-                            dialogCustomKeyBoard = new CustomKeyBoard(StockAndOrder.this, holder.foc);
-                            dialogCustomKeyBoard.show();
-                            dialogCustomKeyBoard.setCancelable(false);
-
-                            //Grab the window of the dialog, and change the width
-                            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                            Window window = dialogCustomKeyBoard.getWindow();
-                            lp.copyFrom(window.getAttributes());
-                            lp.width = (int) getResources().getDimension(R.dimen.custom_keyboard_width);
-                            lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-                            window.setAttributes(lp);
-                        }
-                    }
-                });
-            } else {
-                holder.foc.setFocusable(true);
-
-                holder.foc.setOnTouchListener(new OnTouchListener() {
-                    public boolean onTouch(View v, MotionEvent event) {
-                        if (bmodel.configurationMasterHelper.SHOW_SIH_IN_PNAME) {
-                            strProductObj = "[SIH :"
-                                    + holder.productObj.getSIH() + "] "
-                                    + holder.pname;
-                            productSearch.setProductNameOnBar(strProductObj);
-                        } else
-                            productSearch.setProductNameOnBar(holder.pname);
-
-                        QUANTITY = holder.foc;
-                        QUANTITY.setTag(holder.productObj);
-                        int inType = holder.foc.getInputType();
-                        holder.foc.setInputType(InputType.TYPE_NULL);
-                        holder.foc.onTouchEvent(event);
-                        holder.foc.setInputType(inType);
-                        holder.foc.requestFocus();
-                        if (holder.foc.getText().length() > 0)
-                            holder.foc.setSelection(holder.foc.getText().length());
-                        productSearch.hideSoftInputFromWindow();
-                        return true;
-                    }
-                });
-            }
-
         }
 
     }
