@@ -1150,6 +1150,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                             false);
                 }
 
+                (row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                 initializeRowViews(row,holder,SOLogic,viewType);
 
 
@@ -1927,7 +1928,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             holder.slant_view_bg = row.findViewById(R.id.slant_view_bg);
 
             holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
-            (row.findViewById(R.id.view_dotted_line)).setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+
             //setting typefaces
             holder.tvbarcode.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
             holder.psname.setTypeface(FontUtils.getProductNameFont(StockAndOrder.this));
@@ -3741,6 +3742,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             holder.tvbarcode = row
                     .findViewById(R.id.stock_and_order_listview_productbarcode);
 
+            holder.tvbarcode.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
+
+            if (!bmodel.configurationMasterHelper.SHOW_BARCODE)
+                holder.tvbarcode.setVisibility(View.GONE);
+
             holder.psname = row
                     .findViewById(R.id.stock_and_order_listview_productname);
            /* holder.tvProductCode = row
@@ -4678,7 +4684,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if (resultCode == RESULT_OK) {
                 overridePendingTransition(0, R.anim.zoom_exit);
                 updateValue();
-                refreshList();
+
+                lvwplist.setAdapter(new MyAdapter(mylist));
+
                 Bundle extras = data.getExtras();
                 int holderPosition = extras.getInt("position", 0);
                 int holderTop = extras.getInt("top", 0);
@@ -5861,7 +5869,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     }
 
     public void refreshList() {
-         lvwplist.setAdapter(new MyAdapter(mylist));
     }
 
 
