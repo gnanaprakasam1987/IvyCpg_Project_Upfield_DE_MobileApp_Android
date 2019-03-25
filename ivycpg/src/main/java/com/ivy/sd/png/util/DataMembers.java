@@ -388,7 +388,7 @@ public class DataMembers {
     private static final String tbl_orderReturnDetails_cols = "OrderID,Pid,UomID,TypeID,Qty,Price,LineValue,LiableQty,ReturnQty";
     private static final String tbl_closingStockHeader_cols = "StockID,Date,RetailerID,remark,latitude,longitude,DistributorID,Weightage,Score,AvailabilityShare,ridSF,VisitId";
 
-    public static final String tbl_OrderFreeIssues_cols = "Uid,productId,uomId,qty,conversionQty,reasonId,price,taxPrice,totalValue";
+    public static final String tbl_OrderFreeIssues_cols = "Uid,productId,uomId,qty,conversionQty,reasonId,price,taxPrice,totalValue,batchId";
     public static final String tbl_InvoiceFreeIssues_cols = "Uid,productId,uomId,qty,conversionQty,reasonId,price,taxPrice,totalValue,batchId";
 
     private static final String tbl_closingStockDetails_cols = "StockID,ProductID,Shelfpqty,whpqty,uomid,uomqty,msqqty,Shelfcqty,whcqty,whoqty,shelfoqty,ouomid,ouomqty,LocId,isDistributed,isListed,ReasonID,Facing,IsOwn,PcsUOMId,Rfield1,Rfield2,Rfield3,Score,isAvailable,isAuditDone";

@@ -1255,9 +1255,7 @@ public class OrderHelper {
         double totalValue= productBo.getFoc()*productBo.getSrp();
         sb.append(totalValue);
 
-        if(isInvoice){
-            sb.append(",0");
-        }
+        sb.append(",0");
 
         return sb;
     }
@@ -2127,10 +2125,7 @@ public class OrderHelper {
 
                     }
 
-                    if(!businessModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT&&product.getFoc()>0){
-                        db.insertSQL(DataMembers.tbl_InvoiceFreeIssues, DataMembers.tbl_InvoiceFreeIssues_cols,
-                                getOrderFreeIssues(product,invoiceId,true).toString());
-                    }
+
 
                     if (product.isAllocation() == 1) {
                         int s = product.getSIH() > totalqty ? product.getSIH()
@@ -2144,6 +2139,11 @@ public class OrderHelper {
                                 + " else 0 end) where pid="
                                 + product.getProductID());
                     }
+                }
+
+                if(!businessModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT&&product.getFoc()>0){
+                    db.insertSQL(DataMembers.tbl_InvoiceFreeIssues, DataMembers.tbl_InvoiceFreeIssues_cols,
+                            getOrderFreeIssues(product,invoiceId,true).toString());
                 }
             }
 
