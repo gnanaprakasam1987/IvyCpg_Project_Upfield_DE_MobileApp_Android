@@ -35,9 +35,9 @@ static def fetchRevisionNumber() {
 }
 
 def majorVersion = 2
-def minorVersion = 138
+def minorVersion = 139
 def patchVersion = 0
-def verCode = 1380
+def verCode = 1390
 def revNumber = fetchRevisionNumber()
 
 android {
@@ -304,5 +304,7 @@ dependencies {
     sfdcImplementation 'com.salesforce.mobilesdk:SmartSync:5.0.0'
 
     implementation 'com.mindorks.android:prdownloader:0.4.0'
+
+    implementation 'com.elyeproj.libraries:loaderviewlibrary:1.5.0'
 }
 apply plugin: 'com.google.gms.google-services'

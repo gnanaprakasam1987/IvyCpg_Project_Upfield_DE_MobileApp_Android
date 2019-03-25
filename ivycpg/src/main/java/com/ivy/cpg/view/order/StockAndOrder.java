@@ -68,6 +68,7 @@ import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
+import com.elyeproj.loaderviewlibrary.LoaderTextView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
@@ -473,6 +474,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             public void onDrawerClosed(View view) {
 
                 supportInvalidateOptionsMenu();
+
 
                 if(mSelectedFilter==1)
                     productSearch.startSpecialFilterSearch(productList,mSelectedSpecialFilter);
@@ -1108,7 +1110,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         @Override
         public int getViewTypeCount() {
-            if(true||bmodel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT){
+            if(bmodel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT){
                 return 2;
             }
             else return 1;
@@ -1766,7 +1768,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
             else {
-                //////////// common fields in all the row layout file ////////////////
+
                 if (bmodel.configurationMasterHelper.SHOW_FOC) {
                     String strFoc = holder.productObj.getFoc() + "";
                     holder.foc.setText(strFoc);

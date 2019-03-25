@@ -409,7 +409,7 @@ public class OrderHelper {
 
                 }
 
-                if(!businessModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT&&product.getFoc()>0){
+                if(businessModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT&&product.getFoc()>0){
                     db.insertSQL(DataMembers.tbl_OrderFreeIssues, DataMembers.tbl_OrderFreeIssues_cols,
                             getOrderFreeIssues(product,uid,false).toString());
                 }
@@ -1745,7 +1745,7 @@ public class OrderHelper {
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
                 SalesReturnHelper.getInstance(mContext).loadSalesReturnData(mContext, "ORDER", orderID, false);
 
-            if (!businessModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT) {
+            if (businessModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT) {
 
                 String sql2 = "select " +DataMembers.tbl_OrderFreeIssues_cols+" from "
                         + DataMembers.tbl_OrderFreeIssues
@@ -2163,7 +2163,7 @@ public class OrderHelper {
                     }
                 }
 
-                if(!businessModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT&&product.getFoc()>0){
+                if(businessModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT&&product.getFoc()>0){
                     db.insertSQL(DataMembers.tbl_InvoiceFreeIssues, DataMembers.tbl_InvoiceFreeIssues_cols,
                             getOrderFreeIssues(product,invoiceId,true).toString());
                 }

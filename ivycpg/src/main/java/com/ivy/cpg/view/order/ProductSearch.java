@@ -307,7 +307,7 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
     private boolean isValidProductForCurrentScreen(ProductMasterBO productMasterBO){
 
 
-        if(true||bModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT||productMasterBO.getIsSaleable() == 1) {
+        if(bModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT||productMasterBO.getIsSaleable() == 1) {
 
             if (SCREEN_CODE_ORDER.equals(current_screen_code)) {
 
