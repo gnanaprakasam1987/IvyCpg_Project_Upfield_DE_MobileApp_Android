@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/round_dialog_bg"
+    android:layout_marginLeft="@dimen/dimen_30dp"
+    android:layout_marginRight="@dimen/dimen_30dp"
+    android:layout_gravity="center"
+    android:layout_margin="@dimen/dimen_10dp"
+    android:padding="@dimen/dimen_10dp"
+    android:minWidth="@dimen/_300sdp"
+    android:animateLayoutChanges="true">
+
+    <TextView
+        android:id="@+id/heading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search Product Name"
+        style="@style/HeadingStyle"
+        android:padding="@dimen/dimen_5dp"
+        android:layout_centerHorizontal="true"/>
+
+    <com.ivy.utils.RippleBackground
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:layout_below="@+id/heading"
+        android:layout_marginTop="20dp"
+        app:rb_color="#0099CC"
+        app:rb_duration="2500"
+        app:rb_radius="30dp"
+        app:rb_rippleAmount="5"
+        app:rb_scale="3">
+
+        <ImageView
+            android:id="@+id/mic"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/ico_mic"
+            />
+
+    </com.ivy.utils.RippleBackground>
+
+    <TextView
+        android:id="@+id/text_say_something"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/speech_prompt"
+        style="@style/TextViewNormal"
+        android:layout_below="@+id/content"
+        android:padding="@dimen/dimen_5dp"
+        android:layout_marginTop="@dimen/dimen_10dp"
+        android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>

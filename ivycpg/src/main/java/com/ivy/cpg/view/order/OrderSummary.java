@@ -592,7 +592,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (productBO.getOrderedCaseQty() > 0
                         || productBO.getOrderedPcsQty() > 0
                         || productBO.getOrderedOuterQty() > 0
-                        || (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && isReturnDoneForProduct(productBO))) {
+                        || (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && isReturnDoneForProduct(productBO))
+                        || (bModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT && productBO.getFoc()>0)) {
 
                     int totalQuantity = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
 
@@ -2560,7 +2561,18 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     holder.pcsQty.setText(String.valueOf(0));
                     holder.caseQty.setText(String.valueOf(0));
 
+                    //If only other UOMs are enabled but free is in outer then showing it in screen without considering UOM config.
+                    if(productBO.getQuantitySelected()>0)
+                        row.findViewById(R.id.llOuter).setVisibility(View.VISIBLE);
+                    else row.findViewById(R.id.llOuter).setVisibility(View.GONE);
+
                 } else {
+
+                    //If only other UOMs are enabled but free is in pieces then showing it in screen without considering UOM config.
+                    if(productBO.getQuantitySelected()>0)
+                        row.findViewById(R.id.llPiece).setVisibility(View.VISIBLE);
+                    else row.findViewById(R.id.llPiece).setVisibility(View.GONE);
+
                     holder.pcsQty.setText(String.valueOf(productBO.getQuantitySelected()));
                     holder.caseQty.setText(String.valueOf(0));
                     holder.outerQty.setText(String.valueOf(0));
