@@ -444,7 +444,8 @@ public class CommonPrintHelper {
                                         }
 
                                     }
-                                    if (wrap_text.equalsIgnoreCase("yes"))
+                                    if (length > attr_length
+                                            && wrap_text.equalsIgnoreCase("yes"))
                                         mAttrValue = doAlignWithNextLine(mAttrValue, attr_length, ALIGNMENT_RIGHT, attr_space, attr_bold);
                                     else
                                         mAttrValue = doAlign(mAttrValue, ALIGNMENT_RIGHT, attr_space);
@@ -463,7 +464,8 @@ public class CommonPrintHelper {
                                     } else {
                                         startPosition = property_total_length - lineValue.length() - attr_length;
                                     }
-                                    if (wrap_text.equalsIgnoreCase("yes"))
+                                    if (length > attr_length
+                                            && wrap_text.equalsIgnoreCase("yes"))
                                         mAttrValue = doAlignWithNextLine(mAttrValue, attr_length, ALIGNMENT_RIGHT, attr_space, attr_bold);
                                     else
                                         mAttrValue = doAlign(mAttrValue, ALIGNMENT_RIGHT, startPosition);
@@ -484,7 +486,8 @@ public class CommonPrintHelper {
 
                                     startPosition = (property_total_length / 2) - (length / 2);
 
-                                    if (wrap_text.equalsIgnoreCase("yes"))
+                                    if (length > attr_length
+                                            && wrap_text.equalsIgnoreCase("yes"))
                                         mAttrValue = doAlignWithNextLine(mAttrValue, attr_length, ALIGNMENT_RIGHT, startPosition, attr_bold);
                                     else
                                         mAttrValue = doAlign(mAttrValue, ALIGNMENT_RIGHT, startPosition);
