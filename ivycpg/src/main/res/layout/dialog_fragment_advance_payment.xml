@@ -385,7 +385,7 @@
         <Button
             android:id="@+id/btnsubmit"
             style="?attr/roundedCustomButtonNormal"
-            android:layout_width="@dimen/dimens_100dp"
+            android:layout_width="wrap_content"
             android:layout_height="@dimen/dimens_40dp"
             android:layout_marginTop="@dimen/dimens_14dp"
             android:text="@string/pay_now"
