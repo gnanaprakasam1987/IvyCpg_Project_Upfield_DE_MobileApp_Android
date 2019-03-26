@@ -1558,6 +1558,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_COLLECTION_DELETE = "COLL20";
     public boolean IS_COLLECTION_DELETE;
 
+    //Image upload through Azure Storage
+    private static final String CODE_AZURE_UPLOAD = "IS_AZURE_UPLOAD";
+    public boolean IS_AZURE_UPLOAD = false;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2300,7 +2304,7 @@ public class ConfigurationMasterHelper {
         this.IS_SURVEY_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SOS_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SF_NORM_CHECK = hashMapHHTModuleConfig.get(CODE_CHECK_NORM) != null ? hashMapHHTModuleConfig.get(CODE_CHECK_NORM) : false;
-        this.IS_CATALOG_IMG_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) != null ? hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) : false;
+        this.IS_CATALOG_IMG_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) != null ? hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) : true;
         this.IS_MULTI_STOCKORDER = hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) != null ? hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) : false;
         if (IS_MUST_SELL_REASON && IS_MUST_SELL_SKIP) {
             this.IS_MUST_SELL_SKIP = true;
@@ -2719,6 +2723,8 @@ public class ConfigurationMasterHelper {
         this.IS_VOICE_TO_TEXT = hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) != null ? hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) : -1;
         this.IS_SKIP_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) : false;
         this.IS_COLLECTION_DELETE = hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) != null ? hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) : false;
+
+        this.IS_AZURE_UPLOAD = hashMapHHTModuleConfig.get(CODE_AZURE_UPLOAD) != null ? hashMapHHTModuleConfig.get(CODE_AZURE_UPLOAD) : false;
     }
 
     private boolean isInOutModule() {
@@ -4843,38 +4849,6 @@ public class ConfigurationMasterHelper {
         }
         db.closeDB();
         return 0;
-    }
-
-    public void setAmazonS3Credentials() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
-        try {
-            db.openDataBase();
-            String sql = "Select ListCode,ListName from StandardListMaster where ListType='Amazon_Configuration'";
-            Cursor c = db.selectSQL(sql);
-            if (c != null) {
-                while (c.moveToNext()) {
-                    Commons.print("Check:" + c.getString(0) + " " + c.getString(1));
-                    if (c.getString(0).equals("AS_BUCKET_NAME"))
-                        DataMembers.S3_BUCKET = c.getString(1);
-                    else if (c.getString(0).equals("AS_ACCESS_KEY"))
-                        ConfigurationMasterHelper.ACCESS_KEY_ID = c
-                                .getString(1);
-                    else if (c.getString(0).equals("AS_SECURITY_KEY"))
-                        ConfigurationMasterHelper.SECRET_KEY = c.getString(1);
-                    else if (c.getString(0).equals("AS_END_POINT"))
-                        DataMembers.S3_BUCKET_REGION = c.getString(1);
-                    else if (c.getString(0).equals("AS_ROOT_DIR"))
-                        DataMembers.S3_ROOT_DIRECTORY = c.getString(1);
-
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            db.closeDB();
-        }
-
     }
 
     public ArrayList<ConfigureBO> getLanguageList() {

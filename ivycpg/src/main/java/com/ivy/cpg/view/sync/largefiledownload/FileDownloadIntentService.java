@@ -7,8 +7,6 @@ import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.downloader.Error;
 import com.downloader.OnCancelListener;
 import com.downloader.OnDownloadListener;
@@ -17,15 +15,14 @@ import com.downloader.OnProgressListener;
 import com.downloader.OnStartOrResumeListener;
 import com.downloader.PRDownloader;
 import com.downloader.Progress;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.sync.AWSConnectionHelper;
+import com.ivy.cpg.view.sync.AzureConnectionHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.io.File;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class FileDownloadIntentService extends IntentService {
 
@@ -34,6 +31,8 @@ public class FileDownloadIntentService extends IntentService {
     private ArrayList<DigitalContentModel> downloadUrlList = new ArrayList<>();
     private int count = 0;
     private DecimalFormat df = new DecimalFormat("0.000");
+
+    private String downloadType= "AWS";
 
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
@@ -52,6 +51,9 @@ public class FileDownloadIntentService extends IntentService {
 
             isServiceRunning = true;
             downloadUrlList = intent.getParcelableArrayListExtra("DigiContent");
+
+            downloadType = intent.getExtras()!= null?intent.getExtras().getString("DownloadType","AWS"):"AWS";
+
             createFileStartDownload(downloadUrlList.get(count));
         }
     }
@@ -64,7 +66,7 @@ public class FileDownloadIntentService extends IntentService {
             count = count + 1;
             createFileStartDownload(downloadUrlList.get(count));
         } else if (count == downloadUrlList.size() - 1) {
-            Commons.print("FileDownloadIntentService isServiceRunning "+isServiceRunning);
+            Commons.print("FileDownloadIntentService isServiceRunning " + isServiceRunning);
             isServiceRunning = false;
             stopSelf();
         }
@@ -89,11 +91,11 @@ public class FileDownloadIntentService extends IntentService {
 
     /**
      * Creates the file and start download the file download using PRdownload
-     *  If File already found and within the expiry time then it will resume the download.
+     * If File already found and within the expiry time then it will resume the download.
      */
     private void createFileStartDownload(DigitalContentModel digitalContentBO) {
 
-        Commons.print("FileDownloadIntentService url "+digitalContentBO.getImgUrl());
+        Commons.print("FileDownloadIntentService url " + digitalContentBO.getImgUrl());
 
         if (digitalContentBO.getStatus() != null && digitalContentBO.getStatus().equals(FileDownloadProvider.DONE)) {
             startProcess();
@@ -144,7 +146,7 @@ public class FileDownloadIntentService extends IntentService {
 
             String mFileName;
             int index;
-            File  outFile;
+            File outFile;
 
             mFileName = "file.bin";
 
@@ -181,10 +183,13 @@ public class FileDownloadIntentService extends IntentService {
             }
 
             String signedUrl;
-            if (digitalContentBO.getSignedUrl() != null && digitalContentBO.getSignedUrl().length() > 0){
+            if (digitalContentBO.getSignedUrl() != null && digitalContentBO.getSignedUrl().length() > 0) {
                 signedUrl = digitalContentBO.getSignedUrl();
-            }else {
-                signedUrl = getSignedUrl(digitalContentBO.getImgUrl());
+            } else {
+                if (downloadType.equalsIgnoreCase("AWS"))
+                    signedUrl = AWSConnectionHelper.getInstance().getSignedAwsUrl(digitalContentBO.getImgUrl());
+                else
+                    signedUrl = AzureConnectionHelper.getInstance().getAzureFile(digitalContentBO.getImgUrl());
                 digitalContentBO.setSignedUrl(signedUrl);
             }
 
@@ -260,31 +265,6 @@ public class FileDownloadIntentService extends IntentService {
             FileDownloadProvider.getInstance(context).prepareDigitalContentSaveList(digitalContentBO);
 
         }
-    }
-
-
-    /**
-     * Generate Signed Amazon Url with expiration time for 5 hours
-     */
-    private String getSignedUrl(String downloadKey) {
-        try {
-            BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                    ConfigurationMasterHelper.SECRET_KEY);
-            AmazonS3Client s3 = new AmazonS3Client(myCredentials);
-            s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
-
-            URL url = s3.generatePresignedUrl(DataMembers.S3_BUCKET, downloadKey,
-                    new Date(new Date().getTime() + 1000 * 60 * 300));
-
-            Commons.print("Signed Url " + url.toString());
-
-            return url.toString();
-
-        } catch (Exception e) {
-            Commons.print("response Code code getting null value");
-        }
-
-        return "";
     }
 
 }
