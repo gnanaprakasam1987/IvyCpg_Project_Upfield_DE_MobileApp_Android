@@ -231,7 +231,7 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
             mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
                 @Override
                 public void onMapLoaded() {
-                    updateUserSelection(mSelectedUsers, true);
+                    updateUserSelection(mSelectedUsers, false);
                 }
             });
         } else {
@@ -243,13 +243,6 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
             });
         }
 
-
-        mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-            @Override
-            public void onMapLoaded() {
-                updateUserSelection(null, true);
-            }
-        });
 
     }
 
@@ -271,8 +264,12 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
-        menu.findItem(R.id.menu_users).setVisible(!drawerOpen);
+        if (outletPerfomanceHelper.getLstUsers().size() > 1) {
+            boolean drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
+            menu.findItem(R.id.menu_users).setVisible(!drawerOpen);
+        }else{
+            menu.findItem(R.id.menu_users).setVisible(false);
+        }
     }
 
     @Override
@@ -340,9 +337,8 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
                     ((TextView) getActivity().findViewById(R.id.tv_toolbar_title)).setText(bmodel.mSelectedActivityName);
                 }
 
-                ArrayList<Integer> lstLastVisitedRetailerIds = null;
+                ArrayList<Integer> lstLastVisitedRetailerIds = new ArrayList<>();
                 if (isAlluser) {
-                    lstLastVisitedRetailerIds = new ArrayList<>();
                     for (OutletReportBO userBo : outletPerfomanceHelper.getLstUsers()) {
                         lstLastVisitedRetailerIds.add(outletPerfomanceHelper.downloadlastVisitedRetailer(userBo.getUserId()));
                     }
