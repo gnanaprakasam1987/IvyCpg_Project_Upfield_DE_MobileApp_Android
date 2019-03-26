@@ -15,6 +15,19 @@ public class DataMembers {
     // Image Download URL
     public static String IMG_DOWN_URL;
 
+    //For Microsoft Azure Cloud Storage
+    public static String AZURE_TYPE = "Azure";
+    public static String AZURE_CONTAINER = "devappfiles";
+    public static String AZURE_CONNECTION_STRING = "DefaultEndpointsProtocol=https;AccountName=devappwestindiageo;AccountKey=whdcWLAMnbipdHseTeb6ifOWczAjOcoUjT0wXgnIm+F6cJYGIyumNsapX4IH2vBBMeh9/qVfxpxbAZGjlv1XLw==;EndpointSuffix=core.windows.net";
+    public static String AZURE_SAS = "whdcWLAMnbipdHseTeb6ifOWczAjOcoUjT0wXgnIm+F6cJYGIyumNsapX4IH2vBBMeh9/qVfxpxbAZGjlv1XLw==";
+
+    public static String AZURE_ENDPOINT = "core.windows.net";
+    public static String AZURE_ACCOUNT_NAME = "devappwestindiageo";
+    public static String AZURE_KEY = "whdcWLAMnbipdHseTeb6ifOWczAjOcoUjT0wXgnIm+F6cJYGIyumNsapX4IH2vBBMeh9/qVfxpxbAZGjlv1XLw==";
+    public static String AZURE_BASE_URL = "https://devappwestindiageo.blob.core.windows.net";
+    public static String AZURE_ROOT_DIRECTORY = "IvyDistributor";
+
+
     // For Cloud Image Upload Starts
     public static String S3_BUCKET_REGION = "s3-ap-southeast-1.amazonaws.com";// "Singapore";//
     public static String S3_BUCKET = "ivydevbkt/ivy_distributor";
@@ -125,6 +138,7 @@ public class DataMembers {
     public static final int SYNC_EXPORT = 218;
     public static final int AMAZONIMAGE_UPLOAD = 501;
     //public static final int SYNCUPLOAD_IMAGE = 5555;
+    public static final int AZURE_IMAGE_UPLOAD = 999;
     public static final int NOTIFY_UPLOADED_IMAGE = 55551;
     public static final int NOTIFY_UPLOAD_ERROR_IMAGE = 55552;
     public static final int SAVECOLLECTION = 66;

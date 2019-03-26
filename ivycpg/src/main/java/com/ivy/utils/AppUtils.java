@@ -200,6 +200,16 @@ public class AppUtils {
                 MODE_PRIVATE);
     }
 
+    /**
+     * @return Application's {@code SharedPreferences}.
+     */
+    public static SharedPreferences getSharedPreferenceByName(Context context,String name) {
+        // This sample app persists the registration ID in shared preferences,
+        // but
+        // how you store the regID in your app is up to you.
+        return context.getSharedPreferences(name, MODE_PRIVATE);
+    }
+
 
     /**
      * Generate a value suitable for use in {@link #setId(int)}.

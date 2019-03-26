@@ -36,6 +36,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.DistributorSelectionActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.PasswordLockDialogFragment;
+import com.microsoft.azure.storage.blob.CloudBlobContainer;
 
 import java.io.File;
 import java.util.HashMap;
@@ -597,6 +598,14 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
                 businessModel.userMasterHelper.getUserMasterBO()
                         .getUserid(), transferUtility);
         downloaderThread.start();
+    }
+
+    @Override
+    public void downloadImagesThreadStartFromAzure(HashMap<String, String> imgUrls, CloudBlobContainer cloudBlobContainer){
+        Thread downloadThread = new DownloaderThreadNew(LoginBaseActivity.this,fileDownloadHandler,imgUrls,
+                businessModel.userMasterHelper.getUserMasterBO().getUserid(),
+                cloudBlobContainer);
+        downloadThread.start();
     }
 
     private void callProgressDialog(String title, String message, int maxValue, Message newMsg, boolean isHorizontalStyle) {

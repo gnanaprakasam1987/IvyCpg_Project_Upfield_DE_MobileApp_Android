@@ -260,7 +260,7 @@ public class RoadFragment extends IvyBaseFragment {
                                     moduleMaxCount),
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    if (FileUtils.isExternalStorageAvailable()) {
+                    if (FileUtils.isExternalStorageAvailable(10)) {
                         mImageName = "RA_"
                                 + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                                 + "_" + Commons.now(Commons.DATE_TIME)

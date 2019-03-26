@@ -30,14 +30,16 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/card_margin">
+            android:paddingLeft="@dimen/card_margin"
+            android:paddingRight="@dimen/card_margin"
+            android:paddingTop="@dimen/_20sdp"
+            android:paddingBottom="@dimen/_20sdp">
 
             <TextView
                 android:id="@+id/tv_downloadStaus"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="@dimen/card_margin"
                 android:layout_marginEnd="@dimen/margin_left_retailer_name"
                 android:layout_toStartOf="@+id/refresh_catalog"
@@ -53,7 +55,6 @@
                 android:id="@+id/refresh_catalog"
                 style="?attr/roundedCustomButtonSmall"
                 android:layout_toStartOf="@+id/full_download_catalog"
-                android:layout_centerVertical="true"
                 android:text="Refresh"
                 android:layout_toLeftOf="@+id/full_download_catalog" />
 
@@ -61,7 +62,6 @@
                 android:id="@+id/full_download_catalog"
                 style="?attr/roundedCustomButtonSmall"
                 android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
                 android:text="Full Download"
                 android:layout_marginStart="@dimen/dimen_10dp"
                 android:layout_alignParentRight="true"
@@ -71,7 +71,6 @@
                 android:id="@+id/last_download_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_30dp"
                 android:layout_below="@+id/refresh_catalog"
                 android:layout_marginStart="@dimen/card_margin"
                 android:text="@string/last_image_download_time"

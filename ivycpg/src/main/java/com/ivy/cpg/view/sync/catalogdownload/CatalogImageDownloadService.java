@@ -11,6 +11,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -50,7 +51,7 @@ public class CatalogImageDownloadService extends IntentService {
                     File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + CatalogDownloadConstants.FILE_NAME);
                     int mb = (int) file.length() / 1048576;
 
-                    if (Util.isExternalStorageAvailable(mb * 2)) {
+                    if (FileUtils.isExternalStorageAvailable(mb * 2)) {
 
                         if (file.exists()) {
                             File target = new File(Environment.getExternalStorageDirectory().getPath() + "/" + CatalogDownloadConstants.FOLDER_PATH);
