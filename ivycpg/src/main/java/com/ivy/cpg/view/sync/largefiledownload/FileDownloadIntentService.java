@@ -7,8 +7,6 @@ import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.downloader.Error;
 import com.downloader.OnCancelListener;
 import com.downloader.OnDownloadListener;
@@ -17,30 +15,14 @@ import com.downloader.OnProgressListener;
 import com.downloader.OnStartOrResumeListener;
 import com.downloader.PRDownloader;
 import com.downloader.Progress;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.cpg.view.sync.AWSConnectionHelper;
+import com.ivy.cpg.view.sync.AzureConnectionHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.SharedAccessAccountPermissions;
-import com.microsoft.azure.storage.SharedAccessAccountPolicy;
-import com.microsoft.azure.storage.StorageException;
-import com.microsoft.azure.storage.blob.CloudBlobClient;
-import com.microsoft.azure.storage.blob.CloudBlobContainer;
-import com.microsoft.azure.storage.blob.CloudBlockBlob;
-import com.microsoft.azure.storage.blob.SharedAccessBlobPermissions;
-import com.microsoft.azure.storage.blob.SharedAccessBlobPolicy;
 
 import java.io.File;
-import java.net.URI;
-import java.net.URL;
-import java.security.InvalidKeyException;
 import java.text.DecimalFormat;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.EnumSet;
 
 public class FileDownloadIntentService extends IntentService {
 
@@ -205,9 +187,9 @@ public class FileDownloadIntentService extends IntentService {
                 signedUrl = digitalContentBO.getSignedUrl();
             } else {
                 if (downloadType.equalsIgnoreCase("AWS"))
-                    signedUrl = getSignedAwsUrl(digitalContentBO.getImgUrl());
+                    signedUrl = AWSConnectionHelper.getInstance().getSignedAwsUrl(digitalContentBO.getImgUrl());
                 else
-                    signedUrl = getSignedAzureUrl(digitalContentBO.getImgUrl());
+                    signedUrl = AzureConnectionHelper.getInstance().getAzureFile(digitalContentBO.getImgUrl());
                 digitalContentBO.setSignedUrl(signedUrl);
             }
 
@@ -283,73 +265,6 @@ public class FileDownloadIntentService extends IntentService {
             FileDownloadProvider.getInstance(context).prepareDigitalContentSaveList(digitalContentBO);
 
         }
-    }
-
-
-    /**
-     * Generate Signed Amazon Url with expiration time for 5 hours
-     */
-    private String getSignedAwsUrl(String downloadKey) {
-        try {
-            BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                    ConfigurationMasterHelper.SECRET_KEY);
-            AmazonS3Client s3 = new AmazonS3Client(myCredentials);
-            s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
-
-            URL url = s3.generatePresignedUrl(DataMembers.S3_BUCKET, downloadKey,
-                    new Date(new Date().getTime() + 1000 * 60 * 300));
-
-            Commons.print("Signed Url " + url.toString());
-
-            return url.toString();
-
-        } catch (Exception e) {
-            Commons.print("response Code code getting null value");
-        }
-
-        return "";
-    }
-
-
-    /**
-     * Generate Signed Azure Url with expiration time for 5 hours
-     */
-    private String getSignedAzureUrl(String fileUrl) {
-
-//        fileUrl = "https://devappwestindiageo.blob.core.windows.net"
-//                +"/"+DataMembers.AZURE_CONTAINER
-//                +"/"+fileUrl
-//                +"?"+DataMembers.AZURE_SAS;
-
-        try {
-
-            CloudBlobContainer container = initializeAzureStorageConnection();
-
-            SharedAccessBlobPolicy itemPolicy = new SharedAccessBlobPolicy();
-
-            Date expirationTime = new Date(new Date().getTime() + 1000 * 60 * 300);
-            itemPolicy.setSharedAccessExpiryTime(expirationTime);
-            itemPolicy.setPermissions(EnumSet.of(SharedAccessBlobPermissions.WRITE,SharedAccessBlobPermissions.READ,SharedAccessBlobPermissions.LIST));
-
-            CloudBlockBlob blob = container.getBlockBlobReference(fileUrl);
-//            CloudBlockBlob blob = new CloudBlockBlob(new URI(fileUrl));
-
-            String sasToken = blob.generateSharedAccessSignature(itemPolicy, null);
-
-            return String.format("%s?%s", blob.getUri(), sasToken);
-//            return blob.getUri().toString();
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-        return "";
-    }
-
-    public CloudBlobContainer initializeAzureStorageConnection() throws Exception {
-        CloudStorageAccount storageAccount = CloudStorageAccount.parse(DataMembers.AZURE_CONNECTION_STRING);
-        CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
-        return blobClient.getContainerReference(DataMembers.AZURE_CONTAINER);
     }
 
 }

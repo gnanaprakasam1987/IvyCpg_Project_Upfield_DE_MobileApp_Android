@@ -33,14 +33,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.SDKGlobalConfiguration;
 import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -82,6 +79,8 @@ import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.supervisor.chat.BaseInterfaceAdapter;
+import com.ivy.cpg.view.sync.AWSConnectionHelper;
+import com.ivy.cpg.view.sync.AzureConnectionHelper;
 import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.lib.Utils;
@@ -4142,15 +4141,8 @@ public class BusinessModel extends Application {
     // Amazon Image Upload
     void uploadImageToAmazonCloud(Handler handler) {
         try {
-            System.setProperty
-                    (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
-            configurationMasterHelper.setAmazonS3Credentials();
-            myCredentials = new BasicAWSCredentials(
-                    ConfigurationMasterHelper.ACCESS_KEY_ID,
-                    ConfigurationMasterHelper.SECRET_KEY);
-            AmazonS3Client ec2 = new AmazonS3Client(myCredentials);
-            ec2.setEndpoint(DataMembers.S3_BUCKET_REGION);
-            TransferUtility tm = new TransferUtility(ec2, getApplicationContext
+            AWSConnectionHelper.getInstance().setAmazonS3Credentials(getApplicationContext());
+            TransferUtility tm = new TransferUtility(AWSConnectionHelper.getInstance().getS3Connection(), getApplicationContext
                     ());
 
             folder = new File(FileUtils.photoFolderPath + "/");
@@ -4173,7 +4165,7 @@ public class BusinessModel extends Application {
 
             }
             // success
-            ec2.shutdown();
+            AWSConnectionHelper.getInstance().getS3Connection().shutdown();
             // tm.shutdownNow();
 
         } catch (Exception e) {
@@ -4356,15 +4348,8 @@ public class BusinessModel extends Application {
             mExportFileNames.add("MemoryDetails.txt");
             mExportFileNames.add("Data_Download_Save.xls");
             // int mSucessCount=0;
-            System.setProperty
-                    (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
-            configurationMasterHelper.setAmazonS3Credentials();
-            myCredentials = new BasicAWSCredentials(
-                    ConfigurationMasterHelper.ACCESS_KEY_ID,
-                    ConfigurationMasterHelper.SECRET_KEY);
-            AmazonS3Client ec2 = new AmazonS3Client(myCredentials);
-            ec2.setEndpoint(DataMembers.S3_BUCKET_REGION);
-            TransferUtility tm = new TransferUtility(ec2, getApplicationContext
+            AWSConnectionHelper.getInstance().setAmazonS3Credentials(getApplicationContext());
+            TransferUtility tm = new TransferUtility(AWSConnectionHelper.getInstance().getS3Connection(), getApplicationContext
                     ());
 
             if (synchronizationHelper.isExternalStorageAvailable()) {
@@ -4384,7 +4369,7 @@ public class BusinessModel extends Application {
                     SDPath.mkdir();
                 }
 
-                configurationMasterHelper.setAmazonS3Credentials();
+                AWSConnectionHelper.getInstance().setAmazonS3Credentials(getApplicationContext());
 
                 for (int i = 0; i < mExportFileNames.size(); i++) {
                     Commons.print("UploadFileInAmazon," + mExportFileNames.get(i));
@@ -4460,7 +4445,7 @@ public class BusinessModel extends Application {
                             mExportFileNames.get(i), tm);
                 }
             }
-            ec2.shutdown();
+            AWSConnectionHelper.getInstance().getS3Connection().shutdown();
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -7417,7 +7402,7 @@ public class BusinessModel extends Application {
 
     //Azure ImageUpload
     void uploadImageToAzureCloud(Handler handler) {
-        configurationMasterHelper.setAzureCredentials();
+        AzureConnectionHelper.getInstance().setAzureCredentials(getApplicationContext());
         try {
 
             folder = new File(FileUtils.photoFolderPath + "/");
@@ -7431,7 +7416,7 @@ public class BusinessModel extends Application {
                 String filename = sfFiles[i].getName();
                 //  print invoice file not upload to server
 
-                getResponseForUploadImageToAzureStorageCloud(filename, initializeAzureStorageConnection(), handler);
+                getResponseForUploadImageToAzureStorageCloud(filename, AzureConnectionHelper.getInstance().initializeAzureStorageConnection(), handler);
 
                 successCount = successCount + 1;
 
@@ -7453,12 +7438,6 @@ public class BusinessModel extends Application {
         } catch (Exception e) {
             Commons.printException(e);
         }
-    }
-
-    public CloudBlobContainer initializeAzureStorageConnection() throws Exception {
-        CloudStorageAccount storageAccount = CloudStorageAccount.parse(DataMembers.AZURE_CONNECTION_STRING);
-        CloudBlobClient blobClient = storageAccount.createCloudBlobClient();
-        return blobClient.getContainerReference(DataMembers.AZURE_CONTAINER);
     }
 
     private void getResponseForUploadImageToAzureStorageCloud(String imageName, CloudBlobContainer cloudBlobContainer, final Handler mHandler) {
@@ -7539,6 +7518,8 @@ public class BusinessModel extends Application {
                             .replace("/", "")+ imageName;
                 }
             }
+
+            mBucketName = DataMembers.AZURE_ROOT_DIRECTORY+"/"+mBucketName;
 
             CloudBlockBlob cloudBlockBlob = cloudBlobContainer.getBlockBlobReference(mBucketName);
 

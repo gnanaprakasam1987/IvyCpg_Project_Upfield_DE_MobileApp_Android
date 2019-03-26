@@ -25,6 +25,7 @@ public class DataMembers {
     public static String AZURE_ACCOUNT_NAME = "devappwestindiageo";
     public static String AZURE_KEY = "whdcWLAMnbipdHseTeb6ifOWczAjOcoUjT0wXgnIm+F6cJYGIyumNsapX4IH2vBBMeh9/qVfxpxbAZGjlv1XLw==";
     public static String AZURE_BASE_URL = "https://devappwestindiageo.blob.core.windows.net";
+    public static String AZURE_ROOT_DIRECTORY = "IvyDistributor";
 
 
     // For Cloud Image Upload Starts

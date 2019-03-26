@@ -4841,38 +4841,6 @@ public class ConfigurationMasterHelper {
         return 0;
     }
 
-    public void setAmazonS3Credentials() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
-        try {
-            db.openDataBase();
-            String sql = "Select ListCode,ListName from StandardListMaster where ListType='Amazon_Configuration'";
-            Cursor c = db.selectSQL(sql);
-            if (c != null) {
-                while (c.moveToNext()) {
-                    Commons.print("Check:" + c.getString(0) + " " + c.getString(1));
-                    if (c.getString(0).equals("AS_BUCKET_NAME"))
-                        DataMembers.S3_BUCKET = c.getString(1);
-                    else if (c.getString(0).equals("AS_ACCESS_KEY"))
-                        ConfigurationMasterHelper.ACCESS_KEY_ID = c
-                                .getString(1);
-                    else if (c.getString(0).equals("AS_SECURITY_KEY"))
-                        ConfigurationMasterHelper.SECRET_KEY = c.getString(1);
-                    else if (c.getString(0).equals("AS_END_POINT"))
-                        DataMembers.S3_BUCKET_REGION = c.getString(1);
-                    else if (c.getString(0).equals("AS_ROOT_DIR"))
-                        DataMembers.S3_ROOT_DIRECTORY = c.getString(1);
-
-                }
-                c.close();
-            }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            db.closeDB();
-        }
-
-    }
-
     public ArrayList<ConfigureBO> getLanguageList() {
 
         ArrayList<ConfigureBO> lanList = new ArrayList<>();
@@ -6268,42 +6236,6 @@ public class ConfigurationMasterHelper {
     public boolean isAuditEnabled() {
 
         return IS_TEAMLEAD && IS_AUDIT_USER;
-    }
-
-    public void setAzureCredentials() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
-        try {
-            db.openDataBase();
-            String sql = "Select ListCode,ListName from StandardListMaster where ListType='Azure_Configuration'";
-            Cursor c = db.selectSQL(sql);
-            if (c != null) {
-                while (c.moveToNext()) {
-                    if (c.getString(0).equals("AS_TYPE")) {
-                        DataMembers.AZURE_TYPE = c.getString(1);
-                    } else if (c.getString(0).equals("AS_STORAGE_CONTAINER")) {
-                        DataMembers.AZURE_CONTAINER = c.getString(1);
-                    } else if (c.getString(0).equals("AS_CONNECTION_STRING")) {
-                        DataMembers.AZURE_CONNECTION_STRING = c.getString(1);
-                    } else if (c.getString(0).equals("AS_STORAGE_SAS")) {
-                        DataMembers.AZURE_SAS = c.getString(1);
-                    } else if (c.getString(0).equals("AS_STORAGE_ENDPOINT")) {
-                        DataMembers.AZURE_ENDPOINT = c.getString(1);
-                    } else if (c.getString(0).equals("AS_STORAGE_ACCOUNT_NAME")) {
-                        DataMembers.AZURE_ACCOUNT_NAME = c.getString(1);
-                    } else if (c.getString(0).equals("AS_STORAGE_KEY")) {
-                        DataMembers.AZURE_KEY = c.getString(1);
-                    } else if (c.getString(0).equals("AS_STORAGE_BASE_URL")) {
-                        DataMembers.AZURE_BASE_URL = c.getString(1);
-                    }
-                }
-                c.close();
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            db.closeDB();
-        }
     }
 
 }

@@ -7,8 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.StatFs;
 import android.os.StrictMode;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.Toolbar;
@@ -18,8 +16,6 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.SDKGlobalConfiguration;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectListing;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
@@ -31,22 +27,22 @@ import com.downloader.OnProgressListener;
 import com.downloader.OnStartOrResumeListener;
 import com.downloader.PRDownloader;
 import com.downloader.Progress;
+import com.ivy.cpg.view.sync.AWSConnectionHelper;
+import com.ivy.cpg.view.sync.AzureConnectionHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
 import com.microsoft.azure.storage.blob.ListBlobItem;
 
 import java.io.File;
-import java.net.URL;
 import java.util.ArrayList;
-import java.util.Date;
 
 public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
 
@@ -123,7 +119,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         });
 
 
-        if (!Util.isExternalStorageAvailable(10)) {
+        if (!FileUtils.isExternalStorageAvailable(10)) {
             tvDownloadStatus.setText(getResources().getString(R.string.external_storage_not_available));
         }
 
@@ -139,10 +135,10 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
             filter.addCategory(Intent.CATEGORY_DEFAULT);
             receiver = new ImageDownloadReceiver();
             registerReceiver(receiver, filter);
-            isServiceRunning();
+            checkServiceRunning();
             // tvDownloadStatus.setText("Downloaded " + totalDownloadedCount);
 
-            if (!isExternalStorageAvailable()) {
+            if (!FileUtils.isExternalStorageAvailable(10)) {
                 tvDownloadStatus.setText(getResources().getString(R.string.external_storage_not_available));
             }
 
@@ -157,46 +153,11 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         resumeDownload();
     }
 
-    private void isServiceRunning() {
+    private void checkServiceRunning() {
         if (CatalogImageDownloadService.isServiceRunning) {
             changeButtonState(View.INVISIBLE);
         } else {
             changeButtonState(View.VISIBLE);
-        }
-    }
-
-    private boolean isExternalStorageAvailable() {
-
-        StatFs stat = new StatFs(Environment.getExternalStorageDirectory()
-                .getPath());
-        double sdAvailSize = (double) stat.getAvailableBlocks()
-                * (double) stat.getBlockSize();
-        // One binary gigabyte equals 1,073,741,824 bytes.
-        double mbAvailable = sdAvailSize / 1048576;
-
-        String state = Environment.getExternalStorageState();
-        boolean mExternalStorageAvailable = false;
-        boolean mExternalStorageWriteable = false;
-
-        if (Environment.MEDIA_MOUNTED.equals(state)) {
-            // We can read and write the media
-            mExternalStorageAvailable = mExternalStorageWriteable = true;
-        } else if (Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
-            // We can only read the media
-            mExternalStorageAvailable = true;
-            mExternalStorageWriteable = false;
-        } else {
-            // Something else is wrong. It may be one of many other states, but
-            // all we need
-            // to know is we can neither read nor write
-            mExternalStorageAvailable = mExternalStorageWriteable = false;
-        }
-
-        if (mExternalStorageAvailable
-                && mExternalStorageWriteable && mbAvailable > 10) {
-            return true;
-        } else {
-            return false;
         }
     }
 
@@ -221,7 +182,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
             }
 
         } else {
-            new UpdateStatus().execute();
+            updateStatus();
         }
     }
 
@@ -230,36 +191,23 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         catalogRefreshButton.setVisibility(visibleState);
     }
 
-    public class UpdateStatus extends AsyncTask<String, Void, String> {
+    private void updateStatus(){
+        try {
 
-        int filesCount = 0;
+            int filesCount = 0;
 
-        protected void onPreExecute() {
+            filesCount = FileUtils.getFilesCount(catalogImageDownloadProvider.getStorageDir(getResources().getString(R.string.app_name))
+                    + "/"
+                    + DataMembers.CATALOG);
+            lastDownloadTime = catalogImageDownloadProvider.getLastDownloadedDateTime();
 
-        }
-
-        @Override
-        protected String doInBackground(String... params) {
-            try {
-
-                filesCount = getFilesCount();
-                lastDownloadTime = catalogImageDownloadProvider.getLastDownloadedDateTime();
-
-            } catch (Exception e) {
-                Commons.printException(e);
-                return "Error";
-            }
-
-            return "";
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
             tvDownloadStatus.setText("Downloaded " + filesCount + "/" + filesCount);
             last_download_time.setText(getResources().getString(R.string.last_image_download_time) + lastDownloadTime);
             changeButtonState(View.VISIBLE);
-        }
 
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
     }
 
     public class CatalogImagesFolderRefresh extends AsyncTask<String, Void, String> {
@@ -285,7 +233,9 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                 checkLastModifiedFileAmazon();
             }
 
-            filesCount = getFilesCount();
+            filesCount = FileUtils.getFilesCount(catalogImageDownloadProvider.getStorageDir(getResources().getString(R.string.app_name))
+                    + "/"
+                    + DataMembers.CATALOG);
 
             return "";
         }
@@ -294,7 +244,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         protected void onPostExecute(String s) {
             progressDialogue.dismiss();
 
-            if (stringUrlList.size() == 0) {
+            if (stringUrlList.isEmpty()) {
                 Toast.makeText(getApplicationContext(), "All images are upTo date", Toast.LENGTH_LONG).show();
                 tvDownloadStatus.setText("Downloaded " + filesCount + "/" + filesCount);
                 last_download_time.setText(getResources().getString(R.string.last_image_download_time) + lastDownloadTime);
@@ -307,7 +257,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
     private void checkLastModifiedFileAzure(){
 
         try {
-            CloudBlobContainer cloudBlobContainer = bmodel.initializeAzureStorageConnection();
+            CloudBlobContainer cloudBlobContainer = AzureConnectionHelper.getInstance().initializeAzureStorageConnection();
 
             Iterable<ListBlobItem> blobItems = cloudBlobContainer.getDirectoryReference(downloadPath).listBlobs();
 
@@ -317,13 +267,13 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
 
                 if (cloudBlockBlob.getProperties().getLastModified().after(DateTimeUtils.convertStringToDateObject(lastDownloadTime, "MM/dd/yyyy HH:mm:ss"))) {
 
-                    String sasToken = listBlobItem.getContainer().generateSharedAccessSignature(catalogImageDownloadProvider.getAccessPolicy(), null);
+                    String sasToken = listBlobItem.getContainer().generateSharedAccessSignature(AzureConnectionHelper.getInstance().getAccessPolicy(), null);
 
                     stringUrlList.add(String.format("%s?%s", listBlobItem.getUri(), sasToken));
                 }
             }
 
-            if (stringUrlList.size() > 0)
+            if (!stringUrlList.isEmpty())
                 startDownload();
 
         }catch (Exception e){
@@ -336,7 +286,8 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
 
-            AmazonS3Client s3 = initializeTransferUtility();
+            AWSConnectionHelper.getInstance().setAWSDBValues(this);
+            AmazonS3Client s3 = AWSConnectionHelper.getInstance().getS3Connection();
 
             ObjectListing listing = s3.listObjects(DataMembers.S3_BUCKET, DataMembers.IMG_DOWN_URL + downloadPath);
 
@@ -345,10 +296,9 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                     if (fileList.getLastModified()
                             .after(DateTimeUtils.convertStringToDateObject(lastDownloadTime, "MM/dd/yyyy HH:mm:ss"))) {
 
-                        URL url = s3.generatePresignedUrl(DataMembers.S3_BUCKET, fileList.getKey(),
-                                new Date(new Date().getTime() + 1000 * 60 * 300));
+                        String url = AWSConnectionHelper.getInstance().getSignedAwsUrl(fileList.getKey());
 
-                        stringUrlList.add(url.toString());
+                        stringUrlList.add(url);
                     }
                 }
             }
@@ -360,16 +310,15 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                         if (fileList.getLastModified()
                                 .after(DateTimeUtils.convertStringToDateObject(lastDownloadTime, "MM/dd/yyyy HH:mm:ss"))) {
 
-                            URL url = s3.generatePresignedUrl(DataMembers.S3_BUCKET, fileList.getKey(),
-                                    new Date(new Date().getTime() + 1000 * 60 * 300));
+                            String url = AWSConnectionHelper.getInstance().getSignedAwsUrl(fileList.getKey());
 
-                            stringUrlList.add(url.toString());
+                            stringUrlList.add(url);
                         }
                     }
                 }
             }
 
-            if (stringUrlList.size() > 0) {
+            if (!stringUrlList.isEmpty()) {
 
                 deleteIfImagesExist(stringUrlList);
 
@@ -420,7 +369,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
 
                             catalogImageDownloadProvider.setCatalogImageDownloadFinishTime(filesCount + "", DateTimeUtils.now(DateTimeUtils.DATE_TIME));
 
-                            new UpdateStatus().execute();
+                            updateStatus();
                         }
                     }
 
@@ -433,7 +382,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                             downloadIndex = 0;
                             stringUrlList.clear();
 
-                            new UpdateStatus().execute();
+                            updateStatus();
                         }
 
                     }
@@ -465,14 +414,14 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
             if (file.length > 0)
                 mFileName = file[0];
         }
-        if (mFileName.equals("")) {
+        if (mFileName.trim().equals("")) {
             mFileName = "file.bin";
         }
         return mFileName;
     }
 
     private void deleteIfImagesExist(ArrayList<String> deleteList) {
-        if (Util.isExternalStorageAvailable(10)) {
+        if (FileUtils.isExternalStorageAvailable(10)) {
             try {
                 File folderImage = new File(catalogImageDownloadProvider.getStorageDir(getResources().getString(R.string.app_name))
                         + "/"
@@ -494,32 +443,6 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                 Commons.printException(e);
             }
         }
-    }
-
-    /**
-     * Return number of files available under IvyCPG/CAT folder.
-     * Total number of imaged downloaded will be returned.
-     *
-     * @return count
-     */
-    private int getFilesCount() {
-        int count = 0;
-        if (Util.isExternalStorageAvailable(10)) {
-            try {
-                File folderImage = new File(
-                        catalogImageDownloadProvider.getStorageDir(getResources().getString(R.string.app_name))
-                                + "/"
-                                + DataMembers.CATALOG);
-
-                if (folderImage.exists()) {
-                    count = folderImage.listFiles().length;
-                }
-            } catch (Exception e) {
-                Commons.printException(e);
-                count = 0;
-            }
-        }
-        return count;
     }
 
     @Override
@@ -545,21 +468,21 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
 
-            if (intent.getStringExtra("DownloadDetail") != null) {
+            if (intent.getStringExtra(CatalogDownloadConstants.DOWNLOAD_DETAIL) != null) {
 
-                String message = intent.getStringExtra("DownloadDetail");
-                tvDownloadStatus.setText("Downlaoding " + message);
+                String message = intent.getStringExtra(CatalogDownloadConstants.DOWNLOAD_DETAIL);
+                tvDownloadStatus.setText("Downloading " + message);
 
-            }else if(intent.getStringExtra("Status") != null
-                    && intent.getStringExtra("Status").equalsIgnoreCase("Error")){
+            }else if(intent.getStringExtra(CatalogDownloadConstants.STATUS) != null
+                    && intent.getStringExtra(CatalogDownloadConstants.STATUS).equalsIgnoreCase(CatalogDownloadConstants.ERROR)){
 
                 Toast.makeText(context, getResources().getString(R.string.connection_error_please_try_again), Toast.LENGTH_SHORT).show();
                 finish();
 
-            }else if (intent.getStringExtra("Status") != null
-                    && intent.getStringExtra("Status").equalsIgnoreCase("Complete")) {
+            }else if (intent.getStringExtra(CatalogDownloadConstants.STATUS) != null
+                    && intent.getStringExtra(CatalogDownloadConstants.STATUS).equalsIgnoreCase(CatalogDownloadConstants.COMPLETE)) {
 
-                new UpdateStatus().execute();
+                updateStatus();
             }
 
 
@@ -579,28 +502,13 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
                         tvDownloadStatus.setText(b.getString("errorMessage"));
                 } else if (b.getInt("Status") != 0) {
                     if (b.getInt("Status") == DataMembers.MESSAGE_UNZIPPED) {
-                        new UpdateStatus().execute();
+                        updateStatus();
                     }
                 }
             }
 
         }
 
-    }
-
-    private AmazonS3Client initializeTransferUtility() {
-
-        bmodel.getimageDownloadURL();
-        bmodel.configurationMasterHelper.setAmazonS3Credentials();
-
-        System.setProperty
-                (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
-        BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                ConfigurationMasterHelper.SECRET_KEY);
-        AmazonS3Client s3 = new AmazonS3Client(myCredentials);
-        s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
-
-        return s3;
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {

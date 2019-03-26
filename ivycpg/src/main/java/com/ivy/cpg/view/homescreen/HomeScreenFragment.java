@@ -2689,7 +2689,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
      * Open camera to capture profile picture.
      */
     private void captureUserProfilePicture() {
-        if (FileUtils.isExternalStorageAvailable()) {
+        if (FileUtils.isExternalStorageAvailable(10)) {
             imageFileName = "USER_" + bmodel.userMasterHelper.getUserMasterBO().getUserid() + "_"
                     + Commons.now(Commons.DATE_TIME) + "_img.jpg";
 

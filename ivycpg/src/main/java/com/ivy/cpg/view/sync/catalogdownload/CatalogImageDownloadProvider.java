@@ -6,8 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Environment;
 import android.support.v4.content.LocalBroadcastManager;
 
-import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.downloader.Error;
 import com.downloader.OnCancelListener;
 import com.downloader.OnDownloadListener;
@@ -17,29 +15,24 @@ import com.downloader.OnStartOrResumeListener;
 import com.downloader.PRDownloader;
 import com.downloader.PRDownloaderConfig;
 import com.downloader.Progress;
+import com.ivy.cpg.view.sync.AWSConnectionHelper;
+import com.ivy.cpg.view.sync.AzureConnectionHelper;
 import com.ivy.cpg.view.sync.largefiledownload.FileDownloadProvider;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.NetworkUtils;
-import com.microsoft.azure.storage.blob.CloudBlobContainer;
-import com.microsoft.azure.storage.blob.CloudBlockBlob;
-import com.microsoft.azure.storage.blob.SharedAccessBlobPermissions;
-import com.microsoft.azure.storage.blob.SharedAccessBlobPolicy;
+import com.ivy.utils.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 import java.text.DecimalFormat;
-import java.util.Date;
-import java.util.EnumSet;
-
-import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Created by abbas.a on 15/02/18.
@@ -93,36 +86,36 @@ public class CatalogImageDownloadProvider {
     }
 
     public void storeCatalogDownloadStatus(int id, String status) {
-        SharedPreferences.Editor editor = businessModel.getSharedPreferences(CatalogDownloadConstants.CATLOG_PREF_NAME, MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = AppUtils.getSharedPreferenceByName(businessModel.getApplicationContext(),CatalogDownloadConstants.CATLOG_PREF_NAME).edit();
         editor.putString(CatalogDownloadConstants.STATUS_KEY, status);
         editor.putInt(CatalogDownloadConstants.STATUS_ID, id);
         editor.apply();
     }
 
-    private int getDownloadId(){
-        SharedPreferences editor = businessModel.getSharedPreferences(CatalogDownloadConstants.CATLOG_PREF_NAME, MODE_PRIVATE);
-        return editor.getInt(CatalogDownloadConstants.STATUS_ID,-1);
-    }
-
     private void storeCatalogDownloadUrl(String url) {
-        SharedPreferences.Editor editor = businessModel.getSharedPreferences(CatalogDownloadConstants.CATLOG_PREF_NAME, MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = AppUtils.getSharedPreferenceByName(businessModel.getApplicationContext(),CatalogDownloadConstants.CATLOG_PREF_NAME).edit();
         editor.putString(CatalogDownloadConstants.STATUS_URL, url);
         editor.apply();
     }
 
     public void storeCatalogDownloadStatusError(String error) {
-        SharedPreferences.Editor editor = businessModel.getSharedPreferences(CatalogDownloadConstants.CATLOG_PREF_NAME, MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = AppUtils.getSharedPreferenceByName(businessModel.getApplicationContext(),CatalogDownloadConstants.CATLOG_PREF_NAME).edit();
         editor.putString(CatalogDownloadConstants.STATUS_ERROR, error);
         editor.apply();
     }
 
+    private int getDownloadId(){
+        SharedPreferences editor = AppUtils.getSharedPreferenceByName(businessModel.getApplicationContext(),CatalogDownloadConstants.CATLOG_PREF_NAME);
+        return editor.getInt(CatalogDownloadConstants.STATUS_ID,-1);
+    }
+
     private String getCatalogDownloadUrl() {
-        SharedPreferences editor = businessModel.getSharedPreferences(CatalogDownloadConstants.CATLOG_PREF_NAME, MODE_PRIVATE);
+        SharedPreferences editor = AppUtils.getSharedPreferenceByName(businessModel.getApplicationContext(),CatalogDownloadConstants.CATLOG_PREF_NAME);
         return editor.getString(CatalogDownloadConstants.STATUS_URL, "");
     }
 
     public String getCatalogDownloadStatus() {
-        SharedPreferences editor = businessModel.getSharedPreferences(CatalogDownloadConstants.CATLOG_PREF_NAME, MODE_PRIVATE);
+        SharedPreferences editor = AppUtils.getSharedPreferenceByName(businessModel.getApplicationContext(),CatalogDownloadConstants.CATLOG_PREF_NAME);
         return editor.getString(CatalogDownloadConstants.STATUS_KEY, "");
     }
 
@@ -224,14 +217,14 @@ public class CatalogImageDownloadProvider {
         if (!NetworkUtils.isNetworkConnected(businessModel.getApplicationContext())){
             Intent intent = new Intent("com.ivy.cpg.view.sync.CatalogDownloadStatus");
             // You can also include some extra data.
-            intent.putExtra("Status", "Error");
+            intent.putExtra(CatalogDownloadConstants.STATUS, CatalogDownloadConstants.ERROR);
             LocalBroadcastManager.getInstance(businessModel.getContext()).sendBroadcast(intent);
         }else {
 
             initializePrDownloader(businessModel.getContext());
 
             String downloadURL;
-            if (getCatalogDownloadUrl() == null || getCatalogDownloadUrl().isEmpty())
+            if (StringUtils.isEmptyString(getCatalogDownloadUrl()))
                 // Prepare download URL path.
                 downloadURL = getDownloadUrl();
             else
@@ -276,12 +269,11 @@ public class CatalogImageDownloadProvider {
                             Commons.print("Percentage =" + downloadPercentage
                                     + " - DownloadId =  " + downloadId);
 
-
                             Intent intent = new Intent("com.ivy.cpg.view.sync.CatalogDownloadStatus");
                             // You can also include some extra data.
-                            intent.putExtra("DownloadDetail", downloadDetail);
+                            intent.putExtra(CatalogDownloadConstants.DOWNLOAD_DETAIL, downloadDetail);
                             intent.putExtra("DownloadPercentage", downloadPercentage);
-                            intent.putExtra("Status", "InProgress");
+                            intent.putExtra(CatalogDownloadConstants.STATUS, CatalogDownloadConstants.IN_PROGRESS);
                             LocalBroadcastManager.getInstance(businessModel.getContext()).sendBroadcast(intent);
 
                         }
@@ -296,7 +288,7 @@ public class CatalogImageDownloadProvider {
                                 File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + CatalogDownloadConstants.FILE_NAME);
                                 int mb = (int) file.length() / 1048576;
 
-                                if (Util.isExternalStorageAvailable(mb * 2)) {
+                                if (FileUtils.isExternalStorageAvailable(mb * 2)) {
                                     //Call unzip.
                                     Intent intent = new Intent(ctx, CatalogImageDownloadService.class);
                                     ctx.startService(intent);
@@ -310,7 +302,7 @@ public class CatalogImageDownloadProvider {
 
                             Intent intent = new Intent("com.ivy.cpg.view.sync.CatalogDownloadStatus");
                             // You can also include some extra data.
-                            intent.putExtra("Status", "Complete");
+                            intent.putExtra(CatalogDownloadConstants.STATUS, CatalogDownloadConstants.COMPLETE);
                             LocalBroadcastManager.getInstance(businessModel.getContext()).sendBroadcast(intent);
 
                             isDownloadInProgress = false;
@@ -322,7 +314,7 @@ public class CatalogImageDownloadProvider {
 
                             Intent intent = new Intent("com.ivy.cpg.view.sync.CatalogDownloadStatus");
                             // You can also include some extra data.
-                            intent.putExtra("Status", "Error");
+                            intent.putExtra(CatalogDownloadConstants.STATUS, CatalogDownloadConstants.ERROR);
                             LocalBroadcastManager.getInstance(businessModel.getContext()).sendBroadcast(intent);
 
                             isDownloadInProgress = false;
@@ -333,78 +325,17 @@ public class CatalogImageDownloadProvider {
                         }
                     });
 
-            storeCatalogDownloadStatus(downloadId, "DOWNLOADING");
+            storeCatalogDownloadStatus(downloadId, CatalogDownloadConstants.DOWNLOADING);
         }
 
     }
 
     private String getDownloadUrl(){
         if (businessModel.configurationMasterHelper.IS_AZURE_UPLOAD) {
-            return getAzureFile();
+            return AzureConnectionHelper.getInstance().getAzureFile("Product/" + CatalogDownloadConstants.FILE_NAME);
         }else if (businessModel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
-            return getSignedAwsUrl();
-        }
-
-        return "";
-    }
-
-    /**
-     * Generate Signed Azure Url with expiration time for 5 hours
-     */
-    private String getAzureFile(){
-
-        // Prepare download URL path.
-//        String downloadURL = DataMembers.AZURE_BASE_URL + "/"+DataMembers.AZURE_CONTAINER+"/"+"Product/" + CatalogDownloadConstants.FILE_NAME;
-        String downloadURL = "Product/" + CatalogDownloadConstants.FILE_NAME;
-        try {
-            CloudBlobContainer container = businessModel.initializeAzureStorageConnection();
-
-            CloudBlockBlob blob = container.getBlockBlobReference(downloadURL);
-
-            String sasToken = blob.generateSharedAccessSignature(getAccessPolicy(), null);
-
-            return String.format("%s?%s", blob.getUri(), sasToken);
-
-        }catch(Exception e){
-            Commons.printException(e);
-        }
-
-        return "";
-    }
-
-    public SharedAccessBlobPolicy getAccessPolicy(){
-        SharedAccessBlobPolicy itemPolicy = new SharedAccessBlobPolicy();
-
-        Date expirationTime = new Date(new Date().getTime() + 1000 * 60 * 300);
-        itemPolicy.setSharedAccessExpiryTime(expirationTime);
-        itemPolicy.setPermissions(EnumSet.of(SharedAccessBlobPermissions.WRITE, SharedAccessBlobPermissions.READ, SharedAccessBlobPermissions.LIST));
-
-        return itemPolicy;
-    }
-
-    /**
-     * Generate Signed Amazon Url with expiration time for 5 hours
-     */
-    private String getSignedAwsUrl() {
-        try {
-            businessModel.configurationMasterHelper.setAmazonS3Credentials();
-            businessModel.getimageDownloadURL();
-            String downloadKey = DataMembers.IMG_DOWN_URL+ "Product/" + CatalogDownloadConstants.FILE_NAME;
-
-            BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                    ConfigurationMasterHelper.SECRET_KEY);
-            AmazonS3Client s3 = new AmazonS3Client(myCredentials);
-            s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
-
-            URL url = s3.generatePresignedUrl(DataMembers.S3_BUCKET, downloadKey,
-                    new Date(new Date().getTime() + 1000 * 60 * 300));
-
-            Commons.print("Signed Url " + url.toString());
-
-            return url.toString();
-
-        } catch (Exception e) {
-            Commons.print("response Code code getting null value");
+            AWSConnectionHelper.getInstance().setAWSDBValues(businessModel.getApplicationContext());
+            return AWSConnectionHelper.getInstance().getSignedAwsUrl(DataMembers.IMG_DOWN_URL+ "Product/" + CatalogDownloadConstants.FILE_NAME);
         }
 
         return "";

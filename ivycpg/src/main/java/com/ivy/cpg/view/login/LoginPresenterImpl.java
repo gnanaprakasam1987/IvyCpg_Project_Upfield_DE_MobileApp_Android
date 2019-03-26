@@ -9,15 +9,14 @@ import android.os.Environment;
 import android.preference.PreferenceManager;
 import android.widget.Toast;
 
-import com.amazonaws.SDKGlobalConfiguration;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
+import com.ivy.cpg.view.sync.AWSConnectionHelper;
+import com.ivy.cpg.view.sync.AzureConnectionHelper;
 import com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadProvider;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.BuildConfig;
@@ -31,7 +30,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
-import com.microsoft.azure.storage.blob.CloudBlobContainer;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -1021,20 +1019,18 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
             if (response == SynchronizationHelper.NEXT_METHOD.DIGITAL_CONTENT_AVALILABLE) {
 
                 if (businessModel.configurationMasterHelper.IS_AZURE_UPLOAD) {
-                    businessModel.configurationMasterHelper.setAzureCredentials();
+                    AzureConnectionHelper.getInstance().setAzureCredentials(context);
                     try {
-
-                        CloudBlobContainer cloudBlobContainer = businessModel.initializeAzureStorageConnection();
-                        downloadDigitalContents(true,cloudBlobContainer,null);
+                        loginView.downloadImagesThreadStartFromAzure(businessModel.getDigitalContentURLS(), AzureConnectionHelper.getInstance().initializeAzureStorageConnection());
 
                     } catch (Exception e) {
                         Commons.printException(e);
-                        businessModel.showAlert(context.getString(R.string.error_message_general), 0);
+                        loginView.showAlert(context.getString(R.string.error_message_general), false);
                     }
                 } else if (businessModel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
-                    businessModel.configurationMasterHelper.setAmazonS3Credentials();
-                    initializeTransferUtility();
-                    downloadDigitalContents(false,null,transferUtility); //not Azure Download
+                    AWSConnectionHelper.getInstance().setAmazonS3Credentials(context);
+                    transferUtility = new TransferUtility(AWSConnectionHelper.getInstance().getS3Connection(), context);
+                    loginView.downloadImagesThreadStart(businessModel.getDigitalContentURLS(), transferUtility);
                 }
             } else {
 
@@ -1045,24 +1041,6 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
                 loginView.finishActivity();
             }
         }
-    }
-
-    private void downloadDigitalContents(boolean isAzureDownload, CloudBlobContainer container,TransferUtility transferUtility) {
-
-        if (isAzureDownload)
-            loginView.downloadImagesThreadStartFromAzure(businessModel.getDigitalContentURLS(), container);
-        else
-            loginView.downloadImagesThreadStart(businessModel.getDigitalContentURLS(), transferUtility);
-    }
-
-    private void initializeTransferUtility() {
-        System.setProperty
-                (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
-        BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                ConfigurationMasterHelper.SECRET_KEY);
-        AmazonS3Client s3 = new AmazonS3Client(myCredentials);
-        s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
-        transferUtility = new TransferUtility(s3, context);
     }
 
     public void callDistributorDownload() {

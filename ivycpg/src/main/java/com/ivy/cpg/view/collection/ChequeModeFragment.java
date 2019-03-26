@@ -259,7 +259,7 @@ public class ChequeModeFragment extends IvyBaseFragment
             @Override
             public void onClick(View v) {
                 if (!"".equals(mChequeNoET.getText().toString()) && mPaymentBO.getAmount() > 0) {
-                    if (FileUtils.isExternalStorageAvailable()) {
+                    if (FileUtils.isExternalStorageAvailable(10)) {
 
                         mImageName = "COL_CHQ_"
                                 + bmodel.userMasterHelper.getUserMasterBO().getUserid()

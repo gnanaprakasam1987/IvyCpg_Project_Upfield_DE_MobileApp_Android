@@ -54,7 +54,6 @@ import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
-import com.ivy.cpg.view.sync.catalogdownload.Util;
 import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.camera.CameraActivity;
@@ -3521,8 +3520,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (requestCode == 12 && data != null) {
 
                     invalidateOptionsMenu();
-                    String realPath = Util.getPath(this, data.getData());
-                    Util.copyFile(new File(realPath), FileUtils.photoFolderPath, attachedFilePath);
+                    String realPath = FileUtils.getPath(this, data.getData());
+                    FileUtils.copyFile(new File(realPath), FileUtils.photoFolderPath, attachedFilePath);
                     if (bModel.getOrderHeaderBO() != null)
                         bModel.getOrderHeaderBO().setOrderImageName(attachedFilePath);
                 }
