@@ -47,8 +47,8 @@ public class TimeTrackModule {
 
     @Provides
     @PerActivity
-    TimeTrackingContract.TimeTrackingPresenter<TimeTrackingContract.TimeTrackingView> providesPhotoCapturePresenter(TimeTrackPresenterImpl<TimeTrackingContract.TimeTrackingView> photoCapturePresenter) {
-        return photoCapturePresenter;
+    TimeTrackingContract.TimeTrackingPresenter<TimeTrackingContract.TimeTrackingView> providesPhotoCapturePresenter(TimeTrackPresenterImpl<TimeTrackingContract.TimeTrackingView> timeTrackPresenter) {
+        return timeTrackPresenter;
     }
 
     @Provides
