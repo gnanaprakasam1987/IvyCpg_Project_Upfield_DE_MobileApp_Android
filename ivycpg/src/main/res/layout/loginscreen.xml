@@ -82,15 +82,13 @@
 
                     <EditText
                         android:id="@+id/EditText022"
-                        android:layout_width="fill_parent"
+                        android:layout_width="match_parent"
                         android:layout_height="@dimen/edittext_height"
                         android:contentDescription="@string/app_name"
                         android:hint="@string/password"
                         android:inputType="textPassword"
                         android:lines="1"
                         style="@style/EditTextGravity"
-                        android:paddingEnd="@dimen/forgot_text_width"
-                        android:paddingRight="@dimen/forgot_text_width"
                         android:paddingStart="@dimen/dimen_10dp"
                         android:paddingLeft="@dimen/dimen_10dp"
                         android:textColor="@android:color/black"
