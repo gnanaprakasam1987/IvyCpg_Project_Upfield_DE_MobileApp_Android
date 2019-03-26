@@ -225,7 +225,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
         @Override
         protected String doInBackground(String... params) {
 
-            bmodel.getimageDownloadURL();
+//            bmodel.getimageDownloadURL();
 
             if (bmodel.configurationMasterHelper.IS_AZURE_UPLOAD){
                 checkLastModifiedFileAzure();
