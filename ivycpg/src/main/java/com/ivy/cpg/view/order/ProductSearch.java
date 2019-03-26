@@ -42,7 +42,7 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
     private SearchAsync searchAsync;
     private String selectedSpecialFilter;
     private String userEnteredText;
-    private static ProductSearch instance=null;
+   // private static ProductSearch instance=null;
     private ProductSearchCallBack productSearchCallBack;
     public static String SCREEN_CODE_ORDER="ORDER";
     private String current_screen_code;
@@ -169,13 +169,13 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
 
     }
 
-      public static ProductSearch getInstance(Context context,Vector<ProductMasterBO> masterList,BusinessModel bModel,String current_screen_code) {
+     /* public static ProductSearch getInstance(Context context,Vector<ProductMasterBO> masterList,BusinessModel bModel,String current_screen_code) {
 
         if (instance == null) {
             instance = new ProductSearch(context,masterList,bModel,current_screen_code);
         }
         return instance;
-    }
+    }*/
 
 
     public void startSearch(Vector<ProductMasterBO> masterList,String stringToFilter)
@@ -307,7 +307,8 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
     private boolean isValidProductForCurrentScreen(ProductMasterBO productMasterBO){
 
 
-        if(bModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT||productMasterBO.getIsSaleable() == 1) {
+        if(!bModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT&&productMasterBO.getIsSaleable() == 0)
+            return false;
 
             if (SCREEN_CODE_ORDER.equals(current_screen_code)) {
 
@@ -337,7 +338,7 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
 
             }
 
-        }
+
 
         return true;
 
