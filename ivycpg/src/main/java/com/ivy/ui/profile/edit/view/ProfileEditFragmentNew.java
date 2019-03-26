@@ -347,7 +347,7 @@ public class ProfileEditFragmentNew extends BaseFragment
     @Override
     public void takePhoto(String imageFileName, boolean isForLatLong) {
         this.imageFileName = imageFileName;
-        if (FileUtils.isExternalStorageAvailable()) {
+        if (FileUtils.isExternalStorageAvailable(10)) {
             try {
                 Intent intent = new Intent(getActivity(), CameraActivity.class);
                 intent.putExtra(CameraActivity.QUALITY, 40);

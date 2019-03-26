@@ -15,8 +15,6 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.drawable.GradientDrawable;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -52,15 +50,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.SDKGlobalConfiguration;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.reports.performancereport.OutletPerfomanceHelper;
+import com.ivy.cpg.view.sync.AWSConnectionHelper;
+import com.ivy.cpg.view.sync.AzureConnectionHelper;
 import com.ivy.cpg.view.sync.LastSyncTimeHelper;
 import com.ivy.cpg.view.sync.SyncContractor;
 import com.ivy.cpg.view.sync.UploadHelper;
@@ -892,9 +889,6 @@ public class SynchronizationFragment extends IvyBaseFragment
         else if (i == R.id.menu_file_download){
             startActivity(new Intent(getActivity(), LargeFileDownloadActivity.class));
         }
-        else if (i == R.id.menu_file_download){
-            startActivity(new Intent(getActivity(), LargeFileDownloadActivity.class));
-        }
         return true;
     }
 
@@ -1404,12 +1398,28 @@ public class SynchronizationFragment extends IvyBaseFragment
                     }
 
                     if (bmodel.isDigitalContentAvailable()) {
-                        bmodel.configurationMasterHelper.setAmazonS3Credentials();
-                        initializeTransferUtility();
-                        downloaderThread = new DownloaderThreadNew(getActivity(),
-                                activityHandler, bmodel.getDigitalContentURLS(),
-                                bmodel.userMasterHelper.getUserMasterBO()
-                                        .getUserid(), transferUtility);
+
+
+                        if (bmodel.configurationMasterHelper.IS_AZURE_UPLOAD) {
+                            AzureConnectionHelper.getInstance().setAzureCredentials(getActivity());
+                            try {
+                                downloaderThread = new DownloaderThreadNew(getActivity(),activityHandler,bmodel.getDigitalContentURLS(),
+                                        bmodel.userMasterHelper.getUserMasterBO().getUserid(),
+                                        AzureConnectionHelper.getInstance().initializeAzureStorageConnection());
+                            } catch (Exception e) {
+                                Commons.printException(e);
+                                bmodel.showAlert(context.getString(R.string.error_message_general), 0);
+                            }
+                        } else if (bmodel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
+                            AWSConnectionHelper.getInstance().setAmazonS3Credentials(getActivity());
+                            transferUtility = new TransferUtility(AWSConnectionHelper.getInstance().getS3Connection(), getActivity());
+
+                            downloaderThread = new DownloaderThreadNew(getActivity(),
+                                    activityHandler, bmodel.getDigitalContentURLS(),
+                                    bmodel.userMasterHelper.getUserMasterBO()
+                                            .getUserid(), transferUtility);
+
+                        }
                         downloaderThread.start();
                     }
 
@@ -1789,16 +1799,6 @@ public class SynchronizationFragment extends IvyBaseFragment
                 ConfigurationMasterHelper.outDateFormat));
         edt.putString("time", DateTimeUtils.now(DateTimeUtils.TIME));
         edt.apply();
-    }
-
-    private void initializeTransferUtility() {
-        System.setProperty
-                (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
-        BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                ConfigurationMasterHelper.SECRET_KEY);
-        AmazonS3Client s3 = new AmazonS3Client(myCredentials);
-        s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
-        transferUtility = new TransferUtility(s3, getActivity());
     }
 
     private class DeleteTables extends
@@ -2268,12 +2268,27 @@ public class SynchronizationFragment extends IvyBaseFragment
 
 
             if (response == SynchronizationHelper.NEXT_METHOD.DIGITAL_CONTENT_AVALILABLE) {
-                bmodel.configurationMasterHelper.setAmazonS3Credentials();
-                initializeTransferUtility();
-                downloaderThread = new DownloaderThreadNew(getActivity(),
-                        activityHandler, bmodel.getDigitalContentURLS(),
-                        bmodel.userMasterHelper.getUserMasterBO()
-                                .getUserid(), transferUtility);
+
+                if (bmodel.configurationMasterHelper.IS_AZURE_UPLOAD) {
+                    AzureConnectionHelper.getInstance().setAzureCredentials(getActivity());
+                    try {
+                        downloaderThread = new DownloaderThreadNew(getActivity(),activityHandler,bmodel.getDigitalContentURLS(),
+                                bmodel.userMasterHelper.getUserMasterBO().getUserid(),
+                                AzureConnectionHelper.getInstance().initializeAzureStorageConnection());
+                    } catch (Exception e) {
+                        Commons.printException(e);
+                        bmodel.showAlert(context.getString(R.string.error_message_general), 0);
+                    }
+                } else if (bmodel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
+                    AWSConnectionHelper.getInstance().setAmazonS3Credentials(getActivity());
+                    transferUtility = new TransferUtility(AWSConnectionHelper.getInstance().getS3Connection(), getActivity());
+
+                    downloaderThread = new DownloaderThreadNew(getActivity(),
+                            activityHandler, bmodel.getDigitalContentURLS(),
+                            bmodel.userMasterHelper.getUserMasterBO()
+                                    .getUserid(), transferUtility);
+
+                }
                 downloaderThread.start();
             } else {
                 if (isSwitchUser) {

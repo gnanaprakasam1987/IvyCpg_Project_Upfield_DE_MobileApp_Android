@@ -1616,7 +1616,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                         Toast.LENGTH_LONG).show();
                 return;
             }
-            if (FileUtils.isExternalStorageAvailable()) {
+            if (FileUtils.isExternalStorageAvailable(10)) {
 
                 String mModuleName = "MENU_CALL_ANLYS";
                 mImageName = "NP_" + bmodel.userMasterHelper.getUserMasterBO().getUserid()

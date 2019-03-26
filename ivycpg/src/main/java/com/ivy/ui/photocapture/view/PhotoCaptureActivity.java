@@ -408,7 +408,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
     @OnClick(R.id.capture_img)
     public void onCaptureImageClick() {
-        if (!FileUtils.isExternalStorageAvailable())
+        if (!FileUtils.isExternalStorageAvailable(10))
             showMessage(R.string.please_select_atleast_one_type);
         else if (mSelectedProductId == 0)
             showMessage(R.string.select_prod);

@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.login;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.microsoft.azure.storage.blob.CloudBlobContainer;
 
 import java.util.HashMap;
 
@@ -65,6 +66,8 @@ public interface LoginContract {
         void goToDistributorSelection();
 
         void downloadImagesThreadStart(HashMap<String, String> imgUrls, TransferUtility transferUtility);
+
+        void downloadImagesThreadStartFromAzure(HashMap<String, String> imgUrls, CloudBlobContainer cloudBlobContainer);
     }
 
 

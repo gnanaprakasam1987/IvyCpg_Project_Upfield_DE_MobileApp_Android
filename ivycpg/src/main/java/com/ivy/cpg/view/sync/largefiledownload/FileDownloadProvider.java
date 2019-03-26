@@ -56,6 +56,7 @@ public class FileDownloadProvider {
 
             Intent intent = new Intent(context,FileDownloadIntentService.class);
             intent.putParcelableArrayListExtra("DigiContent",businessModel.getDigitalContentLargeFileURLS());
+            intent.putExtra("DownloadType",businessModel.configurationMasterHelper.IS_AZURE_UPLOAD?"AZURE":"AWS");
 
             context.startService(intent);
         }
