@@ -145,7 +145,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private TextView lpcText;
     private TextView distValue;
     private BusinessModel bmodel;
-    private Vector<ProductMasterBO> mylist;
+    private Vector<ProductMasterBO> mylist=new Vector<>();
     private EditText QUANTITY;
 
     private String append = "";
@@ -258,7 +258,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         orderHelper = OrderHelper.getInstance(this);
         stockCheckHelper = StockCheckHelper.getInstance(this);
-        productSearch=ProductSearch.getInstance(this,productList,bmodel,ProductSearch.SCREEN_CODE_ORDER);
+        productSearch=new ProductSearch(this,productList,bmodel,ProductSearch.SCREEN_CODE_ORDER);
 
         if (bmodel.configurationMasterHelper.SHOW_BARCODE)
             checkAndRequestPermissionAtRunTime(2);
@@ -6055,10 +6055,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         mSelectedFilter=-1;// clearing filter flag
 
-        mylist=searchedList;
-
-        if(mylist!=null) {
-
+        mylist.clear();
+        mylist.addAll(searchedList);
 
             mSchedule = new MyAdapter(mylist);
             lvwplist.setAdapter(mSchedule);
@@ -6070,7 +6068,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
 
-        }
 
         supportInvalidateOptionsMenu();
 
