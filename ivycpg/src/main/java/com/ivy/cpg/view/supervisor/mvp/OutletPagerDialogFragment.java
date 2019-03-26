@@ -47,6 +47,10 @@ public class OutletPagerDialogFragment extends DialogFragment {
     ArrayList<RetailerBo> visitedRetailers = new ArrayList<>();
 
 
+    public OutletPagerDialogFragment(){
+
+    }
+
     public OutletPagerDialogFragment(Marker marker, SellerDetailMapPresenter sellerMapViewPresenter){
         this.marker = marker;
         this.sellerMapViewPresenter = sellerMapViewPresenter;
@@ -65,7 +69,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.outlet_pager_dialog_fragment, container, false);
 
-        initViews(rootView);
+        /*initViews(rootView);
 
         visitedRetailers.addAll(sellerMapViewPresenter.getVisitedRetailers());
         outletListAdapter.notifyDataSetChanged();
@@ -79,7 +83,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
             public void onClick(View v) {
                 dismiss();
             }
-        });
+        });*/
 
         return rootView;
     }

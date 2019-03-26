@@ -322,6 +322,8 @@ public class DataMembers {
 
     public static final String tbl_orderHeader = "OrderHeader";
     public static final String tbl_orderDetails = "OrderDetail";
+    public static final String tbl_OrderFreeIssues = "OrderFreeIssues";
+    public static final String tbl_InvoiceFreeIssues = "InvoiceFreeIssues";
     public static final String tbl_orderReturnDetails = "OrderReturnDetail";
     private static final String tbl_closingStockHeader = "ClosingStockHeader";
     private static final String tbl_closingStockDetails = "ClosingStockDetail";
@@ -361,9 +363,9 @@ public class DataMembers {
     private static final String tbl_CompetitorHeader_cols = "Tid,RetailerId,CompetitorID,Feedback,ImageName,Date,Pid,Remark,CounterId,distributorid,ridSF,VisitId";
     private static final String tbl_CompetitorDetails_cols = "Tid,TrackingListID,tcompetitorid,pid,FromDate,ToDate,Feedback,ImageName,qty,reasonID,RField1";
     private static final String tbl_invoicetaxDetails = "InvoiceTaxDetails";
-    private static final String tbl_invoicetaxDetails_cols = "invoiceid,pid,taxRate,taxType,taxValue,IsFreeProduct";
+    private static final String tbl_invoicetaxDetails_cols = "invoiceid,pid,taxRate,taxType,taxValue,IsFreeProduct,applyLevelId";
     private static final String tbl_ordertaxDetails = "OrderTaxDetails";
-    private static final String tbl_ordertaxDetails_cols = "orderid,pid,taxRate,taxType,taxValue,IsFreeProduct,groupid";
+    private static final String tbl_ordertaxDetails_cols = "orderid,pid,taxRate,taxType,taxValue,IsFreeProduct,groupid,applyLevelId";
     private static final String tbl_invoice_return_detail = "InvoiceReturnDetail";
     private static final String tbl_invoice_return_detail_cols = "InvoiceID,Pid,UomID,TypeID,Qty,Price,LineValue,LiableQty,ReturnQty";
 
@@ -399,6 +401,9 @@ public class DataMembers {
     private static final String tbl_orderDetails_cols = "OrderID,ProductID,Qty,uomid,Rate,uomcount,msqqty,pieceqty,caseqty,d1,d2,d3,DA,outerQty,dOuomQty,dOuomid,soPiece,soCase,OrderType,casePrice,outerPrice,pcsUOMId,totalamount,batchid,PriceOffId,PriceOffValue,isFreeProduct,weight,ReasonId,HsnCode,RField1,NetAmount,UpsellingQty,ASRP";
     private static final String tbl_orderReturnDetails_cols = "OrderID,Pid,UomID,TypeID,Qty,Price,LineValue,LiableQty,ReturnQty";
     private static final String tbl_closingStockHeader_cols = "StockID,Date,RetailerID,remark,latitude,longitude,DistributorID,Weightage,Score,AvailabilityShare,ridSF,VisitId";
+
+    public static final String tbl_OrderFreeIssues_cols = "Uid,productId,uomId,qty,conversionQty,reasonId,price,taxPrice,totalValue,batchId";
+    public static final String tbl_InvoiceFreeIssues_cols = "Uid,productId,uomId,qty,conversionQty,reasonId,price,taxPrice,totalValue,batchId";
 
     private static final String tbl_closingStockDetails_cols = "StockID,ProductID,Shelfpqty,whpqty,uomid,uomqty,msqqty,Shelfcqty,whcqty,whoqty,shelfoqty,ouomid,ouomqty,LocId,isDistributed,isListed,ReasonID,Facing,IsOwn,PcsUOMId,Rfield1,Rfield2,Rfield3,Score,isAvailable,isAuditDone";
     private static final String tbl_InvoiceHeaderUpload_cols = "InvoiceNo,RetailerId,InvoiceDate,InvoiceAmount,Discount,InvNetAmount,OrderId,remark,ImageName,latitude,longitude,return_amt,imgName,LinesPerCall,totalweight,SalesType,print_count,sid,stype,SchemeAmount,TaxAmount,creditPeriod,PrintFilePath,SParentID,timestampid,AddressId,ridSF,VisitId";
@@ -706,6 +711,8 @@ public class DataMembers {
         uploadColumn.put(tbl_orderHeader, tbl_orderHeader_cols);
         uploadColumn.put(tbl_orderDetails, tbl_orderDetails_cols);
         uploadColumn.put(tbl_orderReturnDetails, tbl_orderReturnDetails_cols);
+        uploadColumn.put(tbl_OrderFreeIssues, tbl_OrderFreeIssues_cols);
+        uploadColumn.put(tbl_InvoiceFreeIssues, tbl_InvoiceFreeIssues_cols);
         uploadColumn.put(tbl_closingStockDetails, tbl_closingStockDetails_cols);
 
         uploadColumn.put(tbl_OutletTimestampupload,
@@ -1033,6 +1040,9 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_AnswerScoreDetails, tbl_AnswerScoreDetails_cols);
         uploadColumnWithRetailer.put(tbl_Planorama, tbl_Planorama_cols);
         uploadColumnWithRetailer.put(tbl_Planorama_image, tbl_Planorama_image_cols);
+
+        uploadColumnWithRetailer.put(tbl_OrderFreeIssues, tbl_OrderFreeIssues_cols);
+        uploadColumnWithRetailer.put(tbl_InvoiceFreeIssues, tbl_InvoiceFreeIssues_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();

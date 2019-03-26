@@ -316,6 +316,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_DGTC = "FUN16";
     private static final String CODE_INVOICE_SEQUENCE_NUMBER = "ORDB48";
     private static final String CODE_ORDER_SEQUENCE_NUMBER = "ORDB78";
+    private static final String CODE_LOAD_NON_SALABLE_PRODUCTS = "ORDB79";
     private static final String CODE_SHOW_STOCK_IN_SUMMARY = "ORDB49";
     private static final String CODE_IS_TEAMLEAD = "ISTEAMLEAD"; // Code to validRegex whether the user is teamlead or not
     private static final String CODE_UPLOADUSERLOC = "UPLOADUSERLOC";
@@ -830,6 +831,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_DGTC;
     public boolean SHOW_INVOICE_SEQUENCE_NO;
     public boolean SHOW_ORDER_SEQUENCE_NO;
+    public boolean SHOW_NON_SALABLE_PRODUCT;
     public boolean SHOW_SR_SEQUENCE_NO;
     public boolean SHOW_CN_SEQUENCE_NO;
     public boolean SHOW_STOCK_IN_SUMMARY;
@@ -1547,6 +1549,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_TERMS_COND = "FUN76";
     public boolean IS_SHOW_TERMS_COND;
 
+    private static final String CODE_VOICE_TO_TEXT = "VOICETXT";
+    public int IS_VOICE_TO_TEXT = -1;
+
     private static final String CODE_SKIP_CALL_ANALYSIS = "FUN78";
     public boolean IS_SKIP_CALL_ANALYSIS;
 
@@ -2199,6 +2204,9 @@ public class ConfigurationMasterHelper {
         this.SHOW_INDICATIVE_ORDER_ICON = hashMapHHTModuleConfig.get(CODE_SHOW_INDICATIVE_ORDER_ICON) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_INDICATIVE_ORDER_ICON) : false;
         this.SHOW_DGTC = hashMapHHTModuleConfig.get(CODE_SHOW_DGTC) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_DGTC) : false;
         this.SHOW_INVOICE_SEQUENCE_NO = hashMapHHTModuleConfig.get(CODE_INVOICE_SEQUENCE_NUMBER) != null ? hashMapHHTModuleConfig.get(CODE_INVOICE_SEQUENCE_NUMBER) : false;
+
+        this.SHOW_NON_SALABLE_PRODUCT = hashMapHHTModuleConfig.get(CODE_LOAD_NON_SALABLE_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_LOAD_NON_SALABLE_PRODUCTS) : false;
+
         this.SHOW_ORDER_SEQUENCE_NO = hashMapHHTModuleConfig.get(CODE_ORDER_SEQUENCE_NUMBER) != null ? hashMapHHTModuleConfig.get(CODE_ORDER_SEQUENCE_NUMBER) : false;
         this.SHOW_SR_SEQUENCE_NO = hashMapHHTModuleConfig.get(CODE_SR_SEQUENCE_NUMBER) != null ? hashMapHHTModuleConfig.get(CODE_SR_SEQUENCE_NUMBER) : false;
         this.SHOW_CN_SEQUENCE_NO = hashMapHHTModuleConfig.get(CODE_CN_SEQUENCE_NUMBER) != null ? hashMapHHTModuleConfig.get(CODE_CN_SEQUENCE_NUMBER) : false;
@@ -2711,6 +2719,8 @@ public class ConfigurationMasterHelper {
             IS_ORD_BY_BATCH_EXPIRY_DATE_WISE = hashMapHHTModuleOrder.get(CODE_BATCH_ALLOCATION) == 1;
         }
         this.IS_SHOW_TERMS_COND = hashMapHHTModuleConfig.get(CODE_SHOW_TERMS_COND) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TERMS_COND) : false;
+
+        this.IS_VOICE_TO_TEXT = hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) != null ? hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) : -1;
         this.IS_SKIP_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) : false;
         this.IS_COLLECTION_DELETE = hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) != null ? hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) : false;
 

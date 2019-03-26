@@ -20,6 +20,7 @@ import com.ivy.sd.png.bo.BomReturnBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.SchemeProductBO;
@@ -406,6 +407,11 @@ public class OrderHelper {
 
                     }
 
+                }
+
+                if(businessModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT&&product.getFoc()>0){
+                    db.insertSQL(DataMembers.tbl_OrderFreeIssues, DataMembers.tbl_OrderFreeIssues_cols,
+                            getOrderFreeIssues(product,uid,false).toString());
                 }
 
             }
@@ -1231,6 +1237,57 @@ public class OrderHelper {
 
     }
 
+    private StringBuffer getOrderFreeIssues(ProductMasterBO productBo, String uid,boolean isInvoice){
+
+        StringBuffer sb = new StringBuffer();
+        sb.append(uid+",");
+        sb.append(productBo.getProductID()+",");
+        sb.append(productBo.getPcUomid()+",");
+        sb.append(productBo.getFoc()+",");
+        sb.append(1+",");
+
+        String reasonId=downloadStockReasonType();
+        sb.append(reasonId+",");
+
+        sb.append(productBo.getSrp()+",");
+        sb.append(productBo.getASRP()+",");
+
+        double totalValue= productBo.getFoc()*productBo.getSrp();
+        sb.append(totalValue);
+
+        sb.append(",0");
+
+        return sb;
+    }
+
+    public String  downloadStockReasonType() {
+        ArrayList<ReasonMaster> reasons=new ArrayList<>();
+        try {
+            ReasonMaster reason;
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            Cursor c = db.selectSQL(businessModel.reasonHelper.getReasonFromStdListMaster(StandardListMasterConstants.STOCK_TYPE_REASON));
+            if (c != null) {
+                while (c.moveToNext()) {
+                    reason = new ReasonMaster();
+                    reason.setReasonID(c.getString(0));
+                    reason.setReasonDesc(c.getString(1));
+                    reasons.add(reason);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        // Now this type of reason is not captured from mobile so by default first reason id is passed. In future it will be changed.
+        if(reasons.size()>0)
+            return reasons.get(0).getReasonID();
+            else return "0";
+    }
+
     /**
      * Check weather order is placed for the particular retailer and its't sync
      * yet or not.
@@ -1687,6 +1744,28 @@ public class OrderHelper {
             }
             if (businessModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
                 SalesReturnHelper.getInstance(mContext).loadSalesReturnData(mContext, "ORDER", orderID, false);
+
+            if (businessModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT) {
+
+                String sql2 = "select " +DataMembers.tbl_OrderFreeIssues_cols+" from "
+                        + DataMembers.tbl_OrderFreeIssues
+                        + " where uid="
+                        + StringUtils.QT(orderID);
+                Cursor c = db.selectSQL(sql2);
+                if (c != null) {
+                    while (c.moveToNext()) {
+                        for (ProductMasterBO temp : businessModel.productHelper
+                                .getProductMaster())
+                            if (temp.getProductID().equals(c.getString(1))) {
+                                temp.setFoc(c.getInt(3));
+                                break;
+                            }
+
+                    }
+                    c.close();
+                }
+            }
+
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
@@ -2068,6 +2147,8 @@ public class OrderHelper {
 
                     }
 
+
+
                     if (product.isAllocation() == 1) {
                         int s = product.getSIH() > totalqty ? product.getSIH()
                                 - totalqty : 0;
@@ -2080,6 +2161,11 @@ public class OrderHelper {
                                 + " else 0 end) where pid="
                                 + product.getProductID());
                     }
+                }
+
+                if(businessModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT&&product.getFoc()>0){
+                    db.insertSQL(DataMembers.tbl_InvoiceFreeIssues, DataMembers.tbl_InvoiceFreeIssues_cols,
+                            getOrderFreeIssues(product,invoiceId,true).toString());
                 }
             }
 

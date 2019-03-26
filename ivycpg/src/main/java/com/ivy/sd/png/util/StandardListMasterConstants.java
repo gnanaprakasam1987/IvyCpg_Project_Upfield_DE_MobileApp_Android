@@ -35,6 +35,8 @@ public class StandardListMasterConstants {
 	public static final String COLLECTION_REASON_TYPE = "COLLR";
 	public static final String MUSTSELL_REASON_TYPE = "RMSL";
 
+	public static final String STOCK_TYPE_REASON = "STOCK_TYPE_REASON";
+
 	public static final String SALES_RETURN_SALABLE_REASON_TYPE = "SRS";
 	public static final String SALES_RETURN_NONSALABLE_REASON_TYPE = "SR";
 	public static final String NON_PLANNED_REASON_TYPE = "NFA_DEVIATION";
