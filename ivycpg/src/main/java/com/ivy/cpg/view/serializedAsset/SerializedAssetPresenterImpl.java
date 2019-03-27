@@ -424,7 +424,7 @@ public class SerializedAssetPresenterImpl implements SerializedAssetContractor.S
             if (mAssetTrackingList != null
                     && mAssetTrackingList.size() > 0) {
                 for (SerializedAssetBO assetBO : mAssetTrackingList) {
-                    if (assetBO.getAvailQty() > 0 && (assetBO.getImageName().equals("") || assetBO.getImgName().equals(""))) {
+                    if (assetBO.getAvailQty() > 0 && (assetBO.getImgName().equals("") || assetBO.getImgName().equals(""))) {
                         isFlag = false;
                         errorMsg = mContext.getString(R.string.photo_mandatory);
                     }
