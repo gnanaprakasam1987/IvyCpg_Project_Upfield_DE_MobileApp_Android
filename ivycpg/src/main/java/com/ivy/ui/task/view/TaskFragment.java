@@ -91,7 +91,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     }
 
     @Override
-    public void initVariables(View view) {
+    public void init(View view) {
         taskBgView = view.findViewById(R.id.task_bg_view);
         tabLayout = view.findViewById(R.id.tabs);
         tabLayout.addOnTabSelectedListener(this);
