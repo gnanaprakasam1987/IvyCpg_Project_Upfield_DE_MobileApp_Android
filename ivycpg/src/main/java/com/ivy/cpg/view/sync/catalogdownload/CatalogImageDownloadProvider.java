@@ -347,10 +347,10 @@ public class CatalogImageDownloadProvider {
 
 //        if(Core.getInstance() == null) {
 
-            PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
-                    .setDatabaseEnabled(true)
-                    .build();
-            PRDownloader.initialize(context.getApplicationContext(), config);
+        PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
+                .setDatabaseEnabled(true)
+                .build();
+        PRDownloader.initialize(context.getApplicationContext(), config);
 //        }
     }
 

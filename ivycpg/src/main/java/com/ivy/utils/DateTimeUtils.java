@@ -29,7 +29,7 @@ public class DateTimeUtils {
     public static final int DATE_DOB_FORMAT_PLAIN = 10;
     public static final int TIME = 0;
     public static final int DATE = 1;
-    public static  String defaultDateFormat = "MM/dd/yyyy";
+    public static String defaultDateFormat = "MM/dd/yyyy";
     private static final String serverDateFormat = "yyyy/MM/dd";
     public static int DATE_TIME_ID = 3;
 
@@ -115,7 +115,7 @@ public class DateTimeUtils {
         } else if (DATE_DOB_FORMAT_PLAIN == dateFormat) {
             SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);
             return sdf.format(cal.getTime());
-        }else {
+        } else {
             SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyyHHmmss", Locale.ENGLISH);
             return sdf.format(cal.getTime());
         }
@@ -123,14 +123,13 @@ public class DateTimeUtils {
     }
 
     /**
-     * @deprecated
-     * @see {@link #getDateCount(String, String, String)}
-     * an int < 0 if second Date is greater than the first Date, 0 if they are
-     * equal, and an int > 0 if this Date is greater.
-     *
      * @param firstDate
      * @param secondDate
      * @return
+     * @see {@link #getDateCount(String, String, String)}
+     * an int < 0 if second Date is greater than the first Date, 0 if they are
+     * equal, and an int > 0 if this Date is greater.
+     * @deprecated
      */
     public static int compareDate(String firstDate, String secondDate,
                                   String format) {
@@ -165,10 +164,10 @@ public class DateTimeUtils {
      * Add days to the Date provided
      *
      * @param dateInput Given Date
-     * @param noofDays   No of Days to be added
+     * @param noofDays  No of Days to be added
      * @return date
      */
-    public static Date addDaystoDate(Date dateInput, int noofDays){
+    public static Date addDaystoDate(Date dateInput, int noofDays) {
         Calendar c = Calendar.getInstance();
         c.setTime(dateInput);
         // manipulate date
@@ -303,7 +302,7 @@ public class DateTimeUtils {
      * convert date (yyyy/MM/dd) from server format to user requested format.
      * This method is use full to apply validations.
      *
-     * @param dateInput    date in String
+     * @param dateInput       date in String
      * @param dateInputFormat input date format
      * @return date object
      */
@@ -322,14 +321,13 @@ public class DateTimeUtils {
     }
 
     /**
-     *
      * @param format input date format
      * @return SimpleDateFormat
      */
 
     @NonNull
-    public static SimpleDateFormat getDateFormat (String format){
-        return new SimpleDateFormat(format,Locale.US);
+    public static SimpleDateFormat getDateFormat(String format) {
+        return new SimpleDateFormat(format, Locale.US);
     }
 
     public static String getTimeZone() {
@@ -342,8 +340,8 @@ public class DateTimeUtils {
         return "UTC";
     }
 
-    public static String convertDateTimeObjectToRequestedFormat(String inputText,String inputDateFormat, String outDateFormat) {
-        String outDate="";
+    public static String convertDateTimeObjectToRequestedFormat(String inputText, String inputDateFormat, String outDateFormat) {
+        String outDate = "";
         try {
             DateFormat outputFormat = new SimpleDateFormat(outDateFormat, Locale.ENGLISH);
             DateFormat inputFormat = new SimpleDateFormat(inputDateFormat, Locale.ENGLISH);
@@ -354,6 +352,10 @@ public class DateTimeUtils {
             Commons.printException("convertDateObjectToRequestedFormat" + e);
         }
         return outDate;
+    }
+
+    public static boolean isFutureDate(Calendar endCalendar, Calendar startCalendar) {
+        return endCalendar.after(startCalendar);
     }
 
 }

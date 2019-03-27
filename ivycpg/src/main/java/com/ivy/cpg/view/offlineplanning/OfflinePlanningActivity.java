@@ -17,6 +17,7 @@ import android.os.Bundle;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.widget.SearchView;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,6 +40,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.nonfield.NonFieldBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CalenderBO;
@@ -48,7 +50,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.text.DateFormat;
@@ -907,18 +909,19 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
 
                                     int size = mDayWiseList.size();
 
-                                    if ((size == 0 && dateFormatGeneral.parse(holder.calBO.getCal_date()).after(new Date())) || size != 0) {
+                                    if (size != 0 || dateFormatGeneral.parse(holder.calBO.getCal_date()).after(new Date())) {
                                         SimpleDateFormat format1 = new SimpleDateFormat("yyyy/MM/dd", Locale.US);
                                         Date dt1 = format1.parse(dateStr);
                                         DateFormat format2 = new SimpleDateFormat("EEEE", Locale.US);
                                         String dayOfTheWeek = format2.format(dt1);
 
-                                        tvDayDate.setText(String.format("%s - %s", dayOfTheWeek, mItems.get(position)));
+                                        tvDayDate.setText(String.format("%s - %s", mItems.get(position), dayOfTheWeek));
+
+                                        timeSlots(dateStr);
 
                                         mViewFlipper.showNext();
 
-                                        dayWishPlanningAdapter = new DayWishPlanningAdapter(mDayWiseList, dateStr);
-                                        lvDateWise.setAdapter(dayWishPlanningAdapter);
+                                        setDateWiseAdapter(mDayWiseList, dateStr);
                                         isMonthViewVisible = false;
                                     } else {
                                         Toast.makeText(OfflinePlanningActivity.this, getString(R.string.noPlan), Toast.LENGTH_LONG).show();
@@ -1023,6 +1026,11 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
         ImageView plan_icon;
         Boolean isValid = false;
         Boolean isDataPresent = false;
+    }
+
+    private void setDateWiseAdapter(ArrayList<OfflineDateWisePlanBO> mDayWiseList, String dateStr) {
+        dayWishPlanningAdapter = new DayWishPlanningAdapter(mDayWiseList, dateStr);
+        lvDateWise.setAdapter(dayWishPlanningAdapter);
     }
 
     class MyDragEventListener implements View.OnDragListener {
@@ -1218,7 +1226,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                 }
                                 String dateStr = dayWishSelectedDate;
 
-                                ArrayList<OfflineDateWisePlanBO> mData;
+                                ArrayList<OfflineDateWisePlanBO> mData = new ArrayList<>();
 
                                 if (mHashMapData.get(dateStr) != null) {
                                     mData = mHashMapData.get(dateStr);
@@ -1247,14 +1255,14 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                             } else {
                                                 hoverDate = "";
                                                 madapter.notifyDataSetChanged();
-                                                dayWishPlanningAdapter.notifyDataSetChanged();
+                                                setDateWiseAdapter(mData, dateStr);
                                                 Toast.makeText(OfflinePlanningActivity.this, getString(R.string.retailerExists), Toast.LENGTH_SHORT).show();
                                                 return false;
                                             }
                                         } else if (isRoutePlanned) {
                                             hoverDate = "";
                                             madapter.notifyDataSetChanged();
-                                            dayWishPlanningAdapter.notifyDataSetChanged();
+                                            setDateWiseAdapter(mData, dateStr);
                                             Toast.makeText(OfflinePlanningActivity.this, getString(R.string.notAllowtoPlanOutlet), Toast.LENGTH_SHORT).show();
                                             return false;
                                         } else {
@@ -1263,7 +1271,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                             } else {
                                                 hoverDate = "";
                                                 madapter.notifyDataSetChanged();
-                                                dayWishPlanningAdapter.notifyDataSetChanged();
+                                                setDateWiseAdapter(mData, dateStr);
                                                 Toast.makeText(OfflinePlanningActivity.this, getString(R.string.retailerExists), Toast.LENGTH_SHORT).show();
                                                 return false;
                                             }
@@ -1288,14 +1296,14 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                             } else {
                                                 hoverDate = "";
                                                 madapter.notifyDataSetChanged();
-                                                dayWishPlanningAdapter.notifyDataSetChanged();
+                                                setDateWiseAdapter(mData, dateStr);
                                                 Toast.makeText(OfflinePlanningActivity.this, getString(R.string.nonFieldExists), Toast.LENGTH_SHORT).show();
                                                 return false;
                                             }
                                         } else if (isRetailerPlanned) {
                                             hoverDate = "";
                                             madapter.notifyDataSetChanged();
-                                            dayWishPlanningAdapter.notifyDataSetChanged();
+                                            setDateWiseAdapter(mData, dateStr);
                                             Toast.makeText(OfflinePlanningActivity.this, getString(R.string.notAllowtoPlannonField), Toast.LENGTH_SHORT).show();
                                             return false;
                                         } else {
@@ -1304,7 +1312,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                             } else {
                                                 hoverDate = "";
                                                 madapter.notifyDataSetChanged();
-                                                dayWishPlanningAdapter.notifyDataSetChanged();
+                                                setDateWiseAdapter(mData, dateStr);
                                                 Toast.makeText(OfflinePlanningActivity.this, getString(R.string.nonFieldExists), Toast.LENGTH_SHORT).show();
                                                 return false;
                                             }
@@ -1323,7 +1331,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                                 else
                                     nonFieldAdapter.notifyDataSetChanged();
                                 madapter.notifyDataSetChanged();
-                                dayWishPlanningAdapter.notifyDataSetChanged();
+                                setDateWiseAdapter(mHashMapData.get(dateStr), dateStr);
                                 return true;
                             } else {
                                 Toast.makeText(getApplicationContext(), getString(R.string.pastAndCurrentDays), Toast.LENGTH_LONG).show();
@@ -1511,6 +1519,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
                         bmodel.applyAlertDialogTheme(builder);
                     }
                 });
+
                 convertView.setOnDragListener(myDragEventListener);
                 convertView.setTag(holder);
             } else {
@@ -1518,7 +1527,6 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
             }
             holder.dayWiseRetailer = mDataList.get(position);
             holder.TVRetailerName.setText(holder.dayWiseRetailer.getName());
-            holder.TVRetailerName.setTextColor(getResources().getColor(android.R.color.black));
 
             if (holder.dayWiseRetailer.getEntityType().equalsIgnoreCase(mEntityDistributor) ||
                     holder.dayWiseRetailer.getEntityType().equalsIgnoreCase(mEntityRetailer))
@@ -1613,5 +1621,61 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
         TextView tvName;
         ImageView ivEntityType;
     }
+
+    //test
+    private void timeSlots(String dateStr) {
+        try {
+
+            Date date = DateTimeUtils.convertStringToDateObject(dateStr, "yyyy/MM/dd");
+
+            Calendar startCalendar = Calendar.getInstance();
+            Calendar endCalendar = Calendar.getInstance();
+
+            startCalendar.setTime(date);
+            startCalendar.set(Calendar.HOUR_OF_DAY, 0);
+            startCalendar.set(Calendar.MINUTE, 0);
+            startCalendar.set(Calendar.SECOND, 0);
+            startCalendar.set(Calendar.MILLISECOND, 0);
+
+            endCalendar.setTime(date);
+            endCalendar.set(Calendar.HOUR_OF_DAY, 23);
+            endCalendar.set(Calendar.MINUTE, 59);
+            endCalendar.set(Calendar.SECOND, 59);
+            endCalendar.set(Calendar.MILLISECOND, 999);
+
+            SimpleDateFormat slotTime = new SimpleDateFormat("hh:mma", Locale.US);
+            SimpleDateFormat slotDate = new SimpleDateFormat(", dd/MM/yy", Locale.US);
+            while (DateTimeUtils.isFutureDate(endCalendar, startCalendar)) {
+                String slotStartTime = slotTime.format(startCalendar.getTime());
+                String slotStartDate = slotDate.format(startCalendar.getTime());
+
+                startCalendar.add(Calendar.MINUTE, 60);
+                String slotEndTime = slotTime.format(startCalendar.getTime());
+
+                Log.d("DATE", slotStartTime + " - " + slotEndTime + slotStartDate);
+            }
+
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+
+            for (int i = cal.getFirstDayOfWeek(); i <= 7; i++) {
+                cal.set(Calendar.DAY_OF_WEEK, i);
+                System.out.println(cal.getTime());//Returns Date
+            }
+
+            cal.set(Calendar.WEEK_OF_MONTH, cal.get(Calendar.WEEK_OF_MONTH) - 1);
+
+            for (int i = cal.getFirstDayOfWeek(); i <= 7; i++) {
+                cal.set(Calendar.DAY_OF_WEEK, i);
+                System.out.println(cal.getTime());//Returns Date
+            }
+
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
 
 }
