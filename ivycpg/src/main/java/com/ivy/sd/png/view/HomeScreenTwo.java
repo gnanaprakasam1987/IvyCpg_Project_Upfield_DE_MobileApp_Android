@@ -5001,6 +5001,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         bmodel.setRField1("");
         bmodel.setRField2("");
         bmodel.setSaleReturnNote("");
+        bmodel.setSaleReturnRfValue("");
         bmodel.setStockCheckRemark("");
         bmodel.setAssetRemark("");
     }

@@ -112,9 +112,9 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
                     mFragmentList.add(cashModeFragment);
                     break;
                 case CQ:
-                    CheckModeFragment checkModeFragment = new CheckModeFragment();
-                    checkModeFragment.setArguments(bundle);
-                    mFragmentList.add(checkModeFragment);
+                    ChequeModeFragment chequeModeFragment = new ChequeModeFragment();
+                    chequeModeFragment.setArguments(bundle);
+                    mFragmentList.add(chequeModeFragment);
                     break;
                 case CN:
                     CreditNoteFragment creditNoteFragment = new CreditNoteFragment();
@@ -138,12 +138,12 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
                     mFragmentList.add(couponFragment);
                     break;
                 case DD:
-                    CheckModeFragment ddFragment = new CheckModeFragment();
+                    ChequeModeFragment ddFragment = new ChequeModeFragment();
                     ddFragment.setArguments(bundle);
                     mFragmentList.add(ddFragment);
                     break;
                 case RTGS:
-                    CheckModeFragment rtgsFragment = new CheckModeFragment();
+                    ChequeModeFragment rtgsFragment = new ChequeModeFragment();
                     rtgsFragment.setArguments(bundle);
                     mFragmentList.add(rtgsFragment);
                     break;
@@ -184,9 +184,9 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
 
     @Override
     public void updateDate(Date date, String tag) {
-        CheckModeFragment checkModeFragment = (CheckModeFragment) mFragmentList.get(selectedPosition);
-        if (checkModeFragment != null)
-            checkModeFragment.updateDate(date, "");
+        ChequeModeFragment chequeModeFragment = (ChequeModeFragment) mFragmentList.get(selectedPosition);
+        if (chequeModeFragment != null)
+            chequeModeFragment.updateDate(date, "");
     }
 
     @Override
@@ -217,8 +217,8 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
                 cashModeFragment.numberPressed(vw);
                 break;
             case CQ:
-                CheckModeFragment checkModeFragment = (CheckModeFragment) mFragmentList.get(selectedPosition);
-                checkModeFragment.numberPressed(vw);
+                ChequeModeFragment chequeModeFragment = (ChequeModeFragment) mFragmentList.get(selectedPosition);
+                chequeModeFragment.numberPressed(vw);
                 break;
             case CN:
                 CreditNoteFragment creditNoteFragment = (CreditNoteFragment) mFragmentList.get(selectedPosition);
@@ -237,12 +237,12 @@ public class PaymentModeActivity extends IvyBaseActivityNoActionBar implements U
                 cashModeFragment3.numberPressed(vw);
                 break;
             case DD:
-                CheckModeFragment checkModeFragment1 = (CheckModeFragment) mFragmentList.get(selectedPosition);
-                checkModeFragment1.numberPressed(vw);
+                ChequeModeFragment chequeModeFragment1 = (ChequeModeFragment) mFragmentList.get(selectedPosition);
+                chequeModeFragment1.numberPressed(vw);
                 break;
             case RTGS:
-                CheckModeFragment checkModeFragment2 = (CheckModeFragment) mFragmentList.get(selectedPosition);
-                checkModeFragment2.numberPressed(vw);
+                ChequeModeFragment chequeModeFragment2 = (ChequeModeFragment) mFragmentList.get(selectedPosition);
+                chequeModeFragment2.numberPressed(vw);
                 break;
             case AP:
                 AdvancePaymentFragment advancePaymentFragment = (AdvancePaymentFragment) mFragmentList.get(selectedPosition);

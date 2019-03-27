@@ -270,7 +270,8 @@ public class DigitalContentFragment extends IvyBaseFragment implements BrandDial
                 }
             }
         }
-        if (calledFrom.equalsIgnoreCase("MENU_DGT_SW") || calledFrom.equalsIgnoreCase("DigiCS")) {
+        if (calledFrom.equalsIgnoreCase("MENU_DGT_SW") || calledFrom.equalsIgnoreCase("DigiCS")
+                || !mDigitalContentHelper.isProductMapped()) {
             menu.findItem(R.id.menu_fivefilter).setVisible(false);
         }
 

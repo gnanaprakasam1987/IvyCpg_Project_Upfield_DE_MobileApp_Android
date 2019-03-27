@@ -545,6 +545,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     holder.psname.setMaxLines(businessModel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
                     holder.productCode = row
                             .findViewById(R.id.stock_and_order_listview_produtCode);
+                    holder.tvbarcode = row
+                            .findViewById(R.id.stock_and_order_listview_productbarcode);
 
                     holder.ppq =  row
                             .findViewById(R.id.stock_and_order_listview_ppq);
@@ -621,6 +623,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
                     if (!businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE)
                         holder.productCode.setVisibility(View.GONE);
+
+                    if (!businessModel.configurationMasterHelper.SHOW_BARCODE)
+                        holder.tvbarcode.setVisibility(View.GONE);
 
                     holder.audit.setOnClickListener(new OnClickListener() {
 
@@ -1370,8 +1375,22 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     holder.productCode.setText(prodCode);
                 }
 
+                if (businessModel.configurationMasterHelper.SHOW_BARCODE){
+                    holder.tvbarcode.setVisibility(View.VISIBLE);
+                    String barCode = getResources().getString(R.string.barcode) + ": " +
+                            holder.productObj.getBarCode() + " ";
+
+                    if (businessModel.labelsMasterHelper.applyLabels(holder.tvbarcode.getTag()) != null)
+                        barCode = businessModel.labelsMasterHelper
+                                .applyLabels(holder.tvbarcode.getTag()) + ": " +
+                                holder.productObj.getBarCode() + " ";
+
+                    holder.tvbarcode.setText(barCode);
+                }
+
+
                 String strPPQ = getResources().getString(R.string.ppq) + ": "
-                        + holder.productObj.getRetailerWiseProductWiseP4Qty() + "";
+                        + holder.productObj.getRetailerWiseProductWiseP4Qty() + " ";
                 holder.ppq.setText(strPPQ);
                 String strPSQ = getResources().getString(R.string.psq) + ": "
                         + holder.productObj.getRetailerWiseP4StockQty();
@@ -1507,6 +1526,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         private ProductMasterBO productObj;
         private TextView psname;
         private TextView ppq;
+        private TextView tvbarcode;
         private TextView psq;
         private EditText shelfPcsQty;
         private EditText shelfCaseQty;

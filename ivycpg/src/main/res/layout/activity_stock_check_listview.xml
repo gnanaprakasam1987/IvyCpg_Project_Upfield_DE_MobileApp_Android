@@ -63,13 +63,15 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/stock_and_order_listview_productname"
+                android:layout_marginStart="2dp"
+                android:layout_marginLeft="2dp"
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_marginRight="@dimen/dimens_4dp"
                 android:layout_toEndOf="@+id/stock_and_order_listview_produtCode"
                 android:layout_toRightOf="@+id/stock_and_order_listview_produtCode"
                 android:maxLines="1"
                 android:text="@string/barcode"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/stock_and_order_listview_ppq"

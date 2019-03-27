@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingStart="@dimen/list_item_padding_top_nd_bottom"
+    android:gravity="center_vertical"
+    android:paddingTop="@dimen/list_item_padding_top_nd_bottom"
+    android:paddingEnd="@dimen/list_item_padding_top_nd_bottom"
+    android:paddingBottom="@dimen/list_item_padding_top_nd_bottom">
+
+    <TextView
+        android:id="@+id/menunametxt"
+        style="@style/TextViewListItemPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:ellipsize="middle"
+        android:layout_alignParentLeft="true"
+        android:text="MENU_NAME"
+        android:singleLine="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/tv_time_spent"
+        style="@style/TextViewListItemCaption"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/dimen_5dp"
+        android:layout_marginRight="@dimen/dimen_5dp"
+        android:layout_toLeftOf="@+id/iv_done"
+        android:text="TIME_TAKEN"
+        android:layout_toStartOf="@+id/iv_done" />
+
+    <ImageView
+        android:id="@+id/iv_done"
+        android:layout_width="@dimen/info_icon"
+        android:layout_height="@dimen/info_icon"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dimen_5dp"
+        android:layout_marginRight="@dimen/dimen_5dp"
+        android:src="@drawable/ic_tick_enable"
+        android:layout_alignParentEnd="true" />
+
+</RelativeLayout>
