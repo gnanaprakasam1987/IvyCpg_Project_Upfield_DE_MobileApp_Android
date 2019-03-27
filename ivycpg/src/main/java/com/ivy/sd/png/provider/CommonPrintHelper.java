@@ -93,6 +93,7 @@ public class CommonPrintHelper {
     private static String TAG_RETAILER_ADDRESS2 = "ret_address2";
     private static String TAG_RETAILER_ADDRESS3 = "ret_address3";
     private static String TAG_RETAILER_CITY = "ret_city";
+    private static String TAG_RETAILER_PIN_CODE = "ret_pin_code";
     private static String TAG_RETAILER_CONTACT_NUMBER = "ret_number";
     private static String TAG_RETAILER_TIN_NUMBER = "ret_tin";
     private static String TAG_RETAILER_CST_NUMBER = "ret_cst";
@@ -290,6 +291,7 @@ public class CommonPrintHelper {
             String group_name = "";
             String product_bacth = "", product_free_product = "";
             String scheme_discount = "";
+            String wrap_text = "";
             mAttributeList = null;
 
             int property_total_length = 0;
@@ -381,6 +383,9 @@ public class CommonPrintHelper {
                             String attr_repeat = xmlParser.getAttributeValue(null, "repeat");
                             attr_repeat = attr_repeat == null ? "No" : attr_repeat;
 
+                            wrap_text = xmlParser.getAttributeValue(null, "wrap_text");
+                            wrap_text = wrap_text == null ? "no" : wrap_text;
+
                             String mAttrValue = "";
 
                             if (attr_name.equals("label")) {
@@ -425,7 +430,9 @@ public class CommonPrintHelper {
                                     if (length > attr_length) {
                                         if (!attr_name.equalsIgnoreCase(TAG_PRODUCT_NAME)
                                                 || (attr_name.equalsIgnoreCase(TAG_PRODUCT_NAME) && product_name_single_line.equalsIgnoreCase("NO"))) {
-                                            mAttrValue = mAttrValue.substring(0, attr_length - property_special.length()) + property_special;
+
+                                            if (wrap_text.equalsIgnoreCase("no"))
+                                                mAttrValue = mAttrValue.substring(0, attr_length - property_special.length()) + property_special;
                                         }
                                     } else if (length < attr_length) {
                                         int diff = attr_length - length;
@@ -437,21 +444,31 @@ public class CommonPrintHelper {
                                         }
 
                                     }
-                                    mAttrValue = doAlign(mAttrValue, ALIGNMENT_RIGHT, attr_space);
+                                    if (length > attr_length
+                                            && wrap_text.equalsIgnoreCase("yes"))
+                                        mAttrValue = doAlignWithNextLine(mAttrValue, attr_length, ALIGNMENT_RIGHT, attr_space, attr_bold);
+                                    else
+                                        mAttrValue = doAlign(mAttrValue, ALIGNMENT_RIGHT, attr_space);
 
                                 } else if (attr_align.equalsIgnoreCase(ALIGNMENT_RIGHT)) {
                                     int startPosition;
                                     int length = mAttrValue.length();
 
-                                    if (length > attr_length)
-                                        mAttrValue = mAttrValue.substring(0, attr_length - property_special.length()) + property_special;
+                                    if (length > attr_length) {
+                                        if (wrap_text.equalsIgnoreCase("no"))
+                                            mAttrValue = mAttrValue.substring(0, attr_length - property_special.length()) + property_special;
+                                    }
 
                                     if (attr_padding.equalsIgnoreCase(ALIGNMENT_RIGHT)) {
                                         startPosition = property_total_length - lineValue.length() - length;
                                     } else {
                                         startPosition = property_total_length - lineValue.length() - attr_length;
                                     }
-                                    mAttrValue = doAlign(mAttrValue, ALIGNMENT_RIGHT, startPosition);
+                                    if (length > attr_length
+                                            && wrap_text.equalsIgnoreCase("yes"))
+                                        mAttrValue = doAlignWithNextLine(mAttrValue, attr_length, ALIGNMENT_RIGHT, attr_space, attr_bold);
+                                    else
+                                        mAttrValue = doAlign(mAttrValue, ALIGNMENT_RIGHT, startPosition);
 
                                 } else if (attr_align.equalsIgnoreCase(ALIGNMENT_CENTER)) {
                                     int startPosition;
@@ -462,12 +479,18 @@ public class CommonPrintHelper {
                                     else
                                         length = mAttrValue.length();
 
-                                    if (length > attr_length)
-                                        mAttrValue = mAttrValue.substring(0, attr_length - property_special.length()) + property_special;
+                                    if (length > attr_length) {
+                                        if (wrap_text.equalsIgnoreCase("no"))
+                                            mAttrValue = mAttrValue.substring(0, attr_length - property_special.length()) + property_special;
+                                    }
 
                                     startPosition = (property_total_length / 2) - (length / 2);
 
-                                    mAttrValue = doAlign(mAttrValue, ALIGNMENT_RIGHT, startPosition);
+                                    if (length > attr_length
+                                            && wrap_text.equalsIgnoreCase("yes"))
+                                        mAttrValue = doAlignWithNextLine(mAttrValue, attr_length, ALIGNMENT_RIGHT, startPosition, attr_bold);
+                                    else
+                                        mAttrValue = doAlign(mAttrValue, ALIGNMENT_RIGHT, startPosition);
                                 }
                             }
                             if (attr_bold.equalsIgnoreCase("YES")) {
@@ -781,6 +804,8 @@ public class CommonPrintHelper {
             value = label + bmodel.getRetailerMasterBO().getAddress3();
         } else if (tag.equalsIgnoreCase(TAG_RETAILER_CITY)) {
             value = label + bmodel.getRetailerMasterBO().getCity();
+        } else if (tag.equalsIgnoreCase(TAG_RETAILER_PIN_CODE)) {
+            value = label + bmodel.getRetailerMasterBO().getPincode();
         } else if (tag.equalsIgnoreCase(TAG_RETAILER_CONTACT_NUMBER)) {
             value = label + bmodel.getRetailerMasterBO().getContactnumber();
         } else if (tag.equalsIgnoreCase(TAG_RETAILER_TIN_NUMBER)) {
@@ -2129,6 +2154,44 @@ public class CommonPrintHelper {
                 value = value + emptySpace;
         }
         return value;
+    }
+
+    /**
+     * if given value is reach more than of attr length than wrap text into next line
+     * call doAlign() for alignment
+     *
+     * @param strValue    - given string value
+     * @param attr_length - String value length
+     * @param alignment   - Text Alignment (indicate left/right)
+     * @param gap         - starting  position of the text (allocated space - actual space)
+     *                    Not : if it is negative value than will start in first position
+     * @param strBold     - yes -> Bold apply  No -> Bold not apply
+     * @return
+     */
+    private String doAlignWithNextLine(String strValue, int attr_length, String alignment, int gap, String strBold) {
+        String strBoldTxt = "";
+        String nexLine = "\n";
+        int lastIndex = attr_length;
+        if (strBold.equalsIgnoreCase("yes"))
+            strBoldTxt = "#B#";
+        StringBuilder mAttrValue = new StringBuilder();
+        mAttrValue.append(strBoldTxt).append(doAlign(strValue.substring(0, attr_length), alignment, gap));
+        int length = strValue.length() - attr_length;
+
+
+        while (length > 0) {
+
+            mAttrValue.append(nexLine);
+            if (strValue.substring(lastIndex).length() <= attr_length) {
+                mAttrValue.append(strBoldTxt).append(doAlign(strValue.substring(lastIndex), alignment, gap));
+                length = 0;
+            } else {
+                mAttrValue.append(strBoldTxt).append(doAlign(strValue.substring(lastIndex, (lastIndex + attr_length)), alignment, gap));
+                length -= lastIndex;
+                lastIndex = lastIndex + attr_length;
+            }
+        }
+        return mAttrValue.toString();
     }
 
     /**
