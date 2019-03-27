@@ -3434,6 +3434,7 @@ public class BusinessModel extends Application {
     public void getimageDownloadURL() {
         try {
             boolean isAmazonUpload = false;
+            boolean isAzureUpload = false;
 
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
             );
@@ -3447,9 +3448,19 @@ public class BusinessModel extends Application {
                 }
                 c.close();
             }
+
+            c = db
+                    .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'IS_AZURE_UPLOAD' and flag = 1 and ForSwitchSeller = 0");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    isAzureUpload = true;
+                }
+                c.close();
+            }
+
             c = null;
 
-            if (!isAmazonUpload) {
+            if (!isAmazonUpload && !isAzureUpload) {
                 c = db
                         .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_HOST'");
                 if (c != null) {
