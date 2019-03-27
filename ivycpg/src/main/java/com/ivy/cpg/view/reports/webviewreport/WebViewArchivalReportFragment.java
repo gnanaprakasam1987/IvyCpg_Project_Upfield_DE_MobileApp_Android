@@ -174,7 +174,7 @@ public class WebViewArchivalReportFragment extends IvyBaseFragment {
             webViewReportHelper.prepareArchiveFileDownload(filePath);
             if(bmodel.getDigitalContentURLS().size()>0) {
                 AWSConnectionHelper.getInstance().setAWSDBValues(getActivity());
-                transferUtility = new TransferUtility(AWSConnectionHelper.getInstance().getS3Connection(), getActivity().getApplicationContext());
+                transferUtility = new TransferUtility(AWSConnectionHelper.getInstance().getS3Connection(), mContext);
                 downloaderThread = new DownloaderThreadNew(getActivity(),
                         activityHandler, bmodel.getDigitalContentURLS(),
                         bmodel.userMasterHelper.getUserMasterBO()

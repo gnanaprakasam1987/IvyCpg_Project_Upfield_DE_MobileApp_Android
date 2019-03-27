@@ -79,27 +79,19 @@ public class AzureConnectionHelper {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.openDataBase();
-            String sql = "Select ListCode,ListName from StandardListMaster where ListType='Azure_Configuration'";
+            String sql = "Select ListCode,ListName from StandardListMaster where ListType='Amazon_Configuration'";
             Cursor c = db.selectSQL(sql);
             if (c != null) {
                 while (c.moveToNext()) {
                     if (c.getString(0).equals("AS_TYPE")) {
                         DataMembers.AZURE_TYPE = c.getString(1);
-                    } else if (c.getString(0).equals("AS_STORAGE_CONTAINER")) {
+                    } else if (c.getString(0).equals("AS_BUCKET_NAME")) {
                         DataMembers.AZURE_CONTAINER = c.getString(1);
-                    } else if (c.getString(0).equals("AS_CONNECTION_STRING")) {
+                    } else if (c.getString(0).equals("AS_END_POINT")) {
                         DataMembers.AZURE_CONNECTION_STRING = c.getString(1);
-                    } else if (c.getString(0).equals("AS_STORAGE_SAS")) {
+                    } else if (c.getString(0).equals("AS_SECURITY_KEY")) {
                         DataMembers.AZURE_SAS = c.getString(1);
-                    } else if (c.getString(0).equals("AS_STORAGE_ENDPOINT")) {
-                        DataMembers.AZURE_ENDPOINT = c.getString(1);
-                    } else if (c.getString(0).equals("AS_STORAGE_ACCOUNT_NAME")) {
-                        DataMembers.AZURE_ACCOUNT_NAME = c.getString(1);
-                    } else if (c.getString(0).equals("AS_STORAGE_KEY")) {
-                        DataMembers.AZURE_KEY = c.getString(1);
-                    } else if (c.getString(0).equals("AS_STORAGE_BASE_URL")) {
-                        DataMembers.AZURE_BASE_URL = c.getString(1);
-                    }else if (c.getString(0).equals("AS_ROOT_DIR"))
+                    } else if (c.getString(0).equals("AS_ROOT_DIR"))
                         DataMembers.AZURE_ROOT_DIRECTORY = c.getString(1);
                 }
                 c.close();
