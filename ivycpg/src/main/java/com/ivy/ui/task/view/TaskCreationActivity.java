@@ -58,7 +58,7 @@ import butterknife.OnItemSelected;
 
 import static com.ivy.core.IvyConstants.DEFAULT_DATE_FORMAT;
 
-public class TaskCreationActivity extends BaseActivity implements TaskContract.TaskView, DataPickerDialogFragment.UpdateDateInterface {
+public class TaskCreationActivity extends BaseActivity implements TaskContract.TaskCreationView, DataPickerDialogFragment.UpdateDateInterface {
 
     @Inject
     TaskContract.TaskPresenter<TaskContract.TaskView> taskPresenter;

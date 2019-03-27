@@ -115,11 +115,11 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                 .subscribeWith(new DisposableObserver<Object>() {
                     @Override
                     public void onNext(Object o) {
-                        getIvyView().setTaskUserListData(mUserListBos);
+                        ((TaskContract.TaskCreationView) getIvyView()).setTaskUserListData(mUserListBos);
 
-                        getIvyView().setTaskChannelListData(mChannelListBos);
+                        ((TaskContract.TaskCreationView) getIvyView()).setTaskChannelListData(mChannelListBos);
 
-                        getIvyView().setTaskRetailerListData(mRetailerListBos);
+                        ((TaskContract.TaskCreationView) getIvyView()).setTaskRetailerListData(mRetailerListBos);
 
                         getIvyView().hideLoading();
                     }
@@ -147,7 +147,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                     @Override
                     public void onNext(ArrayList<TaskDataBO> taskDataBOS) {
                         if (!taskDataBOS.isEmpty())
-                            getIvyView().setTaskCategoryListData(taskDataBOS);
+                            ((TaskContract.TaskCreationView) getIvyView()).setTaskCategoryListData(taskDataBOS);
 
                         getIvyView().hideLoading();
                     }
@@ -316,7 +316,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     public void onSaveButtonClick(int channelId, TaskDataBO taskObj) {
         getIvyView().showLoading();
         getCompositeDisposable().add(mTaskDataManager.addAndUpdateTask(channelId
-                , taskObj, getIvyView().getTaskMode(), getTaskImgList()).subscribeOn(getSchedulerProvider().io())
+                , taskObj, ((TaskContract.TaskCreationView) getIvyView()).getTaskMode(), getTaskImgList()).subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {
                     @Override

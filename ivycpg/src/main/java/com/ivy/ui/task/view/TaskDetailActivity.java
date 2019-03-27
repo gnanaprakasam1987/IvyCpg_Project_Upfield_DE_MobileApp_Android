@@ -158,26 +158,6 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
 
     @Override
-    public void setTaskChannelListData(Vector<ChannelBO> channelList) {
-
-    }
-
-    @Override
-    public void setTaskRetailerListData(ArrayList<RetailerMasterBO> retailerList) {
-
-    }
-
-    @Override
-    public void setTaskUserListData(ArrayList<UserMasterBO> userList) {
-
-    }
-
-    @Override
-    public String getTaskMode() {
-        return null;
-    }
-
-    @Override
     public void showUpdatedDialog(int msgResId) {
 
     }
@@ -190,11 +170,6 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         taskImgRecyclerView.setAdapter(new TaskImgListAdapter(updatedList, this, true, null));
         taskDescTv.setText(detailBo.getTaskDesc());
         setImageIntoView(getIntent().getExtras().getString("evidenceImg"));
-
-    }
-
-    @Override
-    public void setTaskCategoryListData(ArrayList<TaskDataBO> categoryList) {
 
     }
 

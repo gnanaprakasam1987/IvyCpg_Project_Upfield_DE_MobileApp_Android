@@ -17,21 +17,24 @@ public interface TaskContract {
 
     interface TaskView extends BaseIvyView {
 
+        void showUpdatedDialog(@StringRes int msgResId);
+
+        void updateListData(ArrayList<TaskDataBO> updatedList);
+
+        void updateImageListAdapter(ArrayList<TaskDataBO> imageList);
+    }
+
+    interface TaskCreationView extends TaskView {
+
+        String getTaskMode();
+
         void setTaskChannelListData(Vector<ChannelBO> channelList);
 
         void setTaskRetailerListData(ArrayList<RetailerMasterBO> retailerList);
 
         void setTaskUserListData(ArrayList<UserMasterBO> userList);
 
-        String getTaskMode();
-
-        void showUpdatedDialog(@StringRes int msgResId);
-
-        void updateListData(ArrayList<TaskDataBO> updatedList);
-
         void setTaskCategoryListData(ArrayList<TaskDataBO> categoryList);
-
-        void updateImageListAdapter(ArrayList<TaskDataBO> imageList);
     }
 
 

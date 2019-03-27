@@ -60,7 +60,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     private Button nxtBtn;
     private LinearLayout footerLL;
     private Bundle bundle;
-    private boolean IsRetailerwisetask;
+    private boolean isRetailerWiseTask;
     private boolean fromHomeScreen;
     private boolean isFromSurvey;
     private boolean fromProfileScreen;
@@ -116,8 +116,8 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             bundle = Objects.requireNonNull(getActivity()).getIntent().getExtras();
 
         if (bundle != null) {
-            if (bundle.containsKey("IsRetailerwisetask")) {
-                IsRetailerwisetask = bundle.getBoolean("IsRetailerwisetask", false);
+            if (bundle.containsKey("isRetailerWiseTask")) {
+                isRetailerWiseTask = bundle.getBoolean("isRetailerWiseTask", false);
             }
 
             if (bundle.containsKey("fromHomeScreen")) {
@@ -147,7 +147,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             });
         }
 
-        if (IsRetailerwisetask) {
+        if (isRetailerWiseTask) {
             if (taskPresenter.getRetailerID() == 0) {
                 mSelectedRetailerID = "0";
             } else {
@@ -158,9 +158,9 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         addTabs();
 
         if (taskPresenter.isShowServerTaskOnly())
-            taskPresenter.updateTaskList(1, mSelectedRetailerID, IsRetailerwisetask, isFromSurvey);
+            taskPresenter.updateTaskList(1, mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
         else
-            taskPresenter.updateTaskList(0, mSelectedRetailerID, IsRetailerwisetask, isFromSurvey);
+            taskPresenter.updateTaskList(0, mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
 
     }
 
@@ -272,7 +272,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         @Override
         public void onTaskExcutedClick(TaskDataBO taskDataBO) {
             taskPresenter.updateModuleTime();
-            if (IsRetailerwisetask) {
+            if (isRetailerWiseTask) {
                 taskPresenter.updateTaskExecution(taskPresenter.getRetailerID() + "", taskDataBO);
             } else {
                 taskPresenter.updateTaskExecution(0 + "", taskDataBO);
@@ -296,7 +296,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
                     break;
                 case 1:
                     i = new Intent(getActivity(), TaskCreationActivity.class);
-                    i.putExtra("IsRetailerwisetask", IsRetailerwisetask);
+                    i.putExtra("isRetailerWiseTask", isRetailerWiseTask);
                     i.putExtra("menuCode", "MENU_TASK");
                     i.putExtra("screentitle", bundle.containsKey("screentitle") ? bundle.getString("screentitle") : getResources().
                             getString(R.string.task));
@@ -401,7 +401,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
             hideBottomSheet();
 
-        taskPresenter.updateTaskList(tab.getPosition(), mSelectedRetailerID, IsRetailerwisetask, isFromSurvey);
+        taskPresenter.updateTaskList(tab.getPosition(), mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
     }
 
     @Override
@@ -419,11 +419,6 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
 
         recyclerView.setAdapter(new TaskListAdapter(updatedList, getActivity(), taskPresenter.outDateFormat(), taskClickListener, fromProfileScreen, fromHomeScreen));
-    }
-
-    @Override
-    public void setTaskCategoryListData(ArrayList<TaskDataBO> categoryList) {
-
     }
 
     @Override
@@ -473,7 +468,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     // Comment by Gp, Issue while going back from Activity Menu
     private void backNavigation() {
 
-        if (IsRetailerwisetask) {
+        if (isRetailerWiseTask) {
             taskPresenter.updateModuleTime();
         }
         if (fromHomeScreen)
@@ -488,7 +483,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         taskPresenter.updateModuleTime();
         Intent i = new Intent(getActivity(), TaskCreationActivity.class);
         i.putExtra("fromHomeScreen", fromHomeScreen);
-        i.putExtra("IsRetailerwisetask", IsRetailerwisetask);
+        i.putExtra("isRetailerWiseTask", isRetailerWiseTask);
         i.putExtra("menuCode", "MENU_TASK");
         i.putExtra("screentitle", bundle.containsKey("screentitle") ? bundle.getString("screentitle") : getResources().
                 getString(R.string.task));
@@ -520,25 +515,6 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         dialog.show(getActivity().getSupportFragmentManager(), "ReasonDialogFragment");
     }
 
-    @Override
-    public void setTaskChannelListData(Vector<ChannelBO> channelList) {
-
-    }
-
-    @Override
-    public void setTaskRetailerListData(ArrayList<RetailerMasterBO> retailerList) {
-
-    }
-
-    @Override
-    public void setTaskUserListData(ArrayList<UserMasterBO> userList) {
-
-    }
-
-    @Override
-    public String getTaskMode() {
-        return null;
-    }
 
     @Override
     public void showUpdatedDialog(int msgResId) {
