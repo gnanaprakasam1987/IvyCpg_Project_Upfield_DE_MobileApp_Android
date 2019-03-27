@@ -214,7 +214,7 @@ public class CatalogImageDownloadProvider {
 
     public void downloadProcess(Context ctx){
 
-        if (!NetworkUtils.isNetworkConnected(businessModel.getApplicationContext())){
+        if (!NetworkUtils.isNetworkConnected(ctx)){
             Intent intent = new Intent("com.ivy.cpg.view.sync.CatalogDownloadStatus");
             // You can also include some extra data.
             intent.putExtra(CatalogDownloadConstants.STATUS, CatalogDownloadConstants.ERROR);
