@@ -1063,7 +1063,119 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
                 holder.tvTaskCount = convertView.findViewById(R.id.tv_task_count);
 
 
+                convertView.setOnClickListener(new OnClickListener() {
+                    public void onClick(View v) {
 
+                        if (selectedPosition.size() == 0) {
+                            if ((bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION && calledBy
+                                    .equals(MENU_PLANNING)
+                                    || (bmodel.configurationMasterHelper.IS_VISITSCREEN_DEV_ALLOW && bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION))) {
+
+                                retailerObj = (RetailerMasterBO) items
+                                        .get(holder.ref);
+                                bmodel.setRetailerMasterBO(retailerObj);
+
+                                if (bmodel.reasonHelper.getDeviatedReturnMaster()
+                                        .size() != 0) {
+
+                                    if (("Y").equals(bmodel.getRetailerMasterBO().getIsNew())) {
+
+                                        Toast t = Toast
+                                                .makeText(
+                                                        getActivity()
+                                                                .getApplicationContext(),
+                                                        getResources()
+                                                                .getString(
+                                                                        R.string.deviation_not_allowed_for_new_retailer),
+                                                        Toast.LENGTH_SHORT);
+                                        t.show();
+
+                                    } else if (!bmodel
+                                            .isAlreadyExistInToday(retailerObj
+                                                    .getRetailerID())) {
+                                        if ((!isReasonDialogClicked)) {
+                                            isReasonDialogClicked = true;
+                                            Commons.print("-"
+                                                    + bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION);
+                                            Commons.print("-" + calledBy);
+                                            bmodel.newOutletHelper.downloadLinkRetailer();
+                                            Intent i = new Intent(getActivity(), ProfileActivity.class);
+                                            i.putExtra("From", calledBy);
+                                            if (calledBy.equalsIgnoreCase(MENU_PLANNING))
+                                                i.putExtra("isPlanning", true);
+                                            else if (calledBy.equalsIgnoreCase(MENU_PLANNING_SUB))
+                                                i.putExtra("isPlanningSub", true);
+                                            i.putExtra("non_visit", true);
+                                            startActivityForResult(i, 1);
+                                        }
+                                    } else {
+                                        Toast.makeText(
+                                                getActivity()
+                                                        .getApplicationContext(),
+                                                getResources()
+                                                        .getString(
+                                                                R.string.retailer_is_already_planned_for_today),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                } else {
+
+                                    Toast t = Toast
+                                            .makeText(
+                                                    getActivity()
+                                                            .getApplicationContext(),
+                                                    getResources()
+                                                            .getString(
+                                                                    R.string.no_deviate_reason_found_plz_redownload),
+                                                    Toast.LENGTH_SHORT);
+                                    t.show();
+                                }
+                            } else {
+                                Toast t = Toast.makeText(getActivity()
+                                                .getApplicationContext(), getResources()
+                                                .getString(R.string.Deviation_not_allowed),
+                                        Toast.LENGTH_SHORT);
+                                t.show();
+                            }
+
+                        }
+                    }
+
+
+                });
+
+                if (mRetailerProp.get("RTPRTY08") != null) {
+                    if (("1").equals(retailerObj.getRField4())) {
+                        holder.ll_iv_asset_mapped.setVisibility(View.VISIBLE);
+                        holder.iv_asset_mapped.setImageResource(R.drawable.ic_action_star_select);
+                    }
+                    if (mRetailerProp.get("RTPRTY08").length() > 0 && mRetailerProp.get("RTPRTY08").split("/").length == 2) {
+                        holder.ll_iv_asset_mapped.setVisibility(View.VISIBLE);
+                        holder.iv_asset_mapped.setImageResource(getMappedDrawableId(mRetailerProp.get("RTPRTY08")));
+                        holder.iv_asset_mapped.setColorFilter(Color.parseColor(getMappedColorCode(mRetailerProp.get("RTPRTY08"),
+                                ("1").equals(retailerObj.getRField4()))));
+                    }
+                    if (retailerObj.getRField4() == null)
+                        holder.ll_iv_asset_mapped.setVisibility(View.GONE);
+                } else {
+                    holder.ll_iv_asset_mapped.setVisibility(View.GONE);
+                }
+
+                if (mRetailerProp.get("RTPRTY09") != null) {
+                    if (retailerObj.getRField8() == null)
+                        holder.tvTaskCount.setVisibility(View.GONE);
+                    else {
+                        if (mRetailerProp.get("RTPRTY09").length() > 0) {
+                            if (mRetailerProp.get("RTPRTY09").equalsIgnoreCase("Task")) {
+                                holder.tvTaskCount.setVisibility(View.VISIBLE);
+                                holder.tvTaskCount.setText(getResources().getString(R.string.task) + ":" + retailerObj.getRField8());
+                            } else
+                                holder.tvTaskCount.setVisibility(View.GONE);
+                        }
+                    }
+
+                } else {
+                    holder.tvTaskCount.setVisibility(View.GONE);
+                }
 
 
                 convertView.setTag(holder);
@@ -1071,8 +1183,8 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
                 holder = (ViewHolder) convertView.getTag();
             }
 
-            holder.retailerObjectHolder  = (RetailerMasterBO) items.get(position);
-            if (selectedPosition.contains(holder.retailerObjectHolder.getRetailerID())) {
+
+            if (selectedPosition.contains(retailerObj.getRetailerID())) {
                 holder.llFirst.setBackgroundColor(getResources().getColor(R.color.colorPrimaryAlpha));
             } else {
                 holder.llFirst.setBackgroundColor(getResources().getColor(android.R.color.white));
@@ -1088,6 +1200,9 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
                         if (bmodel.reasonHelper.getDeviatedReturnMaster()
                                 .size() != 0) {
 
+                            retailerObj = (RetailerMasterBO) items
+                                    .get(holder.ref);
+
                             if (("Y").equals(bmodel.getRetailerMasterBO().getIsNew())) {
 
                                 Toast.makeText(
@@ -1099,7 +1214,7 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
                                         Toast.LENGTH_SHORT).show();
 
                             } else if (bmodel
-                                    .isAlreadyExistInToday(holder.retailerObjectHolder
+                                    .isAlreadyExistInToday(retailerObj
                                             .getRetailerID())) {
                                 Toast.makeText(
                                         getActivity()
@@ -1112,10 +1227,10 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
 
                             } else {
 
-                                if (selectedPosition.contains(holder.retailerObjectHolder.getRetailerID())) {
-                                    selectedPosition.remove(holder.retailerObjectHolder.getRetailerID());
+                                if (selectedPosition.contains(retailerObj.getRetailerID())) {
+                                    selectedPosition.remove(retailerObj.getRetailerID());
                                 } else {
-                                    selectedPosition.add(holder.retailerObjectHolder.getRetailerID());
+                                    selectedPosition.add(retailerObj.getRetailerID());
                                 }
 
                                 if (selectedPosition.size() > 0) {
@@ -1145,146 +1260,34 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
                     return true;
                 }
             });
-            convertView.setOnClickListener(new OnClickListener() {
-                public void onClick(View v) {
 
-                    if (selectedPosition.size() == 0) {
-                        if ((bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION && calledBy
-                                .equals(MENU_PLANNING)
-                                || (bmodel.configurationMasterHelper.IS_VISITSCREEN_DEV_ALLOW && bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION))) {
-
-                            bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
-
-                            if (bmodel.reasonHelper.getDeviatedReturnMaster()
-                                    .size() != 0) {
-
-                                if (("Y").equals(bmodel.getRetailerMasterBO().getIsNew())) {
-
-                                    Toast t = Toast
-                                            .makeText(
-                                                    getActivity()
-                                                            .getApplicationContext(),
-                                                    getResources()
-                                                            .getString(
-                                                                    R.string.deviation_not_allowed_for_new_retailer),
-                                                    Toast.LENGTH_SHORT);
-                                    t.show();
-
-                                } else if (!bmodel
-                                        .isAlreadyExistInToday(holder.retailerObjectHolder
-                                                .getRetailerID())) {
-                                    if ((!isReasonDialogClicked)) {
-                                        isReasonDialogClicked = true;
-                                        Commons.print("-"
-                                                + bmodel.configurationMasterHelper.IS_RETAILER_DEVIATION);
-                                        Commons.print("-" + calledBy);
-                                        bmodel.newOutletHelper.downloadLinkRetailer();
-                                        Intent i = new Intent(getActivity(), ProfileActivity.class);
-                                        i.putExtra("From", calledBy);
-                                        if (calledBy.equalsIgnoreCase(MENU_PLANNING))
-                                            i.putExtra("isPlanning", true);
-                                        else if (calledBy.equalsIgnoreCase(MENU_PLANNING_SUB))
-                                            i.putExtra("isPlanningSub", true);
-                                        i.putExtra("non_visit", true);
-                                        startActivityForResult(i, 1);
-                                    }
-                                } else {
-                                    Toast.makeText(
-                                            getActivity()
-                                                    .getApplicationContext(),
-                                            getResources()
-                                                    .getString(
-                                                            R.string.retailer_is_already_planned_for_today),
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-
-                                Toast t = Toast
-                                        .makeText(
-                                                getActivity()
-                                                        .getApplicationContext(),
-                                                getResources()
-                                                        .getString(
-                                                                R.string.no_deviate_reason_found_plz_redownload),
-                                                Toast.LENGTH_SHORT);
-                                t.show();
-                            }
-                        } else {
-                            Toast t = Toast.makeText(getActivity()
-                                            .getApplicationContext(), getResources()
-                                            .getString(R.string.Deviation_not_allowed),
-                                    Toast.LENGTH_SHORT);
-                            t.show();
-                        }
-
-                    }
-                }
-
-
-            });
-
-            holder.retailerId = holder.retailerObjectHolder.getRetailerID();
-            holder.outletname.setText(holder.retailerObjectHolder.getRetailerName());
+            holder.retailerId = retailerObj.getRetailerID();
+            holder.outletname.setText(retailerObj.getRetailerName());
 
             if (bmodel.configurationMasterHelper.SHOW_RFIELD4)//to show retailer reserve field 4 value
-                holder.rField4.setText(holder.retailerObjectHolder.getRField4());
+                holder.rField4.setText(retailerObj.getRField4());
             else
                 holder.rField4.setVisibility(View.GONE);
 
-            holder.outletAddress.setText(holder.retailerObjectHolder.getAddress1());
+            holder.outletAddress.setText(retailerObj.getAddress1());
 
             if (!bmodel.configurationMasterHelper.SHOW_RETIALER_CONTACTS) {
 
-                String contact_name = holder.retailerObjectHolder.getContactname() + " " + holder.retailerObjectHolder.getContactLname();
+                String contact_name = retailerObj.getContactname() + " " + retailerObj.getContactLname();
                 if (contact_name.trim().length() > 0) {
-                    String lNAme = holder.retailerObjectHolder.getContactname2() + " " + holder.retailerObjectHolder.getContactLname2();
+                    String lNAme = retailerObj.getContactname2() + " " + retailerObj.getContactLname2();
                     if (lNAme.trim().length() > 0)
-                        contact_name = contact_name + " & " + holder.retailerObjectHolder.getContactname2() + " " + holder.retailerObjectHolder.getContactLname2();
+                        contact_name = contact_name + " & " + retailerObj.getContactname2() + " " + retailerObj.getContactLname2();
                 } else
-                    contact_name = holder.retailerObjectHolder.getContactname2() + " " + holder.retailerObjectHolder.getContactLname2();
+                    contact_name = retailerObj.getContactname2() + " " + retailerObj.getContactLname2();
 
 
                 if (contact_name.trim().length() > 0)
                     holder.contactName.setText(contact_name);
                 else
                     convertView.findViewById(R.id.llContactName).setVisibility(View.GONE);
-            } else {
+            } else
                 convertView.findViewById(R.id.llContactName).setVisibility(View.GONE);
-            }
-
-            if (mRetailerProp.get("RTPRTY08") != null) {
-                if (("1").equals(holder.retailerObjectHolder.getRField4())) {
-                    holder.ll_iv_asset_mapped.setVisibility(View.VISIBLE);
-                    holder.iv_asset_mapped.setImageResource(R.drawable.ic_action_star_select);
-                }
-                if (mRetailerProp.get("RTPRTY08").length() > 0 && mRetailerProp.get("RTPRTY08").split("/").length == 2) {
-                    holder.ll_iv_asset_mapped.setVisibility(View.VISIBLE);
-                    holder.iv_asset_mapped.setImageResource(getMappedDrawableId(mRetailerProp.get("RTPRTY08")));
-                    holder.iv_asset_mapped.setColorFilter(Color.parseColor(getMappedColorCode(mRetailerProp.get("RTPRTY08"),
-                            ("1").equals(holder.retailerObjectHolder.getRField4()))));
-                }
-                if (holder.retailerObjectHolder.getRField4() == null)
-                    holder.ll_iv_asset_mapped.setVisibility(View.GONE);
-            } else {
-                holder.ll_iv_asset_mapped.setVisibility(View.GONE);
-            }
-
-            if (mRetailerProp.get("RTPRTY09") != null) {
-                if (holder.retailerObjectHolder.getRField8() == null)
-                    holder.tvTaskCount.setVisibility(View.GONE);
-                else {
-                    if (mRetailerProp.get("RTPRTY09").length() > 0) {
-                        if (mRetailerProp.get("RTPRTY09").equalsIgnoreCase("Task")) {
-                            holder.tvTaskCount.setVisibility(View.VISIBLE);
-                            holder.tvTaskCount.setText(getResources().getString(R.string.task) + ":" + holder.retailerObjectHolder.getRField8());
-                        } else
-                            holder.tvTaskCount.setVisibility(View.GONE);
-                    }
-                }
-
-            } else {
-                holder.tvTaskCount.setVisibility(View.GONE);
-            }
 
             holder.ref = position;
 
@@ -1302,7 +1305,6 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
             int ref;
             ImageView iv_asset_mapped;
             LinearLayout llFirst, ll_iv_asset_mapped;
-            RetailerMasterBO retailerObjectHolder;
         }
 
     }
