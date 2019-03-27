@@ -18,20 +18,18 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.widget.Toast;
 
-import com.amazonaws.SDKGlobalConfiguration;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.ivy.cpg.view.sync.AWSConnectionHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.DownloaderThreadNew;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
+
 import java.util.HashMap;
 import java.util.Locale;
 
@@ -48,7 +46,6 @@ public class WebViewArchivalReportFragment extends IvyBaseFragment {
     private DownloaderThreadNew downloaderThread;
 
     private TransferUtility transferUtility;
-    private AmazonS3Client s3;
 
     private AlertDialog alertDialog;
 
@@ -176,8 +173,8 @@ public class WebViewArchivalReportFragment extends IvyBaseFragment {
             transactionId=id;
             webViewReportHelper.prepareArchiveFileDownload(filePath);
             if(bmodel.getDigitalContentURLS().size()>0) {
-                bmodel.configurationMasterHelper.setAmazonS3Credentials();
-                initializeTransferUtility();
+                AWSConnectionHelper.getInstance().setAWSDBValues(getActivity());
+                transferUtility = new TransferUtility(AWSConnectionHelper.getInstance().getS3Connection(), mContext);
                 downloaderThread = new DownloaderThreadNew(getActivity(),
                         activityHandler, bmodel.getDigitalContentURLS(),
                         bmodel.userMasterHelper.getUserMasterBO()
@@ -268,16 +265,6 @@ public class WebViewArchivalReportFragment extends IvyBaseFragment {
         if (transferUtility != null) {
             transferUtility.cancelAllWithType(TransferType.DOWNLOAD);
         }
-    }
-
-    private void initializeTransferUtility() {
-        System.setProperty
-                (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
-        BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                ConfigurationMasterHelper.SECRET_KEY);
-        AmazonS3Client s3 = new AmazonS3Client(myCredentials);
-        s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
-        transferUtility = new TransferUtility(s3, getActivity().getApplicationContext());
     }
 
     @Override

@@ -4,26 +4,35 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Environment;
-import android.util.Log;
+import android.support.v4.content.LocalBroadcastManager;
 
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
-import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.downloader.Error;
+import com.downloader.OnCancelListener;
+import com.downloader.OnDownloadListener;
+import com.downloader.OnPauseListener;
+import com.downloader.OnProgressListener;
+import com.downloader.OnStartOrResumeListener;
+import com.downloader.PRDownloader;
+import com.downloader.PRDownloaderConfig;
+import com.downloader.Progress;
+import com.ivy.cpg.view.sync.AWSConnectionHelper;
+import com.ivy.cpg.view.sync.AzureConnectionHelper;
+import com.ivy.cpg.view.sync.largefiledownload.FileDownloadProvider;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.FileUtils;
+import com.ivy.utils.NetworkUtils;
+import com.ivy.utils.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.List;
-
-import static android.content.Context.MODE_PRIVATE;
+import java.text.DecimalFormat;
 
 /**
  * Created by abbas.a on 15/02/18.
@@ -32,7 +41,10 @@ import static android.content.Context.MODE_PRIVATE;
 public class CatalogImageDownloadProvider {
 
     public static CatalogImageDownloadProvider instance;
-    BusinessModel businessModel;
+    private BusinessModel businessModel;
+    private DecimalFormat df = new DecimalFormat("0.000");
+    private int downloadId = -1;
+    public boolean isDownloadInProgress = false;
 
     private CatalogImageDownloadProvider(Context context) {
         this.businessModel = (BusinessModel) context.getApplicationContext();
@@ -46,76 +58,26 @@ public class CatalogImageDownloadProvider {
     }
 
     public void callCatalogImageDownload() {
-        callCatalogImageDownload(new DownloadListener(businessModel));
-    }
+        String date = getLastDownloadedDateTime();
+        Commons.print("date in log file : " + date);
 
-    /**
-     * Call this method on first time login to initiate the full download.
-     */
-    public void callCatalogImageDownload(TransferListener tx) {
-
-        try {
-            // Load last downloaed date from SDCard log file.
-            String date = getLastDownloadedDateTime();
-            Commons.print("date in log file : " + date);
-
-            //Initiate only if there is not log file.
-            if (date.isEmpty()) {
-                // Set Digital content download path.
-                businessModel.getimageDownloadURL();
-                // Load credentials
-                businessModel.configurationMasterHelper.setAmazonS3Credentials();
-
-                // Initilise transfer utility
-                TransferUtility transferUtility = Util.getTransferUtility(businessModel);
-
-                // Create location file path to store the downloaded file
-                File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + CatalogDownloadConstants.FILE_NAME);
-                // Prepare download URL path.
-                String downloadURL = DataMembers.IMG_DOWN_URL + "Product/" + CatalogDownloadConstants.FILE_NAME;
-
-                // Initiate the download
-                TransferObserver observer = transferUtility.download(DataMembers.S3_BUCKET, downloadURL, file);
-                observer.setTransferListener(tx);
-
-                // Store download id in shared preference.
-                storeCatalogDownloadStatus(observer.getId(), "DOWNLOADING");
-            }
-        } catch (Exception e) {
-            //TODO: clear the text file. Or call at right palce.
-            Commons.printException(e);
+        //Initiate only if there is not log file.
+        if (date.isEmpty()) {
+            checkCatalogDownload();
         }
-
     }
 
     /**
      * Call this method on local login to initiate catalog download if app crashed.
      */
     public void checkCatalogDownload() {
-        if (getCatalogDownloadStatus().equals(CatalogDownloadConstants.DOWNLOADING)) {
+
+        if (getCatalogDownloadStatus().equals(CatalogDownloadConstants.DOWNLOADING)
+                || getCatalogDownloadStatus().isEmpty()) {
             // Set Digital content download path.
-            businessModel.getimageDownloadURL();
-            businessModel.configurationMasterHelper.setAmazonS3Credentials();
-            TransferUtility transferUtility = Util.getTransferUtility(businessModel.getApplicationContext());
-            List<TransferObserver> observers = transferUtility.getTransfersWithType(TransferType.DOWNLOAD);
-            TransferListener listener = new DownloadListener(businessModel.getApplicationContext());
-            for (TransferObserver observer : observers) {
 
-                if (getCatalogDownloadStatusId() == observer.getId()) {
+            downloadProcess(businessModel.getContext());
 
-                    // Sets listeners to in progress transfers
-                    if (TransferState.WAITING.equals(observer.getState())
-                            || TransferState.WAITING_FOR_NETWORK.equals(observer.getState())
-                            || TransferState.IN_PROGRESS.equals(observer.getState()) || TransferState.FAILED.equals(observer.getState())) {
-
-                        observer.cleanTransferListener();
-                        observer.setTransferListener(listener);
-                        TransferObserver resumed = transferUtility.resume(observer.getId());
-                    }
-
-                }
-
-            }
         } else if (getCatalogDownloadStatus().equals(CatalogDownloadConstants.UNZIP)) {
             //Call unzip.
             Intent intent = new Intent(businessModel, CatalogImageDownloadService.class);
@@ -124,98 +86,44 @@ public class CatalogImageDownloadProvider {
     }
 
     public void storeCatalogDownloadStatus(int id, String status) {
-        SharedPreferences.Editor editor = businessModel.getSharedPreferences(CatalogDownloadConstants.CATLOG_PREF_NAME, MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = AppUtils.getSharedPreferenceByName(businessModel.getApplicationContext(),CatalogDownloadConstants.CATLOG_PREF_NAME).edit();
         editor.putString(CatalogDownloadConstants.STATUS_KEY, status);
         editor.putInt(CatalogDownloadConstants.STATUS_ID, id);
         editor.apply();
     }
 
+    private void storeCatalogDownloadUrl(String url) {
+        SharedPreferences.Editor editor = AppUtils.getSharedPreferenceByName(businessModel.getApplicationContext(),CatalogDownloadConstants.CATLOG_PREF_NAME).edit();
+        editor.putString(CatalogDownloadConstants.STATUS_URL, url);
+        editor.apply();
+    }
+
     public void storeCatalogDownloadStatusError(String error) {
-        SharedPreferences.Editor editor = businessModel.getSharedPreferences(CatalogDownloadConstants.CATLOG_PREF_NAME, MODE_PRIVATE).edit();
+        SharedPreferences.Editor editor = AppUtils.getSharedPreferenceByName(businessModel.getApplicationContext(),CatalogDownloadConstants.CATLOG_PREF_NAME).edit();
         editor.putString(CatalogDownloadConstants.STATUS_ERROR, error);
         editor.apply();
     }
 
-    public int getCatalogDownloadStatusId() {
-        SharedPreferences editor = businessModel.getSharedPreferences(CatalogDownloadConstants.CATLOG_PREF_NAME, MODE_PRIVATE);
-        return editor.getInt(CatalogDownloadConstants.STATUS_ID, 0);
+    private int getDownloadId(){
+        SharedPreferences editor = AppUtils.getSharedPreferenceByName(businessModel.getApplicationContext(),CatalogDownloadConstants.CATLOG_PREF_NAME);
+        return editor.getInt(CatalogDownloadConstants.STATUS_ID,-1);
+    }
+
+    private String getCatalogDownloadUrl() {
+        SharedPreferences editor = AppUtils.getSharedPreferenceByName(businessModel.getApplicationContext(),CatalogDownloadConstants.CATLOG_PREF_NAME);
+        return editor.getString(CatalogDownloadConstants.STATUS_URL, "");
     }
 
     public String getCatalogDownloadStatus() {
-        SharedPreferences editor = businessModel.getSharedPreferences(CatalogDownloadConstants.CATLOG_PREF_NAME, MODE_PRIVATE);
+        SharedPreferences editor = AppUtils.getSharedPreferenceByName(businessModel.getApplicationContext(),CatalogDownloadConstants.CATLOG_PREF_NAME);
         return editor.getString(CatalogDownloadConstants.STATUS_KEY, "");
     }
-
-    public String getCatalogDownloadStatusError() {
-        SharedPreferences editor = businessModel.getSharedPreferences(CatalogDownloadConstants.CATLOG_PREF_NAME, MODE_PRIVATE);
-        return editor.getString(CatalogDownloadConstants.STATUS_ERROR, "");
-    }
-
-    /*
-     * A TransferListener class that can listen to a download task and be
-     * notified when the status changes.
-     */
-    public class DownloadListener implements TransferListener {
-
-        Context ctx;
-
-        DownloadListener(Context ctx) {
-            this.ctx = ctx;
-        }
-
-        // Simply updates the list when notified.
-        @Override
-        public void onError(int id, Exception e) {
-            Log.e("IvyCPG", "onError: " + id, e);
-
-        }
-
-
-        @Override
-        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-            Log.d("IvyCPG", String.format("onProgressChanged: %d, total: %d, current: %d",
-                    id, bytesTotal, bytesCurrent));
-
-        }
-
-        @Override
-        public void onStateChanged(int id, TransferState state) {
-            Log.d("IvyCPG", "onStateChanged: " + id + ", " + state);
-            if (state.equals(TransferState.COMPLETED)) {
-
-
-                // update shared preference
-                storeCatalogDownloadStatus(getCatalogDownloadStatusId(), CatalogDownloadConstants.UNZIP);
-
-
-                try {
-                    File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + CatalogDownloadConstants.FILE_NAME);
-                    int mb = (int) file.length() / 1048576;
-
-                    if (Util.isExternalStorageAvailable(mb * 2)) {
-                        //Call unzip.
-                        Intent intent = new Intent(ctx, CatalogImageDownloadService.class);
-                        ctx.startService(intent);
-
-                    } else {
-                        storeCatalogDownloadStatusError(CatalogDownloadConstants.NO_SPACE);
-                    }
-                } catch (Exception e) {
-                    Commons.printException(e);
-                }
-
-
-            }
-
-        }
-
-
-    }
-
 
     public void clearCatalogImages() {
         try {
             deleteFiles(getStorageDir(businessModel.getResources().getString(R.string.app_name)));
+            storeCatalogDownloadStatus(getDownloadId(),"");
+            storeCatalogDownloadUrl("");
         } catch (Exception e) {
             Commons.printException("deleteImageDetails" + e);
         }
@@ -234,7 +142,6 @@ public class CatalogImageDownloadProvider {
         }
     }
 
-
     public void setCatalogImageDownloadFinishTime(String count, String time) {
         String filename = "log";
         time = time + "\n";
@@ -250,7 +157,6 @@ public class CatalogImageDownloadProvider {
             e.printStackTrace();
         }
     }
-
 
     /**
      * Get last downloaded date time which is stored in log file.
@@ -305,4 +211,147 @@ public class CatalogImageDownloadProvider {
         else
             return false;
     }
+
+    public void downloadProcess(Context ctx){
+
+        if (!NetworkUtils.isNetworkConnected(ctx)){
+            Intent intent = new Intent("com.ivy.cpg.view.sync.CatalogDownloadStatus");
+            // You can also include some extra data.
+            intent.putExtra(CatalogDownloadConstants.STATUS, CatalogDownloadConstants.ERROR);
+            LocalBroadcastManager.getInstance(businessModel.getContext()).sendBroadcast(intent);
+        }else {
+
+            initializePrDownloader(businessModel.getContext());
+
+            String downloadURL;
+            if (StringUtils.isEmptyString(getCatalogDownloadUrl()))
+                // Prepare download URL path.
+                downloadURL = getDownloadUrl();
+            else
+                downloadURL = getCatalogDownloadUrl();
+
+            // Create location file path to store the downloaded file
+            File file = new File(Environment.getExternalStorageDirectory().getPath() + "/");
+
+            downloadId = PRDownloader.download(downloadURL, file.getAbsolutePath(), CatalogDownloadConstants.FILE_NAME)
+                    .build()
+                    .setOnStartOrResumeListener(new OnStartOrResumeListener() {
+                        @Override
+                        public void onStartOrResume() {
+                            storeCatalogDownloadStatus(downloadId, CatalogDownloadConstants.DOWNLOADING);
+                            storeCatalogDownloadUrl(downloadURL);
+                            isDownloadInProgress = true;
+                        }
+                    })
+                    .setOnPauseListener(new OnPauseListener() {
+                        @Override
+                        public void onPause() {
+                        }
+                    })
+                    .setOnCancelListener(new OnCancelListener() {
+                        @Override
+                        public void onCancel() {
+
+                        }
+                    })
+                    .setOnProgressListener(new OnProgressListener() {
+                        @Override
+                        public void onProgress(Progress progress) {
+
+                            double bytesCurrentMB = (double) progress.currentBytes / (double) FileDownloadProvider.MB_IN_BYTES;
+                            double bytesTotalMB = (double) progress.totalBytes / (double) FileDownloadProvider.MB_IN_BYTES;
+
+                            String downloadDetail = String.valueOf(df.format(bytesCurrentMB)) + "MB/" + String.valueOf(df.format(bytesTotalMB)) + "MB";
+
+                            int downloadPercentage = (int) (((float) bytesCurrentMB / (float) bytesTotalMB) * 100);
+
+
+                            Commons.print("Percentage =" + downloadPercentage
+                                    + " - DownloadId =  " + downloadId);
+
+                            Intent intent = new Intent("com.ivy.cpg.view.sync.CatalogDownloadStatus");
+                            // You can also include some extra data.
+                            intent.putExtra(CatalogDownloadConstants.DOWNLOAD_DETAIL, downloadDetail);
+                            intent.putExtra("DownloadPercentage", downloadPercentage);
+                            intent.putExtra(CatalogDownloadConstants.STATUS, CatalogDownloadConstants.IN_PROGRESS);
+                            LocalBroadcastManager.getInstance(businessModel.getContext()).sendBroadcast(intent);
+
+                        }
+                    })
+                    .start(new OnDownloadListener() {
+                        @Override
+                        public void onDownloadComplete() {
+                            // update shared preference
+                            storeCatalogDownloadStatus(downloadId, CatalogDownloadConstants.UNZIP);
+
+                            try {
+                                File file = new File(Environment.getExternalStorageDirectory().getPath() + "/" + CatalogDownloadConstants.FILE_NAME);
+                                int mb = (int) file.length() / 1048576;
+
+                                if (FileUtils.isExternalStorageAvailable(mb * 2)) {
+                                    //Call unzip.
+                                    Intent intent = new Intent(ctx, CatalogImageDownloadService.class);
+                                    ctx.startService(intent);
+
+                                } else {
+                                    storeCatalogDownloadStatusError(CatalogDownloadConstants.NO_SPACE);
+                                }
+                            } catch (Exception e) {
+                                Commons.printException(e);
+                            }
+
+                            Intent intent = new Intent("com.ivy.cpg.view.sync.CatalogDownloadStatus");
+                            // You can also include some extra data.
+                            intent.putExtra(CatalogDownloadConstants.STATUS, CatalogDownloadConstants.COMPLETE);
+                            LocalBroadcastManager.getInstance(businessModel.getContext()).sendBroadcast(intent);
+
+                            isDownloadInProgress = false;
+                            storeCatalogDownloadUrl("");
+                        }
+
+                        @Override
+                        public void onError(Error error) {
+
+                            Intent intent = new Intent("com.ivy.cpg.view.sync.CatalogDownloadStatus");
+                            // You can also include some extra data.
+                            intent.putExtra(CatalogDownloadConstants.STATUS, CatalogDownloadConstants.ERROR);
+                            LocalBroadcastManager.getInstance(businessModel.getContext()).sendBroadcast(intent);
+
+                            isDownloadInProgress = false;
+                            if (error.isServerError())
+                                storeCatalogDownloadUrl("");
+
+                            //storeCatalogDownloadStatus(downloadId,CatalogDownloadConstants.STATUS_ERROR);
+                        }
+                    });
+
+            storeCatalogDownloadStatus(downloadId, CatalogDownloadConstants.DOWNLOADING);
+        }
+
+    }
+
+    private String getDownloadUrl(){
+        if (businessModel.configurationMasterHelper.IS_AZURE_UPLOAD) {
+            return AzureConnectionHelper.getInstance().getAzureFile("Product/" + CatalogDownloadConstants.FILE_NAME);
+        }else if (businessModel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
+            AWSConnectionHelper.getInstance().setAWSDBValues(businessModel.getApplicationContext());
+            return AWSConnectionHelper.getInstance().getSignedAwsUrl(DataMembers.IMG_DOWN_URL+ "Product/" + CatalogDownloadConstants.FILE_NAME);
+        }
+
+        return "";
+    }
+
+    private void initializePrDownloader(Context context){
+        // Initializing PR-DOWNLOADER
+        // Enabling database for resume support even after the application is killed:
+
+//        if(Core.getInstance() == null) {
+
+        PRDownloaderConfig config = PRDownloaderConfig.newBuilder()
+                .setDatabaseEnabled(true)
+                .build();
+        PRDownloader.initialize(context.getApplicationContext(), config);
+//        }
+    }
+
 }

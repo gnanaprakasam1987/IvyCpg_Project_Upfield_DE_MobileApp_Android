@@ -27,6 +27,7 @@ public class DigitalContentHelper {
     private Vector<DigitalContentBO> digitalMaster;
     private ArrayList<DigitalContentBO> filteredDigitalMaster;
     public String mSelectedActivityName;
+    boolean isProductMapped = false;
 
 
     private static final String CODE_FLOAT_DGT_CONTENT = "FUN77";
@@ -53,6 +54,14 @@ public class DigitalContentHelper {
 
     public ArrayList<DigitalContentBO> getFilteredDigitalMaster() {
         return filteredDigitalMaster;
+    }
+
+    public boolean isProductMapped() {
+        return isProductMapped;
+    }
+
+    public void setProductMapped(boolean productMapped) {
+        isProductMapped = productMapped;
     }
 
     public void setFilteredDigitalMaster(ArrayList<DigitalContentBO> filteredDigitalMaster) {
@@ -165,8 +174,7 @@ public class DigitalContentHelper {
         DigitalContentBO product;
         String mMappedImageIds;
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-            );
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             StringBuilder sBuffer = new StringBuilder();
             if ("SELLER".equals(value))
@@ -200,6 +208,8 @@ public class DigitalContentHelper {
                         product.setSequenceNo(c.getInt(7));
                         product.setParentHierarchy(c.getString(8));
                         digitalMaster.add(product);
+                        if(c.getInt(4) != 0)
+                            setProductMapped(true);
                     }
                     c.close();
                 }
@@ -232,8 +242,9 @@ public class DigitalContentHelper {
                         product.setGroupName(c.getString(6));
                         product.setSequenceNo(c.getInt(7));
                         product.setParentHierarchy(c.getString(8));
-
                         digitalMaster.add(product);
+                        if(c.getInt(4) != 0)
+                            setProductMapped(true);
                     }
                     c.close();
                 }

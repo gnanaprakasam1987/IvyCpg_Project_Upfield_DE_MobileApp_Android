@@ -325,6 +325,7 @@ public class CallAnalysisActivityKlgs extends IvyBaseActivityNoActionBar {
         bmodel.setRField1("");
         bmodel.setRField2("");
         bmodel.setSaleReturnNote("");
+        bmodel.setSaleReturnRfValue("");
         bmodel.setStockCheckRemark("");
         bmodel.setAssetRemark("");
     }

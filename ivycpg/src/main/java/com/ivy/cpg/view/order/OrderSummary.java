@@ -54,7 +54,6 @@ import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
-import com.ivy.cpg.view.sync.catalogdownload.Util;
 import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.camera.CameraActivity;
@@ -592,7 +591,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (productBO.getOrderedCaseQty() > 0
                         || productBO.getOrderedPcsQty() > 0
                         || productBO.getOrderedOuterQty() > 0
-                        || (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && isReturnDoneForProduct(productBO))) {
+                        || (bModel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER && isReturnDoneForProduct(productBO))
+                        || (bModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT && productBO.getFoc()>0)) {
 
                     int totalQuantity = productBO.getOrderedPcsQty() + productBO.getOrderedCaseQty() * productBO.getCaseSize() + productBO.getOrderedOuterQty() * productBO.getOutersize();
 
@@ -2560,7 +2560,18 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     holder.pcsQty.setText(String.valueOf(0));
                     holder.caseQty.setText(String.valueOf(0));
 
+                    //If only other UOMs are enabled but free is in outer then showing it in screen without considering UOM config.
+                    if(productBO.getQuantitySelected()>0)
+                        row.findViewById(R.id.llOuter).setVisibility(View.VISIBLE);
+                    else row.findViewById(R.id.llOuter).setVisibility(View.GONE);
+
                 } else {
+
+                    //If only other UOMs are enabled but free is in pieces then showing it in screen without considering UOM config.
+                    if(productBO.getQuantitySelected()>0)
+                        row.findViewById(R.id.llPiece).setVisibility(View.VISIBLE);
+                    else row.findViewById(R.id.llPiece).setVisibility(View.GONE);
+
                     holder.pcsQty.setText(String.valueOf(productBO.getQuantitySelected()));
                     holder.caseQty.setText(String.valueOf(0));
                     holder.outerQty.setText(String.valueOf(0));
@@ -3521,8 +3532,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 if (requestCode == 12 && data != null) {
 
                     invalidateOptionsMenu();
-                    String realPath = Util.getPath(this, data.getData());
-                    Util.copyFile(new File(realPath), FileUtils.photoFolderPath, attachedFilePath);
+                    String realPath = FileUtils.getPath(this, data.getData());
+                    FileUtils.copyFile(new File(realPath), FileUtils.photoFolderPath, attachedFilePath);
                     if (bModel.getOrderHeaderBO() != null)
                         bModel.getOrderHeaderBO().setOrderImageName(attachedFilePath);
                 }

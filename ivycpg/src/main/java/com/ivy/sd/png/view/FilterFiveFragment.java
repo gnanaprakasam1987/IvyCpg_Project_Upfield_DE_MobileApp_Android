@@ -115,17 +115,10 @@ public class FilterFiveFragment<E> extends Fragment {
                     }
 
 
-                    Vector<LevelBO> finalParentList = new Vector<>();
 
                     if (isAttributeFilter && bmodel.productHelper.getmAttributeTypes() != null && bmodel.productHelper.getmAttributeTypes().size() > 0) {
 
                         if (isAttributeFilterSelected()) {
-                            //if product filter is also selected then, final parent id list will prepared to show products based on both attribute and product filter
-                            if (filterText.length() > 0) {
-                                if (isFilterContentSelected(filterProductLevels.size() - bmodel.productHelper.getmAttributeTypes().size())) {
-                                    finalParentList = updateProductLoad((filterProductLevels.size() - bmodel.productHelper.getmAttributeTypes().size()));
-                                }
-                            }
 
                             ArrayList<Integer> lstSelectedAttributesIds = new ArrayList<>();
                             for (LevelBO bo : filterProductLevels) {

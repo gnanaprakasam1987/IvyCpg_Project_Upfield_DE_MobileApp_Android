@@ -47,6 +47,7 @@ import com.ivy.utils.ClickGuard;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -62,7 +63,6 @@ import butterknife.OnClick;
 import butterknife.OnItemSelected;
 
 import static com.ivy.core.IvyConstants.DEFAULT_DATE_FORMAT;
-import static com.ivy.utils.StringUtils.isNullOrEmpty;
 
 public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureContract.PhotoCaptureView, DataPickerDialogFragment.UpdateDateInterface {
 
@@ -227,7 +227,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         getSupportActionBar().setTitle(null);
 
         photoCapturePresenter.getTitleLabel();
-        if(!isNullOrEmpty(title))
+        if(!StringUtils.isEmptyString(title))
             toolBarTitleTxt.setText(title);
         else
             photoCapturePresenter.getTitleLabel();
@@ -363,12 +363,14 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
     @Override
     public String getFromDate() {
-        return fromDateBtn.getText().toString();
+
+        return getResources().getString(R.string.fromdate).equalsIgnoreCase(fromDateBtn.getText().toString())  ? "" : fromDateBtn.getText().toString();
     }
 
     @Override
     public String getToDate() {
-        return toDateBtn.getText().toString();
+
+        return  getResources().getString(R.string.todate).equalsIgnoreCase(toDateBtn.getText().toString()) ? "" : toDateBtn.getText().toString();
     }
 
     @Override
@@ -406,7 +408,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
     @OnClick(R.id.capture_img)
     public void onCaptureImageClick() {
-        if (!FileUtils.isExternalStorageAvailable())
+        if (!FileUtils.isExternalStorageAvailable(10))
             showMessage(R.string.please_select_atleast_one_type);
         else if (mSelectedProductId == 0)
             showMessage(R.string.select_prod);
@@ -573,7 +575,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                     abvEditText.setText(photoCapturePresenter.getEditedPhotoListData().get(key).getAbv());
                     lotCodeEditText.setText(photoCapturePresenter.getEditedPhotoListData().get(key).getLotCode());
                 }
-                if (isNullOrEmpty(photoCapturePresenter.getEditedPhotoListData().get(key).getImageName())) {
+                if (StringUtils.isEmptyString(photoCapturePresenter.getEditedPhotoListData().get(key).getImageName())) {
                     handleNoImage();
                 } else {
                     setImageToView(photoCapturePresenter.getEditedPhotoListData().get(key).getImageName());

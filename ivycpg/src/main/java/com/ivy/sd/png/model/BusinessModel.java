@@ -17,6 +17,7 @@ import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
@@ -32,14 +33,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.SDKGlobalConfiguration;
 import com.amazonaws.auth.AWSCredentials;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
@@ -81,6 +79,8 @@ import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.supervisor.chat.BaseInterfaceAdapter;
+import com.ivy.cpg.view.sync.AWSConnectionHelper;
+import com.ivy.cpg.view.sync.AzureConnectionHelper;
 import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.lib.Utils;
@@ -151,6 +151,10 @@ import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.StringUtils;
+import com.microsoft.azure.storage.CloudStorageAccount;
+import com.microsoft.azure.storage.blob.CloudBlobClient;
+import com.microsoft.azure.storage.blob.CloudBlobContainer;
+import com.microsoft.azure.storage.blob.CloudBlockBlob;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -287,6 +291,7 @@ public class BusinessModel extends Application {
     private String rField2 = "";
     private String rField3 = "";
     private String saleReturnNote = "";
+    private String saleReturnRfValue = "";
     private String assetRemark = "";
     private String note = "";
     private String orderSplitScreenTitle = null;
@@ -403,13 +408,6 @@ public class BusinessModel extends Application {
 
         moduleTimeStampHelper = ModuleTimeStampHelper.getInstance(this);
         fitscoreHelper = FitScoreHelper.getInstance(this);
-    }
-
-
-    public static synchronized BusinessModel getInstance() {
-
-        return mInstance;
-
     }
 
 
@@ -555,6 +553,14 @@ public class BusinessModel extends Application {
 
     public void setSaleReturnNote(String saleReturnNote) {
         this.saleReturnNote = saleReturnNote;
+    }
+
+    public String getSaleReturnRfValue() {
+        return saleReturnRfValue;
+    }
+
+    public void setSaleReturnRfValue(String saleReturnRfValue) {
+        this.saleReturnRfValue = saleReturnRfValue;
     }
 
     public String getOrderHeaderNote() {
@@ -3428,6 +3434,7 @@ public class BusinessModel extends Application {
     public void getimageDownloadURL() {
         try {
             boolean isAmazonUpload = false;
+            boolean isAzureUpload = false;
 
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
             );
@@ -3441,9 +3448,19 @@ public class BusinessModel extends Application {
                 }
                 c.close();
             }
+
+            c = db
+                    .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'IS_AZURE_UPLOAD' and flag = 1 and ForSwitchSeller = 0");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    isAzureUpload = true;
+                }
+                c.close();
+            }
+
             c = null;
 
-            if (!isAmazonUpload) {
+            if (!isAmazonUpload && !isAzureUpload) {
                 c = db
                         .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_HOST'");
                 if (c != null) {
@@ -4135,15 +4152,8 @@ public class BusinessModel extends Application {
     // Amazon Image Upload
     void uploadImageToAmazonCloud(Handler handler) {
         try {
-            System.setProperty
-                    (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
-            configurationMasterHelper.setAmazonS3Credentials();
-            myCredentials = new BasicAWSCredentials(
-                    ConfigurationMasterHelper.ACCESS_KEY_ID,
-                    ConfigurationMasterHelper.SECRET_KEY);
-            AmazonS3Client ec2 = new AmazonS3Client(myCredentials);
-            ec2.setEndpoint(DataMembers.S3_BUCKET_REGION);
-            TransferUtility tm = new TransferUtility(ec2, getApplicationContext
+            AWSConnectionHelper.getInstance().setAmazonS3Credentials(getApplicationContext());
+            TransferUtility tm = new TransferUtility(AWSConnectionHelper.getInstance().getS3Connection(), getApplicationContext
                     ());
 
             folder = new File(FileUtils.photoFolderPath + "/");
@@ -4166,7 +4176,7 @@ public class BusinessModel extends Application {
 
             }
             // success
-            ec2.shutdown();
+            AWSConnectionHelper.getInstance().getS3Connection().shutdown();
             // tm.shutdownNow();
 
         } catch (Exception e) {
@@ -4178,7 +4188,6 @@ public class BusinessModel extends Application {
 
     private void getResponseForUploadImageToAmazonCloud(String
                                                                 imageName, TransferUtility tm, final Handler mHandler) {
-        final int[] status = new int[1];
         try {
 
             final File image = new File(folder, "/" + imageName);
@@ -4350,15 +4359,8 @@ public class BusinessModel extends Application {
             mExportFileNames.add("MemoryDetails.txt");
             mExportFileNames.add("Data_Download_Save.xls");
             // int mSucessCount=0;
-            System.setProperty
-                    (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
-            configurationMasterHelper.setAmazonS3Credentials();
-            myCredentials = new BasicAWSCredentials(
-                    ConfigurationMasterHelper.ACCESS_KEY_ID,
-                    ConfigurationMasterHelper.SECRET_KEY);
-            AmazonS3Client ec2 = new AmazonS3Client(myCredentials);
-            ec2.setEndpoint(DataMembers.S3_BUCKET_REGION);
-            TransferUtility tm = new TransferUtility(ec2, getApplicationContext
+            AWSConnectionHelper.getInstance().setAmazonS3Credentials(getApplicationContext());
+            TransferUtility tm = new TransferUtility(AWSConnectionHelper.getInstance().getS3Connection(), getApplicationContext
                     ());
 
             if (synchronizationHelper.isExternalStorageAvailable()) {
@@ -4378,7 +4380,7 @@ public class BusinessModel extends Application {
                     SDPath.mkdir();
                 }
 
-                configurationMasterHelper.setAmazonS3Credentials();
+                AWSConnectionHelper.getInstance().setAmazonS3Credentials(getApplicationContext());
 
                 for (int i = 0; i < mExportFileNames.size(); i++) {
                     Commons.print("UploadFileInAmazon," + mExportFileNames.get(i));
@@ -4454,7 +4456,7 @@ public class BusinessModel extends Application {
                             mExportFileNames.get(i), tm);
                 }
             }
-            ec2.shutdown();
+            AWSConnectionHelper.getInstance().getS3Connection().shutdown();
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -7407,6 +7409,136 @@ public class BusinessModel extends Application {
 
     public AppDataProvider getAppDataProvider() {
         return appDataProvider;
+    }
+
+    //Azure ImageUpload
+    void uploadImageToAzureCloud(Handler handler) {
+        AzureConnectionHelper.getInstance().setAzureCredentials(getApplicationContext());
+        try {
+
+            folder = new File(FileUtils.photoFolderPath + "/");
+
+            sfFiles = folder.listFiles();
+
+            uploadFileSize = sfFiles.length;
+            isErrorOccured = false;
+            for (int i = 0; i < uploadFileSize; i++) {
+
+                String filename = sfFiles[i].getName();
+                //  print invoice file not upload to server
+
+                getResponseForUploadImageToAzureStorageCloud(filename, AzureConnectionHelper.getInstance().initializeAzureStorageConnection(), handler);
+
+                successCount = successCount + 1;
+
+            }
+            if (successCount == uploadFileSize) {
+                fileDeleteAfterUpload();
+                successCount = 0;
+                sentMessageToHandler
+                        (DataMembers.NOTIFY_WEB_UPLOAD_SUCCESS,
+                                "Images uploaded Successfully",
+                                handler);
+
+            } else {
+                sentMessageToHandler
+                        (DataMembers.NOTIFY_WEB_UPLOAD_ERROR,
+                                "Image Upload Failed!", handler);
+            }
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    private void getResponseForUploadImageToAzureStorageCloud(String imageName, CloudBlobContainer cloudBlobContainer, final Handler mHandler) {
+        try {
+            final File image = new File(folder, "/" + imageName);
+            InputStream fileInputStream = getContentResolver().openInputStream(Uri.fromFile(image));
+            String mBucketName;
+
+            String path = "/"
+                    + userMasterHelper.getUserMasterBO().getDownloadDate()
+                    .replace("/", "") + "/"
+                    + userMasterHelper.getUserMasterBO().getUserid()+ "/";
+
+
+            if (imageName.startsWith("AT_") || imageName.startsWith("NAT_")) {
+                mBucketName = "Asset" + path + imageName;
+            } else if (imageName.startsWith("NO_")) {
+                mBucketName = "RetailerImages" + path + imageName;
+            } else if (imageName.startsWith("SGN_")) {
+                mBucketName = "Invoice" + path + imageName;
+            } else if (imageName.startsWith("INIT_")) {
+                mBucketName = "Initiative" + path  + imageName;
+            } else if (imageName.startsWith("PT_")) {
+                mBucketName = "Promotion" + path + imageName;
+            } else if (imageName.startsWith("SOD_")) {
+                mBucketName = "SOD" + path + imageName;
+            } else if (imageName.startsWith("SOS_")) {
+                mBucketName = "SOS" + path + imageName;
+            } else if (imageName.startsWith("SOSKU_")) {
+                mBucketName = "SOSKU" + path + imageName;
+            } else if (imageName.startsWith("PL_")) {
+                mBucketName = "Planogram" + path + imageName;
+            } else if (imageName.startsWith("VPL_")) {
+                mBucketName = "VanPlanogram" + path + imageName;
+            } else if (imageName.startsWith("CPL_")) {
+                mBucketName = "CounterPlanogram" + path + imageName;
+            } else if (imageName.startsWith("CT_")) {
+                mBucketName = "Competitor" + path + imageName;
+            } else if (imageName.startsWith("SVY_")) {
+                mBucketName = "Survey" + path + imageName;
+            } else if (imageName.startsWith("RA_")) {
+                mBucketName = "RoadActivity" + path + imageName;
+            } else if (imageName.startsWith("COL_")) {
+                mBucketName = "Collection" + path + imageName;
+            } else if (imageName.startsWith("RT_")) {
+                mBucketName = "Retail" + path + imageName;
+            } else if (imageName.startsWith("EXP_")) {
+                mBucketName = "Expense" + path + imageName;
+            } else if (imageName.startsWith("DV_")) {
+                mBucketName = "Delivery" + path + imageName;
+            } else if (imageName.startsWith("NP_")) {
+                mBucketName = "NonProductive" + path + imageName;
+            } else if (imageName.startsWith("PF_")) {
+                mBucketName = "PrintFile" + path + imageName;
+            } else if (imageName.startsWith("GROM_")) {
+                mBucketName = "Grooming" + path + imageName;
+            } else if (imageName.startsWith("PRO_")) {
+                mBucketName = "Profile" + path + imageName;
+            } else if (imageName.startsWith("USER_")) {
+                mBucketName = "User" + path + imageName;
+            } else if (imageName.startsWith("SR_SGN_")) {
+                mBucketName = "SalesReturn" + path + imageName;
+            } else if (imageName.startsWith("ORD_")) {
+                mBucketName = "Order" + path + imageName;
+            } else {
+                if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
+                    mBucketName = "PhotoCapture" + path + imageName;
+                } else {
+
+                    mBucketName =
+                            + userMasterHelper.getUserMasterBO
+                            ().getDistributorid()
+                            + "/"
+                            + userMasterHelper.getUserMasterBO().getUserid()
+                            + "/"
+                            + userMasterHelper.getUserMasterBO
+                            ().getDownloadDate()
+                            .replace("/", "")+ imageName;
+                }
+            }
+
+            mBucketName = DataMembers.AZURE_ROOT_DIRECTORY+"/"+mBucketName;
+
+            CloudBlockBlob cloudBlockBlob = cloudBlobContainer.getBlockBlobReference(mBucketName);
+
+            if (fileInputStream != null)
+                cloudBlockBlob.upload(fileInputStream, fileInputStream.available());
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
     }
 }
 

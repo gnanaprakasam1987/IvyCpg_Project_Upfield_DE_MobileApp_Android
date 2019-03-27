@@ -30,12 +30,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.amazonaws.SDKGlobalConfiguration;
-import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
-import com.amazonaws.services.s3.AmazonS3Client;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
+import com.ivy.cpg.view.sync.AWSConnectionHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.NewOutletAttributeBO;
@@ -476,12 +474,11 @@ public class ProfileFragment extends IvyBaseFragment {
                                         + DataMembers.PROFILE + "/"
                                         + path);
                                 if (imgFile.exists()) {
-                                    bmodel.getimageDownloadURL();
-                                    bmodel.configurationMasterHelper.setAmazonS3Credentials();
-                                    initializeTransferUtility();
+                                    AWSConnectionHelper.getInstance().setAWSDBValues(bmodel.getApplicationContext());
                                     HashMap<String, String> hashMap = new HashMap<>();
                                     hashMap.put(DataMembers.IMG_DOWN_URL + "" + retailerObj.getProfileImagePath(),
                                             DataMembers.PROFILE);
+                                    transferUtility = new TransferUtility(AWSConnectionHelper.getInstance().getS3Connection(), getActivity());
                                     Thread downloaderThread = new DownloaderThreadNew(getActivity(),
                                             activityHandler, hashMap,
                                             bmodel.userMasterHelper.getUserMasterBO()
@@ -1393,16 +1390,6 @@ public class ProfileFragment extends IvyBaseFragment {
             tempBO.setAttrParent(attribHeader);
             attributeList.add(tempBO);
         }
-    }
-
-    private void initializeTransferUtility() {
-        System.setProperty
-                (SDKGlobalConfiguration.ENABLE_S3_SIGV4_SYSTEM_PROPERTY, "true");
-        BasicAWSCredentials myCredentials = new BasicAWSCredentials(ConfigurationMasterHelper.ACCESS_KEY_ID,
-                ConfigurationMasterHelper.SECRET_KEY);
-        AmazonS3Client s3 = new AmazonS3Client(myCredentials);
-        s3.setEndpoint(DataMembers.S3_BUCKET_REGION);
-        transferUtility = new TransferUtility(s3, getActivity());
     }
 
     private void clearAmazonDownload() {

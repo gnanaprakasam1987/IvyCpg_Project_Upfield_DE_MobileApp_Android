@@ -51,7 +51,7 @@ import com.ivy.utils.FileUtils;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class CheckModeFragment extends IvyBaseFragment
+public class ChequeModeFragment extends IvyBaseFragment
         implements DataPickerDialogFragment.UpdateDateInterface,
         UpdatePaymentsInterface, View.OnClickListener {
 
@@ -259,7 +259,7 @@ public class CheckModeFragment extends IvyBaseFragment
             @Override
             public void onClick(View v) {
                 if (!"".equals(mChequeNoET.getText().toString()) && mPaymentBO.getAmount() > 0) {
-                    if (FileUtils.isExternalStorageAvailable()) {
+                    if (FileUtils.isExternalStorageAvailable(10)) {
 
                         mImageName = "COL_CHQ_"
                                 + bmodel.userMasterHelper.getUserMasterBO().getUserid()

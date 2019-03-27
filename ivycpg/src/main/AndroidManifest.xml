@@ -32,6 +32,8 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
 
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+
     <uses-feature
         android:name="android.hardware.camera.front"
         android:required="false" />
@@ -192,7 +194,8 @@
             android:name="com.ivy.cpg.view.order.StockAndOrder"
             android:exported="false"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:hardwareAccelerated="true">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
 
@@ -870,6 +873,12 @@
             android:screenOrientation="portrait"/>
         <activity android:name="com.ivy.cpg.view.Planorama.PlanoramaAnalysisActivty"
             android:screenOrientation="portrait"/>
+
+
+        <service
+            android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"
+            android:enabled="true"
+            android:exported="false" />
 
     </application>
 
