@@ -1350,12 +1350,11 @@ public class BusinessModel extends Application {
             mRetailerBOByRetailerid = new HashMap<>();
             RetailerMasterBO retailer;
 
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
-            );
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.openDataBase();
 
-            configurationMasterHelper.loadRouteConfig();
-            downloadIndicativeOrderedRetailer();
+            configurationMasterHelper.loadRouteConfig(db);
+            downloadIndicativeOrderedRetailer(db);
 
             Cursor c = db
                     .selectSQL("SELECT DISTINCT A.RetailerID, A.RetailerCode, A.RetailerName, RBM.BeatID as beatid, A.creditlimit, A.tinnumber, A.TinExpDate, A.channelID,"
@@ -1594,12 +1593,12 @@ public class BusinessModel extends Application {
                     updateRetailerPriceGRP(retailer, db);
 
                     if (configurationMasterHelper.IS_HANGINGORDER) {
-                        OrderHelper.getInstance(getContext()).updateHangingOrder(getContext(), retailer);
+                        OrderHelper.getInstance(getContext()).updateHangingOrder(getContext(), retailer,db);
                     }
                     updateIndicativeOrderedRetailer(retailer);
 
                     if (configurationMasterHelper.isRetailerBOMEnabled) {
-                        setIsBOMAchieved(retailer);
+                        setIsBOMAchieved(retailer, db);
                     }
                     getRetailerMaster().add(retailer);
 
@@ -1615,7 +1614,7 @@ public class BusinessModel extends Application {
 
 
             if (configurationMasterHelper.SHOW_DATE_ROUTE) {
-                mRetailerHelper.updatePlannedDatesInRetailerObj();
+                mRetailerHelper.updatePlannedDatesInRetailerObj(db);
                 mRetailerHelper.getPlannedRetailerFromDate();
 
             } else {
@@ -1624,20 +1623,20 @@ public class BusinessModel extends Application {
             }
 
             if (configurationMasterHelper.SHOW_MISSED_RETAILER) {
-                mRetailerHelper.downloadMissedRetailer();
+                mRetailerHelper.downloadMissedRetailer(db);
             }
 
             setWeeknoFoNewRetailer();
 
-            CollectionHelper.getInstance(ctx).updateHasPaymentIssue();
+            CollectionHelper.getInstance(ctx).updateHasPaymentIssue(db);
 
             /********************************************/
 
             if (configurationMasterHelper.IS_DAY_WISE_RETAILER_WALKINGSEQ)
                 mRetailerHelper.updateWalkingSequenceDayWise(db);
 
-            updateCurrentFITscore();
-            updateRetailersTotWgt();
+            updateCurrentFITscore(db);
+            updateRetailersTotWgt(db);
 
             if (configurationMasterHelper.SUBD_RETAILER_SELECTION | configurationMasterHelper.IS_LOAD_ONLY_SUBD) {
 
@@ -1651,7 +1650,7 @@ public class BusinessModel extends Application {
                 codeCleanUpUtil.setSubDMaster(getSubDMaster());
             }
 
-            mRetailerHelper.downloadRetailerTarget("SV");
+            mRetailerHelper.downloadRetailerTarget("SV", db);
 
             db.closeDB();
 
@@ -1678,18 +1677,16 @@ public class BusinessModel extends Application {
                 if (c.moveToNext())
                     distId = c.getInt(0);
 
-                c.close();
             }
-
+            c.close();
 
             c = db.selectSQL("SELECT IFNULL(GroupId,0) From RetailerPriceGroup WHERE DistributorID=" + distId + " AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
             if (c != null
                     && c.getCount() > 0) {
                 if (c.moveToNext())
                     retObj.setGroupId(c.getInt(0));
-
-                c.close();
             }
+            c.close();
         } catch (Exception e) {
             Commons.printException("Exception ", e);
         }
@@ -1701,12 +1698,8 @@ public class BusinessModel extends Application {
      * @See
      * {@link com.ivy.core.data.retailer.RetailerDataManagerImpl#setIsBOMAchieved(RetailerMasterBO)}
      */
-    private void setIsBOMAchieved(RetailerMasterBO Retailer) {
-        DBUtil db = null;
+    private void setIsBOMAchieved(RetailerMasterBO Retailer, DBUtil db) {
         try {
-
-            db = new DBUtil(ctx, DataMembers.DB_NAME);
-            db.openDataBase();
             String sql = "";
             Cursor c = null;
 
@@ -1731,11 +1724,9 @@ public class BusinessModel extends Application {
                 }
             }
             c.close();
-            db.closeDB();
 
         } catch (Exception e) {
             e.printStackTrace();
-            db.closeDB();
         }
     }
 
@@ -2029,13 +2020,9 @@ public class BusinessModel extends Application {
      * @See {@link RetailerDataManagerImpl#fetchIndicativeRetailers()}
      * @deprecated
      */
-    public void downloadIndicativeOrderedRetailer() {
-        DBUtil db = null;
+    public void downloadIndicativeOrderedRetailer(DBUtil db) {
         indicativeRtrList = new ArrayList<IndicativeBO>();
         try {
-            db = new DBUtil(ctx, DataMembers.DB_NAME);
-            db.createDataBase();
-            db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select distinct io.rid ,case when io.rid!=ifnull(oh.retailerid,0) then 1 else 0 end as flag ");
             sb.append("from indicativeorder io left join orderHeader oh on  io.rid=oh.retailerid");
@@ -2049,7 +2036,6 @@ public class BusinessModel extends Application {
                 }
             }
             c.close();
-            db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -4961,10 +4947,8 @@ public class BusinessModel extends Application {
 
     }
 
-    public void updateCurrentFITscore() {
+    public void updateCurrentFITscore(DBUtil db) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
-            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select  AH.retailerid,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD " +
@@ -4982,7 +4966,6 @@ public class BusinessModel extends Application {
                 }
             }
             c.close();
-            db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -7312,10 +7295,8 @@ public class BusinessModel extends Application {
         return "";
     }
 
-    public void updateRetailersTotWgt() {
+    public void updateRetailersTotWgt(DBUtil db) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
-            db.openDataBase();
             Cursor c = db.selectSQL("select pieceqty,caseQty,outerQty,uomcount,dOuomQty,weight,retailerid from OrderDetail");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -7331,7 +7312,6 @@ public class BusinessModel extends Application {
 
             }
             c.close();
-            db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
         }
