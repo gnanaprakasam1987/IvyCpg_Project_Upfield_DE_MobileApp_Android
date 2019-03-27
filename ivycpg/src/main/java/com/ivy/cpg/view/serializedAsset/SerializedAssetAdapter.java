@@ -47,7 +47,7 @@ import java.util.GregorianCalendar;
 
 public class SerializedAssetAdapter extends BaseAdapter {
 
-    private ArrayList<SerializedAssetBO> items=null;
+    private ArrayList<SerializedAssetBO> items = null;
     private Context mContext;
     private Fragment mFragment;
     private BusinessModel mBModel;
@@ -70,13 +70,13 @@ public class SerializedAssetAdapter extends BaseAdapter {
     public SerializedAssetAdapter(Context context, BusinessModel mBModel, SerializedAssetPresenterImpl mAssetPresenter, Fragment mFragment
             , ArrayList<SerializedAssetBO> items) {
         super();
-        this.mContext=context;
-        this.mBModel=mBModel;
+        this.mContext = context;
+        this.mBModel = mBModel;
         this.items = items;
         assetTrackingHelper = SerializedAssetHelper.getInstance(context);
         this.outPutDateFormat = mBModel.configurationMasterHelper.outDateFormat;
-        this.mAssetPresenter=mAssetPresenter;
-        this.mFragment=mFragment;
+        this.mAssetPresenter = mAssetPresenter;
+        this.mFragment = mFragment;
 
         ReasonMaster reason1 = new ReasonMaster();
         reason1.setReasonID(Integer.toString(0));
@@ -145,38 +145,38 @@ public class SerializedAssetAdapter extends BaseAdapter {
                     R.layout.row_serialized_asset, parent, false);
             row.setTag(holder);
 
-            holder.audit =  row
+            holder.audit = row
                     .findViewById(R.id.btn_audit);
-            holder.assetNameTV =  row
+            holder.assetNameTV = row
                     .findViewById(R.id.tv_asset_name);
             //holder.assetNameTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.reason1Spin =  row
+            holder.reason1Spin = row
                     .findViewById(R.id.spin_reason1);
 
-            holder.mConditionSpin =  row
+            holder.mConditionSpin = row
                     .findViewById(R.id.spin_condition);
 
-            holder.mInstallDate =  row
+            holder.mInstallDate = row
                     .findViewById(R.id.Btn_install_Date);
-            holder.llInstallDate =  row
+            holder.llInstallDate = row
                     .findViewById(R.id.ll_install_date);
             //holder.mInstallDate.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.mServiceDate =  row
+            holder.mServiceDate = row
                     .findViewById(R.id.Btn_service_Date);
-            holder.ll_service_date =  row
+            holder.ll_service_date = row
                     .findViewById(R.id.ll_service_date);
             //holder.mServiceDate.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            holder.photoBTN =  row
+            holder.photoBTN = row
                     .findViewById(R.id.btn_photo);
-            holder.availQtyRB =  row
+            holder.availQtyRB = row
                     .findViewById(R.id.radio_avail_qty);
-            holder.availQtyLL =  row
+            holder.availQtyLL = row
                     .findViewById(R.id.ll_avail_qty);
-            holder.serialNoTV =  row
+            holder.serialNoTV = row
                     .findViewById(R.id.tv_serialNo);
             //holder.serialNoTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            holder.execQtyLL =  row.findViewById(R.id.ll_exec_qty);
-            holder.execQtyRB =  row.findViewById(R.id.radio_exec_qty);
+            holder.execQtyLL = row.findViewById(R.id.ll_exec_qty);
+            holder.execQtyRB = row.findViewById(R.id.radio_exec_qty);
 
             holder.reason1Spin.setAdapter(mAssetReasonSpinAdapter);
             holder.mConditionSpin.setAdapter(mAssetConditionAdapter);
@@ -265,10 +265,10 @@ public class SerializedAssetAdapter extends BaseAdapter {
                     DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
                     Bundle args = new Bundle();
                     args.putString("MODULE", "ASSET");
-                    args.putString("selectedDate",holder.assetBO.getInstallDate());
+                    args.putString("selectedDate", holder.assetBO.getInstallDate());
                     args.putString("selectedDateFormat", outPutDateFormat);
                     newFragment.setArguments(args);
-                    newFragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(), TAG_DATE_PICKER_INSTALLED);
+                    newFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), TAG_DATE_PICKER_INSTALLED);
                 }
             });
             holder.mServiceDate.setOnClickListener(new View.OnClickListener() {
@@ -280,10 +280,10 @@ public class SerializedAssetAdapter extends BaseAdapter {
                     DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
                     Bundle args = new Bundle();
                     args.putString("MODULE", "ASSET");
-                    args.putString("selectedDate",holder.assetBO.getServiceDate());
+                    args.putString("selectedDate", holder.assetBO.getServiceDate());
                     args.putString("selectedDateFormat", outPutDateFormat);
                     newFragment.setArguments(args);
-                    newFragment.show(((AppCompatActivity)mContext).getSupportFragmentManager(), TAG_DATE_PICKER_SERVICED);
+                    newFragment.show(((AppCompatActivity) mContext).getSupportFragmentManager(), TAG_DATE_PICKER_SERVICED);
                 }
             });
 
@@ -301,7 +301,7 @@ public class SerializedAssetAdapter extends BaseAdapter {
 
                         imageName = moduleName
                                 + mBModel.getRetailerMasterBO()
-                                .getRetailerID()  + "_"
+                                .getRetailerID() + "_"
                                 + holder.assetBO.getAssetID() + "_"
                                 + holder.assetBO.getSerialNo() + "_"
                                 + Commons.now(Commons.DATE_TIME)
@@ -309,7 +309,7 @@ public class SerializedAssetAdapter extends BaseAdapter {
 
                         String fileNameStarts = moduleName
                                 + mBModel.getRetailerMasterBO()
-                                .getRetailerID() + "_"+ holder.assetBO.getAssetID() + "_"
+                                .getRetailerID() + "_" + holder.assetBO.getAssetID() + "_"
                                 + holder.assetBO.getSerialNo() + "_"
                                 + Commons.now(Commons.DATE);
 
@@ -339,7 +339,7 @@ public class SerializedAssetAdapter extends BaseAdapter {
                         Toast.makeText(mContext, mContext.getResources().getString(R.string.external_storage_not_available)
                                 , Toast.LENGTH_SHORT)
                                 .show();
-                      
+
                     }
 
                 }
@@ -357,7 +357,7 @@ public class SerializedAssetAdapter extends BaseAdapter {
 
                         if ((holder.assetBO.getImgName() != null)
                                 && (!holder.assetBO.getImgName().isEmpty())
-                                ) {
+                        ) {
                             holder.photoBTN.setEnabled(true);
                             setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
                         } else {
@@ -368,7 +368,7 @@ public class SerializedAssetAdapter extends BaseAdapter {
                         holder.reason1Spin.setSelection(0);
                         holder.mConditionSpin.setEnabled(true);
                         holder.mConditionSpin.setSelection(0);
-                        holder.mInstallDate.setEnabled(true);
+                        holder.mInstallDate.setEnabled(!holder.assetBO.getmLastInstallDate().isEmpty());
                         holder.mServiceDate.setEnabled(true);
                     } else {
 
@@ -381,10 +381,18 @@ public class SerializedAssetAdapter extends BaseAdapter {
                         holder.mConditionSpin.setSelection(0);
                         holder.mInstallDate.setEnabled(false);
                         holder.mServiceDate.setEnabled(false);
-                        holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-                        holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-                        holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-                        holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                        /*holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                        holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));*/
+
+                        if (!holder.assetBO.getmLastInstallDate().isEmpty())
+                            holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.assetBO.getInstallDate(), outPutDateFormat));
+                        else
+                            holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+
+                        if (!holder.assetBO.getServiceDate().isEmpty())
+                            holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.assetBO.getServiceDate(), outPutDateFormat));
+                        else
+                            holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
 
                     }
 
@@ -426,14 +434,14 @@ public class SerializedAssetAdapter extends BaseAdapter {
         holder.assetNameTV.setText(holder.assetBO.getAssetName());
         holder.reason1Spin.setSelection(mAssetPresenter
                 .getItemIndex(holder.assetBO.getReason1ID(),
-                        mAssetPresenter.getAssetReasonList(),true));
+                        mAssetPresenter.getAssetReasonList(), true));
 
         String serialNo = mContext.getResources().getString(R.string.serial_no);
         if (mBModel.labelsMasterHelper.applyLabels(row.findViewById(
                 R.id.tv_serialNo).getTag()) != null)
             serialNo = mBModel.labelsMasterHelper
                     .applyLabels(row.findViewById(
-                            R.id.tv_serialNo).getTag()) ;
+                            R.id.tv_serialNo).getTag());
 
         serialNo = serialNo + ": " + holder.assetBO.getSerialNo();
 
@@ -452,7 +460,7 @@ public class SerializedAssetAdapter extends BaseAdapter {
                     .applyLabels((Object) "asset_model") != null)
                 strLabel = mBModel.labelsMasterHelper
                         .applyLabels((Object) "asset_model");
-            serialNo = serialNo + "   " + strLabel  + " : " + holder.assetBO.getModelName();
+            serialNo = serialNo + "   " + strLabel + " : " + holder.assetBO.getModelName();
         }
         if (assetTrackingHelper.SHOW_ASSET_TYPE) {
             strLabel = mContext.getResources().getString(R.string.type);
@@ -502,8 +510,9 @@ public class SerializedAssetAdapter extends BaseAdapter {
             holder.mConditionSpin.setEnabled(true);
             holder.mConditionSpin.setSelection(mAssetPresenter
                     .getItemIndex(holder.assetBO.getConditionID(),
-                            mAssetPresenter.getAssetConditionList(),false));
-            holder.mInstallDate.setEnabled(true);
+                            mAssetPresenter.getAssetConditionList(), false));
+
+            holder.mInstallDate.setEnabled(!holder.assetBO.getmLastInstallDate().isEmpty());
             holder.mServiceDate.setEnabled(true);
 
         } else {
@@ -517,19 +526,29 @@ public class SerializedAssetAdapter extends BaseAdapter {
             holder.mServiceDate.setEnabled(false);
             holder.assetBO.setImageName("");
             holder.assetBO.setImgName("");
-            holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-            holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-            holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-            holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+           /* holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+            holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));*/
+
+            if (!holder.assetBO.getmLastInstallDate().isEmpty())
+                holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.assetBO.getInstallDate(), outPutDateFormat));
+            else
+                holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+
+            if (!holder.assetBO.getServiceDate().isEmpty())
+                holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.assetBO.getServiceDate(), outPutDateFormat));
+            else
+                holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
 
         }
 
 
         if (!assetTrackingHelper.SHOW_ASSET_REASON) {
-            holder.reason1Spin.setVisibility(View.GONE);
+            row.findViewById(R.id.reason_ll).setVisibility(View.GONE);
+            //holder.reason1Spin.setVisibility(View.GONE);
         }
         if (!assetTrackingHelper.SHOW_ASSET_CONDITION) {
-            holder.mConditionSpin.setVisibility(View.GONE);
+            row.findViewById(R.id.condition_ll).setVisibility(View.GONE);
+            //holder.mConditionSpin.setVisibility(View.GONE);
         }
         if (!assetTrackingHelper.SHOW_ASSET_INSTALL_DATE) {
             holder.mInstallDate.setVisibility(View.GONE);
@@ -551,7 +570,7 @@ public class SerializedAssetAdapter extends BaseAdapter {
 
         if ((holder.assetBO.getImgName() != null)
                 && (!holder.assetBO.getImgName().isEmpty())
-                ) {
+        ) {
             setPictureToImageView(holder.assetBO.getImgName(), holder.photoBTN);
 
         } else {
@@ -562,7 +581,6 @@ public class SerializedAssetAdapter extends BaseAdapter {
         }
 
 
-
         if (holder.assetBO.getExecutorQty() == 1) {
             holder.execQtyRB.setChecked(true);
         } else {
@@ -570,18 +588,15 @@ public class SerializedAssetAdapter extends BaseAdapter {
         }
 
 
-
         if (assetTrackingHelper.ASSET_RESTRICT_MANUAL_AVAILABILITY_CHECK) {
             holder.availQtyRB.setEnabled(false);
 
             if (assetTrackingHelper.SHOW_ASSET_BARCODE
-                    &&(holder.assetBO.getScanComplete() == 1)) {
+                    && (holder.assetBO.getScanComplete() == 1)) {
                 holder.availQtyRB.setChecked(true);
-            }
-            else if (holder.assetBO.getAvailQty() == 1){
+            } else if (holder.assetBO.getAvailQty() == 1) {
                 holder.availQtyRB.setChecked(true);
-            }
-            else {
+            } else {
                 holder.availQtyRB.setChecked(false);
             }
 
@@ -592,16 +607,14 @@ public class SerializedAssetAdapter extends BaseAdapter {
             }
 
 
-        }
-        else {
+        } else {
             holder.availQtyRB.setEnabled(true);
 
-             if(holder.assetBO.getAvailQty() == 1){
+            if (holder.assetBO.getAvailQty() == 1) {
                 holder.availQtyRB.setChecked(true);
+            } else {
+                holder.availQtyRB.setChecked(false);
             }
-            else {
-                 holder.availQtyRB.setChecked(false);
-             }
         }
 
 
@@ -665,7 +678,7 @@ public class SerializedAssetAdapter extends BaseAdapter {
                     @Override
                     public void onPositiveButtonClick() {
 
-                        mAssetPresenter.removeExistingImage(mAssetId,imageNameStarts,photoPath);
+                        mAssetPresenter.removeExistingImage(mAssetId, imageNameStarts, photoPath);
 
                         Intent intent = new Intent(mContext,
                                 CameraActivity.class);
