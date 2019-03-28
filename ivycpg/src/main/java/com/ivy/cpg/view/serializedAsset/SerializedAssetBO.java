@@ -12,6 +12,7 @@ public class SerializedAssetBO {
     private String reasonDesc;
     private String conditionID = "0";
     private String mInstallDate;
+    private String mLastInstallDate = "";
     private String mServiceDate;
     private String mPOSM;
     private String mBrand;
@@ -113,6 +114,7 @@ public class SerializedAssetBO {
         this.assetTypeId = serializedAssetBO.getAssetTypeId();
         this.assetBarCodeId = serializedAssetBO.getAssetBarCodeId();
         this.assetBarCodeReason = serializedAssetBO.getAssetBarCodeReason();
+        this.mLastInstallDate = serializedAssetBO.getmLastInstallDate();
     }
 
     public int getExecutorQty() {
@@ -517,6 +519,14 @@ public class SerializedAssetBO {
 
     public void setAssetTypeId(String assetTypeId) {
         this.assetTypeId = assetTypeId;
+    }
+
+    public String getmLastInstallDate() {
+        return mLastInstallDate;
+    }
+
+    public void setmLastInstallDate(String mLastInstallDate) {
+        this.mLastInstallDate = mLastInstallDate;
     }
 
     @Override

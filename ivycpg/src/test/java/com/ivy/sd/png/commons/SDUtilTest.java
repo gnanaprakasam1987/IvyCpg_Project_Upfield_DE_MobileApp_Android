@@ -1,4 +1,4 @@
-package com.ivy.sd.png.model;
+package com.ivy.sd.png.commons;
 
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.utils.DateTimeUtils;

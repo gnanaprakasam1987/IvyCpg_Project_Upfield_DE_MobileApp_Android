@@ -12,34 +12,68 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="1dp"
-        android:gravity="center_vertical"
-        android:minHeight="@dimen/list_item_height"
-        android:orientation="horizontal"
-        android:paddingStart="5dp"
-        android:paddingLeft="5dp">
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="0dp"
+        android:orientation="vertical">
 
-        <ImageView
-            android:id="@+id/ivEntityType"
-            android:layout_width="@dimen/ret_image_size"
-            android:layout_height="@dimen/ret_image_size"
-            android:layout_gravity="center"
-            android:layout_margin="@dimen/dimen_10dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:contentDescription="@null"
-            android:src="@drawable/ic_store_ofplan"/>
-
-        <TextView
-            android:id="@+id/tv_rsd"
-            style="@style/TextViewListItemPrimary"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="1"
-            android:text="@string/app_name"
-            android:textAllCaps="true"
-            android:textColor="@color/FullBlack" />
+            android:orientation="vertical">
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="1dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:minHeight="@dimen/list_item_height"
+
+                >
+
+                <ImageView
+                    android:id="@+id/ivEntityType"
+                    android:layout_width="@dimen/ret_image_size"
+                    android:layout_height="@dimen/ret_image_size"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/dimen_10dp"
+                    android:background="?attr/selectableItemBackgroundBorderless"
+                    android:clickable="true"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_store_ofplan" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    >
+                    <TextView
+                        android:id="@+id/tv_rsd"
+                        style="@style/TextViewListItemPrimary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="@string/app_name"
+                        android:textAllCaps="true"
+                        android:textColor="@color/FullBlack" />
+                    <TextView
+                        android:id="@+id/tv_address"
+                        style="@style/TextViewListItemSecondary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:maxLines="1"
+                        android:text="@string/app_name"
+                        android:textAllCaps="false"
+
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
 
     </LinearLayout>
-
 </android.support.v7.widget.CardView>

@@ -55,7 +55,7 @@
                     android:text="Outlet name" />
 
                 <TextView
-                    android:id="@+id/outletLocation_tv"
+                    android:id="@+id/outletAddress"
                     style="@style/TextViewListItemSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -63,7 +63,8 @@
                     android:layout_marginStart="@dimen/outlet_left_margin"
                     android:layout_marginLeft="@dimen/outlet_left_margin"
                     android:text="Outlet Location"
-                    android:textColor="?attr/accentcolor"/>
+                    android:textAllCaps="false"
+                    />
             </LinearLayout>
 
             <LinearLayout

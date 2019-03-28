@@ -562,6 +562,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                             .findViewById(R.id.stock_and_order_listview_sc_qty);
                     holder.shelfouter = row
                             .findViewById(R.id.stock_and_order_listview_shelfouter_qty);
+                    holder.barcode = row
+                            .findViewById(R.id.stock_and_order_listview_productbarcode);
 
 
                     holder.ll_stkCB =  row
@@ -570,6 +572,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     holder.imageButton_availability = row
                             .findViewById(R.id.btn_availability);
 
+                    if(!stockCheckHelper.SHOW_STOCK_BARCODE){
+                        holder.barcode.setVisibility(View.GONE);
+                    }
                     if (stockCheckHelper.SHOW_STOCK_RSN) {
                         row.findViewById(R.id.stock_check_listview_total).setVisibility(View.GONE);
                         holder.total = row.findViewById(R.id.stock_check_listview_total2);
@@ -579,6 +584,12 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 .findViewById(R.id.stock_check_listview_total);
                     }
 
+                    if (!stockCheckHelper.SHOW_SHELF_OUTER
+                            && !stockCheckHelper.SHOW_STOCK_SP
+                            && !stockCheckHelper.SHOW_STOCK_SC) {
+                        row.findViewById(R.id.ll_total2).setVisibility(View.GONE);
+                        row.findViewById(R.id.stock_check_listview_total).setVisibility(View.GONE);
+                    }
 
                     holder.facingQty = row
                             .findViewById(R.id.stock_check_listview_fc_qty);
@@ -1528,6 +1539,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         private TextView ppq;
         private TextView tvbarcode;
         private TextView psq;
+        private TextView barcode;
         private EditText shelfPcsQty;
         private EditText shelfCaseQty;
 
