@@ -265,6 +265,9 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
                     startActivity(i);
                 } else if (isFromCollection) {
                     CollectionHelper.getInstance(CommonPrintPreviewActivity.this).downloadCollectionMethods();
+                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), "MENU_COLLECTION");
 
                     Intent intent = new Intent(CommonPrintPreviewActivity.this,
                             CollectionScreen.class);
