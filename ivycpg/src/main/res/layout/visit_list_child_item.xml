@@ -52,12 +52,11 @@
 
                 <TextView
                     android:id="@+id/outletLocation_tv"
-                    style="@style/TextViewListItemPrimary"
+                    style="@style/TextViewListItemSecondary"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:text="Outlet Location"
-                    android:textColor="?attr/accentcolor"
                     android:textSize="@dimen/text_size_primary"
                     android:visibility="gone" />
             </LinearLayout>

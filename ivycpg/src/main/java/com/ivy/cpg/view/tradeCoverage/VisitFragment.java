@@ -1530,7 +1530,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
             if (bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER)
-                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.visit_list_simple_item, parent, false);
+                view = LayoutInflater.from(parent.getContext()).inflate(R.layout.visit_list_rex, parent, false);
             else
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.visit_list_child_item, parent, false);
 
@@ -1802,6 +1802,13 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 }
 
             }
+            else {
+                String address=(holder.retailerObjectHolder.getAddress1()!=null?(holder.retailerObjectHolder.getAddress1()):"")
+                        +(holder.retailerObjectHolder.getAddress2()!=null&&!holder.retailerObjectHolder.getAddress2().equals("")?(","+holder.retailerObjectHolder.getAddress2()):"")
+                        + (holder.retailerObjectHolder.getAddress3()!=null&&!holder.retailerObjectHolder.getAddress3().equals("")?(","+holder.retailerObjectHolder.getAddress3()):"");
+
+                holder.outletAddress.setText(address);
+            }
 
 
             if (holder.retailerObjectHolder.getIsDeviated() != null
@@ -2067,7 +2074,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
             private TextView outletNameTextView;
             private TextView outletLocationTextView;
-
+            private TextView outletAddress;
             private ImageView imgGoldDeadStore;
             private ImageView imgInvoice;
             private ImageView imgIndicative;
@@ -2107,20 +2114,22 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                 outletNameTextView = itemView
                         .findViewById(R.id.outletName_tv);
-                outletLocationTextView = itemView
-                        .findViewById(R.id.outletLocation_tv);
+
                 imgDeviate = itemView
                         .findViewById(R.id.iv_deviate);
 
                 outletNameTextView.setTypeface(bmodel.configurationMasterHelper
                         .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-                outletLocationTextView.setTypeface(bmodel.configurationMasterHelper
-                        .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+
 
                 if (!bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER) {
                     imgGoldDeadStore = itemView
                             .findViewById(R.id.iv_gold_dead);
 
+                    outletLocationTextView = itemView
+                            .findViewById(R.id.outletLocation_tv);
+                    outletLocationTextView.setTypeface(bmodel.configurationMasterHelper
+                            .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
 
                     imgInvoice = itemView
                             .findViewById(R.id.iv_invoice);
@@ -2173,6 +2182,11 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     ll_iv_deviate = itemView.findViewById(R.id.ll_iv_deviate);
                     ll_iv_cooler = itemView.findViewById(R.id.ll_iv_cooler);
                     ll_iv_loyality = itemView.findViewById(R.id.ll_iv_loyality);
+                }
+                else {
+
+                    outletAddress = itemView.findViewById(R.id.outletAddress);
+
                 }
             }
 
