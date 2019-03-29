@@ -13,6 +13,8 @@ public interface TaskDataManager extends AppDataManagerContract {
 
     Observable<ArrayList<TaskDataBO>> fetchTaskData(String retailerId);
 
+    Observable<ArrayList<TaskDataBO>>fetchCompletedTask(String retailerId);
+
     Observable<ArrayList<TaskDataBO>> fetchPendingTaskData();
 
     Single<Integer> fetchTaskCount();
@@ -28,4 +30,6 @@ public interface TaskDataManager extends AppDataManagerContract {
     Observable<ArrayList<TaskDataBO>> fetTaskImgData(String taskId);
 
     Single<Boolean> deleteTaskData(String taskId,String taskOwner);
+
+    Observable<ArrayList<String>>getDeletedImageList(String taskId);
 }

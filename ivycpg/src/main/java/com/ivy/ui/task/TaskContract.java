@@ -11,7 +11,6 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 public interface TaskContract {
 
@@ -24,11 +23,12 @@ public interface TaskContract {
         void updateImageListAdapter(ArrayList<TaskDataBO> imageList);
     }
 
+
     interface TaskCreationView extends TaskView {
 
         String getTaskMode();
 
-        void setTaskChannelListData(Vector<ChannelBO> channelList);
+        void setTaskChannelListData(ArrayList<ChannelBO> channelList);
 
         void setTaskRetailerListData(ArrayList<RetailerMasterBO> retailerList);
 
@@ -46,6 +46,8 @@ public interface TaskContract {
         void fetchTaskCategory(String menuCode);
 
         void fetchTaskImageList(String taskId);
+
+        void fetchCompletedTask();
 
         void updateTaskList(int taskType, String retailerID, boolean isRetailerwise, boolean isSurveywise);
 
@@ -71,11 +73,11 @@ public interface TaskContract {
 
         ArrayList<UserMasterBO> getTaskUserList();
 
-        ArrayList<TaskDataBO> getTaskList();
-
         int getUserID();
 
         int getRetailerID();
+
+        void orderBySortList(int sortType, boolean orderBy);
 
         boolean isShowServerTaskOnly();
 
@@ -85,9 +87,13 @@ public interface TaskContract {
 
         boolean isNoTaskReason();
 
+        boolean isShowProdLevel();
+
+        boolean isAllowImgCapture();
+
         String outDateFormat();
 
-        boolean isValidate(String taskTitle, String taskView);
+        boolean validate(String taskTitle, String taskView);
 
         void saveModuleCompletion(String menuCode);
 

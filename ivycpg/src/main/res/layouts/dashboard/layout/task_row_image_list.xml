@@ -1,11 +1,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/_10sdp"
+    android:layout_marginRight="@dimen/_10sdp">
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/_10sdp"
         android:paddingTop="@dimen/_8sdp"
         android:paddingEnd="@dimen/_10sdp"
         android:paddingRight="@dimen/_10sdp">

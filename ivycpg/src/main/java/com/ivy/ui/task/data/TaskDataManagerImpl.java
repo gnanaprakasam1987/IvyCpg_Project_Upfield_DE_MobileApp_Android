@@ -16,7 +16,6 @@ import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Vector;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -112,6 +111,11 @@ public class TaskDataManagerImpl implements TaskDataManager {
                 return new ArrayList<>();
             }
         });
+    }
+
+    @Override
+    public Observable<ArrayList<TaskDataBO>> fetchCompletedTask(String retailerId) {
+        return null;
     }
 
     /**
@@ -579,9 +583,41 @@ public class TaskDataManagerImpl implements TaskDataManager {
         });
     }
 
+    @Override
+    public Observable<ArrayList<String>> getDeletedImageList(String taskId) {
+        return Observable.fromCallable(new Callable<ArrayList<String>>() {
+            @Override
+            public ArrayList<String> call() throws Exception {
+                try {
+                    if (mDbUtil.isDbNullOrClosed())
+                        initDb();
+
+                    String query = "SELECT TaskImageName FROM TaskImageDetails"
+                            + " WHERE TaskId = " + StringUtils.QT(taskId);
+
+                    ArrayList<String> deletedImgList = new ArrayList<>();
+                    Cursor c = mDbUtil.selectSQL(query);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            deletedImgList.add(c.getString(0));
+                        }
+                        c.close();
+                        shutDownDb();
+                        return deletedImgList;
+                    }
+
+                } catch (Exception ignore) {
+
+                }
+                shutDownDb();
+                return new ArrayList<>();
+            }
+        });
+    }
+
 
     private String[] getChannelRetailerId(int channelId) {
-        Vector<String> channelRId = new Vector<>();
+        ArrayList<String> channelRId = new ArrayList<>();
         int siz = appDataProvider.getRetailerMasters().size();
         if (channelId == 0) {
             for (int ii = 0; ii < siz; ii++) {
@@ -613,7 +649,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
     }
 
     private String[] getRetailerIdlist() {
-        Vector<String> RId = new Vector<>();
+        ArrayList<String> RId = new ArrayList<>();
         int siz = appDataProvider.getRetailerMasters().size();
         for (int ii = 0; ii < siz; ii++) {
             if (((appDataProvider.getRetailerMasters().get(ii).getIsToday() == 1))

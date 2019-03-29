@@ -196,4 +196,15 @@
     <string name="server_task_can_not_be_delete">Server task can not be delete</string>
     <string name="asc_order">Name(A-Z)</string>
     <string name="desc_order">Name(Z-A)</string>
+    <string name="photo_captured_successfully">Photo Captured Successfully</string>
+
+    <string-array name="task_sort_list">
+        <item>Name(A-Z)</item>
+        <item>Name(Z-A)</item>
+        <item>Category</item>
+        <item>Category</item>
+        <item>Due Date</item>
+        <item>Due Date</item>
+    </string-array>
+
 </resources>

@@ -31,6 +31,8 @@ public class TaskDataBO implements Parcelable {
     int flag = 0;
     private String taskEvidenceImg;
     private String mode;
+    private String sortName;
+    private boolean orderByAsc;
 
 
     protected TaskDataBO(Parcel in) {
@@ -59,6 +61,8 @@ public class TaskDataBO implements Parcelable {
         retailerName = in.readString();
         isChecked = in.readByte() != 0;
         mode = in.readString();
+        sortName = in.readString();
+        orderByAsc = in.readByte() != 0;
     }
 
     public static final Creator<TaskDataBO> CREATOR = new Creator<TaskDataBO>() {
@@ -283,7 +287,6 @@ public class TaskDataBO implements Parcelable {
     }
 
 
-
     public String getTaskEvidenceImg() {
         return taskEvidenceImg;
     }
@@ -303,6 +306,22 @@ public class TaskDataBO implements Parcelable {
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public String getSortName() {
+        return sortName;
+    }
+
+    public void setSortName(String sortName) {
+        this.sortName = sortName;
+    }
+
+    public boolean isOrderByAsc() {
+        return orderByAsc;
+    }
+
+    public void setOrderByAsc(boolean orderByAsc) {
+        this.orderByAsc = orderByAsc;
     }
 
     @Override
@@ -332,5 +351,7 @@ public class TaskDataBO implements Parcelable {
         parcel.writeString(retailerName);
         parcel.writeByte((byte) (isChecked ? 1 : 0));
         parcel.writeString(mode);
+        parcel.writeString(sortName);
+        parcel.writeByte((byte) (orderByAsc ? 1 : 0));
     }
 }

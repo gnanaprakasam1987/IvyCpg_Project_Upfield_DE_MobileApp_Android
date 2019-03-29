@@ -27,9 +27,9 @@ public class TaskImgListAdapter extends RecyclerView.Adapter<TaskImgListAdapter.
     private boolean isDisplayOnly;
     private PhotoClickListener photoClickListener;
 
-    public TaskImgListAdapter(ArrayList<TaskDataBO> imgList, Context context, boolean isDisplayOnly, PhotoClickListener photoClickListener) {
-        this.imgList = imgList;
+    public TaskImgListAdapter(Context context, ArrayList<TaskDataBO> imgList, boolean isDisplayOnly, PhotoClickListener photoClickListener) {
         this.mContext = context;
+        this.imgList = imgList;
         this.isDisplayOnly = isDisplayOnly;
         this.photoClickListener = photoClickListener;
     }

@@ -19,13 +19,11 @@ import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ChannelBO;
-import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.adapter.TaskImgListAdapter;
 import com.ivy.ui.task.di.DaggerTaskComponent;
@@ -35,7 +33,6 @@ import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
-import java.util.Vector;
 
 import javax.inject.Inject;
 
@@ -108,8 +105,8 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     @Override
     protected void getMessageFromAliens() {
         if (getIntent().getExtras() != null) {
-            isFromHomeSrc = getIntent().getBooleanExtra("fromHomeScreen", false);
-            detailBo = getIntent().getExtras().getParcelable("taskObj");
+            isFromHomeSrc = getIntent().getBooleanExtra(TaskConstant.FROM_HOME_SCREEN, false);
+            detailBo = getIntent().getExtras().getParcelable(TaskConstant.TASK_OBJECT);
 
         }
     }
@@ -167,9 +164,9 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         taskTitleTv.setText(detailBo.getTasktitle());
         taskProductLevelTv.setText(detailBo.getTaskCategoryDsc());
         taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(detailBo.getTaskDueDate(), ConfigurationMasterHelper.outDateFormat));
-        taskImgRecyclerView.setAdapter(new TaskImgListAdapter(updatedList, this, true, null));
+        taskImgRecyclerView.setAdapter(new TaskImgListAdapter(this, updatedList, true, null));
         taskDescTv.setText(detailBo.getTaskDesc());
-        setImageIntoView(getIntent().getExtras().getString("evidenceImg"));
+        setImageIntoView(getIntent().getExtras().getString(TaskConstant.EVIDENCE_IMAGE));
 
     }
 
@@ -203,19 +200,23 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     }
 
     private void setImageIntoView(String imageName) {
-        String path = FileUtils.photoFolderPath + "/" + imageName;
-
-        if (FileUtils.isFileExisting(path)) {
-            Uri uri = FileUtils
-                    .getUriFromFile(getApplicationContext(), path);
-            Glide.with(this).load(uri)
-                    .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
-                    .centerCrop()
-                    .placeholder(R.drawable.no_image_available)
-                    .error(R.drawable.no_image_available)
-                    .into(AppUtils.getRoundedImageTarget(this, evidenceImgView, (float) 6));
+        if (!imageName.isEmpty()) {
+            evidenceImgView.setVisibility(View.GONE);
+        } else {
+            evidenceImgView.setVisibility(View.VISIBLE);
+            String path = FileUtils.photoFolderPath + "/" + imageName;
+            if (FileUtils.isFileExisting(path)) {
+                Uri uri = FileUtils
+                        .getUriFromFile(getApplicationContext(), path);
+                Glide.with(this).load(uri)
+                        .asBitmap()
+                        .diskCacheStrategy(DiskCacheStrategy.NONE)
+                        .skipMemoryCache(true)
+                        .centerCrop()
+                        .placeholder(R.drawable.no_image_available)
+                        .error(R.drawable.no_image_available)
+                        .into(AppUtils.getRoundedImageTarget(this, evidenceImgView, (float) 6));
+            }
         }
     }
 
@@ -269,7 +270,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
                 CameraActivity.class);
         String _path = FileUtils.photoFolderPath + "/" + imageName;
         //  intent.putExtra("quality", 40);
-        intent.putExtra("path", _path);
+        intent.putExtra(TaskConstant.FILE_PATH, _path);
         startActivityForResult(intent,
                 CAMERA_REQUEST_CODE);
     }

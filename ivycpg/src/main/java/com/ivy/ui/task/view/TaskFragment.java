@@ -29,15 +29,14 @@ import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ChannelBO;
-import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
+import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.TaskContract;
+import com.ivy.ui.task.adapter.BottomSortListAdapter;
 import com.ivy.ui.task.adapter.TaskListAdapter;
 import com.ivy.ui.task.di.DaggerTaskComponent;
 import com.ivy.ui.task.di.TaskModule;
@@ -46,10 +45,7 @@ import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Objects;
-import java.util.Vector;
 
 import javax.inject.Inject;
 
@@ -59,16 +55,18 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     private RecyclerView recyclerView;
     private Button nxtBtn;
     private LinearLayout footerLL;
-    private Bundle bundle;
     private boolean isRetailerWiseTask;
     private boolean fromHomeScreen;
     private boolean isFromSurvey;
     private boolean fromProfileScreen;
     private String mSelectedRetailerID = "0";
+    private String currentActivityCode;
+    private String screenTitle;
     private String imageName = "";
     private static final int CAMERA_REQUEST_CODE = 1;
     private BottomSheetBehavior bottomSheetBehavior;
     private View taskBgView;
+    private int lastSelectedPos = -1;
 
 
     @Inject
@@ -111,24 +109,28 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
     @Override
     protected void getMessageFromAliens() {
-        bundle = getArguments();
+        Bundle bundle = getArguments();
         if (bundle == null)
             bundle = Objects.requireNonNull(getActivity()).getIntent().getExtras();
 
         if (bundle != null) {
-            if (bundle.containsKey("isRetailerWiseTask")) {
-                isRetailerWiseTask = bundle.getBoolean("isRetailerWiseTask", false);
-            }
+            if (bundle.containsKey(TaskConstant.RETAILER_WISE_TASK))
+                isRetailerWiseTask = bundle.getBoolean(TaskConstant.RETAILER_WISE_TASK, false);
 
-            if (bundle.containsKey("fromHomeScreen")) {
-                fromHomeScreen = bundle.getBoolean("fromHomeScreen", false);
-            }
-            if (bundle.containsKey("FromSurvey")) {
-                isFromSurvey = bundle.getBoolean("FromSurvey", false);
-            }
-            if (bundle.containsKey("fromProfileScreen")) {
-                fromProfileScreen = getArguments().getBoolean("fromProfileScreen", false);
-            }
+            if (bundle.containsKey(TaskConstant.FROM_HOME_SCREEN))
+                fromHomeScreen = bundle.getBoolean(TaskConstant.FROM_HOME_SCREEN, false);
+
+            if (bundle.containsKey(TaskConstant.FORM_SURVEY_SCREEN))
+                isFromSurvey = bundle.getBoolean(TaskConstant.FORM_SURVEY_SCREEN, false);
+
+            if (bundle.containsKey(TaskConstant.FROM_PROFILE_SCREEN))
+                fromProfileScreen = getArguments().getBoolean(TaskConstant.FROM_PROFILE_SCREEN, false);
+
+            if (bundle.containsKey(TaskConstant.CURRENT_ACTIVITY_CODE))
+                currentActivityCode = bundle.getString(TaskConstant.CURRENT_ACTIVITY_CODE, "");
+
+            if (bundle.containsKey(TaskConstant.SCREEN_TITLE))
+                screenTitle = bundle.getString(TaskConstant.SCREEN_TITLE, getString(R.string.task));
         }
     }
 
@@ -148,19 +150,15 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         }
 
         if (isRetailerWiseTask) {
-            if (taskPresenter.getRetailerID() == 0) {
-                mSelectedRetailerID = "0";
-            } else {
-                mSelectedRetailerID = String.valueOf(taskPresenter.getRetailerID());
-            }
+            mSelectedRetailerID = String.valueOf(taskPresenter.getRetailerID());
         }
 
         addTabs();
 
         if (taskPresenter.isShowServerTaskOnly())
-            taskPresenter.updateTaskList(1, mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
+            taskPresenter.updateTaskList(TaskConstant.SERVER_TASK, mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
         else
-            taskPresenter.updateTaskList(0, mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
+            taskPresenter.updateTaskList(TaskConstant.ALL_TASK, mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
 
     }
 
@@ -172,7 +170,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
         if (taskPresenter.isShowServerTaskOnly()) {
             reason = new String[1];
-            reason[0] = "All";
+            reason[0] = getString(R.string.all);
         }
 
         for (String tab_name : reason) {
@@ -184,6 +182,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     }
 
     private void setUpBottomSheet(View view) {
+
         bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
@@ -210,39 +209,57 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             }
         });
 
+        RecyclerView bottomRecyclerView = view.findViewById(R.id.sort_recycler_view);
+        bottomRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        bottomRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        bottomRecyclerView.setHasFixedSize(false);
+        bottomRecyclerView.setNestedScrollingEnabled(false);
+        bottomRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        bottomRecyclerView.setAdapter(new BottomSortListAdapter(getActivity(), getResources().getStringArray(R.array.task_sort_list), BottomSheetRowClickListener, lastSelectedPos));
+/*
         view.findViewById(R.id.asc_ord_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shortListOrder(1, "A - Z");
-                hideBottomSheet();
+                taskPresenter.orderBySortList(TaskConstant.SortType.TASK_TITLE_ASC, true);
+                //shortListOrder(1, "A - Z");
             }
         });
 
         view.findViewById(R.id.desc_ord_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shortListOrder(2, "Z - A");
-                hideBottomSheet();
+                taskPresenter.orderBySortList(TaskConstant.SortType.TASK_TITLE_ASC, false);
+                //shortListOrder(2, "Z - A");
             }
         });
 
         view.findViewById(R.id.level_ord_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shortListOrder(3, "A - Z");
-                hideBottomSheet();
+                taskPresenter.orderBySortList(TaskConstant.SortType.PRODUCT_LEVEL_ASC, true);
+                // shortListOrder(3, "A - Z");
+
             }
         });
 
         view.findViewById(R.id.due_date_ord_tv).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                shortListOrder(4, "A - Z");
-                hideBottomSheet();
+                taskPresenter.orderBySortList(TaskConstant.SortType.DUE_DATE, true);
+                // shortListOrder(4, "A - Z");
             }
-        });
+        });*/
 
     }
+
+    BottomSortListAdapter.RowClickListener BottomSheetRowClickListener = new BottomSortListAdapter.RowClickListener() {
+        @Override
+        public void onSortItemClicked(int sortType, boolean orderByAsc) {
+            taskPresenter.orderBySortList(sortType, true);
+            lastSelectedPos = sortType;
+            hideBottomSheet();
+        }
+    };
 
     private void hideBottomSheet() {
         bottomSheetBehavior.setHideable(true);
@@ -256,12 +273,8 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
                     @Override
                     public void onPositiveButtonClick() {
                         Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
-
-                        if (bundle != null) {
-                            intent.putExtra("IsMoveNextActivity", true);
-                            intent.putExtra("CurrentActivityCode", bundle.getString("CurrentActivityCode", ""));
-                        }
-
+                        intent.putExtra(TaskConstant.MOVE_NEXT_ACTIVITY, true);
+                        intent.putExtra(TaskConstant.CURRENT_ACTIVITY_CODE, currentActivityCode);
                         startActivity(intent);
                         getActivity().finish();
                     }
@@ -292,15 +305,14 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             switch (isType) {
                 case 0:
                     i = new Intent(getActivity(), TaskDetailActivity.class);
-                    i.putExtra("evidenceImg", imageName);
+                    i.putExtra(TaskConstant.EVIDENCE_IMAGE, imageName);
                     break;
                 case 1:
                     i = new Intent(getActivity(), TaskCreationActivity.class);
-                    i.putExtra("isRetailerWiseTask", isRetailerWiseTask);
-                    i.putExtra("menuCode", "MENU_TASK");
-                    i.putExtra("screentitle", bundle.containsKey("screentitle") ? bundle.getString("screentitle") : getResources().
-                            getString(R.string.task));
-                    i.putExtra("isType", isType);
+                    i.putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask);
+                    i.putExtra(TaskConstant.MENU_CODE, "MENU_TASK");
+                    i.putExtra(TaskConstant.SCREEN_TITLE, screenTitle);
+                    i.putExtra(TaskConstant.TASK_SCREEN_MODE, isType);
                     break;
                 case 2:
                     taskPresenter.deleteTask(taskBO.getTaskId(), taskBO.getTaskOwner());
@@ -308,8 +320,8 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             }
 
             if (i != null) {
-                i.putExtra("fromHomeScreen", fromHomeScreen);
-                i.putExtra("taskObj", taskBO);
+                i.putExtra(TaskConstant.FROM_HOME_SCREEN, fromHomeScreen);
+                i.putExtra(TaskConstant.TASK_OBJECT, taskBO);
                 startActivity(i);
             }
         }
@@ -376,7 +388,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
                 getActivity(),
                 CameraActivity.class);
         String _path = FileUtils.photoFolderPath + "/" + imageName;
-        intent.putExtra("path", _path);
+        intent.putExtra(TaskConstant.FILE_PATH, _path);
         startActivityForResult(intent,
                 CAMERA_REQUEST_CODE);
     }
@@ -418,7 +430,10 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     @Override
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
 
-        recyclerView.setAdapter(new TaskListAdapter(updatedList, getActivity(), taskPresenter.outDateFormat(), taskClickListener, fromProfileScreen, fromHomeScreen));
+        recyclerView.setAdapter(new TaskListAdapter(getActivity(), updatedList, taskPresenter.outDateFormat(), taskClickListener, fromProfileScreen, fromHomeScreen));
+
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+            hideBottomSheet();
     }
 
     @Override
@@ -482,11 +497,10 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
         taskPresenter.updateModuleTime();
         Intent i = new Intent(getActivity(), TaskCreationActivity.class);
-        i.putExtra("fromHomeScreen", fromHomeScreen);
-        i.putExtra("isRetailerWiseTask", isRetailerWiseTask);
-        i.putExtra("menuCode", "MENU_TASK");
-        i.putExtra("screentitle", bundle.containsKey("screentitle") ? bundle.getString("screentitle") : getResources().
-                getString(R.string.task));
+        i.putExtra(TaskConstant.FROM_HOME_SCREEN, fromHomeScreen);
+        i.putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask);
+        i.putExtra(TaskConstant.MENU_CODE, "MENU_TASK");
+        i.putExtra(TaskConstant.SCREEN_TITLE, screenTitle);
         startActivity(i);
         getActivity().finish();
     }
@@ -509,10 +523,10 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             }
         });
         Bundle args = new Bundle();
-        args.putString("modulename", "MENU_TASK");
+        args.putString(TaskConstant.MODULE_NAME, "MENU_TASK");
         dialog.setCancelable(false);
         dialog.setArguments(args);
-        dialog.show(getActivity().getSupportFragmentManager(), "ReasonDialogFragment");
+        dialog.show(getActivity().getSupportFragmentManager(), TaskConstant.PHOTO_CAPTURE_DIALOG_TAG);
     }
 
 
@@ -526,11 +540,26 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST_CODE) {
-            if (resultCode == 1)
-                addAttachedFiles(imageName);
+            if (resultCode == 1) {
+                showMessage(getString(R.string.photo_captured_successfully));
+            } else {
+                imageName = "";
+            }
 
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private ArrayList<TaskDataBO> getSortListData() {
+        ArrayList<TaskDataBO> sortList = new ArrayList<>();
+        TaskDataBO sortBo;
+        for (String sortName : getActivity().getResources().getStringArray(R.array.task_sort_list)) {
+            sortBo = new TaskDataBO();
+            sortBo.setSortName(sortName);
+        }
+
+
+        return sortList;
     }
 
     private void addAttachedFiles(String imgName) {
@@ -541,7 +570,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         }*/
     }
 
-    private void shortListOrder(int sortType, String sortText) {
+    /*private void shortListOrder(int sortType, String sortText) {
         if (sortText.equals("A - Z")) {
             Collections.sort(taskPresenter.getTaskList(), new Comparator<TaskDataBO>() {
                 @Override
@@ -567,5 +596,5 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
         }
 
-    }
+    }*/
 }

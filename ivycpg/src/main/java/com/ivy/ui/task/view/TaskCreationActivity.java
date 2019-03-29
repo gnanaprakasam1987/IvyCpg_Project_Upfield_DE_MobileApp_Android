@@ -33,6 +33,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
+import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.adapter.TaskImgListAdapter;
 import com.ivy.ui.task.di.DaggerTaskComponent;
@@ -47,7 +48,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
-import java.util.Vector;
 
 import javax.inject.Inject;
 
@@ -69,7 +69,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     private int isTyp = 0;
     private TaskDataBO taskBo;
     private String screenTitle = "";
-    private String mode = "seller";
+    private String mode = TaskConstant.SELLER_WISE;
     private int mSelectedSpinnerPos = 0;
     private String imageName = "";
     private static String folderPath;
@@ -87,6 +87,9 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     @BindView(R.id.task_category_spinner)
     AppCompatSpinner categorySpinner;
+
+    @BindView(R.id.task_category_tv)
+    TextView productLevelTV;
 
     @BindView(R.id.rg_selection)
     RadioGroup radioGroup;
@@ -193,7 +196,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
 
     @Override
-    public void setTaskChannelListData(Vector<ChannelBO> channelList) {
+    public void setTaskChannelListData(ArrayList<ChannelBO> channelList) {
         channelArrayAdapter.clear();
         channelArrayAdapter.add(new ChannelBO(0, getString(R.string.all_channel)));
         channelArrayAdapter.addAll(channelList);
@@ -227,7 +230,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     @Override
     public void updateImageListAdapter(ArrayList<TaskDataBO> imageList) {
-        imgListRecyclerView.setAdapter(new TaskImgListAdapter(imageList, TaskCreationActivity.this, false, photoClickListener));
+        imgListRecyclerView.setAdapter(new TaskImgListAdapter(TaskCreationActivity.this, imageList, false, photoClickListener));
     }
 
     TaskImgListAdapter.PhotoClickListener photoClickListener = new TaskImgListAdapter.PhotoClickListener() {
@@ -296,9 +299,9 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         showAlert("", getString(msgResId), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
-                taskView.setText("");
+                /*taskView.setText("");
                 taskTitle.setText("");
-                mode = "seller";
+                mode = "seller";*/
                 if (fromHomeScreen)
                     startActivity(new Intent(TaskCreationActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_TASK_NEW"));
@@ -315,7 +318,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @Override
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
         updatedList.add(0, new TaskDataBO());
-        imgListRecyclerView.setAdapter(new TaskImgListAdapter(updatedList, TaskCreationActivity.this, false, photoClickListener));
+        imgListRecyclerView.setAdapter(new TaskImgListAdapter(TaskCreationActivity.this, updatedList, false, photoClickListener));
         updateFieldsInEditMode(taskBo);
     }
 
@@ -327,18 +330,18 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         String taskDuedate = dueDateBtn.getText().toString().isEmpty() ? null
                 : dueDateBtn.getText().toString();
         int taskChannelId;
-        if (!taskPresenter.isValidate(taskTitle.getText().toString(), taskView.getText().toString()))
+        if (!taskPresenter.validate(taskTitle.getText().toString(), taskView.getText().toString()))
             return;
 
         switch (mode) {
-            case "seller":
+            case TaskConstant.SELLER_WISE:
                 if (mSelectedSpinnerPos == 0)
                     taskChannelId = taskPresenter.getUserID();
                 else
                     taskChannelId = userMasterArrayAdapter.getItem(mSelectedSpinnerPos).getUserid();
 
                 break;
-            case "retailer":
+            case TaskConstant.RETAILER_WISE:
                 if (fromHomeScreen)
                     taskChannelId = retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getTretailerId();
                 else
@@ -412,16 +415,27 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         switch (isFrom) {
             case 0:
                 sellerSpinner.setAdapter(userMasterArrayAdapter);
+                enableDisableProductLevelView(View.INVISIBLE);
                 break;
             case 1:
                 sellerSpinner.setAdapter(channelArrayAdapter);
+                enableDisableProductLevelView(View.VISIBLE);
                 break;
             case 2:
                 sellerSpinner.setAdapter(retailerMasterArrayAdapter);
+                enableDisableProductLevelView(View.VISIBLE);
                 break;
         }
 
 
+    }
+
+    /**
+     * @param visibilityFlag 0 - Visible , 4 - Invisible
+     */
+    private void enableDisableProductLevelView(int visibilityFlag) {
+        productLevelTV.setVisibility(visibilityFlag);
+        categorySpinner.setVisibility(visibilityFlag);
     }
 
     private void setUpCategoryAdapter() {
@@ -458,7 +472,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 CameraActivity.class);
         String _path = FileUtils.photoFolderPath + "/" + imageName;
         //  intent.putExtra("quality", 40);
-        intent.putExtra("path", _path);
+        intent.putExtra(TaskConstant.FILE_PATH, _path);
         startActivityForResult(intent,
                 CAMERA_REQUEST_CODE);
     }
@@ -498,11 +512,11 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     private void backNavigation() {
         if (fromHomeScreen)
             startActivity(new Intent(TaskCreationActivity.this,
-                    HomeScreenActivity.class).putExtra("menuCode", "MENU_TASK_NEW"));
+                    HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, "MENU_TASK_NEW"));
         else
             startActivity(new Intent(TaskCreationActivity.this,
-                    TaskActivity.class).putExtra("IsRetailerwisetask", isRetailerTask)
-                    .putExtra("screentitle", screenTitle));
+                    TaskActivity.class).putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerTask)
+                    .putExtra(TaskConstant.SCREEN_TITLE, screenTitle));
         finish();
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
@@ -560,15 +574,15 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     private void updateFieldsInEditMode(@NotNull TaskDataBO taskDataObj) {
         taskTitle.setText(taskDataObj.getTasktitle());
-        categorySpinner.setSelection(getAdapterPosition(taskCategoryArrayAdapter.getCount(), getString(R.string.category)));
+        categorySpinner.setSelection(getAdapterPosition(taskCategoryArrayAdapter.getCount(), TaskConstant.PRODUCT_LEVEL_WISE));
         dueDateBtn.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
                 taskDataObj.getTaskDueDate(), taskPresenter.outDateFormat()));
 
-        if (taskDataObj.getMode().equalsIgnoreCase("seller")) {
+        if (taskDataObj.getMode().equalsIgnoreCase(TaskConstant.SELLER_WISE)) {
             seller_rb.setChecked(true);
             setUpSpinnerData(0);
             sellerSpinner.setSelection(getAdapterPosition(userMasterArrayAdapter.getCount(), taskBo.getMode()));
-        } else if (taskDataObj.getMode().equalsIgnoreCase("retailer")) {
+        } else if (taskDataObj.getMode().equalsIgnoreCase(TaskConstant.RETAILER_WISE)) {
             retailerwise_rb.setChecked(true);
             setUpSpinnerData(1);
             sellerSpinner.setSelection(getAdapterPosition(channelArrayAdapter.getCount(), taskBo.getMode()));
@@ -584,15 +598,15 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     private int getAdapterPosition(int length, String mode) {
         for (int i = 0; i < length; i++) {
             switch (mode) {
-                case "seller":
+                case TaskConstant.SELLER_WISE:
                     if (userMasterArrayAdapter.getItem(i).getUserid() == taskBo.getUserId())
                         return i;
                     break;
-                case "retailer":
+                case TaskConstant.RETAILER_WISE:
                     if (retailerMasterArrayAdapter.getItem(i).getTretailerId() == taskBo.getRid())
                         return i;
                     break;
-                case "channel":
+                case TaskConstant.PRODUCT_LEVEL_WISE:
                     if (channelArrayAdapter.getItem(i).getChannelId() == taskBo.getChannelId())
                         return i;
                     break;

@@ -1558,6 +1558,11 @@ public class ConfigurationMasterHelper {
     private static final String CODE_COLLECTION_DELETE = "COLL20";
     public boolean IS_COLLECTION_DELETE;
 
+    private static final String CODE_SHOW_TASK_PRODUCT_LEVEL = "TASK01";
+    public boolean IS_SHOW_TASK_PRODUCT_LEVEL;
+    private static final String CODE_ALLOW_TASK_IMG_CAPTURE = "TASK02";
+    public boolean IS_ALLOW_TASK_IMG_CAPTURE;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2719,6 +2724,8 @@ public class ConfigurationMasterHelper {
         this.IS_VOICE_TO_TEXT = hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) != null ? hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) : -1;
         this.IS_SKIP_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) : false;
         this.IS_COLLECTION_DELETE = hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) != null ? hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) : false;
+        this.IS_ALLOW_TASK_IMG_CAPTURE = hashMapHHTModuleConfig.get(CODE_ALLOW_TASK_IMG_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_ALLOW_TASK_IMG_CAPTURE) : false;
+        this.IS_SHOW_TASK_PRODUCT_LEVEL = hashMapHHTModuleConfig.get(CODE_SHOW_TASK_PRODUCT_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TASK_PRODUCT_LEVEL) : false;
     }
 
     private boolean isInOutModule() {
@@ -3957,7 +3964,7 @@ public class ConfigurationMasterHelper {
             IS_STK_ORD_BS = false;
             IS_STK_ORD_PROJECT = false;
             SHOW_SALES_RETURN_IN_ORDER = false;
-            SHOW_SALES_RETURN_TV_IN_ORDER =false;
+            SHOW_SALES_RETURN_TV_IN_ORDER = false;
 
 
             IS_PRINT_SEQUENCE_REQUIRED = false;
@@ -4244,7 +4251,7 @@ public class ConfigurationMasterHelper {
             }
             if (codeValue != null && !codeValue.equals("")) {
                 String codeSplit[] = codeValue.split(",");
-                if(codeSplit.length==3) {
+                if (codeSplit.length == 3) {
                     if (codeSplit[0] != null && !codeSplit[0].equals(""))
                         DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = SDUtil.convertToInt(codeSplit[0]);
                     if (codeSplit[1] != null && !codeSplit[1].equals(""))

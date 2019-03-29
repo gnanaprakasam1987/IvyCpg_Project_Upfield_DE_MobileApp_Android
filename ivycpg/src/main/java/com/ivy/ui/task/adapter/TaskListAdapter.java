@@ -11,7 +11,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -19,13 +21,11 @@ import android.widget.TextView;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.util.CommonDialog;
-import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
+import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.view.SwipeRevealLayout;
 import com.ivy.ui.task.view.ViewBinderHelper;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
-import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
 
@@ -39,7 +39,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
     private Boolean isFromHomeSrc;
     private final ViewBinderHelper binderHelper = new ViewBinderHelper();
 
-    public TaskListAdapter(ArrayList<TaskDataBO> taskDatas, Context mContext, String outDateFormat, TaskClickListener taskClickListener, boolean isFromProfileSrc, boolean fromHomeScreen) {
+    public TaskListAdapter(Context mContext, ArrayList<TaskDataBO> taskDatas, String outDateFormat, TaskClickListener taskClickListener, boolean isFromProfileSrc, boolean fromHomeScreen) {
         this.taskDatas = taskDatas;
         this.mContext = mContext;
         this.outDateFormat = outDateFormat;
@@ -79,16 +79,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         holder.taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
                 (taskBo.getTaskDueDate(), outDateFormat));
 
-        holder.taskCB.setOnClickListener(new View.OnClickListener() {
+        holder.taskCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                if (!holder.taskCB.isChecked()) {
-                    holder.taskCB.setChecked(true);
-                    taskBo.setChecked(true);
-                } else {
-                    holder.taskCB.setChecked(false);
-                    taskBo.setChecked(false);
-                }
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                taskBo.setChecked(isChecked);
                 taskClickListener.onTaskExcutedClick(taskBo);
             }
         });
@@ -96,7 +90,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         holder.layoutrow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                taskClickListener.onTaskButtonClick(taskBo, 0);
+                taskClickListener.onTaskButtonClick(taskBo, TaskConstant.TASK_DETAIL);
             }
         });
 
@@ -113,7 +107,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
                 if (taskBo.getUsercreated().equals("0"))
                     ((BaseActivity) mContext).showMessage(R.string.server_task_can_not_be_edit);
                 else
-                    taskClickListener.onTaskButtonClick(taskBo, 1);
+                    taskClickListener.onTaskButtonClick(taskBo, TaskConstant.TASK_EDIT);
 
             }
         });
@@ -168,8 +162,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         LinearLayout layoutCB;
         LinearLayout layoutrow;
         ImageButton btnAttachFile;
-        TextView btnEditTask;
-        TextView btnDeleteTask;
+        Button btnEditTask;
+        Button btnDeleteTask;
         TextView taskDueDateTv;
 
         public TaskListViewHolder(View itemView) {

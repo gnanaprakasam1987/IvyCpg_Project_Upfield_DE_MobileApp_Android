@@ -8,7 +8,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.SubchannelBO;
 
-import java.util.Vector;
+import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -33,16 +33,16 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
 
     private void initDb() {
         mDbUtil.createDataBase();
-        if(mDbUtil.isDbNullOrClosed())
+        if (mDbUtil.isDbNullOrClosed())
             mDbUtil.openDataBase();
     }
 
-    private void shutDownDb(){
+    private void shutDownDb() {
         mDbUtil.closeDB();
     }
 
     @Override
-    public Observable<Vector<ChannelBO>> fetchChannels() {
+    public Observable<ArrayList<ChannelBO>> fetchChannels() {
 
         return Single.fromCallable(new Callable<Integer>() {
             @Override
@@ -63,13 +63,13 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                 }
                 return channelId;
             }
-        }).flatMapObservable(new Function<Integer, ObservableSource<? extends Vector<ChannelBO>>>() {
+        }).flatMapObservable(new Function<Integer, ObservableSource<? extends ArrayList<ChannelBO>>>() {
             @Override
-            public ObservableSource<? extends Vector<ChannelBO>> apply(final Integer channelLevelId) {
-                return Observable.fromCallable(new Callable<Vector<ChannelBO>>() {
+            public ObservableSource<? extends ArrayList<ChannelBO>> apply(final Integer channelLevelId) {
+                return Observable.fromCallable(new Callable<ArrayList<ChannelBO>>() {
                     @Override
-                    public Vector<ChannelBO> call() {
-                        Vector<ChannelBO> channelMaster = new Vector<>();
+                    public ArrayList<ChannelBO> call() {
+                        ArrayList<ChannelBO> channelMaster = new ArrayList<>();
                         try {
                             Cursor c = mDbUtil
                                     .selectSQL("SELECT chid, chName FROM ChannelHierarchy where levelid=" + channelLevelId);
@@ -98,7 +98,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
     }
 
     @Override
-    public Observable<Vector<SubchannelBO>> fetchSubChannels() {
+    public Observable<ArrayList<SubchannelBO>> fetchSubChannels() {
         return Single.fromCallable(new Callable<Integer>() {
             @Override
             public Integer call() {
@@ -121,13 +121,13 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                 }
                 return subChannelLevelId;
             }
-        }).flatMapObservable(new Function<Integer, ObservableSource<? extends Vector<SubchannelBO>>>() {
+        }).flatMapObservable(new Function<Integer, ObservableSource<? extends ArrayList<SubchannelBO>>>() {
             @Override
-            public ObservableSource<? extends Vector<SubchannelBO>> apply(final Integer subChannelLevelId) {
-                return Observable.fromCallable(new Callable<Vector<SubchannelBO>>() {
+            public ObservableSource<? extends ArrayList<SubchannelBO>> apply(final Integer subChannelLevelId) {
+                return Observable.fromCallable(new Callable<ArrayList<SubchannelBO>>() {
                     @Override
-                    public Vector<SubchannelBO> call() {
-                        Vector<SubchannelBO> channelMaster = new Vector<>();
+                    public ArrayList<SubchannelBO> call() {
+                        ArrayList<SubchannelBO> channelMaster = new ArrayList<>();
                         try {
                             Cursor c = mDbUtil.selectSQL("SELECT chid, parentid, chName FROM ChannelHierarchy where levelid=" + subChannelLevelId);
                             if (c != null) {
@@ -422,7 +422,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                 String str = "";
                 int channelid = 0;
 
-                try{
+                try {
                     initDb();
 
                     if (appDataProvider.getRetailMaster() != null)
@@ -465,7 +465,7 @@ public class ChannelDataManagerImpl implements ChannelDataManager {
                         c.close();
                     }
 
-                }catch (Exception ignored){
+                } catch (Exception ignored) {
 
                 }
 

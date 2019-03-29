@@ -21,7 +21,7 @@ public class TaskActivity extends BaseActivity {
             getSupportActionBar().setTitle(null);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setElevation(0);
+            //getSupportActionBar().setElevation(0);
         }
 
     }
