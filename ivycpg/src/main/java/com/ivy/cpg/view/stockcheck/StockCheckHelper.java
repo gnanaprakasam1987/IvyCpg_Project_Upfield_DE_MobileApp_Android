@@ -33,6 +33,7 @@ public class StockCheckHelper {
     public boolean SHOW_STOCK_SC;
     public boolean SHOW_STOCK_CB;
     public boolean SHOW_STOCK_RSN;
+    public boolean SHOW_STOCK_BARCODE;
     public boolean SHOW_SHELF_OUTER;
     public boolean SHOW_STOCK_TOTAL;
     public boolean SHOW_STOCK_FC;
@@ -84,6 +85,7 @@ public class StockCheckHelper {
         SHOW_STOCK_FC = false;
         CHANGE_AVAL_FLOW = false;
         SHOW_STOCK_AVGDAYS = false;
+        SHOW_STOCK_BARCODE=false;
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
         );
@@ -142,6 +144,9 @@ public class StockCheckHelper {
                         break;
                     case "AVGDAYS":
                         SHOW_STOCK_AVGDAYS = true;
+                        break;
+                    case "BARCODE":
+                        SHOW_STOCK_BARCODE = true;
                         break;
 
 

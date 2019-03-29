@@ -1611,15 +1611,18 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             String tvText = holder.retailerObjectHolder.getRetailerName();
             holder.outletNameTextView.setText(tvText);
 
-            if (bmodel.configurationMasterHelper.SHOW_RFIELD4)
-                holder.outletLocationTextView.setText(holder.retailerObjectHolder.getRField4());
-            else
-                holder.outletLocationTextView.setVisibility(View.GONE);
+
 
 
             if (!bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER) {
                 isFirstDone = false;
                 isSecondDone = false;
+
+                if (bmodel.configurationMasterHelper.SHOW_RFIELD4)
+                    holder.outletLocationTextView.setText(holder.retailerObjectHolder.getRField4());
+                else
+                    holder.outletLocationTextView.setVisibility(View.GONE);
+
                 if (mRetTgtAchv.containsKey("VST01")) {
                     String desc = mRetTgtAchv.get("VST01");
                     holder.tv_labelTgt1.setText(desc);
@@ -1809,6 +1812,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                 holder.outletAddress.setText(address);
             }
+
+
 
 
             if (holder.retailerObjectHolder.getIsDeviated() != null
