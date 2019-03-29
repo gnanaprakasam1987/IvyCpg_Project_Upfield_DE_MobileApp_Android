@@ -332,6 +332,7 @@ public class CatalogImageDownloadProvider {
 
     private String getDownloadUrl(){
         if (businessModel.configurationMasterHelper.IS_AZURE_UPLOAD) {
+            AzureConnectionHelper.getInstance().setAzureCredentials(businessModel.getApplicationContext());
             return AzureConnectionHelper.getInstance().getAzureFile("Product/" + CatalogDownloadConstants.FILE_NAME);
         }else if (businessModel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
             AWSConnectionHelper.getInstance().setAWSDBValues(businessModel.getApplicationContext());

@@ -12,10 +12,13 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.ivy.core.IvyConstants;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 import com.microsoft.azure.storage.blob.BlobRequestOptions;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
@@ -24,6 +27,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.HashMap;
@@ -256,20 +260,33 @@ public class DownloaderThreadNew extends Thread {
                             }
 
                             if (!availe_flag) {
-                                BlobRequestOptions options = new BlobRequestOptions();
-                                options.setDisableContentMD5Validation(true);
-                                options.setStoreBlobContentMD5(false);
+
+                                String downloadURL;
+                                if (imagurl.equalsIgnoreCase("")) {
+                                    downloadURL = mFileName;
+                                } else {
+                                    downloadURL = imagurl ;
+                                }
 
                                 CloudBlockBlob blob;
-                                if (imagurl.equalsIgnoreCase("")) {
-                                    blob = cloudBlobContainer.getBlockBlobReference(mFileName);
-                                } else {
-                                    blob = cloudBlobContainer.getBlockBlobReference(imagurl);
+                                if (ConfigurationMasterHelper.ACCESS_KEY_ID.equalsIgnoreCase(IvyConstants.SAS_KEY_TYPE)){
+                                      downloadURL = AppUtils.buildAzureUrl(downloadURL) ;
+                                      blob = new CloudBlockBlob(new URI(downloadURL));
+                                }  else {
+                                    blob = cloudBlobContainer.getBlockBlobReference(downloadURL);
                                 }
 
                                 if (blob.exists()) {
-                                    blob.downloadAttributes();
-                                    blob.downloadToFile(outFile.getAbsolutePath(), null, options, null);
+
+                                    if (ConfigurationMasterHelper.ACCESS_KEY_ID.equalsIgnoreCase(IvyConstants.SAS_KEY_TYPE)){
+                                        blob.downloadToFile(outFile.getAbsolutePath());
+                                    }else {
+                                        BlobRequestOptions options = new BlobRequestOptions();
+                                        options.setDisableContentMD5Validation(true);
+                                        options.setStoreBlobContentMD5(false);
+                                        blob.downloadAttributes();
+                                        blob.downloadToFile(outFile.getAbsolutePath(), null, options, null);
+                                    }
                                     i++;
                                     a = (float) i / (float) mTotalSize;
                                     b = a * 100;
