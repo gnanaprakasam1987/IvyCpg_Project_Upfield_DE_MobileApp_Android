@@ -5412,11 +5412,8 @@ public class ConfigurationMasterHelper {
     }
 
 
-    public void loadRouteConfig() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
-
+    public void loadRouteConfig(DBUtil db) {
         try {
-            db.openDataBase();
             String sb = "select Rfield from HhtModuleMaster where flag=1 and hhtcode=" +
                     bmodel.QT(CODE_SHOW_ALL_ROUTE_FILTER) + " and  ForSwitchSeller = 0";
             Cursor c = db.selectSQL(sb);
@@ -5435,8 +5432,6 @@ public class ConfigurationMasterHelper {
             c.close();
         } catch (Exception e) {
             Commons.printException("" + e);
-        } finally {
-            db.closeDB();
         }
     }
 
