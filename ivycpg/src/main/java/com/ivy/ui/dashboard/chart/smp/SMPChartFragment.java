@@ -49,7 +49,7 @@ public class SMPChartFragment extends BaseFragment {
     }
 
     @Override
-    public void initVariables(View view) {
+    public void init(View view) {
 
     }
 

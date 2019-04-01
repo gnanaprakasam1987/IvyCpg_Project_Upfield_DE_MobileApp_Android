@@ -20,7 +20,6 @@ import android.widget.Toast;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -51,7 +50,7 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         mUnBinder = ButterKnife.bind(this, view);
-        initVariables(view);
+        init(view);
 
         initializeDi();
 
@@ -72,7 +71,7 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     protected abstract int setContentViewLayout();
 
-    public abstract void initVariables(View view);
+    public abstract void init(View view);
 
     /**
      * Abstract method which can be used to get the data
