@@ -125,7 +125,7 @@
 
     <string name="value_exceeded">Value Exceeded</string>
     <string name="this_may_remove_existing_data">This may remove existing data</string>
-    <string name="created_by">Created By</string>
+    <string name="created_by">Created By: </string>
 
     <string name="please_state_reason_not_visiting_store">Please state reason for not visiting following store</string>
 
@@ -193,18 +193,19 @@
     <string name="task_detail">Task Detail</string>
     <string name="task_evidence">Evidence</string>
     <string name="server_task_can_not_be_edit">Server task can not be edit</string>
-    <string name="server_task_can_not_be_delete">Server task can not be delete</string>
-    <string name="asc_order">Name(A-Z)</string>
-    <string name="desc_order">Name(Z-A)</string>
+    <string name="server_task_can_not_be_delete">Server task can not be deleted</string>
     <string name="photo_captured_successfully">Photo Captured Successfully</string>
 
     <string-array name="task_sort_list">
-        <item>Name(A-Z)</item>
-        <item>Name(Z-A)</item>
-        <item>Category</item>
-        <item>Category</item>
-        <item>Due Date</item>
-        <item>Due Date</item>
+        <item>Task(A—Z)</item>
+        <item>Task(Z—A)</item>
+        <item>Category(A—Z)</item>
+        <item>Category(Z—A)</item>
+        <item>Due Date(old—new)</item>
+        <item>Due Date(new—old)</item>
     </string-array>
+    <string name="task_exec_mandatory">Need to execute the task</string>
+    <string name="exec_task_not_allow_to_edit">Executed task not allow to edit</string>
+    <string name="exec_task_not_allow_to_delete">Executed task not allow to delete</string>
 
 </resources>

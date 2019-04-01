@@ -192,7 +192,8 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
-                detailBo.setTaskEvidenceImg(imageName);
+                // detailBo.setTaskEvidenceImg(imageName);
+                taskPresenter.updateTaskExecutionImg(imageName, detailBo.getTaskId());
                 setImageIntoView(imageName);
             }
 
@@ -200,7 +201,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     }
 
     private void setImageIntoView(String imageName) {
-        if (!imageName.isEmpty()) {
+        if (imageName.isEmpty()) {
             evidenceImgView.setVisibility(View.GONE);
         } else {
             evidenceImgView.setVisibility(View.VISIBLE);
@@ -234,11 +235,11 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
                 id = detailBo.getChannelId();
         }*/
 
-        imageName = "TE_" + detailBo.getTaskId() + "_" + detailBo.getTaskCategoryID()
+        imageName = "TSK_" + detailBo.getTaskId() + "_" + detailBo.getTaskCategoryID()
                 + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)
                 + ".jpg";
 
-        String mFirstNameStarts = "TE_" + detailBo.getTaskId()
+        String mFirstNameStarts = "TSK_" + detailBo.getTaskId()
                 + "_" + detailBo.getTaskCategoryID()
                 + "_" + Commons.now(Commons.DATE);
 

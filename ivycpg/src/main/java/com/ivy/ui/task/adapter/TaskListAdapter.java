@@ -21,6 +21,7 @@ import android.widget.TextView;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.ui.task.TaskClickListener;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.view.SwipeRevealLayout;
 import com.ivy.ui.task.view.ViewBinderHelper;
@@ -70,7 +71,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         // put an unique string id as value, can be any string which uniquely define the data
         binderHelper.bind(holder.swipeLayout, taskBo.getTaskId());
 
-        holder.taskTaskOwner.setText(" : " + taskBo.getTaskOwner());
+        holder.taskTaskOwner.setText(taskBo.getTaskOwner());
         holder.taskCreatedDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
                 (taskBo.getCreatedDate(), outDateFormat));
 
@@ -97,7 +98,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         holder.btnAttachFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                taskClickListener.onAttachFile(taskBo.getTaskId(), taskBo.getTaskCategoryID());
+                if (taskBo.isChecked())
+                    taskClickListener.onAttachFile(taskBo.getTaskId(), taskBo.getTaskCategoryID());
+                else
+                    ((BaseActivity) mContext).showMessage(R.string.task_exec_mandatory);
             }
         });
 
@@ -106,6 +110,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             public void onClick(View view) {
                 if (taskBo.getUsercreated().equals("0"))
                     ((BaseActivity) mContext).showMessage(R.string.server_task_can_not_be_edit);
+                else if (taskBo.isChecked())
+                    ((BaseActivity) mContext).showMessage(R.string.exec_task_not_allow_to_edit);
                 else
                     taskClickListener.onTaskButtonClick(taskBo, TaskConstant.TASK_EDIT);
 
@@ -117,6 +123,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             public void onClick(View view) {
                 if (taskBo.getUsercreated().equals("0"))
                     ((BaseActivity) mContext).showMessage(R.string.server_task_can_not_be_delete);
+                if (taskBo.isChecked())
+                    ((BaseActivity) mContext).showMessage(R.string.exec_task_not_allow_to_delete);
                 else {
                     showDeleteAlert(holder.getAdapterPosition());
                 }
@@ -212,15 +220,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         binderHelper.restoreStates(inState);
     }
 */
-
-    public interface TaskClickListener {
-        void onTaskExcutedClick(TaskDataBO taskDataBO);
-
-        void onTaskButtonClick(TaskDataBO taskBO, int isType);
-
-        void onAttachFile(String taskId, int prdLevelId);
-    }
-
     private void showDeleteAlert(int position) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(

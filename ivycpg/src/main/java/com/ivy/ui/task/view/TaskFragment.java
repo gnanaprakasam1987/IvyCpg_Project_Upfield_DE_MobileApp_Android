@@ -34,6 +34,7 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
+import com.ivy.ui.task.TaskClickListener;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.adapter.BottomSortListAdapter;
@@ -67,6 +68,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     private BottomSheetBehavior bottomSheetBehavior;
     private View taskBgView;
     private int lastSelectedPos = -1;
+    private String mSelectedTaskId = "0";
 
 
     @Inject
@@ -215,51 +217,9 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         bottomRecyclerView.setHasFixedSize(false);
         bottomRecyclerView.setNestedScrollingEnabled(false);
         bottomRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-        bottomRecyclerView.setAdapter(new BottomSortListAdapter(getActivity(), getResources().getStringArray(R.array.task_sort_list), BottomSheetRowClickListener, lastSelectedPos));
-/*
-        view.findViewById(R.id.asc_ord_tv).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                taskPresenter.orderBySortList(TaskConstant.SortType.TASK_TITLE_ASC, true);
-                //shortListOrder(1, "A - Z");
-            }
-        });
-
-        view.findViewById(R.id.desc_ord_tv).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                taskPresenter.orderBySortList(TaskConstant.SortType.TASK_TITLE_ASC, false);
-                //shortListOrder(2, "Z - A");
-            }
-        });
-
-        view.findViewById(R.id.level_ord_tv).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                taskPresenter.orderBySortList(TaskConstant.SortType.PRODUCT_LEVEL_ASC, true);
-                // shortListOrder(3, "A - Z");
-
-            }
-        });
-
-        view.findViewById(R.id.due_date_ord_tv).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                taskPresenter.orderBySortList(TaskConstant.SortType.DUE_DATE, true);
-                // shortListOrder(4, "A - Z");
-            }
-        });*/
-
+        bottomRecyclerView.setAdapter(new BottomSortListAdapter(getActivity(), getResources().getStringArray(R.array.task_sort_list), taskClickListener, lastSelectedPos));
     }
 
-    BottomSortListAdapter.RowClickListener BottomSheetRowClickListener = new BottomSortListAdapter.RowClickListener() {
-        @Override
-        public void onSortItemClicked(int sortType, boolean orderByAsc) {
-            taskPresenter.orderBySortList(sortType, true);
-            lastSelectedPos = sortType;
-            hideBottomSheet();
-        }
-    };
 
     private void hideBottomSheet() {
         bottomSheetBehavior.setHideable(true);
@@ -281,7 +241,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
                 }, true);
     }
 
-    final TaskListAdapter.TaskClickListener taskClickListener = new TaskListAdapter.TaskClickListener() {
+    final TaskClickListener taskClickListener = new TaskClickListener() {
         @Override
         public void onTaskExcutedClick(TaskDataBO taskDataBO) {
             taskPresenter.updateModuleTime();
@@ -328,7 +288,9 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
         @Override
         public void onAttachFile(String taskId, int productLevelId) {
-            imageName = "TE_" + taskId + "_" + productLevelId
+            mSelectedTaskId = taskId;
+
+            imageName = "TSK_" + taskId + "_" + productLevelId
                     + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)
                     + ".jpg";
 
@@ -343,6 +305,13 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             else
                 navigateToCameraActivity();
 
+        }
+
+        @Override
+        public void onSortItemClicked(int sortType, boolean orderByAsc) {
+            taskPresenter.orderBySortList(sortType, orderByAsc);
+            lastSelectedPos = sortType;
+            hideBottomSheet();
         }
     };
 
@@ -412,7 +381,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     public void onTabSelected(TabLayout.Tab tab) {
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
             hideBottomSheet();
-
+        lastSelectedPos = -1;
         taskPresenter.updateTaskList(tab.getPosition(), mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
     }
 
@@ -541,6 +510,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
+                taskPresenter.updateTaskExecutionImg(imageName, mSelectedTaskId);
                 showMessage(getString(R.string.photo_captured_successfully));
             } else {
                 imageName = "";
@@ -548,18 +518,6 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
         }
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private ArrayList<TaskDataBO> getSortListData() {
-        ArrayList<TaskDataBO> sortList = new ArrayList<>();
-        TaskDataBO sortBo;
-        for (String sortName : getActivity().getResources().getStringArray(R.array.task_sort_list)) {
-            sortBo = new TaskDataBO();
-            sortBo.setSortName(sortName);
-        }
-
-
-        return sortList;
     }
 
     private void addAttachedFiles(String imgName) {

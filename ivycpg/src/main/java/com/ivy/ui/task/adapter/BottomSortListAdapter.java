@@ -1,6 +1,7 @@
 package com.ivy.ui.task.adapter;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -12,17 +13,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.ui.task.TaskClickListener;
+import com.ivy.ui.task.TaskConstant;
 
 import java.util.HashMap;
 
 public class BottomSortListAdapter extends RecyclerView.Adapter<BottomSortListAdapter.SortListViewHolder> {
     private Context mContext;
     private String[] mSortListData;
-    private RowClickListener rowClickListener;
+    private TaskClickListener rowClickListener;
     private int lastSelectedPos;
-    private static HashMap<String, Integer> menuIcons = new HashMap<String, Integer>();
+    private HashMap<String, Integer> menuIcons;
 
-    public BottomSortListAdapter(Context mContext, String[] mSortListData, RowClickListener rowClickListener, int lastSelectedPos) {
+    public BottomSortListAdapter(Context mContext, String[] mSortListData, TaskClickListener rowClickListener, int lastSelectedPos) {
         this.mContext = mContext;
         this.mSortListData = mSortListData;
         this.rowClickListener = rowClickListener;
@@ -30,12 +33,12 @@ public class BottomSortListAdapter extends RecyclerView.Adapter<BottomSortListAd
 
         menuIcons = new HashMap<String, Integer>() {
             {
-                put(mContext.getString(R.string.asc_order), R.drawable.ic_sort_by_alpha_black_24dp);
-                put(mContext.getString(R.string.desc_order), R.drawable.ic_sort_by_alpha_black_24dp);
-                put(mContext.getString(R.string.category), R.drawable.ic_tag_black_24dp);
-                put(mContext.getString(R.string.category), R.drawable.ic_tag_black_24dp);
-                put(mContext.getString(R.string.due_date), R.drawable.ic_date_picker);
-                put(mContext.getString(R.string.due_date), R.drawable.ic_date_picker);
+                put(mContext.getString(R.string.task) + TaskConstant.ASC_ORD, R.drawable.ic_sort_by_alpha_black_24dp);
+                put(mContext.getString(R.string.task) + TaskConstant.DESC_ORD, R.drawable.ic_sort_by_alpha_black_24dp);
+                put(mContext.getString(R.string.category) + TaskConstant.ASC_ORD, R.drawable.ic_tag_black_24dp);
+                put(mContext.getString(R.string.category) + TaskConstant.DESC_ORD, R.drawable.ic_tag_black_24dp);
+                put(mContext.getString(R.string.due_date) + TaskConstant.ASC_ORD_DATE, R.drawable.ic_date_picker);
+                put(mContext.getString(R.string.due_date) + TaskConstant.DESC_ORD_DATE, R.drawable.ic_date_picker);
             }
         };
     }
@@ -54,8 +57,8 @@ public class BottomSortListAdapter extends RecyclerView.Adapter<BottomSortListAd
     public void onBindViewHolder(@NonNull BottomSortListAdapter.SortListViewHolder holder, int position) {
 
         if (holder.getAdapterPosition() == lastSelectedPos) {
-            holder.sortIcon.setColorFilter(ContextCompat.getColor(mContext, R.color.textColorPrimary), android.graphics.PorterDuff.Mode.MULTIPLY);
-            holder.sortNameTv.setTextColor(ContextCompat.getColor(mContext, R.color.textColorPrimary));
+            holder.sortIcon.setColorFilter(ContextCompat.getColor(mContext, R.color.colorPrimary), PorterDuff.Mode.SRC_IN);
+            holder.sortNameTv.setTextColor(ContextCompat.getColor(mContext, R.color.colorPrimary));
         } else {
             holder.sortIcon.setColorFilter(ContextCompat.getColor(mContext, R.color.black_bg1), android.graphics.PorterDuff.Mode.MULTIPLY);
             holder.sortNameTv.setTextColor(ContextCompat.getColor(mContext, R.color.caption_text_color));
@@ -73,10 +76,13 @@ public class BottomSortListAdapter extends RecyclerView.Adapter<BottomSortListAd
         holder.sortLL.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (holder.getAdapterPosition() % 2 == 0) {
-                    rowClickListener.onSortItemClicked(holder.getAdapterPosition(), false);
+                lastSelectedPos = holder.getAdapterPosition();
+                notifyDataSetChanged();
+                if (lastSelectedPos % 2 == 0
+                        || lastSelectedPos == 0) {
+                    rowClickListener.onSortItemClicked(lastSelectedPos, true);
                 } else {
-                    rowClickListener.onSortItemClicked(holder.getAdapterPosition(), true);
+                    rowClickListener.onSortItemClicked(lastSelectedPos, false);
                 }
             }
         });
@@ -102,7 +108,4 @@ public class BottomSortListAdapter extends RecyclerView.Adapter<BottomSortListAd
         }
     }
 
-    public interface RowClickListener {
-        void onSortItemClicked(int sortType, boolean orderByAsc);
-    }
 }

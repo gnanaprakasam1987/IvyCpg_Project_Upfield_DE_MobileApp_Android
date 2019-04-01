@@ -66,6 +66,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     private int mSelectedCategoryID = 0;
     private boolean fromHomeScreen = false;
     private boolean isRetailerTask = false;
+    private String menuCode;
     private int isTyp = 0;
     private TaskDataBO taskBo;
     private String screenTitle = "";
@@ -158,16 +159,18 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @Override
     protected void getMessageFromAliens() {
         if (getIntent().getExtras() != null) {
-            fromHomeScreen = getIntent().getExtras().getBoolean("fromHomeScreen", false);
-            isRetailerTask = getIntent().getExtras().getBoolean("IsRetailerwisetask", false);
-            screenTitle = getIntent().getExtras().getString("screentitle", getString(R.string.task_creation));
-            isTyp = getIntent().getExtras().getInt("isType", 0);
-            taskBo = getIntent().getExtras().getParcelable("taskObj");
+            fromHomeScreen = getIntent().getExtras().getBoolean(TaskConstant.FROM_HOME_SCREEN, false);
+            isRetailerTask = getIntent().getExtras().getBoolean(TaskConstant.RETAILER_WISE_TASK, false);
+            screenTitle = getIntent().getExtras().getString(TaskConstant.SCREEN_TITLE, getString(R.string.task_creation));
+            isTyp = getIntent().getExtras().getInt(TaskConstant.TASK_SCREEN_MODE, 0);
+            taskBo = getIntent().getExtras().getParcelable(TaskConstant.TASK_OBJECT);
+            menuCode = getIntent().getExtras().getString(TaskConstant.MENU_CODE, "MENU_TASK_");
+
         }
         if (!isRetailerTask) {
             taskPresenter.fetchData();
         }
-        taskPresenter.fetchTaskCategory(getIntent().getExtras().getString("menuCode", "MENU_TASK"));
+        taskPresenter.fetchTaskCategory(menuCode);
 
     }
 
@@ -178,7 +181,6 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         setUpRecyclerView();
         //allow only create task only for retailer if not from seller Task
         if (isRetailerTask) {
-
             radioGroup.setVisibility(View.GONE);
             sellerSpinner.setVisibility(View.GONE);
             applicableTV.setVisibility(View.GONE);
@@ -304,11 +306,11 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 mode = "seller";*/
                 if (fromHomeScreen)
                     startActivity(new Intent(TaskCreationActivity.this,
-                            HomeScreenActivity.class).putExtra("menuCode", "MENU_TASK_NEW"));
+                            HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
                 else
                     startActivity(new Intent(TaskCreationActivity.this,
-                            TaskActivity.class).putExtra("IsRetailerwisetask", isRetailerTask)
-                            .putExtra("screentitle", screenTitle));
+                            TaskActivity.class).putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerTask)
+                            .putExtra(TaskConstant.SCREEN_TITLE, screenTitle));
                 finish();
             }
         });
@@ -415,7 +417,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         switch (isFrom) {
             case 0:
                 sellerSpinner.setAdapter(userMasterArrayAdapter);
-                enableDisableProductLevelView(View.INVISIBLE);
+                enableDisableProductLevelView(View.GONE);
                 break;
             case 1:
                 sellerSpinner.setAdapter(channelArrayAdapter);
@@ -431,7 +433,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     }
 
     /**
-     * @param visibilityFlag 0 - Visible , 4 - Invisible
+     * @param visibilityFlag 0 - Visible , 8 - Gone
      */
     private void enableDisableProductLevelView(int visibilityFlag) {
         productLevelTV.setVisibility(visibilityFlag);
@@ -458,7 +460,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         else if (retailerwise_rb.isChecked())
             id = retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getTretailerId();
 
-        imageName = id + "_" + mSelectedCategoryID
+        imageName = "TSK_" + id + "_" + mSelectedCategoryID
                 + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)
                 + ".jpg";
 
@@ -578,18 +580,20 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         dueDateBtn.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
                 taskDataObj.getTaskDueDate(), taskPresenter.outDateFormat()));
 
-        if (taskDataObj.getMode().equalsIgnoreCase(TaskConstant.SELLER_WISE)) {
-            seller_rb.setChecked(true);
-            setUpSpinnerData(0);
-            sellerSpinner.setSelection(getAdapterPosition(userMasterArrayAdapter.getCount(), taskBo.getMode()));
-        } else if (taskDataObj.getMode().equalsIgnoreCase(TaskConstant.RETAILER_WISE)) {
-            retailerwise_rb.setChecked(true);
-            setUpSpinnerData(1);
-            sellerSpinner.setSelection(getAdapterPosition(channelArrayAdapter.getCount(), taskBo.getMode()));
-        } else {
-            channelwise_rb.setChecked(true);
-            setUpSpinnerData(2);
-            sellerSpinner.setSelection(getAdapterPosition(retailerMasterArrayAdapter.getCount(), taskBo.getMode()));
+        if (!isRetailerTask) {
+            if (taskDataObj.getMode().equalsIgnoreCase(TaskConstant.SELLER_WISE)) {
+                seller_rb.setChecked(true);
+                setUpSpinnerData(0);
+                sellerSpinner.setSelection(getAdapterPosition(userMasterArrayAdapter.getCount(), taskBo.getMode()));
+            } else if (taskDataObj.getMode().equalsIgnoreCase(TaskConstant.RETAILER_WISE)) {
+                retailerwise_rb.setChecked(true);
+                setUpSpinnerData(1);
+                sellerSpinner.setSelection(getAdapterPosition(channelArrayAdapter.getCount(), taskBo.getMode()));
+            } else {
+                channelwise_rb.setChecked(true);
+                setUpSpinnerData(2);
+                sellerSpinner.setSelection(getAdapterPosition(retailerMasterArrayAdapter.getCount(), taskBo.getMode()));
+            }
         }
         taskView.setText(taskDataObj.getTaskDesc());
 
@@ -606,7 +610,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                     if (retailerMasterArrayAdapter.getItem(i).getTretailerId() == taskBo.getRid())
                         return i;
                     break;
-                case TaskConstant.PRODUCT_LEVEL_WISE:
+                case TaskConstant.CHANNEL_WISE:
                     if (channelArrayAdapter.getItem(i).getChannelId() == taskBo.getChannelId())
                         return i;
                     break;

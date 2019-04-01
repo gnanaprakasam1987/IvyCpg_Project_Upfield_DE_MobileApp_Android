@@ -128,6 +128,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
+import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.view.TaskActivity;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
@@ -819,7 +820,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             DateTimeUtils.now(DateTimeUtils.TIME), MENU_TASK);
                     Intent intent = new Intent(getApplicationContext(), TaskActivity.class);
-                    intent.putExtra("IsRetailerwisetask", true);
+                    intent.putExtra(TaskConstant.RETAILER_WISE_TASK, true);
                     startActivity(intent);
                 }
 
@@ -2186,9 +2187,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
                     Intent intent = new Intent(getApplicationContext(),
                             TaskActivity.class);
-                    intent.putExtra("CurrentActivityCode", menu.getConfigCode());
-                    intent.putExtra("IsRetailerwisetask", true);
-                    intent.putExtra("screentitle", menu.getMenuName());
+                    intent.putExtra(TaskConstant.CURRENT_ACTIVITY_CODE, menu.getConfigCode());
+                    intent.putExtra(TaskConstant.RETAILER_WISE_TASK, true);
+                    intent.putExtra(TaskConstant.SCREEN_TITLE, menu.getMenuName());
 
                     startActivity(intent);
                     isCreated = false;
@@ -3774,7 +3775,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     isCreated = false;
                 }
             }
-        }else if(menu.getConfigCode().equals(MENU_PLANORMA) && hasLink == 1){
+        } else if (menu.getConfigCode().equals(MENU_PLANORMA) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
                 Intent i = new Intent(this,

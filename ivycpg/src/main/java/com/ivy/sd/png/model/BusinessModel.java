@@ -3569,6 +3569,17 @@ public class BusinessModel extends Application {
                 c.close();
             }
 
+            c = db.selectSQL("SELECT DISTINCT TaskImageName FROM TaskImageDetails");
+            if (c != null) {
+                while ((c.moveToNext())) {
+                    getDigitalContentURLS().put(
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                            DataMembers.TASK_DIGITAL_CONTENT);
+
+                }
+                c.close();
+            }
+
             db.closeDB();
 
             getDigitalContentURLS().put(
@@ -4233,6 +4244,8 @@ public class BusinessModel extends Application {
                 mBucketName = mBucketDetails + "/" + "SalesReturn" + path;
             } else if (imageName.startsWith("ORD_")) {
                 mBucketName = mBucketDetails + "/" + "Order" + path;
+            } else if (imageName.startsWith("TSK_")) {
+                mBucketName = mBucketDetails + "/" + "Task" + path;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = mBucketDetails + "/" + "PhotoCapture" + path;

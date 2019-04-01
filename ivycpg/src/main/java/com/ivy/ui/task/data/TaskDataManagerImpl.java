@@ -59,7 +59,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                     ArrayList<TaskDataBO> taskDataBOS = new ArrayList<>();
                     String query = "select distinct A.taskid,B.taskcode,B.taskDesc,A.retailerId,A.upload,"
                             + "(CASE WHEN ifnull(TD.TaskId,0) >0 THEN 1 ELSE 0 END) as isDone,"
-                            + "B.usercreated , B.taskowner , B.date, A.upload,A.channelid,A.userid,B.DueDate,B.CategoryId,PL.PName"
+                            + "B.usercreated , B.taskowner , B.date, A.upload,A.channelid,A.userid,IFNULL(B.DueDate,''),B.CategoryId,IFNULL(PL.PName,'')"
                             + " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid"
                             + " left join TaskExecutionDetails TD on TD.TaskId=A.taskid and TD.RetailerId = " + retailerId
                             + " left join ProductMaster PL on PL.PID=B.CategoryId"
@@ -262,6 +262,31 @@ public class TaskDataManagerImpl implements TaskDataManager {
                         return false;
                     }
                 });
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> updateTaskExecutionImage(String imageName, String taskId) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                try {
+                    if (mDbUtil.isDbNullOrClosed())
+                        initDb();
+
+
+                    mDbUtil.updateSQL("UPDATE TaskExecutionDetails "
+                            + " SET ImageName=" + StringUtils.QT(imageName)
+                            + " WHERE TaskId=" + StringUtils.QT(taskId));
+
+                    shutDownDb();
+                    return true;
+                } catch (Exception ignore) {
+
+                }
+                shutDownDb();
+                return false;
             }
         });
     }

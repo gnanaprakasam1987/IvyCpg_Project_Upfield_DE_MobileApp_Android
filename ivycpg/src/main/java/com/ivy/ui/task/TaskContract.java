@@ -59,6 +59,8 @@ public interface TaskContract {
 
         void updateTaskExecution(String retailerID, TaskDataBO taskDataBO);
 
+        void updateTaskExecutionImg(String imageName, String taskID);
+
         ArrayList<TaskDataBO> getTaskImgList();
 
         void deleteTask(String taskId, String taskOwner);

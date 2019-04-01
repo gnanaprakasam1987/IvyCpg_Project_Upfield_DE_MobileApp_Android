@@ -47,6 +47,7 @@ public class DataMembers {
     public static final String PROFILE = "PRO";
     public static final String CATALOG = "CAT";
     public static final String USER = "USER";
+    public static final String TASK_DIGITAL_CONTENT = "TDC";
 
     public static final int NOTIFY_WEB_UPLOAD_SUCCESS = 32;
     public static final int NOTIFY_WEB_UPLOAD_ERROR = 33;

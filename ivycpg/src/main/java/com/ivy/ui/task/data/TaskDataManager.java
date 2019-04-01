@@ -21,6 +21,8 @@ public interface TaskDataManager extends AppDataManagerContract {
 
     Single<Boolean> updateTaskExecutionData(TaskDataBO taskDataBO, String retailerId);
 
+    Single<Boolean>updateTaskExecutionImage(String imageName,String taskId);
+
     Single<Boolean> addAndUpdateTask(int channelId, TaskDataBO taskObj, String mode, ArrayList<TaskDataBO> taskImgList);
 
     Observable<ArrayList<RetailerMasterBO>> fetchRetailers();

@@ -4,9 +4,9 @@
     android:id="@+id/row_sort_ll"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?rippleColor"
     android:clickable="true"
     android:focusable="true"
+    android:background="@color/white"
     android:gravity="center_vertical"
     android:minHeight="@dimen/list_item_space"
     android:orientation="horizontal"
@@ -19,7 +19,7 @@
         android:id="@+id/list_item_icon_sort"
         style="@style/menuIconImageView"
         android:contentDescription="@string/sort_by"
-        android:src="@drawable/ic_sort_by_alpha_black_24dp" />
+       />
 
     <TextView
         android:id="@+id/list_item_menu_sort_tv"
@@ -33,5 +33,5 @@
         android:fontFamily="@font/roboto_regular"
         android:gravity="center_vertical"
         android:text="@string/Name"
-        android:textColor="?captionTextColor" />
+        android:textColor="?attr/captionTextColor" />
 </LinearLayout>

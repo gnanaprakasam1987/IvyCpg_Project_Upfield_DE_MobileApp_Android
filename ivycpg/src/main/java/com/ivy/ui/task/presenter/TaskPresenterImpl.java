@@ -21,6 +21,8 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.data.TaskDataManager;
@@ -28,6 +30,12 @@ import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.rx.SchedulerProvider;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -316,6 +324,52 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
 
+    public void writeToFile(String data, String filename, String foldername) {
+        String path = FileUtils.photoFolderPath + foldername;
+
+        File folder = new File(path);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+
+        File newFile = new File(path, filename);
+        /*  newFile.createNewFile();
+          FileOutputStream fOut = new FileOutputStream(newFile);
+          OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
+          myOutWriter.append(data);
+          myOutWriter.close();
+          fOut.flush();
+          fOut.close();*/
+        String destpath = FileUtils.photoFolderPath + "/" + DataMembers.IVYDIST_PATH + "/";
+        copyFile(newFile, destpath, filename);
+
+    }
+
+
+    private void copyFile(File sourceFile, String path, String filename) {
+
+        File folder = new File(path);
+        if (!folder.exists()) {
+            folder.mkdirs();
+        }
+        File destFile = new File(path, filename);
+        FileChannel source = null;
+        FileChannel destination = null;
+        try {
+
+            source = new FileInputStream(sourceFile).getChannel();
+            destination = new FileOutputStream(destFile).getChannel();
+            destination.transferFrom(source, 0, source.size());
+            source.close();
+            destination.close();
+        } catch (FileNotFoundException e) {
+            Commons.printException(e.getMessage());
+        } catch (IOException e) {
+            Commons.printException(e.getMessage());
+        }
+    }
+
+
     @Override
     public void onSaveButtonClick(int channelId, TaskDataBO taskObj) {
         getIvyView().showLoading();
@@ -345,6 +399,21 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                         if (isUpdated) {
                             saveModuleCompletion("MENU_TASK");
                             getIvyView().showUpdatedDialog(R.string.task_updated_successfully);
+                        }
+                    }
+                }));
+    }
+
+    @Override
+    public void updateTaskExecutionImg(String imageName, String taskID) {
+        getCompositeDisposable().add(mTaskDataManager.updateTaskExecutionImage(imageName, taskID)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<Boolean>() {
+                    @Override
+                    public void accept(Boolean imgUpdated) throws Exception {
+                        if (imgUpdated) {
+                            getIvyView().showMessage(R.string.image_saved);
                         }
                     }
                 }));

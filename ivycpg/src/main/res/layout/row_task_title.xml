@@ -62,9 +62,9 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/bg_card"
         android:clickable="true"
-        android:focusable="true"
-        android:background="@drawable/bg_card">
+        android:focusable="true">
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/layoutBorder"
@@ -117,8 +117,9 @@
                         style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/dummy_txt"
-                        android:textStyle="italic" />
+                        android:layout_marginEnd="@dimen/_3sdp"
+                        android:layout_marginRight="@dimen/_3sdp"
+                        android:text="@string/dummy_txt" />
 
                     <TextView
                         android:id="@+id/task_taskowner_label"
@@ -127,8 +128,7 @@
                         android:layout_height="wrap_content"
                         android:layout_toEndOf="@+id/task_createdOn"
                         android:layout_toRightOf="@+id/task_createdOn"
-                        android:text="@string/created_by"
-                        android:textStyle="italic" />
+                        android:text="@string/created_by" />
 
 
                     <TextView
@@ -139,8 +139,7 @@
                         android:layout_toEndOf="@+id/task_taskowner_label"
                         android:layout_toRightOf="@+id/task_taskowner_label"
                         android:gravity="start|center"
-                        android:text="@string/dummy_txt"
-                        android:textStyle="italic" />
+                        android:text="@string/dummy_txt" />
 
 
                 </RelativeLayout>
@@ -149,40 +148,38 @@
             <TextView
                 android:id="@+id/task_due_date_tv"
                 style="@style/TextViewListItemValues"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1.5"
                 android:gravity="center"
                 android:text="@string/dummy_txt" />
 
+            <ImageButton
+                android:id="@+id/btn_attach_photo"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical|start"
+                android:layout_weight=".5"
+                android:background="@color/zxing_transparent"
+                android:contentDescription="@string/add_img_content_description"
+                android:rotation="45"
+                android:src="@drawable/ic_attach_file_black_24dp"
+                android:tint="?primarycolor" />
+
             <LinearLayout
                 android:id="@+id/layoutCB"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:gravity="center|start">
-
-                <ImageButton
-                    android:id="@+id/btn_attach_photo"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical|start"
-                    android:layout_weight=".5"
-                    android:background="@color/zxing_transparent"
-                    android:contentDescription="@string/add_img_content_description"
-                    android:rotation="45"
-                    android:src="@drawable/ic_attach_file_black_24dp"
-                    android:tint="?primarycolor" />
+                android:layout_weight=".5"
+                android:gravity="center_vertical">
 
                 <CheckBox
                     android:id="@+id/task_title_CB"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/main_photo_width"
-                    android:layout_gravity="end|center_vertical"
-                    android:layout_marginStart="@dimen/_10sdp"
-                    android:layout_marginLeft="@dimen/_10sdp"
-                    android:layout_weight=".5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
                     android:text="" />
             </LinearLayout>
 

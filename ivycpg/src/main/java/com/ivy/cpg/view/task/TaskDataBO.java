@@ -24,9 +24,9 @@ public class TaskDataBO implements Parcelable {
     private boolean isUpload;
     private int userId;
     private String userName;
-    private String taskDueDate;
+    private String taskDueDate = "";
     private String taskEndDate;
-    private String taskCategoryDsc;
+    private String taskCategoryDsc = "";
     private int taskCategoryID;
     int flag = 0;
     private String taskEvidenceImg;

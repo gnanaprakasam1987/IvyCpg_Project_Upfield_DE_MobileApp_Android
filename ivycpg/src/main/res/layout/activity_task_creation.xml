@@ -37,8 +37,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:adjustViewBounds="true"
-                    android:padding="8dp"
-                    android:paddingBottom="0dp"
+                    android:padding="@dimen/_8sdp"
                     android:text="@string/plan_task" />
 
                 <EditText
@@ -49,7 +48,7 @@
                     android:layout_below="@+id/task_title_tv"
                     android:layout_gravity="start|center"
                     android:maxLength="25"
-                    tools:ignore="Autofill" />
+                    />
 
                 <TextView
                     android:id="@+id/task_category_tv"
@@ -58,10 +57,9 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv"
                     android:adjustViewBounds="true"
-                    android:paddingStart="8dp"
-                    android:paddingLeft="8dp"
-                    android:paddingTop="8dp"
-                    android:paddingBottom="0dp"
+                    android:padding="@dimen/_8sdp"
+                    android:layout_marginRight="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
                     android:text="@string/category" />
 
                 <android.support.v7.widget.AppCompatSpinner
@@ -69,6 +67,8 @@
                     style="@style/Widget.AppCompat.Spinner.Underlined"
                     android:layout_width="@dimen/spinner_width"
                     android:layout_height="@dimen/spinner_layout_height"
+                    android:layout_marginRight="@dimen/_20sdp"
+                    android:layout_marginEnd="@dimen/_20sdp"
                     android:layout_below="@+id/task_category_tv"
                     android:spinnerMode="dialog"
 
@@ -80,12 +80,11 @@
                     android:layout_width="@dimen/spinner_width"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv"
-                    android:layout_marginStart="@dimen/_20sdp"
-                    android:layout_marginLeft="@dimen/_20sdp"
                     android:layout_toEndOf="@+id/task_category_tv"
                     android:layout_toRightOf="@+id/task_category_tv"
                     android:adjustViewBounds="true"
-                    android:paddingTop="8dp"
+                    android:paddingTop="@dimen/_8sdp"
+                    android:paddingBottom="@dimen/_8sdp"
                     android:text="@string/due_date" />
 
                 <Button
@@ -94,8 +93,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_38sdp"
                     android:layout_below="@+id/task_due_date_tv"
-                    android:layout_marginStart="@dimen/_20sdp"
-                    android:layout_marginLeft="@dimen/_20sdp"
                     android:layout_toEndOf="@+id/task_category_spinner"
                     android:layout_toRightOf="@+id/task_category_spinner"
                     android:gravity="center|start"
@@ -110,7 +107,7 @@
                 android:layout_below="@+id/first_layout"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:padding="8dp" />
+                android:padding="@dimen/_8sdp" />
 
 
             <RelativeLayout
@@ -120,7 +117,7 @@
                 android:layout_below="@+id/task_img_recycler_view"
                 android:gravity="center_vertical|start"
                 android:orientation="vertical"
-                android:padding="8dp">
+                android:padding="@dimen/_8sdp">
 
                 <TextView
                     android:id="@+id/applicable_tv"
@@ -131,7 +128,7 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentTop="true"
                     android:gravity="center"
-                    android:paddingTop="10dp"
+                    android:padding="@dimen/_8sdp"
                     android:text="@string/applyto" />
 
                 <RadioGroup
@@ -189,7 +186,7 @@
                 android:layout_below="@+id/spinner_rl"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="8dp">
+                android:padding="@dimen/_8sdp">
 
                 <TextView
                     android:id="@+id/task_desc_tv"
@@ -197,8 +194,7 @@
                     android:layout_width="@dimen/spinner_width"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
-                    android:padding="8dp"
-                    android:paddingBottom="0dp"
+                    android:padding="@dimen/_8sdp"
                     android:text="@string/description" />
 
                 <EditText
@@ -235,13 +231,14 @@
         android:layout_gravity="bottom"
         android:background="?attr/customFooterBackgroundColor"
         android:gravity="center"
+        android:padding="@dimen/_3sdp"
         android:orientation="vertical">
 
 
         <Button
             android:id="@+id/saveTask"
             style="?attr/roundedCustomButtonNormal"
-            android:layout_gravity="center"
+            android:layout_gravity="center|end"
             android:text="@string/save"
             android:textAllCaps="false" />
 
