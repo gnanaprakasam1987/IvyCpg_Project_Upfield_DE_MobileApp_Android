@@ -1,0 +1,100 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ivy.ui.offlineplan.view.OfflinePlanFragment">
+
+    <LinearLayout
+        android:id="@+id/ll_titleList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimen_2dp">
+
+        <TextView
+            android:id="@+id/txt_mon"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/mon"
+            android:textAllCaps="true"
+            android:textColor="@color/black_bg1" />
+
+        <TextView
+            android:id="@+id/txt_tue"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/tue"
+            android:textAllCaps="true"
+            android:textColor="@color/black_bg1" />
+
+        <TextView
+            android:id="@+id/txt_wed"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/wed"
+            android:textAllCaps="true"
+            android:textColor="@color/black_bg1" />
+
+        <TextView
+            android:id="@+id/txt_thu"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/thu"
+            android:textAllCaps="true"
+            android:textColor="@color/black_bg1" />
+
+        <TextView
+            android:id="@+id/txt_fri"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/fri"
+            android:textAllCaps="true"
+            android:textColor="@color/black_bg1" />
+
+        <TextView
+            android:id="@+id/txt_sat"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/sat"
+            android:textAllCaps="true"
+            android:textColor="@color/black_bg1" />
+
+        <TextView
+            android:id="@+id/txt_sun"
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/sun"
+            android:textAllCaps="true"
+            android:textColor="@color/black_bg1" />
+    </LinearLayout>
+
+    <com.ivy.lib.MonthView.MonthRecyclerView
+        android:id="@+id/rv_calendar"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/ll_titleList"/>
+
+</RelativeLayout>

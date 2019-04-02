@@ -68,7 +68,6 @@ import com.ivy.cpg.view.login.TermsAndConditionsActivity;
 import com.ivy.cpg.view.mvp.MVPFragment;
 import com.ivy.cpg.view.nonfield.NonFieldHelper;
 import com.ivy.cpg.view.nonfield.NonFieldHomeFragment;
-import com.ivy.cpg.view.offlineplanning.OfflinePlanningActivity;
 import com.ivy.cpg.view.orderfullfillment.OrderFullfillmentRetailerSelection;
 import com.ivy.cpg.view.quickcall.QuickCallFragment;
 import com.ivy.cpg.view.reports.ReportMenuFragment;
@@ -108,6 +107,7 @@ import com.ivy.sd.png.view.NewoutletContainerFragment;
 import com.ivy.sd.png.view.PlanDeviationFragment;
 import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
+import com.ivy.ui.offlineplan.view.OfflinePlanFragment;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
@@ -209,7 +209,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private ListView listView;
     private ArrayList<ChannelBO> mChannelList;
     private ChannelSelectionDialog dialogFragment;
-
 
 
     @Nullable
@@ -400,8 +399,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         });
 
         // Initilize photo filder path and create directory if not exisit.
-        if(!FileUtils.createFilePathAndFolder(getContext())) {
-            Toast.makeText(getContext(),"Photo storage folder not created..",Toast.LENGTH_LONG).show();
+        if (!FileUtils.createFilePathAndFolder(getContext())) {
+            Toast.makeText(getContext(), "Photo storage folder not created..", Toast.LENGTH_LONG).show();
         }
 
         /** Initialising map view **/
@@ -432,7 +431,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     }
 
-    public void loadHomeMenuConfiguration(){
+    public void loadHomeMenuConfiguration() {
         leftmenuDB = new Vector<>();
         bmodel.configurationMasterHelper.downloadMainMenu();
         for (ConfigureBO con : bmodel.configurationMasterHelper.getConfig()) {
@@ -562,7 +561,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         switch (requestCode) {
             case CAMERA_REQUEST_CODE:
                 if (resultCode == 1) {
-                    Uri uri = FileUtils.getUriFromFile(getActivity(),FileUtils.photoFolderPath + "/" + imageFileName);
+                    Uri uri = FileUtils.getUriFromFile(getActivity(), FileUtils.photoFolderPath + "/" + imageFileName);
                     bmodel.userMasterHelper.getUserMasterBO().setImagePath(imageFileName);
                     bmodel.userMasterHelper.saveUserProfile(bmodel.userMasterHelper.getUserMasterBO());
                     profileImageView.invalidate();
@@ -571,7 +570,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 break;
             case TERMS_COND_REQ_CODE:
                 if (getActivity() != null)
-                getActivity().overridePendingTransition(0, R.anim.zoom_exit);
+                    getActivity().overridePendingTransition(0, R.anim.zoom_exit);
                 break;
             default:
                 break;
@@ -1087,11 +1086,13 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else {
-                Intent i = new Intent(getContext(), OfflinePlanningActivity.class);
+                /*Intent i = new Intent(getContext(), OfflinePlanningActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.putExtra("screentitle", "" + "Call Planning");
                 startActivity(i);
-                getActivity().finish();
+                getActivity().finish();*/
+                switchFragment(MENU_OFLNE_PLAN, menuItem
+                        .getMenuName());
             }
 
         } else if (menuItem.getConfigCode().equals(MENU_JOINT_CALL)) {
@@ -1690,6 +1691,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         DenominationFragment denominationFragment = (DenominationFragment) fm.findFragmentByTag(MENU_DENOMINATION);
 
+        OfflinePlanFragment offlinePlanFragment = (OfflinePlanFragment) fm.findFragmentByTag(MENU_OFLNE_PLAN);
+
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()
                 && !bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER) {
@@ -1783,7 +1786,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 && stockProposalFragment.isVisible()) {
             return;
         } else if
-                (newOutletEditFragment != null && (fragmentName.equals(MENU_NEWRET_EDT))
+        (newOutletEditFragment != null && (fragmentName.equals(MENU_NEWRET_EDT))
                         && newOutletEditFragment.isVisible()) {
             return;
         } else if (acknowledgementFragment != null && fragmentName.equals(MENU_JOINT_ACK)
@@ -1793,7 +1796,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 && planDeviationFragment.isVisible()) {
             return;
         } else if
-                (expenseFragment != null && (fragmentName.equals(MENU_EXPENSE))
+        (expenseFragment != null && (fragmentName.equals(MENU_EXPENSE))
                         && expenseFragment.isVisible()) {
             return;
         } else if (taskFragment != null && fragmentName.equals(MENU_TASK_NEW)
@@ -1810,6 +1813,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             return;
         } else if (denominationFragment != null && (fragmentName.equals(MENU_DENOMINATION))
                 && denominationFragment.isVisible()) {
+            return;
+        } else if (offlinePlanFragment != null && (fragmentName.equals(MENU_OFLNE_PLAN))
+                && offlinePlanFragment.isVisible()) {
             return;
         }
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
@@ -1892,6 +1898,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(mQuickCallFragment);
         if (denominationFragment != null)
             ft.remove(denominationFragment);
+        if (offlinePlanFragment != null)
+            ft.remove(offlinePlanFragment);
 
         Bundle bndl;
         Fragment fragment;
@@ -2275,6 +2283,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 ft.add(R.id.fragment_content, fragment,
                         MENU_DENOMINATION);
                 break;
+            case MENU_OFLNE_PLAN:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                fragment = new OfflinePlanFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_OFLNE_PLAN);
+                break;
         }
         ft.commitAllowingStateLoss();
 
@@ -2384,9 +2400,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         private AlertDialog alertDialog;
         private String title;
 
-        public LoadRoadActivityData(String title){
+        public LoadRoadActivityData(String title) {
             this.title = title;
         }
+
         protected void onPreExecute(String str) {
             builder = new AlertDialog.Builder(getActivity());
 

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ll_date"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_2dp">
+
+    <TextView
+        android:id="@+id/tv_date"
+        style="@style/TextViewListItemPrimary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="@string/app_name" />
+
+    <TextView
+        android:id="@+id/tv_retailers"
+        style="@style/TextViewListItemSecondary"
+        android:layout_width="match_parent"
+        android:textColor="?attr/colorAccent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:layout_below="@+id/tv_date"
+        android:text="@string/retailer"/>
+
+</RelativeLayout>
+
