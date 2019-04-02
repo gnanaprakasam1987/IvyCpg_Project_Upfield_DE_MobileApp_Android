@@ -470,10 +470,18 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 supportInvalidateOptionsMenu();
 
 
-                if(mSelectedFilter==1)
-                    productSearch.startSpecialFilterSearch(productList,mSelectedSpecialFilter);
-                else if(mSelectedFilter==2)
-                productSearch.startSearch(productList,mSelectedProductId,mSelectedAttributeProductIds);
+                if(mSelectedFilter==1) {
+                    findViewById(R.id.view_loading).setVisibility(View.VISIBLE);
+
+                    productSearch.startSpecialFilterSearch(productList, mSelectedSpecialFilter);
+                }
+                else if(mSelectedFilter==2) {
+                    findViewById(R.id.view_loading).setVisibility(View.VISIBLE);
+                    productSearch.startSearch(productList, mSelectedProductId, mSelectedAttributeProductIds);
+                }
+                else {
+                    updateScreenTitle();
+                }
 
 
             }
@@ -525,6 +533,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
         lvwplist = (ListView) findViewById(R.id.list);
+        lvwplist.setEmptyView(findViewById(R.id.view_empty));
         lvwplist.setCacheColorHint(0);
 
         SBDHelper.getInstance(this).calculateSBDDistribution(getApplicationContext()); //sbd calculation
@@ -6060,6 +6069,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             if(getSupportActionBar()!=null) {
                 updateScreenTitle();
             }
+
+        findViewById(R.id.view_loading).setVisibility(View.GONE);
 
 
 

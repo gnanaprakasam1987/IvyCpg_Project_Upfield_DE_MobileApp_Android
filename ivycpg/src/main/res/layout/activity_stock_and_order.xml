@@ -92,9 +92,11 @@
 
                 <include layout="@layout/layout_search" />
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical">
 
                         <ListView
                             android:id="@+id/list"
@@ -105,8 +107,30 @@
                             android:cacheColorHint="@null"
                             android:divider="@android:color/transparent"
                             android:dividerHeight="1dp"
-                            android:fitsSystemWindows="true" />
-                </LinearLayout>
+                            android:fitsSystemWindows="true"
+                            >
+                        </ListView>
+
+                    <ProgressBar
+                        android:id="@+id/view_loading"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_centerInParent="true"
+                        android:visibility="gone"
+                        />
+
+                    <TextView
+                        android:id="@+id/view_empty"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone"
+                        android:text="@string/no_products_exists"
+                        android:layout_centerInParent="true"
+
+                        >
+                    </TextView>
+                </RelativeLayout>
             </LinearLayout>
         </RelativeLayout>
 
