@@ -2593,7 +2593,7 @@ public class BusinessModel extends Application {
                     + "," + StringUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
 
             db.insertSQL("Nonproductivereasonmaster", columns, values);
-            if (!outlet.getCollectionReasonID().equals("0")) {
+            if (outlet.getCollectionReasonID() != null && !outlet.getCollectionReasonID().equals("0")) {
                 String uid = StringUtils.QT(getAppDataProvider().getUser()
                         .getDistributorid()
                         + ""
