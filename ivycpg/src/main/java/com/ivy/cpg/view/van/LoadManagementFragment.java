@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -87,6 +88,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private LoadManagementHelper loadManagementHelper;
     private StockProposalModuleHelper stockProposalModuleHelper;
 
+    private ImageButton imageview_buzzer;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -134,6 +137,14 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 menuDB = bmodel.configurationMasterHelper
                         .downloadLoadManagementMenu();
             }
+
+            imageview_buzzer=view.findViewById(R.id.imageview_buzzer);
+            imageview_buzzer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
 
 
             ListView listView = view.findViewById(R.id.listView1);
