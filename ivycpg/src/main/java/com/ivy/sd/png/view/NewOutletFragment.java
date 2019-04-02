@@ -6337,6 +6337,11 @@ public class NewOutletFragment extends IvyBaseFragment
 
                 deleteNewRetailer();
                 bmodel.downloadRetailerMaster();
+                if (bmodel.configurationMasterHelper.CALC_QDVP3)
+                    bmodel.updateSurveyScoreHistoryRetailerWise();
+
+                bmodel.downloadVisit_Actual_Achieved();
+
                 alertDialog.dismiss();
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.data_download_successfully),
