@@ -2587,10 +2587,11 @@ public class BusinessModel extends Application {
                     + getAppDataProvider().getRetailMaster().getBeatID() + ","
                     + StringUtils.QT(outlet.getDate()) + "," + StringUtils.QT(outlet.getReasonid())
                     + "," + StringUtils.QT(getStandardListId(outlet.getReasontype())) + ","
-                    + StringUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + StringUtils.QT(outlet.getImagePath()) + "," + StringUtils.QT(remarks);
+                    + StringUtils.QT("N") + "," + getAppDataProvider().getRetailMaster().getDistributorId() + "," + StringUtils.QT(outlet.getImagePath()) + "," + StringUtils.QT(remarks)
+                    + "," + StringUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
 
             db.insertSQL("Nonproductivereasonmaster", columns, values);
-            if (!outlet.getCollectionReasonID().equals("0")) {
+            if (outlet.getCollectionReasonID() != null && !outlet.getCollectionReasonID().equals("0")) {
                 String uid = StringUtils.QT(getAppDataProvider().getUser()
                         .getDistributorid()
                         + ""
