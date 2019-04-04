@@ -693,7 +693,7 @@ public class SchemeDetailsMasterHelper {
         sb.append("SELECT distinct FD.SchemeID, SFP.productid, PM.psname, SFP.FreeQty, SFP.MaxQty, FD.Rate,");
         sb.append("FD.MaxRate,PM.PName,FD.amount,FD.maxAmount,FD.percent,");
         sb.append("FD.maxPercent,PM.pCode,SFP.uomid,SFP.GroupName,SFP.GroupType,FD.isFreeCombination,");
-        sb.append("FD.Type,UM.ListName,FD.everyuomid,FD.everyQty FROM SchemeFreeMaster FD");
+        sb.append("FD.Type,UM.ListName,FD.everyuomid,FD.everyQty, FD.SlabMaxValue FROM SchemeFreeMaster FD");
 
         sb.append(" LEFT JOIN SchemeFreeProducts as SFP on SFP.schemeid=FD.schemeid");
         sb.append(" LEFT JOIN ProductMaster PM ON SFP.ProductID = PM.PID");
@@ -742,7 +742,7 @@ public class SchemeDetailsMasterHelper {
                     schemeBO.setFreeType(c.getString(17));
                     schemeBO.setEveryUomId(c.getInt(19));
                     schemeBO.setEveryQty(c.getInt(20));
-
+                    schemeBO.setMaximumSlab(c.getInt(21));
 
                     //updating stock for free products
                     if (bModel.productHelper.getProductMasterBOById(productBO.getProductId()) != null) {
@@ -4264,35 +4264,26 @@ public class SchemeDetailsMasterHelper {
      */
     private int calculateApplyCountBasedOnEveryUOM(SchemeBO schemeBO) {
         int count = 0;
+        int totalConvertedQty = 0;
         List<SchemeProductBO> schemeProductList = schemeBO.getBuyingProducts();
-
         for (SchemeProductBO schemeProductBO : schemeProductList) {
-
             ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(schemeProductBO.getProductId());
             if (productBO != null) {
-
-                int totalOrderQty = productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize());
+                int totalOrderQty = (productBO.getOrderedPcsQty() + (productBO.getOrderedCaseQty() * productBO.getCaseSize()) + (productBO.getOrderedOuterQty() * productBO.getOutersize()));
                 if (schemeBO.getEveryUomId() == productBO.getCaseUomId()) {
-
                     if (productBO.getCaseSize() != 0) {
-                        totalOrderQty = totalOrderQty / productBO.getCaseSize();
-                        count = count + (totalOrderQty / schemeBO.getEveryQty());
+                        totalConvertedQty = totalConvertedQty + (totalOrderQty / productBO.getCaseSize());
                     }
-
                 } else if (schemeBO.getEveryUomId() == productBO.getOuUomid()) {
-
                     if (productBO.getOutersize() != 0) {
-                        totalOrderQty = totalOrderQty / productBO.getOutersize();
-                        count = count + (totalOrderQty / schemeBO.getEveryQty());
+                        totalConvertedQty = totalConvertedQty + (totalOrderQty / productBO.getOutersize());
                     }
-
                 } else {
-                    count = count + (totalOrderQty / schemeBO.getEveryQty());
+                    totalConvertedQty = totalConvertedQty + totalOrderQty;
                 }
             }
         }
-
-
+        count = count + (totalConvertedQty / schemeBO.getEveryQty());
         return count;
     }
 
@@ -4649,7 +4640,7 @@ public class SchemeDetailsMasterHelper {
 
         Cursor c = db
                 .selectSQL("SELECT SM.SchemeID, SM.Description, SM.Type, SM.ShortName, SM.ChannelID, SM.SubChannelID, "
-                        + "BD.ProductID, PM.PName, BD.BuyQty, FD.FreeQty, FD.MaxQty, FD.Rate, FD.MaxRate FROM SchemeMaster SM "
+                        + "BD.ProductID, PM.PName, BD.BuyQty, FD.FreeQty, FD.MaxQty, FD.Rate, FD.MaxRate, FD.SlabMaxValue FROM SchemeMaster SM "
                         + "INNER JOIN  SchemeBuyMaster BD ON BD.SchemeID = SM.SchemeID  INNER JOIN ProductMaster PM ON BD.ProductID = PM.PID "
                         + "INNER JOIN SchemeFreeMaster FD ON FD.FreeProductID = BD.ProductID AND FD.SchemeID = BD.SchemeID WHERE SM.ChannelID = '"
                         + channelId
@@ -4680,6 +4671,7 @@ public class SchemeDetailsMasterHelper {
                 schemeBO.setMaximumQuantity(c.getInt(10)); // Max Qty
                 schemeBO.setActualPrice(c.getInt(11)); // Min Disc Rate
                 schemeBO.setMaximumPrice(c.getInt(12)); // Max Disc Rate
+                schemeBO.setMaximumSlab(c.getInt(13));
                 mSchemePromotion.add(schemeBO);
             }
             c.close();
