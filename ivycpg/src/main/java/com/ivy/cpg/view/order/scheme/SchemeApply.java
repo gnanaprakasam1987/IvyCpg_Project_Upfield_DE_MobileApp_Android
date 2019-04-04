@@ -442,6 +442,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                 holder.tv_label_qtytitle = view.findViewById(R.id.tv_qtytitle);
                 holder.text_stock_availability = (TextView) view
                         .findViewById(R.id.text_stock_availability);
+                holder.text_maxslab = view.findViewById(R.id.text_maxslab);
                 //typeface
                 holder.productNameTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
                 holder.schemeTV.setTypeface(bModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
@@ -1062,6 +1063,43 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
 
                     holder.percentRL.setVisibility(View.VISIBLE);
 
+                    if (holder.schemeBO.getMaximumSlab() != 0) {
+                        double totalPercentageDiscount = 0.0;
+                        ProductMasterBO productBO = bModel.productHelper.getProductMasterBOById(holder.schemeBO.getSkuBuyProdID());
+                        if (bModel.configurationMasterHelper.SHOW_BATCH_ALLOCATION
+                                && bModel.configurationMasterHelper.IS_SIH_VALIDATION
+                                && bModel.configurationMasterHelper.IS_INVOICE) {
+
+                            if (productBO
+                                    .getBatchwiseProductCount() > 0) {
+                                totalPercentageDiscount = schemeHelper
+                                        .calculateDiscountValue(
+                                                productBO,
+                                                holder.schemeBO.getSelectedPrecent(),
+                                                "SCH_PER", true);
+                            } else {
+                                totalPercentageDiscount = schemeHelper
+                                        .calculateDiscountValue(
+                                                productBO,
+                                                holder.schemeBO.getSelectedPrecent(),
+                                                "SCH_PER",
+                                                false);
+                            }
+                        } else {
+                            totalPercentageDiscount = schemeHelper
+                                    .calculateDiscountValue(
+                                            productBO,
+                                            holder.schemeBO.getSelectedPrecent(),
+                                            "SCH_PER", false);
+                        }
+
+                        if (totalPercentageDiscount > holder.schemeBO.getMaximumSlab()) {
+                            holder.text_maxslab.setVisibility(View.VISIBLE);
+                            holder.text_maxslab.setText("Scheme Amt : " + SDUtil.roundIt(
+                                    totalPercentageDiscount, 2)
+                                    + " Maximum Slab Amt : " + holder.schemeBO.getMaximumSlab());
+                        }
+                    }
                 } else {
                     holder.percentRL.setVisibility(View.VISIBLE);
                 }
@@ -1082,7 +1120,19 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
                     if (QUANTITY == holder.amountET)
                         QUANTITY = null;
                     holder.amountRL.setVisibility(View.VISIBLE);
-
+                    if(holder.schemeBO.getMaximumSlab() != 0 && holder.schemeBO.getSelectedAmount() > holder.schemeBO.getMaximumSlab()){
+                        holder.text_maxslab.setVisibility(View.VISIBLE);
+                        holder.text_maxslab.setText("Scheme Amt : " + holder.schemeBO
+                                .getMinimumAmount() +" Maximum Slab Amt : " + holder.schemeBO.getMaximumSlab() );
+                        holder.amountET.setText(holder.schemeBO.getMaximumSlab() + "");
+                        holder.schemeBO.setSelectedAmount(holder.schemeBO.getMaximumSlab());
+                        if (holder.schemeBO.getMinimumAmount() > holder.schemeBO.getSelectedAmount()) {
+                            holder.schemeBO.setMinimumAmount(holder.schemeBO.getSelectedAmount());
+                            holder.schemeBO.setMaximumAmount(holder.schemeBO.getSelectedAmount());
+                        } else if (holder.schemeBO.getMaximumAmount() > holder.schemeBO.getSelectedAmount()) {
+                            holder.schemeBO.setMaximumAmount(holder.schemeBO.getSelectedAmount());
+                        }
+                    }
                 } else {
                     holder.amountRL.setVisibility(View.VISIBLE);
                 }
@@ -1369,7 +1419,7 @@ public class SchemeApply extends IvyBaseActivityNoActionBar {
         ;
         // Range
         private TextView quantityRangeTV, percentRangeTV;
-        private TextView priceRangeTV, amountRangeTV, text_stock_availability;
+        private TextView priceRangeTV, amountRangeTV, text_stock_availability, text_maxslab;
         // Entry
         private EditText priceET, amountET, percentET;
         // CheckBox
