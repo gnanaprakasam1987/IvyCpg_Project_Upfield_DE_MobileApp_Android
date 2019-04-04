@@ -186,4 +186,17 @@
     <string name="error_in_creating_visit">Error in creating visit</string>
     <string name="error_in_saving">Error in Saving</string>
 
+    <string name="complete_all_mandatory_activities_before_you_start_the_day">Complete all Mandatory activities before you start the day.</string>
+    <string name="today_you_have_uncompleted_activities">Today, You have %d uncompleted activities.</string>
+    <string name="today_you_have_completed_all_activities">Today, You have completed all activities.</string>
+    <string name="stop">Stop</string>
+    <string name="trip_started">Trip Started Successfully.</string>
+    <string name="trip_ended">Trip Ended Successfully.</string>
+    <string name="pls_start_the_trip">Please start the trip.</string>
+    <string name="pls_end_the_trip">Please end the trip.</string>
+    <string name="pls_end_the_previous_trip">Please end the previous trip.</string>
+    <string name="pls_complete_all_mandatory_modules_of_start_day">Please complete all the mandatory modules of start of the day.</string>
+    <string name="pls_complete_all_mandatory_modules_to_close_the_day">Please complete all the mandatory modules to close the day.</string>
+    <string name="do_you_want_to_continue_same_trip_or_end_the_trip">Do you want to continue the same trip or end the trip?.</string>
+
 </resources>

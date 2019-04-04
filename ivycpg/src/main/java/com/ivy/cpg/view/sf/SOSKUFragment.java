@@ -743,7 +743,7 @@ public class SOSKUFragment extends IvyBaseFragment implements
 
                 mSFHelper
                         .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOSKU);
-                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOSKU);
+                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOSKU, true);
                 mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
 

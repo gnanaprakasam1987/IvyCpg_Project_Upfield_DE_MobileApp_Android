@@ -73,6 +73,7 @@ import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.retailercontact.RetailerContactFragment;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -282,7 +283,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         new LoadProfileConfigs().execute();
 
-        bmodel.isModuleDone();
+        bmodel.isModuleDone(true);
         new loadActivityMenu().execute();
 
 
@@ -1589,6 +1590,19 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     }
 
     private void validationToStartVisit() {
+
+        if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
+            if (!LoadManagementHelper.getInstance(getApplicationContext()).isTripStarted(this)) {
+                Toast.makeText(this, getResources().getString(R.string.pls_start_the_trip), Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (!LoadManagementHelper.getInstance(getApplicationContext()).isAllMandatoryPlanningSubModulesCompleted(this)) {
+                Toast.makeText(this, getResources().getString(R.string.pls_complete_all_mandatory_modules_of_start_day), Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
 
         // Downloaded date vs Mobile Date validation.
         if ((DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()

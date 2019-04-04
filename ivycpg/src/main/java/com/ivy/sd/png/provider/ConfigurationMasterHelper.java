@@ -552,6 +552,11 @@ public class ConfigurationMasterHelper {
     private static final String CODE_NON_SALABLE_UNLOAD = "NS_UNLOAD";
     public boolean SHOW_NON_SALABLE_UNLOAD;
 
+    private static final String CODE_TO_ENABLE_TRIP = "FUN79";
+    public boolean IS_ENABLE_TRIP = false;
+    public boolean IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP = false;
+
+
     /**
      * RoadActivity config *
      */
@@ -2725,6 +2730,11 @@ public class ConfigurationMasterHelper {
         this.IS_COLLECTION_DELETE = hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) != null ? hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) : false;
 
         this.IS_AZURE_UPLOAD = hashMapHHTModuleConfig.get(CODE_AZURE_UPLOAD) != null ? hashMapHHTModuleConfig.get(CODE_AZURE_UPLOAD) : false;
+
+        this.IS_ENABLE_TRIP = hashMapHHTModuleConfig.get(CODE_TO_ENABLE_TRIP) != null ? hashMapHHTModuleConfig.get(CODE_TO_ENABLE_TRIP) : false;
+        if(hashMapHHTModuleOrder.get(CODE_TO_ENABLE_TRIP) != null && hashMapHHTModuleOrder.get(CODE_TO_ENABLE_TRIP)==1)
+        this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP =true;
+        else this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP =false;
     }
 
     private boolean isInOutModule() {
@@ -3262,7 +3272,7 @@ public class ConfigurationMasterHelper {
             );
             db.openDataBase();
 
-            String sql = "select hhtCode, flag, RField,MName from "
+            String sql = "select hhtCode, flag, RField,MName,RField1 from "
                     + DataMembers.tbl_HhtMenuMaster
                     + " where  flag=1 and MenuType="
                     + bmodel.QT(MENU_LOAD_MANAGEMENT) + " and lang="
@@ -3278,6 +3288,7 @@ public class ConfigurationMasterHelper {
                     con.setFlag(c.getInt(1));
                     con.setModule_Order(c.getInt(2));
                     con.setMenuName(c.getString(3));
+                    con.setMandatory(c.getInt(4));
                     loadmanagementmenuconfig.add(con);
 
                 }
@@ -3303,7 +3314,7 @@ public class ConfigurationMasterHelper {
             );
             db.openDataBase();
 
-            String sql = "select hhtCode, flag, RField,MName from "
+            String sql = "select hhtCode, flag, RField,MName,RField1 from "
                     + DataMembers.tbl_HhtMenuMaster
                     + " where  flag=1 and MenuType="
                     + bmodel.QT(MENU_PLANNING_SUB) + " and lang="
@@ -3319,6 +3330,7 @@ public class ConfigurationMasterHelper {
                     con.setFlag(c.getInt(1));
                     con.setModule_Order(c.getInt(2));
                     con.setMenuName(c.getString(3));
+                    con.setMandatory(c.getInt(4));
                     config.add(con);
 
                 }

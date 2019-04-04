@@ -76,7 +76,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Vector;
-import java.util.concurrent.TimeUnit;
 
 public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
         implements View.OnClickListener, SyncContractor.SyncView {
@@ -1438,7 +1437,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
         } else {
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                     .now(DateTimeUtils.TIME));
-            bmodel.saveModuleCompletion("MENU_CALL_ANLYS");
+            bmodel.saveModuleCompletion("MENU_CALL_ANLYS", true);
         }
         resetRemarksBO();
         if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {

@@ -270,7 +270,7 @@ public class DashboardFragment extends IvyBaseFragment implements DashboardContr
             if (isFromHomeScreenTwo) {
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
-                bmodel.saveModuleCompletion(menuCode);
+                bmodel.saveModuleCompletion(menuCode, true);
                 getActivity().finish();
             } else {
                 getActivity().finish();

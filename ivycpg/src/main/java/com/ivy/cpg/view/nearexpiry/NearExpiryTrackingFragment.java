@@ -579,7 +579,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         protected Boolean doInBackground(Void... arg0) {
             try {
                 mNearExpiryHelper.saveSKUTracking(getActivity().getApplicationContext());
-                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_NEAREXPIRY);
+                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_NEAREXPIRY, true);
                 mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
 

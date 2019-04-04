@@ -654,7 +654,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     if (mBModel.reasonHelper.isNpReasonPhotoAvaiable(mBModel.retailerMasterBO.getRetailerID(), menuCode)) {
-                        mBModel.saveModuleCompletion(menuCode);
+                        mBModel.saveModuleCompletion(menuCode, true);
                         startActivity(new Intent(getActivity(),
                                 HomeScreenTwo.class));
                         getActivity().finish();
@@ -695,8 +695,10 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         protected Boolean doInBackground(String... arg0) {
             try {
                 mPlanoGramHelper.savePlanoGram(getContext().getApplicationContext());
-                if (calledBy != null && !"3".equals(calledBy))
-                    mBModel.saveModuleCompletion(HomeScreenTwo.MENU_PLANOGRAM);
+                if(menuCode.equalsIgnoreCase("MENU_VAN_PLANOGRAM"))
+                    mBModel.saveModuleCompletion("MENU_VAN_PLANOGRAM", false);
+                else if (calledBy != null && !"3".equals(calledBy))
+                    mBModel.saveModuleCompletion(HomeScreenTwo.MENU_PLANOGRAM, true);
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException("" + e);

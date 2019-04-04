@@ -2083,7 +2083,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), mMenuCode)) {
-                        bmodel.saveModuleCompletion(mMenuCode);
+                        bmodel.saveModuleCompletion(mMenuCode, true);
                         if (!mMenuCode.equalsIgnoreCase("MENU_SURVEY_SW")
                                 && !mMenuCode.equalsIgnoreCase("MENU_SURVEY01_SW")
                                 && !mMenuCode.equalsIgnoreCase("MENU_SURVEY_BA_CS")) {
@@ -2199,7 +2199,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     surveyHelperNew.deleteUnusedImages();
                     surveyHelperNew.saveAnswer(mMenuCode);
                 }
-                bmodel.saveModuleCompletion(mMenuCode);
+                bmodel.saveModuleCompletion(mMenuCode, true);
                 return Boolean.TRUE;
             } catch (Exception e) {
                 e.printStackTrace();

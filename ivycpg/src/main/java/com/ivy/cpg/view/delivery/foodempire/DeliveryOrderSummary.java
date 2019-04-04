@@ -132,7 +132,7 @@ public class DeliveryOrderSummary extends IvyBaseActivityNoActionBar implements 
                 }
                 if (isSaved) {
                     orderHelper.insertDeliveryOrderRecord(DeliveryOrderSummary.this, isPartialOrder);
-                    bmodel.saveModuleCompletion(HomeScreenTwo.MENU_DELIVERY_ORDER);
+                    bmodel.saveModuleCompletion(HomeScreenTwo.MENU_DELIVERY_ORDER, true);
                 }
 
             } catch (Exception ex) {

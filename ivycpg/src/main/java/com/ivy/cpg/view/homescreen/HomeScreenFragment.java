@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -86,6 +87,7 @@ import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.task.TaskFragment;
 import com.ivy.cpg.view.tradeCoverage.VisitFragment;
 import com.ivy.cpg.view.van.LoadManagementFragment;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.cpg.view.van.stockproposal.StockProposalFragment;
 import com.ivy.cpg.view.webview.WebViewActivity;
 import com.ivy.maplib.PlanningMapFragment;
@@ -108,6 +110,7 @@ import com.ivy.sd.png.view.NewoutletContainerFragment;
 import com.ivy.sd.png.view.PlanDeviationFragment;
 import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
@@ -555,6 +558,16 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
     }
 
+    private void moveToSpecificMenu(String menuCode){
+        for (ConfigureBO configureBO : leftmenuDB) {
+            if (configureBO.getConfigCode().equalsIgnoreCase(menuCode)){
+                gotoNextActivity(configureBO);
+                break;
+            }
+
+        }
+    }
+
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -625,6 +638,43 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                                     }
                                 });
                 bmodel.applyAlertDialogTheme(builderGPS);
+                break;
+
+            case 2:
+                AlertDialog.Builder builderTrip = new AlertDialog.Builder(getActivity())
+                        .setCancelable(false)
+                        .setNegativeButton(
+                                getResources().getString(R.string.end),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+
+                                        moveToSpecificMenu(MENU_LOAD_MANAGEMENT);
+
+                                    }
+                                });
+                if(bmodel.configurationMasterHelper.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP){
+                    builderTrip.setPositiveButton(getResources().getString(R.string.lbl_continue),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+
+                                    SharedPreferences sharedPreferences = AppUtils.getSharedPreferenceByName(bmodel.getApplicationContext(), LoadManagementHelper.getInstance(getActivity().getApplicationContext()).TRIP_CONSTANT);
+                                    sharedPreferences.edit().putString("tripExtendedDate",DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+                                    sharedPreferences.edit().apply();
+
+                                    moveToSpecificMenu(MENU_VISIT);
+                                }
+                            });
+                    builderTrip.setTitle(
+                            getResources().getString(R.string.do_you_want_to_continue_same_trip_or_end_the_trip));
+                }
+                else {
+                    builderTrip.setTitle(
+                            getResources().getString(R.string.pls_end_the_previous_trip));
+                }
+
+                bmodel.applyAlertDialogTheme(builderTrip);
                 break;
         }
     }
@@ -704,7 +754,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
-            } else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
+            }else if(LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isValidTrip()){
+                    showDialog(2);
+            }
+            else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
                     && isInandOutModuleEnabled
                     && AttendanceHelper.getInstance(getContext()).isSellerWorking(getContext())) {
                 Toast.makeText(getActivity(),

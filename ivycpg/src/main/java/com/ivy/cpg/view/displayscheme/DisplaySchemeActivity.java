@@ -79,7 +79,7 @@ public class DisplaySchemeActivity extends IvyBaseActivityNoActionBar {
                 public void onClick(View view) {
                     if (isDataAvailable()) {
                         if (schemeHelper.saveDisplayScheme(getApplicationContext())) {
-                            businessModel.saveModuleCompletion(HomeScreenTwo.MENU_DISPLAY_SCH);
+                            businessModel.saveModuleCompletion(HomeScreenTwo.MENU_DISPLAY_SCH, true);
                             Toast.makeText(DisplaySchemeActivity.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_LONG).show();
                             startActivity(new Intent(DisplaySchemeActivity.this,
                                     HomeScreenTwo.class));

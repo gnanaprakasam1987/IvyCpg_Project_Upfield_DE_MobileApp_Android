@@ -6,17 +6,20 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 <RelativeLayout
+    android:id="@+id/layout_trip"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/dimen_10dp"
     android:background="#DCEDFF">
-    <ImageButton
+    <Button
         android:id="@+id/imageview_buzzer"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:src="@drawable/image_buzzer_green"
-        android:background="@android:color/transparent"
+        android:background="@drawable/image_buzzer_green"
         android:scaleType="fitCenter"
+        android:text="@string/start"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
 
         />
 
@@ -37,6 +40,7 @@
         android:layout_marginRight="@dimen/list_margin"
         android:layout_weight="1"
         android:ellipsize="marquee"
+        android:text="@string/today_you_have_uncompleted_activities"
         />
     <TextView
         android:id="@+id/textView_status_secondary"
@@ -47,6 +51,7 @@
         android:layout_marginRight="@dimen/list_margin"
         android:layout_weight="1"
         android:ellipsize="marquee"
+        android:text="@string/complete_all_mandatory_activities_before_you_start_the_day"
         />
 
     </LinearLayout>

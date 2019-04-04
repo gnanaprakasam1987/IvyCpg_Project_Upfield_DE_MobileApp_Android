@@ -109,7 +109,6 @@ import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.task.Task;
-import com.ivy.cpg.view.task.TaskHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -128,7 +127,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.cpg.view.profile.ProfileActivity;
-import com.ivy.utils.AppUtils;
 import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
@@ -979,7 +977,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     private void updateMenuVisitStatus(Vector<ConfigureBO> menuDB) {
         int size = menuDB.size();
 
-        bmodel.isModuleDone();
+        bmodel.isModuleDone(true);
 
         try {
             for (int i = 0; i < size; i++) {
@@ -5317,7 +5315,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } else {
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                     .now(DateTimeUtils.TIME));
-            bmodel.saveModuleCompletion("MENU_CALL_ANLYS");
+            bmodel.saveModuleCompletion("MENU_CALL_ANLYS", true);
         }
         resetRemarksBO();
         if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {

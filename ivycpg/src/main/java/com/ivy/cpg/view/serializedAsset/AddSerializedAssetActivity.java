@@ -600,7 +600,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
     private void saveNewAsset() {
         setAddAssetDetails();
-        mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SERIALIZED_ASSET);
+        mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SERIALIZED_ASSET, true);
 
 
         assetTrackingHelper

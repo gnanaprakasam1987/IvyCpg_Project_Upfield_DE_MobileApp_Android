@@ -50,7 +50,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -62,7 +61,6 @@ import android.widget.ViewFlipper;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.core.IvyConstants;
-import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
@@ -1731,7 +1729,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     if (businessModel.reasonHelper.isNpReasonPhotoAvaiable(businessModel.retailerMasterBO.getRetailerID(), "MENU_STOCK")) {
-                        businessModel.saveModuleCompletion("MENU_STOCK");
+                        businessModel.saveModuleCompletion("MENU_STOCK", true);
                         startActivity(new Intent(getActivity(),
                                 HomeScreenTwo.class));
                         getActivity().finish();

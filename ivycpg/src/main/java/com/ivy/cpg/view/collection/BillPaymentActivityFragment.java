@@ -511,8 +511,8 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
             updatePayableAmt();
 
             collectionHelper.saveCollection(mSelecteInvoiceList, mPaymentList);
-            bmodel.saveModuleCompletion("MENU_COLLECTION");
-            bmodel.saveModuleCompletion("MENU_COLLECTION");
+            bmodel.saveModuleCompletion("MENU_COLLECTION", true);
+            bmodel.saveModuleCompletion("MENU_COLLECTION", true);
             if (bmodel.configurationMasterHelper.COMMON_PRINT_INTERMEC)
                 appendString = print2inchDataforCollectionReport();
             else
