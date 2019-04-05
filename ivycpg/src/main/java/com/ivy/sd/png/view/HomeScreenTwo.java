@@ -1784,9 +1784,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                         bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_ORDER);
 
-                        if (!bmodel.configurationMasterHelper.IS_VALIDATE_CREDIT_DAYS
+                        if ((!bmodel.configurationMasterHelper.IS_VALIDATE_DUE_DAYS || bmodel.productHelper.isDueDateExpired()) && (!bmodel.configurationMasterHelper.IS_VALIDATE_CREDIT_DAYS
                                 || bmodel.getRetailerMasterBO().getCreditDays() == 0
-                                || bmodel.productHelper.isCheckCreditPeriod()) {
+                                || bmodel.productHelper.isCheckCreditPeriod())) {
 
                             if (bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER) {
                                 if (bmodel.hasAlreadyStockChecked(bmodel
@@ -5166,9 +5166,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 isClick = true;
                 if (bmodel.productHelper.getProductMaster().size() > 0) {
                     bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_STK_ORD);
-                    if (!bmodel.configurationMasterHelper.IS_VALIDATE_CREDIT_DAYS
+                    if ((!bmodel.configurationMasterHelper.IS_VALIDATE_DUE_DAYS || bmodel.productHelper.isDueDateExpired()) && (!bmodel.configurationMasterHelper.IS_VALIDATE_CREDIT_DAYS
                             || bmodel.getRetailerMasterBO().getCreditDays() == 0
-                            || bmodel.productHelper.isCheckCreditPeriod()) {
+                            || bmodel.productHelper.isCheckCreditPeriod())) {
 
                         /** Load the stock check if opened in edit mode. **/
                         bmodel.setEditStockCheck(false);

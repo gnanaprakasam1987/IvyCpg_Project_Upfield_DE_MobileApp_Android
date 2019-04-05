@@ -1558,6 +1558,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_COLLECTION_DELETE = "COLL20";
     public boolean IS_COLLECTION_DELETE;
 
+    private static final String CODE_VALIDATE_DUE_DATE = "CREDITDUE01";
+    public boolean IS_VALIDATE_DUE_DAYS;
+
     private static final String CODE_SHOW_TASK_PRODUCT_LEVEL = "TASK01";
     public boolean IS_SHOW_TASK_PRODUCT_LEVEL;
     private static final String CODE_ALLOW_TASK_IMG_CAPTURE = "TASK02";
@@ -2724,6 +2727,7 @@ public class ConfigurationMasterHelper {
         this.IS_VOICE_TO_TEXT = hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) != null ? hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) : -1;
         this.IS_SKIP_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) : false;
         this.IS_COLLECTION_DELETE = hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) != null ? hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) : false;
+        this.IS_VALIDATE_DUE_DAYS = hashMapHHTModuleConfig.get(CODE_VALIDATE_DUE_DATE ) != null ? hashMapHHTModuleConfig.get(CODE_VALIDATE_DUE_DATE) : false;
         this.IS_ALLOW_TASK_IMG_CAPTURE = hashMapHHTModuleConfig.get(CODE_ALLOW_TASK_IMG_CAPTURE) != null ? hashMapHHTModuleConfig.get(CODE_ALLOW_TASK_IMG_CAPTURE) : false;
         this.IS_SHOW_TASK_PRODUCT_LEVEL = hashMapHHTModuleConfig.get(CODE_SHOW_TASK_PRODUCT_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TASK_PRODUCT_LEVEL) : false;
     }
