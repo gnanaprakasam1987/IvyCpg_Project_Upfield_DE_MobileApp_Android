@@ -1,12 +1,12 @@
-package com.ivy.ui.offlineplan.di;
+package com.ivy.ui.offlineplan.calendar.di;
 
 import android.content.Context;
 
 import com.ivy.core.di.scope.PerActivity;
-import com.ivy.ui.offlineplan.OfflinePlanContract;
-import com.ivy.ui.offlineplan.data.OfflinePlanDataManager;
-import com.ivy.ui.offlineplan.data.OfflinePlanDataManagerImpl;
-import com.ivy.ui.offlineplan.presenter.OfflinePlanPresenterImpl;
+import com.ivy.ui.offlineplan.calendar.OfflinePlanContract;
+import com.ivy.ui.offlineplan.calendar.data.OfflinePlanDataManager;
+import com.ivy.ui.offlineplan.calendar.data.OfflinePlanDataManagerImpl;
+import com.ivy.ui.offlineplan.calendar.presenter.OfflinePlanPresenterImpl;
 import com.ivy.utils.rx.AppSchedulerProvider;
 import com.ivy.utils.rx.SchedulerProvider;
 

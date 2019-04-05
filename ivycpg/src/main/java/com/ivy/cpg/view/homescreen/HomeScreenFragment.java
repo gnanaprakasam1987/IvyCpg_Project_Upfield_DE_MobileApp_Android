@@ -107,7 +107,7 @@ import com.ivy.sd.png.view.NewoutletContainerFragment;
 import com.ivy.sd.png.view.PlanDeviationFragment;
 import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
-import com.ivy.ui.offlineplan.view.OfflinePlanFragment;
+import com.ivy.ui.offlineplan.calendar.view.OfflinePlanFragment;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;

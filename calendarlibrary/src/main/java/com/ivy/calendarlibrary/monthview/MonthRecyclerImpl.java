@@ -1,4 +1,4 @@
-package com.ivy.lib.MonthView;
+package com.ivy.calendarlibrary.monthview;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

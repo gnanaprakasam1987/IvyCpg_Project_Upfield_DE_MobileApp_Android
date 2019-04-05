@@ -1,4 +1,4 @@
-package com.ivy.ui.offlineplan.data;
+package com.ivy.ui.offlineplan.calendar.data;
 
 import com.ivy.core.data.AppDataManagerContract;
 

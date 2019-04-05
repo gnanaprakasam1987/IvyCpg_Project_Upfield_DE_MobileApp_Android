@@ -3,7 +3,9 @@ package com.ivy.core.base.view;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -324,6 +326,13 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
             ((BaseActivity) getActivity()).setUpToolbar(title);
         else if (getActivity() instanceof IvyBaseActivityNoActionBar)
             ((IvyBaseActivityNoActionBar) getActivity()).setUpToolbar(title);
+    }
+
+    public void applyAlertDialogTheme(Context context, AlertDialog.Builder builder){
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).applyAlertDialogTheme(context,builder);
+        else if (getActivity() instanceof IvyBaseActivityNoActionBar)
+            ((IvyBaseActivityNoActionBar) getActivity()).applyAlertDialogTheme(context,builder);
     }
 
     // Todo to be removed

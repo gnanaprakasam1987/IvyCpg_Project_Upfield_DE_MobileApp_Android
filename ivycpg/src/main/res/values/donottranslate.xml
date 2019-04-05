@@ -186,4 +186,7 @@
     <string name="error_in_creating_visit">Error in creating visit</string>
     <string name="error_in_saving">Error in Saving</string>
 
+    <!--offline Planning-->
+    <string name="month">Month</string>
+
 </resources>

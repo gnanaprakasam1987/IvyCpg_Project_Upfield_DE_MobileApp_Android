@@ -15,6 +15,7 @@ public class CalenderBO {
     private List<RetailerMasterBO> retailerMasterBOArrayList = new ArrayList<RetailerMasterBO>();
     private List<BeatMasterBO> beatMasterBOArrayList =new ArrayList<>();
     private RetailerMasterBO retailerMasterBO;
+    private boolean isToday;
 
     public CalenderBO() {
 
@@ -74,5 +75,12 @@ public class CalenderBO {
         return this.retailerMasterBOArrayList.toString();
     }
 
+    public boolean isToday() {
+        return isToday;
+    }
+
+    public void setToday(boolean today) {
+        isToday = today;
+    }
 }
 

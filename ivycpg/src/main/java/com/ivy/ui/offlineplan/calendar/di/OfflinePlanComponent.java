@@ -1,8 +1,8 @@
-package com.ivy.ui.offlineplan.di;
+package com.ivy.ui.offlineplan.calendar.di;
 
 import com.ivy.core.di.component.IvyAppComponent;
 import com.ivy.core.di.scope.PerActivity;
-import com.ivy.ui.offlineplan.view.OfflinePlanFragment;
+import com.ivy.ui.offlineplan.calendar.view.OfflinePlanFragment;
 
 import dagger.Component;
 
