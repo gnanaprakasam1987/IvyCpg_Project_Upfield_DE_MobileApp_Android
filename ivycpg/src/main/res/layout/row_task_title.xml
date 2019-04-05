@@ -34,9 +34,11 @@
                 android:padding="@dimen/_14sdp"
                 android:text="@string/edit"
                 android:textAlignment="center"
+                android:clickable="true"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_secondary" />
+                android:textSize="@dimen/text_size_secondary"
+                android:focusable="true" />
 
 
             <Button
@@ -52,6 +54,8 @@
                 android:padding="@dimen/_14sdp"
                 android:text="@string/delete"
                 android:textAlignment="center"
+                android:clickable="true"
+                android:focusable="true"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_secondary" />

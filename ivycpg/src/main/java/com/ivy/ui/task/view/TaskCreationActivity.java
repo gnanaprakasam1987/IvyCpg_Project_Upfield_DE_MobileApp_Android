@@ -301,9 +301,6 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         showAlert("", getString(msgResId), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
-                /*taskView.setText("");
-                taskTitle.setText("");
-                mode = "seller";*/
                 if (fromHomeScreen)
                     startActivity(new Intent(TaskCreationActivity.this,
                             HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
@@ -414,6 +411,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     private void setUpSpinnerData(int isFrom) {
         mSelectedSpinnerPos = 0;
+        sellerSpinner.setVisibility(View.VISIBLE);
         switch (isFrom) {
             case 0:
                 sellerSpinner.setAdapter(userMasterArrayAdapter);
@@ -473,7 +471,6 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 TaskCreationActivity.this,
                 CameraActivity.class);
         String _path = FileUtils.photoFolderPath + "/" + imageName;
-        //  intent.putExtra("quality", 40);
         intent.putExtra(TaskConstant.FILE_PATH, _path);
         startActivityForResult(intent,
                 CAMERA_REQUEST_CODE);
@@ -514,7 +511,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     private void backNavigation() {
         if (fromHomeScreen)
             startActivity(new Intent(TaskCreationActivity.this,
-                    HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, "MENU_TASK_NEW"));
+                    HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
         else
             startActivity(new Intent(TaskCreationActivity.this,
                     TaskActivity.class).putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerTask)

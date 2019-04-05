@@ -79,6 +79,8 @@ public interface TaskContract {
 
         int getRetailerID();
 
+        boolean isDeviceUser();
+
         void orderBySortList(int sortType, boolean orderBy);
 
         boolean isShowServerTaskOnly();

@@ -69,6 +69,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     private View taskBgView;
     private int lastSelectedPos = -1;
     private String mSelectedTaskId = "0";
+    private String menuCode;
 
 
     @Inject
@@ -133,6 +134,9 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
             if (bundle.containsKey(TaskConstant.SCREEN_TITLE))
                 screenTitle = bundle.getString(TaskConstant.SCREEN_TITLE, getString(R.string.task));
+
+            if (bundle.containsKey(TaskConstant.MENU_CODE))
+                menuCode = bundle.getString(TaskConstant.MENU_CODE);
         }
     }
 
@@ -270,7 +274,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
                 case 1:
                     i = new Intent(getActivity(), TaskCreationActivity.class);
                     i.putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask);
-                    i.putExtra(TaskConstant.MENU_CODE, "MENU_TASK");
+                    i.putExtra(TaskConstant.MENU_CODE, menuCode);
                     i.putExtra(TaskConstant.SCREEN_TITLE, screenTitle);
                     i.putExtra(TaskConstant.TASK_SCREEN_MODE, isType);
                     break;
@@ -468,7 +472,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         Intent i = new Intent(getActivity(), TaskCreationActivity.class);
         i.putExtra(TaskConstant.FROM_HOME_SCREEN, fromHomeScreen);
         i.putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask);
-        i.putExtra(TaskConstant.MENU_CODE, "MENU_TASK");
+        i.putExtra(TaskConstant.MENU_CODE, menuCode);
         i.putExtra(TaskConstant.SCREEN_TITLE, screenTitle);
         startActivity(i);
         getActivity().finish();
@@ -482,7 +486,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             public void onDismiss(DialogInterface dialog) {
                 if (taskPresenter.isNPPhotoReasonAvailable(String.valueOf(taskPresenter.getRetailerID()), "MENU_TASK")) {
                     if (!fromHomeScreen) {
-                        taskPresenter.saveModuleCompletion("MENU_TASK");
+                        taskPresenter.saveModuleCompletion(menuCode);
                         startActivity(new Intent(getActivity(),
                                 HomeScreenTwo.class));
                         getActivity().finish();
@@ -492,7 +496,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             }
         });
         Bundle args = new Bundle();
-        args.putString(TaskConstant.MODULE_NAME, "MENU_TASK");
+        args.putString(TaskConstant.MODULE_NAME, menuCode);
         dialog.setCancelable(false);
         dialog.setArguments(args);
         dialog.show(getActivity().getSupportFragmentManager(), TaskConstant.PHOTO_CAPTURE_DIALOG_TAG);
@@ -519,40 +523,4 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
-    private void addAttachedFiles(String imgName) {
-        /*if (!evidenceImgList.isEmpty()) {
-            TaskDataBO tskBo = new TaskDataBO();
-            tskBo.setTaskEvidenceImg(imgName);
-            evidenceImgList.add(tskBo);
-        }*/
-    }
-
-    /*private void shortListOrder(int sortType, String sortText) {
-        if (sortText.equals("A - Z")) {
-            Collections.sort(taskPresenter.getTaskList(), new Comparator<TaskDataBO>() {
-                @Override
-                public int compare(TaskDataBO fstr, TaskDataBO sstr) {
-                    if (sortType == 1)
-                        return fstr.getTasktitle().compareToIgnoreCase(sstr.getTasktitle());
-                    else if (sortType == 3)
-                        return fstr.getTaskCategoryDsc().compareToIgnoreCase(sstr.getTaskCategoryDsc());
-                    else
-                        return fstr.getTaskDueDate().compareToIgnoreCase(sstr.getTaskDueDate());
-                }
-            });
-            updateListData(taskPresenter.getTaskList());
-
-        } else if (sortText.equals("Z - A")) {
-            Collections.sort(taskPresenter.getTaskList(), new Comparator<TaskDataBO>() {
-                @Override
-                public int compare(TaskDataBO fstr, TaskDataBO sstr) {
-                    return sstr.getTasktitle().compareToIgnoreCase(fstr.getTasktitle());
-                }
-            });
-            updateListData(taskPresenter.getTaskList());
-
-        }
-
-    }*/
 }

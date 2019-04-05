@@ -718,7 +718,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         updateMenuVisitStatus(mInStoreMenu);
 
 
-
         mSchedule = new IconicAdapter(mInStoreMenu);
 
         mTempMenuList = new Vector<>(menuDB);
@@ -821,6 +820,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             DateTimeUtils.now(DateTimeUtils.TIME), MENU_TASK);
                     Intent intent = new Intent(getApplicationContext(), TaskActivity.class);
                     intent.putExtra(TaskConstant.RETAILER_WISE_TASK, true);
+                    intent.putExtra(TaskConstant.MENU_CODE, MENU_TASK);
                     startActivity(intent);
                 }
 
@@ -2188,6 +2188,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     Intent intent = new Intent(getApplicationContext(),
                             TaskActivity.class);
                     intent.putExtra(TaskConstant.CURRENT_ACTIVITY_CODE, menu.getConfigCode());
+                    intent.putExtra(TaskConstant.MENU_CODE, menu.getConfigCode());
                     intent.putExtra(TaskConstant.RETAILER_WISE_TASK, true);
                     intent.putExtra(TaskConstant.SCREEN_TITLE, menu.getMenuName());
 

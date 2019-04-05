@@ -465,6 +465,11 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
     @Override
+    public boolean isDeviceUser() {
+        return true;
+    }
+
+    @Override
     public void orderBySortList(int sortType, boolean orderBy) {
         if (orderBy) {
             Collections.sort(taskPreparedList, new Comparator<TaskDataBO>() {

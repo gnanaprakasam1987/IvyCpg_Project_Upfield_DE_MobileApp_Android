@@ -64,7 +64,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             + " left join TaskExecutionDetails TD on TD.TaskId=A.taskid and TD.RetailerId = " + retailerId
                             + " left join ProductMaster PL on PL.PID=B.CategoryId"
                             + " left join RetailerMaster RM on RM.RetailerID=A.retailerId"
-                            + " where B.Status!='D'"
+                            + " where (B.Status!='D' OR B.Status IS NULL) and A.retailerId=" + retailerId
                             + " and A.TaskId not in (Select taskid from TaskHistory where RetailerId =" + retailerId + ")";
 
                     Cursor c = mDbUtil

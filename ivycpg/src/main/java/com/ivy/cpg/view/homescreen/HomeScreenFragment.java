@@ -83,7 +83,6 @@ import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
-import com.ivy.cpg.view.task.TaskHelper;
 import com.ivy.cpg.view.tradeCoverage.VisitFragment;
 import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.cpg.view.van.stockproposal.StockProposalFragment;
@@ -109,10 +108,9 @@ import com.ivy.sd.png.view.PlanDeviationFragment;
 import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
 import com.ivy.ui.task.TaskConstant;
+import com.ivy.ui.task.view.TaskFragment;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
-import com.ivy.ui.task.view.TaskActivity;
-import com.ivy.ui.task.view.TaskFragment;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -402,8 +400,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         });
 
         // Initilize photo filder path and create directory if not exisit.
-        if(!FileUtils.createFilePathAndFolder(getContext())) {
-            Toast.makeText(getContext(),"Photo storage folder not created..",Toast.LENGTH_LONG).show();
+        if (!FileUtils.createFilePathAndFolder(getContext())) {
+            Toast.makeText(getContext(), "Photo storage folder not created..", Toast.LENGTH_LONG).show();
         }
 
         /** Initialising map view **/
@@ -434,7 +432,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
     }
 
-    public void loadHomeMenuConfiguration(){
+    public void loadHomeMenuConfiguration() {
         leftmenuDB = new Vector<>();
         bmodel.configurationMasterHelper.downloadMainMenu();
         for (ConfigureBO con : bmodel.configurationMasterHelper.getConfig()) {
@@ -564,7 +562,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         switch (requestCode) {
             case CAMERA_REQUEST_CODE:
                 if (resultCode == 1) {
-                    Uri uri = FileUtils.getUriFromFile(getActivity(),FileUtils.photoFolderPath + "/" + imageFileName);
+                    Uri uri = FileUtils.getUriFromFile(getActivity(), FileUtils.photoFolderPath + "/" + imageFileName);
                     bmodel.userMasterHelper.getUserMasterBO().setImagePath(imageFileName);
                     bmodel.userMasterHelper.saveUserProfile(bmodel.userMasterHelper.getUserMasterBO());
                     profileImageView.invalidate();
@@ -573,7 +571,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 break;
             case TERMS_COND_REQ_CODE:
                 if (getActivity() != null)
-                getActivity().overridePendingTransition(0, R.anim.zoom_exit);
+                    getActivity().overridePendingTransition(0, R.anim.zoom_exit);
                 break;
             default:
                 break;
@@ -2224,6 +2222,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putString(TaskConstant.SCREEN_TITLE, menuName);
                 bndl.putBoolean(TaskConstant.RETAILER_WISE_TASK, false);
                 bndl.putBoolean(TaskConstant.FROM_HOME_SCREEN, true);
+                bndl.putString(TaskConstant.MENU_CODE, MENU_TASK_NEW);
                 fragment = new TaskFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
@@ -2386,9 +2385,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         private AlertDialog alertDialog;
         private String title;
 
-        public LoadRoadActivityData(String title){
+        public LoadRoadActivityData(String title) {
             this.title = title;
         }
+
         protected void onPreExecute(String str) {
             builder = new AlertDialog.Builder(getActivity());
 
