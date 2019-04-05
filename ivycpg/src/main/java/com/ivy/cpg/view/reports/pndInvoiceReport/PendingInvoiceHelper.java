@@ -119,8 +119,11 @@ public class PendingInvoiceHelper {
                         c.close();
                     }
                     db.closeDB();
+                    subscribe.onNext(invoiceHeader);
+                    subscribe.onComplete();
                 } catch (Exception e) {
-
+                    subscribe.onError(e);
+                    subscribe.onComplete();
                     Commons.printException(e);
                 }
 
