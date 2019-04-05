@@ -59,7 +59,8 @@ public class TaskDataManagerImpl implements TaskDataManager {
                     ArrayList<TaskDataBO> taskDataBOS = new ArrayList<>();
                     String query = "select distinct A.taskid,B.taskcode,B.taskDesc,A.retailerId,A.upload,"
                             + "(CASE WHEN ifnull(TD.TaskId,0) >0 THEN 1 ELSE 0 END) as isDone,"
-                            + "B.usercreated , B.taskowner , B.date, A.upload,A.channelid,A.userid,IFNULL(B.DueDate,''),B.CategoryId,IFNULL(PL.PName,'')"
+                            + "B.usercreated , B.taskowner , B.date, A.upload,A.channelid,A.userid,"
+                            + "IFNULL(B.DueDate,''),B.CategoryId,IFNULL(PL.PName,''),B.IsServerTask"
                             + " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid"
                             + " left join TaskExecutionDetails TD on TD.TaskId=A.taskid and TD.RetailerId = " + retailerId
                             + " left join ProductMaster PL on PL.PID=B.CategoryId"
@@ -90,6 +91,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             taskmasterbo.setTaskDueDate(c.getString(12));
                             taskmasterbo.setTaskCategoryID(c.getInt(13));
                             taskmasterbo.setTaskCategoryDsc(c.getString(14));
+                            taskmasterbo.setServerTask(c.getInt(15));
 
                             if (taskmasterbo.getUserId() != 0)
                                 taskmasterbo.setMode("seller");
@@ -574,7 +576,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
     }
 
     @Override
-    public Single<Boolean> deleteTaskData(String taskId, String taskOwner) {
+    public Single<Boolean> deleteTaskData(String taskId, String taskOwner, int serverTask) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
@@ -582,7 +584,8 @@ public class TaskDataManagerImpl implements TaskDataManager {
                     if (mDbUtil.isDbNullOrClosed())
                         initDb();
 
-                    if (!taskOwner.equalsIgnoreCase("self")) {
+                    if (!taskOwner.equalsIgnoreCase("self")
+                            && serverTask == 1) {
 
                         mDbUtil.updateSQL("UPDATE TaskMaster " +
                                 "SET status='D' WHERE taskid=" + StringUtils.QT(taskId));

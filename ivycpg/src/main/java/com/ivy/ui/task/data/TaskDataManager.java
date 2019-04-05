@@ -13,7 +13,7 @@ public interface TaskDataManager extends AppDataManagerContract {
 
     Observable<ArrayList<TaskDataBO>> fetchTaskData(String retailerId);
 
-    Observable<ArrayList<TaskDataBO>>fetchCompletedTask(String retailerId);
+    Observable<ArrayList<TaskDataBO>> fetchCompletedTask(String retailerId);
 
     Observable<ArrayList<TaskDataBO>> fetchPendingTaskData();
 
@@ -21,7 +21,7 @@ public interface TaskDataManager extends AppDataManagerContract {
 
     Single<Boolean> updateTaskExecutionData(TaskDataBO taskDataBO, String retailerId);
 
-    Single<Boolean>updateTaskExecutionImage(String imageName,String taskId);
+    Single<Boolean> updateTaskExecutionImage(String imageName, String taskId);
 
     Single<Boolean> addAndUpdateTask(int channelId, TaskDataBO taskObj, String mode, ArrayList<TaskDataBO> taskImgList);
 
@@ -31,7 +31,7 @@ public interface TaskDataManager extends AppDataManagerContract {
 
     Observable<ArrayList<TaskDataBO>> fetTaskImgData(String taskId);
 
-    Single<Boolean> deleteTaskData(String taskId,String taskOwner);
+    Single<Boolean> deleteTaskData(String taskId, String taskOwner, int serverTask);
 
-    Observable<ArrayList<String>>getDeletedImageList(String taskId);
+    Observable<ArrayList<String>> getDeletedImageList(String taskId);
 }

@@ -63,7 +63,7 @@ public interface TaskContract {
 
         ArrayList<TaskDataBO> getTaskImgList();
 
-        void deleteTask(String taskId, String taskOwner);
+        void deleteTask(String taskId, String taskOwner, int serverTask);
 
         String getSelectedRetailerId();
 

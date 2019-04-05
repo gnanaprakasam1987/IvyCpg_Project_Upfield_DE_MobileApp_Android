@@ -578,9 +578,9 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
     @Override
-    public void deleteTask(String taskId, String taskOwner) {
+    public void deleteTask(String taskId, String taskOwner, int serverTask) {
         getIvyView().showLoading();
-        getCompositeDisposable().add(mTaskDataManager.deleteTaskData(taskId, taskOwner).subscribeOn(getSchedulerProvider().io())
+        getCompositeDisposable().add(mTaskDataManager.deleteTaskData(taskId, taskOwner, serverTask).subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {
                     @Override

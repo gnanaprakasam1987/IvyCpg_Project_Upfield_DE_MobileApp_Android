@@ -279,7 +279,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
                     i.putExtra(TaskConstant.TASK_SCREEN_MODE, isType);
                     break;
                 case 2:
-                    taskPresenter.deleteTask(taskBO.getTaskId(), taskBO.getTaskOwner());
+                    taskPresenter.deleteTask(taskBO.getTaskId(), taskBO.getTaskOwner(),taskBO.getServerTask());
                     break;
             }
 
