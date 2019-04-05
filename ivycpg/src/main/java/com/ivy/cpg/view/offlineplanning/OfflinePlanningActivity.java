@@ -460,9 +460,11 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
 
                 holder = new RsdHolder();
                 holder.tvName = convertView.findViewById(R.id.tv_rsd);
+                holder.tvAddress=convertView.findViewById(R.id.tv_address);
                 holder.ivEntityType = convertView.findViewById(R.id.ivEntityType);
 
                 holder.tvName.setTypeface(FontUtils.getFontRoboto(OfflinePlanningActivity.this, FontUtils.FontType.MEDIUM));
+                //holder.tvAddress.setTypeface(FontUtils.getFontRoboto(OfflinePlanningActivity.this, FontUtils.FontType.LIGHT));
                 holder.ivEntityType.setImageDrawable(getResources().getDrawable(R.drawable.ic_store_ofplan));
 
                 convertView.setTag(holder);
@@ -472,6 +474,11 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
 
             holder.retailerMasterBO = items.get(position);
             holder.tvName.setText(holder.retailerMasterBO.getRetailerName());
+
+            String address=(holder.retailerMasterBO.getAddress1()!=null?(holder.retailerMasterBO.getAddress1()):"");
+
+            holder.tvAddress.setText(address);
+
             return convertView;
         }
 
@@ -1618,7 +1625,7 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
     public class RsdHolder {
         RetailerMasterBO retailerMasterBO;
         NonFieldBO nonFieldBO;
-        TextView tvName;
+        TextView tvName,tvAddress;
         ImageView ivEntityType;
     }
 

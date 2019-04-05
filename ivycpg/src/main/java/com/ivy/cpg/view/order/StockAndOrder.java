@@ -19,7 +19,6 @@ import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -54,7 +53,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -65,10 +63,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 import android.widget.Toast;
 
-import com.elyeproj.loaderviewlibrary.LoaderTextView;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.cpg.view.digitalcontent.DigitalContentActivity;
@@ -127,9 +123,7 @@ import com.ivy.utils.FontUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Vector;
@@ -145,7 +139,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
     private TextView lpcText;
     private TextView distValue;
     private BusinessModel bmodel;
-    private Vector<ProductMasterBO> mylist;
+    private Vector<ProductMasterBO> mylist=new Vector<>();
     private EditText QUANTITY;
 
     private String append = "";
@@ -258,7 +252,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         orderHelper = OrderHelper.getInstance(this);
         stockCheckHelper = StockCheckHelper.getInstance(this);
-        productSearch=ProductSearch.getInstance(this,productList,bmodel,ProductSearch.SCREEN_CODE_ORDER);
+        productSearch=new ProductSearch(this,productList,bmodel,ProductSearch.SCREEN_CODE_ORDER);
 
         if (bmodel.configurationMasterHelper.SHOW_BARCODE)
             checkAndRequestPermissionAtRunTime(2);
@@ -6055,10 +6049,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         mSelectedFilter=-1;// clearing filter flag
 
-        mylist=searchedList;
-
-        if(mylist!=null) {
-
+        mylist.clear();
+        mylist.addAll(searchedList);
 
             mSchedule = new MyAdapter(mylist);
             lvwplist.setAdapter(mSchedule);
@@ -6070,7 +6062,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
 
-        }
 
         supportInvalidateOptionsMenu();
 

@@ -49,6 +49,7 @@ import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.ivy.core.CodeCleanUpUtil;
+import com.ivy.core.IvyConstants;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.app.AppDataProviderImpl;
 import com.ivy.core.data.channel.ChannelDataManagerImpl;
@@ -151,8 +152,6 @@ import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.StringUtils;
-import com.microsoft.azure.storage.CloudStorageAccount;
-import com.microsoft.azure.storage.blob.CloudBlobClient;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
 
@@ -170,6 +169,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.net.URI;
 import java.nio.channels.FileChannel;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
@@ -2611,7 +2611,7 @@ public class BusinessModel extends Application {
                     + "," + StringUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
 
             db.insertSQL("Nonproductivereasonmaster", columns, values);
-            if (!outlet.getCollectionReasonID().equals("0")) {
+            if (outlet.getCollectionReasonID() != null && !outlet.getCollectionReasonID().equals("0")) {
                 String uid = StringUtils.QT(getAppDataProvider().getUser()
                         .getDistributorid()
                         + ""
@@ -3434,6 +3434,7 @@ public class BusinessModel extends Application {
     public void getimageDownloadURL() {
         try {
             boolean isAmazonUpload = false;
+            boolean isAzureUpload = false;
 
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
             );
@@ -3447,9 +3448,19 @@ public class BusinessModel extends Application {
                 }
                 c.close();
             }
+
+            c = db
+                    .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'IS_AZURE_UPLOAD' and flag = 1 and ForSwitchSeller = 0");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    isAzureUpload = true;
+                }
+                c.close();
+            }
+
             c = null;
 
-            if (!isAmazonUpload) {
+            if (!isAmazonUpload && !isAzureUpload) {
                 c = db
                         .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_HOST'");
                 if (c != null) {
@@ -7418,8 +7429,6 @@ public class BusinessModel extends Application {
 
                 getResponseForUploadImageToAzureStorageCloud(filename, AzureConnectionHelper.getInstance().initializeAzureStorageConnection(), handler);
 
-                successCount = successCount + 1;
-
             }
             if (successCount == uploadFileSize) {
                 fileDeleteAfterUpload();
@@ -7521,10 +7530,19 @@ public class BusinessModel extends Application {
 
             mBucketName = DataMembers.AZURE_ROOT_DIRECTORY+"/"+mBucketName;
 
-            CloudBlockBlob cloudBlockBlob = cloudBlobContainer.getBlockBlobReference(mBucketName);
+            CloudBlockBlob cloudBlockBlob =null;
+            if (ConfigurationMasterHelper.ACCESS_KEY_ID.equalsIgnoreCase(IvyConstants.SAS_KEY_TYPE)){
+                String downloadURL = AppUtils.buildAzureUrl(mBucketName) ;
+                cloudBlockBlob = new CloudBlockBlob(new URI(downloadURL));
+            }else {
+                 cloudBlobContainer.getBlockBlobReference(mBucketName);
+            }
 
-            if (fileInputStream != null)
+            if (fileInputStream != null && cloudBlockBlob != null) {
                 cloudBlockBlob.upload(fileInputStream, fileInputStream.available());
+                successCount = successCount + 1;
+            }
+
         } catch (Exception e) {
             Commons.printException(e);
         }

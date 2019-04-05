@@ -283,5 +283,14 @@ public class AppUtils {
         }
     }
 
+    /**
+     * Build the url to download using Azure
+     * @param appendUrl - file path in download url
+     * @return
+     */
+    public static String buildAzureUrl(String appendUrl){
+        return DataMembers.AZURE_CONNECTION_STRING + "/"+DataMembers.AZURE_CONTAINER+"/"+appendUrl+ DataMembers.AZURE_SAS;
+    }
+
 
 }

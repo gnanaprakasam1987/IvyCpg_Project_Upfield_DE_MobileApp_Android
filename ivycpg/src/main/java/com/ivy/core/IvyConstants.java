@@ -40,4 +40,6 @@ public class IvyConstants {
     public static final int AUDIT_NOT_OK = 0;
     public static final int AUDIT_OK = 1;
     public static final int AUDIT_DEFAULT = 2;
+
+    public static final String SAS_KEY_TYPE ="SAS";
 }

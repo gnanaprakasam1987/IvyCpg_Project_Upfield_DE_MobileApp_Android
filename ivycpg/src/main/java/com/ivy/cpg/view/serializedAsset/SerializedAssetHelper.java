@@ -347,7 +347,8 @@ public class SerializedAssetHelper {
             sb.append("ifnull((select SLM.Listname from StandardListMaster SLM where SLM.ListId=A.modelid ");
             sb.append("and SLM.ListType='ASSET_MODEL_TYPE'),'') as ModelName,");
             sb.append("ifnull((select SLM.Listname from StandardListMaster SLM where SLM.ListId=A.AssetType ");
-            sb.append("and SLM.ListType='ASSET_TYPE'),'') as AssetType ");
+            sb.append("and SLM.ListType='ASSET_TYPE'),'') as AssetType,");
+            sb.append("B.installDate as installDate,B.lastserviceDate as serviceDate ");
             sb.append("from SerializedAssetMaster A ");
             sb.append("inner join SerializedAssetMapping B on A.AssetId=B.AssetId ");
             sb.append("left join SerializedAssetProductMapping C on C.AssetId=A.AssetId ");
@@ -356,7 +357,7 @@ public class SerializedAssetHelper {
             String allMasterSb = sb.toString();
 
             sb.append("Where Retailerid in(0,");
-            sb.append(StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
+            sb.append(StringUtils.QT(mBusinessModel.getRetailerMasterBO().getRetailerID())).append(")");
 
             sb.append(" GROUP BY RetailerId,B.AssetId,B.SerialNumber ORDER BY RetailerId");
 
@@ -384,6 +385,9 @@ public class SerializedAssetHelper {
                     assetTrackingBO.setModelName(c.getString(c.getColumnIndex("ModelName")));
                     assetTrackingBO.setAssetTypeId(c.getString(c.getColumnIndex("AssetTypeId")));
                     assetTrackingBO.setAssetType(c.getString(c.getColumnIndex("AssetType")));
+                    assetTrackingBO.setmLastInstallDate(c.getString(c.getColumnIndex("installDate")));
+                    assetTrackingBO.setInstallDate(c.getString(c.getColumnIndex("installDate")));
+                    assetTrackingBO.setServiceDate(c.getString(c.getColumnIndex("serviceDate")));
 
 
                     mAssetTrackingList.add(assetTrackingBO);

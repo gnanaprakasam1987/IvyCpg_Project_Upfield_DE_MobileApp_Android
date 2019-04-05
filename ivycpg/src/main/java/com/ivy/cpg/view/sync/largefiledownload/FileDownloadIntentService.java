@@ -54,6 +54,11 @@ public class FileDownloadIntentService extends IntentService {
 
             downloadType = intent.getExtras()!= null?intent.getExtras().getString("DownloadType","AWS"):"AWS";
 
+            if (downloadType.equalsIgnoreCase("AWS"))
+                AWSConnectionHelper.getInstance().setAmazonS3Credentials(context);
+            else
+                AzureConnectionHelper.getInstance().setAzureCredentials(context);
+
             createFileStartDownload(downloadUrlList.get(count));
         }
     }
