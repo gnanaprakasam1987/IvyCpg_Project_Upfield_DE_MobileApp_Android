@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.ivy.cpg.view.retailercontact.ContactCreationFragment;
+import com.ivy.cpg.view.retailercontact.RetailerContactFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
@@ -107,7 +108,32 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
                     adapter.addFragment(new NewOutletFragment(), getResources().getString(R.string.outlet));
 
                 if (bmodel.configurationMasterHelper.IS_CONTACT_TAB) {
-                    adapter.addFragment(ContactCreationFragment.getInstance(isFromEditProfileView), getResources().getString(R.string.contact));
+
+                    //1 - View Mode ; 2,0 - Edit Mode
+                    int screenMode = getActivity().getIntent().getIntExtra("screenMode", 0);
+                    String retailerId = bundle.getString("retailerId", "");
+
+                    boolean isEdit = false;
+
+                    if (isFromEditProfileView) {
+                        isEdit = true;
+                        screenMode = 2;
+                    }
+
+
+                    bmodel.newOutletHelper.setRetailerContactList(new ArrayList<>());
+                    if (screenMode == 2){
+                        bmodel.newOutletHelper.setRetailerContactList(bmodel.profilehelper.getContactBos(retailerId,isEdit));
+                    }
+
+                    if (screenMode == 1) {
+                        Bundle bundle = new Bundle();
+                        bundle.putString("RetailerId",retailerId);
+                        RetailerContactFragment retailerContactFragment = new RetailerContactFragment();
+                        retailerContactFragment.setArguments(bundle);
+                        adapter.addFragment(retailerContactFragment, getResources().getString(R.string.contact));
+                    }else
+                        adapter.addFragment(ContactCreationFragment.getInstance(isFromEditProfileView), getResources().getString(R.string.contact));
                 }
 
                 viewPager.setAdapter(adapter);

@@ -1,5 +1,7 @@
 package com.ivy.cpg.view.retailercontact;
 
+import java.util.ArrayList;
+
 /**
  * Created by mansoor.k on 30-07-2018.
  */
@@ -13,6 +15,43 @@ public class RetailerContactBo {
     private int isPrimary;
     private String contactTitleLovId = "";
     private String cpId= "";
+    private int isEmailPrimary;
+    private String salutationTitle="";
+    private String contactSalutationId="";
+
+    private ArrayList<RetailerContactAvailBo> contactAvailList = new ArrayList<>();
+
+    public ArrayList<RetailerContactAvailBo> getContactAvailList() {
+        return contactAvailList;
+    }
+
+    public void setContactAvailList(ArrayList<RetailerContactAvailBo> contactAvailList) {
+        this.contactAvailList = contactAvailList;
+    }
+
+    public String getContactSalutationId() {
+        return contactSalutationId;
+    }
+
+    public void setContactSalutationId(String contactSalutationId) {
+        this.contactSalutationId = contactSalutationId;
+    }
+
+    public String getSalutationTitle() {
+        return salutationTitle;
+    }
+
+    public void setSalutationTitle(String salutationTitle) {
+        this.salutationTitle = salutationTitle;
+    }
+
+    public int getIsEmailPrimary() {
+        return isEmailPrimary;
+    }
+
+    public void setIsEmailPrimary(int isEmailPrimary) {
+        this.isEmailPrimary = isEmailPrimary;
+    }
 
     public String getStatus() {
         return status;
