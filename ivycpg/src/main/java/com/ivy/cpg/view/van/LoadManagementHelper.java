@@ -587,7 +587,7 @@ public class LoadManagementHelper {
             }
             else
                 db.updateSQL("update "+DataMembers.tbl_TripMaster
-                        +" set endDate="+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)+","+"upload='N'")
+                        +" set endDate="+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))+","+"upload='N'"
                         +" where userId="+bmodel.userMasterHelper.getUserMasterBO().getUserid());
 
         }
@@ -688,7 +688,7 @@ public class LoadManagementHelper {
 
         int difference=DateTimeUtils.getDateCount(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),tripStartDate,"yyyy/MM/dd");
 
-        if(difference<0)
+        if(difference>0)
             return false;
 
 

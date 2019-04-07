@@ -241,6 +241,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
 
 
+
         if (isFromPlanning || !bmodel.configurationMasterHelper.IS_MAP)
             switchBtnLty.setVisibility(View.GONE);
         else

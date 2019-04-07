@@ -201,9 +201,10 @@ public class OdameterHelper {
             Cursor c = db.selectSQL("select isstarted from odameter");
             if (c != null) {
                 if (c.moveToNext()) {
+                    boolean isStarted=c.getInt(0)==1;
                     c.close();
                     db.closeDB();
-                    return c.getInt(0)==1;
+                    return isStarted;
                 }
                 c.close();
             }
@@ -223,9 +224,10 @@ public class OdameterHelper {
             Cursor c = db.selectSQL("select isEnded from odameter");
             if (c != null) {
                 if (c.moveToNext()) {
+                    boolean isSEnded=c.getInt(0)==1;
                     c.close();
                     db.closeDB();
-                    return c.getInt(0)==1;
+                    return isSEnded;
                 }
                 c.close();
             }

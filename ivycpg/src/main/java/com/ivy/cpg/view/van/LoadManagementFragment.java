@@ -145,7 +145,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
 
             layout_trip=view.findViewById(R.id.layout_trip);
-            if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
+            if(!bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
                 layout_trip.setVisibility(View.GONE);
             }
 
@@ -520,11 +520,14 @@ public class LoadManagementFragment extends IvyBaseFragment {
             holder.menuBTN.setText(configTemp.getMenuName());
 
             if(configTemp.isDone()){
+                holder.imageView_mandatory.setVisibility(View.VISIBLE);
                 holder.imageView_mandatory.setImageResource(R.drawable.blue_tick);
             }
             else {
-                if(configTemp.getMandatory()==1)
-                holder.imageView_mandatory.setImageResource(R.drawable.img_mandatory);
+                if(configTemp.getMandatory()==1) {
+                    holder.imageView_mandatory.setVisibility(View.VISIBLE);
+                    holder.imageView_mandatory.setImageResource(R.drawable.img_mandatory);
+                }
                 else holder.imageView_mandatory.setVisibility(View.INVISIBLE);
             }
 
@@ -573,12 +576,14 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
                     if(fromScreen.equals("MENU_PLANNING_SUB")) {
                         menuDB.get(i).setDone(OdameterHelper.getInstance(getActivity().getApplicationContext()).isOdameterStarted(getActivity()));
-                        count_moduleCompleted+=1;
                     }
                     else {
                         menuDB.get(i).setDone(OdameterHelper.getInstance(getActivity().getApplicationContext()).isOdameterEnded(getActivity()));
-                        count_moduleCompleted+=1;
+
                     }
+
+                    if(menuDB.get(i).isDone())
+                        count_moduleCompleted+=1;
                 }
                 else if (menuDB.get(i).getConfigCode().equals(MENU_STOCK_VIEW)) {
                     if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
@@ -593,12 +598,16 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     }
                 }
                 else if (menuDB.get(i).getConfigCode().equals(MENU_VAN_UNLOAD)) {
-                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
+                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
                         menuDB.get(i).setDone(true);
+                        count_moduleCompleted += 1;
+                    }
                 }
                 else if (menuDB.get(i).getConfigCode().equals(MENU_VAN_PLANOGRAM)) {
-                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
+                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
                         menuDB.get(i).setDone(true);
+                        count_moduleCompleted += 1;
+                    }
                 }
                 else if (menuDB.get(i).getConfigCode().equals(MENU_LOAD_WEBVIEW)) {
                     if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
