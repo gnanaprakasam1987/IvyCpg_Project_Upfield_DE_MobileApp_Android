@@ -10,7 +10,7 @@ public class TaskDataBO implements Parcelable {
     private int channelId;
 
     private String taskImg;
-    private String taskImgType;
+    private String taskImgPath;
 
     private String upload;
 
@@ -40,7 +40,7 @@ public class TaskDataBO implements Parcelable {
         taskId = in.readString();
         channelId = in.readInt();
         taskImg = in.readString();
-        taskImgType = in.readString();
+        taskImgPath = in.readString();
         upload = in.readString();
         tasktitle = in.readString();
         rid = in.readInt();
@@ -279,12 +279,12 @@ public class TaskDataBO implements Parcelable {
         this.flag = flag;
     }
 
-    public String getTaskImgType() {
-        return taskImgType;
+    public String getTaskImgPath() {
+        return taskImgPath;
     }
 
-    public void setTaskImgType(String taskImgType) {
-        this.taskImgType = taskImgType;
+    public void setTaskImgPath(String taskImgPath) {
+        this.taskImgPath = taskImgPath;
     }
 
 
@@ -339,7 +339,7 @@ public class TaskDataBO implements Parcelable {
         parcel.writeString(taskId);
         parcel.writeInt(channelId);
         parcel.writeString(taskImg);
-        parcel.writeString(taskImgType);
+        parcel.writeString(taskImgPath);
         parcel.writeString(upload);
         parcel.writeString(tasktitle);
         parcel.writeInt(rid);

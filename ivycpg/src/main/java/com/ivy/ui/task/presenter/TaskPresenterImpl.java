@@ -311,6 +311,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
         if (imageName != null
                 && !imageName.isEmpty()) {
             imgBo.setTaskImg(imageName);
+            imgBo.setTaskImgPath(FileUtils.photoFolderPath);
 
             mTaskImgList.add(imgBo);
 
@@ -319,6 +320,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
             imgBo.setTaskImg("");
             if (mTaskImgList.isEmpty())
                 mTaskImgList.add(imgBo);
+
         }
         getIvyView().updateImageListAdapter(getTaskImgList());
     }
@@ -570,6 +572,11 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                     }
                 }));
         return isAvailable;
+    }
+
+    @Override
+    public void createServerTaskImgPath(String serverPath) {
+        TaskConstant.TASK_SERVER_IMG_PATH = serverPath;
     }
 
     @Override

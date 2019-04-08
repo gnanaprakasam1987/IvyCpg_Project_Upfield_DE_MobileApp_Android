@@ -103,6 +103,8 @@ public interface TaskContract {
 
         boolean isNPPhotoReasonAvailable(String retailerID, String moduleName);
 
+        void createServerTaskImgPath(String serverPath);
+
 
     }
 }

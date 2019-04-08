@@ -53,7 +53,7 @@ public class TaskImgListAdapter extends RecyclerView.Adapter<TaskImgListAdapter.
                 holder.deleteImg.setVisibility(View.VISIBLE);
             }
         }
-        String path = FileUtils.photoFolderPath + "/" + imgList.get(holder.getAdapterPosition()).getTaskImg();
+        String path = imgList.get(holder.getAdapterPosition()).getTaskImgPath() + "/" + imgList.get(holder.getAdapterPosition()).getTaskImg();
 
         // if (FileUtils.isFileExisting(path)) {
         Uri uri = FileUtils

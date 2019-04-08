@@ -231,11 +231,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         builder.setPositiveButton(mContext.getString(R.string.ok),
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-
+                        taskClickListener.onTaskButtonClick(taskDatas.get(position), 2);
                         taskDatas.remove(position);
                         notifyItemRemoved(position);
                         notifyItemRangeChanged(position, taskDatas.size());
-                        taskClickListener.onTaskButtonClick(taskDatas.get(position), 2);
                         dialog.dismiss();
 
 

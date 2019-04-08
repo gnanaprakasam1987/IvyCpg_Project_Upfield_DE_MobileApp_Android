@@ -161,10 +161,6 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
         addTabs();
 
-        if (taskPresenter.isShowServerTaskOnly())
-            taskPresenter.updateTaskList(TaskConstant.SERVER_TASK, mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
-        else
-            taskPresenter.updateTaskList(TaskConstant.ALL_TASK, mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
 
     }
 
@@ -386,7 +382,11 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
             hideBottomSheet();
         lastSelectedPos = -1;
-        taskPresenter.updateTaskList(tab.getPosition(), mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
+
+        if (taskPresenter.isShowServerTaskOnly())
+            taskPresenter.updateTaskList(TaskConstant.SERVER_TASK, mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
+        else
+            taskPresenter.updateTaskList(tab.getPosition(), mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
     }
 
     @Override

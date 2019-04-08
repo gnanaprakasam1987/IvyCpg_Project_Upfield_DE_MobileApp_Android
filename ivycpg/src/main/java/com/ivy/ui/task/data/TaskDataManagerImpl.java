@@ -12,7 +12,9 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.task.TaskConstant;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -360,7 +362,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
 
 
                     // Insert Task into TaskMaster
-                    columns_new = "taskid,taskcode,taskdesc,upload ,taskowner,date,usercreated,DueDate,CategoryId,EndDate,Status";
+                    columns_new = "taskid,taskcode,taskdesc,upload ,taskowner,date,usercreated,DueDate,CategoryId,EndDate,Status,IsServerTask";
 
                     value_new = finalTid + "," + StringUtils.QT(title) + "," + StringUtils.QT(name) + ","
                             + "'N'," + finalTaskOwner + ", " + date + ",1,"
@@ -368,7 +370,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             .convertToServerDateFormat(
                                     taskObj.getTaskDueDate(),
                                     ConfigurationMasterHelper.outDateFormat)) + ","
-                            + taskObj.getTaskCategoryID() + "," + endDate + "," + finalStatus;
+                            + taskObj.getTaskCategoryID() + "," + endDate + "," + finalStatus + "," + 0;
 
                     mDbUtil.insertSQL("TaskMaster", columns_new, value_new);
 
@@ -383,7 +385,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                                     .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
                             value_new = finalTid + "," + imgId + "," + StringUtils.QT(imgBO.getTaskImg())
-                                    + "," + imgBO.getTaskImgType() + "," + "'N'" + "," + finalStatus;
+                                    + "," + imgBO.getTaskImgPath() + "," + "'N'" + "," + finalStatus;
 
                             mDbUtil.insertSQL("TaskImageDetails", columns_new, value_new);
                         }
@@ -548,7 +550,8 @@ public class TaskDataManagerImpl implements TaskDataManager {
                     if (mDbUtil.isDbNullOrClosed())
                         initDb();
 
-                    String query = "SELECT TaskImageName,ImageType FROM TaskImageDetails"
+                    String query = "SELECT TMD.TaskImageName,TM.IsServerTask FROM TaskImageDetails TMD"
+                            + " INNER JOIN TaskMaster TM ON TM.taskId = TMD.TaskId"
                             + " WHERE Status!='D' AND TaskId = " + StringUtils.QT(taskId);
 
                     ArrayList<TaskDataBO> taskImgList = new ArrayList<>();
@@ -558,7 +561,12 @@ public class TaskDataManagerImpl implements TaskDataManager {
                         while (c.moveToNext()) {
                             TaskDataBO taskImgBo = new TaskDataBO();
                             taskImgBo.setTaskImg(c.getString(0));
-                            taskImgBo.setTaskImgType(c.getString(1));
+
+                            if (c.getInt(1) == 1)
+                                taskImgBo.setTaskImgPath(TaskConstant.TASK_SERVER_IMG_PATH + "/" + c.getString(0));
+                            else
+                                taskImgBo.setTaskImgPath(FileUtils.photoFolderPath + "/" + c.getString(0));
+
                             taskImgList.add(taskImgBo);
                         }
                         c.close();
@@ -584,8 +592,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                     if (mDbUtil.isDbNullOrClosed())
                         initDb();
 
-                    if (!taskOwner.equalsIgnoreCase("self")
-                            && serverTask == 1) {
+                    if (serverTask == 1) {
 
                         mDbUtil.updateSQL("UPDATE TaskMaster " +
                                 "SET status='D' WHERE taskid=" + StringUtils.QT(taskId));

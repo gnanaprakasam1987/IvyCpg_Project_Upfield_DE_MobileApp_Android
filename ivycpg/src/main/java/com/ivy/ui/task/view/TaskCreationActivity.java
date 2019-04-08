@@ -179,6 +179,10 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         setUnBinder(ButterKnife.bind(this));
         setUpToolBar();
         setUpRecyclerView();
+        taskPresenter.createServerTaskImgPath(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
+                + taskPresenter.getUserID()
+                + DataMembers.DIGITAL_CONTENT + "/"
+                + DataMembers.TASK_DIGITAL_CONTENT);
         //allow only create task only for retailer if not from seller Task
         if (isRetailerTask) {
             radioGroup.setVisibility(View.GONE);

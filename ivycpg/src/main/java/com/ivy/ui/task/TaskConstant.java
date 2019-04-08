@@ -1,5 +1,9 @@
 package com.ivy.ui.task;
 
+import android.os.Environment;
+
+import com.ivy.sd.png.util.DataMembers;
+
 public class TaskConstant {
 
     public static final String RETAILER_WISE_TASK = "isRetailerWiseTask";
@@ -66,6 +70,8 @@ public class TaskConstant {
     public static final String ASC_ORD_DATE = "(old—new)";
 
     public static final String DESC_ORD_DATE = "(new—old)";
+
+    public static String TASK_SERVER_IMG_PATH ;
 
 
 }
