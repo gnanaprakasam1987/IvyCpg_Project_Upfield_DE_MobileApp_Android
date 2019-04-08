@@ -398,7 +398,8 @@ public class DiscountHelper {
 
 
             StringBuffer sb = new StringBuffer();
-            sb.append("select Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
+            sb.append("select Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue,dm.ComputeAfterTax,dm.ApplyAfterTax");
+            sb.append(" from DiscountProductMapping dpm ");
             sb.append(" left Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append(" where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
@@ -428,6 +429,8 @@ public class DiscountHelper {
                     discountBO.setToDiscount(c.getDouble(9));
                     discountBO.setMinAmount(c.getDouble(10));
                     discountBO.setMaxAmount(c.getDouble(11));
+                    discountBO.setComputeAfterTax(c.getInt(12));
+                    discountBO.setApplyAfterTax(c.getInt(13));
                     mBillWiseDiscountList.add(discountBO);
                 }
                 c.close();
@@ -714,7 +717,8 @@ public class DiscountHelper {
             Cursor c;
 
             StringBuffer sb = new StringBuffer();
-            sb.append("select distinct Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
+            sb.append("select distinct Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue,dm.ComputeAfterTax,dm.ApplyAfterTax");
+            sb.append(" from DiscountProductMapping dpm ");
             sb.append(" left Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append(" where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
@@ -744,6 +748,8 @@ public class DiscountHelper {
                     discountBO.setToDiscount(c.getDouble(9));
                     discountBO.setMinAmount(c.getDouble(10));
                     discountBO.setMaxAmount(c.getDouble(11));
+                    discountBO.setComputeAfterTax(c.getInt(12));
+                    discountBO.setApplyAfterTax(c.getInt(13));
                     mBillWisePaytTermDiscountList.add(discountBO);
                 }
                 c.close();
@@ -1004,9 +1010,9 @@ public class DiscountHelper {
                 }
                 if (schemeBO != null) {
                     if (schemeBO.isAmountTypeSelected()) {
-                        if(businessModel.configurationMasterHelper.IS_SKIP_SCHEME_APPLY &&
+                        if (businessModel.configurationMasterHelper.IS_SKIP_SCHEME_APPLY &&
                                 schemeBO.getMaximumSlab() != 0 &&
-                                schemeBO.getSelectedAmount() > schemeBO.getMaximumSlab()){// Checking the Maximum slab Cap here
+                                schemeBO.getSelectedAmount() > schemeBO.getMaximumSlab()) {// Checking the Maximum slab Cap here
                             schemeBO.setSelectedAmount(schemeBO.getMaximumSlab());
                         }
                         totalSchemeDiscountValue += schemeBO.getSelectedAmount();
@@ -1027,12 +1033,12 @@ public class DiscountHelper {
                                 totalOrderValueOfBuyProducts += schemeHelper.getTotalOrderedValue(schemeProductBo.getProductId(),
                                         schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(), false, false);
                             }
-                        } else if(schemeBO.isDiscountPrecentSelected()){
+                        } else if (schemeBO.isDiscountPrecentSelected()) {
                             for (SchemeProductBO schemeProductBo : schemeProductList) {
                                 totalOrderValueOfBuyProducts += schemeHelper.getTotalOrderedValue(schemeProductBo.getProductId(),
                                         schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(), false, false);
                             }
-                            totalPercentageDiscountAmt=(totalOrderValueOfBuyProducts*schemeBO.getSelectedPrecent())/100;
+                            totalPercentageDiscountAmt = (totalOrderValueOfBuyProducts * schemeBO.getSelectedPrecent()) / 100;
 
 
                         }
@@ -1203,7 +1209,7 @@ public class DiscountHelper {
                                                                     schemeBO.getSelectedPrecent(),
                                                                     "SCH_PER", false);
                                                 }
-                                                if(schemeBO.getMaximumSlab() != 0 && totalPercentageDiscount > schemeBO.getMaximumSlab()){// Checking the Maximum slab Cap here
+                                                if (schemeBO.getMaximumSlab() != 0 && totalPercentageDiscount > schemeBO.getMaximumSlab()) {// Checking the Maximum slab Cap here
                                                     double percentage_productContribution = ((totalPercentageDiscount / totalPercentageDiscountAmt) * 100);
                                                     totalPercentageDiscount = schemeBO.getMaximumSlab() * (percentage_productContribution / 100);
                                                 }
