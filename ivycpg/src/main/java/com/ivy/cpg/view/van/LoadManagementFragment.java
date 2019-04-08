@@ -159,7 +159,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     if(fromScreen.equals("MENU_PLANNING_SUB")) {
                         loadManagementHelper.updateTrip(true);
                         Toast.makeText(getActivity(),getResources().getString(R.string.trip_started),Toast.LENGTH_LONG).show();
-                        button_buzzer.setBackground(getResources().getDrawable(R.drawable.image_buzzer_grey));
+                        button_buzzer.setBackground(getResources().getDrawable(R.drawable.img_buzzer_grey));
                         button_buzzer.setEnabled(false);
                     }
                     else {
@@ -171,7 +171,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
                                 loadManagementHelper.updateTrip(false);
                                 Toast.makeText(getActivity(), getResources().getString(R.string.trip_ended), Toast.LENGTH_LONG).show();
-                                button_buzzer.setBackground(getResources().getDrawable(R.drawable.image_buzzer_grey));
+                                button_buzzer.setBackground(getResources().getDrawable(R.drawable.img_buzzer_grey));
                                 button_buzzer.setEnabled(false);
                             }
                         }
@@ -190,8 +190,11 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 button_buzzer.setText(getResources().getString(R.string.start));
 
                 if(loadManagementHelper.isTripStarted(getActivity())) {
-                    button_buzzer.setBackground(getResources().getDrawable(R.drawable.image_buzzer_grey));
+                    button_buzzer.setBackground(getResources().getDrawable(R.drawable.img_buzzer_grey));
                     button_buzzer.setEnabled(false);
+                }
+                else {
+                    button_buzzer.setBackground(getResources().getDrawable(R.drawable.image_buzzer_green));
                 }
 
 
@@ -199,10 +202,14 @@ public class LoadManagementFragment extends IvyBaseFragment {
                         .downloadPlanningSubMenu();
             } else {
                 button_buzzer.setText(getResources().getString(R.string.stop));
+                textView_status_secondary.setText(getResources().getString(R.string.complete_all_mandatory_activities_before_you_stop_the_day));
 
                 if(loadManagementHelper.isTripEnded(getActivity())) {
-                    button_buzzer.setBackground(getResources().getDrawable(R.drawable.image_buzzer_grey));
+                    button_buzzer.setBackground(getResources().getDrawable(R.drawable.img_buzzer_grey));
                     button_buzzer.setEnabled(false);
+                }
+                else {
+                    button_buzzer.setBackground(getResources().getDrawable(R.drawable.image_buzzer_red));
                 }
 
                 menuDB = bmodel.configurationMasterHelper

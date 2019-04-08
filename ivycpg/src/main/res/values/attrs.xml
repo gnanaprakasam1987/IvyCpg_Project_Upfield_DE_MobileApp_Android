@@ -79,6 +79,7 @@
         <attr name="mtdDashboardBackground" format="reference" />
         <attr name="dashboardSpinnerSelector" format="reference" />
         <attr name="customListTitleBackgroundColor" format="color" />
+        <attr name="startAndEndOfTheDayHeaderLayoutBg" format="color" />
     </declare-styleable>
 
     <declare-styleable name="cardViewLayout">

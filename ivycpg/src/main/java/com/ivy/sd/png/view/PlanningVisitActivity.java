@@ -36,6 +36,8 @@ public class PlanningVisitActivity extends IvyBaseActivityNoActionBar implements
         setContentView(R.layout.activity_planning_visit);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
+        bmodel=(BusinessModel)getApplicationContext();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

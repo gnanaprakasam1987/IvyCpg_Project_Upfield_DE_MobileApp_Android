@@ -140,4 +140,9 @@
     <color name="rippelColor">#0099CC</color>
 
 
+    <!-- ********************************Planning sub/ LoadManagement Module **************************-->
+
+    <color name="startAndEndOfTheDayHeaderLayoutBg_blue">#DCEDFF</color>
+
+
 </resources>
