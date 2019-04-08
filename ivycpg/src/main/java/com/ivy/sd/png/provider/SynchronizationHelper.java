@@ -648,7 +648,8 @@ SynchronizationHelper {
             String sql;
             Cursor c;
 
-            sql = "select count(*) from stockinhandmaster where upload='N'";
+            sql = "select count(*) from stockinhandmaster where upload='N' " +
+                    "union select count(*) from NonSalableSIHMaster where upload='N'";
 
             c = db.selectSQL(sql);
             if (c != null) {
