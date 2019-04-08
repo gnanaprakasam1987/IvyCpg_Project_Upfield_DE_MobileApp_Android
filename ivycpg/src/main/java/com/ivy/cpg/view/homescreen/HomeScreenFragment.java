@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -659,9 +660,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                                 public void onClick(DialogInterface dialog,
                                                     int whichButton) {
 
-                                    SharedPreferences sharedPreferences = AppUtils.getSharedPreferenceByName(bmodel.getApplicationContext(), LoadManagementHelper.getInstance(getActivity().getApplicationContext()).TRIP_CONSTANT);
-                                    sharedPreferences.edit().putString("tripExtendedDate",DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
-                                    sharedPreferences.edit().apply();
+                                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(bmodel.getApplicationContext());
+                                    sharedPreferences.edit().putString("tripExtendedDate",DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)).apply();
 
                                     moveToSpecificMenu(MENU_VISIT);
                                 }
@@ -754,7 +754,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
-            }else if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP&&LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isValidTrip()){
+            }else if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP&&!LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isValidTrip()){
                     showDialog(2);
             }
             else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE

@@ -521,7 +521,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
             if(configTemp.isDone()){
                 holder.imageView_mandatory.setVisibility(View.VISIBLE);
-                holder.imageView_mandatory.setImageResource(R.drawable.blue_tick);
+                holder.imageView_mandatory.setImageResource(R.drawable.blue_trick);
             }
             else {
                 if(configTemp.getMandatory()==1) {

@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
@@ -27,6 +28,7 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.cpg.view.sync.UploadPresenterImpl;
 import com.ivy.cpg.view.van.odameter.OdameterHelper;
 import com.ivy.lib.Utils;
@@ -582,6 +584,7 @@ public class LoadManagementHelper {
                 db.insertSQL(DataMembers.tbl_TripMaster, columns, stringBuilder.toString());
 
                 SharedPreferences sharedPreferences = AppUtils.getSharedPreferenceByName(bmodel.getApplicationContext(), TRIP_CONSTANT);
+
                 sharedPreferences.edit().putString("tripId",id);
                 sharedPreferences.edit().apply();
             }
@@ -664,7 +667,7 @@ public class LoadManagementHelper {
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
 
-        SharedPreferences sharedPreferences = AppUtils.getSharedPreferenceByName(bmodel.getApplicationContext(), TRIP_CONSTANT);
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(bmodel.getApplicationContext());
         String tripExtendedDate = sharedPreferences.getString("tripExtendedDate", "");
         if(!tripExtendedDate.equals("")&&DateTimeUtils.getDateCount(tripExtendedDate,DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),"yyyy/MM/dd")==0)
             return true;
@@ -727,6 +730,13 @@ public class LoadManagementHelper {
                 return false;
 
             }
+        }
+
+        if (!UploadHelper.getInstance(context.getApplicationContext()).isAttendanceCompleted(context.getApplicationContext())) {
+            bmodel.showAlert(
+                    context.getResources()
+                            .getString(R.string.attendance_activity_not_completed), 0);
+            return false;
         }
 
         final Vector<NonproductivereasonBO> nonProductiveRetailersVector = bmodel.getMissedCallRetailers();
