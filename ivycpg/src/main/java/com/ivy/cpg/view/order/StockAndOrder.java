@@ -252,7 +252,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         orderHelper = OrderHelper.getInstance(this);
         stockCheckHelper = StockCheckHelper.getInstance(this);
-        productSearch=new ProductSearch(this,productList,bmodel,ProductSearch.SCREEN_CODE_ORDER);
+        productSearch=new ProductSearch(this,productList,ProductSearch.SCREEN_CODE_ORDER);
 
         if (bmodel.configurationMasterHelper.SHOW_BARCODE)
             checkAndRequestPermissionAtRunTime(2);
@@ -573,13 +573,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER && !bmodel.configurationMasterHelper.SHOW_SPL_FLIER_NOT_NEEDED
                         && !bmodel.configurationMasterHelper.IS_SHOW_ALL_SKU_ON_EDIT) {
 
-                    mSelectedFilterMap.put("General", productSearch.mOrdered);
+                    mSelectedFilterMap.put("General", productSearch.FILTER_CODE_ORDERED);
                     if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
                         loadSpecialFilterView();
-                        productSearch.startSpecialFilterSearch(productList,productSearch.mOrdered);
-                        selectTab(productSearch.mOrdered);
+                        productSearch.startSpecialFilterSearch(productList,productSearch.FILTER_CODE_ORDERED);
+                        selectTab(productSearch.FILTER_CODE_ORDERED);
                     } else {
-                        productSearch.startSpecialFilterSearch(productList,productSearch.mOrdered);
+                        productSearch.startSpecialFilterSearch(productList,productSearch.FILTER_CODE_ORDERED);
                     }
                 } else {
                     mSelectedFilterMap.put("General", GENERAL);
@@ -653,7 +653,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 GuidedSellingBO bo = bmodel.getmGuidedSelling().get(position);
                 if (bo.isCurrent() || (isPrevious && bo.getSequance() == prevSequance)) {
                     // checking for product availability..
-                    if (!bo.getFilterCode().equals(productSearch.mSuggestedOrder) || (bo.getFilterCode().equals(productSearch.mSuggestedOrder) && isProductsAvailable(bo.getFilterCode()))) {
+                    if (!bo.getFilterCode().equals(productSearch.FILTER_CODE_SUGGESTED_ORDER) || (bo.getFilterCode().equals(productSearch.FILTER_CODE_SUGGESTED_ORDER) && isProductsAvailable(bo.getFilterCode()))) {
                         //in case of specialfilter as a tab
                         if (bo.isProductFilter() || bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
                             if (bmodel.configurationMasterHelper.IS_SPL_FILTER_TAB) {
