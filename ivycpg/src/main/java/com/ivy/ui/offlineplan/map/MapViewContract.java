@@ -7,8 +7,7 @@ import java.util.ArrayList;
 
 public interface MapViewContract {
 
-    interface MapView extends OfflinePlanBaseContract {
-        void loadAllStores(ArrayList<RetailerMasterBO> retailersBo);
-        void loadTodayVisit(ArrayList<RetailerMasterBO> retailersBo);
+    interface MapView extends OfflinePlanBaseContract.OfflinePlanBaseView {
+
     }
 }

@@ -2,13 +2,13 @@ package com.ivy.ui.offlineplan.calendar.presenter;
 
 import android.text.format.DateUtils;
 
-import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CalenderBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.ui.offlineplan.OfflineBasePresenterImpl;
 import com.ivy.ui.offlineplan.calendar.OfflinePlanContract;
 import com.ivy.ui.offlineplan.calendar.data.OfflinePlanDataManager;
 import com.ivy.utils.DateTimeUtils;
@@ -27,7 +27,7 @@ import io.reactivex.disposables.CompositeDisposable;
 /**
  * Created by mansoor on 27/03/2019
  */
-public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanView> extends BasePresenter<V> implements OfflinePlanContract.OfflinePlanPresenter<V> {
+public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanView> extends OfflineBasePresenterImpl<V> implements OfflinePlanContract.OfflinePlanPresenter<V> {
 
     private OfflinePlanDataManager offlinePlanDataManager;
     private String planFromDate, planToDate;
@@ -232,4 +232,5 @@ public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanV
         date1 = cal.getTime();
         return date1;
     }
+
 }

@@ -17,7 +17,7 @@ public interface OfflinePlanContract {
     }
 
     @PerActivity
-    interface OfflinePlanPresenter<V extends OfflinePlanView> extends OfflinePlanBaseContract.OfflinePlanBasePresenter{
+    interface OfflinePlanPresenter<V extends OfflinePlanView> extends OfflinePlanBaseContract.OfflinePlanBasePresenter<V>{
         void setPlanDates();
         void loadCalendar();
         void onNextMonthClicked();

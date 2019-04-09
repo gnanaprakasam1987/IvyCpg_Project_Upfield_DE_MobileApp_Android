@@ -18,6 +18,7 @@ import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CalenderBO;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.ui.offlineplan.calendar.OfflinePlanContract;
@@ -188,5 +189,15 @@ public class OfflinePlanFragment extends BaseFragment implements OfflinePlanCont
     @Override
     public void onDateSelected(String selectedDate) {
         showMessage(selectedDate);
+    }
+
+    @Override
+    public void showAllStores(ArrayList<RetailerMasterBO> retailersBo) {
+
+    }
+
+    @Override
+    public void showTodayVisit(ArrayList<RetailerMasterBO> retailersBo) {
+
     }
 }
