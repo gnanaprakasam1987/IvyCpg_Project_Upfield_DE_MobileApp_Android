@@ -8,6 +8,7 @@ import android.os.BatteryManager;
 
 import com.ivy.core.data.app.AppDataProviderImpl;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -250,7 +251,7 @@ public class OutletTimeStampHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,OrderValue,lpc,ridSF";
+            String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,OrderValue,lpc,ridSF,tripUid";
 
 
             String values = getUid() + ","
@@ -274,6 +275,13 @@ public class OutletTimeStampHelper {
                     + "," + QT(String.valueOf(bmodel.getOrderValue()))
                     + "," + QT(String.valueOf(bmodel.retailerMasterBO.getTotalLines()))
                     + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
+
+            if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
+                values += "," + QT(LoadManagementHelper.getInstance(context.getApplicationContext()).getTripId());
+            }
+            else {
+                values += "," + QT("0");
+            }
 
 			db.insertSQL("OutletTimestamp", columns, values);
 

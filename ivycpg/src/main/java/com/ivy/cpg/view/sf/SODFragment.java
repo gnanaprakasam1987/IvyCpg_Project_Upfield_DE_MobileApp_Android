@@ -1111,7 +1111,7 @@ public class SODFragment extends IvyBaseFragment implements
             try {
                 mSFHelper
                         .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOD);
-                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOD);
+                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOD, true);
                 mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;

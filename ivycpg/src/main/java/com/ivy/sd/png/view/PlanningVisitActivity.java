@@ -36,6 +36,8 @@ public class PlanningVisitActivity extends IvyBaseActivityNoActionBar implements
         setContentView(R.layout.activity_planning_visit);
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
+        bmodel=(BusinessModel)getApplicationContext();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -57,6 +59,14 @@ public class PlanningVisitActivity extends IvyBaseActivityNoActionBar implements
             bundle.putBoolean("isPlanningSub", true);
             bundle.putString("From", "Planningsub");
         }
+
+        if(bundle.getBoolean("isPlanningSub")){
+            if (getIntent().getStringExtra("menuCode")!=null) {
+                // It is just a view screen, so updating once the screen is visited once
+                bmodel.saveModuleCompletion(getIntent().getStringExtra("menuCode"), false);
+            }
+        }
+
         VisitFragment fragmentObject = new VisitFragment();
         fragmentObject.setArguments(bundle);
         if (fragmentObject != null) {

@@ -739,7 +739,7 @@ public class PhotoCaptureActivity extends IvyBaseActivityNoActionBar implements
         protected Boolean doInBackground(String... arg0) {
             try {
                 mPhotoCaptureHelper.savePhotoCaptureDetails(getApplicationContext(), mRetailerId);
-                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_PHOTO);
+                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_PHOTO, true);
                 mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;

@@ -2238,7 +2238,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     new MyThread(OrderSummary.this,
                             DataMembers.SAVEORDERANDSTOCK).start();
                     if (!orderHelper.isQuickCall)
-                        bModel.saveModuleCompletion("MENU_STK_ORD");
+                        bModel.saveModuleCompletion("MENU_STK_ORD", true);
 
 
                 } else {

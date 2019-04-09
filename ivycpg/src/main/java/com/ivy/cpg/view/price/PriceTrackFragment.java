@@ -658,7 +658,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         protected Boolean doInBackground(Void... arg0) {
             try {
                 priceTrackingHelper.savePriceTransaction(getContext().getApplicationContext(), businessModel.productHelper.getTaggedProducts());
-                businessModel.saveModuleCompletion(HomeScreenTwo.MENU_PRICE);
+                businessModel.saveModuleCompletion(HomeScreenTwo.MENU_PRICE, true);
                 businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
 

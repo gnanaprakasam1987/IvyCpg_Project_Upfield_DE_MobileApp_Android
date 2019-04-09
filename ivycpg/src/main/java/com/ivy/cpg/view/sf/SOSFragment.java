@@ -1407,7 +1407,7 @@ public class SOSFragment extends IvyBaseFragment implements
             try {
                 mSFHelper
                         .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOS);
-                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOS);
+                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOS, true);
                 mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;
