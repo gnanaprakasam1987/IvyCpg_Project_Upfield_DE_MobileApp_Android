@@ -500,7 +500,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     public void onClick(View v) {
 
                         if(fromScreen.equals("MENU_PLANNING_SUB")){
-                            if(!loadManagementHelper.isTripStarted(getActivity())) {
+                            if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP&&!loadManagementHelper.isTripStarted(getActivity())) {
                                 Toast.makeText(getActivity(),getResources().getString(R.string.pls_start_the_trip),Toast.LENGTH_LONG).show();
                                 return;
                             }
