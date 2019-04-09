@@ -339,6 +339,7 @@ public class DataMembers {
     public static final String tbl_orderHeaderRequest = "OrderHeaderRequest";
     public static final String tbl_orderDetailRequest = "OrderDetailRequest";
     public static final String tbl_retailerPotential = "RetailerPotential";
+    public static final String tbl_contactAvailability = "ContactAvailability";
 
     private static final String tbl_deviateReasontableupload = "deviateReasontable";
     private static final String tbl_SbdMerchandisingHeaderupload = "SbdMerchandisingHeader";
@@ -532,9 +533,13 @@ public class DataMembers {
     public static final String tbl_RetailerEditHeader = "RetailerEditHeader";
     public static final String tbl_RetailerEditDetail = "RetailerEditDetail";
     public static final String tbl_RetailerContactEdit = "RetailerContactEdit";
+    public static final String tbl_ContactAvailabilityEdit = "ContactAvailabilityEdit";
+
+    public static final String tbl_ContactAvailability_Cols = "CPId,CPAId,Day,StartTime,EndTime";
+    public static final String tbl_ContactAvailabilityEdit_Cols = "CPId,CPAId,Day,StartTime,EndTime,Status";
     private static final String tbl_RetailerEditHeader_cols = "Tid,RetailerId,Date";
     private static final String tbl_RetailerEditDetail_cols = "Tid,code,Value,RefId";
-    private static final String tbl_RetailerContactEdit_cols = "Contact_Title,Contact_Title_LovId,ContactName,ContactName_LName,ContactNumber,Email,IsPrimary,Status,CPId,RetailerId,Tid";
+    private static final String tbl_RetailerContactEdit_cols = "Contact_Title,Contact_Title_LovId,ContactName,ContactName_LName,ContactNumber,Email,IsPrimary,Status,CPId,RetailerId,Tid,salutationLovId,IsEmailNotificationReq";
 
 
     private static final String tbl_RetailerVerification = "RetailerVerification";
@@ -608,7 +613,7 @@ public class DataMembers {
     private static final String tbl_RetailerEntryDetails_Cols = "UId,EntryMode,ReasonId";
 
     private static final String tbl_retailerContactupload_cols = "RetailerID,contactname,ContactName_LName,ContactNumber," +
-            "contact_title,contact_title_lovid,IsPrimary,Email";
+            "contact_title,contact_title_lovid,IsPrimary,Email,salutationLovId,IsEmailNotificationReq";
     private static final String tbl_retailerAddressupload_cols = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
             + "email,FaxNo,pincode,State,IsPrimary,Mobile,Region,Country,District";
     private static final String tbl_retailerAttributeupload_cols = "RetailerId,AttributeId,LevelId";
@@ -856,6 +861,9 @@ public class DataMembers {
         uploadColumn.put(tbl_orderDetailRequest, tbl_OrderDetailRequest_cols);
         uploadColumn.put(tbl_retailerPotential, tbl_RetailerPotential_cols);
 
+        uploadColumn.put(tbl_contactAvailability, tbl_ContactAvailability_Cols);
+        uploadColumn.put(tbl_ContactAvailabilityEdit, tbl_ContactAvailabilityEdit_Cols);
+
 
         uploadColumn.put(tbl_loyaltyredemptionheader, tbl_tbl_loyaltyredemptionheader_cols);
         uploadColumn.put(tbl_loyaltyredemptiondetail, tbl_loyaltyredemptiondetail_cols);
@@ -1025,6 +1033,9 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_display_scheme_enrollment_header, tbl_display_scheme_enrollment_cols);
         uploadColumnWithRetailer.put(tbl_display_scheme_tracking_header, tbl_display_scheme_tracking_cols);
         uploadColumnWithRetailer.put(tbl_date_wise_plan, tbl_date_wise_plan_cols);
+
+        uploadColumnWithRetailer.put(tbl_contactAvailability, tbl_ContactAvailability_Cols);
+        uploadColumnWithRetailer.put(tbl_ContactAvailabilityEdit, tbl_ContactAvailabilityEdit_Cols);
 
         uploadColumnWithRetailer.put(tbl_CollectionDueHeader, tbl_CollectionDueHeader_cols);
         uploadColumnWithRetailer.put(tbl_CollectionDueDetails, tbl_CollectionDueDetails_cols);
@@ -1196,6 +1207,9 @@ public class DataMembers {
         uploadNewRetailerColumn.put(tbl_retailerAttribute, tbl_retailerAttributeupload_cols);
         uploadNewRetailerColumn.put(tbl_orderHeaderRequest, tbl_OrderHeaderRequest_cols);
         uploadNewRetailerColumn.put(tbl_retailerPotential, tbl_RetailerPotential_cols);
+
+        uploadNewRetailerColumn.put(tbl_contactAvailability, tbl_ContactAvailability_Cols);
+        uploadNewRetailerColumn.put(tbl_ContactAvailabilityEdit, tbl_ContactAvailabilityEdit_Cols);
 
     }
 

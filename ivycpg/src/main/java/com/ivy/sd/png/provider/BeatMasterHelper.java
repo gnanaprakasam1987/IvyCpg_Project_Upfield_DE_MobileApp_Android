@@ -10,6 +10,7 @@ import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -88,7 +89,9 @@ public class BeatMasterHelper {
 
         for (int i = 0; i < siz; ++i) {
             beat = getBeatMaster().get(i);
-            if (beatName.equals(beat.getBeatDescription())) {
+            if (!StringUtils.isEmptyString(beatName)
+                    && !StringUtils.isEmptyString(beat.getBeatDescription())
+                    && beatName.equals(beat.getBeatDescription())) {
                 return beat.getBeatId() + "";
             }
         }

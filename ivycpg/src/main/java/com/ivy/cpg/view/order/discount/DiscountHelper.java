@@ -1004,6 +1004,11 @@ public class DiscountHelper {
                 }
                 if (schemeBO != null) {
                     if (schemeBO.isAmountTypeSelected()) {
+                        if(businessModel.configurationMasterHelper.IS_SKIP_SCHEME_APPLY &&
+                                schemeBO.getMaximumSlab() != 0 &&
+                                schemeBO.getSelectedAmount() > schemeBO.getMaximumSlab()){// Checking the Maximum slab Cap here
+                            schemeBO.setSelectedAmount(schemeBO.getMaximumSlab());
+                        }
                         totalSchemeDiscountValue += schemeBO.getSelectedAmount();
                         totalSchemeDiscountValue = SDUtil.formatAsPerCalculationConfig(totalSchemeDiscountValue);
                     }
@@ -1016,11 +1021,20 @@ public class DiscountHelper {
 
                         // Getting total order value of buy products
                         double totalOrderValueOfBuyProducts = 0;
+                        double totalPercentageDiscountAmt = 0;
                         if (schemeBO.isAmountTypeSelected()) {
                             for (SchemeProductBO schemeProductBo : schemeProductList) {
                                 totalOrderValueOfBuyProducts += schemeHelper.getTotalOrderedValue(schemeProductBo.getProductId(),
                                         schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(), false, false);
                             }
+                        } else if(schemeBO.isDiscountPrecentSelected()){
+                            for (SchemeProductBO schemeProductBo : schemeProductList) {
+                                totalOrderValueOfBuyProducts += schemeHelper.getTotalOrderedValue(schemeProductBo.getProductId(),
+                                        schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(), false, false);
+                            }
+                            totalPercentageDiscountAmt=(totalOrderValueOfBuyProducts*schemeBO.getSelectedPrecent())/100;
+
+
                         }
 
 
@@ -1189,7 +1203,10 @@ public class DiscountHelper {
                                                                     schemeBO.getSelectedPrecent(),
                                                                     "SCH_PER", false);
                                                 }
-
+                                                if(schemeBO.getMaximumSlab() != 0 && totalPercentageDiscount > schemeBO.getMaximumSlab()){// Checking the Maximum slab Cap here
+                                                    double percentage_productContribution = ((totalPercentageDiscount / totalPercentageDiscountAmt) * 100);
+                                                    totalPercentageDiscount = schemeBO.getMaximumSlab() * (percentage_productContribution / 100);
+                                                }
                                                 if (productBO.getNetValue() > 0) {
                                                     productBO
                                                             .setNetValue(productBO
