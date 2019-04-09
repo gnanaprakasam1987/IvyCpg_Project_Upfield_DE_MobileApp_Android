@@ -4,7 +4,7 @@ import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.ui.offlineplan.map.data.MapViewDataManager;
+import com.ivy.ui.retailer.view.map.data.MapViewDataManager;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import javax.inject.Inject;
