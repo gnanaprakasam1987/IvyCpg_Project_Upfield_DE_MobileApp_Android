@@ -33,7 +33,9 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
@@ -56,6 +58,7 @@ public class QuickCallFragment extends IvyBaseFragment {
     ListView lvSubDId;
     Context context;
     Vector<RetailerMasterBO> retailer = new Vector<>();
+    ArrayList<SupplierMasterBO> mSupplierList = new ArrayList<>();
 
     @Override
     public void onAttach(Context context) {
@@ -110,6 +113,21 @@ public class QuickCallFragment extends IvyBaseFragment {
         }
     }
 
+    private void updateDefaultSupplierSelection() {
+        try {
+            int mDefaultSupplierSelection = bmodel.getSupplierPosition(mSupplierList);
+            if (mSupplierList != null && mSupplierList.size() > 0) {
+                bmodel.getRetailerMasterBO().setSupplierBO(
+                        mSupplierList.get(mDefaultSupplierSelection));
+                bmodel.getRetailerMasterBO().setDistributorId(mSupplierList.get(mDefaultSupplierSelection).getSupplierID());
+                bmodel.getRetailerMasterBO().setDistParentId(mSupplierList.get(mDefaultSupplierSelection).getDistParentID());
+                bmodel.getRetailerMasterBO().setSupplierTaxLocId(mSupplierList.get(mDefaultSupplierSelection).getSupplierTaxLocId());
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+    }
+
     private class RetailerSelectionAdapter extends ArrayAdapter<RetailerMasterBO> {
 
         private final Vector<RetailerMasterBO> items;
@@ -154,6 +172,18 @@ public class QuickCallFragment extends IvyBaseFragment {
                     @Override
                     public void onClick(View view) {
                         bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
+                        String rSalesType = bmodel.getStandardListCode(bmodel.getRetailerMasterBO().getSalesTypeId());
+                        if (bmodel.configurationMasterHelper.IS_SHOW_RID_CONCEDER_AS_DSTID && rSalesType.equalsIgnoreCase("INDIRECT")) {
+                            bmodel.retailerMasterBO.setDistributorId(SDUtil.convertToInt(bmodel.retailerMasterBO.getRetailerID()));
+                            bmodel.retailerMasterBO.setDistParentId(0);
+                        } else {
+                            if (!bmodel.configurationMasterHelper.IS_APPLY_DISTRIBUTOR_WISE_PRICE
+                                    && !bmodel.configurationMasterHelper.IS_DISTRIBUTOR_AVAILABLE) {
+                                mSupplierList = bmodel.downloadSupplierDetails();
+                                if (mSupplierList != null && mSupplierList.size() > 0)
+                                    updateDefaultSupplierSelection();
+                            }
+                        }
                         loadOrderScreen();
                     }
                 });

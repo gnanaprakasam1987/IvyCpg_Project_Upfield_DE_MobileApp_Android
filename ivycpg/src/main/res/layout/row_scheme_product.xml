@@ -386,5 +386,15 @@
             android:textColor="@color/RED"
             android:text="@string/stock_not_available"
             android:visibility="gone"/>
+        <TextView
+            android:id="@+id/text_maxslab"
+            style="@style/TextViewListItemCaption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:maxLines="2"
+            android:textColor="@color/RED"
+            android:text="@string/stock_not_available"
+            android:visibility="gone"/>
     </LinearLayout>
 </android.support.v7.widget.CardView>

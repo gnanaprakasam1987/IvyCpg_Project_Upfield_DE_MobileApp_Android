@@ -189,4 +189,33 @@
     <!--offline Planning-->
     <string name="month">Month</string>
 
+    <string name="enter_time_slot">Enter Time Slot</string>
+    <string name="select_salutation">Select Salutation</string>
+    <string name="primary_email_pref_already_given">Primary Email Pref Already Given</string>
+
+    <string name="picker_today">Today</string>
+    <string name="picker_am">AM</string>
+    <string name="picker_pm">PM</string>
+
+    <string name="sunday">Sunday</string>
+    <string name="monday">Monday</string>
+    <string name="tuesday">Tuesday</string>
+    <string name="wednesday">Wednesday</string>
+    <string name="thursday">Thursday</string>
+    <string name="friday">Friday</string>
+    <string name="saturday">Saturday</string>
+
+    <string-array name="days_array">
+        <item>@string/sunday</item>
+        <item>@string/monday</item>
+        <item>@string/tuesday</item>
+        <item>@string/wednesday</item>
+        <item>@string/thursday</item>
+        <item>@string/friday</item>
+        <item>@string/saturday</item>
+    </string-array>
+
+    <string name="time_slot_already_selected">Time Slot Fall In Already Selected Timeslot</string>
+    <string name="from_time_should_be_lesser">Avail From Time Should Be Lesser Than Avail Till</string>
+
 </resources>
