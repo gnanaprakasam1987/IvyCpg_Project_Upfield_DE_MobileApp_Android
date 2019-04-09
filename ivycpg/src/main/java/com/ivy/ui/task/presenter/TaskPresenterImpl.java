@@ -105,13 +105,15 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                     @Override
                     public Boolean apply(ArrayList<UserMasterBO> userMasterBOS, ArrayList<ChannelBO> channelBOS, ArrayList<RetailerMasterBO> retailerMasterBOS) throws Exception {
                         mUserListBos.clear();
+                            for (UserMasterBO userBo : userMasterBOS) {
+                                if (userBo.getUserid() == appDataProvider.getUser().getUserid()) {
+                                    userBo.setUserName("Self");
+                                    break;
+                                }
+                            }
+                            mUserListBos.addAll(userMasterBOS);
 
-                        for (UserMasterBO userBo : userMasterBOS) {
-                            if (userBo.getUserid() == appDataProvider.getUser().getUserid())
-                                userBo.setUserName("Self");
-                        }
 
-                        mUserListBos.addAll(userMasterBOS);
 
                         mChannelListBos.clear();
                         mChannelListBos.addAll(channelBOS);

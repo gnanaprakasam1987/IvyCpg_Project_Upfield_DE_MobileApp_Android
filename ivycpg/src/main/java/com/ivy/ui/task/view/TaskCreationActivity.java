@@ -84,7 +84,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     EditText taskTitle;
 
     @BindView(R.id.spinner_seller)
-    Spinner sellerSpinner;
+    Spinner spinnerSelection;
 
     @BindView(R.id.task_category_spinner)
     AppCompatSpinner categorySpinner;
@@ -186,7 +186,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         //allow only create task only for retailer if not from seller Task
         if (isRetailerTask) {
             radioGroup.setVisibility(View.GONE);
-            sellerSpinner.setVisibility(View.GONE);
+            spinnerSelection.setVisibility(View.GONE);
             applicableTV.setVisibility(View.GONE);
             mode = "retailer";
         } else {
@@ -219,10 +219,12 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     @Override
     public void setTaskUserListData(ArrayList<UserMasterBO> userList) {
-        userMasterArrayAdapter.clear();
-        userMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_seller)));
-        userMasterArrayAdapter.addAll(userList);
-        userMasterArrayAdapter.notifyDataSetChanged();
+        if (!userList.isEmpty()) {
+            userMasterArrayAdapter.clear();
+            userMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_seller)));
+            userMasterArrayAdapter.addAll(userList);
+            userMasterArrayAdapter.notifyDataSetChanged();
+        }
 
     }
 
@@ -415,18 +417,19 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     private void setUpSpinnerData(int isFrom) {
         mSelectedSpinnerPos = 0;
-        sellerSpinner.setVisibility(View.VISIBLE);
+        spinnerSelection.setVisibility(View.VISIBLE);
         switch (isFrom) {
             case 0:
-                sellerSpinner.setAdapter(userMasterArrayAdapter);
+                if (!userMasterArrayAdapter.isEmpty())
+                    spinnerSelection.setAdapter(userMasterArrayAdapter);
                 enableDisableProductLevelView(View.GONE);
                 break;
             case 1:
-                sellerSpinner.setAdapter(channelArrayAdapter);
+                spinnerSelection.setAdapter(channelArrayAdapter);
                 enableDisableProductLevelView(View.VISIBLE);
                 break;
             case 2:
-                sellerSpinner.setAdapter(retailerMasterArrayAdapter);
+                spinnerSelection.setAdapter(retailerMasterArrayAdapter);
                 enableDisableProductLevelView(View.VISIBLE);
                 break;
         }
@@ -585,15 +588,15 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             if (taskDataObj.getMode().equalsIgnoreCase(TaskConstant.SELLER_WISE)) {
                 seller_rb.setChecked(true);
                 setUpSpinnerData(0);
-                sellerSpinner.setSelection(getAdapterPosition(userMasterArrayAdapter.getCount(), taskBo.getMode()));
+                spinnerSelection.setSelection(getAdapterPosition(userMasterArrayAdapter.getCount(), taskBo.getMode()));
             } else if (taskDataObj.getMode().equalsIgnoreCase(TaskConstant.RETAILER_WISE)) {
                 retailerwise_rb.setChecked(true);
                 setUpSpinnerData(1);
-                sellerSpinner.setSelection(getAdapterPosition(channelArrayAdapter.getCount(), taskBo.getMode()));
+                spinnerSelection.setSelection(getAdapterPosition(channelArrayAdapter.getCount(), taskBo.getMode()));
             } else {
                 channelwise_rb.setChecked(true);
                 setUpSpinnerData(2);
-                sellerSpinner.setSelection(getAdapterPosition(retailerMasterArrayAdapter.getCount(), taskBo.getMode()));
+                spinnerSelection.setSelection(getAdapterPosition(retailerMasterArrayAdapter.getCount(), taskBo.getMode()));
             }
         }
         taskView.setText(taskDataObj.getTaskDesc());

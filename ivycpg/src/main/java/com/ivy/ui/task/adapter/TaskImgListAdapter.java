@@ -71,7 +71,7 @@ public class TaskImgListAdapter extends RecyclerView.Adapter<TaskImgListAdapter.
         holder.deleteImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showImageDeleteAlert(imgList.get(holder.getAdapterPosition()).getTaskImg(), holder.getAdapterPosition());
+                showImageDeleteAlert(imgList.get(holder.getAdapterPosition()).getTaskImg(), holder.getAdapterPosition(), imgList.get(holder.getAdapterPosition()).getTaskImgPath());
             }
         });
 
@@ -119,12 +119,12 @@ public class TaskImgListAdapter extends RecyclerView.Adapter<TaskImgListAdapter.
         void onTakePhoto();
     }
 
-    private void showImageDeleteAlert(final String imageNameStarts, int position) {
+    private void showImageDeleteAlert(final String imageNameStarts, int position, String imgPath) {
 
         ((BaseActivity) mContext).showAlert("", mContext.getString(R.string.do_you_want_to_delete_the_image), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
-                FileUtils.deleteFiles(FileUtils.photoFolderPath,
+                FileUtils.deleteFiles(imgPath,
                         imageNameStarts);
                 imgList.remove(position);
                 notifyItemRemoved(position);
