@@ -2736,9 +2736,7 @@ public class ConfigurationMasterHelper {
         this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP =true;
         else this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP =false;
 
-        // for testing..
-        this.IS_ENABLE_TRIP=true;
-        this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP =true;
+
     }
 
     private boolean isInOutModule() {
