@@ -10,6 +10,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
@@ -20,6 +21,7 @@ import com.ivy.ui.retailer.di.DaggerRetailerComponent;
 import com.ivy.ui.retailer.di.RetailerModule;
 import com.ivy.ui.retailer.presenter.RetailerPresenterImpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,6 +37,8 @@ public class PlanningMapViewFragment extends BaseFragment implements RetailerCon
     private ViewGroup infoWindow;
     private LayoutInflater layInflater;
     private Context context;
+
+    private List<RetailerMasterBO> retailerList = new ArrayList<>();
 
     @Inject
     RetailerPresenterImpl<RetailerContract.RetailerView> presenter;
@@ -58,7 +62,7 @@ public class PlanningMapViewFragment extends BaseFragment implements RetailerCon
 
     @Override
     protected int setContentViewLayout() {
-        return R.layout.fragment_map_view_planning;
+        return R.layout.fragment_planning_map;
     }
 
     @Override
@@ -66,8 +70,9 @@ public class PlanningMapViewFragment extends BaseFragment implements RetailerCon
 
         layInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE );
 
+        view.findViewById(R.id.ll_view).setVisibility(View.GONE);
+
         mapWrapperLayout = view.findViewById(R.id.planningmapnew);
-        mapWrapperLayout.init(mMap, presenter.getPixelsFromDpInt(getContext()));
 
         this.infoWindow = (ViewGroup) layInflater.inflate(
                 R.layout.custom_info_window, (ViewGroup) null);
@@ -91,7 +96,13 @@ public class PlanningMapViewFragment extends BaseFragment implements RetailerCon
 
     @Override
     public void populateRetailers(List<RetailerMasterBO> retailerList) {
+        this.retailerList = retailerList;
 
+        presenter.prepareRetailerMarker(mMap,retailerList);
+    }
+
+    @Override
+    public void populateRetailersMarker(List<MarkerOptions> retailerList) {
     }
 
     @Override
@@ -112,6 +123,8 @@ public class PlanningMapViewFragment extends BaseFragment implements RetailerCon
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        mapWrapperLayout.init(mMap, presenter.getPixelsFromDpInt(getContext()));
 
         mMap.setOnMarkerClickListener(this);
         mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
@@ -141,7 +154,7 @@ public class PlanningMapViewFragment extends BaseFragment implements RetailerCon
     private class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
 
-        public CustomInfoWindowAdapter() {
+        CustomInfoWindowAdapter() {
             // CustomInfoWindowAdapter
         }
 

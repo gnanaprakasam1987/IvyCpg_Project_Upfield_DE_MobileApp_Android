@@ -2,6 +2,8 @@ package com.ivy.ui.retailer;
 
 import android.content.Context;
 
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -14,6 +16,8 @@ public interface RetailerContract {
 
          void populateRetailers(List<RetailerMasterBO> retailerList);
 
+         void populateRetailersMarker(List<MarkerOptions> retailerList);
+
          void populatePlannedRetailers(List<RetailerMasterBO> plannedRetailers);
 
          void populateUnPlannedRetailers(List<RetailerMasterBO> unPlannedRetailers);
@@ -25,6 +29,8 @@ public interface RetailerContract {
      interface RetailerPresenter<V extends RetailerView> extends BaseIvyPresenter<V> {
 
          void fetchRetailerList();
+
+         void prepareRetailerMarker(GoogleMap map, List<RetailerMasterBO> retailerList);
 
          void addRetailerToPlan(RetailerMasterBO retailerMasterBO, String startDate, String endDate);
 

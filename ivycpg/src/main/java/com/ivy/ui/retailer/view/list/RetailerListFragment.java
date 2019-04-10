@@ -2,6 +2,7 @@ package com.ivy.ui.retailer.view.list;
 
 import android.view.View;
 
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.ui.retailer.RetailerContract;
@@ -36,6 +37,11 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
 
     @Override
     public void populateRetailers(List<RetailerMasterBO> retailerList) {
+
+    }
+
+    @Override
+    public void populateRetailersMarker(List<MarkerOptions> retailerList) {
 
     }
 
