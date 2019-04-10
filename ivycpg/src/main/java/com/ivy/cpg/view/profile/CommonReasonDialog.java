@@ -95,6 +95,7 @@ public class CommonReasonDialog extends Dialog {
             public void onClick(View v) {
                 hideKeyboard();
                 dismiss();
+                addNonVisitListener.onDismiss();
             }
         });
 
@@ -282,6 +283,7 @@ public class CommonReasonDialog extends Dialog {
 
     public interface AddNonVisitListener {
         void addReatailerReason();
+        void onDismiss();
     }
 
 

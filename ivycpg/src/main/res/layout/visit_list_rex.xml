@@ -3,7 +3,7 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/list_card_height"
+    android:layout_height="wrap_content"
     android:foreground="?attr/selectableItemBackground"
     card_view:cardCornerRadius="0dp"
     card_view:cardElevation="@dimen/ret_card_elevation"
@@ -22,72 +22,77 @@
             android:layout_height="match_parent"
             android:background="?attr/colorAccent" />
 
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/retailer_margin_right"
-            android:layout_marginRight="@dimen/retailer_margin_right"
-            android:layout_weight="54.9"
-            android:gravity="center"
-            android:orientation="vertical">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/icons_left_margin"
                 android:layout_marginLeft="@dimen/icons_left_margin"
-                android:gravity="center"
+                android:layout_marginTop="@dimen/icons_top_margin"
+                android:layout_marginBottom="@dimen/icons_top_margin"
                 android:orientation="vertical">
 
 
                 <TextView
                     android:id="@+id/outletName_tv"
-                    style="@style/TextViewListItemPrimary"
+                    style="@style/RetailerNameListView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/actionbar_subtitle_text_size"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/outlet_left_margin"
                     android:layout_marginLeft="@dimen/outlet_left_margin"
-                    android:text="Outlet name" />
+                    android:text="@string/outlet_name" />
 
                 <TextView
                     android:id="@+id/outletAddress"
-                    style="@style/TextViewListItemSecondary"
+                    style="@style/RetailerSecondaryListView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginStart="@dimen/outlet_left_margin"
                     android:layout_marginLeft="@dimen/outlet_left_margin"
-                    android:text="Outlet Location"
-                    android:textAllCaps="false"
-                    />
-            </LinearLayout>
+                    android:text="@string/location"
+                    android:textAllCaps="false"/>
 
-            <LinearLayout
-                android:id="@+id/ll_iv_deviate"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/icons_left_margin"
-                android:layout_marginLeft="@dimen/icons_left_margin"
-                android:layout_marginTop="@dimen/icons_top_margin"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/iv_deviate"
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimens_4dp">
+                <LinearLayout
+                    android:id="@+id/ll_iv_deviate"
                     android:layout_width="@dimen/ret_image_size"
                     android:layout_height="@dimen/ret_image_size"
-                    android:background="@drawable/ic_dashboard_deviated"
-                    android:visibility="visible" />
+                    android:layout_marginStart="@dimen/outlet_left_margin"
+                    android:layout_marginLeft="@dimen/outlet_left_margin"
+                    android:orientation="horizontal"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:background="@drawable/circle_transparent">
 
+                    <ImageView
+                        android:id="@+id/iv_deviate"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_dashboard_deviated" />
+                </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tv_lastvisit"
+                        style="@style/TextViewListItemSecondary"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/outlet_left_margin"
+                        android:layout_marginRight="@dimen/outlet_left_margin"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:textColor="@color/half_Black"
+                        android:text="@string/last_vist"/>
+
+                </RelativeLayout>
 
             </LinearLayout>
         </LinearLayout>
-
-
-    </LinearLayout>
 
 </android.support.v7.widget.CardView>
