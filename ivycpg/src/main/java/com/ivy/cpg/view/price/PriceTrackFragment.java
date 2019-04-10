@@ -421,7 +421,14 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             boolean navDrawerOpen = false;
             if (mDrawerLayout != null)
                 drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
-            menu.findItem(R.id.menu_location_filter).setVisible(false);
+
+            if (businessModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
+                menu.findItem(R.id.menu_location_filter).setVisible(false);
+            else {
+                if (businessModel.productHelper.getInStoreLocation().size() < 2)
+                    menu.findItem(R.id.menu_location_filter).setVisible(false);
+            }
+
             menu.findItem(R.id.menu_spl_filter).setVisible(false);
             menu.findItem(R.id.menu_remarks).setVisible(false);
 
@@ -505,8 +512,33 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             }
             return true;
         }
+        else if (i == R.id.menu_loc_filter) {
+            showLocation();
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
+
+    private void showLocation() {
+        AlertDialog.Builder builder;
+
+        builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(null);
+        builder.setSingleChoiceItems(priceTrackingHelper.getLocationAdapter(),
+                priceTrackingHelper.mSelectedLocationIndex,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        priceTrackingHelper.mSelectedLocationIndex = item;
+                        dialog.dismiss();
+
+                    }
+                });
+
+        businessModel.applyAlertDialogTheme(builder);
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -706,52 +738,6 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         }
     }
 
-    private void onLoadModule(Vector<LevelBO> parentidList) {
-        Vector<ProductMasterBO> items = businessModel.productHelper.getTaggedProducts();
-
-        if (items == null) {
-            businessModel.showAlert(
-                    getResources().getString(R.string.no_products_exists), 0);
-            return;
-        }
-
-        mylist = new ArrayList<>();
-
-        if (priceTrackingHelper.LOAD_PRICE_COMPETITOR == 0) {
-            for (LevelBO levelBO : parentidList) {
-                for (ProductMasterBO sku : items) {
-                    if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
-                        continue;
-                    if ((levelBO.getProductID() == sku.getParentid()) && (sku.getIsSaleable() == 1 && sku.getOwn() == 1)) {
-                        mylist.add(sku);
-                    }
-                }
-            }
-        } else if (priceTrackingHelper.LOAD_PRICE_COMPETITOR == 1) {
-            for (LevelBO levelBO : parentidList) {
-                for (ProductMasterBO sku : items) {
-                    if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
-                        continue;
-                    if ((levelBO.getProductID() == sku.getParentid()) && (sku.getIsSaleable() == 1 && sku.getOwn() == 0)) {
-                        mylist.add(sku);
-                    }
-                }
-            }
-        } else if (priceTrackingHelper.LOAD_PRICE_COMPETITOR == 2) {
-            for (LevelBO levelBO : parentidList) {
-                for (ProductMasterBO sku : items) {
-                    if (businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !sku.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
-                        continue;
-                    if ((levelBO.getProductID() == sku.getParentid()) && (sku.getIsSaleable() == 1)) {
-                        mylist.add(sku);
-                    }
-                }
-            }
-        }
-
-        MyAdapter adapter = new MyAdapter(mylist);
-        lv.setAdapter(adapter);
-    }
 
     private void onLoadModule(int filteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts) {
         Vector<ProductMasterBO> items = businessModel.productHelper.getTaggedProducts();
@@ -939,6 +925,10 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         lv.setAdapter(adapter);
     }
 
+    public void refreshList(){
+        MyAdapter adapter = new MyAdapter(mylist);
+        lv.setAdapter(adapter);
+    }
     private void loadReasons() {
         spinnerAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_bluetext_layout);

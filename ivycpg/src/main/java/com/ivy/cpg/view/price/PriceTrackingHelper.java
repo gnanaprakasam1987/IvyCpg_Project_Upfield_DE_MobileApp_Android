@@ -2,10 +2,12 @@ package com.ivy.cpg.view.price;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.widget.ArrayAdapter;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
+import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -47,6 +49,9 @@ public class PriceTrackingHelper {
     private String CODE_PRICE_LASTVP = "PRICE_LAST_VP";
     public ArrayList<String> mSearchTypeArray = new ArrayList<>();
 
+    private ArrayAdapter<StandardListBO> mLocationAdapter;
+
+    public int mSelectedLocationIndex;
 
     private PriceTrackingHelper(Context context) {
         this.context = context;
@@ -88,6 +93,20 @@ public class PriceTrackingHelper {
         mSearchTypeArray.add(context.getResources().getString(R.string.prod_code));
         mSearchTypeArray.add(context.getResources().getString(
                 R.string.order_dialog_barcode));
+
+        //location
+        mLocationAdapter = new ArrayAdapter<>(context,
+                android.R.layout.select_dialog_singlechoice);
+        for (StandardListBO temp : bmodel.productHelper.getInStoreLocation())
+            mLocationAdapter.add(temp);
+        if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
+            mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
+        }
+
+    }
+
+    public ArrayAdapter<StandardListBO> getLocationAdapter() {
+        return mLocationAdapter;
     }
 
     public void clearInstance() {
