@@ -50,7 +50,6 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -62,7 +61,6 @@ import android.widget.ViewFlipper;
 import com.google.zxing.integration.android.IntentIntegrator;
 import com.google.zxing.integration.android.IntentResult;
 import com.ivy.core.IvyConstants;
-import com.ivy.cpg.view.order.StockAndOrder;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.sd.png.asean.view.R;
@@ -1667,18 +1665,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
-                mDrawerLayout.closeDrawers();
-            else {
-                stockCheckPresenter.returnToHome();
-                if (isFromChild)
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                            .putExtra("isStoreMenu", true));
-                else
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().finish();
-            }
-            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            onBackButonClick();
             return true;
         } else if (i == R.id.menu_survey) {
             startActivity(new Intent(getActivity(), SurveyActivityNew.class));
@@ -1731,7 +1718,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     if (businessModel.reasonHelper.isNpReasonPhotoAvaiable(businessModel.retailerMasterBO.getRetailerID(), "MENU_STOCK")) {
-                        businessModel.saveModuleCompletion("MENU_STOCK");
+                        businessModel.saveModuleCompletion("MENU_STOCK", true);
                         startActivity(new Intent(getActivity(),
                                 HomeScreenTwo.class));
                         getActivity().finish();
@@ -2369,5 +2356,50 @@ public class StockCheckFragment extends IvyBaseFragment implements
         }
     };
 
+
+    private void onBackButonClick() {
+
+        if (stockCheckHelper.hasStockCheck()) {
+            showBackDialog();
+        } else {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                mDrawerLayout.closeDrawers();
+            else {
+                stockCheckPresenter.returnToHome();
+                if (isFromChild)
+                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
+                            .putExtra("isStoreMenu", true));
+                else
+                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
+                getActivity().finish();
+            }
+            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+        }
+    }
+
+    private void showBackDialog() {
+        CommonDialog dialog = new CommonDialog(getActivity(), getResources().getString(R.string.doyouwantgoback),
+                "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                stockCheckPresenter.returnToHome();
+                if (isFromChild)
+                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
+                            .putExtra("isStoreMenu", true));
+                else
+                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
+                getActivity().finish();
+                getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+
+            }
+        }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setCancelable(false);
+    }
 
 }

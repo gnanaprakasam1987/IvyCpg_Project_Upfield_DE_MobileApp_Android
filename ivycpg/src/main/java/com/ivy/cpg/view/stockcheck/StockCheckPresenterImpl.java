@@ -164,7 +164,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
                 stockCheckHelper.saveClosingStock(context.getApplicationContext(), false);
                 // update review plan in DB
                 stockCheckHelper.setReviewPlanInDB(context.getApplicationContext());
-                businessModel.saveModuleCompletion(HomeScreenTwo.MENU_STOCK);
+                businessModel.saveModuleCompletion(HomeScreenTwo.MENU_STOCK, true);
 
                 return Boolean.TRUE;
             } catch (Exception e) {

@@ -270,7 +270,7 @@ public class CloseCallActivity extends IvyBaseActivityNoActionBar {
         nonproductive.setReasontype("CLCR");
 
         bmodel.closecallhelper.saveCloseCallreason(nonproductive);
-        bmodel.updateIsVisitedFlag();
+        bmodel.updateIsVisitedFlag("Y");
         Toast.makeText(CloseCallActivity.this,
                 getResources().getString(R.string.reason_saved),
                 Toast.LENGTH_SHORT).show();

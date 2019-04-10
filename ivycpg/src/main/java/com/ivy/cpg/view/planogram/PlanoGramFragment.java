@@ -609,27 +609,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-
-            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
-                mDrawerLayout.closeDrawers();
-            else {
-                if ("1".equals(calledBy)) {
-                    getActivity().finish();
-                }
-                if ("2".equals(calledBy)) {
-                    mBModel.outletTimeStampHelper
-                            .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                    getActivity().finish();
-                }
-                if ("3".equals(calledBy)) {
-                    getActivity().finish();
-                }
-
-
-            }
-            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-
+            onBackButonClick();
             return true;
         } else if (i == R.id.menu_next) {
             nextButtonClick();
@@ -654,7 +634,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     if (mBModel.reasonHelper.isNpReasonPhotoAvaiable(mBModel.retailerMasterBO.getRetailerID(), menuCode)) {
-                        mBModel.saveModuleCompletion(menuCode);
+                        mBModel.saveModuleCompletion(menuCode, true);
                         startActivity(new Intent(getActivity(),
                                 HomeScreenTwo.class));
                         getActivity().finish();
@@ -695,8 +675,10 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         protected Boolean doInBackground(String... arg0) {
             try {
                 mPlanoGramHelper.savePlanoGram(getContext().getApplicationContext());
-                if (calledBy != null && !"3".equals(calledBy))
-                    mBModel.saveModuleCompletion(HomeScreenTwo.MENU_PLANOGRAM);
+                if(menuCode.equalsIgnoreCase("MENU_VAN_PLANOGRAM"))
+                    mBModel.saveModuleCompletion("MENU_VAN_PLANOGRAM", false);
+                else if (calledBy != null && !"3".equals(calledBy))
+                    mBModel.saveModuleCompletion(HomeScreenTwo.MENU_PLANOGRAM, true);
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException("" + e);
@@ -1364,5 +1346,49 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
     interface ItemClickSupport{
         void onItemClicked(String path,boolean isDelete);
+    }
+
+    private void onBackButonClick() {
+
+        String result = checkDataForSave();
+        if (!PlanogramCheck.NOTCOMPLETED.toString().equals(result) && !PlanogramCheck.ADHERENCEFAILED.toString().equals(result)) {
+            showAlert();
+        } else {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                mDrawerLayout.closeDrawers();
+            else {
+                if ("1".equals(calledBy) || "3".equals(calledBy)) {
+                    getActivity().finish();
+                } else if ("2".equals(calledBy)) {
+                    mBModel.outletTimeStampHelper
+                            .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
+                    startActivityAndFinish(HomeScreenTwo.class);
+                }
+
+            }
+        }
+    }
+
+    private void showAlert() {
+        CommonDialog dialog = new CommonDialog(getActivity(), getResources().getString(R.string.doyouwantgoback),
+                "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                if ("1".equals(calledBy) || "3".equals(calledBy)) {
+                    getActivity().finish();
+                } else if ("2".equals(calledBy)) {
+                    mBModel.outletTimeStampHelper
+                            .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
+                    startActivityAndFinish(HomeScreenTwo.class);
+                }
+            }
+        }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setCancelable(false);
     }
 }

@@ -3,6 +3,7 @@ package com.ivy.cpg.view.van.odameter;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.bo.VanLoadMasterBO;
@@ -41,7 +42,7 @@ public class OdameterHelper {
             db.executeQ("DELETE from Odameter");
 
             if (!bmodel.configurationMasterHelper.SHOW_PHOTO_ODAMETER) {
-                String columns = "uid,start,end,isstarted,startlatitude,startlongitude,starttime,date";
+                String columns = "uid,start,end,isstarted,startlatitude,startlongitude,starttime,date,tripUid";
 
                 String values = StringUtils.QT(bmodel.userMasterHelper.getUserMasterBO()
                         .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID))
@@ -60,6 +61,14 @@ public class OdameterHelper {
                         + ","
                         + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
                         .getDownloadDate());
+
+                if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
+                    values += "," + StringUtils.QT(LoadManagementHelper.getInstance(context.getApplicationContext()).getTripId());
+                }
+                else {
+                    values += "," + StringUtils.QT("0");
+                }
+
                 String sql = "insert into " + "Odameter" + "(" + columns
                         + ") values(" + values + ")";
                 db.executeQ(sql);
@@ -67,7 +76,7 @@ public class OdameterHelper {
 
             } else {
 
-                String columns = "uid,start,end,isstarted,startlatitude,startlongitude,starttime,date,startImage";
+                String columns = "uid,start,end,isstarted,startlatitude,startlongitude,starttime,date,startImage,tripUid";
 
                 String values = StringUtils.QT(bmodel.userMasterHelper.getUserMasterBO()
                         .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID))
@@ -88,6 +97,14 @@ public class OdameterHelper {
                         .getDownloadDate())
                         + ","
                         + StringUtils.QT(mylist.getStartTripImg());
+
+                if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
+                    values += "," + StringUtils.QT(LoadManagementHelper.getInstance(context.getApplicationContext()).getTripId());
+                }
+                else {
+                    values += "," + StringUtils.QT("0");
+                }
+
                 String sql = "insert into " + "Odameter" + "(" + columns
                         + ") values(" + values + ")";
                 db.executeQ(sql);
@@ -174,5 +191,51 @@ public class OdameterHelper {
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+    }
+
+    public boolean isOdameterStarted(Context ctx) {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            Cursor c = db.selectSQL("select isstarted from odameter");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    boolean isStarted=c.getInt(0)==1;
+                    c.close();
+                    db.closeDB();
+                    return isStarted;
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return false;
+    }
+
+    public boolean isOdameterEnded(Context ctx) {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            Cursor c = db.selectSQL("select isEnded from odameter");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    boolean isSEnded=c.getInt(0)==1;
+                    c.close();
+                    db.closeDB();
+                    return isSEnded;
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return false;
     }
 }

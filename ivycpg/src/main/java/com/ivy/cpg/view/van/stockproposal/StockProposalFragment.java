@@ -1282,6 +1282,9 @@ public class StockProposalFragment extends IvyBaseFragment implements
 
                 StockProposalModuleHelper.getInstance(getActivity())
                         .saveStockProposal(stockPropVector);
+
+                bmodel.saveModuleCompletion("MENU_STOCK_PROPOSAL", false);
+
             } catch (Exception e) {
                 Log.i("e", e.getMessage());
                 return Boolean.FALSE;

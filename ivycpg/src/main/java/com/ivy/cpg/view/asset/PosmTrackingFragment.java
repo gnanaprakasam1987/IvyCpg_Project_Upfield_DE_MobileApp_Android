@@ -1383,7 +1383,7 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
             deleteUnusedImages();
             assetTrackingHelper.saveAsset(getContext().getApplicationContext(), screenCode);
-            mBModel.saveModuleCompletion(screenCode);
+            mBModel.saveModuleCompletion(screenCode, true);
             return "";
         }
 

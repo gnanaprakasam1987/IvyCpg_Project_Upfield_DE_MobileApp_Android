@@ -902,7 +902,7 @@ public class SellerDashboardFragment extends IvyBaseFragment implements AdapterV
             if (isFromHomeScreenTwo) {//update time stamp if previous screen is homescreentwo
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
-                bmodel.saveModuleCompletion(menuCode);
+                bmodel.saveModuleCompletion(menuCode, true);
             }
             getActivity().finish();
             return true;

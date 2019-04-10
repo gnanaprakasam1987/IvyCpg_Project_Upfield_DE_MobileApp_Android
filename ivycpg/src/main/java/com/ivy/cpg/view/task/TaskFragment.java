@@ -388,7 +388,7 @@ public class TaskFragment extends IvyBaseFragment {
                 public void onDismiss(DialogInterface dialog) {
                     if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), "MENU_TASK")) {
                         if (!fromHomeScreen) {
-                            bmodel.saveModuleCompletion("MENU_TASK");
+                            bmodel.saveModuleCompletion("MENU_TASK", true);
                             startActivity(new Intent(getActivity(),
                                     HomeScreenTwo.class));
                             getActivity().finish();

@@ -38,6 +38,20 @@
         </LinearLayout>
 
         <ImageView
+            android:id="@+id/img_mandatory"
+            android:layout_width="@dimen/activity_list_icon_size"
+            android:layout_height="@dimen/activity_list_icon_size"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/dialog_list_item_left_margin"
+            android:layout_marginRight="@dimen/dialog_list_item_left_margin"
+            android:autoMirrored="true"
+            android:rotationY="@integer/locale_mirror_flip"
+            android:src="@drawable/blue_trick"
+            tools:ignore="UnusedAttribute"
+            android:layout_toStartOf="@+id/img_arrow"
+            android:layout_toLeftOf="@+id/img_arrow"/>
+
+        <ImageView
             android:id="@+id/img_arrow"
             android:layout_width="@dimen/profile_history_20dp"
             android:layout_height="@dimen/activity_list_icon_size"

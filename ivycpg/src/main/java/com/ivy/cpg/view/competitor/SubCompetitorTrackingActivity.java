@@ -53,6 +53,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
@@ -274,8 +275,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            finish();
-
+            onBackButonClick();
             return true;
         } else if (i == R.id.menu_photo)
 
@@ -870,7 +870,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
             try {
                 competitorTrackingHelper.saveCompetitor();
                 if (!calledBy.equals("3"))
-                    bmodel.saveModuleCompletion(HomeScreenTwo.MENU_COMPETITOR);
+                    bmodel.saveModuleCompletion(HomeScreenTwo.MENU_COMPETITOR, true);
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;
@@ -1050,5 +1050,34 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
             }
         }
         return -1;
+    }
+
+    private void onBackButonClick() {
+
+        if (hasData()) {
+            showBackDialog();
+        } else {
+            finish();
+            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+        }
+    }
+
+    private void showBackDialog() {
+        CommonDialog dialog = new CommonDialog(this, getResources().getString(R.string.doyouwantgoback),
+                "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                finish();
+                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+
+            }
+        }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setCancelable(false);
     }
 }

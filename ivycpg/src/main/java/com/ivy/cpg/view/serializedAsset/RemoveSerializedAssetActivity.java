@@ -380,7 +380,7 @@ public class RemoveSerializedAssetActivity extends IvyBaseActivityNoActionBar {
                                 .deleteAssetTransaction(getApplicationContext(), assetTrackingBO.getSNO());
                         itr.remove();
                     }
-                    bModel.saveModuleCompletion(HomeScreenTwo.MENU_SERIALIZED_ASSET);
+                    bModel.saveModuleCompletion(HomeScreenTwo.MENU_SERIALIZED_ASSET, true);
                 }
             }
 
