@@ -1,6 +1,7 @@
 package com.ivy.ui.retailer.view.map;
 
 import android.content.Context;
+import android.location.Location;
 import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,13 +12,17 @@ import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.core.base.view.BaseFragment;
+import com.ivy.core.base.view.BaseMapFragment;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -34,9 +39,8 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
-public class PlanningMapViewFragment extends BaseFragment implements RetailerContract.RetailerView,
+public class RetailerMapFragment extends BaseMapFragment implements RetailerContract.RetailerView,
         OnMapReadyCallback,GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener {
 
@@ -81,7 +85,7 @@ public class PlanningMapViewFragment extends BaseFragment implements RetailerCon
                 .ivyAppComponent(((BusinessModel) Objects.requireNonNull(getActivity()).getApplication()).getComponent())
                 .retailerModule(new RetailerModule(this, getActivity()))
                 .build()
-                .inject(PlanningMapViewFragment.this);
+                .inject(RetailerMapFragment.this);
 
         setBasePresenter(presenter);
     }
@@ -91,6 +95,8 @@ public class PlanningMapViewFragment extends BaseFragment implements RetailerCon
     protected int setContentViewLayout() {
         return R.layout.fragment_planning_map;
     }
+
+
 
     @Override
     public void initVariables(View view) {
@@ -147,6 +153,31 @@ public class PlanningMapViewFragment extends BaseFragment implements RetailerCon
     @Override
     public void populateRetailers(List<RetailerMasterBO> retailerList) {
         this.retailerList = retailerList;
+        ArrayList<MarkerOptions> retailerMarkerList = new ArrayList<>();
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+        for (RetailerMasterBO retailerMasterBO : retailerList) {
+
+            if (retailerMasterBO.getLatitude() != 0 && retailerMasterBO.getLongitude() != 0) {
+
+                LatLng latLng = new LatLng(retailerMasterBO.getLatitude(), retailerMasterBO.getLongitude());
+                MarkerOptions mMarkerOptions = new MarkerOptions()
+                        .position(latLng)
+                        .title(retailerMasterBO.getRetailerName() + "," + retailerMasterBO.getRetailerID())
+                        .snippet(retailerMasterBO.getAddress1())
+                        .icon(BitmapDescriptorFactory
+                                .fromResource(getMarkerIcon(retailerMasterBO)));
+
+                addMarkerToMap(mMarkerOptions);
+                builder.include(latLng);
+
+                retailerMarkerList.add(mMarkerOptions);
+            }
+        }
+
+        if (retailerMarkerList.size() > 0)
+            focusMarker(getMap(),builder);
+
 
         presenter.prepareRetailerMarker(mMap,retailerList);
     }
@@ -201,6 +232,26 @@ public class PlanningMapViewFragment extends BaseFragment implements RetailerCon
         return false;
     }
 
+    @Override
+    public int getMapContainerResId() {
+        return 0;
+    }
+
+    @Override
+    public void onLocationResult(Location location) {
+
+    }
+
+    @Override
+    public void onMapReady() {
+
+    }
+
+    @Override
+    public void onMapUnavailable() {
+        showMessage("Map Not Available");
+    }
+
     private class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
 
@@ -219,5 +270,45 @@ public class PlanningMapViewFragment extends BaseFragment implements RetailerCon
             return infoWindow;
         }
 
+    }
+
+    public void focusMarker(GoogleMap map,final LatLngBounds.Builder builder) {
+
+        map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+            @Override
+            public void onMapLoaded() {
+
+                if (checkAreaBoundsTooSmall(builder.build())) {
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(builder.build().getCenter(), 19));
+                } else {
+                    map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 60));
+                }
+            }
+        });
+    }
+
+    private boolean checkAreaBoundsTooSmall(LatLngBounds bounds) {
+        float[] result = new float[1];
+        Location.distanceBetween(bounds.southwest.latitude, bounds.southwest.longitude, bounds.northeast.latitude, bounds.northeast.longitude, result);
+        return result[0] < 300;
+    }
+
+    private int getMarkerIcon(RetailerMasterBO retailerMasterBO) {
+        int drawable = R.drawable.marker_visit_unscheduled;
+
+        if ("Y".equals(retailerMasterBO.getIsVisited())) {
+            if (("N").equals(retailerMasterBO.isOrdered()))
+                drawable = R.drawable.marker_visit_non_productive;
+            else
+                drawable = R.drawable.marker_visit_completed;
+        } else if (retailerMasterBO.getIsToday() == 1 || "Y".equals(retailerMasterBO.getIsDeviated()))
+            drawable = R.drawable.marker_visit_planned;
+
+
+        if (retailerMasterBO.isHasNoVisitReason())
+            drawable = R.drawable.marker_visit_cancelled;
+
+
+        return drawable;
     }
 }

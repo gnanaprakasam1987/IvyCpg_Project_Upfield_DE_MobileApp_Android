@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -29,7 +28,6 @@ import com.ivy.calendarlibrary.monthview.MonthView;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.maplib.PlanningMapFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CalenderBO;
 import com.ivy.sd.png.bo.SpinnerBO;
@@ -39,7 +37,7 @@ import com.ivy.ui.offlineplan.calendar.adapter.CalendarClickListner;
 import com.ivy.ui.offlineplan.calendar.adapter.MonthViewAdapter;
 import com.ivy.ui.offlineplan.calendar.di.DaggerOfflinePlanComponent;
 import com.ivy.ui.offlineplan.calendar.di.OfflinePlanModule;
-import com.ivy.ui.retailer.view.map.PlanningMapViewFragment;
+import com.ivy.ui.retailer.view.map.RetailerMapFragment;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -248,7 +246,7 @@ public class OfflinePlanFragment extends BaseFragment implements OfflinePlanCont
             FragmentManager fm = ((FragmentActivity)context).getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
 
-            PlanningMapViewFragment fragment = new PlanningMapViewFragment();
+            RetailerMapFragment fragment = new RetailerMapFragment();
             ft.add(R.id.fragment_content, fragment,"MapView");
             ft.commit();
             return true;

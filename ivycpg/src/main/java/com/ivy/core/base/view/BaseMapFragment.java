@@ -22,6 +22,7 @@ import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public abstract class BaseMapFragment extends BaseFragment implements BaseIvyView, BaseMapView,
         GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener {
@@ -36,13 +37,9 @@ public abstract class BaseMapFragment extends BaseFragment implements BaseIvyVie
 
     private float zoomLevel = 16;
 
-    abstract int getMapContainerResId();
+    public abstract int getMapContainerResId();
 
-    abstract void onMapLoaded();
-
-    abstract void onErrorLoadingMap();
-
-    abstract void onLocationResult(Location location);
+    public abstract void onLocationResult(Location location);
 
     @Override
     public void loadMap() {
@@ -70,18 +67,18 @@ public abstract class BaseMapFragment extends BaseFragment implements BaseIvyVie
                             public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
                                 view.removeOnLayoutChangeListener(this);
 
-                                onMapLoaded();
+                                BaseMapFragment.this.onMapReady();
                             }
                         });
                     }
                     // If layout has been made, call onMapLoaded directly
                     else {
-                        onMapLoaded();
+                        BaseMapFragment.this.onMapReady();
                     }
                 }
             });
         } else {
-            onErrorLoadingMap();
+            onMapUnavailable();
         }
 
     }
@@ -127,10 +124,8 @@ public abstract class BaseMapFragment extends BaseFragment implements BaseIvyVie
         }
     }
 
-    public void removeLocationUpdates()
-    {
-        if( mLocationProviderClient != null && mLocationCallback != null )
-        {
+    public void removeLocationUpdates() {
+        if (mLocationProviderClient != null && mLocationCallback != null) {
             mLocationProviderClient.removeLocationUpdates(mLocationCallback);
         }
     }
@@ -139,23 +134,23 @@ public abstract class BaseMapFragment extends BaseFragment implements BaseIvyVie
         this.zoomLevel = zoomLevel;
     }
 
-    public void moveMapToLocation(LatLng location){
-        moveMapToLocation(location,this.zoomLevel);
+    public void moveMapToLocation(LatLng location) {
+        moveMapToLocation(location, this.zoomLevel);
     }
 
-    public void moveMapToLocation(LatLng location, float zoomLevel){
+    public void moveMapToLocation(LatLng location, float zoomLevel) {
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, zoomLevel));
     }
 
-    public void enableZoomControls(boolean isEnabled){
+    public void enableZoomControls(boolean isEnabled) {
         mMap.getUiSettings().setZoomControlsEnabled(isEnabled);
     }
 
-    public void enableCompass(boolean isEnabled){
+    public void enableCompass(boolean isEnabled) {
         mMap.getUiSettings().setCompassEnabled(isEnabled);
     }
 
-    public void enableMyLocationButton(boolean isEnabled){
+    public void enableMyLocationButton(boolean isEnabled) {
         if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
@@ -165,7 +160,7 @@ public abstract class BaseMapFragment extends BaseFragment implements BaseIvyVie
 
     }
 
-    public void enableMapToolBar(boolean isEnabled){
+    public void enableMapToolBar(boolean isEnabled) {
         mMap.getUiSettings().setMapToolbarEnabled(isEnabled);
     }
 
@@ -180,6 +175,16 @@ public abstract class BaseMapFragment extends BaseFragment implements BaseIvyVie
         // Return false so that we don't consume the event and the default behavior still occurs
         // (the camera animates to the user's current position).
         return false;
+    }
+
+    public void addMarkerToMap(MarkerOptions markerOptions) {
+        mMap.addMarker(markerOptions);
+    }
+
+    public void addMarkerToMap(MarkerOptions markerOptions, boolean focus) {
+        mMap.addMarker(markerOptions);
+        if (focus)
+            moveMapToLocation(markerOptions.getPosition());
     }
 
 

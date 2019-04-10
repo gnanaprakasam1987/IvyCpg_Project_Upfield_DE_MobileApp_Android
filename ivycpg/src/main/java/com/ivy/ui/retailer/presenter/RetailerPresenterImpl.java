@@ -51,32 +51,7 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView> exte
     @Override
     public void prepareRetailerMarker(GoogleMap map,List<RetailerMasterBO> retailerList) {
 
-        ArrayList<MarkerOptions> retailerMarkerList = new ArrayList<>();
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
 
-        for (RetailerMasterBO retailerMasterBO : retailerList) {
-
-            if (retailerMasterBO.getLatitude() != 0 && retailerMasterBO.getLongitude() != 0) {
-
-                LatLng latLng = new LatLng(retailerMasterBO.getLatitude(), retailerMasterBO.getLongitude());
-                MarkerOptions mMarkerOptions = new MarkerOptions()
-                        .position(latLng)
-                        .title(retailerMasterBO.getRetailerName() + "," + retailerMasterBO.getRetailerID())
-                        .snippet(retailerMasterBO.getAddress1())
-                        .icon(BitmapDescriptorFactory
-                                .fromResource(getMarkerIcon(retailerMasterBO)));
-
-                map.addMarker(mMarkerOptions);
-                builder.include(latLng);
-
-                retailerMarkerList.add(mMarkerOptions);
-            }
-        }
-
-        if (retailerMarkerList.size() > 0)
-            focusMarker(map,builder);
-
-        getIvyView().populateRetailersMarker(retailerMarkerList);
     }
 
     @Override
@@ -100,45 +75,7 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView> exte
         return (int) ((39 + 20) * scale + 0.5f);
     }
 
-    public void focusMarker(GoogleMap map,final LatLngBounds.Builder builder) {
 
-        map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-            @Override
-            public void onMapLoaded() {
-
-                if (checkAreaBoundsTooSmall(builder.build())) {
-                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(builder.build().getCenter(), 19));
-                } else {
-                    map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 60));
-                }
-            }
-        });
-    }
-
-    private boolean checkAreaBoundsTooSmall(LatLngBounds bounds) {
-        float[] result = new float[1];
-        Location.distanceBetween(bounds.southwest.latitude, bounds.southwest.longitude, bounds.northeast.latitude, bounds.northeast.longitude, result);
-        return result[0] < 300;
-    }
-
-    private int getMarkerIcon(RetailerMasterBO retailerMasterBO) {
-        int drawable = R.drawable.marker_visit_unscheduled;
-
-        if ("Y".equals(retailerMasterBO.getIsVisited())) {
-            if (("N").equals(retailerMasterBO.isOrdered()))
-                drawable = R.drawable.marker_visit_non_productive;
-            else
-                drawable = R.drawable.marker_visit_completed;
-        } else if (retailerMasterBO.getIsToday() == 1 || "Y".equals(retailerMasterBO.getIsDeviated()))
-            drawable = R.drawable.marker_visit_planned;
-
-
-        if (retailerMasterBO.isHasNoVisitReason())
-            drawable = R.drawable.marker_visit_cancelled;
-
-
-        return drawable;
-    }
 
 
 }
