@@ -6,19 +6,14 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.maplib.BaiduMapFragment;
 import com.ivy.maplib.PlanningMapFragment.DataPulling;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
-import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
@@ -27,7 +22,6 @@ import com.ivy.cpg.view.tradeCoverage.adhocPlanning.AdhocPlanningFragment;
 import com.ivy.cpg.view.tradeCoverage.missedOutlets.MissedVisitFragment;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class PlanningActivity extends IvyBaseActivityNoActionBar implements
@@ -40,13 +34,11 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
     private static final String mMissedretailer = "missedretailer";
     private String fromWhere;
     private NonVisitFragment mNonVisitFragment;
-    private List<MarkerOptions> markerList;
 
     private TabLayout.Tab allTab;
     private TabLayout.Tab missedRetailerTab;
 
     private List<com.baidu.mapapi.map.MarkerOptions> baiduMarkerList;
-    com.baidu.mapapi.model.LatLng baidulatLng;
 
     ArrayList<StandardListBO> mRetailerSelectionList;
 
@@ -74,8 +66,6 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
         bmodel.mSelectedRetailerLatitude = 0;
         bmodel.mSelectedRetailerLongitude = 0;
 
-        /** Initialising map view **/
-        markerList = new ArrayList<>();
         baiduMarkerList = new ArrayList<>();
         try {
             if (bmodel.configurationMasterHelper.IS_MAP) {
@@ -270,95 +260,6 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
         return false;
     }
 
-    private void setSearchTextColour(SearchView searchView) {
-        LinearLayout searchPlate = searchView
-                .findViewById(R.id.search_plate);
-        searchPlate
-
-                .setBackgroundResource(R.drawable.abc_ab_share_pack_holo_light);
-    }
-
-
-    private void displayTodayRoute(String filter) {
-        LatLng latLng;
-
-        List<RetailerMasterBO> retailer = new ArrayList<>();
-        try {
-            int siz = bmodel.getRetailerMaster().size();
-            retailer.clear();
-            // Add today's retailers.
-
-            if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
-                for (int i = 0; i < siz; i++) {
-                    if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
-                        retailer.add(bmodel.getRetailerMaster().get(i));
-                    }
-                }
-            } else {
-                for (int i = 0; i < siz; i++) {
-
-                    retailer.add(bmodel.getRetailerMaster().get(i));
-
-                }
-            }
-
-            Collections.sort(retailer,
-                    RetailerMasterBO.WalkingSequenceComparator);
-
-
-            // Add today'sdeviated retailers.
-            for (int i = 0; i < siz; i++) {
-                if (bmodel.getRetailerMaster().get(i).getIsDeviated() != null && ("Y").equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
-                    if (filter != null) {
-                        if ((bmodel.getRetailerMaster().get(i)
-                                .getRetailerName().toLowerCase())
-                                .contains(filter.toLowerCase())) {
-                            retailer.add(bmodel.getRetailerMaster().get(i));
-                        }
-                    } else {
-                        retailer.add(bmodel.getRetailerMaster().get(i));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-        try {
-
-            if (bmodel.configurationMasterHelper.IS_MAP) {
-                markerList.clear();
-                baiduMarkerList.clear();
-                for (int i = 0; i < retailer.size(); i++) {
-                    if (bmodel.configurationMasterHelper.IS_BAIDU_MAP) {
-                        Bundle bndl = new Bundle();
-                        bndl.putCharSequence("addr", retailer.get(i).getAddress1());
-                        baidulatLng = new com.baidu.mapapi.model.LatLng(retailer.get(i).getLatitude(), retailer
-                                .get(i).getLongitude());
-                        com.baidu.mapapi.map.MarkerOptions mBMarker = new com.baidu.mapapi.map.MarkerOptions().position(baidulatLng)
-                                .title(retailer.get(i).getRetailerName())
-                                .extraInfo(bndl)
-                                .icon(com.baidu.mapapi.map.BitmapDescriptorFactory.fromResource(R.drawable.markergreen)
-                                ).animateType(com.baidu.mapapi.map.MarkerOptions.MarkerAnimateType.drop);
-                        baiduMarkerList.add(mBMarker);
-                    } else {
-                        latLng = new LatLng(retailer.get(i).getLatitude(), retailer
-                                .get(i).getLongitude());
-                        MarkerOptions mMarkerOptions = new MarkerOptions()
-                                .position(latLng)
-                                .title(retailer.get(i).getRetailerName())
-                                .snippet(retailer.get(i).getAddress1())
-                                .icon(BitmapDescriptorFactory
-                                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                        markerList.add(mMarkerOptions);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
     public void updateRetailerCount(int retailerCount, int isFrom) {
         try {
             String str;
@@ -387,11 +288,6 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
             Commons.printException(e);
         }
         return tabText;
-    }
-
-    @Override
-    public List<MarkerOptions> getData() {
-        return markerList;
     }
 
     @Override

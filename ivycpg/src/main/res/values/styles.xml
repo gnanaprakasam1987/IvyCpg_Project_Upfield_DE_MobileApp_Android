@@ -783,6 +783,18 @@ negative button and neutral button -->
         <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
 
+    <style name="RetailerNameListView" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/retailer_name_list</item>
+        <item name="android:textColor">?attr/listItemPrimaryTextColor</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+
+    <style name="RetailerSecondaryListView" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/retailer_address_list</item>
+        <item name="android:textColor">@color/FullBlack</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+    </style>
+
 
     <!-- checkbox used only asset-->
     <style name="checkBox_for_remove_asset_Style" parent="Base.Theme.AppCompat">

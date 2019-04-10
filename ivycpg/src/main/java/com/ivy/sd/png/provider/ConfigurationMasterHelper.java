@@ -1567,6 +1567,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_AZURE_UPLOAD = "IS_AZURE_UPLOAD";
     public boolean IS_AZURE_UPLOAD = false;
 
+    private static final String CODE_SHOW_RETAILER_LAST_VISIT = "RTRS33";
+    public boolean IS_SHOW_RETAILER_LAST_VISIT;
+    public boolean IS_SHOW_RETAILER_LAST_VISITEDBY;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2730,6 +2734,8 @@ public class ConfigurationMasterHelper {
         this.IS_COLLECTION_DELETE = hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) != null ? hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) : false;
 
         this.IS_AZURE_UPLOAD = hashMapHHTModuleConfig.get(CODE_AZURE_UPLOAD) != null ? hashMapHHTModuleConfig.get(CODE_AZURE_UPLOAD) : false;
+        this.IS_SHOW_RETAILER_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LAST_VISIT) : false;
+        this.IS_SHOW_RETAILER_LAST_VISITEDBY = isShowLastVisitedBy();
 
         this.IS_ENABLE_TRIP = hashMapHHTModuleConfig.get(CODE_TO_ENABLE_TRIP) != null ? hashMapHHTModuleConfig.get(CODE_TO_ENABLE_TRIP) : false;
         if(hashMapHHTModuleOrder.get(CODE_TO_ENABLE_TRIP) != null && hashMapHHTModuleOrder.get(CODE_TO_ENABLE_TRIP)==1)
@@ -6260,6 +6266,28 @@ public class ConfigurationMasterHelper {
     public boolean isAuditEnabled() {
 
         return IS_TEAMLEAD && IS_AUDIT_USER;
+    }
+
+    private boolean isShowLastVisitedBy() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        db.openDataBase();
+
+        String sql = "SELECT hhtCode, RField FROM "
+                + DataMembers.tbl_HhtModuleMaster
+                + " WHERE flag='1' AND hhtCode='RTRS33' and ForSwitchSeller = 0";
+        Cursor c = db.selectSQL(sql);
+        if (c != null && c.getCount() != 0) {
+            while (c.moveToNext()) {
+                if (c.getString(1).equalsIgnoreCase("1")) {
+                    return true;
+                }
+            }
+            c.close();
+        }
+        db.closeDB();
+
+
+        return false;
     }
 
 }
