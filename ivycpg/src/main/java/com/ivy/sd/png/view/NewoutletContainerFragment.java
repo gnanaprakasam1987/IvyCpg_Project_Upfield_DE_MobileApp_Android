@@ -28,6 +28,9 @@ import java.util.List;
 public class NewoutletContainerFragment extends IvyBaseFragment {
 
     private BusinessModel bmodel;
+    private boolean isFromEditProfileView;
+    private static final String screenModeValue="screenMode"; //1 - View Mode ; 2,0 - Edit Mode
+    private static final String retailerIdValue="retailerId"; //1 - View Mode ; 2,0 - Edit Mode
     Bundle bundle;
 
     @Override
@@ -74,7 +77,7 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
         }
     }
 
-    boolean isFromEditProfileView;
+
 
     private void initializeItem(View view) {
 
@@ -110,9 +113,8 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
 
                 if (bmodel.configurationMasterHelper.IS_CONTACT_TAB) {
 
-                    //1 - View Mode ; 2,0 - Edit Mode
-                    int screenMode = getActivity().getIntent().getIntExtra("screenMode", 0);
-                    String retailerId = bundle.getString("retailerId", "");
+                    int screenMode = getActivity().getIntent().getIntExtra(screenModeValue, 0);
+                    String retailerId = bundle.getString(retailerIdValue, "");
 
                     boolean isEdit = false;
 
