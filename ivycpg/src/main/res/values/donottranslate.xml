@@ -189,11 +189,11 @@
     <string name="pause">Pause</string>
     <string name="resume_visit">Resume Visit</string>
 
-    <string name="complete_all_mandatory_activities_before_you_start_the_day">Complete all Mandatory activities before start the day.</string>
-    <string name="complete_all_mandatory_activities_before_you_stop_the_day">Complete all mandatory activities before stop the day.</string>
+    <string name="complete_all_mandatory_activities_before_you_start_the_day">Complete all Mandatory activity before start the day.</string>
+    <string name="complete_all_mandatory_activities_before_you_stop_the_day">Complete all mandatory activity before end the day.</string>
     <string name="today_you_have_uncompleted_activities">Today, You have %d uncompleted activities.</string>
     <string name="today_you_have_completed_all_activities">Today, You have completed all activities.</string>
-    <string name="stop">Stop</string>
+    <string name="stop">End</string>
     <string name="trip_started">Trip Started Successfully.</string>
     <string name="trip_ended">Trip Ended Successfully.</string>
     <string name="pls_start_the_trip">Please start the trip.</string>
