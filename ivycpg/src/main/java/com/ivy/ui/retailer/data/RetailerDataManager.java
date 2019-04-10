@@ -1,4 +1,6 @@
 package com.ivy.ui.retailer.data;
 
-public interface RetailerDataManager {
+import com.ivy.core.data.AppDataManagerContract;
+
+public interface RetailerDataManager extends AppDataManagerContract {
 }
