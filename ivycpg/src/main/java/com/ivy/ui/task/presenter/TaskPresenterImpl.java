@@ -319,6 +319,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
 
 
         } else {
+            imgBo.setTaskImgPath(FileUtils.photoFolderPath);
             imgBo.setTaskImg("");
             if (mTaskImgList.isEmpty())
                 mTaskImgList.add(imgBo);

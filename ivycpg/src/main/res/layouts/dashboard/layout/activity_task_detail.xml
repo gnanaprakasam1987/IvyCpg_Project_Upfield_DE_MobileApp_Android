@@ -34,10 +34,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:adjustViewBounds="true"
-                    android:paddingStart="@dimen/dimen_10dp"
-                    android:paddingLeft="@dimen/dimen_10dp"
-                    android:paddingTop="@dimen/dimen_10dp"
-                    android:paddingRight="@dimen/dimen_10dp"
+                    android:padding="@dimen/dimen_10dp"
                     android:text="@string/plan_task" />
 
                 <TextView
@@ -70,10 +67,7 @@
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:adjustViewBounds="true"
-                    android:paddingStart="@dimen/dimen_10dp"
-                    android:paddingLeft="@dimen/dimen_10dp"
-                    android:paddingTop="@dimen/dimen_10dp"
-                    android:paddingRight="@dimen/dimen_10dp"
+                    android:padding="@dimen/dimen_10dp"
                     android:text="@string/category" />
 
                 <TextView
@@ -100,10 +94,7 @@
                     android:layout_toEndOf="@+id/task_category_tv"
                     android:layout_toRightOf="@+id/task_category_tv"
                     android:adjustViewBounds="true"
-                    android:paddingStart="@dimen/dimen_10dp"
-                    android:paddingLeft="@dimen/dimen_10dp"
-                    android:paddingTop="@dimen/dimen_10dp"
-                    android:paddingRight="@dimen/dimen_10dp"
+                    android:padding="@dimen/dimen_10dp"
                     android:text="@string/due_date" />
 
                 <TextView
@@ -129,47 +120,80 @@
                     android:background="@color/divider_view_color"
                     android:labelFor="@+id/evidence_img_recycler_view" />
 
-            </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/task_img_rl"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/first_layout"
-                android:padding="@dimen/dimen_10dp">
 
                 <TextView
-                    android:id="@+id/task_img_tv"
+                    android:id="@+id/task_created_by_tv"
                     style="@style/TextViewNormalHighlight"
                     android:layout_width="@dimen/spinner_width"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/tsk_category_divider"
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:adjustViewBounds="true"
-                    android:text="@string/photo" />
+                    android:padding="@dimen/dimen_10dp"
+                    android:text="@string/created_by" />
 
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/task_img_recycler_view"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/task_created_by_value_tv"
+                    style="@style/TextViewNormal"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/task_img_tv"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true" />
+                    android:layout_below="@+id/task_created_by_tv"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:adjustViewBounds="true"
+                    android:paddingStart="@dimen/dimen_10dp"
+                    android:paddingLeft="@dimen/dimen_10dp"
+                    android:paddingRight="@dimen/dimen_10dp"
+                    android:paddingBottom="@dimen/dimen_10dp"
+                    android:text="@string/dummy_txt" />
+
+
+                <TextView
+                    android:id="@+id/task_created_date_tv"
+                    style="@style/TextViewNormalHighlight"
+                    android:layout_width="@dimen/spinner_width"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tsk_category_divider"
+                    android:layout_toEndOf="@+id/task_created_by_tv"
+                    android:layout_toRightOf="@+id/task_created_by_tv"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/dimen_10dp"
+                    android:text="@string/date_label" />
+
+                <TextView
+                    android:id="@+id/task_created_date_value_tv"
+                    style="@style/TextViewNormal"
+                    android:layout_width="@dimen/spinner_width"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/task_created_date_tv"
+                    android:layout_toEndOf="@+id/task_created_by_tv"
+                    android:layout_toRightOf="@+id/task_created_by_tv"
+                    android:adjustViewBounds="true"
+                    android:paddingStart="@dimen/dimen_10dp"
+                    android:paddingLeft="@dimen/dimen_10dp"
+                    android:paddingRight="@dimen/dimen_10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/dummy_txt" />
+
+                <View
+                    android:id="@+id/tsk_createdby_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/activity_divider_height"
+                    android:layout_below="@+id/task_created_date_value_tv"
+                    android:background="@color/divider_view_color"
+                    android:labelFor="@+id/evidence_img_recycler_view" />
+
             </RelativeLayout>
 
-            <View
-                android:id="@+id/tsk_img_divider"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/activity_divider_height"
-                android:layout_below="@+id/task_img_rl"
-                android:background="@color/divider_view_color"
-                android:labelFor="@+id/evidence_img_recycler_view" />
+
 
             <RelativeLayout
                 android:id="@+id/rl_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tsk_img_divider"
+                android:layout_below="@+id/first_layout"
                 android:gravity="start|center"
                 android:orientation="vertical">
 
@@ -179,10 +203,7 @@
                     android:layout_width="@dimen/spinner_width"
                     android:layout_height="wrap_content"
                     android:adjustViewBounds="true"
-                    android:paddingStart="@dimen/dimen_10dp"
-                    android:paddingLeft="@dimen/dimen_10dp"
-                    android:paddingTop="@dimen/dimen_10dp"
-                    android:paddingRight="@dimen/dimen_10dp"
+                    android:padding="@dimen/dimen_10dp"
                     android:text="@string/description" />
 
                 <TextView
@@ -206,11 +227,47 @@
                     android:labelFor="@+id/evidence_img_recycler_view" />
             </RelativeLayout>
 
+
+            <RelativeLayout
+                android:id="@+id/task_img_rl"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/rl_description"
+                android:padding="@dimen/dimen_10dp">
+
+                <TextView
+                    android:id="@+id/task_img_tv"
+                    style="@style/TextViewNormalHighlight"
+                    android:layout_width="@dimen/spinner_width"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:paddingBottom="@dimen/dimen_10dp"
+                    android:adjustViewBounds="true"
+                    android:text="@string/photo" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/task_img_recycler_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/task_img_tv"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true" />
+            </RelativeLayout>
+
+            <View
+                android:id="@+id/tsk_img_divider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/activity_divider_height"
+                android:layout_below="@+id/task_img_rl"
+                android:background="@color/divider_view_color"
+                android:labelFor="@+id/evidence_img_recycler_view" />
+
             <RelativeLayout
                 android:id="@+id/evidence_img_rl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/rl_description"
+                android:layout_below="@+id/tsk_img_divider"
                 android:padding="@dimen/dimen_10dp">
 
 
@@ -222,6 +279,7 @@
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:adjustViewBounds="true"
+                    android:paddingBottom="@dimen/dimen_10dp"
                     android:text="@string/task_evidence" />
 
                 <ImageButton

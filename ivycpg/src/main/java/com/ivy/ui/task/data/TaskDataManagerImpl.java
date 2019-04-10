@@ -376,7 +376,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
 
 
                     //add task created images into TaskImageDetails table
-                    columns_new = "TaskId,TaskImageId,TaskImageName,ImageType,Upload,Status";
+                    columns_new = "TaskId,TaskImageId,TaskImageName,Upload,Status";
                     String imgId;
                     for (TaskDataBO imgBO : taskImgList) {
                         if (!imgBO.getTaskImg().isEmpty()) {
@@ -385,7 +385,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                                     .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
                             value_new = finalTid + "," + imgId + "," + StringUtils.QT(imgBO.getTaskImg())
-                                    + "," + imgBO.getTaskImgPath() + "," + "'N'" + "," + finalStatus;
+                                    + "," + "'N'" + "," + finalStatus;
 
                             mDbUtil.insertSQL("TaskImageDetails", columns_new, value_new);
                         }
@@ -552,7 +552,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
 
                     String query = "SELECT TMD.TaskImageName,TM.IsServerTask FROM TaskImageDetails TMD"
                             + " INNER JOIN TaskMaster TM ON TM.taskId = TMD.TaskId"
-                            + " WHERE Status!='D' AND TaskId = " + StringUtils.QT(taskId);
+                            + " WHERE TMD.Status!='D' AND TMD.TaskId = " + StringUtils.QT(taskId);
 
                     ArrayList<TaskDataBO> taskImgList = new ArrayList<>();
                     Cursor c = mDbUtil
@@ -563,9 +563,9 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             taskImgBo.setTaskImg(c.getString(0));
 
                             if (c.getInt(1) == 1)
-                                taskImgBo.setTaskImgPath(TaskConstant.TASK_SERVER_IMG_PATH + "/" + c.getString(0));
+                                taskImgBo.setTaskImgPath(TaskConstant.TASK_SERVER_IMG_PATH);
                             else
-                                taskImgBo.setTaskImgPath(FileUtils.photoFolderPath + "/" + c.getString(0));
+                                taskImgBo.setTaskImgPath(FileUtils.photoFolderPath);
 
                             taskImgList.add(taskImgBo);
                         }
@@ -574,8 +574,8 @@ public class TaskDataManagerImpl implements TaskDataManager {
                         return taskImgList;
                     }
 
-                } catch (Exception ignore) {
-
+                } catch (Exception e) {
+                    Commons.printException(e);
                 }
                 shutDownDb();
                 return new ArrayList<>();

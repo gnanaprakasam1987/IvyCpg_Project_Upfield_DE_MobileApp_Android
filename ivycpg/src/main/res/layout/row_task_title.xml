@@ -108,63 +108,23 @@
                     android:text="@string/dummy_txt" />
 
 
-                <RelativeLayout
-                    android:id="@+id/rl_created_by"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/task_due_date_tv"
+                    style="@style/TextViewListItemSecondary"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="start|center"
-                    android:gravity="start|center"
-                    android:orientation="horizontal">
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:text="@string/due_date" />
 
-                    <TextView
-                        android:id="@+id/task_createdOn"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="@dimen/_3sdp"
-                        android:layout_marginRight="@dimen/_3sdp"
-                        android:text="@string/dummy_txt" />
-
-                    <TextView
-                        android:id="@+id/task_taskowner_label"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@+id/task_createdOn"
-                        android:layout_toRightOf="@+id/task_createdOn"
-                        android:text="@string/created_by" />
-
-
-                    <TextView
-                        android:id="@+id/task_taskowner"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_toEndOf="@+id/task_taskowner_label"
-                        android:layout_toRightOf="@+id/task_taskowner_label"
-                        android:gravity="start|center"
-                        android:text="@string/dummy_txt" />
-
-
-                </RelativeLayout>
             </LinearLayout>
-
-            <TextView
-                android:id="@+id/task_due_date_tv"
-                style="@style/TextViewListItemValues"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_weight="1.5"
-                android:gravity="center"
-                android:text="@string/dummy_txt" />
 
             <ImageButton
                 android:id="@+id/btn_attach_photo"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical|start"
-                android:layout_weight=".5"
+                android:layout_weight="1"
                 android:background="@color/zxing_transparent"
                 android:contentDescription="@string/add_img_content_description"
                 android:rotation="45"
@@ -176,14 +136,15 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_weight=".5"
-                android:gravity="center_vertical">
+                android:layout_weight="1"
+                android:gravity="center">
 
                 <CheckBox
                     android:id="@+id/task_title_CB"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:gravity="center"
+                    android:layout_gravity="center"
                     android:text="" />
             </LinearLayout>
 

@@ -8,7 +8,7 @@ public interface TaskClickListener {
 
     void onTaskButtonClick(TaskDataBO taskBO, int isType);
 
-    void onAttachFile(String taskId, int prdLevelId);
+    void onAttachFile(String taskId, int prdLevelId,boolean isChecked);
 
     void onSortItemClicked(int sortType, boolean orderByAsc);
 }

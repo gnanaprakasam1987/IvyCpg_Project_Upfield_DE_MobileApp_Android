@@ -66,25 +66,13 @@
                 android:tag="task_title_label"
                 android:text="@string/task" />
 
-            <TextView
-                android:id="@+id/tv_due_date"
-                style="@style/TextViewListTitle"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.5"
-                android:clickable="true"
-                android:gravity="center"
-                android:textAlignment="center"
-                android:focusable="true"
-                android:tag="task_sort_title_label"
-                android:text="@string/due_date" />
 
             <TextView
                 android:id="@+id/tv_sort"
                 style="@style/TextViewListTitle"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:clickable="true"
                 android:focusable="true"
                 android:tag="task_sort_title_label"

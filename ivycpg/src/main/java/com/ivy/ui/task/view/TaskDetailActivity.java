@@ -20,7 +20,6 @@ import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.task.TaskConstant;
@@ -69,6 +68,19 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
     @BindView(R.id.task_evidence_image_view)
     ImageView evidenceImgView;
+
+    @BindView(R.id.task_created_by_tv)
+    TextView createdByTv;
+
+    @BindView(R.id.task_created_by_value_tv)
+    TextView createdByValueTv;
+
+    @BindView(R.id.task_created_date_tv)
+    TextView createdDateTv;
+
+    @BindView(R.id.task_created_date_value_tv)
+    TextView createdDateValueTv;
+
 
     private TaskDataBO detailBo;
     private boolean isFromHomeSrc;
@@ -163,8 +175,11 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
         taskTitleTv.setText(detailBo.getTasktitle());
         taskProductLevelTv.setText(detailBo.getTaskCategoryDsc());
-        taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(detailBo.getTaskDueDate(), ConfigurationMasterHelper.outDateFormat));
+        taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(detailBo.getTaskDueDate(), taskPresenter.outDateFormat()));
         taskImgRecyclerView.setAdapter(new TaskImgListAdapter(this, updatedList, true, null));
+        createdByValueTv.setText(detailBo.getTaskOwner());
+        createdDateValueTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
+                (detailBo.getCreatedDate(), taskPresenter.outDateFormat()));
         taskDescTv.setText(detailBo.getTaskDesc());
         setImageIntoView(getIntent().getExtras().getString(TaskConstant.EVIDENCE_IMAGE));
 
@@ -204,6 +219,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         if (imageName.isEmpty()) {
             evidenceImgView.setVisibility(View.GONE);
         } else {
+            detailBo.setTaskEvidenceImg(imageName);
             evidenceImgView.setVisibility(View.VISIBLE);
             String path = FileUtils.photoFolderPath + "/" + imageName;
             if (FileUtils.isFileExisting(path)) {

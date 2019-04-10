@@ -261,11 +261,21 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
          */
         @Override
         public void onTaskButtonClick(TaskDataBO taskBO, int isType) {
+            if (taskBO.getUsercreated().equals("0")) {
+                showMessage(R.string.server_task_can_not_be_edit);
+                return;
+            } else if (taskBO.isChecked()) {
+                showMessage(R.string.exec_task_not_allow_to_edit);
+                return;
+            }
+
+
             Intent i = null;
             switch (isType) {
                 case 0:
                     i = new Intent(getActivity(), TaskDetailActivity.class);
-                    i.putExtra(TaskConstant.EVIDENCE_IMAGE, imageName);
+                    if (taskBO.getTaskEvidenceImg()==null)
+                        i.putExtra(TaskConstant.EVIDENCE_IMAGE, imageName);
                     break;
                 case 1:
                     i = new Intent(getActivity(), TaskCreationActivity.class);
@@ -275,7 +285,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
                     i.putExtra(TaskConstant.TASK_SCREEN_MODE, isType);
                     break;
                 case 2:
-                    taskPresenter.deleteTask(taskBO.getTaskId(), taskBO.getTaskOwner(),taskBO.getServerTask());
+                    taskPresenter.deleteTask(taskBO.getTaskId(), taskBO.getTaskOwner(), taskBO.getServerTask());
                     break;
             }
 
@@ -287,14 +297,20 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         }
 
         @Override
-        public void onAttachFile(String taskId, int productLevelId) {
+        public void onAttachFile(String taskId, int productLevelId, boolean isChecked) {
+            if (!isChecked) {
+                showMessage(R.string.task_exec_mandatory);
+                return;
+            }
+
+
             mSelectedTaskId = taskId;
 
             imageName = "TSK_" + taskId + "_" + productLevelId
                     + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)
                     + ".jpg";
 
-            String mFirstNameStarts = "TE_" + taskId
+            String mFirstNameStarts = "TSK_" + taskId
                     + "_" + productLevelId
                     + "_" + Commons.now(Commons.DATE);
 

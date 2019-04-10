@@ -29,8 +29,8 @@
     <dimen name="actionbar_subtitle_text_size">22sp</dimen>
     <dimen name="trade_coverage_text_size">15sp</dimen>
     <dimen name="banner_text_size">15sp</dimen>
-    <dimen name="text_size_primary">18sp</dimen>
-    <dimen name="text_size_secondary">16sp</dimen>
+    <dimen name="text_size_primary">20sp</dimen>
+    <dimen name="text_size_secondary">18sp</dimen>
     <dimen name="text_size_caption">16sp</dimen>
     <dimen name="date_picker_text_size">17sp</dimen>
 

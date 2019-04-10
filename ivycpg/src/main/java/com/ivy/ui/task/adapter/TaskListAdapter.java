@@ -17,8 +17,8 @@ import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.ui.task.TaskClickListener;
@@ -71,9 +71,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         // put an unique string id as value, can be any string which uniquely define the data
         binderHelper.bind(holder.swipeLayout, taskBo.getTaskId());
 
-        holder.taskTaskOwner.setText(taskBo.getTaskOwner());
-        holder.taskCreatedDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
-                (taskBo.getCreatedDate(), outDateFormat));
 
         holder.taskTitle.setText(taskBo.getTasktitle());
         holder.taskProductLevel.setText(taskBo.getTaskCategoryDsc());
@@ -98,22 +95,15 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         holder.btnAttachFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (taskBo.isChecked())
-                    taskClickListener.onAttachFile(taskBo.getTaskId(), taskBo.getTaskCategoryID());
-                else
-                    ((BaseActivity) mContext).showMessage(R.string.task_exec_mandatory);
+                taskClickListener.onAttachFile(taskBo.getTaskId(), taskBo.getTaskCategoryID(), taskBo.isChecked());
             }
         });
 
         holder.btnEditTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (taskBo.getUsercreated().equals("0"))
-                    ((BaseActivity) mContext).showMessage(R.string.server_task_can_not_be_edit);
-                else if (taskBo.isChecked())
-                    ((BaseActivity) mContext).showMessage(R.string.exec_task_not_allow_to_edit);
-                else
-                    taskClickListener.onTaskButtonClick(taskBo, TaskConstant.TASK_EDIT);
+
+                taskClickListener.onTaskButtonClick(taskBo, TaskConstant.TASK_EDIT);
 
             }
         });
@@ -122,9 +112,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             @Override
             public void onClick(View view) {
                 if (taskBo.getUsercreated().equals("0"))
-                    ((BaseActivity) mContext).showMessage(R.string.server_task_can_not_be_delete);
+                    Toast.makeText(mContext, mContext.getString(R.string.server_task_can_not_be_delete), Toast.LENGTH_SHORT).show();
                 if (taskBo.isChecked())
-                    ((BaseActivity) mContext).showMessage(R.string.exec_task_not_allow_to_delete);
+                    Toast.makeText(mContext, mContext.getString(R.string.exec_task_not_allow_to_delete), Toast.LENGTH_SHORT).show();
                 else {
                     showDeleteAlert(holder.getAdapterPosition());
                 }
@@ -165,8 +155,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         CheckBox taskCB;
         TextView taskTitle;
         TextView taskProductLevel;
-        TextView taskTaskOwner;
-        TextView taskCreatedDate;
         LinearLayout layoutCB;
         LinearLayout layoutrow;
         ImageButton btnAttachFile;
@@ -181,8 +169,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             taskCB = itemView.findViewById(R.id.task_title_CB);
             taskTitle = itemView.findViewById(R.id.task_title_tv);
             taskProductLevel = itemView.findViewById(R.id.task_category_tv);
-            taskTaskOwner = itemView.findViewById(R.id.task_taskowner);
-            taskCreatedDate = itemView.findViewById(R.id.task_createdOn);
             layoutCB = itemView.findViewById(R.id.layoutCB);
             layoutrow = itemView.findViewById(R.id.layoutBorder);
             btnAttachFile = itemView.findViewById(R.id.btn_attach_photo);
@@ -192,7 +178,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
 
             if (isFromProfileSrc) {
                 taskCB.setVisibility(View.GONE);
-                itemView.findViewById(R.id.rl_created_by).setVisibility(View.GONE);
             }
 
             if (isFromHomeSrc)
