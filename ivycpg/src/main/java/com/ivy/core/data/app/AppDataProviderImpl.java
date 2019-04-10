@@ -47,6 +47,8 @@ public class AppDataProviderImpl implements AppDataProvider {
 
     private ArrayList<RetailerMasterBO> subDMasterList;
 
+    private RetailerMasterBO pausedRetailer;
+
     @Override
     public void setInTime(String inTime) {
         //TODO to be removed post refactoring
@@ -204,5 +206,15 @@ public class AppDataProviderImpl implements AppDataProvider {
     @Override
     public ArrayList<RetailerMasterBO> getSubDMasterList() {
         return subDMasterList;
+    }
+
+    @Override
+    public void setPausedRetailer(RetailerMasterBO retailerMasterBO) {
+        this.pausedRetailer = retailerMasterBO;
+    }
+
+    @Override
+    public RetailerMasterBO getPausedRetailer() {
+        return pausedRetailer;
     }
 }

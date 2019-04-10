@@ -701,6 +701,13 @@ public class LoadManagementHelper {
     private NonVisitReasonDialog nvrd;
     public boolean validateDayClose(Context context, boolean isFromSyncScreen, UploadPresenterImpl presenter, CheckBox dayCloseCheckBox){
 
+        if (bmodel.getAppDataProvider().getPausedRetailer() != null) {
+            Toast.makeText(context, R.string.visit_paused_msg, Toast.LENGTH_LONG).show();
+            if (dayCloseCheckBox != null)
+            dayCloseCheckBox.setChecked(false);
+            return false;
+        }
+
         if (bmodel.outletTimeStampHelper
                 .isJointCall(bmodel.userMasterHelper.getUserMasterBO()
                         .getJoinCallUserList())) {

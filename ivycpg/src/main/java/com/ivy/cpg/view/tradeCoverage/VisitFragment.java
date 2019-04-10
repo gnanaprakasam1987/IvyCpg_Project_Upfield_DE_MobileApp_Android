@@ -1986,12 +1986,52 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             holder.cardView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (bmodel.configurationMasterHelper.VALIDATE_TRADE_COVERAGE) {
-                        SharedPreferences sharedPrefs = PreferenceManager
-                                .getDefaultSharedPreferences(getActivity());
-                        int validate = sharedPrefs.getInt("trade_coverage_validation", 0);
-                        if (validate == 1) {
+                    if (!isVisitPaused(holder.retailerObjectHolder)) {
+                        if (bmodel.configurationMasterHelper.VALIDATE_TRADE_COVERAGE) {
+                            SharedPreferences sharedPrefs = PreferenceManager
+                                    .getDefaultSharedPreferences(getActivity());
+                            int validate = sharedPrefs.getInt("trade_coverage_validation", 0);
+                            if (validate == 1) {
 
+                                mSelectedRetailer = holder;
+
+                                bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
+                                bmodel.setVisitretailerMaster(startVistitRetailers);
+                                startVisit = calledBy.equals(MENU_PLANNING);
+
+                                if (!profileClick && !holder.retailerObjectHolder.getIsNew().equals("Y")) {
+                                    profileClick = true;
+                                    if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && SDUtil.convertToInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
+                                        bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(SDUtil.convertToInt(holder.retailerObjectHolder.getRetailerID()));
+                                    }
+                                    Intent i = new Intent(getActivity(), ProfileActivity.class);
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    if (isFromPlanning) {
+                                        i.putExtra("From", MENU_PLANNING);
+                                        i.putExtra("isPlanning", true);
+                                    } else if (isFromPlanningSub) {
+                                        i.putExtra("From", MENU_PLANNING_SUB);
+                                        i.putExtra("isPlanningSub", true);
+                                    } else {
+                                        i.putExtra("From", MENU_VISIT);
+                                        i.putExtra("visit", startVisit);
+                                        i.putExtra("locvisit", true);
+                                    }
+
+                                    startActivity(i);
+
+                                }
+                            } else {
+                                String Url = bmodel.mRetailerHelper.getValidateUrl();
+                                if (bmodel.isOnline()) {
+                                    if (Url.length() > 0)
+                                        new ValidateRetailerVisit(holder, Url).execute();
+                                    else
+                                        Toast.makeText(getActivity(), R.string.url_not_mapped, Toast.LENGTH_LONG).show();
+                                } else
+                                    Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
+                            }
+                        } else {
                             mSelectedRetailer = holder;
 
                             bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
@@ -2018,46 +2058,10 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                 }
 
                                 startActivity(i);
-
                             }
-                        } else {
-                            String Url = bmodel.mRetailerHelper.getValidateUrl();
-                            if (bmodel.isOnline()) {
-                                if (Url.length() > 0)
-                                    new ValidateRetailerVisit(holder, Url).execute();
-                                else
-                                    Toast.makeText(getActivity(), R.string.url_not_mapped, Toast.LENGTH_LONG).show();
-                            } else
-                                Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        mSelectedRetailer = holder;
-
-                        bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
-                        bmodel.setVisitretailerMaster(startVistitRetailers);
-                        startVisit = calledBy.equals(MENU_PLANNING);
-
-                        if (!profileClick && !holder.retailerObjectHolder.getIsNew().equals("Y")) {
-                            profileClick = true;
-                            if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && SDUtil.convertToInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
-                                bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(SDUtil.convertToInt(holder.retailerObjectHolder.getRetailerID()));
-                            }
-                            Intent i = new Intent(getActivity(), ProfileActivity.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            if (isFromPlanning) {
-                                i.putExtra("From", MENU_PLANNING);
-                                i.putExtra("isPlanning", true);
-                            } else if (isFromPlanningSub) {
-                                i.putExtra("From", MENU_PLANNING_SUB);
-                                i.putExtra("isPlanningSub", true);
-                            } else {
-                                i.putExtra("From", MENU_VISIT);
-                                i.putExtra("visit", startVisit);
-                                i.putExtra("locvisit", true);
-                            }
-
-                            startActivity(i);
-                        }
+                        Toast.makeText(getActivity(), R.string.visit_paused_msg, Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -2258,4 +2262,10 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
         return resid;
     }
+
+    private boolean isVisitPaused(RetailerMasterBO retailerMasterBO) {
+        return bmodel.getAppDataProvider().getPausedRetailer() != null
+                && !retailerMasterBO.getRetailerID().equals(bmodel.getAppDataProvider().getPausedRetailer().getRetailerID());
+    }
+
 }

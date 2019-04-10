@@ -1655,6 +1655,14 @@ public class BusinessModel extends Application {
                 codeCleanUpUtil.setSubDMaster(getSubDMaster());
             }
 
+            for (RetailerMasterBO retailerMasterBO : getRetailerMaster()) {
+                if ("P".equals(retailerMasterBO.getIsVisited())) {
+                    appDataProvider.setPausedRetailer(retailerMasterBO);
+                    break;
+                }
+
+            }
+
             mRetailerHelper.downloadRetailerTarget("SV");
 
             db.closeDB();
@@ -3895,12 +3903,12 @@ public class BusinessModel extends Application {
      * Update the visited status in DB as well as loaded objects. In
      * retailerMaster isVisited field will be set to 'Y'
      */
-    public void updateIsVisitedFlag() {
+    public void updateIsVisitedFlag(String flag) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
             );
             db.openDataBase();
-            db.updateSQL("Update RetailerBeatMapping set isVisited='Y' where RetailerID ="
+            db.updateSQL("Update RetailerBeatMapping set isVisited=" + QT(flag) + " where RetailerID ="
                     + getRetailerMasterBO().getRetailerID()
                     + " AND BeatID=" + getRetailerMasterBO().getBeatID());
 
@@ -3912,12 +3920,17 @@ public class BusinessModel extends Application {
                 RetailerMasterBO ret = retailerMaster.get(i);
                 if (ret.getRetailerID().equals(
                         getRetailerMasterBO().getRetailerID())) {
-                    ret.setIsVisited("Y");
+                    ret.setIsVisited(flag);
                 }
             }
 
             // Updated selected object flag
-            getRetailerMasterBO().setIsVisited("Y");
+            getRetailerMasterBO().setIsVisited(flag);
+
+            if ("P".equals(flag))
+                getAppDataProvider().setPausedRetailer(getRetailerMasterBO());
+            else
+                getAppDataProvider().setPausedRetailer(null);
 
         } catch (Exception e) {
             Commons.printException(e);

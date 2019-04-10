@@ -269,6 +269,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         initilizeViews();
 
+        if ("P".equals(bmodel.getAppDataProvider().getRetailMaster().getIsVisited()))
+            startVisitBtn.setText(getResources().getString(R.string.resume_visit));
+
         setCustomFont();
 
         bundle = new Bundle();
@@ -1861,7 +1864,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         } else {
 
             if (bmodel.timer == null) {
-                bmodel.timer = new TimerCount();
+                if ("P".equals(bmodel.getAppDataProvider().getRetailMaster().getIsVisited())) {
+                    long pausedTime = getSharedPreferences("RetailerPause", MODE_PRIVATE).getLong("pausetime", 0);
+                    bmodel.timer = new TimerCount(ProfileActivity.this, pausedTime);
+                } else
+                    bmodel.timer = new TimerCount(ProfileActivity.this, 0);
             }
             isClicked = true;
             // Set the select retailer Obj in bmodel
@@ -2342,7 +2349,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 alertDialog.dismiss();
 
                 if (bmodel.timer == null) {
-                    bmodel.timer = new TimerCount();
+                    if ("P".equals(bmodel.getAppDataProvider().getRetailMaster().getIsVisited())) {
+                        long pausedTime = getSharedPreferences("RetailerPause", MODE_PRIVATE).getLong("pausetime", 0);
+                        bmodel.timer = new TimerCount(ProfileActivity.this, pausedTime);
+                    } else
+                    bmodel.timer = new TimerCount(ProfileActivity.this, 0);
                 }
                 isClicked = false;
 
