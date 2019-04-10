@@ -518,6 +518,8 @@ public class DataMembers {
     public static final String tbl_InvoiceDiscountDetail = "InvoiceDiscountDetail";
     private static final String tbl_InvoiceDiscountDetail_cols = "OrderId,InvoiceId,Pid,Typeid,Value,Percentage,ApplyLevelid,DiscountId,IsCompanyGiven";
 
+    public static final String tbl_TripMaster = "TripMaster";
+
     public static final String tbl_OrderDiscountDetail = "OrderDiscountDetail";
     private static final String tbl_OrderDiscountDetail_cols = "OrderId,Pid,Typeid,Value,Percentage,ApplyLevelid,DiscountId,IsCompanyGiven";
 

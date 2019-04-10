@@ -807,7 +807,7 @@ public class OrderDeliveryHelper {
 
             db.closeDB();
 
-            businessModel.saveModuleCompletion(menuCode);
+            businessModel.saveModuleCompletion(menuCode, true);
 
         } catch (Exception e) {
             Commons.printException(e);

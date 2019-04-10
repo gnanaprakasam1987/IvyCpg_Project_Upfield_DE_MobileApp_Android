@@ -33,4 +33,9 @@
     <!--List item Value Text color-->
     <color name="list_item_values_text_color_red">#262626</color>
 
+    <!-- ********************************Planning sub/ LoadManagement Module **************************-->
+
+    <color name="startAndEndOfTheDayHeaderLayoutBg_red">#FFEEEE</color>
+
+
 </resources>

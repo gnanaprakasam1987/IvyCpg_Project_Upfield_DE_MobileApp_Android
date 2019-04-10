@@ -73,6 +73,7 @@ import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.retailercontact.RetailerContactFragment;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -215,6 +216,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     String dynamicReportTitle = "";
 
     String selectedUserId = "";
+    private boolean fromMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -268,6 +270,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         initilizeViews();
 
+        if ("P".equals(bmodel.getAppDataProvider().getRetailMaster().getIsVisited()))
+            startVisitBtn.setText(getResources().getString(R.string.resume_visit));
+
         setCustomFont();
 
         bundle = new Bundle();
@@ -282,7 +287,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         new LoadProfileConfigs().execute();
 
-        bmodel.isModuleDone();
+        bmodel.isModuleDone(true);
         new loadActivityMenu().execute();
 
 
@@ -387,6 +392,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         fromHomeClick = getIntent().getBooleanExtra("hometwo", false);
         isFromPlanning = getIntent().getBooleanExtra("isPlanning", false);
         isFromPlanningSub = getIntent().getBooleanExtra("isPlanningSub", false);
+        fromMap = getIntent().getBooleanExtra("map", false);
 
         try {
             Intent arg = getIntent();
@@ -859,7 +865,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     markerList.add(storeLatLng);
                     MarkerOptions options = new MarkerOptions();
                     options.position(storeLatLng);// Setting the position of the marker
-                    options.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable()));
+                    options.icon(BitmapDescriptorFactory.fromResource(getMarkerIcon(retailerObj)));
 
                     if (mMap != null) {
                         mMap.addMarker(options);
@@ -887,25 +893,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             Commons.printException(e);
         }
 
-    }
-
-    private Bitmap getBitmapFromVectorDrawable() {
-        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.store_loc, null);
-        // Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, R.drawable.store_loc);
-        if (drawable != null) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                drawable = (DrawableCompat.wrap(drawable)).mutate();
-            }
-
-            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
-
-            return bitmap;
-        }
-        return null;
     }
 
     /**
@@ -952,7 +939,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
             for (int i = 0; i < markerList.size(); i++) {
                 if (i == 0) {
-                    options.icon(getBitmapDescriptor(R.drawable.store_loc));//storelocation));
+                    options.icon(BitmapDescriptorFactory.fromResource(getMarkerIcon(retailerObj)));//storelocation));
                 } else if (i == 1) {
                     options1.icon(getBitmapDescriptor(R.drawable.user_loc));//(R.drawable.userlocation));
                 }
@@ -987,7 +974,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
             if (retlatlng.latitude != 0.0 && retlatlng.longitude != 0.0) {
                 latLng = retlatlng;
-                options.icon(getBitmapDescriptor(R.drawable.store_loc));
+                options.icon(BitmapDescriptorFactory.fromResource(getMarkerIcon(retailerObj)));
             } else {
                 latLng = curlatlng;
                 options.icon(getBitmapDescriptor(R.drawable.user_loc));
@@ -1594,6 +1581,19 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     private void validationToStartVisit() {
 
+        if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
+            if (!LoadManagementHelper.getInstance(getApplicationContext()).isTripStarted(this)) {
+                Toast.makeText(this, getResources().getString(R.string.pls_start_the_trip), Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (!LoadManagementHelper.getInstance(getApplicationContext()).isAllMandatoryPlanningSubModulesCompleted(this)) {
+                Toast.makeText(this, getResources().getString(R.string.pls_complete_all_mandatory_modules_of_start_day), Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
+
         // Downloaded date vs Mobile Date validation.
         if ((DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
                 .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd") > 0)
@@ -1847,7 +1847,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         } else {
 
             if (bmodel.timer == null) {
-                bmodel.timer = new TimerCount();
+                if ("P".equals(bmodel.getAppDataProvider().getRetailMaster().getIsVisited())) {
+                    long pausedTime = getSharedPreferences("RetailerPause", MODE_PRIVATE).getLong("pausetime", 0);
+                    bmodel.timer = new TimerCount(ProfileActivity.this, pausedTime);
+                } else
+                    bmodel.timer = new TimerCount(ProfileActivity.this, 0);
             }
             isClicked = true;
             // Set the select retailer Obj in bmodel
@@ -2236,6 +2240,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     }
 
+    @Override
+    public void onDismiss() {
+
+    }
+
     private void showAlert(String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(msg);
@@ -2246,6 +2255,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 //  updateCancel();
                 if (calledBy.equalsIgnoreCase(MENU_VISIT)) {
                     Intent i = new Intent(ProfileActivity.this, HomeScreenActivity.class);
+                    if (fromMap)
+                        i.putExtra("menuCode", "MENU_PLANE_MAP");
+                    else
                     i.putExtra("menuCode", "MENU_VISIT");
                     startActivity(i);
                     finish();
@@ -2328,7 +2340,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 alertDialog.dismiss();
 
                 if (bmodel.timer == null) {
-                    bmodel.timer = new TimerCount();
+                    if ("P".equals(bmodel.getAppDataProvider().getRetailMaster().getIsVisited())) {
+                        long pausedTime = getSharedPreferences("RetailerPause", MODE_PRIVATE).getLong("pausetime", 0);
+                        bmodel.timer = new TimerCount(ProfileActivity.this, pausedTime);
+                    } else
+                    bmodel.timer = new TimerCount(ProfileActivity.this, 0);
                 }
                 isClicked = false;
 
@@ -2401,5 +2417,23 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             });
         }
 
+    }
+
+    private int getMarkerIcon(RetailerMasterBO retailerMasterBO) {
+        int drawable = R.drawable.marker_visit_unscheduled;
+
+        if ("Y".equals(retailerMasterBO.getIsVisited())) {
+            if (("N").equals(retailerMasterBO.isOrdered()))
+                drawable = R.drawable.marker_visit_non_productive;
+            else
+                drawable = R.drawable.marker_visit_completed;
+        } else if (retailerMasterBO.getIsToday() == 1 || "Y".equals(retailerMasterBO.getIsDeviated()))
+            drawable = R.drawable.marker_visit_planned;
+
+        if (retailerMasterBO.isHasNoVisitReason())
+            drawable = R.drawable.marker_visit_cancelled;
+
+
+        return drawable;
     }
 }

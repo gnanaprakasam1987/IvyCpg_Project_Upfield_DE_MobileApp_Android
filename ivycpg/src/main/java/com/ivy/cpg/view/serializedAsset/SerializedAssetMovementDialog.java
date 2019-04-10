@@ -209,7 +209,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
                 if (SpReason.getSelectedItemPosition() != 0) {
 
                     setAddAssetDetails();
-                    mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET);
+                    mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET, true);
                     assetTrackingHelper
                             .saveAssetMovementDetails(getContext().getApplicationContext(), movementType,referenceId);
                     Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),

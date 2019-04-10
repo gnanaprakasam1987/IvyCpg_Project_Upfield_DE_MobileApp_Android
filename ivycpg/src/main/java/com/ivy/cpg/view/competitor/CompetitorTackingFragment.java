@@ -288,7 +288,7 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
             try {
                 competitorTrackingHelper.saveCompetitor();
                 if (!calledBy.equals("3"))
-                    bmodel.saveModuleCompletion(HomeScreenTwo.MENU_COMPETITOR);
+                    bmodel.saveModuleCompletion(HomeScreenTwo.MENU_COMPETITOR, true);
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;

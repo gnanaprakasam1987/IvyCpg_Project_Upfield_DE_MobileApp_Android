@@ -65,6 +65,8 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.CustomFragment;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -239,6 +241,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             isFromPlanning = getArguments().getBoolean("isPlanning", false);
             isFromPlanningSub = getArguments().getBoolean("isPlanningSub", false);
         }
+
 
 
         if (isFromPlanning || !bmodel.configurationMasterHelper.IS_MAP)
@@ -1569,14 +1572,11 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 }
 
                 if (("Y").equals(holder.retailerObjectHolder.getIsDeadStore())) {
-                    holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.half_Black));
                     if (!bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER) {
                         holder.tv_labelTgt1.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray_text));
                         holder.tv_labelTgt2.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray_text));
                     }
                 } else {
-
-                    holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.FullBlack));
                     if (!bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER) {
                         holder.tv_labelTgt1.setTextColor(color);
                         holder.tv_labelTgt2.setTextColor(color);
@@ -1601,7 +1601,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     holder.line_order_without_invoice.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.light_gray));
                 }
 
-                holder.outletNameTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.FullBlack));
                 if (!bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER) {
                     holder.tv_labelTgt1.setTextColor(color);
                     holder.tv_labelTgt2.setTextColor(color);
@@ -1611,7 +1610,10 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             String tvText = holder.retailerObjectHolder.getRetailerName();
             holder.outletNameTextView.setText(tvText);
 
-
+            if (bmodel.configurationMasterHelper.IS_SHOW_RETAILER_LAST_VISIT)
+                holder.tv_lastVisit.setText(getLastVisitData(holder.retailerObjectHolder));
+            else
+                holder.tv_lastVisit.setVisibility(View.GONE);
 
 
             if (!bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER) {
@@ -1985,12 +1987,52 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             holder.cardView.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (bmodel.configurationMasterHelper.VALIDATE_TRADE_COVERAGE) {
-                        SharedPreferences sharedPrefs = PreferenceManager
-                                .getDefaultSharedPreferences(getActivity());
-                        int validate = sharedPrefs.getInt("trade_coverage_validation", 0);
-                        if (validate == 1) {
+                    if (!isVisitPaused(holder.retailerObjectHolder)) {
+                        if (bmodel.configurationMasterHelper.VALIDATE_TRADE_COVERAGE) {
+                            SharedPreferences sharedPrefs = PreferenceManager
+                                    .getDefaultSharedPreferences(getActivity());
+                            int validate = sharedPrefs.getInt("trade_coverage_validation", 0);
+                            if (validate == 1) {
 
+                                mSelectedRetailer = holder;
+
+                                bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
+                                bmodel.setVisitretailerMaster(startVistitRetailers);
+                                startVisit = calledBy.equals(MENU_PLANNING);
+
+                                if (!profileClick && !holder.retailerObjectHolder.getIsNew().equals("Y")) {
+                                    profileClick = true;
+                                    if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && SDUtil.convertToInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
+                                        bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(SDUtil.convertToInt(holder.retailerObjectHolder.getRetailerID()));
+                                    }
+                                    Intent i = new Intent(getActivity(), ProfileActivity.class);
+                                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    if (isFromPlanning) {
+                                        i.putExtra("From", MENU_PLANNING);
+                                        i.putExtra("isPlanning", true);
+                                    } else if (isFromPlanningSub) {
+                                        i.putExtra("From", MENU_PLANNING_SUB);
+                                        i.putExtra("isPlanningSub", true);
+                                    } else {
+                                        i.putExtra("From", MENU_VISIT);
+                                        i.putExtra("visit", startVisit);
+                                        i.putExtra("locvisit", true);
+                                    }
+
+                                    startActivity(i);
+
+                                }
+                            } else {
+                                String Url = bmodel.mRetailerHelper.getValidateUrl();
+                                if (bmodel.isOnline()) {
+                                    if (Url.length() > 0)
+                                        new ValidateRetailerVisit(holder, Url).execute();
+                                    else
+                                        Toast.makeText(getActivity(), R.string.url_not_mapped, Toast.LENGTH_LONG).show();
+                                } else
+                                    Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
+                            }
+                        } else {
                             mSelectedRetailer = holder;
 
                             bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
@@ -2017,46 +2059,10 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                                 }
 
                                 startActivity(i);
-
                             }
-                        } else {
-                            String Url = bmodel.mRetailerHelper.getValidateUrl();
-                            if (bmodel.isOnline()) {
-                                if (Url.length() > 0)
-                                    new ValidateRetailerVisit(holder, Url).execute();
-                                else
-                                    Toast.makeText(getActivity(), R.string.url_not_mapped, Toast.LENGTH_LONG).show();
-                            } else
-                                Toast.makeText(getActivity(), R.string.please_connect_to_internet, Toast.LENGTH_LONG).show();
                         }
                     } else {
-                        mSelectedRetailer = holder;
-
-                        bmodel.setRetailerMasterBO(holder.retailerObjectHolder);
-                        bmodel.setVisitretailerMaster(startVistitRetailers);
-                        startVisit = calledBy.equals(MENU_PLANNING);
-
-                        if (!profileClick && !holder.retailerObjectHolder.getIsNew().equals("Y")) {
-                            profileClick = true;
-                            if (bmodel.configurationMasterHelper.isRetailerBOMEnabled && SDUtil.convertToInt(bmodel.getRetailerMasterBO().getCredit_invoice_count()) <= 0) {
-                                bmodel.mRetailerHelper.downloadRetailerWiseDeadPdts(SDUtil.convertToInt(holder.retailerObjectHolder.getRetailerID()));
-                            }
-                            Intent i = new Intent(getActivity(), ProfileActivity.class);
-                            i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            if (isFromPlanning) {
-                                i.putExtra("From", MENU_PLANNING);
-                                i.putExtra("isPlanning", true);
-                            } else if (isFromPlanningSub) {
-                                i.putExtra("From", MENU_PLANNING_SUB);
-                                i.putExtra("isPlanningSub", true);
-                            } else {
-                                i.putExtra("From", MENU_VISIT);
-                                i.putExtra("visit", startVisit);
-                                i.putExtra("locvisit", true);
-                            }
-
-                            startActivity(i);
-                        }
+                        Toast.makeText(getActivity(), R.string.visit_paused_msg, Toast.LENGTH_LONG).show();
                     }
                 }
             });
@@ -2083,7 +2089,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             private ImageView imgGoldDeadStore;
             private ImageView imgInvoice;
             private ImageView imgIndicative;
-            private ImageView imgDeviate;
             private ImageView iv_dead_gold_store;
             private ImageView iv_asset_mapped;
             private ImageView iv_cooler;
@@ -2097,6 +2102,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
             private TextView tv_actualTgt2;
             private TextView tv_achvTgt2;
             private TextView tvTaskCount;
+            private TextView tv_lastVisit;
 
             private ImageView line_order_without_invoice;
             LinearLayout ll_score1;
@@ -2119,12 +2125,11 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
 
                 outletNameTextView = itemView
                         .findViewById(R.id.outletName_tv);
-
-                imgDeviate = itemView
-                        .findViewById(R.id.iv_deviate);
-
-                outletNameTextView.setTypeface(bmodel.configurationMasterHelper
-                        .getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+                outletLocationTextView = itemView
+                        .findViewById(R.id.outletLocation_tv);
+                tv_lastVisit = itemView
+                        .findViewById(R.id.tv_lastvisit);
+                ll_iv_deviate = itemView.findViewById(R.id.ll_iv_deviate);
 
 
                 if (!bmodel.configurationMasterHelper.IS_SIMPLE_RETIALER) {
@@ -2184,7 +2189,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     ll_iv_indicative = itemView.findViewById(R.id.ll_iv_indicative);
                     ll_iv_dead_gold_store = itemView.findViewById(R.id.ll_iv_dead_gold_store);
                     ll_iv_asset_mapped = itemView.findViewById(R.id.ll_iv_asset_mapped);
-                    ll_iv_deviate = itemView.findViewById(R.id.ll_iv_deviate);
                     ll_iv_cooler = itemView.findViewById(R.id.ll_iv_cooler);
                     ll_iv_loyality = itemView.findViewById(R.id.ll_iv_loyality);
                 }
@@ -2257,4 +2261,27 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
         return resid;
     }
+
+    private String getLastVisitData(RetailerMasterBO retailerMasterBO) {
+        String strLastVisit = retailerMasterBO.getLastVisitDate() == null ? "" : DateTimeUtils.convertFromServerDateToRequestedFormat(retailerMasterBO.getLastVisitDate(), ConfigurationMasterHelper.outDateFormat);
+
+        if (bmodel.configurationMasterHelper.IS_SHOW_RETAILER_LAST_VISITEDBY) {
+            if (StringUtils.isEmptyString(strLastVisit))
+                strLastVisit = retailerMasterBO.getLastVisitedBy() == null ? "" : "By : " + retailerMasterBO.getLastVisitedBy();
+            else
+                strLastVisit = strLastVisit + " | " + (retailerMasterBO.getLastVisitedBy() == null ? "" : "By : " + retailerMasterBO.getLastVisitedBy());
+        }
+
+        if (StringUtils.isEmptyString(strLastVisit))
+            return "";
+        else
+            return getResources().getString(R.string.last_vist) + " " + strLastVisit;
+    }
+
+
+    private boolean isVisitPaused(RetailerMasterBO retailerMasterBO) {
+        return bmodel.getAppDataProvider().getPausedRetailer() != null
+                && !retailerMasterBO.getRetailerID().equals(bmodel.getAppDataProvider().getPausedRetailer().getRetailerID());
+    }
+
 }

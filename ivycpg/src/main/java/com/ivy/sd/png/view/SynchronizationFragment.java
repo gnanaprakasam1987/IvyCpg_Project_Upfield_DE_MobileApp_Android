@@ -67,6 +67,7 @@ import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
 import com.ivy.cpg.view.sync.largefiledownload.FileDownloadProvider;
 import com.ivy.cpg.view.sync.largefiledownload.LargeFileDownloadActivity;
 import com.ivy.cpg.view.sync.uploadStatusReport.UploadStatusActivity;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.cpg.view.van.vanunload.VanUnLoadModuleHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.BuildConfig;
@@ -122,7 +123,7 @@ public class SynchronizationFragment extends IvyBaseFragment
     private SharedPreferences mLastSyncSharedPref;
 
 
-    private NonVisitReasonDialog nvrd;
+
 
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
@@ -297,116 +298,18 @@ public class SynchronizationFragment extends IvyBaseFragment
                     public void onCheckedChanged(CompoundButton buttonView,
                                                  boolean isChecked) {
                         if (isChecked) {
-                            if (bmodel.outletTimeStampHelper
-                                    .isJointCall(bmodel.userMasterHelper.getUserMasterBO()
-                                            .getJoinCallUserList())) {
-                                bmodel.showAlert(
-                                        getResources().getString(
-                                                R.string.logout_joint_user_dayclose), 0);
-                                dayCloseCheckBox.setChecked(false);
-                                return;
+
+                            boolean proceedDayClose=LoadManagementHelper.getInstance(context.getApplicationContext()).validateDayClose(context,true,presenter,dayCloseCheckBox);
+
+                            if(proceedDayClose) {
+                                presenter.updateDayCloseStatus(true);
                             }
-                            presenter.updateDayCloseStatus(true);
-                            if (DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
-                                    "yyyy/MM/dd") >= 0) {
-
-                                if (!presenter.isDayClosed()) {
-
-                                    final Vector<NonproductivereasonBO> nonProductiveRetailersVector = presenter.getMissedCallRetailers();
-                                    if ((nonProductiveRetailersVector.size() != 0 && bmodel.configurationMasterHelper.HAS_NO_VISIT_REASON_VALIDATION)) {
-
-                                        dayCloseCheckBox.setChecked(false);
-                                        presenter.updateDayCloseStatus(false);
-
-                                        nvrd = new NonVisitReasonDialog(getActivity(), nonProductiveRetailersVector);
-                                        nvrd.setOnDismissListener(new DialogInterface.OnDismissListener() {
-                                            @Override
-                                            public void onDismiss(DialogInterface dialogInterface) {
-                                                if (nonProductiveRetailersVector.size() == 0) {
-                                                    dayCloseCheckBox.setChecked(true);
-                                                    presenter.updateDayCloseStatus(true);
-                                                }
-                                            }
-                                        });
-
-                                        nvrd.show();
-                                        DisplayMetrics displaymetrics = new DisplayMetrics();
-                                        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-                                        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-                                        Window window = nvrd.getWindow();
-                                        lp.copyFrom(window.getAttributes());
-                                        lp.width = displaymetrics.widthPixels - 50;
-                                        lp.height = (int) (displaymetrics.heightPixels / 1.1);
-                                        window.setAttributes(lp);
-                                        syncStatus(1);
-
-                                    } else {
-                                        try {
-                                            if (bmodel.configurationMasterHelper.SHOW_CLOSE_DAY_VALID) {
-                                                if (presenter.isOdameterON() && !bmodel.endjourneyclicked) {
-                                                    bmodel.showAlert(
-                                                            getResources()
-                                                                    .getString(
-                                                                            R.string.journey_not_ended),
-                                                            0);
-                                                    dayCloseCheckBox.setChecked(false);
-                                                    presenter.updateDayCloseStatus(false);
-                                                    syncStatus(1);
-
-                                                } else {
-                                                    showAlertOk(
-                                                            getResources()
-                                                                    .getString(
-                                                                            R.string.you_are_closing)
-                                                                    + " "
-                                                                    + bmodel.getDay(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-                                                                    + " "
-                                                                    + "("
-                                                                    + DateTimeUtils
-                                                                    .convertFromServerDateToRequestedFormat(
-                                                                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                                                                            ConfigurationMasterHelper.outDateFormat)
-                                                                    + ")" + ".", 0);
-                                                }
-                                            } else {
-                                                showAlertOk(
-                                                        getResources()
-                                                                .getString(
-                                                                        R.string.you_are_closing)
-                                                                + " "
-                                                                + bmodel.getDay(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-                                                                + " "
-                                                                + "("
-                                                                + DateTimeUtils
-                                                                .convertFromServerDateToRequestedFormat(
-                                                                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                                                                        ConfigurationMasterHelper.outDateFormat)
-                                                                + ")" + ".", 0);
-                                            }
-                                        } catch (Exception e) {
-                                            showAlertOk(
-                                                    getResources().getString(
-                                                            R.string.you_are_closing)
-                                                            + " today "
-                                                            + "("
-                                                            + DateTimeUtils
-                                                            .convertFromServerDateToRequestedFormat(
-                                                                    DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                                                                    ConfigurationMasterHelper.outDateFormat)
-                                                            + ")" + ".", 0);
-                                        }
-
-                                    }
-
-                                }
-                            } else {
-                                Toast.makeText(getActivity(),
-                                        getResources().getString(R.string.download_date_mismatch),
-                                        Toast.LENGTH_SHORT).show();
+                            else {
                                 dayCloseCheckBox.setChecked(false);
                                 presenter.updateDayCloseStatus(false);
-
                             }
+
+
                         }
                         syncStatus(1);
                     }
@@ -437,20 +340,25 @@ public class SynchronizationFragment extends IvyBaseFragment
                 if (presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString())) {
 
 
-                    isValidUser = !aws || presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString());
+                    if (bmodel.getAppDataProvider().getPausedRetailer() == null) {
 
-                    if (isValidUser)
-                        if (dayCloseCheckBox.isChecked()) {
-                            showAlertOkCancel(
-                                    getResources()
-                                            .getString(
-                                                    R.string.do_u_want_to_close_the_day),
-                                    0);
+                        isValidUser = !aws || presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString());
 
-                        } else {
-                            presenter.validateAndUpload(false);
+                        if (isValidUser)
+                            if (dayCloseCheckBox.isChecked()) {
+                                showAlertOkCancel(
+                                        getResources()
+                                                .getString(
+                                                        R.string.do_u_want_to_close_the_day),
+                                        0);
 
-                        }
+                            } else {
+                                presenter.validateAndUpload(false);
+
+                            }
+                    } else {
+                        Toast.makeText(getActivity(), R.string.visit_paused_msg, Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     bmodel.showAlert(
                             getResources().getString(
@@ -736,6 +644,13 @@ public class SynchronizationFragment extends IvyBaseFragment
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
+        // If trip enabled, then day close will be considered if trip is closed in load management screen.
+        if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP){
+            // Day close checkbox is not needed if this config enabled.
+            if(LoadManagementHelper.getInstance(context.getApplicationContext()).isTripEnded(context))
+              presenter.updateDayCloseStatus(true);
+        }
 
         setDayCloseEnableDisable();
 

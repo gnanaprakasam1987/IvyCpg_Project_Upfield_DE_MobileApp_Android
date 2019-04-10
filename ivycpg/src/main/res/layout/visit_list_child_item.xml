@@ -39,34 +39,164 @@
                 android:layout_marginStart="@dimen/icons_left_margin"
                 android:layout_marginLeft="@dimen/icons_left_margin"
                 android:gravity="center"
+                android:orientation="horizontal"
+                android:baselineAligned="false">
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_weight="5"
                 android:orientation="vertical">
 
 
                 <TextView
                     android:id="@+id/outletName_tv"
-                    style="@style/TextViewListItemPrimary"
+                    style="@style/RetailerNameListView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="Outlet name" />
+                    android:singleLine="true"
+                    android:text="@string/outlet_name" />
 
                 <TextView
                     android:id="@+id/outletLocation_tv"
-                    style="@style/TextViewListItemSecondary"
+                    style="@style/RetailerSecondaryListView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="Outlet Location"
-                    android:textSize="@dimen/text_size_primary"
+                    android:text="@string/location"
                     android:visibility="gone" />
             </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/ll_scoreParent"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="4"
+                    android:orientation="horizontal"
+                    android:visibility="visible">
 
-            <LinearLayout
+                    <ImageView
+                        android:id="@+id/img_line1"
+                        android:layout_width="1dp"
+                        android:layout_height="@dimen/list_vertical_seperator"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/margin_20px"
+                        android:layout_marginRight="@dimen/margin_20px"
+                        android:background="@color/light_gray"
+                        android:visibility="visible" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_score1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/margin_20px"
+                        android:layout_marginRight="@dimen/margin_20px"
+                        android:layout_weight="4.9"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+                        <TextView
+                            android:id="@+id/labelTgt1"
+                            style="@style/TextViewListItemCaption"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:singleLine="true"
+                            android:text="@string/achv_tgt"
+                            android:ellipsize="none" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="0dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tv_achvTgt1"
+                                style="@style/TextViewListItemValues"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="" />
+
+                            <TextView
+                                android:id="@+id/tv_actualTgt1"
+                                style="@style/TextViewListItemValues"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/margin_5px"
+                                android:layout_marginLeft="@dimen/margin_5px"
+                                android:text=""/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/img_line2"
+                        android:layout_width="1dp"
+                        android:layout_height="@dimen/list_vertical_seperator"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/margin_20px"
+                        android:layout_marginRight="@dimen/margin_20px"
+                        android:background="@color/light_gray"
+                        android:visibility="visible" />
+
+                    <LinearLayout
+                        android:id="@+id/ll_score2"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/margin_5px"
+                        android:layout_marginRight="@dimen/margin_5px"
+                        android:layout_weight="4.9"
+                        android:orientation="vertical"
+                        android:visibility="visible">
+
+
+                        <TextView
+                            android:id="@+id/labelTgt2"
+                            style="@style/TextViewListItemCaption"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:singleLine="true"
+                            android:text="@string/achv_tgt"
+                            android:ellipsize="none" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tv_achvTgt2"
+                                style="@style/TextViewListItemValues"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="" />
+
+                            <TextView
+                                android:id="@+id/tv_actualTgt2"
+                                style="@style/TextViewListItemValues"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginStart="@dimen/margin_5px"
+                                android:layout_marginLeft="@dimen/margin_5px"
+                                android:text=""/>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </LinearLayout>
+
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/icons_left_margin"
                 android:layout_marginLeft="@dimen/icons_left_margin"
-                android:layout_marginTop="@dimen/icons_top_margin"
+                android:layout_gravity="center_vertical"
+                android:layout_marginTop="@dimen/dimens_4dp">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -217,135 +347,21 @@
                     android:visibility="gone" />
 
             </LinearLayout>
+                <TextView
+                    android:id="@+id/tv_lastvisit"
+                    style="@style/TextViewListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/outlet_left_margin"
+                    android:layout_marginRight="@dimen/outlet_left_margin"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/half_Black"
+                    android:text="@string/last_vist"/>
+
+            </RelativeLayout>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/ll_scoreParent"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_weight="4"
-            android:orientation="horizontal"
-            android:visibility="visible">
-
-            <ImageView
-                android:id="@+id/img_line1"
-                android:layout_width="1dp"
-                android:layout_height="@dimen/list_vertical_seperator"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/margin_20px"
-                android:layout_marginRight="@dimen/margin_20px"
-                android:background="@color/light_gray"
-                android:visibility="visible" />
-
-            <LinearLayout
-                android:id="@+id/ll_score1"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/margin_20px"
-                android:layout_marginRight="@dimen/margin_20px"
-                android:layout_weight="4.9"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-                <TextView
-                    android:id="@+id/labelTgt1"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/roboto_medium"
-                    android:singleLine="true"
-                    android:text="@string/achv_tgt"
-                    android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/text_size_caption" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="0dp"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tv_achvTgt1"
-                        style="@style/TextViewListItemValues"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_light"
-                        android:text=""
-                        android:textSize="@dimen/text_size_primary" />
-
-                    <TextView
-                        android:id="@+id/tv_actualTgt1"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_5px"
-                        android:layout_marginLeft="@dimen/margin_5px"
-                        android:fontFamily="@font/roboto_light"
-                        android:text=""
-                        android:textSize="@dimen/text_size_caption" />
-                </LinearLayout>
-            </LinearLayout>
-
-            <ImageView
-                android:id="@+id/img_line2"
-                android:layout_width="1dp"
-                android:layout_height="@dimen/list_vertical_seperator"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/margin_20px"
-                android:layout_marginRight="@dimen/margin_20px"
-                android:background="@color/light_gray"
-                android:visibility="visible" />
-
-            <LinearLayout
-                android:id="@+id/ll_score2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/margin_5px"
-                android:layout_marginRight="@dimen/margin_5px"
-                android:layout_weight="4.9"
-                android:orientation="vertical"
-                android:visibility="visible">
-
-
-                <TextView
-                    android:id="@+id/labelTgt2"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:fontFamily="@font/roboto_medium"
-                    android:singleLine="true"
-                    android:text="@string/achv_tgt"
-                    android:textColor="?attr/colorAccent"
-                    android:textSize="@dimen/text_size_caption" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:id="@+id/tv_achvTgt2"
-                        style="@style/TextViewListItemValues"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/roboto_light"
-                        android:text=""
-                        android:textSize="@dimen/text_size_primary" />
-
-                    <TextView
-                        android:id="@+id/tv_actualTgt2"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="@dimen/margin_5px"
-                        android:layout_marginLeft="@dimen/margin_5px"
-                        android:fontFamily="@font/roboto_light"
-                        android:text=""
-                        android:textSize="@dimen/text_size_caption" />
-                </LinearLayout>
-            </LinearLayout>
-        </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

@@ -188,7 +188,7 @@ public class SOSSummaryActivity_PRJSpecific extends IvyBaseActivityNoActionBar i
         protected Boolean doInBackground(Void... arg0) {
             try {
                 mSFHelper.saveSOS_PRJSpecific_Transaction();
-                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOS_PROJ);
+                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOS_PROJ, true);
                 mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;

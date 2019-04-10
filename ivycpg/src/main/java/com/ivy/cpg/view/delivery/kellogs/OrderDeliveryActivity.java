@@ -331,7 +331,7 @@ public class OrderDeliveryActivity extends IvyBaseActivityNoActionBar {
 
                             boolean status = orderDeliveryHelper.updateTableValues(OrderDeliveryActivity.this, orderId, false, getIntent().getExtras().getString("menuCode"), referenceId);
                             if (status) {
-                                bmodel.saveModuleCompletion(getIntent().getExtras().getString("menuCode"));
+                                bmodel.saveModuleCompletion(getIntent().getExtras().getString("menuCode"), true);
                                 Toast.makeText(
                                         OrderDeliveryActivity.this,
                                         getResources().getString(R.string.invoice_generated),

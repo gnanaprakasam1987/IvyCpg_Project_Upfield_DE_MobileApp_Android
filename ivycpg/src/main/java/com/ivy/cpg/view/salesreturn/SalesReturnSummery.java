@@ -632,7 +632,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
                 bmodel.productHelper.taxHelper.getBillTaxList().clear();
             }
 
-            bmodel.saveModuleCompletion("MENU_SALES_RET");
+            bmodel.saveModuleCompletion("MENU_SALES_RET", true);
 
             if (bmodel.configurationMasterHelper.IS_CREDIT_NOTE_CREATION)
                 updateCreditNoteprintList();

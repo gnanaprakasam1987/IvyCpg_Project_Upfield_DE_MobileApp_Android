@@ -38,6 +38,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.utils.DateTimeUtils;
@@ -117,15 +118,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
-                mDrawerLayout.closeDrawers();
-            else {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
-                        .now(DateTimeUtils.TIME));
-                startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                ((Activity) context).finish();
-            }
-            ((Activity) context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            onBackButonClick();
             return true;
         } else if (i == R.id.menu_next) {
             nextButtonClick();
@@ -351,7 +344,7 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
                 emptyReturnHelper.saveEmptyReturn();
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
-                bmodel.saveModuleCompletion("MENU_EMPTY_RETURN");
+                bmodel.saveModuleCompletion("MENU_EMPTY_RETURN", true);
 
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -468,5 +461,39 @@ public class EmptyReturnFragment extends IvyBaseFragment implements BrandDialogI
     @Override
     public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
 
+    }
+
+    private void onBackButonClick() {
+
+        if (emptyReturnHelper.hasDataTosave()) {
+            showAlert();
+        } else {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                mDrawerLayout.closeDrawers();
+            else {
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
+                startActivityAndFinish(HomeScreenTwo.class);
+            }
+        }
+    }
+
+    private void showAlert() {
+        CommonDialog dialog = new CommonDialog(getActivity(), getResources().getString(R.string.doyouwantgoback),
+                "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
+                startActivityAndFinish(HomeScreenTwo.class);
+            }
+        }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setCancelable(false);
     }
 }

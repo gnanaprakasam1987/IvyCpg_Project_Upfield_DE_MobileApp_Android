@@ -174,7 +174,7 @@ public class KellogsDashboardFragment extends IvyBaseFragment {
         if (i == android.R.id.home) {
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                     .now(DateTimeUtils.TIME));
-            bmodel.saveModuleCompletion("MENU_DASH_KELGS_ACT");
+            bmodel.saveModuleCompletion("MENU_DASH_KELGS_ACT", true);
             Intent j = new Intent(getActivity(), HomeScreenTwo.class);
             startActivity(j);
             getActivity().finish();

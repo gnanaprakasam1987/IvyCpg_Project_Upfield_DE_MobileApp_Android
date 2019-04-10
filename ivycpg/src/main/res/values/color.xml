@@ -148,4 +148,9 @@
     <color name="picker_default_selector_color">#646464</color>
 
 
+    <!-- ********************************Planning sub/ LoadManagement Module **************************-->
+
+    <color name="startAndEndOfTheDayHeaderLayoutBg_blue">#DCEDFF</color>
+
+
 </resources>

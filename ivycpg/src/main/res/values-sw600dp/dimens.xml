@@ -773,4 +773,6 @@
 
     <dimen name="catalog_details_image">350dp</dimen>
 
+    <dimen name="retailer_name_list">20sp</dimen>
+    <dimen name="retailer_address_list">18sp</dimen>
 </resources>

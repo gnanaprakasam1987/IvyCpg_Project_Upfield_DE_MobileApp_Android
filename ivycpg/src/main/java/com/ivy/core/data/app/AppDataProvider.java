@@ -68,5 +68,9 @@ public interface AppDataProvider {
 
     ArrayList<RetailerMasterBO> getSubDMasterList();
 
+    void setPausedRetailer(RetailerMasterBO retailerMasterBO);
+
+    RetailerMasterBO getPausedRetailer();
+
 
 }

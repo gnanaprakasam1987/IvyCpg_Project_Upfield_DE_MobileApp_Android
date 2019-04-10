@@ -1969,14 +1969,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            if (mFrom.equalsIgnoreCase("HomeScreenTwo")) {
-                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
-                if (isFromChild)
-                    intent.putExtra("isStoreMenu", true);
-                startActivity(intent);
-            }
-            getActivity().finish();
-            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            onBackButonClick();
             return true;
         } else if (i == R.id.menu_save) {
             if (!checkClicked) {
@@ -2083,7 +2076,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), mMenuCode)) {
-                        bmodel.saveModuleCompletion(mMenuCode);
+                        bmodel.saveModuleCompletion(mMenuCode, true);
                         if (!mMenuCode.equalsIgnoreCase("MENU_SURVEY_SW")
                                 && !mMenuCode.equalsIgnoreCase("MENU_SURVEY01_SW")
                                 && !mMenuCode.equalsIgnoreCase("MENU_SURVEY_BA_CS")) {
@@ -2199,7 +2192,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     surveyHelperNew.deleteUnusedImages();
                     surveyHelperNew.saveAnswer(mMenuCode);
                 }
-                bmodel.saveModuleCompletion(mMenuCode);
+                bmodel.saveModuleCompletion(mMenuCode, true);
                 return Boolean.TRUE;
             } catch (Exception e) {
                 e.printStackTrace();
@@ -2472,5 +2465,45 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private void onBackButonClick() {
+
+        if (surveyHelperNew.hasDataToSave()) {
+            showAlert();
+        } else {
+            if (mFrom.equalsIgnoreCase("HomeScreenTwo")) {
+                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+                if (isFromChild)
+                    intent.putExtra("isStoreMenu", true);
+                startActivity(intent);
+            }
+            getActivity().finish();
+            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+        }
+    }
+
+    private void showAlert() {
+        CommonDialog dialog = new CommonDialog(getActivity(), getResources().getString(R.string.doyouwantgoback),
+                "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                if (mFrom.equalsIgnoreCase("HomeScreenTwo")) {
+                    Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+                    if (isFromChild)
+                        intent.putExtra("isStoreMenu", true);
+                    startActivity(intent);
+                }
+                getActivity().finish();
+                getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            }
+        }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setCancelable(false);
     }
 }

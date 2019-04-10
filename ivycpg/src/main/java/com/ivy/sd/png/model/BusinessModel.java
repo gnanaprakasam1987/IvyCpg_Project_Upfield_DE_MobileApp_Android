@@ -1391,7 +1391,7 @@ public class BusinessModel extends Application {
                             + " , IFNULL(RC2.contactname,'') as sc_name, IFNULL(RC2.ContactName_LName,'') as sc_LName, RC2.ContactNumber as sc_Number,"
                             + " RC2.CPID as sc_CPID, IFNULL(RC2.DOB,'') as sc_DOB, RC2.contact_title as sc_title, RC2.contact_title_lovid as sc_title_lovid,"
 
-                            + "RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
+                            + "RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency, RV.lastVisitDate, RV.lastVisitedBy,"
 
                             + " IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RField8,RField9,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
                             + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,RA.District,"
@@ -1589,6 +1589,8 @@ public class BusinessModel extends Application {
                     retailer.setSupplierTaxLocId(c.getInt(c.getColumnIndex("SupplierTaxLocId")));
                     retailer.setRidSF(c.getString(c.getColumnIndex("ridSF")));
                     retailer.setDistrict(c.getString(c.getColumnIndex("District")));
+                    retailer.setLastVisitDate(c.getString(c.getColumnIndex("lastVisitDate")));
+                    retailer.setLastVisitedBy(c.getString(c.getColumnIndex("lastVisitedBy")));
 
                     retailer.setIsToday(0);
                     retailer.setHangingOrder(false);
@@ -1653,6 +1655,14 @@ public class BusinessModel extends Application {
                 }
 
                 codeCleanUpUtil.setSubDMaster(getSubDMaster());
+            }
+
+            for (RetailerMasterBO retailerMasterBO : getRetailerMaster()) {
+                if ("P".equals(retailerMasterBO.getIsVisited())) {
+                    appDataProvider.setPausedRetailer(retailerMasterBO);
+                    break;
+                }
+
             }
 
             mRetailerHelper.downloadRetailerTarget("SV");
@@ -3895,12 +3905,12 @@ public class BusinessModel extends Application {
      * Update the visited status in DB as well as loaded objects. In
      * retailerMaster isVisited field will be set to 'Y'
      */
-    public void updateIsVisitedFlag() {
+    public void updateIsVisitedFlag(String flag) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
             );
             db.openDataBase();
-            db.updateSQL("Update RetailerBeatMapping set isVisited='Y' where RetailerID ="
+            db.updateSQL("Update RetailerBeatMapping set isVisited=" + QT(flag) + " where RetailerID ="
                     + getRetailerMasterBO().getRetailerID()
                     + " AND BeatID=" + getRetailerMasterBO().getBeatID());
 
@@ -3912,12 +3922,17 @@ public class BusinessModel extends Application {
                 RetailerMasterBO ret = retailerMaster.get(i);
                 if (ret.getRetailerID().equals(
                         getRetailerMasterBO().getRetailerID())) {
-                    ret.setIsVisited("Y");
+                    ret.setIsVisited(flag);
                 }
             }
 
             // Updated selected object flag
-            getRetailerMasterBO().setIsVisited("Y");
+            getRetailerMasterBO().setIsVisited(flag);
+
+            if ("P".equals(flag))
+                getAppDataProvider().setPausedRetailer(getRetailerMasterBO());
+            else
+                getAppDataProvider().setPausedRetailer(null);
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -4756,21 +4771,25 @@ public class BusinessModel extends Application {
      * This has been moved to  Dbhelper
      * @See {@link AppDataManagerImpl#saveModuleCompletion(String)}
      */
-    public boolean saveModuleCompletion(String menuName) {
+    public boolean saveModuleCompletion(String menuName, boolean isRetailerModule) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
             );
             db.createDataBase();
             db.openDataBase();
 
+            String retailerId="0";
+            if(isRetailerModule)
+                retailerId=getRetailerMasterBO().getRetailerID();
+
             Cursor c = db
                     .selectSQL("SELECT * FROM ModuleCompletionReport WHERE RetailerId="
-                            + getRetailerMasterBO().getRetailerID() + " AND MENU_CODE = " + QT(menuName));
+                            + retailerId + " AND MENU_CODE = " + QT(menuName));
 
             if (c.getCount() == 0) {
                 String columns = "Retailerid,MENU_CODE";
 
-                String values = getRetailerMasterBO().getRetailerID() + ","
+                String values = retailerId + ","
                         + QT(menuName);
 
                 db.insertSQL("ModuleCompletionReport", columns, values);
@@ -4812,15 +4831,20 @@ public class BusinessModel extends Application {
     }
 
 
-    public void isModuleDone() {
+    public void isModuleDone(boolean isRetailerBasedModule) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
             );
             db.openDataBase();
+            String query="Select MENU_CODE from ModuleCompletionReport "
+                            + " where retailerid=";
+                            if(isRetailerBasedModule)
+                                query+= getRetailerMasterBO().getRetailerID();
+                            else query+= 0;
+
+
             Cursor c = db
-                    .selectSQL("Select MENU_CODE from ModuleCompletionReport "
-                            + " where retailerid="
-                            + QT(getRetailerMasterBO().getRetailerID()));
+                    .selectSQL(query);
 
             mModuleCompletionResult = new HashMap<String, String>();
 

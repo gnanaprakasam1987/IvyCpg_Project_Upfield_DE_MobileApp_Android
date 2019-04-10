@@ -312,7 +312,7 @@ public class TaskHelper {
             values = QT(taskBO.getTaskId()) + "," + QT(retailerid) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + UID + ",'N'" + ","
                      + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
             db.insertSQL("TaskExecutionDetails", columns, values);
-            bmodel.saveModuleCompletion("MENU_TASK");
+            bmodel.saveModuleCompletion("MENU_TASK", true);
         } else {
 
             Cursor c = db.selectSQL("Select * from TaskExecutionDetails");

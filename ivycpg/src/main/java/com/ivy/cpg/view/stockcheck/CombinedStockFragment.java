@@ -1462,7 +1462,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
                 // update review plan in DB
                 stockCheckHelper.setReviewPlanInDB(getContext().getApplicationContext());
-                bmodel.saveModuleCompletion(HomeScreenTwo.MENU_COMBINED_STOCK);
+                bmodel.saveModuleCompletion(HomeScreenTwo.MENU_COMBINED_STOCK, true);
 
                 return Boolean.TRUE;
             } catch (Exception e) {
