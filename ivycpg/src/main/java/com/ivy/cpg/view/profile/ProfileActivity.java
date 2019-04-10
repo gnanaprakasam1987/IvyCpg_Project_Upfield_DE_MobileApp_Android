@@ -1418,7 +1418,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             } else if (tabName.equalsIgnoreCase("SBD Gap")) {
                 return new SBDGapFragment();
             } else if (tabName.equals(retailer_contact_title)) {
-                return new RetailerContactFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("RetailerId",bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
+                RetailerContactFragment retailerContactFragment = new RetailerContactFragment();
+                retailerContactFragment.setArguments(bundle);
+                return retailerContactFragment;
             } else if (dynamicReportTitle.equalsIgnoreCase(tabName)) {
                 DynamicReportHelper.getInstance(ProfileActivity.this).downloadDynamicReport("MENU_DYN_RPT_RTR");
                 DynamicReportFragment dynamicReportFragment = new DynamicReportFragment();
