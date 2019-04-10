@@ -966,11 +966,11 @@ public class ProductHelper {
             sql = "select A.pid as productId, A.pcode as pcode,A.pname as pname,A.parentid as parentId,A.sih as sih, "
                     + "A.psname as psname,A.barcode as barcode,A.vat as vat ,A.isfocus as isfocus, max(ifnull("
                     + str
-                    + ")) as srp , ifnull("
+                    + ")) as srp , max(ifnull("
                     + csrp
-                    + ") as csrp ,ifnull("
+                    + ")) as csrp ,max(ifnull("
                     + osrp
-                    + ") as osrp ,A.msqqty as msqqty,"
+                    + ")) as osrp ,A.msqqty as msqqty,"
                     + "A.dUomQty as caseQty,A.duomid as caseUomId, u.ListCode as ListCode ,A.MRP as MRP,"
                     + " ifnull(sbd.DrpQty,0) as DrpQty,ifnull(sbd.grpName,'') as grpName,A.RField1 as RField1 ,PWHS.qty as PWHSqty ,A.IsAlloc as IsAlloc, "
                     + getSpecialFilterQuery()
@@ -1532,11 +1532,18 @@ public class ProductHelper {
 
             String groupIds = getMappedGroupId(db, taggingType);
             StringBuilder productIds = new StringBuilder();
-            Cursor c = db
-                    .selectSQL("SELECT pid,PCM.GroupID,FromNorm,ToNorm,Weightage FROM ProductTaggingCriteriaMapping PCM " +
-                            " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid " +
-                            " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid and PGM.isOwn = 1" +
-                            " WHERE PCM.groupid IN(" + groupIds + ")");
+//            Cursor c = db
+//                    .selectSQL("SELECT pid,PCM.GroupID,FromNorm,ToNorm,Weightage FROM ProductTaggingCriteriaMapping PCM " +
+//                            " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid " +
+//                            " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid and PGM.isOwn = 1" +
+//                            " WHERE PCM.groupid IN(" + groupIds + ")");
+
+            Cursor c = db.selectSQL("SELECT PMM.pid,PCM.GroupID,FromNorm,ToNorm,Weightage FROM ProductTaggingCriteriaMapping PCM " +
+                    "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid " +
+                    "INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid and PGM.isOwn = 1 " +
+                    "INNER JOIN ConfigActivityFilter CAF on PMM.PLID = CAF.ProductContent and CAF.ActivityCode = 'MENU_STK_ORD' " +
+                    "INNER JOIN ProductMaster PMM ON PMM.Plid = CAF.ProductContent and PMM.ParentHierarchy like '%'||PGM.PID||'%' " +
+                    "WHERE PCM.groupid IN(" + groupIds + ")");
 
             if (c != null) {
                 while (c.moveToNext()) {
