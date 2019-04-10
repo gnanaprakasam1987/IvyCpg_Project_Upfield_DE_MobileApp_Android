@@ -86,6 +86,7 @@ public class PlanningMapViewFragment extends BaseFragment implements RetailerCon
         setBasePresenter(presenter);
     }
 
+
     @Override
     protected int setContentViewLayout() {
         return R.layout.fragment_planning_map;
