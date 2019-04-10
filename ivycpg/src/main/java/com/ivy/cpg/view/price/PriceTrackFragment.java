@@ -470,19 +470,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
-                mDrawerLayout.closeDrawers();
-            else {
-                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
-                        .now(DateTimeUtils.TIME));
-                if (isFromChild)
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                            .putExtra("isStoreMenu", true));
-                else
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().finish();
-            }
-            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            onBackButonClick();
             return true;
         } else if (i == R.id.menu_next) {
 
@@ -1889,5 +1877,52 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             return true;
         }
         return false;
+    }
+
+    private void onBackButonClick() {
+
+        if (priceTrackingHelper.hasDataTosave(businessModel.productHelper.getTaggedProducts())) {
+            showBackDialog();
+        } else {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                mDrawerLayout.closeDrawers();
+            else {
+                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
+                if (isFromChild)
+                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
+                            .putExtra("isStoreMenu", true));
+                else
+                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
+                getActivity().finish();
+            }
+            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+        }
+    }
+
+    private void showBackDialog() {
+        CommonDialog dialog = new CommonDialog(getActivity(), getResources().getString(R.string.doyouwantgoback),
+                "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
+                if (isFromChild)
+                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
+                            .putExtra("isStoreMenu", true));
+                else
+                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
+                getActivity().finish();
+                getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+
+            }
+        }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setCancelable(false);
     }
 }

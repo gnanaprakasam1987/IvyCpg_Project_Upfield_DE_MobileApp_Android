@@ -340,20 +340,25 @@ public class SynchronizationFragment extends IvyBaseFragment
                 if (presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString())) {
 
 
-                    isValidUser = !aws || presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString());
+                    if (bmodel.getAppDataProvider().getPausedRetailer() == null) {
 
-                    if (isValidUser)
-                        if (dayCloseCheckBox.isChecked()) {
-                            showAlertOkCancel(
-                                    getResources()
-                                            .getString(
-                                                    R.string.do_u_want_to_close_the_day),
-                                    0);
+                        isValidUser = !aws || presenter.isValidUser(txtUserName.getText().toString(), txtPassword.getText().toString());
 
-                        } else {
-                            presenter.validateAndUpload(false);
+                        if (isValidUser)
+                            if (dayCloseCheckBox.isChecked()) {
+                                showAlertOkCancel(
+                                        getResources()
+                                                .getString(
+                                                        R.string.do_u_want_to_close_the_day),
+                                        0);
 
-                        }
+                            } else {
+                                presenter.validateAndUpload(false);
+
+                            }
+                    } else {
+                        Toast.makeText(getActivity(), R.string.visit_paused_msg, Toast.LENGTH_LONG).show();
+                    }
                 } else {
                     bmodel.showAlert(
                             getResources().getString(

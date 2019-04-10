@@ -1,9 +1,10 @@
 package com.ivy.sd.png.util;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Handler;
 import android.os.Message;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Timer;
@@ -22,13 +23,16 @@ public class TimerCount {
 	Timer timer;
 	Date mStartTime;
 	Date mCurrentTime;
-	Date mTimeTaken;
 	Handler mHandler;
 
 	Calendar cal;
-	SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+	private Context context;
+	private long pausedTime;
+	private long diff;
 
-	public TimerCount() {
+	public TimerCount(Context context, long mPausedTime) {
+		this.context = context;
+		this.pausedTime = mPausedTime;
 		cal = Calendar.getInstance();
 		mStartTime = cal.getTime();
 		timer = new Timer();
@@ -39,7 +43,7 @@ public class TimerCount {
 		public void run() {
 			cal = Calendar.getInstance();
 			mCurrentTime = cal.getTime();
-			long diff = mCurrentTime.getTime() - mStartTime.getTime();
+			diff = (mCurrentTime.getTime() - mStartTime.getTime()) + pausedTime;
 
 			double diffInHours = diff / ((double) 1000 * 60 * 60);
 			int hours = (int) diffInHours;
@@ -75,6 +79,12 @@ public class TimerCount {
 
 	public void stopTimer() {
 		timer.cancel(); // Terminate the timer thread
+	}
+
+	public void pauseTimer() {
+		timer.cancel();
+		SharedPreferences sharedPreferences = context.getSharedPreferences("RetailerPause", Context.MODE_PRIVATE);
+		sharedPreferences.edit().putLong("pausetime", diff).apply();
 	}
 
 	public void setHandler(Handler handler) {

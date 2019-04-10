@@ -1969,14 +1969,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            if (mFrom.equalsIgnoreCase("HomeScreenTwo")) {
-                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
-                if (isFromChild)
-                    intent.putExtra("isStoreMenu", true);
-                startActivity(intent);
-            }
-            getActivity().finish();
-            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            onBackButonClick();
             return true;
         } else if (i == R.id.menu_save) {
             if (!checkClicked) {
@@ -2472,5 +2465,45 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         } catch (Exception e) {
             return false;
         }
+    }
+
+    private void onBackButonClick() {
+
+        if (surveyHelperNew.hasDataToSave()) {
+            showAlert();
+        } else {
+            if (mFrom.equalsIgnoreCase("HomeScreenTwo")) {
+                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+                if (isFromChild)
+                    intent.putExtra("isStoreMenu", true);
+                startActivity(intent);
+            }
+            getActivity().finish();
+            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+        }
+    }
+
+    private void showAlert() {
+        CommonDialog dialog = new CommonDialog(getActivity(), getResources().getString(R.string.doyouwantgoback),
+                "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                if (mFrom.equalsIgnoreCase("HomeScreenTwo")) {
+                    Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+                    if (isFromChild)
+                        intent.putExtra("isStoreMenu", true);
+                    startActivity(intent);
+                }
+                getActivity().finish();
+                getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            }
+        }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setCancelable(false);
     }
 }

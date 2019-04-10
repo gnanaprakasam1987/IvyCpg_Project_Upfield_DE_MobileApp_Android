@@ -38,7 +38,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.collection.CollectionBO;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
@@ -123,6 +122,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
     private boolean isSubmitButtonClicked = false;
 
     private Vector<ConfigureBO> menuDB = new Vector<>();
+    private Button img_pause;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,6 +180,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             mNoOrderCameraBTN = findViewById(R.id.btn_camera);
             contentCloseCall = findViewById(R.id.content_closeCallCard);
             TVMenuName = findViewById(R.id.tvMenuName);
+            img_pause = findViewById(R.id.img_pause);
 
             contentCloseCall.setVisibility(View.GONE);
 
@@ -296,6 +297,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     rvModule.setLayoutManager(linearLayoutManager);
                     rvModule.setItemAnimator(new DefaultItemAnimator());
                     rvModule.setAdapter(moduleAdapter);
+                } else if ("CallA41".equalsIgnoreCase(configureBO.getConfigCode())) {
+                    img_pause.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -348,6 +351,43 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             bmodel.updateRetailersTotWgt(bmodel.getRetailerMasterBO());
 
             SBDHelper.getInstance(this).calculateSBDDistribution(getApplicationContext());
+
+            img_pause.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    bmodel.updateIsVisitedFlag("P");
+
+                    // stop timer
+                    if (bmodel.timer != null) {
+                        bmodel.timer.pauseTimer();
+                        bmodel.timer = null;
+                    }
+
+                    bmodel.outletTimeStampHelper.updateTimeStamp(DateTimeUtils
+                            .now(DateTimeUtils.TIME), mFeedbackReasonId);
+
+
+                    if (!hasActivityDone() && !bmodel.configurationMasterHelper.SHOW_FEEDBACK_IN_CLOSE_CALL && !bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON) {
+                        bmodel.outletTimeStampHelper.deleteTimeStampAllModule();
+                        bmodel.outletTimeStampHelper.deleteTimeStamp();
+                        bmodel.outletTimeStampHelper.deleteTimeStampImages();
+                        bmodel.outletTimeStampHelper.deleteImagesFromFolder();
+
+                    } else {
+                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                                .now(DateTimeUtils.TIME));
+                        bmodel.saveModuleCompletion("MENU_CALL_ANLYS", true);
+                    }
+                    resetRemarksBO();
+                    if (bmodel.configurationMasterHelper.HAS_SELLER_TYPE_SELECTION_ENABLED) {
+                        resetSellerConfiguration();
+                    }
+
+                    bmodel.productHelper.clearProductHelper();
+                    finish();
+                }
+            });
         } catch (Exception e) {
             Commons.printException(e);
 
@@ -1376,7 +1416,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             nonproductive.setImagePath(mImagePath);
             nonproductive.setImageName(mImageName);
             bmodel.saveNonproductivereason(nonproductive, edt_other_remarks.getText().toString());
-            bmodel.updateIsVisitedFlag();
+            bmodel.updateIsVisitedFlag("Y");
             // Alert the user
             Toast.makeText(CallAnalysisActivity.this,
                     getResources().getString(R.string.reason_saved),
@@ -1390,13 +1430,13 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             nonproductive.setCollectionReasonID(collectionReasonID);
             nonproductive.setCollectionReasonType(collectionReasonType);
             bmodel.saveNonproductivereason(nonproductive, "");
-            bmodel.updateIsVisitedFlag();
+            bmodel.updateIsVisitedFlag("Y");
             // Alert the user
             Toast.makeText(CallAnalysisActivity.this,
                     getResources().getString(R.string.reason_saved),
                     Toast.LENGTH_SHORT).show();
         } else if (!mFeedBackId.equals("0") || hasActivityDone()) {
-            bmodel.updateIsVisitedFlag();
+            bmodel.updateIsVisitedFlag("Y");
         }
 
 

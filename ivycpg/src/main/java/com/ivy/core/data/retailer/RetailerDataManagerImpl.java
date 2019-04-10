@@ -351,6 +351,13 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                         }
                                     }
 
+                                    for (RetailerMasterBO retailerMasterBO : retailerMasterBOS) {
+                                        if ("P".equals(retailerMasterBO.getIsVisited())) {
+                                            appDataProvider.setPausedRetailer(retailerMasterBO);
+                                            break;
+                                        }
+
+                                    }
 
                                 } catch (Exception ignored) {
 

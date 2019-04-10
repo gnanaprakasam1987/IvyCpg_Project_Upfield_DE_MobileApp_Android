@@ -5301,7 +5301,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     }
 
     private void doCloseCall() {
-        bmodel.updateIsVisitedFlag();
+        bmodel.updateIsVisitedFlag("Y");
+
+        // stop timer
+        if (bmodel.timer != null) {
+            bmodel.timer.stopTimer();
+            bmodel.timer = null;
+        }
 
         bmodel.outletTimeStampHelper.updateTimeStamp(DateTimeUtils
                 .now(DateTimeUtils.TIME), "");
