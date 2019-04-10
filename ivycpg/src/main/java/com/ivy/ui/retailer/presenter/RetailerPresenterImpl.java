@@ -64,7 +64,7 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView> exte
                         .title(retailerMasterBO.getRetailerName() + "," + retailerMasterBO.getRetailerID())
                         .snippet(retailerMasterBO.getAddress1())
                         .icon(BitmapDescriptorFactory
-                                .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                                .fromResource(getMarkerIcon(retailerMasterBO)));
 
                 map.addMarker(mMarkerOptions);
                 builder.include(latLng);
@@ -106,8 +106,11 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView> exte
             @Override
             public void onMapLoaded() {
 
-                map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 60));
-
+                if (checkAreaBoundsTooSmall(builder.build())) {
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(builder.build().getCenter(), 19));
+                } else {
+                    map.animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 60));
+                }
             }
         });
     }

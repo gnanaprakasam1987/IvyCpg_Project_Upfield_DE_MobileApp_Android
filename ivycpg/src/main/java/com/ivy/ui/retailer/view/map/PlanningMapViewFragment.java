@@ -1,9 +1,15 @@
 package com.ivy.ui.retailer.view.map;
 
 import android.content.Context;
+import android.support.constraint.ConstraintLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CompoundButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.Switch;
+import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -27,18 +33,38 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
+import butterknife.BindView;
+import butterknife.OnClick;
+
 public class PlanningMapViewFragment extends BaseFragment implements RetailerContract.RetailerView,
         OnMapReadyCallback,GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener {
 
     private String screenTitle;
-    private MapWrapperLayout mapWrapperLayout;
     private GoogleMap mMap;
     private ViewGroup infoWindow;
     private LayoutInflater layInflater;
     private Context context;
 
-    private List<RetailerMasterBO> retailerList = new ArrayList<>();
+    private List<RetailerMasterBO> retailerList;
+
+    @BindView(R.id.ll_view)
+    LinearLayout switchLayout;
+
+    @BindView(R.id.planningmapnew)
+    MapWrapperLayout mapWrapperLayout;
+
+    @BindView(R.id.img_legends_info)
+    ImageView imgLegendInfo;
+
+    @BindView(R.id.constraint_legends)
+    ConstraintLayout legendConstraintLayout;
+
+    @BindView(R.id.switch_plan)
+    Switch switchPlanSelect;
+
+    @BindView(R.id.tv_all)
+    TextView selectedPlanNameTv;
 
     @Inject
     RetailerPresenterImpl<RetailerContract.RetailerView> presenter;
@@ -70,12 +96,35 @@ public class PlanningMapViewFragment extends BaseFragment implements RetailerCon
 
         layInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE );
 
-        view.findViewById(R.id.ll_view).setVisibility(View.GONE);
-
-        mapWrapperLayout = view.findViewById(R.id.planningmapnew);
+        switchLayout.setVisibility(View.GONE);
 
         this.infoWindow = (ViewGroup) layInflater.inflate(
                 R.layout.custom_info_window, (ViewGroup) null);
+
+        imgLegendInfo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (legendConstraintLayout.getVisibility() == View.GONE)
+                    legendConstraintLayout.setVisibility(View.VISIBLE);
+                else
+                    legendConstraintLayout.setVisibility(View.GONE);
+            }
+        });
+
+        switchPlanSelect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                String strPlannned;
+                if (isChecked)
+                    selectedPlanNameTv.setText(getResources().getString(R.string.all));
+                else
+                    selectedPlanNameTv.setText(getResources().getString(R.string.day_plan));
+
+                if (mMap != null)
+                    mMap.clear();
+
+            }
+        });
     }
 
     @Override
