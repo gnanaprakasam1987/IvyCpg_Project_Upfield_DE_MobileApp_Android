@@ -49,7 +49,6 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     private String screenTitle;
     private GoogleMap mMap;
     private ViewGroup infoWindow;
-    private LayoutInflater layInflater;
     private Context context;
 
     private List<RetailerMasterBO> retailerList;
@@ -138,7 +137,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             focusMarker(getMap(), builder);
 
 
-        presenter.prepareRetailerMarker(mMap, retailerList);
+        //presenter.prepareRetailerMarker(mMap, retailerList);
     }
 
     @Override
