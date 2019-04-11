@@ -6,6 +6,7 @@ import android.widget.ArrayAdapter;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -32,6 +33,7 @@ public class PriceTrackingHelper {
     public boolean SHOW_PRICE_SRP;
     public boolean SHOW_PRICE_CHANGED;
     public boolean SHOW_PRICE_COMPLIANCE;
+    public boolean SHOW_PRICE_TAG_CHECK;
     public boolean SHOW_PRICE_LASTVP;
     public int IS_PRICE_CHANGE_REASON = 0;
 
@@ -125,13 +127,13 @@ public class PriceTrackingHelper {
             String tid = "";
 
             // To load previous transaction prices
-            String sql1 = "SELECT PId,Price,Uomid,mrp,isown FROM " + mLastVisitPrice
+            String sql1 = "SELECT PId,Price,Uomid,mrp,isown,inStoreLocId,hasPriceTag FROM " + mLastVisitPrice
                     + " WHERE Rid = " + bmodel.getRetailerMasterBO().getRetailerID();
             Cursor cur = db.selectSQL(sql1);
             if (cur != null) {
                 while (cur.moveToNext()) {
                     setPrevPrice(cur.getString(0), cur.getString(1),
-                            cur.getInt(2), cur.getString(3), cur.getInt(4));
+                            cur.getInt(2), cur.getString(3), cur.getInt(4), cur.getInt(5), cur.getInt(6));
                 }
                 cur.close();
             }
@@ -163,14 +165,14 @@ public class PriceTrackingHelper {
             }
 
 
-            sql1 = "SELECT PId, Changed, Price, Compliance, ReasonId, Own,UomID,mrp,mop,price_change_reasonid FROM "
+            sql1 = "SELECT PId, Changed, Price, Compliance, ReasonId, Own,UomID,mrp,mop,price_change_reasonid,inStoreLocId,hasPriceTag FROM "
                     + mPriceChangeDetail + " WHERE Tid = " + QT(tid);
             cur = db.selectSQL(sql1);
             if (cur != null) {
                 while (cur.moveToNext()) {
                     setPrice(cur.getString(0), cur.getInt(1), cur.getString(2),
-                            cur.getInt(3), cur.getString(4), cur.getInt(5),
-                            cur.getInt(6), cur.getString(7), cur.getString(8), cur.getString(9));
+                            cur.getInt(3), cur.getInt(4), cur.getInt(5),
+                            cur.getInt(6), cur.getString(7), cur.getString(8), cur.getString(9),cur.getInt(10),cur.getInt(11));
                 }
                 cur.close();
             }
@@ -189,7 +191,7 @@ public class PriceTrackingHelper {
      * @param pid
      * @param price
      */
-    private void setPrevPrice(String pid, String price, int uomid, String mrp, int own) {
+    private void setPrevPrice(String pid, String price, int uomid, String mrp, int own,int locationId,int isPriceTagAvailable) {
         //mTaggedProducts list only used in PriceCheck screen. So updating only in mTaggedProducts
         ProductMasterBO sku;
         if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
@@ -199,17 +201,23 @@ public class PriceTrackingHelper {
         }
         if (sku != null) {
             if (sku.getOwn() == own) {
-                if (sku.getCaseUomId() == uomid) {
-                    sku.setPrevPrice_ca(price);
-                    sku.setPrevMRP_ca(mrp);
-                }
-                if (sku.getPcUomid() == uomid) {
-                    sku.setPrevPrice_pc(price);
-                    sku.setPrevMRP_pc(mrp);
-                }
-                if (sku.getOuUomid() == uomid) {
-                    sku.setPrevPrice_oo(price);
-                    sku.setPrevMRP_ou(mrp);
+                for(LocationBO locationBO:sku.getLocations()) {
+                    if(locationBO.getLocationId()==locationId) {
+                        if (sku.getCaseUomId() == uomid) {
+                            locationBO.setPrevPrice_ca(price);
+                            sku.setPrevMRP_ca(mrp);
+                        }
+                        if (sku.getPcUomid() == uomid) {
+                            locationBO.setPrevPrice_pc(price);
+                            sku.setPrevMRP_pc(mrp);
+                        }
+                        if (sku.getOuUomid() == uomid) {
+                            locationBO.setPrevPrice_oo(price);
+                            sku.setPrevMRP_ou(mrp);
+                        }
+
+                        locationBO.setPriceTagAvailability(isPriceTagAvailable);
+                    }
                 }
 
             }
@@ -223,7 +231,7 @@ public class PriceTrackingHelper {
      * @param price
      */
     private void setPrice(String pid, int changed, String price,
-                          int compliance, String reasonId, int own, int uomID, String mrp, String mop, String priceChangeRid) {
+                          int compliance, int reasonId, int own, int uomID, String mrp, String mop, String priceChangeRid,int locationId,int isPriceTagAvailable) {
 
         //mTaggedProducts list only used in PriceCheck screen. So updating only in mTaggedProducts
         ProductMasterBO productBO;
@@ -234,25 +242,34 @@ public class PriceTrackingHelper {
         }
         if (productBO != null) {
             if (productBO.getOwn() == own) {
-                productBO.setPriceChanged(changed);
-                productBO.setPriceCompliance(compliance);
-                productBO.setReasonID(reasonId);
-                productBO.setPriceMOP(mop);
-                productBO.setPriceChangeReasonID(priceChangeRid);
 
-                if (productBO.getCaseUomId() == uomID) {
-                    productBO.setPrice_ca(price);
-                    productBO.setMrp_ca(mrp);
-                }
-                if (productBO.getPcUomid() == uomID) {
-                    productBO.setPrice_pc(price);
-                    productBO.setMrp_pc(mrp);
+                for(LocationBO locationBO:productBO.getLocations()){
+                    if(locationBO.getLocationId()==locationId){
 
+                        locationBO.setPriceChanged(changed);
+                        locationBO.setPriceCompliance(compliance);
+                        locationBO.setReasonId(reasonId);
+                        productBO.setPriceMOP(mop);
+                        locationBO.setPriceChangeReasonID(priceChangeRid);
+
+                        if (productBO.getCaseUomId() == uomID) {
+                            locationBO.setPrice_ca(price);
+                            locationBO.setMrp_ca(mrp);
+                        }
+                        if (productBO.getPcUomid() == uomID) {
+                            locationBO.setPrice_pc(price);
+                            locationBO.setMrp_pc(mrp);
+
+                        }
+                        if (productBO.getOuUomid() == uomID) {
+                            locationBO.setPrice_oo(price);
+                            locationBO.setMrp_ou(mrp);
+                        }
+
+                        locationBO.setPriceTagAvailability(isPriceTagAvailable);
+                    }
                 }
-                if (productBO.getOuUomid() == uomID) {
-                    productBO.setPrice_oo(price);
-                    productBO.setMrp_ou(mrp);
-                }
+
 
             }
         }
@@ -450,28 +467,19 @@ public class PriceTrackingHelper {
     public boolean hasDataTosave(List<ProductMasterBO> productList) {
 
 
-        for (ProductMasterBO sku : productList) {
-            if (sku.getPrice().equals(".") && sku.getPriceCompliance() != 0 && sku.getPriceChanged() != 0
-                    || sku.getPrice_ca().equals(".")
-                    || sku.getPrice_pc().equals(".")
-                    || sku.getPrice_oo().equals(".")
-                    || sku.getMrp_ca().equals(".")
-                    || sku.getMrp_pc().equals(".")
-                    || sku.getReasonID().equals(".")
-                    || sku.getMrp_ou().equals("."))
-                return false;
-        }
 
         for (ProductMasterBO sku : productList) {
-            if (!sku.getPrice().equals("0") || sku.getPriceCompliance() != 0 ||sku.getPriceChanged() != 0
-                    || !sku.getPrice_ca().equals("0")
-                    || !sku.getPrice_pc().equals("0")
-                    || !sku.getPrice_oo().equals("0")
-                    || !sku.getMrp_ca().equals("0")
-                    || !sku.getMrp_pc().equals("0")
-                    || !sku.getReasonID().equals("0")
-                    || !sku.getMrp_ou().equals("0"))
-                return true;
+            for(LocationBO locationBO:sku.getLocations()) {
+                if (locationBO.getPriceCompliance() != 0 || locationBO.getPriceChanged() != 0
+                        || (!locationBO.getPrice_ca().equals("0")&&locationBO.getPrice_ca().equals("."))
+                        || (!locationBO.getPrice_pc().equals("0")&&locationBO.getPrice_pc().equals("."))
+                        || (!locationBO.getPrice_oo().equals("0")&&locationBO.getPrice_oo().equals("."))
+                        || (!locationBO.getMrp_ca().equals("0")&&locationBO.getMrp_ca().equals("."))
+                        || (!locationBO.getMrp_pc().equals("0")&&locationBO.getMrp_pc().equals("."))
+                        || locationBO.getReasonId()!=0
+                        || (!locationBO.getMrp_ou().equals("0"))&&locationBO.getMrp_ou().equals("."))
+                    return true;
+            }
         }
 
         return false;
@@ -479,8 +487,10 @@ public class PriceTrackingHelper {
     public boolean hasPriceChangeReason(List<ProductMasterBO> productList) {
 
         for (ProductMasterBO sku : productList) {
-            if (sku.getPriceChanged() != 0 && sku.getPriceChangeReasonID().equals("0"))
-                return false;
+            for(LocationBO locationBO:sku.getLocations()) {
+                if (locationBO.getPriceChanged() != 0 && locationBO.getPriceChangeReasonID().equals("0"))
+                    return false;
+            }
         }
 
         return true;
