@@ -1532,17 +1532,27 @@ public class ProductHelper {
 
             String groupIds = getMappedGroupId(db, taggingType);
             StringBuilder productIds = new StringBuilder();
-//            Cursor c = db
-//                    .selectSQL("SELECT pid,PCM.GroupID,FromNorm,ToNorm,Weightage FROM ProductTaggingCriteriaMapping PCM " +
-//                            " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid " +
-//                            " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid and PGM.isOwn = 1" +
-//                            " WHERE PCM.groupid IN(" + groupIds + ")");
+
+            int mContentLevelId = 0;
+
+            // for hybrid seeler if pre seller need to take order at different level
+            if (bmodel.configurationMasterHelper.IS_SWITCH_SELLER_CONFIG_LEVEL && bmodel.getRetailerMasterBO().getIsVansales() == 0 &&
+                    bmodel.configurationMasterHelper.switchConfigLevel > 0) {
+                mContentLevelId = bmodel.configurationMasterHelper.switchConfigLevel;
+            } else {
+                Cursor cur = db.selectSQL("SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = 'MENU_STK_ORD'");
+                if (cur != null) {
+                    if (cur.moveToNext()) {
+                        mContentLevelId = cur.getInt(0);
+                    }
+                    cur.close();
+                }
+            }
 
             Cursor c = db.selectSQL("SELECT PMM.pid,PCM.GroupID,FromNorm,ToNorm,Weightage FROM ProductTaggingCriteriaMapping PCM " +
                     "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid " +
                     "INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid and PGM.isOwn = 1 " +
-                    "INNER JOIN ConfigActivityFilter CAF on PMM.PLID = CAF.ProductContent and CAF.ActivityCode = 'MENU_STK_ORD' " +
-                    "INNER JOIN ProductMaster PMM ON PMM.Plid = CAF.ProductContent and PMM.ParentHierarchy like '%/'||PGM.PID||'/%' " +
+                    "INNER JOIN ProductMaster PMM ON PMM.Plid = "+ mContentLevelId +" and PMM.ParentHierarchy like '%/'||PGM.PID||'/%' " +
                     "WHERE PCM.groupid IN(" + groupIds + ")");
 
             if (c != null) {
