@@ -2528,12 +2528,14 @@ public class DashBoardHelper {
 
     public ArrayList<String> loadMSLUnsold(String retailerID) {
         ArrayList<String> mslUnsoldList = new ArrayList<>();
-        String productIds = bmodel.productHelper.getTaggingDetails("MSL");
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-        );
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+        db.createDataBase();
+        db.openDataBase();
+        int mContentLevel = bmodel.productHelper.getContentLevel(db, "MENU_DASHBOARD");
+        String productIds = bmodel.productHelper.getTaggingDetails("MSL", mContentLevel);
         try {
-            db.createDataBase();
-            db.openDataBase();
+            if(db.isDbNullOrClosed())
+                db.openDataBase();
             String sb = "Select distinct PM.PName from RtrWiseDeadProducts RP " +
                     "inner join ProductMaster PM on RP.pid = PM.PID " +
                     " Where RP.rid = " + bmodel.QT(retailerID) +
