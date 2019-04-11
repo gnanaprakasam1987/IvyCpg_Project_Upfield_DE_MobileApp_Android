@@ -1542,7 +1542,7 @@ public class ProductHelper {
                     "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid " +
                     "INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid and PGM.isOwn = 1 " +
                     "INNER JOIN ConfigActivityFilter CAF on PMM.PLID = CAF.ProductContent and CAF.ActivityCode = 'MENU_STK_ORD' " +
-                    "INNER JOIN ProductMaster PMM ON PMM.Plid = CAF.ProductContent and PMM.ParentHierarchy like '%'||PGM.PID||'%' " +
+                    "INNER JOIN ProductMaster PMM ON PMM.Plid = CAF.ProductContent and PMM.ParentHierarchy like '%/'||PGM.PID||'/%' " +
                     "WHERE PCM.groupid IN(" + groupIds + ")");
 
             if (c != null) {
