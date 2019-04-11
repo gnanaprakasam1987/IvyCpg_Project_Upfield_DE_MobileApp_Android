@@ -185,6 +185,15 @@
     <string name="visit_created_successfully">Visit created Successfully</string>
     <string name="error_in_creating_visit">Error in creating visit</string>
     <string name="error_in_saving">Error in Saving</string>
+    <string name="my_location">My Location</string>
+    <string name="no_loc_to_display">No Location to display</string>
+    <string name="route_cleared">Route Cleared, Select Two Marker</string>
+    <string name="am_here">I\'m here</string>
+    <string name="fetching_route">Fetching route, Please wait…</string>
+    <string name="visit_completed">Completed Visit</string>
+    <string name="visit_unplanned">Unplanned Visit</string>
+    <string name="check_network_curr_loc">Check Network Connection for getting current location</string>
+    <string name="non_productive">Non Productive</string>
     <string name="visit_paused_msg">Close paused visit to start a new visit</string>
     <string name="pause">Pause</string>
     <string name="resume_visit">Resume Visit</string>

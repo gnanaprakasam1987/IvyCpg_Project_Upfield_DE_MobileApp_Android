@@ -945,35 +945,18 @@ public class ProductHelper {
             Commons.print("filter" + filter);
             String sql = "";
 
-            int mContentLevelId = 0;
-
-            // for hybrid seeler if pre seller need to take order at different level
-            if (bmodel.configurationMasterHelper.IS_SWITCH_SELLER_CONFIG_LEVEL && bmodel.getRetailerMasterBO().getIsVansales() == 0 &&
-                    bmodel.configurationMasterHelper.switchConfigLevel > 0 && moduleCode.equalsIgnoreCase("MENU_STK_ORD")) {
-                mContentLevelId = bmodel.configurationMasterHelper.switchConfigLevel;
-
-            } else {
-                Cursor cur = db.selectSQL("SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = " + bmodel.QT(moduleCode));
-
-                if (cur != null) {
-                    if (cur.moveToNext()) {
-                        mContentLevelId = cur.getInt(0);
-                    }
-                    cur.close();
-                }
-            }
-
+            int mContentLevelId = getContentLevel(db, moduleCode);
             sql = "select A.pid as productId, A.pcode as pcode,A.pname as pname,A.parentid as parentId,A.sih as sih, "
                     + "A.psname as psname,A.barcode as barcode,A.vat as vat ,A.isfocus as isfocus, max(ifnull("
                     + str
-                    + ")) as srp , ifnull("
+                    + ")) as srp , max(ifnull("
                     + csrp
-                    + ") as csrp ,ifnull("
+                    + ")) as csrp ,max(ifnull("
                     + osrp
-                    + ") as osrp ,A.msqqty as msqqty,"
+                    + ")) as osrp ,A.msqqty as msqqty,"
                     + "A.dUomQty as caseQty,A.duomid as caseUomId, u.ListCode as ListCode ,A.MRP as MRP,"
                     + " ifnull(sbd.DrpQty,0) as DrpQty,ifnull(sbd.grpName,'') as grpName,A.RField1 as RField1 ,PWHS.qty as PWHSqty ,A.IsAlloc as IsAlloc, "
-                    + getSpecialFilterQuery()
+                    + getSpecialFilterQuery(mContentLevelId)
                     + "dOuomQty as outersize ,dOuomid as dOuomid,caseBarcode as caseBarcode,outerBarcode as outerBarcode,"
                     + " piece_uomid as piece_uomid ,A.mrp as mrp,"
                     + " A.isSalable as isSalable,A.isReturnable as isReturnable,A.TypeID as TypeID,A.baseprice as baseprice,"
@@ -1136,7 +1119,7 @@ public class ProductHelper {
         return genericObjectPair;
     }
 
-    private String getSpecialFilterQuery() {
+    private String getSpecialFilterQuery(int mContentLevelId) {
 
         StringBuilder stringBuilder = new StringBuilder();
         Vector<ConfigureBO> filterBO = bmodel.configurationMasterHelper.downloadFilterList();
@@ -1179,50 +1162,50 @@ public class ProductHelper {
         String nearExpiryTaggedProductIds = "";
 
         if (filter10) {
-            MSLproductIds = getTaggingDetails("MSL");
+            MSLproductIds = getTaggingDetails("MSL", mContentLevelId);
             stringBuilder.append("A.pid in(" + MSLproductIds + ") as IsMustSell,");
         } else {
             stringBuilder.append("0 as IsMustSell,");
         }
         if (filter16) {
-            NMSLproductIds = getTaggingDetails("NMSL");
+            NMSLproductIds = getTaggingDetails("NMSL", mContentLevelId);
             stringBuilder.append("A.pid in(" + NMSLproductIds + ") as IsNMustSell,");
 
         } else {
             stringBuilder.append("0 as IsNMustSell,");
         }
         if (filter11) {
-            FCBNDproductIds = getTaggingDetails("FCBND");
+            FCBNDproductIds = getTaggingDetails("FCBND", mContentLevelId);
             stringBuilder.append("A.pid in(" + FCBNDproductIds + ") as IsFocusBrand,");
         } else {
             stringBuilder.append("0 as IsFocusBrand,");
         }
         if (filter12) {
-            FCBND2productIds = getTaggingDetails("FCBND2");
+            FCBND2productIds = getTaggingDetails("FCBND2", mContentLevelId);
             stringBuilder.append("A.pid in(" + FCBND2productIds + ") as IsFocusBrand2,");
         } else {
             stringBuilder.append("0 as IsFocusBrand2,");
         }
         if (filter20) {
-            FCBND3productIds = getTaggingDetails("FCBND3");
+            FCBND3productIds = getTaggingDetails("FCBND3", mContentLevelId);
             stringBuilder.append("A.pid in(" + FCBND3productIds + ") as IsFocusBrand3,");
         } else {
             stringBuilder.append("0 as IsFocusBrand3,");
         }
         if (filter21) {
-            FCBND4productIds = getTaggingDetails("FCBND4");
+            FCBND4productIds = getTaggingDetails("FCBND4", mContentLevelId);
             stringBuilder.append("A.pid in(" + FCBND4productIds + ") as IsFocusBrand4,");
         } else {
             stringBuilder.append("0 as IsFocusBrand4,");
         }
         if (filter22) {
-            SMPproductIds = getTaggingDetails("SMP");
+            SMPproductIds = getTaggingDetails("SMP", mContentLevelId);
             stringBuilder.append("A.pid in(" + SMPproductIds + ") as IsSMP,");
         } else {
             stringBuilder.append("0 as IsSMP,");
         }
         if (filter19) {
-            nearExpiryTaggedProductIds = getTaggingDetails("MENU_NEAREXPIRY");
+            nearExpiryTaggedProductIds = getTaggingDetails("MENU_NEAREXPIRY", mContentLevelId);
             stringBuilder.append("A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry,");
         } else {
             stringBuilder.append("0 as isNearExpiry,");
@@ -1485,8 +1468,10 @@ public class ProductHelper {
      */
     public void downloadTaggedProducts(String mMenuCode) {
         try {
-
-            String productIds = getTaggingDetails(mMenuCode);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+            db.openDataBase();
+            int mContentLevel = getContentLevel(db, mMenuCode);
+            String productIds = getTaggingDetails(mMenuCode, mContentLevel);
             List<String> mSKUId = new ArrayList<>();
 
             mSKUId = Arrays.asList(productIds.split(","));
@@ -1507,7 +1492,8 @@ public class ProductHelper {
                     mTaggedProductById.put(sku.getProductID(), sku);
                 }
             }
-
+            if(!db.isDbNullOrClosed())
+                db.closeDB();
         } catch (Exception e) {
             Commons.printException("downloadTaggedProducts", e);
         }
@@ -1521,22 +1507,22 @@ public class ProductHelper {
      * @param taggingType tagging type
      * @return productId with comma separated string.
      */
-    public String getTaggingDetails(String taggingType) {
+    public String getTaggingDetails(String taggingType, int mContentLevelId) {
         try {
             ProductTaggingBO taggingBO;
             productTaggingList = new ArrayList<>();
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
-
             db.openDataBase();
 
             String groupIds = getMappedGroupId(db, taggingType);
             StringBuilder productIds = new StringBuilder();
-            Cursor c = db
-                    .selectSQL("SELECT pid,PCM.GroupID,FromNorm,ToNorm,Weightage FROM ProductTaggingCriteriaMapping PCM " +
-                            " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid " +
-                            " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid and PGM.isOwn = 1" +
-                            " WHERE PCM.groupid IN(" + groupIds + ")");
+
+            Cursor c = db.selectSQL("SELECT PMM.pid,PCM.GroupID,FromNorm,ToNorm,Weightage FROM ProductTaggingCriteriaMapping PCM " +
+                    "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid " +
+                    "INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid and PGM.isOwn = 1 " +
+                    "INNER JOIN ProductMaster PMM ON PMM.Plid = "+ mContentLevelId +" and PMM.ParentHierarchy like '%/'||PGM.PID||'/%' " +
+                    "WHERE PCM.groupid IN(" + groupIds + ")");
 
             if (c != null) {
                 while (c.moveToNext()) {
@@ -5548,6 +5534,46 @@ public class ProductHelper {
         c.close();
         return mappedGrpIds;
 
+    }
+
+    public int getContentLevel(DBUtil db, String activityCode){
+        int mContentLevelId = 0;
+        // for hybrid seeler if pre seller need to take order at different level
+        if (bmodel.configurationMasterHelper.IS_SWITCH_SELLER_CONFIG_LEVEL && bmodel.getRetailerMasterBO().getIsVansales() == 0 &&
+                bmodel.configurationMasterHelper.switchConfigLevel > 0 && activityCode.equalsIgnoreCase("MENU_STK_ORD")) {
+            mContentLevelId = bmodel.configurationMasterHelper.switchConfigLevel;
+        } else {
+            Cursor cur = db.selectSQL("SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = " + bmodel.QT(activityCode));
+            if (cur != null) {
+                if (cur.moveToNext()) {
+                    mContentLevelId = cur.getInt(0);
+                }
+                cur.close();
+            }
+        }
+        return mContentLevelId;
+    }
+
+    public int getContentLevel(Context mContext, String activityCode){
+        int mContentLevelId = 0;
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+        db.createDataBase();
+        db.openDataBase();
+        // for hybrid seeler if pre seller need to take order at different level
+        if (bmodel.configurationMasterHelper.IS_SWITCH_SELLER_CONFIG_LEVEL && bmodel.getRetailerMasterBO().getIsVansales() == 0 &&
+                bmodel.configurationMasterHelper.switchConfigLevel > 0 && activityCode.equalsIgnoreCase("MENU_STK_ORD")) {
+            mContentLevelId = bmodel.configurationMasterHelper.switchConfigLevel;
+        } else {
+            Cursor cur = db.selectSQL("SELECT ProductContent FROM ConfigActivityFilter WHERE ActivityCode = " + bmodel.QT(activityCode));
+            if (cur != null) {
+                if (cur.moveToNext()) {
+                    mContentLevelId = cur.getInt(0);
+                }
+                cur.close();
+            }
+        }
+        db.closeDB();
+        return mContentLevelId;
     }
 }
 

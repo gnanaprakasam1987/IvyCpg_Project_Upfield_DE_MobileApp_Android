@@ -208,6 +208,8 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private int supplierTaxLocId;
     private String ridSF;
     private String district;
+    private String lastVisitDate;
+    private String lastVisitedBy;
 
     public int getIsSEZzone() {
         return isSEZzone;
@@ -1630,5 +1632,21 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     public void setRField9(String RField9) {
         this.RField9 = RField9;
+    }
+
+    public String getLastVisitDate() {
+        return lastVisitDate;
+    }
+
+    public void setLastVisitDate(String lastVisitDate) {
+        this.lastVisitDate = lastVisitDate;
+    }
+
+    public String getLastVisitedBy() {
+        return lastVisitedBy;
+    }
+
+    public void setLastVisitedBy(String lastVisitedBy) {
+        this.lastVisitedBy = lastVisitedBy;
     }
 }
