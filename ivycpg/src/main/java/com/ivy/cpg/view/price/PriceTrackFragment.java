@@ -532,6 +532,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                     public void onClick(DialogInterface dialog, int item) {
                         priceTrackingHelper.mSelectedLocationIndex = item;
                         dialog.dismiss();
+                        refreshList();
 
                     }
                 });
@@ -1122,8 +1123,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                     @Override
                     public void onClick(View v) {
 
-                        if (holder.mSKUBO.getPriceChanged() == 1) {
-                            holder.mSKUBO.setPriceChanged(0);
+                        if (holder.mSKUBO.getLocations().get(priceTrackingHelper.mSelectedLocationIndex).getPriceChanged() == 1) {
+                            holder.mSKUBO.getLocations().get(priceTrackingHelper.mSelectedLocationIndex).setPriceChanged(0);
                             holder.mChanged.setChecked(false);
                             holder.mCaPrice.setEnabled(false);
                             holder.mPcPrice.setEnabled(false);
@@ -1166,7 +1167,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
 
                         } else {
-                            holder.mSKUBO.setPriceChanged(1);
+                            holder.mSKUBO.getLocations().get(priceTrackingHelper.mSelectedLocationIndex).setPriceChanged(1);
                             holder.mChanged.setChecked(true);
 
                             if (priceTrackingHelper.IS_PRICE_CHANGE_REASON == 1) {
@@ -1203,7 +1204,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         if (qty.length() > 0)
                             holder.mCaPrice.setSelection(qty.length());
                         if (SDUtil.isValidDecimal(qty, 8, businessModel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION)) {
-                            holder.mSKUBO.setPrice_ca(qty);
+                            holder.mSKUBO.getLocations().get(priceTrackingHelper.mSelectedLocationIndex).setPrice_ca(qty);
                         } else {
                             Toast.makeText(
                                     getActivity(),
@@ -1251,7 +1252,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         if (qty.length() > 0)
                             holder.mPcPrice.setSelection(qty.length());
                         if (SDUtil.isValidDecimal(qty, 8, businessModel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION)) {
-                            holder.mSKUBO.setPrice_pc(qty);
+                            holder.mSKUBO.getLocations().get(priceTrackingHelper.mSelectedLocationIndex).setPrice_pc(qty);
                         } else {
                             Toast.makeText(
                                     getActivity(),
@@ -1300,7 +1301,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                             holder.mOoPrice.setSelection(qty.length());
 
                         if (SDUtil.isValidDecimal(qty, 8, businessModel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION)) {
-                            holder.mSKUBO.setPrice_oo(qty);
+                            holder.mSKUBO.getLocations().get(priceTrackingHelper.mSelectedLocationIndex).setPrice_oo(qty);
                         } else {
                             Toast.makeText(
                                     getActivity(),
@@ -1344,20 +1345,20 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                     @Override
                     public void onClick(View v) {
 
-                        if (holder.mSKUBO.getPriceCompliance() == 1) {
-                            holder.mSKUBO.setPriceCompliance(0);
+                        if (holder.mSKUBO.getLocations().get(priceTrackingHelper.mSelectedLocationIndex).getPriceCompliance() == 1) {
+                            holder.mSKUBO.getLocations().get(priceTrackingHelper.mSelectedLocationIndex).setPriceCompliance(0);
                             holder.mCompliance.setChecked(false);
                             holder.mReason.setEnabled(true);
                             holder.mReason.setSelected(true);
                             holder.mReason.setSelection(0);
-                            holder.mSKUBO.setReasonID("0");
+                            holder.mSKUBO.getLocations().get(priceTrackingHelper.mSelectedLocationIndex).setReasonId(0);
                         } else {
-                            holder.mSKUBO.setPriceCompliance(1);
+                            holder.mSKUBO.getLocations().get(priceTrackingHelper.mSelectedLocationIndex).setPriceCompliance(1);
                             holder.mCompliance.setChecked(true);
                             holder.mReason.setEnabled(false);
                             holder.mReason.setSelected(false);
                             holder.mReason.setSelection(0);
-                            holder.mSKUBO.setReasonID("0");
+                            holder.mSKUBO.getLocations().get(priceTrackingHelper.mSelectedLocationIndex).setReasonId(0);
                         }
                     }
                 });
@@ -1371,8 +1372,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                                 ReasonMaster reString = (ReasonMaster) holder.mReason
                                         .getSelectedItem();
 
-                                holder.mSKUBO.setReasonID(reString
-                                        .getReasonID());
+                                holder.mSKUBO.getLocations().get(priceTrackingHelper.mSelectedLocationIndex).setReasonId(Integer.parseInt(reString
+                                        .getReasonID()));
 
                             }
 
@@ -1389,7 +1390,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                                 ReasonMaster reString = (ReasonMaster) holder.mReason_price_change
                                         .getSelectedItem();
 
-                                holder.mSKUBO.setPriceChangeReasonID(reString
+                                holder.mSKUBO.getLocations().get(priceTrackingHelper.mSelectedLocationIndex).setPriceChangeReasonID(reString
                                         .getReasonID());
                             }
 

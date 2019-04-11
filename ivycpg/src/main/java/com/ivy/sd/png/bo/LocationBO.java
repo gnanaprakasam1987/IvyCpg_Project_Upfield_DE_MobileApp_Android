@@ -36,6 +36,12 @@ public class LocationBO {
     private int productID;
     private int photoid;
     private int availability = -1;
+    private int priceChanged;
+    private int priceCompliance;
+
+    private String price_ca = "0";
+    private String price_pc = "0";
+    private String price_oo = "0";
 
     private ArrayList<NearExpiryDateBO> nearexpiryDate;
 
@@ -361,6 +367,51 @@ public class LocationBO {
 
     public void setAvailability(int availability) {
         this.availability = availability;
+    }
+
+    public String getPrice_ca() {
+        return price_ca;
+    }
+
+    public void setPrice_ca(String price_ca) {
+        this.price_ca = price_ca;
+    }
+
+    public String getPrice_pc() {
+        return price_pc;
+    }
+
+    public void setPrice_pc(String price_pc) {
+        this.price_pc = price_pc;
+    }
+
+    public String getPrice_oo() {
+        return price_oo;
+    }
+
+    public void setPrice_oo(String price_oo) {
+        this.price_oo = price_oo;
+    }
+
+    public void setPriceChanged(int priceChanged) {
+        this.priceChanged = priceChanged;
+    }
+
+    public int getPriceChanged() {
+        return priceChanged;
+    }
+
+    public int getPriceCompliance() {
+        return priceCompliance;
+    }
+
+    public void setPriceCompliance(int priceCompliance) {
+        this.priceCompliance = priceCompliance;
+    }
+
+    private String priceChangeReasonID = "0";
+    public void setPriceChangeReasonID(String priceChangeReasonID) {
+        this.priceChangeReasonID = priceChangeReasonID;
     }
 
 }
