@@ -3,6 +3,7 @@ package com.ivy.ui.retailer.view.map;
 import android.content.Context;
 import android.location.Location;
 import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Group;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -39,9 +40,10 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+import butterknife.OnClick;
 
 public class RetailerMapFragment extends BaseMapFragment implements RetailerContract.RetailerView,
-        OnMapReadyCallback,GoogleMap.OnMarkerClickListener,
+        OnMapReadyCallback, GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener {
 
     private String screenTitle;
@@ -52,23 +54,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
     private List<RetailerMasterBO> retailerList;
 
-    @BindView(R.id.ll_view)
-    LinearLayout switchLayout;
-
-    @BindView(R.id.planningmapnew)
-    MapWrapperLayout mapWrapperLayout;
-
-    @BindView(R.id.img_legends_info)
-    ImageView imgLegendInfo;
-
-    @BindView(R.id.constraint_legends)
-    ConstraintLayout legendConstraintLayout;
-
-    @BindView(R.id.switch_plan)
-    Switch switchPlanSelect;
-
-    @BindView(R.id.tv_all)
-    TextView selectedPlanNameTv;
+    @BindView(R.id.legendGroup)
+    Group legendGroup;
 
     @Inject
     RetailerPresenterImpl<RetailerContract.RetailerView> presenter;
@@ -93,45 +80,19 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
     @Override
     protected int setContentViewLayout() {
-        return R.layout.fragment_planning_map;
+        return R.layout.fragment_retailer_map;
     }
-
 
 
     @Override
     public void initVariables(View view) {
 
-        layInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE );
 
-        switchLayout.setVisibility(View.GONE);
+    }
 
-        this.infoWindow = (ViewGroup) layInflater.inflate(
-                R.layout.custom_info_window, (ViewGroup) null);
-
-        imgLegendInfo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (legendConstraintLayout.getVisibility() == View.GONE)
-                    legendConstraintLayout.setVisibility(View.VISIBLE);
-                else
-                    legendConstraintLayout.setVisibility(View.GONE);
-            }
-        });
-
-        switchPlanSelect.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                String strPlannned;
-                if (isChecked)
-                    selectedPlanNameTv.setText(getResources().getString(R.string.all));
-                else
-                    selectedPlanNameTv.setText(getResources().getString(R.string.day_plan));
-
-                if (mMap != null)
-                    mMap.clear();
-
-            }
-        });
+    @OnClick(R.id.retailer_legend_info_img)
+    void onInfoImgClicked() {
+        legendGroup.setVisibility(legendGroup.getVisibility() == View.VISIBLE ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -143,10 +104,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     @Override
     protected void setUpViews() {
         setUpToolbar(screenTitle);
+        loadMap();
 
-        SupportMapFragment mapFragment = (SupportMapFragment) this.getChildFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
     }
 
 
@@ -176,10 +135,10 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         }
 
         if (retailerMarkerList.size() > 0)
-            focusMarker(getMap(),builder);
+            focusMarker(getMap(), builder);
 
 
-        presenter.prepareRetailerMarker(mMap,retailerList);
+        presenter.prepareRetailerMarker(mMap, retailerList);
     }
 
     @Override
@@ -204,22 +163,6 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-
-        mapWrapperLayout.init(mMap, presenter.getPixelsFromDpInt(getContext()));
-
-        mMap.setOnMarkerClickListener(this);
-        mMap.setInfoWindowAdapter(new CustomInfoWindowAdapter());
-        mMap.setOnInfoWindowClickListener(this);
-        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
-
-            @Override
-            public void onMapClick(LatLng latLng) {
-
-
-            }
-        });
-
-        presenter.fetchRetailerList();
     }
 
     @Override
@@ -234,7 +177,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
     @Override
     public int getMapContainerResId() {
-        return 0;
+        return R.id.mapContainerLayout;
     }
 
     @Override
@@ -244,7 +187,19 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
     @Override
     public void onMapReady() {
+        getMap().setOnMarkerClickListener(this);
+        getMap().setInfoWindowAdapter(new CustomInfoWindowAdapter());
+        getMap().setOnInfoWindowClickListener(this);
+        getMap().setOnMapClickListener(new GoogleMap.OnMapClickListener() {
 
+            @Override
+            public void onMapClick(LatLng latLng) {
+
+
+            }
+        });
+
+        presenter.fetchRetailerList();
     }
 
     @Override
@@ -266,13 +221,12 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
         @Override
         public View getInfoWindow(final Marker marker) {
-            mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
             return infoWindow;
         }
 
     }
 
-    public void focusMarker(GoogleMap map,final LatLngBounds.Builder builder) {
+    public void focusMarker(GoogleMap map, final LatLngBounds.Builder builder) {
 
         map.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override

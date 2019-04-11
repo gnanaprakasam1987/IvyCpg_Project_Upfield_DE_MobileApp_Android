@@ -1,25 +1,16 @@
 package com.ivy.ui.retailer.presenter;
 
 import android.content.Context;
-import android.location.Location;
-import android.os.Bundle;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.datamanager.DataManager;
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.ui.retailer.RetailerContract;
 import com.ivy.utils.rx.SchedulerProvider;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
