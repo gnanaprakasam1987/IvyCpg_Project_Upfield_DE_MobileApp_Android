@@ -49,6 +49,7 @@ public class PriceTrackingHelper {
     private String CODE_PRICE_COMPLIANCE = "PRICE_COMPLIANCE";
     private String CODE_SHOW_PREV_MRP_IN_PRICE = "PRICE_LAST_VP_MRP";
     private String CODE_PRICE_LASTVP = "PRICE_LAST_VP";
+    private String CODE_PRICE_TAG = "PRICE_TAG";
     public ArrayList<String> mSearchTypeArray = new ArrayList<>();
 
     private ArrayAdapter<StandardListBO> mLocationAdapter;
@@ -650,6 +651,18 @@ public class PriceTrackingHelper {
                 }
                 c.close();
             }
+
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_TAG) + " and ForSwitchSeller = 0 and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.SHOW_PRICE_TAG_CHECK = true;
+                }
+                c.close();
+            }
+
 
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
                     + " where hhtCode=" + bmodel.QT(CODE_PRICE_COMPETITOR) + " and ForSwitchSeller = 0 and Flag=1";
