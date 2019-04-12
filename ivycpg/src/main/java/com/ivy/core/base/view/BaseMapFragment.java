@@ -1,6 +1,8 @@
 package com.ivy.core.base.view;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.support.annotation.NonNull;
@@ -22,10 +24,12 @@ import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public abstract class BaseMapFragment extends BaseFragment implements BaseIvyView, BaseMapView,
-        GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener {
+public abstract class BaseMapFragment extends BaseFragment implements BaseIvyView, BaseMapView,OnMapReadyCallback,
+        GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener,GoogleMap.OnMarkerClickListener,
+        GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap;
 
@@ -41,9 +45,17 @@ public abstract class BaseMapFragment extends BaseFragment implements BaseIvyVie
 
     public abstract void onLocationResult(Location location);
 
+    private Context context;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
+
     @Override
     public void loadMap() {
-        final View view = getActivity().findViewById(getMapContainerResId());
+        final View view = ((Activity)context).findViewById(getMapContainerResId());
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(getMapContainerResId());
         if (mapFragment == null) {
@@ -54,35 +66,32 @@ public abstract class BaseMapFragment extends BaseFragment implements BaseIvyVie
         }
 
 
-        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(getActivity()) == ConnectionResult.SUCCESS) {
-            mapFragment.getMapAsync(new OnMapReadyCallback() {
-                @Override
-                public void onMapReady(final GoogleMap googleMap) {
-                    mMap = googleMap;
-                    // If layout hasn't happen yet, just wait for it and then trigger onMapLoaded
-                    // FIXME this is very leak prone, find a better way?
-                    if (view.getWidth() == 0 && view.getHeight() == 0) {
-                        view.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-                            @Override
-                            public void onLayoutChange(View view, int i, int i1, int i2, int i3, int i4, int i5, int i6, int i7) {
-                                view.removeOnLayoutChangeListener(this);
-
-                                BaseMapFragment.this.onMapReady();
-                            }
-                        });
-                    }
-                    // If layout has been made, call onMapLoaded directly
-                    else {
-                        BaseMapFragment.this.onMapReady();
-                    }
-                }
-            });
+        if (GoogleApiAvailability.getInstance().isGooglePlayServicesAvailable(context) == ConnectionResult.SUCCESS) {
+            mapFragment.getMapAsync(this);
         } else {
             onMapUnavailable();
         }
 
     }
 
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+        onMapReady();
+
+        mMap.setOnMarkerClickListener(this);
+        mMap.setOnInfoWindowClickListener(this);
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        return false;
+    }
+
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+
+    }
 
     protected GoogleMap getMap() {
         return mMap;
@@ -90,7 +99,7 @@ public abstract class BaseMapFragment extends BaseFragment implements BaseIvyVie
 
     public void enableUserLocation() {
         if (mMap != null) {
-            mLocationProviderClient = LocationServices.getFusedLocationProviderClient(getActivity());
+            mLocationProviderClient = LocationServices.getFusedLocationProviderClient(context);
             mLocationCallback = new LocationCallback() {
                 @Override
                 public void onLocationResult(LocationResult locationResult) {
@@ -117,7 +126,9 @@ public abstract class BaseMapFragment extends BaseFragment implements BaseIvyVie
                 .setFastestInterval(1000);
 
         if (mLocationProviderClient != null && mLocationCallback != null) {
-            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
             mLocationProviderClient.requestLocationUpdates(locationRequest, mLocationCallback, null);
@@ -151,7 +162,9 @@ public abstract class BaseMapFragment extends BaseFragment implements BaseIvyVie
     }
 
     public void enableMyLocationButton(boolean isEnabled) {
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
             return;
         }
         mMap.setMyLocationEnabled(true);

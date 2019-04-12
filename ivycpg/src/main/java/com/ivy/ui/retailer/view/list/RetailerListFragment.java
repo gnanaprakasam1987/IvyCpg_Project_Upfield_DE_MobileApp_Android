@@ -41,9 +41,10 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
     }
 
     @Override
-    public void populateRetailersMarker(List<MarkerOptions> retailerList) {
+    public void populateTodayPlannedRetailers(List<RetailerMasterBO> retailerList) {
 
     }
+
 
     @Override
     public void populatePlannedRetailers(List<RetailerMasterBO> plannedRetailers) {

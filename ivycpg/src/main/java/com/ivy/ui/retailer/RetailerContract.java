@@ -13,7 +13,7 @@ public interface RetailerContract {
 
          void populateRetailers(List<RetailerMasterBO> retailerList);
 
-         void populateRetailersMarker(List<MarkerOptions> retailerList);
+         void populateTodayPlannedRetailers(List<RetailerMasterBO> retailerList);
 
          void populatePlannedRetailers(List<RetailerMasterBO> plannedRetailers);
 
@@ -33,6 +33,9 @@ public interface RetailerContract {
 
          void deleteRetailerFromPlan(RetailerMasterBO retailerMasterBO);
 
+         void setRetailerMasterBo(RetailerMasterBO retailerMasterBO);
+
+         void fetchLinkRetailer();
 
     }
 }

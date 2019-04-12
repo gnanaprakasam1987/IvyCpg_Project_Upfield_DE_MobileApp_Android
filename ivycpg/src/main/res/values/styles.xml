@@ -1107,5 +1107,12 @@ negative button and neutral button -->
         <item name="actionBarTheme">@style/ThemeOverlay.SdkTheme.ActionBar</item>
     </style>
 
+    <style name="Color1SwitchStyle">
+        <item name="android:thumb">@drawable/customswitchselector</item>
+        <item name="android:track">@drawable/my_custom_track</item>
+        <item name="track">@drawable/my_custom_track</item>
+
+    </style>
+
 
 </resources>
