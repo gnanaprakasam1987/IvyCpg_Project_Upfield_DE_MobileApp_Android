@@ -854,7 +854,7 @@ public class VanLoadStockViewFragment extends IvyBaseFragment {
 
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + productBO.getProductName().toLowerCase() + "\r\n");
+                tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + productBO.getProductShortName() + "\r\n");
                 tempsb.append("SETBOLD 0 \r\n");
                 tempsb.append("PRINT\r\n");
 
