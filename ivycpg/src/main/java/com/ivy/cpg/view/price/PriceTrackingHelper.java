@@ -290,7 +290,7 @@ public class PriceTrackingHelper {
             Cursor headerCursor;
 
             String headerColumns = "Tid, RetailerId, Date, TimeZone,distributorid,ridSF,VisitId";
-            String detailColumns = "Tid, PId, Changed, Price, Compliance, ReasonId, Own, RetailerId,uomID,mrp,mop,price_change_reasonid";
+            String detailColumns = "Tid, PId, Changed, Price, Compliance, ReasonId, Own, RetailerId,uomID,mrp,mop,price_change_reasonid,inStoreLocId,hasPriceTag";
 
             String values;
 
@@ -340,115 +340,125 @@ public class PriceTrackingHelper {
             db.insertSQL(mPriceChangeHeader, headerColumns, values);
 
             // Save Details
-            for (ProductMasterBO sku : productList) {
-                if (!sku.getPrice().equals("0")
-                        || sku.getPriceCompliance() == 1
-                        || !sku.getReasonID().equals("0")
-                        || !sku.getPrice_ca().equals("0")
-                        || !sku.getPrice_pc().equals("0")
-                        || !sku.getPrice_oo().equals("0")
-                        || !sku.getMrp_ca().equals("0")
-                        || !sku.getMrp_pc().equals("0")
-                        || !sku.getMrp_ou().equals("0")
-                        ) {
-                    boolean isInserted = false;
+            for (ProductMasterBO productBO : productList) {
 
-                    if(sku.getPrice_ca().trim().equals("."))
-                        sku.setPrice_ca("0.0");
-                    else if(sku.getPrice_ca().trim().equals(".0"))
-                        sku.setPrice_ca("0.0");
-                    else if(sku.getPrice_ca().trim().endsWith(".") && sku.getPrice_ca().trim().length()>1)
-                        sku.setPrice_ca(sku.getPrice_ca()+"0");
+                int siz = productBO.getLocations().size();
+                for (int j = 0; j < siz; j++) {
 
-                    if(sku.getPrice_pc().trim().equals("."))
-                        sku.setPrice_pc("0.0");
-                    else if(sku.getPrice_pc().trim().equals(".0"))
-                        sku.setPrice_pc("0.0");
-                    else if(sku.getPrice_pc().trim().endsWith(".") && sku.getPrice_pc().trim().length()>1)
-                        sku.setPrice_pc(sku.getPrice_pc()+"0");
 
-                    if(sku.getPrice_oo().trim().equals("."))
-                        sku.setPrice_oo("0.0");
-                    else if(sku.getPrice_oo().trim().equals(".0"))
-                        sku.setPrice_oo("0.0");
-                    else if(sku.getPrice_oo().trim().endsWith(".") && sku.getPrice_oo().trim().length()>1)
-                        sku.setPrice_oo(sku.getPrice_oo()+"0");
+                    LocationBO locationBO= productBO.getLocations().get(j);
+                    if (locationBO.getPriceCompliance() == 1
+                            || locationBO.getReasonId()!=0
+                            || !locationBO.getPrice_ca().equals("0")
+                            || !locationBO.getPrice_pc().equals("0")
+                            || !locationBO.getPrice_oo().equals("0")
+                            || !locationBO.getMrp_ca().equals("0")
+                            || !locationBO.getMrp_pc().equals("0")
+                            || !locationBO.getMrp_ou().equals("0")
+                            ) {
+                        boolean isInserted = false;
 
-                    sku.setPrice_ca(checkDecimalValue(sku.getPrice_ca(), 8, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION));
-                    sku.setPrice_oo(checkDecimalValue(sku.getPrice_oo(), 8, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION));
-                    sku.setPrice_pc(checkDecimalValue(sku.getPrice_pc(), 8, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION));
+                        if (locationBO.getPrice_ca().trim().equals("."))
+                            locationBO.setPrice_ca("0.0");
+                        else if (locationBO.getPrice_ca().trim().equals(".0"))
+                            locationBO.setPrice_ca("0.0");
+                        else if (locationBO.getPrice_ca().trim().endsWith(".") && locationBO.getPrice_ca().trim().length() > 1)
+                            locationBO.setPrice_ca(locationBO.getPrice_ca() + "0");
 
-                    if ((!sku.getPrice_ca().equals("0") && !sku.getPrice_ca().equals("0.0")) || (!sku.getMrp_ca().equals("0") && !sku.getMrp_ca().equals("0.0"))) {
-                        values = QT(tid) + "," + sku.getProductID() + ","
-                                + sku.getPriceChanged() + ","
-                                + QT(sku.getPrice_ca())
-                                + "," + sku.getPriceCompliance() + ","
-                                + sku.getReasonID() + "," + sku.getOwn() + ","
-                                + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
-                                + "," + sku.getCaseUomId() + "," + sku.getMrp_ca() + "," + sku.getPriceMOP()+","+sku.getPriceChangeReasonID();
+                        if (locationBO.getPrice_pc().trim().equals("."))
+                            locationBO.setPrice_pc("0.0");
+                        else if (locationBO.getPrice_pc().trim().equals(".0"))
+                            locationBO.setPrice_pc("0.0");
+                        else if (locationBO.getPrice_pc().trim().endsWith(".") && locationBO.getPrice_pc().trim().length() > 1)
+                            locationBO.setPrice_pc(locationBO.getPrice_pc() + "0");
 
-                        if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                            productWeightage = bmodel.fitscoreHelper.checkWeightage(sku.getProductID());
-                            values = values + "," + productWeightage;
-                            sum = sum + productWeightage;
+                        if (locationBO.getPrice_oo().trim().equals("."))
+                            locationBO.setPrice_oo("0.0");
+                        else if (locationBO.getPrice_oo().trim().equals(".0"))
+                            locationBO.setPrice_oo("0.0");
+                        else if (locationBO.getPrice_oo().trim().endsWith(".") && locationBO.getPrice_oo().trim().length() > 1)
+                            locationBO.setPrice_oo(locationBO.getPrice_oo() + "0");
+
+                        locationBO.setPrice_ca(checkDecimalValue(locationBO.getPrice_ca(), 8, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION));
+                        locationBO.setPrice_oo(checkDecimalValue(locationBO.getPrice_oo(), 8, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION));
+                        locationBO.setPrice_pc(checkDecimalValue(locationBO.getPrice_pc(), 8, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION));
+
+                        if ((!locationBO.getPrice_ca().equals("0") && !locationBO.getPrice_ca().equals("0.0")) || (!locationBO.getMrp_ca().equals("0") && !locationBO.getMrp_ca().equals("0.0"))) {
+                            values = QT(tid) + "," + locationBO.getProductID() + ","
+                                    + locationBO.getPriceChanged() + ","
+                                    + QT(locationBO.getPrice_ca())
+                                    + "," + locationBO.getPriceCompliance() + ","
+                                    + locationBO.getReasonId() + "," + productBO.getOwn() + ","
+                                    + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
+                                    + "," + productBO.getCaseUomId() + "," + locationBO.getMrp_ca() + "," + productBO.getPriceMOP() + "," + locationBO.getPriceChangeReasonID()+ "," + locationBO.getLocationId()
+                                    + "," + locationBO.getPriceTagAvailability();
+
+                            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                productWeightage = bmodel.fitscoreHelper.checkWeightage(productBO.getProductID());
+                                values = values + "," + productWeightage;
+                                sum = sum + productWeightage;
+                            }
+
+                            db.insertSQL(mPriceChangeDetail, detailColumns, values);
+                            isInserted = true;
+                        }
+                        if ((!locationBO.getPrice_pc().equals("0") && !locationBO.getPrice_pc().equals("0.0")) || (!locationBO.getMrp_pc().equals("0") && !locationBO.getMrp_pc().equals("0.0"))) {
+                            values = QT(tid) + "," + locationBO.getProductID() + ","
+                                    + locationBO.getPriceChanged() + ","
+                                    + QT(locationBO.getPrice_pc())
+                                    + "," + locationBO.getPriceCompliance() + ","
+                                    + locationBO.getReasonId() + "," + productBO.getOwn() + ","
+                                    + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
+                                    + "," + productBO.getPcUomid() + "," + locationBO.getMrp_pc() + "," + productBO.getPriceMOP() + "," + locationBO.getPriceChangeReasonID()+ "," + locationBO.getLocationId()
+                                    + "," + locationBO.getPriceTagAvailability();
+
+                            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                productWeightage = bmodel.fitscoreHelper.checkWeightage(productBO.getProductID());
+                                values = values + "," + productWeightage;
+                                sum = sum + productWeightage;
+                            }
+
+                            db.insertSQL(mPriceChangeDetail, detailColumns, values);
+                            isInserted = true;
+                        }
+                        if ((!locationBO.getPrice_oo().equals("0") && !locationBO.getPrice_oo().equals("0.0")) || (!locationBO.getMrp_ou().equals("0") && !locationBO.getMrp_ou().equals("0.0"))) {
+                            values = QT(tid) + "," + locationBO.getProductID() + ","
+                                    + locationBO.getPriceChanged() + ","
+                                    + QT(locationBO.getPrice_oo())
+                                    + "," + locationBO.getPriceCompliance() + ","
+                                    + locationBO.getReasonId() + "," + productBO.getOwn() + ","
+                                    + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
+                                    + "," + productBO.getOuUomid() + "," + locationBO.getMrp_ou() + "," + productBO.getPriceMOP() + "," + locationBO.getPriceChangeReasonID()+ "," + locationBO.getLocationId()
+                                    + "," + locationBO.getPriceTagAvailability();
+
+                            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                productWeightage = bmodel.fitscoreHelper.checkWeightage(productBO.getProductID());
+                                values = values + "," + productWeightage;
+                                sum = sum + productWeightage;
+                            }
+
+                            db.insertSQL(mPriceChangeDetail, detailColumns, values);
+                            isInserted = true;
                         }
 
-                        db.insertSQL(mPriceChangeDetail, detailColumns, values);
-                        isInserted = true;
-                    }
-                    if ((!sku.getPrice_pc().equals("0") && !sku.getPrice_pc().equals("0.0")) || (!sku.getMrp_pc().equals("0") && !sku.getMrp_pc().equals("0.0"))) {
-                        values = QT(tid) + "," + sku.getProductID() + ","
-                                + sku.getPriceChanged() + ","
-                                + QT(sku.getPrice_pc())
-                                + "," + sku.getPriceCompliance() + ","
-                                + sku.getReasonID() + "," + sku.getOwn() + ","
-                                + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
-                                + "," + sku.getPcUomid() + "," + sku.getMrp_pc() + "," + sku.getPriceMOP()+","+sku.getPriceChangeReasonID();
+                        if (!isInserted && locationBO.getReasonId()!=0 || locationBO.getPriceCompliance() == 1) {
+                            values = QT(tid) + "," + locationBO.getProductID() + ","
+                                    + locationBO.getPriceChanged() + ","
+                                    + QT(locationBO.getPrice_pc())
+                                    + "," + locationBO.getPriceCompliance() + ","
+                                    + locationBO.getReasonId() + "," + productBO.getOwn() + ","
+                                    + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
+                                    + "," + 0 + "," + locationBO.getMrp_ou() + "," + productBO.getPriceMOP() + "," + locationBO.getPriceChangeReasonID()+ "," + locationBO.getLocationId()
+                                    + "," + locationBO.getPriceTagAvailability();
 
-                        if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                            productWeightage = bmodel.fitscoreHelper.checkWeightage(sku.getProductID());
-                            values = values + "," + productWeightage;
-                            sum = sum + productWeightage;
+                            if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
+                                productWeightage = bmodel.fitscoreHelper.checkWeightage(productBO.getProductID());
+                                values = values + "," + productWeightage;
+                                sum = sum + productWeightage;
+                            }
+
+                            db.insertSQL(mPriceChangeDetail, detailColumns, values);
                         }
-
-                        db.insertSQL(mPriceChangeDetail, detailColumns, values);
-                        isInserted = true;
-                    }
-                    if ((!sku.getPrice_oo().equals("0") && !sku.getPrice_oo().equals("0.0")) || (!sku.getMrp_ou().equals("0") && !sku.getMrp_ou().equals("0.0"))) {
-                        values = QT(tid) + "," + sku.getProductID() + ","
-                                + sku.getPriceChanged() + ","
-                                + QT(sku.getPrice_oo())
-                                + "," + sku.getPriceCompliance() + ","
-                                + sku.getReasonID() + "," + sku.getOwn() + ","
-                                + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
-                                + "," + sku.getOuUomid() + "," + sku.getMrp_ou() + "," + sku.getPriceMOP()+","+sku.getPriceChangeReasonID();
-
-                        if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                            productWeightage = bmodel.fitscoreHelper.checkWeightage(sku.getProductID());
-                            values = values + "," + productWeightage;
-                            sum = sum + productWeightage;
-                        }
-
-                        db.insertSQL(mPriceChangeDetail, detailColumns, values);
-                        isInserted = true;
-                    }
-
-                    if (!isInserted && !sku.getReasonID().equals("0") || sku.getPriceCompliance() == 1) {
-                        values = QT(tid) + "," + sku.getProductID() + ","
-                                + sku.getPriceChanged() + ","
-                                + QT(sku.getPrice_pc())
-                                + "," + sku.getPriceCompliance() + ","
-                                + sku.getReasonID() + "," + sku.getOwn() + ","
-                                + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
-                                + "," + 0 + "," + sku.getMrp_ou() + "," + sku.getPriceMOP() +","+ sku.getPriceChangeReasonID();
-
-                        if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                            productWeightage = bmodel.fitscoreHelper.checkWeightage(sku.getProductID());
-                            values = values + "," + productWeightage;
-                            sum = sum + productWeightage;
-                        }
-
-                        db.insertSQL(mPriceChangeDetail, detailColumns, values);
                     }
                 }
             }
