@@ -2526,12 +2526,15 @@ public class BusinessModel extends Application {
 
                 if (!outlet.getReasonid().equals("0")) {
                     bool = true;
+                    String ridSF = "";
+                    if (getAppDataProvider().getRetailMaster() != null && getAppDataProvider().getRetailMaster().getRidSF() != null)
+                        ridSF = getAppDataProvider().getRetailMaster().getRidSF();
                     values = id + "," + StringUtils.QT(outlet.getRetailerid()) + ","
                             + outlet.getBeatId() + "," + StringUtils.QT(outlet.getDate())
                             + "," + StringUtils.QT(outlet.getReasonid()) + ","
                             + StringUtils.QT(getStandardListId(outlet.getReasontype()))
                             + "," + StringUtils.QT("N") + "," + outlet.getDistributorID()
-                            + "," + StringUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
+                            + "," + StringUtils.QT(ridSF);
 
                     db.insertSQL("Nonproductivereasonmaster", columns, values);
                 }

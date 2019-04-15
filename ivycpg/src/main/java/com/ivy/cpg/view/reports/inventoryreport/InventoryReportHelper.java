@@ -30,15 +30,18 @@ public class InventoryReportHelper {
         try {
             bmodel.setRetailerMasterBO(bmodel.getRetailerBoByRetailerID().get(retailerId + ""));
 
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+            db.openDataBase();
+            int mContentLevelId = bmodel.productHelper.getContentLevel(db, "MENU_STK_ORD");
+
             String focusBrandIds = "";
             if (type.equalsIgnoreCase("Filt11"))
-                focusBrandIds = bmodel.productHelper.getTaggingDetails("FCBND");
+                focusBrandIds = bmodel.productHelper.getTaggingDetails("FCBND", mContentLevelId);
             else if (type.equals("Filt12"))
-                focusBrandIds = bmodel.productHelper.getTaggingDetails("FCBND2");
+                focusBrandIds = bmodel.productHelper.getTaggingDetails("FCBND2", mContentLevelId);
 
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-            );
-            db.openDataBase();
+            if(db.isDbNullOrClosed())
+                db.openDataBase();
 
             String s = "select distinct " +
                     "CD.productid,Shelfpqty,Shelfcqty,Shelfoqty,SM.listname,PM.psname from ClosingStockDetail CD " +
