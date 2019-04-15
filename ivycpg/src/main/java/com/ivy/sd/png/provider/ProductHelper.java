@@ -1538,6 +1538,15 @@ public class ProductHelper {
                         taggingBO.setWeightage(c.getInt(4));
                         productTaggingList.add(taggingBO);
                     }
+
+                    if(taggingType.equalsIgnoreCase("PC")){
+                        // overriding price for price module
+                        float price=c.getFloat(3);
+                        if(price>0) {
+                            productMasterById.get(c.getString(0)).setSrp(price);
+                            productMasterById.get(c.getString(0)).setPriceMOP(String.valueOf(price));
+                        }
+                    }
                 }
                 c.close();
             }
