@@ -11,6 +11,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_view"
         app:layout_constraintTop_toBottomOf="@+id/storeFilterSwitch"/>
 
     <android.support.v7.widget.SwitchCompat
@@ -151,5 +152,219 @@
 
         </android.support.constraint.ConstraintLayout>
     </android.support.v7.widget.CardView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/fab4_bottom_margin"
+        android:layout_marginEnd="@dimen/profile_23dp"
+        android:layout_marginRight="@dimen/profile_23dp"
+        android:clickable="true"
+        android:src="@drawable/ic_gps"
+        android:tint="@color/light_gray"
+        android:visibility="gone"
+        app:backgroundTint="@color/white"
+        app:fabSize="mini"
+        app:pressedTranslationZ="12dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/fab3_bottom_margin"
+        android:layout_marginEnd="@dimen/profile_23dp"
+        android:layout_marginRight="@dimen/profile_23dp"
+        android:clickable="true"
+        android:src="@drawable/map_marker_radius"
+        android:tint="@color/light_gray"
+        android:visibility="gone"
+        app:backgroundTint="@color/white"
+        app:fabSize="mini"
+        app:pressedTranslationZ="12dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/fab2_bottom_margin"
+        android:layout_marginEnd="@dimen/profile_23dp"
+        android:layout_marginRight="@dimen/profile_23dp"
+        android:clickable="true"
+        android:src="@drawable/ic_my_location"
+        android:tint="@color/light_gray"
+        android:visibility="gone"
+        app:backgroundTint="@color/white"
+        app:fabSize="mini"
+        app:pressedTranslationZ="12dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/fab1_bottom_margin"
+        android:layout_marginEnd="@dimen/sos_dialog_margin"
+        android:layout_marginRight="@dimen/sos_dialog_margin"
+        android:clickable="true"
+        android:src="@drawable/ic_navigation"
+        android:tint="@color/green_productivity"
+        android:visibility="visible"
+        app:backgroundTint="@color/FullBlack"
+        app:fabSize="normal"
+        app:pressedTranslationZ="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_view"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <LinearLayout
+        android:id="@+id/bottom_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?attr/colorPrimaryDark"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/profile_history_20dp"
+            android:layout_marginStart="@dimen/profile_history_20dp"
+            android:layout_marginTop="@dimen/profile_history_20dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/car_direction"
+                android:layout_width="@dimen/retailer_map_button_width"
+                android:layout_height="@dimen/retailer_map_button_hegight"
+                android:layout_marginEnd="@dimen/profile_history_10dp"
+                android:layout_marginRight="@dimen/profile_history_10dp"
+                android:background="@drawable/map_button_round_corner_white"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_directions_car"
+                android:tint="@color/highlighter" />
+
+            <ImageButton
+                android:id="@+id/walk_direction"
+                android:layout_width="@dimen/retailer_map_button_width"
+                android:layout_height="@dimen/retailer_map_button_hegight"
+                android:layout_marginLeft="@dimen/profile_history_10dp"
+                android:layout_marginStart="@dimen/profile_history_10dp"
+                android:background="@drawable/button_round_corner_transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_directions_walk"
+                android:tint="@color/divider_view_color" />
+
+            <ImageButton
+                android:id="@+id/clear_route_id"
+                android:layout_width="@dimen/retailer_map_button_width"
+                android:layout_height="@dimen/retailer_map_button_hegight"
+                android:layout_marginLeft="@dimen/profile_history_25dp"
+                android:layout_marginStart="@dimen/profile_history_25dp"
+                android:background="@drawable/button_round_corner_transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_clear_route"
+                android:tint="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/profile_22dp"
+            android:layout_marginLeft="@dimen/profile_22dp"
+            android:layout_marginStart="@dimen/profile_22dp"
+            android:layout_marginTop="@dimen/profile_history_10dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/plano_adherence_bottom"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/from_txtid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|start"
+                    android:text="@string/from"
+                    android:textColor="@color/divider_view_color"
+                    android:textSize="@dimen/text_size_caption" />
+
+                <TextView
+                    android:id="@+id/from_txt_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|start"
+                    android:layout_marginTop="@dimen/retailer_5dp"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_caption" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/plano_adherence_bottom"
+                android:layout_marginLeft="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
+                android:layout_marginTop="@dimen/plano_adherence_bottom"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/to_txtid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|start"
+                    android:text="@string/to"
+                    android:textColor="@color/divider_view_color"
+                    android:textSize="@dimen/text_size_caption" />
+
+                <TextView
+                    android:id="@+id/to_txt_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|start"
+                    android:layout_marginTop="@dimen/retailer_5dp"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_caption" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/hrs_txt_value"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:layout_marginEnd="@dimen/profile_22dp"
+                android:layout_marginLeft="@dimen/profile_history_10dp"
+                android:layout_marginRight="@dimen/profile_22dp"
+                android:layout_marginStart="@dimen/profile_history_10dp"
+                android:layout_marginTop="@dimen/hrs_text_margin_top"
+                android:gravity="end|bottom"
+                android:text="1hr 39min (2.3 m)"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_primary"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_margin="@dimen/plano_adherence_bottom"/>
+
+        </LinearLayout>
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>
