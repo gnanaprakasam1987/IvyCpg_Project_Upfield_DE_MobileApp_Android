@@ -483,10 +483,6 @@ public class OrderHelper {
 
             }
 
-            if (businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
-                DiscountHelper.getInstance(mContext).insertWithHoldDiscount(db, this.getOrderId());
-            }
-
             try {
                 if (businessModel.configurationMasterHelper.IS_SIH_VALIDATION
                         && businessModel.configurationMasterHelper.SHOW_PRODUCTRETURN) {
@@ -998,10 +994,6 @@ public class OrderHelper {
                             businessModel.productHelper.insertBillWiseEntryDisc(db, uid);
                     }
 
-                }
-
-                if (businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
-                    DiscountHelper.getInstance(mContext).insertWithHoldDiscount(db, this.getOrderId());
                 }
 
 
@@ -2052,8 +2044,7 @@ public class OrderHelper {
             if (businessModel.configurationMasterHelper.SHOW_DISCOUNT
                     || businessModel.configurationMasterHelper.discountType == 1
                     || businessModel.configurationMasterHelper.discountType == 2
-                    || businessModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG
-                    || businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
+                    || businessModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
 
                 businessModel.productHelper.updateInvoiceIdInDiscountTable(db, invoiceId,
                         this.getOrderId());

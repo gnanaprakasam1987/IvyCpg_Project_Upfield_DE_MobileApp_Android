@@ -8,6 +8,9 @@ public class StoreWiseDiscountBO {
     private double minAmount,maxAmount;
 	private double discountValue,discount;
 
+	private int computeAfterTax;
+	private int applyAfterTax;
+
 	public boolean isApplied() {
 		return isApplied;
 	}
@@ -161,5 +164,21 @@ public class StoreWiseDiscountBO {
 
 	public void setPayTerm(int payTerm) {
 		this.payTerm = payTerm;
+	}
+
+	public int getComputeAfterTax() {
+		return computeAfterTax;
+	}
+
+	public void setComputeAfterTax(int computeAfterTax) {
+		this.computeAfterTax = computeAfterTax;
+	}
+
+	public int getApplyAfterTax() {
+		return applyAfterTax;
+	}
+
+	public void setApplyAfterTax(int applyAfterTax) {
+		this.applyAfterTax = applyAfterTax;
 	}
 }
