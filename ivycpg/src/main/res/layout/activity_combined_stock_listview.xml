@@ -72,7 +72,8 @@
             android:layout_centerVertical="true"
             android:layout_toStartOf="@+id/ivArrow"
             android:layout_toLeftOf="@+id/ivArrow"
-            android:src="@drawable/ic_tick_enable" />
+            android:src="@drawable/ic_tick_enable"
+            android:visibility="gone"/>
 
 
     </RelativeLayout>

@@ -44,6 +44,8 @@ public class RetailerContactFragment extends IvyBaseFragment {
     private static String CODE_CONTACTAVAILABILITY = "CONTACTAVAILABILITY"; // for future devlopement
     private AppSchedulerProvider appSchedulerProvider;
 
+    private String retailerId ="";
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -51,6 +53,8 @@ public class RetailerContactFragment extends IvyBaseFragment {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
+        retailerId =  getArguments() != null?getArguments().getString("RetailerId"):"";
 
         view = inflater.inflate(R.layout.fragment_retailer_contact, container,
                 false);
@@ -91,7 +95,7 @@ public class RetailerContactFragment extends IvyBaseFragment {
     }
 
     private void getDataToPopulate() {
-        new CompositeDisposable().add((Disposable) bmodel.profilehelper.downloadRetailerContact(bmodel.getRetailerMasterBO().getRetailerID(), false)
+        new CompositeDisposable().add((Disposable) bmodel.profilehelper.downloadRetailerContact(retailerId, false)
                 .subscribeOn(appSchedulerProvider.io())
                 .observeOn(appSchedulerProvider.ui())
                 .subscribeWith(arrayListObserver()));

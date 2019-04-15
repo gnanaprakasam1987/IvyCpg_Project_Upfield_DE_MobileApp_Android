@@ -2037,6 +2037,40 @@ public class ProductHelper {
         return true;
     }
 
+    /*To check whether the due date has expired or not for the invoices done*/
+    public boolean isDueDateExpired() {
+        bmodel.downloadInvoice(bmodel.getRetailerMasterBO().getRetailerID(), "COL");
+        ArrayList<InvoiceHeaderBO> items = bmodel.getInvoiceHeaderBO();
+        try {
+            if (items != null && !items.isEmpty()) {
+
+                for (InvoiceHeaderBO invoiceHeaderBo : items) {
+
+                    String dueDate = invoiceHeaderBo.getDueDate();
+                    String collectionDate = invoiceHeaderBo.getCollectionDate();
+                    SimpleDateFormat format = new SimpleDateFormat(ConfigurationMasterHelper.outDateFormat, Locale.getDefault());
+                    Date date = format.parse(dueDate);
+                    dueDate = DateTimeUtils.convertDateObjectToRequestedFormat(
+                            date, "yyyy/MM/dd");
+                    String currentDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
+                    int dayCount = 0;
+                    if (collectionDate == null || collectionDate.isEmpty()) {
+                        dayCount = DateTimeUtils.getDateCount(dueDate, currentDate,
+                                "yyyy/MM/dd");
+                    }
+                    if (dayCount > 0) {
+                        return false;
+                    }
+
+                }
+
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return true;
+    }
+
     /**
      * Download the isReturnable products and its Quantity from ProductMaster
      * and BomMaster, UomMaster and PriceMaster
@@ -3426,7 +3460,8 @@ public class ProductHelper {
             db.createDataBase();
             db.openDataBase();
             sb = new StringBuilder();
-            sb.append(" select Value,IsPercentage,dm.Typeid,SM.Listname,ApplyLevelid,Moduleid,dm.DiscountId,PM.PID,dm.isCompanyGiven from DiscountProductMapping dpm ");
+            sb.append(" select Value,IsPercentage,dm.Typeid,SM.Listname,ApplyLevelid,Moduleid,dm.DiscountId,PM.PID,dm.isCompanyGiven,dm.ComputeAfterTax,dm.ApplyAfterTax");
+            sb.append(" from DiscountProductMapping dpm ");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId ");
             sb.append(" Left Join StandardListmaster SM on SM.Listid=dm.Typeid ");
             sb.append(" inner Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1 ");
@@ -3461,6 +3496,8 @@ public class ProductHelper {
                         storeWiseDiscountBO.setDiscountId(c.getInt(6));
                         storeWiseDiscountBO.setProductId(c.getInt(7));
                         storeWiseDiscountBO.setIsCompanyGiven(c.getInt(8));
+                        storeWiseDiscountBO.setComputeAfterTax(c.getInt(9));
+                        storeWiseDiscountBO.setApplyAfterTax(c.getInt(10));
 
                         if (discountid != storeWiseDiscountBO.getDiscountId()) {
                             if (discountid != 0) {

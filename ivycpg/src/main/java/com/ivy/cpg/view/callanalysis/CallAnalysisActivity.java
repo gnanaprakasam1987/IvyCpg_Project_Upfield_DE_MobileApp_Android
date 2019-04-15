@@ -38,6 +38,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.collection.CollectionBO;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
@@ -73,8 +74,11 @@ import com.ivy.utils.StringUtils;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.TimeZone;
 import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
@@ -2117,6 +2121,28 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
             Objects.requireNonNull(c).close();
             db.closeDB();
+
+            Map<String, ConfigureBO> myMap = new HashMap<>();
+            for (ConfigureBO collectionBO : moduleList) {
+                String menuName = collectionBO.getMenuName();
+                if (myMap.containsKey(menuName)) {
+                    String time1=collectionBO.getRegex();
+                    String time2=myMap.get(menuName).getRegex();
+                    SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm:ss");
+                    timeFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+                    Date date1 = timeFormat.parse(time1);
+                    Date date2 = timeFormat.parse(time2);
+                    long sum = date1.getTime() + date2.getTime();
+                    String date3 = timeFormat.format(new Date(sum));
+                    myMap.get(menuName).setRegex(date3);
+                } else
+                    myMap.put(menuName, collectionBO);
+            }
+            moduleList.clear();
+
+            for (String productMenuCode : myMap.keySet()) {
+                moduleList.add(myMap.get(productMenuCode));
+            }
 
             for (ConfigureBO config : bmodel.configurationMasterHelper.getActivityMenu()) {
                 if (config.getConfigCode().equals(ConfigurationMasterHelper.MENU_STORECHECK))

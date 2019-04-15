@@ -398,7 +398,8 @@ public class DiscountHelper {
 
 
             StringBuffer sb = new StringBuffer();
-            sb.append("select Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
+            sb.append("select Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue,dm.ComputeAfterTax,dm.ApplyAfterTax");
+            sb.append(" from DiscountProductMapping dpm ");
             sb.append(" left Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append(" where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
@@ -428,6 +429,8 @@ public class DiscountHelper {
                     discountBO.setToDiscount(c.getDouble(9));
                     discountBO.setMinAmount(c.getDouble(10));
                     discountBO.setMaxAmount(c.getDouble(11));
+                    discountBO.setComputeAfterTax(c.getInt(12));
+                    discountBO.setApplyAfterTax(c.getInt(13));
                     mBillWiseDiscountList.add(discountBO);
                 }
                 c.close();
@@ -447,30 +450,41 @@ public class DiscountHelper {
      * @param totalOrderValue total order value
      * @return total discount
      */
-    public double calculateBillWiseRangeDiscount(double totalOrderValue) {
+    public double calculateBillWiseRangeDiscount(double totalOrderValue, int isFlag) {
         double discountValue = 0;
+        double finalTotalOrdValue = totalOrderValue;
         if (mBillWiseDiscountList != null) {
             for (StoreWiseDiscountBO storeWiseDiscountBO : mBillWiseDiscountList) {
-                if (totalOrderValue >= storeWiseDiscountBO.getMinAmount() && totalOrderValue <= storeWiseDiscountBO.getMaxAmount()) {
-                    if (storeWiseDiscountBO.getIsPercentage() == 1) {
-                        discountValue = (totalOrderValue * storeWiseDiscountBO.getAppliedDiscount() / 100);
+                if (totalOrderValue >= storeWiseDiscountBO.getMinAmount()
+                        && totalOrderValue <= storeWiseDiscountBO.getMaxAmount()) {
 
-                    } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
-                        discountValue = storeWiseDiscountBO.getAppliedDiscount();
+                    if (isFlag == storeWiseDiscountBO.getComputeAfterTax()) {
+
+                        if (storeWiseDiscountBO.getIsPercentage() == 1) {
+                            discountValue = (totalOrderValue * storeWiseDiscountBO.getAppliedDiscount() / 100);
+
+                        } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
+                            discountValue = storeWiseDiscountBO.getAppliedDiscount();
+                        }
+
+                        discountValue = SDUtil.formatAsPerCalculationConfig(discountValue);
+                        storeWiseDiscountBO.setDiscountValue(discountValue);
                     }
-                    discountValue = SDUtil.formatAsPerCalculationConfig(discountValue);
-                    storeWiseDiscountBO.setDiscountValue(discountValue);
 
-                    businessModel.getOrderHeaderBO().setBillLevelDiscountValue(discountValue);
+                    businessModel.getOrderHeaderBO().setBillLevelDiscountValue(storeWiseDiscountBO.getDiscountValue());
                     businessModel.getOrderHeaderBO().setDiscount(storeWiseDiscountBO.getDiscount());
                     businessModel.getOrderHeaderBO().setDiscountId(storeWiseDiscountBO.getDiscountId());
                     businessModel.getOrderHeaderBO().setIsCompanyGiven(storeWiseDiscountBO.getIsCompanyGiven());
+
+                    if (isFlag == storeWiseDiscountBO.getApplyAfterTax())
+                        finalTotalOrdValue = finalTotalOrdValue - storeWiseDiscountBO.getDiscountValue();
+
                     break;
                 }
             }
 
         }
-        return discountValue;
+        return finalTotalOrdValue;
 
 
     }
@@ -513,29 +527,36 @@ public class DiscountHelper {
         db.closeDB();
     }
 
-    public double calculateBillWiseDiscount(double totalOrderValue) {
+    public double calculateBillWiseDiscount(double totalOrderValue, int isFlag) {
         double totalValue = totalOrderValue;
         double totalBillWiseDiscountValue = 0;
         double billWiseCompanyDiscount = 0;
         double billWiseDistributorDiscount = 0;
+        double finalTotOrdDiscValue = totalOrderValue;
         String discountName = "";
         String compDiscount = "";
         if (mBillWiseDiscountList != null && mBillWiseDiscountList.size() > 0) {
             for (StoreWiseDiscountBO storeWiseDiscountBO : mBillWiseDiscountList) {
-                if (storeWiseDiscountBO.getIsCompanyGiven() == 1) {
-                    totalOrderValue = totalValue - billWiseDistributorDiscount;
-                }
-                double discountValue = 0;
-                if (storeWiseDiscountBO.getIsPercentage() == 1) {
-                    discountValue = totalOrderValue * storeWiseDiscountBO.getDiscount() / 100;
-                } else {
-                    //Rajkumar - Type id is coming for Bill wise discount also..
-                    // So If it is not percentage type discount, then it is considered as amount type discount.
-                    discountValue = storeWiseDiscountBO.getDiscount();
-                }
-                discountValue = SDUtil.formatAsPerCalculationConfig(discountValue);
 
-                storeWiseDiscountBO.setDiscountValue(discountValue);
+                double discountValue = 0;
+                if (isFlag == storeWiseDiscountBO.getComputeAfterTax()) {
+
+                    if (storeWiseDiscountBO.getIsCompanyGiven() == 1) {
+                        totalOrderValue = totalValue - billWiseDistributorDiscount;
+                    }
+
+                    if (storeWiseDiscountBO.getIsPercentage() == 1) {
+                        discountValue = totalOrderValue * storeWiseDiscountBO.getDiscount() / 100;
+                    } else {
+                        //Rajkumar - Type id is coming for Bill wise discount also..
+                        // So If it is not percentage type discount, then it is considered as amount type discount.
+                        discountValue = storeWiseDiscountBO.getDiscount();
+                    }
+                    discountValue = SDUtil.formatAsPerCalculationConfig(discountValue);
+                    storeWiseDiscountBO.setDiscountValue(discountValue);
+                }
+
+
                 if (storeWiseDiscountBO.getIsCompanyGiven() == 1) {
                     billWiseCompanyDiscount = billWiseCompanyDiscount + discountValue;
                     if (!"".equals(compDiscount)) {
@@ -551,16 +572,23 @@ public class DiscountHelper {
                 }
 
                 totalBillWiseDiscountValue = totalBillWiseDiscountValue + discountValue;
+
+                if (isFlag == storeWiseDiscountBO.getApplyAfterTax())
+                    finalTotOrdDiscValue = finalTotOrdDiscValue - storeWiseDiscountBO.getDiscountValue();
             }
 
         }
         setDistDiscountData(discountName);
         setCompDiscountData(compDiscount);
-        businessModel.getRetailerMasterBO().setBillWiseCompanyDiscount(billWiseCompanyDiscount);
-        businessModel.getRetailerMasterBO().setBillWiseDistributorDiscount(billWiseDistributorDiscount);
+        businessModel.getRetailerMasterBO().setBillWiseCompanyDiscount(
+                businessModel.getRetailerMasterBO().getBillWiseCompanyDiscount() + billWiseCompanyDiscount);
+        businessModel.getRetailerMasterBO().setBillWiseDistributorDiscount(
+                businessModel.getRetailerMasterBO().getBillWiseDistributorDiscount() + billWiseDistributorDiscount);
+        businessModel.getOrderHeaderBO().setBillLevelDiscountValue(
+                businessModel.getOrderHeaderBO().getBillLevelDiscountValue() + totalBillWiseDiscountValue);
 
 
-        return totalBillWiseDiscountValue;
+        return finalTotOrdDiscValue;
     }
 
 
@@ -714,7 +742,8 @@ public class DiscountHelper {
             Cursor c;
 
             StringBuffer sb = new StringBuffer();
-            sb.append("select distinct Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue from DiscountProductMapping dpm ");
+            sb.append("select distinct Value,IsPercentage,dm.Typeid,Description,ApplyLevelid,Moduleid,PM.PID,dm.DiscountId,dm.isCompanyGiven,toValue,minValue,maxValue,dm.ComputeAfterTax,dm.ApplyAfterTax");
+            sb.append(" from DiscountProductMapping dpm ");
             sb.append(" left Join ProductMaster PM on PM.ParentHierarchy LIKE '%/'|| dpm.ProductId ||'/%' and PM.issalable =1");
             sb.append(" inner join DiscountMaster dm on dm.DiscountId=dpm.DiscountId where dm.DiscountId in (select DiscountId from DiscountMapping  ");
             sb.append(" where (Retailerid=" + businessModel.getRetailerMasterBO().getRetailerID() + " OR ");
@@ -744,6 +773,8 @@ public class DiscountHelper {
                     discountBO.setToDiscount(c.getDouble(9));
                     discountBO.setMinAmount(c.getDouble(10));
                     discountBO.setMaxAmount(c.getDouble(11));
+                    discountBO.setComputeAfterTax(c.getInt(12));
+                    discountBO.setApplyAfterTax(c.getInt(13));
                     mBillWisePaytTermDiscountList.add(discountBO);
                 }
                 c.close();
@@ -893,28 +924,36 @@ public class DiscountHelper {
      * @param totalOrderValue Total order value
      * @return discount value
      */
-    public double calculateBillWisePayTermDiscount(double totalOrderValue) {
+    public double calculateBillWisePayTermDiscount(double totalOrderValue, int isFlag) {
 
 
         double totalValue = totalOrderValue;
         double discountValue = 0;
         double billWiseCompanyDiscount = 0;
         double billWiseDistributorDiscount = 0;
+        double finalTotOrdDiscValue = totalOrderValue;
         String discountName = "";
         String compDiscount = "";
         if (mBillWisePaytTermDiscountList != null) {
             for (StoreWiseDiscountBO storeWiseDiscountBO : mBillWisePaytTermDiscountList) {
+
+
                 if (storeWiseDiscountBO.getIsCompanyGiven() == 0) {
 
                     totalOrderValue = totalValue - billWiseCompanyDiscount;
                 }
-                if (storeWiseDiscountBO.getIsPercentage() == 1) {
-                    discountValue = (totalOrderValue * storeWiseDiscountBO.getDiscount() / 100);
 
-                } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
-                    discountValue = storeWiseDiscountBO.getDiscount();
+                if (isFlag == storeWiseDiscountBO.getComputeAfterTax()) {
+
+                    if (storeWiseDiscountBO.getIsPercentage() == 1) {
+                        discountValue = (totalOrderValue * storeWiseDiscountBO.getDiscount() / 100);
+
+                    } else if (storeWiseDiscountBO.getIsPercentage() == 0) {
+                        discountValue = storeWiseDiscountBO.getDiscount();
+                    }
+                    discountValue = SDUtil.formatAsPerCalculationConfig(discountValue);
+                    storeWiseDiscountBO.setDiscountValue(discountValue);
                 }
-                discountValue = SDUtil.formatAsPerCalculationConfig(discountValue);
 
                 if (storeWiseDiscountBO.getIsCompanyGiven() == 1) {
                     billWiseCompanyDiscount = billWiseCompanyDiscount + discountValue;
@@ -930,10 +969,11 @@ public class DiscountHelper {
                         discountName = storeWiseDiscountBO.getDescription();
                 }
 
+                if (isFlag == storeWiseDiscountBO.getApplyAfterTax())
+                    finalTotOrdDiscValue = finalTotOrdDiscValue - storeWiseDiscountBO.getDiscountValue();
 
-                storeWiseDiscountBO.setDiscountValue(discountValue);
-
-                businessModel.getOrderHeaderBO().setBillLevelDiscountValue(discountValue);
+                businessModel.getOrderHeaderBO().setBillLevelDiscountValue(
+                        businessModel.getOrderHeaderBO().getBillLevelDiscountValue() + storeWiseDiscountBO.getDiscountValue());
                 businessModel.getOrderHeaderBO().setDiscount(storeWiseDiscountBO.getDiscount());
                 businessModel.getOrderHeaderBO().setDiscountId(storeWiseDiscountBO.getDiscountId());
                 businessModel.getOrderHeaderBO().setIsCompanyGiven(storeWiseDiscountBO.getIsCompanyGiven());
@@ -944,9 +984,12 @@ public class DiscountHelper {
         }
         setDistDiscountData(discountName);
         setCompDiscountData(compDiscount);
-        businessModel.getRetailerMasterBO().setBillWiseCompanyDiscount(billWiseCompanyDiscount);
-        businessModel.getRetailerMasterBO().setBillWiseDistributorDiscount(billWiseDistributorDiscount);
-        return discountValue;
+        businessModel.getRetailerMasterBO().setBillWiseCompanyDiscount(
+                businessModel.getRetailerMasterBO().getBillWiseCompanyDiscount() + billWiseCompanyDiscount);
+        businessModel.getRetailerMasterBO().setBillWiseDistributorDiscount(
+                businessModel.getRetailerMasterBO().getBillWiseDistributorDiscount() + billWiseDistributorDiscount);
+
+        return finalTotOrdDiscValue;
 
 
     }
@@ -1004,6 +1047,11 @@ public class DiscountHelper {
                 }
                 if (schemeBO != null) {
                     if (schemeBO.isAmountTypeSelected()) {
+                        if (businessModel.configurationMasterHelper.IS_SKIP_SCHEME_APPLY &&
+                                schemeBO.getMaximumSlab() != 0 &&
+                                schemeBO.getSelectedAmount() > schemeBO.getMaximumSlab()) {// Checking the Maximum slab Cap here
+                            schemeBO.setSelectedAmount(schemeBO.getMaximumSlab());
+                        }
                         totalSchemeDiscountValue += schemeBO.getSelectedAmount();
                         totalSchemeDiscountValue = SDUtil.formatAsPerCalculationConfig(totalSchemeDiscountValue);
                     }
@@ -1016,11 +1064,20 @@ public class DiscountHelper {
 
                         // Getting total order value of buy products
                         double totalOrderValueOfBuyProducts = 0;
+                        double totalPercentageDiscountAmt = 0;
                         if (schemeBO.isAmountTypeSelected()) {
                             for (SchemeProductBO schemeProductBo : schemeProductList) {
                                 totalOrderValueOfBuyProducts += schemeHelper.getTotalOrderedValue(schemeProductBo.getProductId(),
                                         schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(), false, false);
                             }
+                        } else if (schemeBO.isDiscountPrecentSelected()) {
+                            for (SchemeProductBO schemeProductBo : schemeProductList) {
+                                totalOrderValueOfBuyProducts += schemeHelper.getTotalOrderedValue(schemeProductBo.getProductId(),
+                                        schemeBO.isBatchWise(), schemeProductBo.getBatchId(), schemeBO.getParentId(), false, false);
+                            }
+                            totalPercentageDiscountAmt = (totalOrderValueOfBuyProducts * schemeBO.getSelectedPrecent()) / 100;
+
+
                         }
 
 
@@ -1189,7 +1246,10 @@ public class DiscountHelper {
                                                                     schemeBO.getSelectedPrecent(),
                                                                     "SCH_PER", false);
                                                 }
-
+                                                if (schemeBO.getMaximumSlab() != 0 && totalPercentageDiscount > schemeBO.getMaximumSlab()) {// Checking the Maximum slab Cap here
+                                                    double percentage_productContribution = ((totalPercentageDiscount / totalPercentageDiscountAmt) * 100);
+                                                    totalPercentageDiscount = schemeBO.getMaximumSlab() * (percentage_productContribution / 100);
+                                                }
                                                 if (productBO.getNetValue() > 0) {
                                                     productBO
                                                             .setNetValue(productBO
