@@ -441,7 +441,7 @@ public class PriceTrackingHelper {
                             isInserted = true;
                         }
 
-                        if (!isInserted && locationBO.getReasonId()!=0 || locationBO.getPriceCompliance() == 1) {
+                        if (!isInserted && (locationBO.getReasonId()!=0 || locationBO.getPriceCompliance() == 1)) {
                             values = QT(tid) + "," + locationBO.getProductID() + ","
                                     + locationBO.getPriceChanged() + ","
                                     + QT(locationBO.getPrice_pc())
