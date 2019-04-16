@@ -3520,6 +3520,11 @@ public class OrderHelper {
                 db.deleteSQL("InvoiceTaxDetails", "OrderID=" + uid,
                         false);
 
+                db.deleteSQL("OrderFreeIssues", "uid=" + uid,
+                        false);
+                db.deleteSQL("InvoiceFreeIssues", "uid=" + uid,
+                        false);
+
                 // If Product Return Module Enabled, then deleting corresponding return transactions
                 if (businessModel.configurationMasterHelper.SHOW_PRODUCTRETURN
                         && businessModel.configurationMasterHelper.IS_SIH_VALIDATION)
