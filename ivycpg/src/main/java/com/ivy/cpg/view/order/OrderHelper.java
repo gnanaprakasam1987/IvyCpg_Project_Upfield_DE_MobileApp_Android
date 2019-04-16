@@ -3515,6 +3515,8 @@ public class OrderHelper {
                         false);
                 db.deleteSQL("InvoiceDiscountDetail", "OrderID=" + uid,
                         false);
+                db.deleteSQL("OrderTaxDetails", "OrderID=" + uid,
+                        false);
                 db.deleteSQL("InvoiceTaxDetails", "OrderID=" + uid,
                         false);
 
