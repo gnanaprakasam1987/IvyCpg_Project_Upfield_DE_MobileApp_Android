@@ -290,7 +290,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             for (ConfigureBO configureBO : callanalysismenu) {
                 if (configureBO.getConfigCode().equalsIgnoreCase("CallA38")) {
                     contentCloseCall.setVisibility(View.VISIBLE);
-                    TVMenuName.setText(configureBO.getMenuName());
+                    TVMenuName.setText(StringUtils.isEmptyString(configureBO.getMenuName()) ? "Activity Completion Status" : configureBO.getMenuName());
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                     linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                     ModuleAdapter moduleAdapter = new ModuleAdapter(getTimeTakenData());

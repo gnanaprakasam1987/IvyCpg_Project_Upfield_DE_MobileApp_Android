@@ -5,8 +5,7 @@
     android:paddingStart="@dimen/list_item_padding_top_nd_bottom"
     android:gravity="center_vertical"
     android:paddingTop="@dimen/list_item_padding_top_nd_bottom"
-    android:paddingEnd="@dimen/list_item_padding_top_nd_bottom"
-    android:paddingBottom="@dimen/list_item_padding_top_nd_bottom">
+    android:paddingEnd="@dimen/list_item_padding_top_nd_bottom">
 
     <TextView
         android:id="@+id/menunametxt"
@@ -42,5 +41,11 @@
         android:layout_centerVertical="true"
         android:src="@drawable/ic_tick_enable"
         android:layout_alignParentEnd="true" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimens_1dp"
+        android:layout_below="@+id/iv_done"
+        android:layout_marginTop="@dimen/list_item_padding_top_nd_bottom"
+        android:background="@color/grey_odd"/>
 
 </RelativeLayout>

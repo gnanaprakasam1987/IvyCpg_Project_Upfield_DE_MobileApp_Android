@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -31,7 +30,7 @@ import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.NetworkUtils;
 import com.ivy.utils.StringUtils;
 
-public class OTPValidationDialog extends Dialog implements OnClickListener {
+public class RetailerSequenceSkipDialog extends Dialog implements View.OnClickListener {
 
     private BusinessModel bmodel;
 
@@ -47,12 +46,10 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
     private Context mContext;
 
     private OTPValidationHelper otpValidationHelper;
-    private int actualRadius;
 
-
-    public OTPValidationDialog(Context context,
-                               OnDismissListener otpPasswordDismissListener,
-                               RetailerMasterBO retailerBO, String strTitle, int actualRadius) {
+    public RetailerSequenceSkipDialog(Context context,
+                                      OnDismissListener otpPasswordDismissListener,
+                                      RetailerMasterBO retailerBO, String strTitle) {
         super(context);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -68,8 +65,8 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
 
         mContext = context;
         this.bmodel = (BusinessModel)context.getApplicationContext();
+
         mRetailerBO = retailerBO;
-        this.actualRadius = actualRadius;
 
         password = findViewById(R.id.passwordEditText);
         messageTv = findViewById(R.id.messageTv);
@@ -89,9 +86,9 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
         //private ProgressDialog pd;
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
 
-        if (bmodel.configurationMasterHelper.ret_skip_otp_flag == 1) {
+        if (bmodel.configurationMasterHelper.ret_skip_flag == 2) {
             reason.setVisibility(View.VISIBLE);
-            reasonAdapter = new ArrayAdapter<>(mContext,
+            reasonAdapter = new ArrayAdapter<SpinnerBO>(mContext,
                     R.layout.spinner_bluetext_layout);
             reasonAdapter.add(new SpinnerBO(0, context.getResources()
                     .getString(R.string.select_reason)));
@@ -114,16 +111,16 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
 
         customProgressDialog(builder);
         alertDialog = builder.create();
-
     }
 
     @Override
     public void onClick(View v) {
         int i = v.getId();
         if (i == R.id.btn_ok) {
-            if (bmodel.configurationMasterHelper.ret_skip_otp_flag == 1)
+            if (bmodel.configurationMasterHelper.ret_skip_flag == 2)
+                // to do
                 if (((SpinnerBO) reason.getSelectedItem()).getId() != 0) {
-                    new CheckOTPPassword(password.getText().toString(), ((SpinnerBO) reason.getSelectedItem()).getId()).execute();
+                    new CheckOTPPassword(password.getText().toString()).execute();
 
                 } else {
                     Toast.makeText(
@@ -144,7 +141,7 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
                                         R.string.no_network_connection),
                                 Toast.LENGTH_SHORT).show();
                     else
-                        new CheckOTPPassword(password.getText().toString(), 0).execute();
+                        new CheckOTPPassword(password.getText().toString()).execute();
 
 
                 }
@@ -172,7 +169,7 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
             );
             db.openDataBase();
-            Cursor c = db.selectSQL(bmodel.reasonHelper.getReasonFromStdListMaster(StandardListMasterConstants.OTP_SKIP_REASON_TYPE));
+            Cursor c = db.selectSQL(bmodel.reasonHelper.getReasonFromStdListMaster(StandardListMasterConstants.OTP_REASON_TYPE));
             if (c != null) {
                 while (c.moveToNext()) {
                     reason = new SpinnerBO(c.getInt(0), c.getString(1));
@@ -189,11 +186,9 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
     class CheckOTPPassword extends AsyncTask<Void, Void, String> {
 
         String otp;
-        int reasonID;
 
-        CheckOTPPassword(String otp, int reasonID) {
-            this.otp =  otp;
-            this.reasonID = reasonID;
+        CheckOTPPassword(String otp) {
+            this.otp = otp;
         }
 
         protected void onPreExecute() {
@@ -207,9 +202,10 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
                 alertDialog.dismiss();
             switch (result) {
                 case "1":
-                    mRetailerBO.setOtpActivatedDate(DateTimeUtils
-                                .now(DateTimeUtils.DATE_GLOBAL));
-                    otpValidationHelper.saveOTPActivatedDate(mRetailerBO.getRetailerID(), 1);
+                    mRetailerBO.setSkipActivatedDate(DateTimeUtils
+                            .now(DateTimeUtils.DATE_GLOBAL));
+                    mRetailerBO.setSkip(true);
+                    otpValidationHelper.saveOTPActivatedDate(mRetailerBO.getRetailerID(), 2);
                     doDismiss();
                     break;
                 case "-1":
@@ -239,23 +235,77 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
         protected String doInBackground(Void... params) {
 
             try {
-                if (bmodel.configurationMasterHelper.ret_skip_otp_flag == 1)
-                    return saveOTPSkipReason(reasonID,"REASON");
-                else {
-                    String sucessStaus = bmodel
+                if (bmodel.configurationMasterHelper.ret_skip_flag == 2)
+                    return saveReason();
+                else // For Retailer Skip OTP
+                    return bmodel
                             .checkOTP(
                                     mRetailerBO.getRetailerID(),
                                     otp,
                                     bmodel.getStandardListIdAndType(
-                                            StandardListMasterConstants.SLM_RET_GPS_CODE,
+                                            StandardListMasterConstants.SLM_RET_SEQ_CODE,
                                             StandardListMasterConstants.OTP_LIST_CODE));
-                    if ("1".equals(sucessStaus))
-                        saveOTPSkipReason(reasonID,"OTP");
-                    return sucessStaus;
-                }
             } catch (Exception e) {
                 return "0";
             }
+        }
+
+        private String saveReason() {
+
+            try {
+                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+                );
+                String values;
+                db.createDataBase();
+                db.openDataBase();
+
+                String id;
+
+                String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID,ridSF";
+
+                id = StringUtils.QT(bmodel.getAppDataProvider().getUser()
+                        .getDistributorid()
+                        + ""
+                        + bmodel.getAppDataProvider().getUser().getUserid()
+                        + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
+
+                values = id
+                        + ","
+                        + StringUtils.QT(mRetailerBO.getRetailerID())
+                        + ","
+                        + mRetailerBO.getBeatID()
+                        + ","
+                        + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                        + ","
+                        + ((SpinnerBO) reason.getSelectedItem()).getId()
+                        + ","
+                        + StringUtils.QT(bmodel
+                        .getStandardListId(StandardListMasterConstants.OTP_REASON_TYPE))
+                        + "," + StringUtils.QT("N")
+                        + "," + mRetailerBO.getDistributorId()
+                        + "," + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
+
+                db.deleteSQL(
+                        "Nonproductivereasonmaster",
+                        "RetailerID="
+                                + StringUtils.QT(mRetailerBO.getRetailerID())
+                                + " and DistributorId="
+                                + mRetailerBO.getDistributorId()
+                                + " and ReasonTypes="
+                                + StringUtils.QT(bmodel
+                                .getStandardListId(StandardListMasterConstants.OTP_REASON_TYPE))
+                                + " and Date="
+                                + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE)), false);
+
+                db.insertSQL("Nonproductivereasonmaster", columns, values);
+
+                db.closeDB();
+            } catch (Exception e) {
+                Commons.printException(e);
+                return "-4";
+            }
+
+            return "1";
         }
     }
 
@@ -278,56 +328,4 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
             Commons.printException(e);
         }
     }
-
-    private String saveOTPSkipReason(int reasonID, String reasonType) {
-
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-            );
-            String values;
-            db.createDataBase();
-            db.openDataBase();
-
-            String id;
-
-            String columns = "Tid,RetailerID,ReasonID,Date,Type,ExpectedRadius,ActualRadius,upload";
-
-            id = StringUtils.QT(bmodel.getAppDataProvider().getUser()
-                    .getDistributorid()
-                    + ""
-                    + bmodel.getAppDataProvider().getUser().getUserid()
-                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
-
-            values = id
-                    + ","
-                    + StringUtils.QT(mRetailerBO.getRetailerID())
-                    + ","
-                    + reasonID
-                    + ","
-                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-                    + "," + StringUtils.QT(reasonType)
-                    + "," + mRetailerBO.getGpsDistance()
-                    + "," + actualRadius
-                    + "," + StringUtils.QT("N");
-
-            db.deleteSQL(
-                    "RetailerLocationDeviation",
-                    "RetailerID="
-                            + StringUtils.QT(mRetailerBO.getRetailerID())
-                            + " and Type="
-                            + StringUtils.QT(reasonType)
-                            + " and Date="
-                            + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)), false);
-
-            db.insertSQL("RetailerLocationDeviation", columns, values);
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-            return "-4";
-        }
-
-        return "1";
-    }
-
 }

@@ -711,6 +711,9 @@ public class DataMembers {
     private static final String tbl_AnswerScoreDetails = "AnswerScoreDetail";
     private static final String tbl_AnswerScoreDetails_cols = "Uid,SurveyId,qid,score";
 
+    private static final String tbl_RetailerLocationDeviation = "RetailerLocationDeviation";
+    private static final String tbl_RetailerLocationDeviation_cols = "Tid,ReasonID,RetailerID,Date,Type,ExpectedRadius,ActualRadius,OutletTimeStampID";
+
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
     static {
@@ -903,6 +906,7 @@ public class DataMembers {
 
         uploadColumn.put(tbl_Planorama, tbl_Planorama_cols);
         uploadColumn.put(tbl_Planorama_image, tbl_Planorama_image_cols);
+        uploadColumn.put(tbl_RetailerLocationDeviation, tbl_RetailerLocationDeviation_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -1056,6 +1060,7 @@ public class DataMembers {
 
         uploadColumnWithRetailer.put(tbl_OrderFreeIssues, tbl_OrderFreeIssues_cols);
         uploadColumnWithRetailer.put(tbl_InvoiceFreeIssues, tbl_InvoiceFreeIssues_cols);
+        uploadColumn.put(tbl_RetailerLocationDeviation, tbl_RetailerLocationDeviation_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();

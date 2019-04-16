@@ -99,10 +99,10 @@
 
                         <TextView
                             android:id="@+id/tvMenuName"
-                            style="@style/TextViewListItemPrimary"
+                            style="@style/TextViewCaptionNormal"
                             android:layout_width="wrap_content"
                             android:layout_height="fill_parent"
-                            android:gravity="center" />
+                            android:gravity="center"/>
 
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/module_recylcer"
