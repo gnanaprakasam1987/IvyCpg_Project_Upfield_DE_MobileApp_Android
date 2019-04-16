@@ -3521,7 +3521,14 @@ public class OrderHelper {
                         false);
                 db.deleteSQL("InvoiceDiscountDetail", "OrderID=" + uid,
                         false);
+                db.deleteSQL("OrderTaxDetails", "OrderID=" + uid,
+                        false);
                 db.deleteSQL("InvoiceTaxDetails", "OrderID=" + uid,
+                        false);
+
+                db.deleteSQL("OrderFreeIssues", "uid=" + uid,
+                        false);
+                db.deleteSQL("InvoiceFreeIssues", "uid=" + uid,
                         false);
 
                 // If Product Return Module Enabled, then deleting corresponding return transactions
