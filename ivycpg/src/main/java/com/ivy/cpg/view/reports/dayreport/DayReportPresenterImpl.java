@@ -7,6 +7,7 @@ import com.ivy.cpg.view.reports.orderreport.OrderReportBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
 import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.Utils;
+import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -17,6 +18,7 @@ import com.ivy.sd.png.bo.SubDepotBo;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -225,8 +227,11 @@ public class DayReportPresenterImpl implements DayReportPresenter {
 
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT16")) {
                 double FBvalue = 0;
+                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+                db.openDataBase();
+                int mContentLevelId = mBusinessModel.productHelper.getContentLevel(db, "MENU_STK_ORD");
                 String productIds = mBusinessModel.productHelper
-                        .getTaggingDetails("FCBND");
+                        .getTaggingDetails("FCBND", mContentLevelId);
 
                 ArrayList<OrderDetail> mylist = dayReportHelper
                         .downloadFBOrderDetailForDayReport(productIds);
@@ -236,10 +241,16 @@ public class DayReportPresenterImpl implements DayReportPresenter {
 
                 }
                 con.setMenuNumber(mBusinessModel.formatValue(FBvalue) + "");
+                if(!db.isDbNullOrClosed())
+                    db.closeDB();
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT17")) {
                 double FB2value = 0;
+
+                DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+                db.openDataBase();
+                int mContentLevelId = mBusinessModel.productHelper.getContentLevel(db, "MENU_STK_ORD");
                 String productIds = mBusinessModel.productHelper
-                        .getTaggingDetails("FCBND2");
+                        .getTaggingDetails("FCBND2", mContentLevelId);
 
                 ArrayList<OrderDetail> mylist = dayReportHelper
                         .downloadFBOrderDetailForDayReport(productIds);
@@ -249,6 +260,8 @@ public class DayReportPresenterImpl implements DayReportPresenter {
 
                 }
                 con.setMenuNumber(mBusinessModel.formatValue(FB2value) + "");
+                if(!db.isDbNullOrClosed())
+                    db.closeDB();
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT18")) {
                 final float totalWeight = dashBoardHelper.getTotalWeight("");
                 con.setMenuNumber(Utils.formatAsTwoDecimal((double) totalWeight));
