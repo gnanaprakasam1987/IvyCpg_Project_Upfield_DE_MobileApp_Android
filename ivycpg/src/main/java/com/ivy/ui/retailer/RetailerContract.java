@@ -1,5 +1,7 @@
 package com.ivy.ui.retailer;
 
+import android.content.Context;
+
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
@@ -21,6 +23,8 @@ public interface RetailerContract {
 
          void populateCompletedRetailers(List<RetailerMasterBO> unPlannedRetailers);
 
+         void drawRoutePath(String path);
+
     }
 
      interface RetailerPresenter<V extends RetailerView> extends BaseIvyPresenter<V> {
@@ -36,6 +40,8 @@ public interface RetailerContract {
          void setRetailerMasterBo(RetailerMasterBO retailerMasterBO);
 
          void fetchLinkRetailer();
+
+         void fetchRoutePath(String url);
 
     }
 }

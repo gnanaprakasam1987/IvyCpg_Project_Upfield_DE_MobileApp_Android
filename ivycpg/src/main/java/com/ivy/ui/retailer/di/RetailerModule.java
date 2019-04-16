@@ -4,6 +4,8 @@ import android.content.Context;
 
 import com.ivy.core.di.scope.PerActivity;
 import com.ivy.ui.retailer.RetailerContract;
+import com.ivy.ui.retailer.data.RetailerDataManager;
+import com.ivy.ui.retailer.data.RetailerDataManagerImpl;
 import com.ivy.utils.rx.AppSchedulerProvider;
 import com.ivy.utils.rx.SchedulerProvider;
 
@@ -42,5 +44,10 @@ public class RetailerModule {
     @PerActivity
     RetailerContract.RetailerPresenter<RetailerContract.RetailerView> providesRetailerPresenter(RetailerContract.RetailerPresenter<RetailerContract.RetailerView> retailerPresenter) {
         return retailerPresenter;
+    }
+
+    @Provides
+    RetailerDataManager retailerDataManager(RetailerDataManagerImpl retailerDataManagerImpl){
+        return retailerDataManagerImpl;
     }
 }

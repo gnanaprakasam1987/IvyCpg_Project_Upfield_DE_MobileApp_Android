@@ -24,8 +24,10 @@ import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.ivy.sd.png.asean.view.R;
 
 public abstract class BaseMapFragment extends BaseFragment implements BaseIvyView, BaseMapView,OnMapReadyCallback,
         GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener,GoogleMap.OnMarkerClickListener,
@@ -77,6 +79,9 @@ public abstract class BaseMapFragment extends BaseFragment implements BaseIvyVie
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+
+        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
+
         onMapReady();
 
         mMap.setOnMarkerClickListener(this);
@@ -190,8 +195,12 @@ public abstract class BaseMapFragment extends BaseFragment implements BaseIvyVie
         return false;
     }
 
-    public void addMarkerToMap(MarkerOptions markerOptions) {
-        mMap.addMarker(markerOptions);
+    public Marker addMarkerToMap(MarkerOptions markerOptions) {
+        return mMap.addMarker(markerOptions);
+    }
+
+    public void addSellerMarkerToMap(MarkerOptions markerOptions){
+        Marker marker = addMarkerToMap(markerOptions);
     }
 
     public void addMarkerToMap(MarkerOptions markerOptions, boolean focus) {
@@ -200,5 +209,9 @@ public abstract class BaseMapFragment extends BaseFragment implements BaseIvyVie
             moveMapToLocation(markerOptions.getPosition());
     }
 
-
+    @Override
+    public void onStop() {
+        super.onStop();
+        removeLocationUpdates();
+    }
 }

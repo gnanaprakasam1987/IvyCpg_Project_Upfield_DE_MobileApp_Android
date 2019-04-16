@@ -60,4 +60,9 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
     public void populateCompletedRetailers(List<RetailerMasterBO> unPlannedRetailers) {
 
     }
+
+    @Override
+    public void drawRoutePath(String path) {
+
+    }
 }

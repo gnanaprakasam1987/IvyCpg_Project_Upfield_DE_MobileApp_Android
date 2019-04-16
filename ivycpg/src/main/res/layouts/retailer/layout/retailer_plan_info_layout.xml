@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="visible"
+    app:behavior_hideable="true"
+    app:behavior_peekHeight="@dimen/_80sdp"
+    android:layout_margin="@dimen/_5sdp"
+    app:cardBackgroundColor="@color/white"
+    app:cardCornerRadius="@dimen/_3sdp"
+    app:cardElevation="@dimen/_3sdp"
+    app:cardPreventCornerOverlap="true"
+    app:cardUseCompatPadding="true"
+    app:contentPadding="0dp"
+    android:id="@+id/outlet_plan_window"
+    app:layout_behavior="@string/bottom_sheet_behavior">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/_10sdp"
+        android:paddingRight="@dimen/_10sdp"
+        android:paddingTop="@dimen/_5sdp"
+        android:paddingBottom="@dimen/_5sdp">
+
+        <TextView
+            android:id="@+id/tv_outlet_name"
+            style="@style/TextViewListItemValuesHighLight"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:text="Sajen Stores"
+            android:padding="@dimen/_3sdp"
+            app:layout_constraintEnd_toStartOf="@id/add_plan"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/tv_outlet_address"
+            style="@style/TextViewListItemSecondary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:text="Tambaram Chennai"
+            android:textColor="#8b000000"
+            android:padding="@dimen/_3sdp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_name"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/add_plan"
+            style="@style/TextViewStyleSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5sdp"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/add_plane"
+            android:textColor="@color/green_productivity"
+            android:visibility="gone"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <!--Visit Start Begins-->
+        <TextView
+            android:id="@+id/tv_visit_time_txt"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:text="Visit Time"
+            android:textColor="#de000000"
+            android:padding="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address"/>
+
+        <TextView
+            android:id="@+id/tv_visit_date"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:text="17/04/2019"
+            android:textColor="#de000000"
+            android:padding="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginRight="@dimen/_15sdp"
+            app:layout_constraintEnd_toStartOf="@id/tv_visit_time"
+            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address"/>
+
+        <TextView
+            android:id="@+id/tv_visit_time"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:text="10:00"
+            android:textColor="#de000000"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:padding="@dimen/_3sdp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        <!--Visit Start Ends-->
+
+        <!--Visit End Begins-->
+        <TextView
+            android:id="@+id/tv_visit_end_time_txt"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:text="Visit End"
+            android:textColor="#de000000"
+            android:padding="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_visit_time_txt"/>
+
+        <TextView
+            android:id="@+id/tv_visit_end_date"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:text="17/04/2019"
+            android:textColor="#de000000"
+            android:padding="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:layout_marginRight="@dimen/_15sdp"
+            app:layout_constraintEnd_toStartOf="@id/tv_visit_end_time"
+            app:layout_constraintTop_toBottomOf="@+id/tv_visit_time_txt"/>
+
+        <TextView
+            android:id="@+id/tv_visit_end_time"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:text="10:00"
+            android:textColor="#de000000"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:padding="@dimen/_3sdp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_visit_time_txt"
+            app:layout_constraintEnd_toEndOf="parent"/>
+        <!--Visit End Ends-->
+
+        <!--Last Visit Begins-->
+        <TextView
+            android:id="@+id/tv_last_visit_txt"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:text="Last Visit"
+            android:textColor="#de000000"
+            android:padding="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_visit_end_time_txt"/>
+
+        <TextView
+            android:id="@+id/tv_last_visit_date"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:text="17/04/2019"
+            android:textColor="#de000000"
+            android:padding="@dimen/_3sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_visit_end_time_txt"/>
+        <!--Last Visit Ends-->
+
+        <android.support.constraint.Group
+            android:id="@+id/visitElementGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="tv_visit_end_time_txt,tv_visit_time,tv_visit_date,tv_visit_end_time,tv_visit_time_txt,tv_visit_end_date,tv_last_visit_txt,tv_last_visit_date" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

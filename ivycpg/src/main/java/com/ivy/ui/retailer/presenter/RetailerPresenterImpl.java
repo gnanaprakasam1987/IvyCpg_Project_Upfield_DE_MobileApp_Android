@@ -7,16 +7,19 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 import com.ivy.ui.retailer.RetailerContract;
+import com.ivy.ui.retailer.data.RetailerDataManager;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 
 public class RetailerPresenterImpl<V extends RetailerContract.RetailerView> extends BasePresenter<V> implements RetailerContract.RetailerPresenter<V> {
 
     private AppDataProvider appDataProvider;
     private ProfileDataManagerImpl profileDataManager;
+    private RetailerDataManager retailerDataManager;
 
     @Inject
     RetailerPresenterImpl(DataManager dataManager,
@@ -24,11 +27,12 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView> exte
                           CompositeDisposable compositeDisposable,
                           ConfigurationMasterHelper configurationMasterHelper,
                           V view,
-                          AppDataProvider appDataProvider, ProfileDataManagerImpl profileDataManager) {
+                          AppDataProvider appDataProvider, ProfileDataManagerImpl profileDataManager, RetailerDataManager retailerDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
 
         this.appDataProvider = appDataProvider;
         this.profileDataManager = profileDataManager;
+        this.retailerDataManager = retailerDataManager;
     }
 
     @Override
@@ -61,6 +65,19 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView> exte
     @Override
     public void fetchLinkRetailer() {
         profileDataManager.getLinkRetailer();
+    }
+
+    @Override
+    public void fetchRoutePath(String url) {
+        getCompositeDisposable().add(retailerDataManager.getRoutePath(url)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String path) throws Exception {
+                        getIvyView().drawRoutePath(path);
+                    }
+                }));
     }
 
 }

@@ -33,6 +33,7 @@
             android:text=""
             android:layout_width="wrap_content"
             android:textSize="@dimen/_12sdp"
+            android:visibility="gone"
             android:layout_height="wrap_content"/>
 
     </LinearLayout>
@@ -44,7 +45,7 @@
         android:layout_gravity="center_horizontal"
         android:orientation="horizontal"
         android:gravity="center"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_marginTop="@dimen/_10sdp">
 
         <TextView
