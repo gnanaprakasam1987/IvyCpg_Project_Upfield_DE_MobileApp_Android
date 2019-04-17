@@ -1562,15 +1562,17 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
             if (!mSelectedRetailer.equals("ALL")) {
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "CENTER\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                if (IsOriginal)
+                if (IsOriginal) {
                     tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
                             + "Original Print" + "\r\n");
-                else
+                } else {
                     tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
                             + "Duplicate print" + "\r\n");
+                }
+                tempsb.append("SETBOLD 0 \r\n");
+                tempsb.append("PRINT\r\n");
             }
-            tempsb.append("SETBOLD 0 \r\n");
-            tempsb.append("PRINT\r\n");
+
 
             double total;
             double totalDiscount = 0;
