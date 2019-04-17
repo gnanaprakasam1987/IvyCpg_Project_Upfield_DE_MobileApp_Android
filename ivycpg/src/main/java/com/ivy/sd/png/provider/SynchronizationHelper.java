@@ -34,6 +34,7 @@ import com.android.volley.toolbox.Volley;
 import com.ivy.core.data.datamanager.DataManagerImpl;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.collection.CollectionHelper;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.sfdc.AccountData;
@@ -58,7 +59,6 @@ import com.ivy.sd.png.model.MyHttpConnectionNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FileUtils;
@@ -3885,7 +3885,7 @@ SynchronizationHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String sql = "select pid,price,mrp,PH.retailerid,uomid,own from PriceCheckDetail PD"
+            String sql = "select pid,price,mrp,PH.retailerid,uomid,own,hasPriceTag from PriceCheckDetail PD"
                     + " INNER JOIN PriceCheckHeader PH ON PD.tid=PH.tid where date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor cur = db.selectSQL(sql);
             if (cur != null) {
@@ -3893,10 +3893,10 @@ SynchronizationHelper {
                     sql = "Select pid from LastVisitPrice where pid=" + cur.getString(0) + " and rid=" + cur.getString(3) + " and uomid=" + cur.getString(4);
                     Cursor cur1 = db.selectSQL(sql);
                     if (cur1 != null && cur1.getCount() > 0) {
-                        db.updateSQL("update LastVisitPrice set price=" + cur.getString(1) + ",mrp=" + cur.getString(2) + " where pid=" + cur.getString(0) + " and rid=" + cur.getString(3) + " and uomid=" + cur.getString(4));
+                        db.updateSQL("update LastVisitPrice set price=" + cur.getString(1) + ",mrp=" + cur.getString(2) + " where pid=" + cur.getString(0) + " and rid=" + cur.getString(3) + " and uomid=" + cur.getString(4) + " and hasPriceTag=" + cur.getInt(6));
                         cur1.close();
                     } else {
-                        db.insertSQL("LastVisitPrice", "rid,pid,uomid,price,mrp,isown", cur.getString(3) + "," + cur.getString(0) + "," + cur.getString(4) + "," + cur.getString(1) + "," + cur.getString(2) + "," + cur.getString(5));
+                        db.insertSQL("LastVisitPrice", "rid,pid,uomid,price,mrp,isown,hasPriceTag", cur.getString(3) + "," + cur.getString(0) + "," + cur.getString(4) + "," + cur.getString(1) + "," + cur.getString(2) + "," + cur.getString(5) + "," + cur.getInt(6));
                     }
                 }
                 cur.close();
@@ -3914,7 +3914,7 @@ SynchronizationHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String sql = "select SH.retailerid,productId,shelfpqty,shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,IsOwn,Facing"
+            String sql = "select SH.retailerid,productId,shelfpqty,shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,IsOwn,Facing,hasPriceTag"
                     + " from ClosingStockDetail SD INNER JOIN ClosingStockHeader SH ON SD.stockId=SH.stockId where SH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor cur = db.selectSQL(sql);
             if (cur != null) {
@@ -3925,14 +3925,14 @@ SynchronizationHelper {
                         db.updateSQL("update LastVisitStock set shelfpqty=" + cur.getString(2) + ",shelfcqty=" + cur.getString(3) + ",shelfoqty=" + cur.getString(4)
                                 + ",whpqty=" + cur.getString(5) + ",whcqty=" + cur.getString(6) + ",whoqty=" + cur.getString(7) + ",LocId=" + cur.getString(8)
                                 + ",isDistributed=" + cur.getString(9) + ",isListed=" + cur.getString(10) + ",reasonID=" + cur.getString(11)
-                                + ",IsOwn=" + cur.getString(12) + ",Facing=" + cur.getString(13)
+                                + ",IsOwn=" + cur.getString(12) + ",Facing=" + cur.getString(13) + ",hasPriceTag=" + cur.getInt(14)
 
                                 + " where productid=" + cur.getString(1) + " and retailerid=" + cur.getString(0) + " and LocId=" + cur.getString(8));
                         cur1.close();
                     } else {
-                        db.insertSQL("LastVisitStock", "retailerid,productId,shelfpqty,shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,IsOwn,facing", cur.getString(0) + "," + cur.getString(1) + "," + cur.getString(2) + "," + cur.getString(3) + "," + cur.getString(4) + "," + cur.getString(5)
+                        db.insertSQL("LastVisitStock", "retailerid,productId,shelfpqty,shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,IsOwn,facing,hasPriceTag", cur.getString(0) + "," + cur.getString(1) + "," + cur.getString(2) + "," + cur.getString(3) + "," + cur.getString(4) + "," + cur.getString(5)
                                 + "," + cur.getString(6) + "," + cur.getString(7) + "," + cur.getString(8) + "," + cur.getString(9) + "," + cur.getString(10)
-                                + "," + cur.getString(11) + "," + cur.getString(12) + "," + cur.getString(13));
+                                + "," + cur.getString(11) + "," + cur.getString(12) + "," + cur.getString(13) + "," + cur.getInt(14));
 
                     }
                 }
@@ -4730,14 +4730,14 @@ SynchronizationHelper {
 
     }
 
-    public String getSelectedUserLoginId(String userId,Context context){
+    public String getSelectedUserLoginId(String userId, Context context) {
         String loginId = "";
         try {
 
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select loginid from UserMaster where userid = '"+userId+"'");
+                    .selectSQL("select loginid from UserMaster where userid = '" + userId + "'");
             if (c != null) {
                 if (c.moveToNext()) {
                     loginId = c.getString(0);

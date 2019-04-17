@@ -35,7 +35,8 @@ public class PriceTrackingHelper {
     public boolean SHOW_PRICE_COMPLIANCE;
     public boolean SHOW_PRICE_TAG_CHECK;
     public boolean SHOW_PRICE_LASTVP;
-    public int IS_PRICE_CHANGE_REASON = 0;
+    public boolean IS_PRICE_CHANGE_REASON;
+    public boolean SHOW_PRICE_LOCATION_FILTER;
 
     // 0 - product ,1 - Competitor product , 2 - Product & Competitior product
     public int LOAD_PRICE_COMPETITOR = 0;
@@ -68,8 +69,8 @@ public class PriceTrackingHelper {
         return instance;
     }
 
-    private  String checkDecimalValue(String value, int wholeValueCount,
-                                           int decimalValueCount) {
+    private String checkDecimalValue(String value, int wholeValueCount,
+                                     int decimalValueCount) {
         if (!value.contains("."))
             return value;
         else {
@@ -580,10 +581,11 @@ public class PriceTrackingHelper {
             SHOW_PRICE_CHANGED = false;
             SHOW_PRICE_COMPLIANCE = false;
             LOAD_PRICE_COMPETITOR = 0;
-            IS_PRICE_CHANGE_REASON = 0;
+            IS_PRICE_CHANGE_REASON = false;
             IS_LOAD_PRICE_COMPETITOR = false;
             SHOW_PREV_MRP_IN_PRICE = false;
             SHOW_PRICE_LASTVP = false;
+            SHOW_PRICE_LOCATION_FILTER = false;
 
             String codeValue = null;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
@@ -662,22 +664,19 @@ public class PriceTrackingHelper {
                         case "LVP":
                             this.SHOW_PRICE_LASTVP = true;
                             break;
+                        case "PCHG":
+                            this.SHOW_PRICE_CHANGED = true;
+                            break;
+                        case "PRSNCHG":
+                            this.IS_PRICE_CHANGE_REASON = true;
+                            break;
+                        case "LOC":
+                            this.SHOW_PRICE_LOCATION_FILTER = true;
+                            break;
+
                     }
 
                 }
-            }
-
-
-            sql = "select RField from "
-                    + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_CHANGED) + " and ForSwitchSeller = 0 and Flag=1";
-            c = db.selectSQL(sql);
-            if (c != null && c.getCount() != 0) {
-                if (c.moveToNext()) {
-                    this.SHOW_PRICE_CHANGED = true;
-                    this.IS_PRICE_CHANGE_REASON = c.getInt(0);
-                }
-                c.close();
             }
 
 
@@ -692,65 +691,6 @@ public class PriceTrackingHelper {
                 }
                 c.close();
             }
-
-
-             /*  sql = "select RField from "
-                    + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_SRP) + " and ForSwitchSeller = 0 and Flag=1";
-            c = db.selectSQL(sql);
-            if (c != null && c.getCount() != 0) {
-                if (c.moveToNext()) {
-                    this.SHOW_PRICE_SRP = true;
-                }
-                c.close();
-            }*/
-
-           /* sql = "select RField from "
-                    + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_COMPLIANCE) + " and ForSwitchSeller = 0 and Flag=1";
-            c = db.selectSQL(sql);
-            if (c != null && c.getCount() != 0) {
-                if (c.moveToNext()) {
-                    this.SHOW_PRICE_COMPLIANCE = true;
-                }
-                c.close();
-            }*/
-
-            /*sql = "select RField from "
-                    + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_TAG) + " and ForSwitchSeller = 0 and Flag=1";
-            c = db.selectSQL(sql);
-            if (c != null && c.getCount() != 0) {
-                if (c.moveToNext()) {
-                    this.SHOW_PRICE_TAG_CHECK = true;
-                }
-                c.close();
-            }*/
-
-
-
-
-           /* sql = "select RField from "
-                    + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_PREV_MRP_IN_PRICE) + " and ForSwitchSeller = 0 and Flag=1";
-            c = db.selectSQL(sql);
-            if (c != null && c.getCount() != 0) {
-                if (c.moveToNext()) {
-                    this.SHOW_PREV_MRP_IN_PRICE = true;
-                }
-                c.close();
-            }*/
-
-          /*  sql = "select RField from "
-                    + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_LASTVP) + " and ForSwitchSeller = 0 and Flag=1";
-            c = db.selectSQL(sql);
-            if (c != null && c.getCount() != 0) {
-                if (c.moveToNext()) {
-                    this.SHOW_PRICE_LASTVP = true;
-                }
-                c.close();
-            }*/
 
 
             db.closeDB();

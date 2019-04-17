@@ -988,7 +988,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 menu.findItem(R.id.menu_loc_filter).setVisible(false);
             else {
-                if (bmodel.productHelper.getInStoreLocation().size() < 2)
+                if (bmodel.productHelper.getInStoreLocation().size() > 1
+                        || !stockCheckHelper.SHOW_COMB_LOCATION_FILTER)
                     menu.findItem(R.id.menu_loc_filter).setVisible(false);
             }
 
