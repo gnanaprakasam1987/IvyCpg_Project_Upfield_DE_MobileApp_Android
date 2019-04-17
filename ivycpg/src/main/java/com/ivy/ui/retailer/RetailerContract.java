@@ -15,7 +15,7 @@ public interface RetailerContract {
 
          void populateRetailers(List<RetailerMasterBO> retailerList);
 
-         void populateTodayPlannedRetailers(List<RetailerMasterBO> retailerList);
+         void populateTodayPlannedRetailers(RetailerMasterBO retailerList);
 
          void populatePlannedRetailers(List<RetailerMasterBO> plannedRetailers);
 
@@ -25,14 +25,17 @@ public interface RetailerContract {
 
          void drawRoutePath(String path);
 
+         void focusMarker();
+
     }
 
      interface RetailerPresenter<V extends RetailerView> extends BaseIvyPresenter<V> {
 
+         List<RetailerMasterBO> loadRetailerList();
+
          void fetchRetailerList();
 
          void fetchTodayPlannedRetailers();
-
 
          void setRetailerMasterBo(RetailerMasterBO retailerMasterBO);
 

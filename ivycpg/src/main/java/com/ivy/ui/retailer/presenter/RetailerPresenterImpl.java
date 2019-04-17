@@ -11,6 +11,7 @@ import com.ivy.ui.retailer.data.RetailerDataManager;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -38,27 +39,29 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView> exte
     }
 
     @Override
+    public List<RetailerMasterBO> loadRetailerList() {
+        return appDataProvider.getRetailerMasters();
+    }
+
+    @Override
     public void fetchRetailerList() {
 
-        getIvyView().populateRetailers(appDataProvider.getRetailerMasters());
+        getIvyView().populateRetailers(loadRetailerList());
 
     }
 
     @Override
     public void fetchTodayPlannedRetailers() {
 
-        ArrayList<RetailerMasterBO> todaysRetailers= new ArrayList<>();
         for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
             if ("Y".equals(retailerMasterBO.getIsVisited())
                     || retailerMasterBO.getIsToday() == 1
                     || "Y".equals(retailerMasterBO.getIsDeviated())) {
-                todaysRetailers.add(retailerMasterBO);
-
-
+                getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
             }
         }
-        getIvyView().populateRetailers(todaysRetailers);
 
+        getIvyView().focusMarker();
     }
 
     @Override
@@ -82,6 +85,20 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView> exte
                         getIvyView().drawRoutePath(path);
                     }
                 }));
+    }
+
+    public String makeURL(double sourcelat, double sourcelog, double destlat,
+                          double destlog,String key,boolean isBywalk) {
+        String mode;
+        if (isBywalk)
+            mode = "mode=walking";
+        else
+            mode = "mode=driving";
+
+        return "https://maps.googleapis.com/maps/api/directions/json" +
+                "?origin=" + Double.toString(sourcelat) + "," + Double.toString(sourcelog) +
+                "&destination=" + Double.toString(destlat) + "," + Double.toString(destlog) +
+                "&sensor=false&" + mode + "&alternatives=true" + "&" + key;
     }
 
 }

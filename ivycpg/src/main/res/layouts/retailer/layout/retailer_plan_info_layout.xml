@@ -8,13 +8,14 @@
     android:visibility="visible"
     app:behavior_hideable="true"
     app:behavior_peekHeight="@dimen/_80sdp"
-    android:layout_margin="@dimen/_5sdp"
+    android:layout_marginBottom="@dimen/_10sdp"
     app:cardBackgroundColor="@color/white"
     app:cardCornerRadius="@dimen/_3sdp"
     app:cardElevation="@dimen/_3sdp"
     app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="true"
     app:contentPadding="0dp"
+    android:clickable="true"
     android:id="@+id/outlet_plan_window"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
@@ -22,10 +23,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/_10sdp"
-        android:paddingRight="@dimen/_10sdp"
-        android:paddingTop="@dimen/_5sdp"
-        android:paddingBottom="@dimen/_5sdp">
+        android:paddingLeft="@dimen/_15sdp"
+        android:paddingRight="@dimen/_15sdp"
+        android:paddingTop="@dimen/_10sdp"
+        android:paddingBottom="@dimen/_10sdp">
 
         <TextView
             android:id="@+id/tv_outlet_name"
@@ -36,7 +37,7 @@
             android:maxLines="1"
             android:text="Sajen Stores"
             android:padding="@dimen/_3sdp"
-            app:layout_constraintEnd_toStartOf="@id/add_plan"
+            app:layout_constraintEnd_toStartOf="@id/profile_plan"
             app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
@@ -54,15 +55,46 @@
 
         <TextView
             android:id="@+id/add_plan"
-            style="@style/TextViewStyleSmall"
+            style="@style/TextViewListItemCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_5sdp"
+            android:layout_margin= "@dimen/_5sdp"
             android:padding="@dimen/_5sdp"
             android:text="@string/add_plane"
             android:textColor="@color/green_productivity"
-            android:visibility="gone"
+            android:visibility="visible"
+            app:layout_constraintTop_toTopOf="@+id/profile_plan"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_plan"
             app:layout_constraintRight_toRightOf="parent"/>
+
+        <TextView
+            android:id="@+id/save_plan"
+            style="@style/TextViewListItemCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin= "@dimen/_5sdp"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/save"
+            android:textColor="@color/green_productivity"
+            android:visibility="gone"
+            app:layout_constraintTop_toTopOf="@+id/profile_plan"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_plan"
+            app:layout_constraintRight_toRightOf="parent"/>
+
+        <ImageView
+            android:id="@+id/profile_plan"
+            style="@style/TextViewListItemCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_5sdp"
+            android:src="@drawable/ic_store_icon"
+            android:tint="@color/FullBlack"
+            android:visibility="visible"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            app:layout_constraintRight_toLeftOf="@id/add_plan"/>
 
         <!--Visit Start Begins-->
         <TextView
@@ -72,7 +104,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical|left"
             android:maxLines="1"
-            android:text="Visit Time"
+            android:text="Visit Start Time"
             android:textColor="#de000000"
             android:padding="@dimen/_3sdp"
             android:layout_marginTop="@dimen/_15sdp"
@@ -117,7 +149,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical|left"
             android:maxLines="1"
-            android:text="Visit End"
+            android:text="Visit End Time"
             android:textColor="#de000000"
             android:padding="@dimen/_3sdp"
             android:layout_marginTop="@dimen/_15sdp"
@@ -162,7 +194,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical|left"
             android:maxLines="1"
-            android:text="Last Visit"
+            android:text="Last Visit Date"
             android:textColor="#de000000"
             android:padding="@dimen/_3sdp"
             android:layout_marginTop="@dimen/_15sdp"
@@ -188,7 +220,7 @@
             android:id="@+id/visitElementGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:visibility="visible"
             app:constraint_referenced_ids="tv_visit_end_time_txt,tv_visit_time,tv_visit_date,tv_visit_end_time,tv_visit_time_txt,tv_visit_end_date,tv_last_visit_txt,tv_last_visit_date" />
 
 

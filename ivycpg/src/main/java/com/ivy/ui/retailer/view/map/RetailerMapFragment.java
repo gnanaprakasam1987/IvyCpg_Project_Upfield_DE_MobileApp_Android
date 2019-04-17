@@ -3,7 +3,9 @@ package com.ivy.ui.retailer.view.map;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
 import android.support.design.widget.BottomSheetBehavior;
@@ -41,6 +43,7 @@ import com.ivy.ui.retailer.RetailerContract;
 import com.ivy.ui.retailer.di.DaggerRetailerComponent;
 import com.ivy.ui.retailer.di.RetailerModule;
 import com.ivy.ui.retailer.presenter.RetailerPresenterImpl;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.NetworkUtils;
 
@@ -69,19 +72,10 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     private ViewGroup infoWindow;
     private Context context;
 
-    private List<RetailerMasterBO> retailerList;
-
     private MapWrapperLayout mapWrapperLayout;
 
     private TextView infoTitle;
-    private TextView infoSnippet;
-    private TextView infoProfile;
-    private TextView infoAddToPlan;
 
-    private OnInfoWindowElemTouchListener infoButtonListener;
-    private OnInfoWindowElemTouchListener infoDeviateListener;
-
-    private boolean isRoute = false;
     private boolean isBywalk = false,isclickable;
 
     private Vector<Polyline> line = new Vector<>();
@@ -123,8 +117,20 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     @BindView(R.id.tv_outlet_address)
     TextView tvOutletAddress;
 
-    @BindView(R.id.tv_last_visit_txt)
+    @BindView(R.id.tv_last_visit_date)
     TextView tvLastVisitDate;
+
+    @BindView(R.id.tv_visit_time)
+    TextView tvStartVisitTime;
+
+    @BindView(R.id.tv_visit_date)
+    TextView tvStartVisitDate;
+
+    @BindView(R.id.tv_visit_end_date)
+    TextView tvVisitEndDate;
+
+    @BindView(R.id.tv_visit_end_time)
+    TextView tvVisitEndTime;
 
     @BindView(R.id.visitElementGroup)
     Group visitElementGroup;
@@ -132,7 +138,15 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     @BindView(R.id.outlet_plan_window)
     CardView outletPlanWindow;
 
+    @BindView(R.id.save_plan)
+    TextView savePlan;
+
+    @BindView(R.id.profile_plan)
+    ImageView profilePlan;
+
     private BottomSheetBehavior bottomSheetBehavior;
+
+    RetailerMasterBO retailerMasterBO;
 
     @Inject
     RetailerPresenterImpl<RetailerContract.RetailerView> presenter;
@@ -170,30 +184,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
                 R.layout.retailer_custom_info_window, (ViewGroup) null);
 
         infoTitle = infoWindow.findViewById(R.id.title);
-        infoSnippet = infoWindow.findViewById(R.id.snippet);
-        infoProfile = infoWindow.findViewById(R.id.btn_profile);
-        infoAddToPlan = infoWindow.findViewById(R.id.btn_deviate);
 
-        this.infoButtonListener = new OnInfoWindowElemTouchListener(infoProfile) {
-            @Override
-            protected void onClickConfirmed(View v, Marker marker) {
-                if (!getResources().getString(R.string.my_location).equals(marker.getTitle())) {
-                    Toast.makeText(context, "Profile Button", Toast.LENGTH_SHORT).show();
-                    profileClicked(retailerMasterBO);
-                }
-            }
-        };
-        infoProfile.setOnTouchListener(infoButtonListener);
-
-        this.infoDeviateListener = new OnInfoWindowElemTouchListener(infoAddToPlan) {
-            @Override
-            protected void onClickConfirmed(View v, Marker marker) {
-                if (!getResources().getString(R.string.my_location).equals(marker.getTitle())) {
-                    Toast.makeText(context, "Plan Button", Toast.LENGTH_SHORT).show();
-                }
-            }
-        };
-        infoAddToPlan.setOnTouchListener(infoDeviateListener);
+        builder = new LatLngBounds.Builder();
 
         storeFilterSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -202,11 +194,16 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
                 if (getMap() != null)
                     getMap().clear();
 
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+                builder = new LatLngBounds.Builder();
+                isFocusRetailer = false;
+
                 if (isChecked) {
-                    populateTodayPlannedRetailers(retailerList);
+                    presenter.fetchTodayPlannedRetailers();
                     storeFilterSwitch.setText(getResources().getString(R.string.day_plan));
                 }else {
-                    populateRetailers(retailerList);
+                    presenter.fetchRetailerList();
                     storeFilterSwitch.setText(getResources().getString(R.string.all_retailer));
                 }
             }
@@ -266,6 +263,51 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
         bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.outlet_plan_window));
 
+        addPlan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (addPlan.getText().toString().equalsIgnoreCase(getString(R.string.add_plane))){
+
+                    visitElementGroup.setVisibility(View.VISIBLE);
+
+                    addPlan.setVisibility(View.GONE);
+
+                    savePlan.setVisibility(View.VISIBLE);
+
+                    setViewBackground(ContextCompat.getDrawable(context,R.drawable.edittext_bottom_border));
+
+                    tvStartVisitDate.setText(DateTimeUtils.now(4));
+                    tvVisitEndDate.setText(DateTimeUtils.now(4));
+
+                    tvStartVisitTime.setText(DateTimeUtils.now(0));
+                    tvVisitEndTime.setText(DateTimeUtils.now(0));
+
+                }else{
+
+                    addPlan.setVisibility(View.GONE);
+
+                    savePlan.setVisibility(View.VISIBLE);
+
+                    setViewBackground(ContextCompat.getDrawable(context,R.drawable.edittext_bottom_border));
+
+                    tvStartVisitDate.setText(DateTimeUtils.now(4));
+                    tvVisitEndDate.setText(DateTimeUtils.now(4));
+
+                    tvStartVisitTime.setText(DateTimeUtils.now(0));
+                    tvVisitEndTime.setText(DateTimeUtils.now(0));
+                }
+
+                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED)
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+        });
+    }
+
+    private void setViewBackground(Drawable viewBackground){
+        tvStartVisitDate.setBackground(viewBackground);
+        tvVisitEndDate.setBackground(viewBackground);
+        tvStartVisitTime.setBackground(viewBackground);
+        tvVisitEndTime.setBackground(viewBackground);
     }
 
     @OnClick(R.id.clear_route_id)
@@ -288,14 +330,12 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
     @OnClick(R.id.fab)
     void routeIconClicked(){
-        if (!isRoute) {
+        if (bottomLayout.getVisibility() == View.GONE) {
             bottomLayout.setVisibility(View.VISIBLE);
-            isRoute = true;
         } else {
             isclickable = false;
             isBywalk = false;
             clearRoute();
-            isRoute = false;
             bottomLayout.setVisibility(View.GONE);
             //car icon's
             carDirBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.map_button_round_corner_white));
@@ -326,6 +366,20 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             @Override
             public void onStateChanged(@NonNull View bottomSheet, int newState) {
                 switch (newState) {
+
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+                        savePlan.setVisibility(View.GONE);
+                        if (!"Y".equalsIgnoreCase(retailerMasterBO.getIsVisited()))
+                            addPlan.setVisibility(View.VISIBLE);
+
+                        if (!"Y".equalsIgnoreCase(retailerMasterBO.getIsVisited())
+                                && retailerMasterBO.getIsToday() != 1 && !"Y".equalsIgnoreCase(retailerMasterBO.getIsDeviated()))
+                            visitElementGroup.setVisibility(View.GONE);
+
+                        setViewBackground(null);
+
+                        break;
+
                     default:
                         break;
                 }
@@ -335,46 +389,31 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
             }
         });
-
-
     }
 
     @Override
     public void populateRetailers(List<RetailerMasterBO> retailerList) {
 
-        boolean isFocusRetailer = false;
-        builder = new LatLngBounds.Builder();
-
         for (RetailerMasterBO retailerMasterBO : retailerList) {
 
             if (retailerMasterBO.getLatitude() != 0 && retailerMasterBO.getLongitude() != 0) {
 
-                CharSequence retailerState = "Y";
-                if ("Y".equals(retailerMasterBO.getIsVisited())
-                        || "Y".equals(retailerMasterBO.getIsDeviated()))
-                    retailerState = "Z";
-
-                addMarkerToMap(prepareMarkerOption(retailerMasterBO,builder,retailerState));
+                addMarkerToMap(prepareMarkerOption(retailerMasterBO,builder));
 
                 isFocusRetailer = true;
             }
         }
 
-        this.retailerList = retailerList;
-
-        if (isFocusRetailer)
-            focusMarker(builder);
+        focusMarker();
     }
 
-    private MarkerOptions prepareMarkerOption(RetailerMasterBO retailerMasterBO, LatLngBounds.Builder builder,CharSequence stateName){
+    private MarkerOptions prepareMarkerOption(RetailerMasterBO retailerMasterBO, LatLngBounds.Builder builder){
 
         LatLng latLng = new LatLng(retailerMasterBO.getLatitude(), retailerMasterBO.getLongitude());
         MarkerOptions mMarkerOptions = new MarkerOptions()
                 .position(latLng)
-                .title(retailerMasterBO.getRetailerName() + "," + retailerMasterBO.getRetailerID()+ ","+stateName )
-                .snippet(retailerMasterBO.getAddress1())
-                .icon(BitmapDescriptorFactory
-                        .fromResource(getMarkerIcon(retailerMasterBO)));
+                .title(retailerMasterBO.getRetailerName() + "," + retailerMasterBO.getRetailerID())
+                .icon(BitmapDescriptorFactory.fromResource(getMarkerIcon(retailerMasterBO)));
 
 
         builder.include(latLng);
@@ -382,30 +421,15 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         return mMarkerOptions;
     }
 
+    private boolean isFocusRetailer = false;
+
     @Override
-    public void populateTodayPlannedRetailers(List<RetailerMasterBO> todayPlannedRetailers){
+    public void populateTodayPlannedRetailers(RetailerMasterBO todayPlannedRetailer){
 
-        boolean isFocusRetailer = false;
-        builder = new LatLngBounds.Builder();
-        for (RetailerMasterBO retailerMasterBO : retailerList) {
-            if ("Y".equals(retailerMasterBO.getIsVisited())
-                    || retailerMasterBO.getIsToday() == 1
-                    || "Y".equals(retailerMasterBO.getIsDeviated())) {
-
-                CharSequence retailerState = "Y";
-                if ("Y".equals(retailerMasterBO.getIsVisited())
-                        || "Y".equals(retailerMasterBO.getIsDeviated()))
-                    retailerState = "Z";
-
-                if (retailerMasterBO.getLatitude() != 0 && retailerMasterBO.getLongitude() != 0) {
-                    addMarkerToMap(prepareMarkerOption(retailerMasterBO, builder,retailerState));
-                    isFocusRetailer = true;
-                }
-            }
+        if (todayPlannedRetailer.getLatitude() != 0 && todayPlannedRetailer.getLongitude() != 0) {
+            addMarkerToMap(prepareMarkerOption(todayPlannedRetailer, builder));
+            isFocusRetailer = true;
         }
-
-        if (isFocusRetailer)
-            focusMarker(builder);
     }
 
     @Override
@@ -510,14 +534,14 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
        if (getResources().getString(R.string.my_location).equals(marker.getTitle()))
         return true;
 
-        for (RetailerMasterBO retailerMasterBO : retailerList) {
+        for (RetailerMasterBO retailerMasterBO : presenter.loadRetailerList()) {
             if (retailerMasterBO.getRetailerID().equals(marker.getTitle().split(",")[1])) {
                 this.retailerMasterBO = retailerMasterBO;
                 break;
             }
         }
 
-        if (isRoute) {
+        if (bottomLayout.getVisibility() == View.VISIBLE) {
             isclickable = false;
             onInfoWindowClick(marker);
         }else {
@@ -528,24 +552,36 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         return false;
     }
 
-
-    RetailerMasterBO retailerMasterBO;
-
     private void setPlanWindowValues(RetailerMasterBO retailerMasterBO){
+
+        setViewBackground(null);
+
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
 
-        tvOutletName.setText(retailerMasterBO.getRetailerName());
-        tvOutletAddress.setText(retailerMasterBO.getAddress1());
+        if ("Y".equals(retailerMasterBO.getIsVisited())
+                || retailerMasterBO.getIsToday() == 1
+                || "Y".equals(retailerMasterBO.getIsDeviated())) {
 
-        if (retailerMasterBO.getIsToday() == 1){
             visitElementGroup.setVisibility(View.VISIBLE);
-        }else {
-            visitElementGroup.setVisibility(View.GONE);
 
             tvLastVisitDate.setText(retailerMasterBO.getLastVisitDate());
+
+            if (!"Y".equals(retailerMasterBO.getIsVisited())) {
+                addPlan.setVisibility(View.VISIBLE);
+                addPlan.setText(getString(R.string.edit));
+            }else
+                addPlan.setVisibility(View.GONE);
+
+        }else {
+            visitElementGroup.setVisibility(View.GONE);
+            addPlan.setVisibility(View.VISIBLE);
+            addPlan.setText(getString(R.string.add_plane));
         }
+
+        tvOutletName.setText(retailerMasterBO.getRetailerName());
+        tvOutletAddress.setText(retailerMasterBO.getAddress1());
     }
 
     @Override
@@ -586,13 +622,12 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
                 if (legendGroup.getVisibility() == View.VISIBLE)
                     legendGroup.setVisibility(View.GONE);
 
-                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
 
             }
         });
 
-        presenter.fetchRetailerList();
+        storeFilterSwitch.setChecked(true);
 
         enableUserLocation();
         requestLocationUpdates();
@@ -617,19 +652,9 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         @Override
         public View getInfoWindow(final Marker marker) {
 
-            infoProfile.setVisibility(View.GONE);
-//            String[] str_snippet = marker.getSnippet().split("\n");
             String str_title = marker.getTitle().split(",")[0];
             infoTitle.setText(str_title);
-//            infoSnippet.setText(str_snippet[0]);
-//            String isPlanned = marker.getTitle().split(",")[2];
-//            if ("Y".equals(isPlanned))
-//                infoAddToPlan.setVisibility(View.VISIBLE);
-//            else
-                infoAddToPlan.setVisibility(View.GONE);
 
-//            infoButtonListener.setMarker(marker);
-//            infoDeviateListener.setMarker(marker);
             mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
             return infoWindow;
         }
@@ -647,22 +672,25 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         startActivity(i);
     }
 
-    public void focusMarker(final LatLngBounds.Builder builder) {
+    @Override
+    public void focusMarker() {
 
-        try {
-            getMap().setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
-                @Override
-                public void onMapLoaded() {
+        if (isFocusRetailer) {
+            try {
+                getMap().setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
+                    @Override
+                    public void onMapLoaded() {
 
-                    if (checkAreaBoundsTooSmall(builder.build())) {
-                        getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(builder.build().getCenter(), 19));
-                    } else {
-                        getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 60));
+                        if (checkAreaBoundsTooSmall(builder.build())) {
+                            getMap().animateCamera(CameraUpdateFactory.newLatLngZoom(builder.build().getCenter(), 19));
+                        } else {
+                            getMap().animateCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), 60));
+                        }
                     }
-                }
-            });
-        }catch(Exception e){
-            Commons.printException(e);
+                });
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
         }
     }
 
@@ -705,7 +733,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
                 testClearRoute = " ";
                 toTv.setText(testClearRoute);
                 toText = "";
-                if (isRoute)
+                if (bottomLayout.getVisibility() == View.GONE)
                     Toast.makeText(getActivity(),
                         getResources().getString(R.string.route_cleared),
                         Toast.LENGTH_SHORT).show();
@@ -728,34 +756,18 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     }
 
     private void drawRoute(Marker mMarker) {
-        String url;
         mMarker.hideInfoWindow();
         markerLatLng[1] = mMarker.getPosition();
         toText = (getResources().getString(R.string.my_location).equals(mMarker.getTitle())) ? mMarker.getTitle()
                 : mMarker.getTitle().split(",")[0];
-        url = makeURL(markerLatLng[0].latitude, markerLatLng[0].longitude,
-                markerLatLng[1].latitude, markerLatLng[1].longitude);
-
-        showLoading(getResources().getString(R.string.fetching_route));
-        presenter.fetchRoutePath(url);
-
-        mClick = 2;
-    }
-
-    public String makeURL(double sourcelat, double sourcelog, double destlat,
-                          double destlog) {
-        String mode;
-        if (isBywalk)
-            mode = "mode=walking";
-        else
-            mode = "mode=driving";
 
         String mapKey = "key=" + getString(R.string.google_maps_api_key);
 
-        return "https://maps.googleapis.com/maps/api/directions/json" +
-                "?origin=" + Double.toString(sourcelat) + "," + Double.toString(sourcelog) +
-                "&destination=" + Double.toString(destlat) + "," + Double.toString(destlog) +
-                "&sensor=false&" + mode + "&alternatives=true" + "&" + mapKey;
+        showLoading(getResources().getString(R.string.fetching_route));
+        presenter.fetchRoutePath(presenter.makeURL(markerLatLng[0].latitude, markerLatLng[0].longitude,
+                markerLatLng[1].latitude, markerLatLng[1].longitude,mapKey,isBywalk));
+
+        mClick = 2;
     }
 
     private List<LatLng> decodePoly(String encoded) {

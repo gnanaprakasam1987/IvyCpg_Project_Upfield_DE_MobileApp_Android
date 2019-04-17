@@ -46,6 +46,9 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 
+import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_MAP_PLAN;
+import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_OFLNE_PLAN;
+
 
 public class OfflinePlanFragment extends BaseFragment implements OfflinePlanContract.OfflinePlanView, CalendarClickListner {
 
@@ -247,7 +250,7 @@ public class OfflinePlanFragment extends BaseFragment implements OfflinePlanCont
             FragmentTransaction ft = fm.beginTransaction();
 
             RetailerMapFragment fragment = new RetailerMapFragment();
-            ft.add(R.id.fragment_content, fragment,"MapView");
+            ft.add(R.id.fragment_content, fragment,MENU_MAP_PLAN);
             ft.commit();
             return true;
         }
