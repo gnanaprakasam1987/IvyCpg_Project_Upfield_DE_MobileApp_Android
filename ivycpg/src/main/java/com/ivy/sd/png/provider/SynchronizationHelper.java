@@ -1043,7 +1043,8 @@ SynchronizationHelper {
                     "union select count(Tid) from RetailerScoreHeader where upload='N'" +
                     "union select count(Tid) from RetailerScoreDetails where upload='N'" +
                     "union select count(uid) from DenominationHeader where upload='N'" +
-                    "union select count(uid) from DenominationDetails where upload='N'";
+                    "union select count(uid) from DenominationDetails where upload='N'" +
+                    "union select count(Tid) from RetailerLocationDeviation where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -2517,7 +2518,7 @@ SynchronizationHelper {
                         + bmodel.QT(CASE_TYPE) + "and b.batchid = pm.batchid");
                 sb.append(" left join temp_vanload as c on pm.pid=c.pid  and pm.uid=c.uid and c.uomcode="
                         + bmodel.QT(OUTER_TYPE) + "and c.batchid = pm.batchid");
-                sb.append(" group by pm.uid,pm.pid,a.batchid,b.batchid,c.batchid order by pm.uid,pm.pid ");
+                sb.append(" group by pm.uid,pm.pid,a.batchid,b.batchid,c.batchid order by pm.rowid,pm.uid,pm.pid ");
                 db.executeQ(sb.toString());
                 db.deleteSQL("temp_vanload", null, true);
             }

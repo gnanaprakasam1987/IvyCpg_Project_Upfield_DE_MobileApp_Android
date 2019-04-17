@@ -1570,6 +1570,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_RETAILER_LAST_VISIT = "RTRS33";
     public boolean IS_SHOW_RETAILER_LAST_VISIT;
     public boolean IS_SHOW_RETAILER_LAST_VISITEDBY;
+    public int ret_skip_otp_flag = 0; // 1 Show reason spinner, 0 otp edittext
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2741,7 +2742,7 @@ public class ConfigurationMasterHelper {
         if(hashMapHHTModuleOrder.get(CODE_TO_ENABLE_TRIP) != null && hashMapHHTModuleOrder.get(CODE_TO_ENABLE_TRIP)==1)
         this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP =true;
         else this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP =false;
-
+        this.ret_skip_otp_flag = hashMapHHTModuleOrder.get(CODE_SHOW_LOCATION_PWD_DIALOG) != null ? hashMapHHTModuleOrder.get(CODE_SHOW_LOCATION_PWD_DIALOG) : 0;
 
     }
 

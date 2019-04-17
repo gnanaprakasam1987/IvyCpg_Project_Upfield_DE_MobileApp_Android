@@ -11,8 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -34,8 +32,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -70,6 +66,7 @@ import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.cpg.nfc.NFCReadDialogActivity;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
+import com.ivy.cpg.view.profile.otpValidation.RetailerSequenceSkipDialog;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.retailercontact.RetailerContactFragment;
@@ -177,6 +174,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     private LatLng retLatLng, curLatLng;
     private OTPValidationDialog otpValidationDialog;
+    private RetailerSequenceSkipDialog retSeqSkipDialog;
     private android.content.DialogInterface.OnDismissListener otpPasswordDismissListenerNew;
 
     private AppBarLayout appbar;
@@ -2020,12 +2018,17 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     || !ret.getSkipActivatedDate().equals(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))) {
                 if (bmodel.configurationMasterHelper.ret_skip_flag == 1
                         || bmodel.configurationMasterHelper.ret_skip_flag == 2) {
-                    callOTPDialog(
-                            ret,
-                            bmodel.configurationMasterHelper.ret_skip_flag == 1 ? getResources()
-                                    .getString(R.string.enter_otp_skip_seq)
-                                    : getResources().getString(
-                                    R.string.select_reason_skip_seq), OTPValidationDialog.ValidationType.WALKING_SEQ);
+
+                    if (retSeqSkipDialog != null && retSeqSkipDialog.isShowing()) {
+                        retSeqSkipDialog.cancel();
+                        retSeqSkipDialog = null;
+                    }
+                    retSeqSkipDialog = new RetailerSequenceSkipDialog(this,
+                            otpPasswordDismissListenerNew, ret, bmodel.configurationMasterHelper.ret_skip_flag == 1 ? getResources()
+                            .getString(R.string.enter_otp_skip_seq)
+                            : getResources().getString(
+                            R.string.select_reason_skip_seq));
+                    retSeqSkipDialog.show();
                 } else {
                     Toast.makeText(
                             this,
@@ -2037,17 +2040,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             }
         }
         return true;
-    }
-
-    private void callOTPDialog(RetailerMasterBO ret, String strTitle, OTPValidationDialog.ValidationType flag) {
-        if (otpValidationDialog != null && otpValidationDialog.isShowing()) {
-            otpValidationDialog.cancel();
-            otpValidationDialog = null;
-        }
-        otpValidationDialog = new OTPValidationDialog(this, bmodel,
-                otpPasswordDismissListenerNew, ret, strTitle, flag);
-        otpValidationDialog.setCancelable(false);
-        otpValidationDialog.show();
     }
 
     private boolean getPreviousRetailerVisitedStatus(RetailerMasterBO retailerBO) {
@@ -2136,7 +2128,14 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     + getResources().getString(R.string.or_you_are) + " "
                     + distance + getResources().getString(R.string.mts_away);
 
-        callOTPDialog(ret, strTitle, OTPValidationDialog.ValidationType.LOCATION);
+        if (otpValidationDialog != null && otpValidationDialog.isShowing()) {
+            otpValidationDialog.cancel();
+            otpValidationDialog = null;
+        }
+        otpValidationDialog = new OTPValidationDialog(this,
+                otpPasswordDismissListenerNew, ret, strTitle, (int) distance);
+        otpValidationDialog.show();
+
     }
 
     class DownloadSupervisorData extends AsyncTask<Integer, Integer, Boolean> {
