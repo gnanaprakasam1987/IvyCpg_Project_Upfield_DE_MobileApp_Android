@@ -10,6 +10,8 @@ import com.ivy.ui.retailer.RetailerContract;
 import com.ivy.ui.retailer.data.RetailerDataManager;
 import com.ivy.utils.rx.SchedulerProvider;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
@@ -43,17 +45,19 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView> exte
     }
 
     @Override
-    public void addRetailerToPlan(RetailerMasterBO retailerMasterBO, String startDate, String endDate) {
+    public void fetchTodayPlannedRetailers() {
 
-    }
+        ArrayList<RetailerMasterBO> todaysRetailers= new ArrayList<>();
+        for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
+            if ("Y".equals(retailerMasterBO.getIsVisited())
+                    || retailerMasterBO.getIsToday() == 1
+                    || "Y".equals(retailerMasterBO.getIsDeviated())) {
+                todaysRetailers.add(retailerMasterBO);
 
-    @Override
-    public void updateRetailerToPlan(RetailerMasterBO retailerMasterBO, String startDate, String endDate) {
 
-    }
-
-    @Override
-    public void deleteRetailerFromPlan(RetailerMasterBO retailerMasterBO) {
+            }
+        }
+        getIvyView().populateRetailers(todaysRetailers);
 
     }
 

@@ -31,11 +31,8 @@ public interface RetailerContract {
 
          void fetchRetailerList();
 
-         void addRetailerToPlan(RetailerMasterBO retailerMasterBO, String startDate, String endDate);
+         void fetchTodayPlannedRetailers();
 
-         void updateRetailerToPlan(RetailerMasterBO retailerMasterBO, String startDate, String endDate);
-
-         void deleteRetailerFromPlan(RetailerMasterBO retailerMasterBO);
 
          void setRetailerMasterBo(RetailerMasterBO retailerMasterBO);
 
