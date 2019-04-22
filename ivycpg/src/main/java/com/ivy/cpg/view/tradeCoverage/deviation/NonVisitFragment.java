@@ -1160,29 +1160,27 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
                     holder.ll_iv_asset_mapped.setVisibility(View.GONE);
                 }
 
-                if (mRetailerProp.get("RTPRTY09") != null) {
-                    if (retailerObj.getRField8() == null)
-                        holder.tvTaskCount.setVisibility(View.GONE);
-                    else {
-                        if (mRetailerProp.get("RTPRTY09").length() > 0) {
-                            if (mRetailerProp.get("RTPRTY09").equalsIgnoreCase("Task")) {
-                                holder.tvTaskCount.setVisibility(View.VISIBLE);
-                                holder.tvTaskCount.setText(getResources().getString(R.string.task) + ":" + retailerObj.getRField8());
-                            } else
-                                holder.tvTaskCount.setVisibility(View.GONE);
-                        }
-                    }
-
-                } else {
-                    holder.tvTaskCount.setVisibility(View.GONE);
-                }
-
-
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
 
+            if (mRetailerProp.get("RTPRTY09") != null) {
+                if (retailerObj.getRField8() == null)
+                    holder.tvTaskCount.setVisibility(View.GONE);
+                else {
+                    if (mRetailerProp.get("RTPRTY09").length() > 0) {
+                        if (mRetailerProp.get("RTPRTY09").equalsIgnoreCase("Task")) {
+                            holder.tvTaskCount.setVisibility(View.VISIBLE);
+                            holder.tvTaskCount.setText(getResources().getString(R.string.task) + ":" + retailerObj.getRField8());
+                        } else
+                            holder.tvTaskCount.setVisibility(View.GONE);
+                    }
+                }
+
+            } else {
+                holder.tvTaskCount.setVisibility(View.GONE);
+            }
 
             if (selectedPosition.contains(retailerObj.getRetailerID())) {
                 holder.llFirst.setBackgroundColor(getResources().getColor(R.color.colorPrimaryAlpha));

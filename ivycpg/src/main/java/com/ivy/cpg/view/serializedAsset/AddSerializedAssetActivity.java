@@ -845,6 +845,13 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         if (capacitySpinner.getSelectedItemPosition() == 0 && vendorSpinner.getSelectedItemPosition() == 0 && modelSpinner.getSelectedItemPosition() == 0 && typeSpinner.getSelectedItemPosition() == 0)
             filterList.addAll(posmList);
 
+        if(filterList.get(0)!= null && !filterList.get(0).getPOSMDescription().equalsIgnoreCase(SELECT)){
+            AssetAddDetailBO tempPosm = new AssetAddDetailBO();
+            tempPosm.setPOSMId("0");
+            tempPosm.setPOSMDescription(SELECT);
+            filterList.add(0, tempPosm);
+        }
+
         ArrayAdapter<AssetAddDetailBO> mAssetSpinAdapter = new ArrayAdapter<>(
                 this, R.layout.spinner_bluetext_layout, filterList);
         mAssetSpinAdapter

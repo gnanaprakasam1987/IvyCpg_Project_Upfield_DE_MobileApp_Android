@@ -1562,15 +1562,17 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
             if (!mSelectedRetailer.equals("ALL")) {
                 tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "CENTER\r\n");
                 tempsb.append("SETBOLD 1 \r\n");
-                if (IsOriginal)
+                if (IsOriginal) {
                     tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
                             + "Original Print" + "\r\n");
-                else
+                } else {
                     tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
                             + "Duplicate print" + "\r\n");
+                }
+                tempsb.append("SETBOLD 0 \r\n");
+                tempsb.append("PRINT\r\n");
             }
-            tempsb.append("SETBOLD 0 \r\n");
-            tempsb.append("PRINT\r\n");
+
 
             double total;
             double totalDiscount = 0;
@@ -1618,11 +1620,11 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                             + bmodel.userMasterHelper.getUserMasterBO()
                             .getUserCode() + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
-                    tempsb.append("PRINT");
+                    tempsb.append("PRINT\r\n");
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 250 + " 1 "
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 "
                             + getString(R.string.agent_name)
                             + ":"
                             + bmodel.userMasterHelper.getUserMasterBO().getUserName()
@@ -1668,23 +1670,23 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                     tempsb.append("SETBOLD 1 \r\n");
                     tempsb.append("TEXT ANG12PT.CPF 0 " + 10 + " 1 " + getString(R.string.inv_no) + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
-                    tempsb.append("PRINT");
+                    tempsb.append("PRINT\r\n");
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 160 + " 1 " + getString(R.string.type) + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 40 + " 1 " + getString(R.string.type) + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 240 + " 1 " + getString(R.string.date) + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 120 + " 1 " + getString(R.string.date) + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
 
                     tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                     tempsb.append("SETBOLD 1 \r\n");
-                    tempsb.append("TEXT ANG12PT.CPF 0 " + 320 + " 1 " + "Chq Num" + "\r\n");
+                    tempsb.append("TEXT ANG12PT.CPF 0 " + 240 + " 1 " + "Chq Num" + "\r\n");
                     tempsb.append("SETBOLD 0 \r\n");
                     tempsb.append("PRINT");
 
@@ -1715,27 +1717,27 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                         tempsb.append("SETBOLD 1 \r\n");
                         if (payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE)) {
                             if (payBO.getReferenceNumber().startsWith("AP")) {
-                                tempsb.append("TEXT ANG12PT.CPF 0 " + 160 + " 1 "
+                                tempsb.append("TEXT ANG12PT.CPF 0 " + 40 + " 1 "
                                         + getResources().getString(R.string.advance_payment) + "\r\n");
                             } else {
-                                tempsb.append("TEXT ANG12PT.CPF 0 " + 160 + " 1 "
+                                tempsb.append("TEXT ANG12PT.CPF 0 " + 40 + " 1 "
                                         + getResources().getString(R.string.credit_note) + "\r\n");
                             }
                         } else {
                             if (payBO.getCashMode().equals(StandardListMasterConstants.CASH)) {
-                                tempsb.append("TEXT ANG12PT.CPF 0 " + 160 + " 1 "
+                                tempsb.append("TEXT ANG12PT.CPF 0 " + 40 + " 1 "
                                         + getResources().getString(R.string.cash) + "\r\n");
                             } else if (payBO.getCashMode().equals(StandardListMasterConstants.CHEQUE)) {
-                                tempsb.append("TEXT ANG12PT.CPF 0 " + 160 + " 1 "
+                                tempsb.append("TEXT ANG12PT.CPF 0 " + 40 + " 1 "
                                         + getResources().getString(R.string.cheque) + "\r\n");
                             } else if (payBO.getCashMode().equals(StandardListMasterConstants.DEMAND_DRAFT)) {
-                                tempsb.append("TEXT ANG12PT.CPF 0 " + 160 + " 1 "
+                                tempsb.append("TEXT ANG12PT.CPF 0 " + 40 + " 1 "
                                         + "DD" + "\r\n");
                             } else if (payBO.getCashMode().equals(StandardListMasterConstants.RTGS)) {
-                                tempsb.append("TEXT ANG12PT.CPF 0 " + 160 + " 1 "
+                                tempsb.append("TEXT ANG12PT.CPF 0 " + 40 + " 1 "
                                         + getResources().getString(R.string.rtgs) + "\r\n");
                             } else if (payBO.getCashMode().equals(StandardListMasterConstants.MOBILE_PAYMENT)) {
-                                tempsb.append("TEXT ANG12PT.CPF 0 " + 160 + " 1 "
+                                tempsb.append("TEXT ANG12PT.CPF 0 " + 40 + " 1 "
                                         + "Mob.Pay" + "\r\n");
                             }
                         }
@@ -1745,7 +1747,7 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
 
                         tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                         tempsb.append("SETBOLD 1 \r\n");
-                        tempsb.append("TEXT ANG12PT.CPF 0 " + 240 + " 1 "
+                        tempsb.append("TEXT ANG12PT.CPF 0 " + 120 + " 1 "
                                 + payBO.getChequeDate()
                                 + "\r\n");
                         tempsb.append("SETBOLD 0 \r\n");
@@ -1754,10 +1756,10 @@ public class CollectionPreviewScreen extends IvyBaseActivityNoActionBar {
                         tempsb.append("! 0 200 200 " + 40 + " 1\r\n" + "LEFT\r\n");
                         tempsb.append("SETBOLD 1 \r\n");
                         if (!payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE) && !payBO.getCashMode().equals(StandardListMasterConstants.ADVANCE_PAYMENT))
-                            tempsb.append("TEXT ANG12PT.CPF 0 " + 320 + " 1 "
+                            tempsb.append("TEXT ANG12PT.CPF 0 " + 240 + " 1 "
                                     + payBO.getChequeNumber() + "\r\n");
                         else {
-                            tempsb.append("TEXT ANG12PT.CPF 0 " + 320 + " 1 "
+                            tempsb.append("TEXT ANG12PT.CPF 0 " + 240 + " 1 "
                                     + payBO.getReferenceNumber() + "\r\n");
                         }
                         tempsb.append("SETBOLD 0 \r\n");

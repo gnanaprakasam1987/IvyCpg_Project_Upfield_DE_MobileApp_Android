@@ -396,7 +396,7 @@ public class PriceTrackingHelper {
                         isInserted = true;
                     }
 
-                    if (!isInserted && !sku.getReasonID().equals("0") || sku.getPriceCompliance() == 1) {
+                    if (!isInserted && (!sku.getReasonID().equals("0") || sku.getPriceCompliance() == 1)) {
                         values = QT(tid) + "," + sku.getProductID() + ","
                                 + sku.getPriceChanged() + ","
                                 + QT(sku.getPrice_pc())

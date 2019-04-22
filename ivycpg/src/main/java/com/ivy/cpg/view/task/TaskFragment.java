@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.sd.png.util.view.OnSingleClickListener;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.utils.DateTimeUtils;
@@ -530,6 +532,29 @@ public class TaskFragment extends IvyBaseFragment {
                             holder.taskCB.setChecked(false);
                             holder.taskBO.setChecked(false);
                         }
+
+                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
+                        if (IsRetailerwisetask) {
+                            taskHelper.saveTask(bmodel
+                                    .getRetailerMasterBO()
+                                    .getRetailerID(), holder.taskBO);
+                        } else {
+                            taskHelper.saveTask(0 + "",
+                                    holder.taskBO);
+                        }
+                    }
+                });
+                holder.layoutCB.setOnClickListener(new OnSingleClickListener() {
+                    @Override
+                    public void onSingleClick(View v) {
+                        holder.taskCB.setChecked(!holder.taskCB.isChecked());
+                    }
+                });
+                holder.taskCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                        holder.taskCB.setChecked(isChecked);
+                        holder.taskBO.setChecked(isChecked);
 
                         bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                         if (IsRetailerwisetask) {
