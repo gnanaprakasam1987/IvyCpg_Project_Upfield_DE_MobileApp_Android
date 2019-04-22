@@ -3243,7 +3243,7 @@ public class OrderHelper {
 
 
     /**
-     * Method to check whether stock is available to deliver
+     * Method to check whether stock is available to deliver (check for getFreeSIH based on config : IS_FREE_SIH_AVAILABLE
      *
      * @param orderList Orderd list
      * @return stock avilability
@@ -3252,6 +3252,7 @@ public class OrderHelper {
         try {
 
             HashMap<String, Integer> mDeliverQtyByProductId = new HashMap<>();
+            HashMap<String, Integer> mDeliveryFreeQtyByProductId = new HashMap<>();
 
             for (ProductMasterBO product : orderList) {
 
@@ -3270,6 +3271,8 @@ public class OrderHelper {
 
                 }
             }
+
+
             SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
             if (schemeHelper.IS_SCHEME_ON) {
                 for (SchemeBO schemeBO : schemeHelper.getAppliedSchemeList()) {
@@ -3278,11 +3281,23 @@ public class OrderHelper {
                             for (SchemeProductBO freeProductBO : schemeBO.getFreeProducts()) {
                                 if (freeProductBO.getQuantitySelected() > 0) {
 
-                                    if (mDeliverQtyByProductId.get(freeProductBO.getProductId()) != null) {
-                                        int qty = mDeliverQtyByProductId.get(freeProductBO.getProductId());
-                                        mDeliverQtyByProductId.put(freeProductBO.getProductId(), (qty + freeProductBO.getQuantitySelected()));
+                                    if (!businessModel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE) {
+
+                                        if (mDeliverQtyByProductId.get(freeProductBO.getProductId()) != null) {
+                                            int qty = mDeliverQtyByProductId.get(freeProductBO.getProductId());
+                                            mDeliverQtyByProductId.put(freeProductBO.getProductId(), (qty + freeProductBO.getQuantitySelected()));
+                                        } else {
+                                            mDeliverQtyByProductId.put(freeProductBO.getProductId(), freeProductBO.getQuantitySelected());
+                                        }
+
                                     } else {
-                                        mDeliverQtyByProductId.put(freeProductBO.getProductId(), freeProductBO.getQuantitySelected());
+
+                                        if (mDeliveryFreeQtyByProductId.get(freeProductBO.getProductId()) != null) {
+                                            int qty = mDeliveryFreeQtyByProductId.get(freeProductBO.getProductId());
+                                            mDeliveryFreeQtyByProductId.put(freeProductBO.getProductId(), (qty + freeProductBO.getQuantitySelected()));
+                                        } else {
+                                            mDeliveryFreeQtyByProductId.put(freeProductBO.getProductId(), freeProductBO.getQuantitySelected());
+                                        }
                                     }
                                 }
                             }
@@ -3300,6 +3315,18 @@ public class OrderHelper {
                         return false;
                 }
             }
+
+            if (businessModel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE) {
+                for (String productId : mDeliveryFreeQtyByProductId.keySet()) {
+                    ProductMasterBO freeProduct = businessModel.productHelper.getProductMasterBOById(productId);
+                    if (freeProduct != null) {
+                        if (mDeliveryFreeQtyByProductId.get(productId) > freeProduct.getFreeSIH())
+                            return false;
+                    }
+                }
+            }
+
+
         } catch (Exception ex) {
             Commons.printException(ex);
             return false;
