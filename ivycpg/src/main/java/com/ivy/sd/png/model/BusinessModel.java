@@ -2850,7 +2850,7 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
 
-            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,IsOwn,facing from "
+            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,IsOwn,facing,hasPriceTag from "
                     + DataMembers.tbl_LastVisitStock
                     + " where retailerid=" + retailerId;
 
@@ -2870,6 +2870,7 @@ public class BusinessModel extends Application {
                     int reasonID = orderDetailCursor.getInt(10);
                     int isOwn = orderDetailCursor.getInt(11);
                     int facing = orderDetailCursor.getInt(12);
+                    int priceTag = orderDetailCursor.getInt(13);
                     int pouring = 0;
                     int cocktail = 0;
 
@@ -2879,7 +2880,7 @@ public class BusinessModel extends Application {
 
                     setStockCheckQtyDetails(productId, shelfpqty, shelfcqty,
                             whpqty, whcqty, whoqty, shelfoqty, locationId,
-                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, menucode, availability);
+                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, menucode, availability, priceTag);
 
                 }
                 orderDetailCursor.close();
@@ -2963,7 +2964,7 @@ public class BusinessModel extends Application {
             // if (remarksHelper.getRemarksBO().getModuleCode()
             // .equals(StandardListMasterConstants.MENU_STOCK))
             // remarksHelper.getRemarksBO().setTid(stockID);
-            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,isAuditDone,IsOwn,Facing,RField1,RField2,isAvailable from "
+            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,isAuditDone,IsOwn,Facing,RField1,RField2,isAvailable,hasPriceTag from "
                     + DataMembers.tbl_closingstockdetail
                     + " where stockId="
                     + QT(stockID) + "";
@@ -2987,10 +2988,11 @@ public class BusinessModel extends Application {
                     int pouring = orderDetailCursor.getInt(14);
                     int cocktail = orderDetailCursor.getInt(15);
                     int availability = orderDetailCursor.getInt(16);
+                    int priceTag = orderDetailCursor.getInt(17);
 
                     setStockCheckQtyDetails(productId, shelfpqty, shelfcqty,
                             whpqty, whcqty, whoqty, shelfoqty, locationId,
-                            isDistributed, isListed, reasonID, audit, isOwn, facing, pouring, cocktail, menuCode, availability);
+                            isDistributed, isListed, reasonID, audit, isOwn, facing, pouring, cocktail, menuCode, availability, priceTag);
 
                 }
                 orderDetailCursor.close();
@@ -3057,7 +3059,7 @@ public class BusinessModel extends Application {
                                          int shelfcqty, int whpqty, int whcqty, int whoqty, int shelfoqty,
                                          int locationId, int isDistributed, int isListed, int reasonID,
                                          int audit, int isOwn, int facing, int pouring, int cocktail,
-                                         String menuCode, int availability) {
+                                         String menuCode, int availability, int priceTag) {
 
         //mTaggedProducts list only used in StockCheck screen. So updating only in mTaggedProducts
         ProductMasterBO product = null;
@@ -3106,6 +3108,7 @@ public class BusinessModel extends Application {
                     product.getLocations().get(j).setIsPouring(pouring);
                     product.getLocations().get(j).setCockTailQty(cocktail);
                     product.getLocations().get(j).setAvailability(availability);
+                    product.getLocations().get(j).setPriceTagAvailability(priceTag);
 
                     int totalStockQty = (shelfpqty + (shelfcqty * product.getCaseSize()) + (shelfoqty * product.getOutersize()));
                     product.setTotalStockQty(product.getTotalStockQty() + totalStockQty);
@@ -4826,9 +4829,9 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
 
-            String retailerId="0";
-            if(isRetailerModule)
-                retailerId=getRetailerMasterBO().getRetailerID();
+            String retailerId = "0";
+            if (isRetailerModule)
+                retailerId = getRetailerMasterBO().getRetailerID();
 
             Cursor c = db
                     .selectSQL("SELECT * FROM ModuleCompletionReport WHERE RetailerId="
@@ -4884,11 +4887,11 @@ public class BusinessModel extends Application {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
             );
             db.openDataBase();
-            String query="Select MENU_CODE from ModuleCompletionReport "
-                            + " where retailerid=";
-                            if(isRetailerBasedModule)
-                                query+= getRetailerMasterBO().getRetailerID();
-                            else query+= 0;
+            String query = "Select MENU_CODE from ModuleCompletionReport "
+                    + " where retailerid=";
+            if (isRetailerBasedModule)
+                query += getRetailerMasterBO().getRetailerID();
+            else query += 0;
 
 
             Cursor c = db
@@ -7530,7 +7533,7 @@ public class BusinessModel extends Application {
             String path = "/"
                     + userMasterHelper.getUserMasterBO().getDownloadDate()
                     .replace("/", "") + "/"
-                    + userMasterHelper.getUserMasterBO().getUserid()+ "/";
+                    + userMasterHelper.getUserMasterBO().getUserid() + "/";
 
 
             if (imageName.startsWith("AT_") || imageName.startsWith("NAT_")) {
@@ -7540,7 +7543,7 @@ public class BusinessModel extends Application {
             } else if (imageName.startsWith("SGN_")) {
                 mBucketName = "Invoice" + path + imageName;
             } else if (imageName.startsWith("INIT_")) {
-                mBucketName = "Initiative" + path  + imageName;
+                mBucketName = "Initiative" + path + imageName;
             } else if (imageName.startsWith("PT_")) {
                 mBucketName = "Promotion" + path + imageName;
             } else if (imageName.startsWith("SOD_")) {
@@ -7589,25 +7592,25 @@ public class BusinessModel extends Application {
                 } else {
 
                     mBucketName =
-                            + userMasterHelper.getUserMasterBO
-                            ().getDistributorid()
-                            + "/"
-                            + userMasterHelper.getUserMasterBO().getUserid()
-                            + "/"
-                            + userMasterHelper.getUserMasterBO
-                            ().getDownloadDate()
-                            .replace("/", "")+ imageName;
+                            +userMasterHelper.getUserMasterBO
+                                    ().getDistributorid()
+                                    + "/"
+                                    + userMasterHelper.getUserMasterBO().getUserid()
+                                    + "/"
+                                    + userMasterHelper.getUserMasterBO
+                                    ().getDownloadDate()
+                                    .replace("/", "") + imageName;
                 }
             }
 
-            mBucketName = DataMembers.AZURE_ROOT_DIRECTORY+"/"+mBucketName;
+            mBucketName = DataMembers.AZURE_ROOT_DIRECTORY + "/" + mBucketName;
 
-            CloudBlockBlob cloudBlockBlob =null;
-            if (ConfigurationMasterHelper.ACCESS_KEY_ID.equalsIgnoreCase(IvyConstants.SAS_KEY_TYPE)){
-                String downloadURL = AppUtils.buildAzureUrl(mBucketName) ;
+            CloudBlockBlob cloudBlockBlob = null;
+            if (ConfigurationMasterHelper.ACCESS_KEY_ID.equalsIgnoreCase(IvyConstants.SAS_KEY_TYPE)) {
+                String downloadURL = AppUtils.buildAzureUrl(mBucketName);
                 cloudBlockBlob = new CloudBlockBlob(new URI(downloadURL));
-            }else {
-                 cloudBlobContainer.getBlockBlobReference(mBucketName);
+            } else {
+                cloudBlobContainer.getBlockBlobReference(mBucketName);
             }
 
             if (fileInputStream != null && cloudBlockBlob != null) {
