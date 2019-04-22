@@ -83,6 +83,7 @@ import com.ivy.cpg.view.supervisor.chat.BaseInterfaceAdapter;
 import com.ivy.cpg.view.sync.AWSConnectionHelper;
 import com.ivy.cpg.view.sync.AzureConnectionHelper;
 import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
+import com.ivy.cpg.view.sync.largefiledownload.FileDownloadProvider;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -3523,12 +3524,12 @@ public class BusinessModel extends Application {
                     .selectSQL("SELECT DISTINCT ImgURL,imgId FROM PlanogramImageInfo");
             if (c != null) {
                 while (c.moveToNext()) {
-                    if (configurationMasterHelper.DIGITAL_CONTENT_SIZE != -1){
+                    if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN){
 
                         DigitalContentModel digitalContentBO = new DigitalContentModel();
 
                         String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
-                        digitalContentBO.setFileSize("2 MB ≈");
+                        digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES*2));//approx 2mb
                         digitalContentBO.setImageID(c.getInt(1));
                         digitalContentBO.setImgUrl(downloadUrl);
                         digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);
@@ -3552,12 +3553,12 @@ public class BusinessModel extends Application {
                         .selectSQL("SELECT DISTINCT ImagePath,imageId FROM LastVisitPlanogramImageDetails");
                 if (c != null) {
                     while (c.moveToNext()) {
-                        if (configurationMasterHelper.DIGITAL_CONTENT_SIZE != -1) {
+                        if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
 
                             DigitalContentModel digitalContentBO = new DigitalContentModel();
 
                             String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
-                            digitalContentBO.setFileSize("2 MB ≈");
+                            digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES*2));// approx  2 mb
                             digitalContentBO.setImageID(c.getInt(1));
                             digitalContentBO.setImgUrl(downloadUrl);
                             digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);

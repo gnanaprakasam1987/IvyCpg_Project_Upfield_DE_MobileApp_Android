@@ -347,36 +347,16 @@ public class PlanoGramHelper {
      *
      * @param retailerId Retailer Id
      */
-    public boolean loadPlanoGramInEditMode(Context mContext, String retailerId) {
+    public void loadPlanoGramInEditMode(Context mContext, String retailerId) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             db.openDataBase();
-            String tid = "";
-            String sql = "SELECT Tid FROM PlanogramHeader WHERE RetailerId = "
-                    + retailerId + " AND Date = "
-                    + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-                    + " and (upload='N' OR refid!=0)";
 
-            Cursor orderHeaderCursor = db.selectSQL(sql);
-            if (orderHeaderCursor != null) {
-                if (orderHeaderCursor.moveToNext())
-                    tid = orderHeaderCursor.getString(0);
-            }
-
-            orderHeaderCursor.close();
-
-            if(tid.trim().isEmpty()){
-                db.close();
-                if(mBModel.configurationMasterHelper.isAuditEnabled())
-                    return false;
-                else
-                    return true;
-            }
 
             if(mBModel.configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
                 // LastVisit
                 String lastVisitQuery = "SELECT PId, Adherence, ReasonID, LocID"
-                        + " FROM LastVisitPlanogram inner join  WHERE retailerId=" + mBModel.getAppDataProvider().getRetailMaster().getRetailerID();
+                        + " FROM LastVisitPlanogram WHERE retailerId=" + mBModel.getAppDataProvider().getRetailMaster().getRetailerID();
 
                 Cursor lastVisitCursor = db.selectSQL(lastVisitQuery);
 
@@ -442,31 +422,50 @@ public class PlanoGramHelper {
 
             //
 
-            String sql1 = "SELECT PId, PLID, ImageName, Adherence, ReasonID, LocID, IFNULL(isAuditDone,'2')"
-                    + " FROM PlanogramDetails WHERE tid=" + QT(tid);
+            String tid = "";
+            String sql = "SELECT Tid FROM PlanogramHeader WHERE RetailerId = "
+                    + retailerId + " AND Date = "
+                    + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + " and (upload='N' OR refid!=0)";
 
-            Cursor orderDetailCursor = db.selectSQL(sql1);
-
-            if (orderDetailCursor != null) {
-                while (orderDetailCursor.moveToNext()) {
-                    int pid = orderDetailCursor.getInt(0);
-                    String imageName = orderDetailCursor.getString(2);
-                    String adherence = orderDetailCursor.getString(3);
-                    String reasonID = orderDetailCursor.getString(4);
-                    int locationID = orderDetailCursor.getInt(5);
-                    int aduit = orderDetailCursor.getInt(6);
-                    setPlanoGramDetails(pid, imageName, adherence, reasonID,
-                            locationID, aduit,tid,mContext);
-                }
-                orderDetailCursor.close();
+            Cursor orderHeaderCursor = db.selectSQL(sql);
+            if (orderHeaderCursor != null) {
+                if (orderHeaderCursor.moveToNext())
+                    tid = orderHeaderCursor.getString(0);
             }
+
+            orderHeaderCursor.close();
+
+            if(!tid.trim().isEmpty()){
+
+                String sql1 = "SELECT PId, PLID, ImageName, Adherence, ReasonID, LocID, IFNULL(isAuditDone,'2')"
+                        + " FROM PlanogramDetails WHERE tid=" + QT(tid);
+
+                Cursor orderDetailCursor = db.selectSQL(sql1);
+
+                if (orderDetailCursor != null) {
+                    while (orderDetailCursor.moveToNext()) {
+                        int pid = orderDetailCursor.getInt(0);
+                        String imageName = orderDetailCursor.getString(2);
+                        String adherence = orderDetailCursor.getString(3);
+                        String reasonID = orderDetailCursor.getString(4);
+                        int locationID = orderDetailCursor.getInt(5);
+                        int aduit = orderDetailCursor.getInt(6);
+                        setPlanoGramDetails(pid, imageName, adherence, reasonID,
+                                locationID, aduit,tid,mContext);
+                    }
+                    orderDetailCursor.close();
+                }
+
+            }
+
+
 
             db.closeDB();
         } catch (Exception e) {
             db.closeDB();
             Commons.printException("" + e);
         }
-        return true;
     }
 
     /**

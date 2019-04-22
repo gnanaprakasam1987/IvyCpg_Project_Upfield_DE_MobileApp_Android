@@ -59,6 +59,7 @@ import com.ivy.sd.png.model.MyHttpConnectionNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FileUtils;
@@ -4141,26 +4142,25 @@ SynchronizationHelper {
                                     + "," + cur2.getString(2)
                                     + "," + cur2.getString(3)
                                     + "," + cur2.getString(4)
-                                    + "," + cur2.getString(5)
-                                    + "," + cur2.getString(6)
-                                    + "," + cur2.getString(7));
+                                    + "," + cur2.getString(5));
                 }
                 cur2.close();
             }
 
             // re insert  transaction data from SOS_Tracking_Detail records into LastVisitSOS
-            String sql3 = "select STD.pid,STD.imageName,STD.mappingId,STD.ImagePath,STD.ImageId,STH.LocId,STH.RetailerId from PlanogramImageDetails STD LEFT JOIN PlanogramHeader STH ON STD.Tid=STH.Tid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            String sql3 = "select STD.pid,STD.imageName,STD.mappingId,STD.ImagePath,STD.ImageId,STH.LocId,STH.RetailerId from PlanogramImageDetails STD LEFT JOIN PlanogramDetails STH ON STD.Tid=STH.Tid LEFT JOIN PlanogramHeader PH ON STD.tid=PH.tid where PH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + " group by STD.tid,STD.pid,STD.imageId";
             Cursor cur3 = db.selectSQL(sql3);
             if (cur3 != null) {
                 while (cur3.moveToNext()) {
                     db.insertSQL("LastVisitPlanogramImageDetails", "pid,imageName,mappingId,ImagePath,ImageId,LocId,RetailerId",
-                            cur2.getString(0)
-                                    + "," + cur2.getString(1)
-                                    + "," + cur2.getString(2)
-                                    + "," + cur2.getString(3)
-                                    + "," + cur2.getString(4)
-                                    + "," + cur2.getString(5)
-                                    + "," + cur2.getString(6));
+                            cur3.getString(0)
+                                    + "," + StringUtils.QT(cur3.getString(1))
+                                    + "," + cur3.getString(2)
+                                    + "," + StringUtils.QT(cur3.getString(3))
+                                    + "," + cur3.getString(4)
+                                    + "," + cur3.getString(5)
+                                    + "," + cur3.getString(6));
                 }
                 cur3.close();
             }
