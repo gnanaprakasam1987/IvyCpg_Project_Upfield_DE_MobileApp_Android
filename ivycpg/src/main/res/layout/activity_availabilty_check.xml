@@ -1,898 +1,898 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusableInTouchMode="true"
-    android:orientation="vertical"
-    android:windowSoftInputMode="stateAlwaysHidden">
+    android:orientation="vertical">
 
     <include
         android:id="@+id/toolbar"
         layout="@layout/material_tool_bar"
-        />
+        app:layout_constraintBottom_toTopOf="@+id/scroll_view"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <android.support.v4.widget.NestedScrollView xmlns:tools="http://schemas.android.com/tools"
+    <ScrollView
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        android:orientation="vertical"
+        android:scrollbars="none"
+        app:layout_constraintBottom_toTopOf="@+id/keypad"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        tools:context="com.ivy.cpg.view.stockcheck.CombinedStockDetailActivity">
+
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/scroll_view"
-            android:layout_below="@+id/toolbar"
-            android:fillViewport="true"
-            android:orientation="vertical"
-            android:layout_above="@+id/keypad"
-            android:scrollbars="none"
-            tools:context="com.ivy.cpg.view.stockcheck.CombinedStockDetailActivity">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/zxing_transparent"
-                    android:orientation="vertical">
-
-                    <RelativeLayout
-                        android:id="@+id/availability_lty"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/card_margin">
-
-                        <TextView
-                            android:id="@+id/tvTitleAvaialabilty"
-                            style="@style/HeadingStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_centerVertical="true"
-                            android:text="@string/combined_availability" />
-
-
-                    </RelativeLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-
-                        <LinearLayout
-                            android:id="@+id/ll_is_distributed"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/right_margin"
-                            android:layout_marginTop="@dimen/target_top_margin"
-                            android:layout_marginEnd="@dimen/right_margin"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/tv_is_distributed"
-                                style="@style/TextViewListItemCaption"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:tag="item_exp_facing"
-                                android:text="@string/is_distributed" />
-
-                            <android.support.v7.widget.AppCompatCheckBox
-                                android:id="@+id/is_distributed"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_weight="1"
-                                android:gravity="center"
-
-                                />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/ll_is_listed"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/right_margin"
-                            android:layout_marginTop="@dimen/target_top_margin"
-                            android:layout_marginEnd="@dimen/right_margin"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/tv_is_listed"
-                                style="@style/TextViewListItemCaption"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:tag="item_exp_facing"
-                                android:text="@string/is_Listed" />
-
-                            <android.support.v7.widget.AppCompatCheckBox
-                                android:id="@+id/is_listed"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_weight="1"
-                                android:gravity="center" />
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/ll_availability"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/right_margin"
-                            android:layout_marginTop="@dimen/target_top_margin"
-                            android:layout_marginEnd="@dimen/right_margin"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/tv_availability"
-                                style="@style/TextViewListItemCaption"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:tag="item_exp_facing"
-                                android:text="@string/avail" />
-
-                            <android.support.v7.widget.AppCompatCheckBox
-                                android:id="@+id/chk_availability"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_weight="1"
-                                android:gravity="center"
-
-                                />
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/ll_reason"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end|center|bottom"
-                            android:layout_marginStart="@dimen/right_margin"
-                            android:layout_marginLeft="@dimen/right_margin"
-                            android:layout_marginTop="@dimen/target_top_margin"
-                            android:orientation="vertical">
-
-                            <Spinner
-                                android:id="@+id/mreason"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:background="@android:color/transparent"
-                                android:gravity="start|center"
-                                android:overlapAnchor="false">
-
-
-                            </Spinner>
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <View
-                        android:id="@+id/view_dotted_line_avg"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="@dimen/card_margin"
-                        android:background="@color/light_gray" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvTitleCurrentStock"
-                            style="@style/HeadingStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_centerVertical="true"
-                            android:layout_margin="@dimen/card_margin"
-                            android:text="@string/current_stock" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/card_margin"
-                            android:layout_marginLeft="@dimen/card_margin"
-                            android:layout_marginRight="@dimen/card_margin"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:id="@+id/ll_avail_piece"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/right_margin"
-                                android:layout_marginRight="@dimen/right_margin"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/tv_avail_pctitle"
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:tag="@string/item_piece"
-                                    android:text="@string/avail_pcs" />
-
-                                <EditText
-                                    android:id="@+id/et_avail_pcValue"
-                                    style="@style/EditText_ListItem"
-                                    android:layout_width="@dimen/discount_editbox_width"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:gravity="start" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/ll_avail_case"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/right_margin"
-                                android:layout_marginEnd="@dimen/right_margin"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/tv_avail_cstitle"
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:tag="@string/item_case"
-                                    android:text="@string/avail_cases" />
-
-                                <EditText
-                                    android:id="@+id/et_avail_csValue"
-                                    style="@style/EditText_ListItem"
-                                    android:layout_width="@dimen/discount_editbox_width"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:gravity="start" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/ll_avail_outer"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/right_margin"
-                                android:layout_marginLeft="@dimen/right_margin"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/tv_avail_outitle"
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:tag="@string/item_outer"
-                                    android:text="@string/avail_outer" />
-
-                                <EditText
-                                    android:id="@+id/et_avail_ouValue"
-                                    style="@style/EditText_ListItem"
-                                    android:layout_width="@dimen/discount_editbox_width"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:gravity="start" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/ll_face_qty"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/right_margin"
-                                android:layout_marginEnd="@dimen/right_margin"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/tv_faceqty_cstitle"
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:tag="item_exp_facing"
-                                    android:text="@string/facing" />
-
-                                <EditText
-                                    android:id="@+id/et_faceqty_csValue"
-                                    style="@style/EditText_ListItem"
-                                    android:layout_width="@dimen/discount_editbox_width"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:gravity="start"
-                                    android:text="@string/zero" />
-                            </LinearLayout>
-                        </LinearLayout>
-
-
-                        <View
-                            android:id="@+id/view_dotted_line"
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginTop="@dimen/card_margin"
-                            android:background="@color/light_gray" />
-
-                        <LinearLayout
-                            android:id="@+id/ll_avgdays"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="@dimen/card_margin"
-                            android:layout_marginLeft="@dimen/card_margin"
-                            android:layout_marginTop="@dimen/card_margin"
-                            android:layout_marginRight="@dimen/card_margin"
-                            android:orientation="horizontal">
-
-
-                            <LinearLayout
-                                android:id="@+id/ll_avg_qty"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/right_margin"
-                                android:layout_marginRight="@dimen/right_margin"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/tv_avg_qty_label"
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:tag="avg_qty"
-                                    android:text="@string/qty" />
-
-                                <TextView
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/dimen_1dp"
-                                    android:layout_marginEnd="@dimen/dimen_1dp"
-                                    android:maxLines="1"
-                                    android:text=":" />
-
-                                <TextView
-                                    android:id="@+id/tv_avg_qty_value"
-                                    style="@style/TextViewListItemPrimary"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/zero" />
-                            </LinearLayout>
-
-
-                            <LinearLayout
-                                android:id="@+id/ll_avg_rfield1"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/right_margin"
-                                android:layout_marginRight="@dimen/right_margin"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/tv_avg_rfield1_label"
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:tag="avg_rfield1"
-                                    android:text="@string/rfield1_klgs" />
-
-                                <TextView
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/dimen_1dp"
-                                    android:layout_marginEnd="@dimen/dimen_1dp"
-                                    android:maxLines="1"
-                                    android:text=":" />
-
-                                <TextView
-                                    android:id="@+id/tv_avg_rfield1_value"
-                                    style="@style/TextViewListItemPrimary"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/zero" />
-                            </LinearLayout>
-
-
-                            <LinearLayout
-                                android:id="@+id/ll_avg_rfield2"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/right_margin"
-                                android:layout_marginRight="@dimen/right_margin"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/tv_avg_rfield2_label"
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:tag="avg_rfield2"
-                                    android:text="@string/rfield2_klgs" />
-
-                                <TextView
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/dimen_1dp"
-                                    android:layout_marginEnd="@dimen/dimen_1dp"
-                                    android:maxLines="1"
-                                    android:text=":" />
-
-                                <TextView
-                                    android:id="@+id/tv_avg_rfield2_value"
-                                    style="@style/TextViewListItemPrimary"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/zero" />
-                            </LinearLayout>
-
-
-                            <LinearLayout
-                                android:id="@+id/ll_avg_rfield3"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginEnd="@dimen/right_margin"
-                                android:layout_marginRight="@dimen/right_margin"
-                                android:orientation="horizontal">
-
-                                <TextView
-                                    android:id="@+id/tv_avg_rfield3_label"
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:tag="avg_rfield3"
-                                    android:text="@string/rfield3_klgs" />
-
-                                <TextView
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/dimen_1dp"
-                                    android:layout_marginEnd="@dimen/dimen_1dp"
-                                    android:maxLines="1"
-                                    android:text=":" />
-
-                                <TextView
-                                    android:id="@+id/tv_avg_rfield3_value"
-                                    style="@style/TextViewListItemPrimary"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/zero" />
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/ll_price_parentLty"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/zxing_transparent"
-                    android:orientation="vertical">
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/card_margin"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvTitlePriceCheck"
-                            style="@style/HeadingStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_centerVertical="true"
-                            android:text="@string/price_check"
-                            tools:ignore="ObsoleteLayoutParam" />
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/target_top_margin"
-                            android:orientation="horizontal">
-
-                            <LinearLayout
-                                android:id="@+id/ll_price_piece"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginTop="@dimen/target_top_margin"
-                                android:layout_marginEnd="@dimen/right_margin"
-                                android:layout_marginRight="@dimen/right_margin"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/tv_price_pcTitle"
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:tag="price_piece"
-                                    android:text="@string/avail_pcs" />
-
-                                <EditText
-                                    android:id="@+id/et_price_pcValue"
-                                    style="@style/EditText_ListItem"
-                                    android:layout_width="@dimen/discount_editbox_width"
-                                    android:layout_height="0dp"
-                                    android:layout_weight="1"
-                                    android:gravity="start"
-                                    android:text="@string/zero" />
-                            </LinearLayout>
-
-
-                            <LinearLayout
-                                android:id="@+id/ll_price_case"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/right_margin"
-                                android:layout_marginTop="@dimen/target_top_margin"
-                                android:layout_marginEnd="@dimen/right_margin"
-                                android:layout_toEndOf="@+id/ll_price_piece"
-                                android:layout_toRightOf="@+id/ll_price_piece"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/tv_price_csTitle"
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:tag="price_case"
-                                    android:text="@string/avail_cases" />
-
-                                <EditText
-                                    android:id="@+id/et_price_csValue"
-                                    style="@style/EditText_ListItem"
-                                    android:layout_width="@dimen/discount_editbox_width"
-                                    android:layout_height="0dp"
-                                    android:layout_weight="1"
-                                    android:gravity="start"
-                                    android:text="@string/zero" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/ll_price_outer"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/right_margin"
-                                android:layout_marginLeft="@dimen/right_margin"
-                                android:layout_marginTop="@dimen/target_top_margin"
-                                android:layout_toEndOf="@+id/ll_price_case"
-                                android:layout_toRightOf="@+id/ll_price_case"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/tv_price_ouTitle"
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:tag="price_outer"
-                                    android:text="@string/avail_outer" />
-
-                                <EditText
-                                    android:id="@+id/et_price_ouValue"
-                                    style="@style/EditText_ListItem"
-                                    android:layout_width="@dimen/discount_editbox_width"
-                                    android:layout_height="0dp"
-                                    android:layout_weight="1"
-                                    android:gravity="start"
-                                    android:text="@string/zero" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/ll_priceRadio_grpLty"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="@dimen/right_margin"
-                                android:layout_marginLeft="@dimen/right_margin"
-                                android:layout_marginTop="@dimen/target_top_margin"
-                                android:layout_toEndOf="@+id/ll_price_outer"
-                                android:layout_toRightOf="@+id/ll_price_outer"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/tv_change_price"
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:text="@string/change_in_price" />
-
-                                <RadioGroup
-                                    android:id="@+id/rg_price"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="0dp"
-                                    android:layout_marginTop="8dp"
-                                    android:layout_weight="1"
-                                    android:orientation="horizontal">
-
-                                    <RadioButton
-                                        android:id="@+id/priceYes"
-                                        style="@style/TextViewListItemPrimary"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_marginEnd="@dimen/radio_margin"
-                                        android:layout_marginRight="@dimen/radio_margin"
-                                        android:button="@drawable/ic_tick_disable"
-                                        android:paddingStart="@dimen/plano_rb_padding"
-                                        android:paddingLeft="@dimen/plano_rb_padding"
-                                        android:text="@string/yes"
-                                        tools:ignore="RtlSymmetry" />
-
-                                    <RadioButton
-                                        android:id="@+id/priceno"
-                                        style="@style/TextViewListItemPrimary"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:layout_toEndOf="@id/priceYes"
-                                        android:layout_toRightOf="@id/priceYes"
-                                        android:button="@drawable/ic_cross_disable"
-                                        android:paddingStart="@dimen/plano_rb_padding"
-                                        android:paddingEnd="@dimen/plano_rb_padding"
-                                        android:text="@string/no"
-                                        tools:ignore="ObsoleteLayoutParam" />
-
-                                </RadioGroup>
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/ll_priceMrp_piece"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/ll_price_piece"
-                                android:layout_marginTop="@dimen/target_top_margin"
-                                android:layout_marginEnd="@dimen/right_margin"
-                                android:layout_marginRight="@dimen/right_margin"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/tv_priceMrp_pcTitle"
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:tag="priceMrp_pcLabel"
-                                    android:text="@string/avail_pcs" />
-
-                                <EditText
-                                    android:id="@+id/et_priceMrp_pcValue"
-                                    style="@style/EditText_ListItem"
-                                    android:layout_width="@dimen/discount_editbox_width"
-                                    android:layout_height="0dp"
-                                    android:layout_weight="1"
-                                    android:gravity="start"
-                                    android:text="@string/zero" />
-
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/ll_priceMrp_case"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/ll_price_case"
-                                android:layout_marginStart="@dimen/right_margin"
-                                android:layout_marginTop="@dimen/target_top_margin"
-                                android:layout_marginEnd="@dimen/right_margin"
-                                android:layout_toEndOf="@+id/ll_price_piece"
-                                android:layout_toRightOf="@+id/ll_price_piece"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/tv_priceMrp_csTitle"
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:tag="priceMrp_csLabel"
-                                    android:text="@string/avail_cases" />
-
-                                <EditText
-                                    android:id="@+id/et_priceMrp_csValue"
-                                    style="@style/EditText_ListItem"
-                                    android:layout_width="@dimen/discount_editbox_width"
-                                    android:layout_height="0dp"
-                                    android:layout_weight="1"
-                                    android:gravity="start"
-                                    android:text="@string/zero" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:id="@+id/ll_priceMrp_outer"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/ll_price_outer"
-                                android:layout_marginStart="@dimen/right_margin"
-                                android:layout_marginLeft="@dimen/right_margin"
-                                android:layout_marginTop="@dimen/target_top_margin"
-                                android:layout_toEndOf="@+id/ll_price_case"
-                                android:layout_toRightOf="@+id/ll_price_case"
-                                android:orientation="vertical">
-
-                                <TextView
-                                    android:id="@+id/tv_priceMrp_ouTitle"
-                                    style="@style/TextViewListItemCaption"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:tag="priceMrp_ouLabel"
-                                    android:text="@string/avail_outer" />
-
-                                <EditText
-                                    android:id="@+id/et_priceMrp_ouValue"
-                                    style="@style/EditText_ListItem"
-                                    android:layout_width="@dimen/discount_editbox_width"
-                                    android:layout_height="0dp"
-                                    android:layout_weight="1"
-                                    android:gravity="start"
-                                    android:text="@string/zero" />
-                            </LinearLayout>
-
-
-                        </RelativeLayout>
-
-                    </LinearLayout>
-                </LinearLayout>
-
-                <View
-                    android:id="@+id/view_dotted_line2"
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="@dimen/dimens_2dp"
-                    android:background="@color/light_gray" />
-
-                <LinearLayout
-                    android:id="@+id/ll_expriyCheck_parentLty"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/zxing_transparent"
-                    android:orientation="vertical">
-
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/card_margin"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/tvTitleExpiryCheck"
-                            style="@style/HeadingStyle"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentStart="true"
-                            android:layout_alignParentLeft="true"
-                            android:layout_centerVertical="true"
-                            android:text="@string/expiry_check"
-                            tools:ignore="ObsoleteLayoutParam" />
-
-                        <RelativeLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/target_top_margin"
-                            android:orientation="horizontal">
-
-
-                            <RelativeLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_alignParentStart="true"
-                                android:layout_alignParentLeft="true"
-                                android:layout_marginTop="@dimen/target_top_margin">
-
-                                <LinearLayout
-                                    android:id="@+id/ll_exp_piece"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginEnd="@dimen/right_margin"
-                                    android:layout_marginRight="@dimen/right_margin"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:id="@+id/tv_exp_pcTitle"
-                                        style="@style/TextViewListItemCaption"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:tag="expiry_piece"
-                                        android:text="@string/avail_pcs" />
-
-                                    <EditText
-                                        android:id="@+id/et_exp_pcValue"
-                                        style="@style/EditText_ListItem"
-                                        android:layout_width="@dimen/discount_editbox_width"
-                                        android:layout_height="0dp"
-                                        android:layout_weight="1"
-                                        android:gravity="start"
-                                        android:text="@string/zero" />
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:id="@+id/ll_exp_case"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginEnd="@dimen/right_margin"
-                                    android:layout_marginRight="@dimen/right_margin"
-                                    android:layout_toEndOf="@+id/ll_exp_piece"
-                                    android:layout_toRightOf="@+id/ll_exp_piece"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:id="@+id/tv_exp_csTitle"
-                                        style="@style/TextViewListItemCaption"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:tag="expiry_case"
-                                        android:text="@string/avail_cases" />
-
-                                    <EditText
-                                        android:id="@+id/et_exp_csValue"
-                                        style="@style/EditText_ListItem"
-                                        android:layout_width="@dimen/discount_editbox_width"
-                                        android:layout_height="0dp"
-                                        android:layout_weight="1"
-                                        android:gravity="start"
-                                        android:text="@string/zero" />
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:id="@+id/ll_exp_outer"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="@dimen/right_margin"
-                                    android:layout_marginLeft="@dimen/right_margin"
-                                    android:layout_toEndOf="@+id/ll_exp_case"
-                                    android:layout_toRightOf="@+id/ll_exp_case"
-                                    android:orientation="vertical">
-
-                                    <TextView
-                                        android:id="@+id/tv_exp_ouTitle"
-                                        style="@style/TextViewListItemCaption"
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
-                                        android:tag="expiry_outer"
-                                        android:text="@string/avail_outer" />
-
-                                    <EditText
-                                        android:id="@+id/et_exp_ouValue"
-                                        style="@style/EditText_ListItem"
-                                        android:layout_width="@dimen/discount_editbox_width"
-                                        android:layout_height="0dp"
-                                        android:layout_weight="1"
-                                        android:gravity="start"
-                                        android:text="@string/zero" />
-                                </LinearLayout>
-
-                            </RelativeLayout>
-                        </RelativeLayout>
-
-                    </LinearLayout>
-                </LinearLayout>
-            </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
-
-
-        <include
-            android:id="@+id/keypad"
-            layout="@layout/keypad"
-            android:layout_width="match_parent"
-            android:layout_above="@+id/footer"
-            android:layout_height="wrap_content" />
-
-        <LinearLayout
-            android:id="@+id/footer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="?attr/customFooterBackgroundColor"
-            android:orientation="vertical">
+            android:padding="@dimen/_10sdp">
 
             <TextView
+                android:id="@+id/tvTitleAvaialabilty"
+                style="@style/HeadingStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/combined_availability"
+                app:layout_constraintBottom_toTopOf="@+id/tv_is_distributed"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_is_distributed"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:tag="item_exp_facing"
+                android:text="@string/is_distributed"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread"
+                app:layout_constraintStart_toStartOf="@+id/tvTitleAvaialabilty"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitleAvaialabilty" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/is_distributed"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                app:layout_constraintEnd_toEndOf="@+id/tv_is_distributed"
+                app:layout_constraintStart_toStartOf="@+id/tv_is_distributed"
+                app:layout_constraintTop_toBottomOf="@+id/tv_is_distributed" />
+
+            <android.support.constraint.Group
+                android:id="@+id/dist_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_is_distributed,is_distributed" />
+
+            <TextView
+                android:id="@+id/tv_is_listed"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="item_exp_facing"
+                android:text="@string/is_Listed"
+                app:layout_constraintEnd_toStartOf="@+id/tv_availability"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_is_distributed"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitleAvaialabilty"
+                app:layout_constraintTop_toTopOf="@+id/tv_is_distributed" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/is_listed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="@+id/tv_is_listed"
+                app:layout_constraintLeft_toRightOf="@+id/is_distributed"
+                app:layout_constraintStart_toStartOf="@+id/tv_is_listed"
+                app:layout_constraintTop_toBottomOf="@+id/tv_is_listed" />
+
+            <android.support.constraint.Group
+                android:id="@+id/is_listed_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_is_listed,is_listed" />
+
+            <TextView
+                android:id="@+id/tv_availability"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="item_exp_facing"
+                android:text="@string/avail"
+                app:layout_constraintEnd_toStartOf="@+id/tv_price_tag"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_is_listed"
+                app:layout_constraintTop_toBottomOf="@+id/chk_availability"
+                app:layout_constraintTop_toTopOf="@+id/tv_is_listed" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/chk_availability"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="@+id/tv_availability"
+                app:layout_constraintLeft_toRightOf="@+id/is_listed"
+                app:layout_constraintStart_toStartOf="@+id/tv_availability"
+                app:layout_constraintTop_toBottomOf="@+id/tv_availability" />
+
+            <android.support.constraint.Group
+                android:id="@+id/avail_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_availability,chk_availability" />
+
+            <TextView
+                android:id="@+id/tv_price_tag"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="item_exp_facing"
+                android:text="@string/compliance"
+                app:layout_constraintEnd_toStartOf="@+id/tv_reason"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_availability"
+                app:layout_constraintTop_toBottomOf="@+id/chk_availability"
+                app:layout_constraintTop_toTopOf="@+id/tv_is_listed" />
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/chk_price_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                app:layout_constraintEnd_toEndOf="@+id/tv_price_tag"
+                app:layout_constraintLeft_toRightOf="@+id/is_listed"
+                app:layout_constraintStart_toStartOf="@+id/tv_price_tag"
+                app:layout_constraintTop_toBottomOf="@+id/tv_price_tag" />
+
+            <android.support.constraint.Group
+                android:id="@+id/price_tag_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_price_tag,chk_price_tag" />
+
+            <TextView
+                android:id="@+id/tv_reason"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="price_tag"
+                android:text="@string/reason"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_price_tag"
+                app:layout_constraintTop_toBottomOf="@+id/tv_price_tag"
+                app:layout_constraintTop_toTopOf="@+id/tv_price_tag" />
+
+            <Spinner
+                android:id="@+id/mreason"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:gravity="start|center"
+                android:overlapAnchor="false"
+                app:layout_constraintLeft_toRightOf="@+id/chk_price_tag"
+                app:layout_constraintStart_toEndOf="@+id/tv_reason"
+                app:layout_constraintStart_toStartOf="@+id/tv_reason"
+                app:layout_constraintTop_toBottomOf="@+id/tv_reason"
+                tools:ignore="UnusedAttribute" />
+
+            <android.support.constraint.Group
+                android:id="@+id/reason_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_reason,mreason" />
+
+            <View
+                android:id="@+id/view_dotted_line_avg"
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/light_gray" />
+                android:background="@color/light_gray"
+                app:layout_constraintLeft_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tvTitleAvaialabilty"
+                app:layout_constraintTop_toBottomOf="@+id/guideline1" />
 
-            <Button
-                android:id="@+id/btn_save"
-                style="?attr/roundedCustomButtonSmall"
-                android:layout_gravity="end"
-                android:layout_margin="@dimen/target_top_margin"
-                android:gravity="center"
-                android:text="@string/done"
-                android:textAllCaps="false" />
-        </LinearLayout>
 
-</RelativeLayout>
+
+            <TextView
+                android:id="@+id/tvTitleCurrentStock"
+                style="@style/HeadingStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/current_stock"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/guideline1" />
+
+
+            <TextView
+                android:id="@+id/tv_avail_pctitle"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="start"
+                android:tag="@string/item_piece"
+                android:text="@string/avail_pcs"
+                android:textAlignment="textStart"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitleCurrentStock" />
+
+            <EditText
+                android:id="@+id/et_avail_pcValue"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/discount_editbox_width"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:textAlignment="textStart"
+                app:layout_constraintStart_toStartOf="@+id/tv_avail_pctitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_avail_pctitle" />
+
+
+            <android.support.constraint.Group
+                android:id="@+id/cs_piece_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_avail_pctitle,et_avail_pcValue" />
+
+            <TextView
+                android:id="@+id/tv_avail_cstitle"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="@string/item_case"
+                android:text="@string/avail_cases"
+                app:layout_constraintEnd_toStartOf="@+id/tv_avail_outitle"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_avail_pctitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitleCurrentStock"
+                app:layout_constraintTop_toTopOf="@+id/tv_avail_pctitle" />
+
+            <EditText
+                android:id="@+id/et_avail_csValue"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/discount_editbox_width"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:textAlignment="textStart"
+                app:layout_constraintLeft_toRightOf="@+id/tv_avail_pctitle"
+                app:layout_constraintStart_toStartOf="@+id/tv_avail_cstitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_avail_cstitle" />
+
+            <android.support.constraint.Group
+                android:id="@+id/cs_case_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_avail_cstitle,et_avail_csValue" />
+
+            <TextView
+                android:id="@+id/tv_avail_outitle"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="@string/item_outer"
+                android:text="@string/avail_outer"
+                app:layout_constraintEnd_toStartOf="@+id/tv_faceqty_cstitle"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_avail_cstitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitleCurrentStock"
+                app:layout_constraintTop_toTopOf="@+id/tv_avail_cstitle" />
+
+            <EditText
+                android:id="@+id/et_avail_ouValue"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/discount_editbox_width"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:textAlignment="textStart"
+                app:layout_constraintLeft_toRightOf="@+id/et_avail_csValue"
+                app:layout_constraintStart_toStartOf="@+id/tv_avail_outitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_avail_outitle" />
+
+            <android.support.constraint.Group
+                android:id="@+id/cs_outer_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_avail_outitle,et_avail_ouValue" />
+
+
+            <TextView
+                android:id="@+id/tv_faceqty_cstitle"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="item_exp_facing"
+                android:text="@string/facing"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_avail_outitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitleCurrentStock"
+                app:layout_constraintTop_toTopOf="@+id/tv_avail_outitle" />
+
+            <EditText
+                android:id="@+id/et_faceqty_csValue"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/discount_editbox_width"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="@string/zero"
+                android:textAlignment="textStart"
+                app:layout_constraintLeft_toRightOf="@+id/et_avail_ouValue"
+                app:layout_constraintStart_toStartOf="@+id/tv_faceqty_cstitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_faceqty_cstitle" />
+
+            <android.support.constraint.Group
+                android:id="@+id/facing_qty_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_faceqty_cstitle,et_faceqty_csValue" />
+
+
+            <View
+                android:id="@+id/view_dotted_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/light_gray"
+                app:layout_constraintLeft_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/guideline2" />
+
+
+
+            <TextView
+                android:id="@+id/tv_avg_qty_label"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:tag="avg_qty"
+                android:text="@string/qty"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_avail_pctitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/view_dotted_line" />
+
+
+            <TextView
+                android:id="@+id/tv_avg_qty_value"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/zero"
+                app:layout_constraintEnd_toStartOf="@+id/tv_avg_rfield1_label"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_avg_qty_label"
+                app:layout_constraintTop_toBottomOf="@+id/view_dotted_line"
+                app:layout_constraintTop_toTopOf="@+id/tv_avg_qty_label" />
+
+            <TextView
+                android:id="@+id/tv_avg_rfield1_label"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="avg_rfield1"
+                android:text="@string/rfield1_klgs"
+                app:layout_constraintEnd_toStartOf="@+id/tv_avg_rfield1_value"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_avg_qty_value"
+                app:layout_constraintTop_toBottomOf="@+id/view_dotted_line"
+                app:layout_constraintTop_toTopOf="@+id/tv_avg_qty_value" />
+
+
+            <TextView
+                android:id="@+id/tv_avg_rfield1_value"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/zero"
+                app:layout_constraintEnd_toStartOf="@+id/tv_avg_rfield2_label"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_avg_rfield1_label"
+                app:layout_constraintTop_toBottomOf="@+id/view_dotted_line"
+                app:layout_constraintTop_toTopOf="@+id/tv_avg_rfield1_label" />
+
+            <TextView
+                android:id="@+id/tv_avg_rfield2_label"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="avg_rfield2"
+                android:text="@string/rfield2_klgs"
+                app:layout_constraintEnd_toStartOf="@+id/tv_avg_rfield2_value"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_avg_rfield1_value"
+                app:layout_constraintTop_toBottomOf="@+id/view_dotted_line"
+                app:layout_constraintTop_toTopOf="@+id/tv_avg_rfield1_value" />
+
+            <TextView
+                android:id="@+id/tv_avg_rfield2_value"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/zero"
+                app:layout_constraintEnd_toStartOf="@+id/tv_avg_rfield3_label"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_avg_rfield2_label"
+                app:layout_constraintTop_toBottomOf="@+id/view_dotted_line"
+                app:layout_constraintTop_toTopOf="@+id/tv_avg_rfield2_label" />
+
+
+            <TextView
+                android:id="@+id/tv_avg_rfield3_label"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="avg_rfield3"
+                android:text="@string/rfield3_klgs"
+                app:layout_constraintEnd_toStartOf="@+id/tv_avg_rfield3_value"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_avg_rfield2_value"
+                app:layout_constraintTop_toBottomOf="@+id/view_dotted_line"
+                app:layout_constraintTop_toTopOf="@+id/tv_avg_rfield2_value" />
+
+            <TextView
+                android:id="@+id/tv_avg_rfield3_value"
+                style="@style/TextViewListItemPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/zero"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_avg_rfield3_label"
+                app:layout_constraintTop_toBottomOf="@+id/view_dotted_line"
+                app:layout_constraintTop_toTopOf="@+id/tv_avg_rfield3_label" />
+
+
+            <android.support.constraint.Group
+                android:id="@+id/tv_avg_day_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_avg_qty_label,tv_avg_qty_value
+                ,tv_avg_rfield1_label,tv_avg_rfield1_value
+                ,tv_avg_rfield2_label,tv_avg_rfield2_value
+                ,tv_avg_rfield3_label,tv_avg_rfield3_value" />
+
+
+            <TextView
+                android:id="@+id/tvTitlePriceCheck"
+                style="@style/HeadingStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/price_check"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_avg_qty_label"
+                tools:ignore="ObsoleteLayoutParam" />
+
+
+            <TextView
+                android:id="@+id/tv_price_pcTitle"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:tag="price_piece"
+                android:text="@string/avail_pcs"
+                app:layout_constraintEnd_toStartOf="@+id/tv_price_csTitle"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitlePriceCheck" />
+
+            <EditText
+                android:id="@+id/et_price_pcValue"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/discount_editbox_width"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:text="@string/zero"
+                app:layout_constraintStart_toStartOf="@+id/tv_price_pcTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_price_pcTitle" />
+
+
+            <android.support.constraint.Group
+                android:id="@+id/pc_piece_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_price_pcTitle,et_price_pcValue" />
+
+            <TextView
+                android:id="@+id/tv_price_csTitle"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="price_case"
+                android:text="@string/avail_cases"
+                app:layout_constraintEnd_toStartOf="@+id/tv_price_ouTitle"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_price_pcTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitlePriceCheck"
+                app:layout_constraintTop_toTopOf="@+id/tv_price_pcTitle" />
+
+            <EditText
+                android:id="@+id/et_price_csValue"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/discount_editbox_width"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:text="@string/zero"
+                app:layout_constraintLeft_toRightOf="@+id/et_price_pcValue"
+                app:layout_constraintStart_toStartOf="@+id/tv_price_csTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_price_csTitle" />
+
+            <android.support.constraint.Group
+                android:id="@+id/pc_case_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_price_csTitle,et_price_csValue" />
+
+            <TextView
+                android:id="@+id/tv_price_ouTitle"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="price_outer"
+                android:text="@string/avail_outer"
+                app:layout_constraintEnd_toStartOf="@+id/tv_change_price"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_price_csTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitlePriceCheck"
+                app:layout_constraintTop_toTopOf="@+id/tv_price_csTitle" />
+
+            <EditText
+                android:id="@+id/et_price_ouValue"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/discount_editbox_width"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:text="@string/zero"
+                app:layout_constraintLeft_toRightOf="@+id/et_price_csValue"
+                app:layout_constraintStart_toStartOf="@+id/tv_price_ouTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_price_ouTitle" />
+
+            <android.support.constraint.Group
+                android:id="@+id/pc_outer_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_price_ouTitle,et_price_ouValue" />
+
+            <TextView
+                android:id="@+id/tv_change_price"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/change_in_price"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_price_ouTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitlePriceCheck"
+                app:layout_constraintTop_toTopOf="@+id/tv_price_ouTitle" />
+
+            <RadioGroup
+                android:id="@+id/rg_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintLeft_toRightOf="@+id/et_price_ouValue"
+                app:layout_constraintStart_toStartOf="@+id/tv_change_price"
+                app:layout_constraintTop_toBottomOf="@+id/tv_change_price">
+
+                <RadioButton
+                    android:id="@+id/priceYes"
+                    style="@style/TextViewListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:button="@drawable/ic_tick_disable"
+                    android:text="@string/yes" />
+
+                <RadioButton
+                    android:id="@+id/priceno"
+                    style="@style/TextViewListItemSecondary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/_6sdp"
+                    android:layout_marginLeft="@dimen/_6sdp"
+                    android:button="@drawable/ic_cross_disable"
+                    android:text="@string/no" />
+            </RadioGroup>
+
+
+            <android.support.constraint.Group
+                android:id="@+id/price_change_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_change_price,rg_price" />
+
+
+            <TextView
+                android:id="@+id/tv_priceMrp_pcTitle"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:tag="priceMrp_pcLabel"
+                android:text="@string/avail_pcs"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintHorizontal_chainStyle="spread_inside"
+                app:layout_constraintStart_toEndOf="@+id/tv_price_pcTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/et_price_pcValue" />
+
+            <EditText
+                android:id="@+id/et_priceMrp_pcValue"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/discount_editbox_width"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:text="@string/zero"
+                app:layout_constraintStart_toStartOf="@+id/tv_priceMrp_pcTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_priceMrp_pcTitle" />
+
+            <android.support.constraint.Group
+                android:id="@+id/pc_mrp_piece_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_priceMrp_pcTitle,et_priceMrp_pcValue" />
+
+            <TextView
+                android:id="@+id/tv_priceMrp_csTitle"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="priceMrp_csLabel"
+                android:text="@string/avail_cases"
+                app:layout_constraintEnd_toStartOf="@+id/tv_priceMrp_ouTitle"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_priceMrp_pcTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_priceMrp_pcTitle"
+                app:layout_constraintTop_toTopOf="@+id/tv_priceMrp_pcTitle" />
+
+            <EditText
+                android:id="@+id/et_priceMrp_csValue"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/discount_editbox_width"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:text="@string/zero"
+                app:layout_constraintLeft_toRightOf="@+id/et_priceMrp_pcValue"
+                app:layout_constraintStart_toStartOf="@+id/tv_priceMrp_csTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_priceMrp_csTitle" />
+
+            <android.support.constraint.Group
+                android:id="@+id/pc_mrp_case_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_priceMrp_csTitle,et_priceMrp_csValue" />
+
+            <TextView
+                android:id="@+id/tv_priceMrp_ouTitle"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="priceMrp_ouLabel"
+                android:text="@string/avail_outer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/rg_price"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_priceMrp_csTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_priceMrp_pcTitle"
+                app:layout_constraintTop_toTopOf="@+id/tv_priceMrp_csTitle" />
+
+            <EditText
+                android:id="@+id/et_priceMrp_ouValue"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/discount_editbox_width"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="start"
+                android:text="@string/zero"
+                app:layout_constraintLeft_toRightOf="@+id/et_priceMrp_csValue"
+                app:layout_constraintStart_toStartOf="@+id/tv_priceMrp_ouTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_priceMrp_ouTitle" />
+
+            <android.support.constraint.Group
+                android:id="@+id/pc_mrp_outer_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_priceMrp_ouTitle,et_priceMrp_ouValue" />
+
+            <View
+                android:id="@+id/view_dotted_line2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/light_gray"
+                app:layout_constraintLeft_toRightOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/guideline3" />
+
+
+            <android.support.constraint.Group
+                android:id="@+id/price_check_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tvTitlePriceCheck
+                ,view_dotted_line2" />
+
+
+
+
+            <TextView
+                android:id="@+id/tvTitleExpiryCheck"
+                style="@style/HeadingStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:text="@string/expiry_check"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/guideline3"
+                tools:ignore="ObsoleteLayoutParam" />
+
+            <TextView
+                android:id="@+id/tv_exp_pcTitle"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:tag="expiry_piece"
+                android:text="@string/avail_pcs"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_priceMrp_pcTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitleExpiryCheck" />
+
+            <EditText
+                android:id="@+id/et_exp_pcValue"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/discount_editbox_width"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="@string/zero"
+                app:layout_constraintLeft_toLeftOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/tv_exp_pcTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_exp_pcTitle" />
+
+            <android.support.constraint.Group
+                android:id="@+id/exp_piece_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_exp_pcTitle,et_exp_pcValue" />
+
+            <TextView
+                android:id="@+id/tv_exp_csTitle"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="expiry_case"
+                android:text="@string/avail_cases"
+                app:layout_constraintEnd_toStartOf="@+id/tv_exp_ouTitle"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_exp_pcTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitleExpiryCheck"
+                app:layout_constraintTop_toTopOf="@+id/tv_exp_pcTitle" />
+
+            <EditText
+                android:id="@+id/et_exp_csValue"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/discount_editbox_width"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="@string/zero"
+                app:layout_constraintLeft_toRightOf="@+id/et_exp_pcValue"
+                app:layout_constraintStart_toStartOf="@+id/tv_exp_csTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_exp_csTitle" />
+
+            <android.support.constraint.Group
+                android:id="@+id/exp_case_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_exp_csTitle,et_exp_csValue" />
+
+            <TextView
+                android:id="@+id/tv_exp_ouTitle"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="expiry_outer"
+                android:text="@string/avail_outer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toEndOf="@+id/tv_exp_csTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitleExpiryCheck"
+                app:layout_constraintTop_toTopOf="@+id/tv_exp_csTitle" />
+
+            <EditText
+                android:id="@+id/et_exp_ouValue"
+                style="@style/EditText_ListItem"
+                android:layout_width="@dimen/discount_editbox_width"
+                android:layout_height="wrap_content"
+                android:gravity="start"
+                android:text="@string/zero"
+                app:layout_constraintLeft_toRightOf="@+id/et_exp_csValue"
+                app:layout_constraintStart_toStartOf="@+id/tv_exp_ouTitle"
+                app:layout_constraintTop_toBottomOf="@+id/tv_exp_ouTitle" />
+
+            <android.support.constraint.Group
+                android:id="@+id/exp_outer_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="tv_exp_ouTitle,et_exp_ouValue" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.18" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.40" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.80" />
+
+
+        </android.support.constraint.ConstraintLayout>
+
+    </ScrollView>
+
+    <include
+        android:id="@+id/keypad"
+        layout="@layout/keypad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/footer"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <LinearLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?attr/customFooterBackgroundColor"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/light_gray" />
+
+        <Button
+            android:id="@+id/btn_save"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_gravity="end"
+            android:layout_margin="@dimen/target_top_margin"
+            android:gravity="center"
+            android:text="@string/done"
+            android:textAllCaps="false" />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
