@@ -513,7 +513,7 @@ public class VanUnLoadModuleHelper {
      * Configuration enable
      */
     public void vanUnloadFreeSiHAutomatically(Context context) {
-        String columns = "uid,pid,pname,batchid,batchno,sih,caseqty,pcsqty,outerqty,duomqty,douomqty,dUomId,dOuomid,date,type";
+        String columns = "uid,pid,pname,batchid,batchno,sih,caseqty,pcsqty,outerqty,duomqty,douomqty,dUomId,dOuomid,date,type,isFree";
         String uid = bmodel.userMasterHelper.getUserMasterBO().getUserid()
                 + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
@@ -556,7 +556,7 @@ public class VanUnLoadModuleHelper {
                             + ","
                             + StringUtils.QT(bmodel.userMasterHelper
                             .getUserMasterBO().getDownloadDate()) + ","
-                            + 1;
+                            + 0 + "," + 1;
 
                     db.insertSQL(DataMembers.tbl_vanunload_details, columns,
                             values);
