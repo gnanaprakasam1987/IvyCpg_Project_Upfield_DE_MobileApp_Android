@@ -1,11 +1,8 @@
 package com.ivy.ui.retailer.data;
 
-import android.database.Cursor;
-
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 
 import java.io.BufferedReader;

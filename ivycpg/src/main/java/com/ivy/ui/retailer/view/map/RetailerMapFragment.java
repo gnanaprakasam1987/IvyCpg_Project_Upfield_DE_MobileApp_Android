@@ -1,16 +1,11 @@
 package com.ivy.ui.retailer.view.map;
 
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.support.annotation.NonNull;
 import android.support.constraint.Group;
-import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,17 +26,16 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ivy.core.base.view.BaseMapFragment;
-import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.ui.offlineplan.addplan.view.AddPlanDialogFragment;
 import com.ivy.ui.retailer.RetailerContract;
 import com.ivy.ui.retailer.di.DaggerRetailerComponent;
 import com.ivy.ui.retailer.di.RetailerModule;
 import com.ivy.ui.retailer.presenter.RetailerPresenterImpl;
-import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.NetworkUtils;
 
@@ -105,45 +99,9 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     @BindView(R.id.to_txt_value)
     TextView toTv;
 
-    @BindView(R.id.add_plan)
-    TextView addPlan;
+    private RetailerMasterBO retailerMasterBO;
 
-    @BindView(R.id.tv_outlet_name)
-    TextView tvOutletName;
-
-    @BindView(R.id.tv_outlet_address)
-    TextView tvOutletAddress;
-
-    @BindView(R.id.tv_last_visit_date)
-    TextView tvLastVisitDate;
-
-    @BindView(R.id.tv_visit_time)
-    TextView tvStartVisitTime;
-
-    @BindView(R.id.tv_visit_date)
-    TextView tvStartVisitDate;
-
-    @BindView(R.id.tv_visit_end_date)
-    TextView tvVisitEndDate;
-
-    @BindView(R.id.tv_visit_end_time)
-    TextView tvVisitEndTime;
-
-    @BindView(R.id.visitElementGroup)
-    Group visitElementGroup;
-
-    @BindView(R.id.outlet_plan_window)
-    CardView outletPlanWindow;
-
-    @BindView(R.id.save_plan)
-    TextView savePlan;
-
-    @BindView(R.id.profile_plan)
-    ImageView profilePlan;
-
-    private BottomSheetBehavior bottomSheetBehavior;
-
-    RetailerMasterBO retailerMasterBO;
+    private AddPlanDialogFragment addPlanDialogFragment;
 
     @Inject
     RetailerPresenterImpl<RetailerContract.RetailerView> presenter;
@@ -193,93 +151,50 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             bottomLayout.getLayoutParams().height = (int) getResources().getDimension(R.dimen.ratiler_map_bottomview_height);
         }
 
-        walkDirBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isByWalk = true;
-                isClickable = true;
-                clearRoute();
-                if (mClick == 2) {
-                    if (isSameLocation(rmarker))
-                        drawRoute(rmarker);
-                }
-                //car icon's
-                walkDirBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.map_button_round_corner_white));
-                walkDirBtn.setColorFilter(ContextCompat.getColor(context, R.color.highlighter));
-                //walk iocn's
-                carDirBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.button_round_corner_transparent));
-                carDirBtn.setColorFilter(ContextCompat.getColor(context, R.color.divider_view_color));
-            }
-        });
+        walkDirBtn.setOnClickListener(directionWalkListener);
 
-        carDirBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isByWalk = false;
-                isClickable = true;
-                clearRoute();
-                if (mClick == 2) {
-                    if (isSameLocation(rmarker))
-                        drawRoute(rmarker);
-                }
-                //car icon's
-                carDirBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.map_button_round_corner_white));
-                carDirBtn.setColorFilter(ContextCompat.getColor(context, R.color.highlighter));
-                //walk iocn's
-                walkDirBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.button_round_corner_transparent));
-                walkDirBtn.setColorFilter(ContextCompat.getColor(context, R.color.divider_view_color));
-            }
-        });
+        carDirBtn.setOnClickListener(directionCarListener);
 
-        tvOutletName.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                profileClicked(retailerMasterBO);
-            }
-        });
-
-        bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.outlet_plan_window));
-
-        addPlan.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (addPlan.getText().toString().equalsIgnoreCase(getString(R.string.add_plan))){
-
-                    visitElementGroup.setVisibility(View.VISIBLE);
-
-                    addPlan.setVisibility(View.GONE);
-
-                    savePlan.setVisibility(View.VISIBLE);
-
-                    setViewBackground(ContextCompat.getDrawable(context,R.drawable.edittext_bottom_border));
-
-                    tvStartVisitDate.setText(DateTimeUtils.now(4));
-                    tvVisitEndDate.setText(DateTimeUtils.now(4));
-
-                    tvStartVisitTime.setText(DateTimeUtils.now(0));
-                    tvVisitEndTime.setText(DateTimeUtils.now(0));
-
-                }else{
-
-                    addPlan.setVisibility(View.GONE);
-
-                    savePlan.setVisibility(View.VISIBLE);
-
-                    setViewBackground(ContextCompat.getDrawable(context,R.drawable.edittext_bottom_border));
-
-                    tvStartVisitDate.setText(DateTimeUtils.now(4));
-                    tvVisitEndDate.setText(DateTimeUtils.now(4));
-
-                    tvStartVisitTime.setText(DateTimeUtils.now(0));
-                    tvVisitEndTime.setText(DateTimeUtils.now(0));
-                }
-
-                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED)
-                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            }
-        });
     }
 
+
+    private View.OnClickListener directionWalkListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            isByWalk = true;
+            isClickable = true;
+            clearRoute();
+            if (mClick == 2) {
+                if (isSameLocation(rmarker))
+                    drawRoute(rmarker);
+            }
+            //car icon's
+            walkDirBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.map_button_round_corner_white));
+            walkDirBtn.setColorFilter(ContextCompat.getColor(context, R.color.highlighter));
+            //walk iocn's
+            carDirBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.button_round_corner_transparent));
+            carDirBtn.setColorFilter(ContextCompat.getColor(context, R.color.divider_view_color));
+        }
+    };
+
+    private View.OnClickListener directionCarListener =new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            isByWalk = false;
+            isClickable = true;
+            clearRoute();
+            if (mClick == 2) {
+                if (isSameLocation(rmarker))
+                    drawRoute(rmarker);
+            }
+            //car icon's
+            carDirBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.map_button_round_corner_white));
+            carDirBtn.setColorFilter(ContextCompat.getColor(context, R.color.highlighter));
+            //walk iocn's
+            walkDirBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.button_round_corner_transparent));
+            walkDirBtn.setColorFilter(ContextCompat.getColor(context, R.color.divider_view_color));
+        }
+    };
 
     private CompoundButton.OnCheckedChangeListener storeFilterCheckListener = new CompoundButton.OnCheckedChangeListener() {
         @Override
@@ -288,7 +203,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             if (getMap() != null)
                 getMap().clear();
 
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+            if (addPlanDialogFragment != null && addPlanDialogFragment.isVisible())
+                addPlanDialogFragment.dismiss();
 
             builder = new LatLngBounds.Builder();
             isFocusRetailer = false;
@@ -302,13 +218,6 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             }
         }
     };
-
-    private void setViewBackground(Drawable viewBackground){
-        tvStartVisitDate.setBackground(viewBackground);
-        tvVisitEndDate.setBackground(viewBackground);
-        tvStartVisitTime.setBackground(viewBackground);
-        tvVisitEndTime.setBackground(viewBackground);
-    }
 
     @OnClick(R.id.clear_route_id)
     void clearRouteButton(){
@@ -359,36 +268,6 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     protected void setUpViews() {
         setUpToolbar(screenTitle);
         loadMap();
-
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-
-        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                switch (newState) {
-
-                    case BottomSheetBehavior.STATE_COLLAPSED:
-                        savePlan.setVisibility(View.GONE);
-                        if (!"Y".equalsIgnoreCase(retailerMasterBO.getIsVisited()))
-                            addPlan.setVisibility(View.VISIBLE);
-
-                        if (!"Y".equalsIgnoreCase(retailerMasterBO.getIsVisited())
-                                && retailerMasterBO.getIsToday() != 1 && !"Y".equalsIgnoreCase(retailerMasterBO.getIsDeviated()))
-                            visitElementGroup.setVisibility(View.GONE);
-
-                        setViewBackground(null);
-
-                        break;
-
-                    default:
-                        break;
-                }
-            }
-
-            @Override
-            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-            }
-        });
     }
 
     @Override
@@ -547,41 +426,11 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         }else {
             marker.showInfoWindow();
 
-            setPlanWindowValues(retailerMasterBO);
+            addPlanDialogFragment = new AddPlanDialogFragment(retailerMasterBO);
+            addPlanDialogFragment.show(((FragmentActivity)context).getSupportFragmentManager(),
+                    "add_plan_fragment");
         }
         return false;
-    }
-
-    private void setPlanWindowValues(RetailerMasterBO retailerMasterBO){
-
-        setViewBackground(null);
-
-        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_HIDDEN) {
-            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-        }
-
-        if ("Y".equals(retailerMasterBO.getIsVisited())
-                || retailerMasterBO.getIsToday() == 1
-                || "Y".equals(retailerMasterBO.getIsDeviated())) {
-
-            visitElementGroup.setVisibility(View.VISIBLE);
-
-            tvLastVisitDate.setText(retailerMasterBO.getLastVisitDate());
-
-            if (!"Y".equals(retailerMasterBO.getIsVisited())) {
-                addPlan.setVisibility(View.VISIBLE);
-                addPlan.setText(getString(R.string.edit));
-            }else
-                addPlan.setVisibility(View.GONE);
-
-        }else {
-            visitElementGroup.setVisibility(View.GONE);
-            addPlan.setVisibility(View.VISIBLE);
-            addPlan.setText(getString(R.string.add_plan));
-        }
-
-        tvOutletName.setText(retailerMasterBO.getRetailerName());
-        tvOutletAddress.setText(retailerMasterBO.getAddress1());
     }
 
     @Override
@@ -622,7 +471,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
                 if (legendGroup.getVisibility() == View.VISIBLE)
                     legendGroup.setVisibility(View.GONE);
 
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                if (addPlanDialogFragment != null && addPlanDialogFragment.isVisible())
+                    addPlanDialogFragment.dismiss();
 
             }
         });
@@ -659,17 +509,6 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             return infoWindow;
         }
 
-    }
-
-    private void profileClicked(RetailerMasterBO startVisitBo){
-        presenter.setRetailerMasterBo(startVisitBo);
-        Intent i = new Intent(context, ProfileActivity.class);
-        i.putExtra("From", "RetailerMap");
-        i.putExtra("locvisit", true);
-        i.putExtra("map", true);
-        i.putExtra("HideVisit", startVisitBo.getIsToday() != 1);
-
-        startActivity(i);
     }
 
     @Override

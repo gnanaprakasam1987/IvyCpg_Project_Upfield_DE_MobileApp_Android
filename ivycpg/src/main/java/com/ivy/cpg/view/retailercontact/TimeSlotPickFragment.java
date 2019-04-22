@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.retailercontact;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -7,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.retailercontact.customview.WheelDayPicker;
@@ -22,6 +24,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+@SuppressLint("ValidFragment")
 public class TimeSlotPickFragment extends DialogFragment {
 
     @NonNull
@@ -35,10 +38,34 @@ public class TimeSlotPickFragment extends DialogFragment {
 
     private Context context;
 
+    private boolean isShowDay = true, isShowStart =true; boolean isShowEnd=true;
+    private String dayTxt ="Available Day",startTxt = "Available From", endTxt="Available Till",  title = "Contact Availability";
+
+    private RetailerContactAvailBo availBo;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         this.context = context;
+    }
+
+    public TimeSlotPickFragment(){
+
+    }
+
+    public TimeSlotPickFragment(boolean isShowDay,boolean isShowStart, boolean isShowEnd,
+                                String dayTxt, String startTxt, String endTxt, String title,RetailerContactAvailBo availBo){
+        this.isShowDay = isShowDay;
+        this.isShowStart = isShowStart;
+        this.isShowEnd  = isShowEnd;
+
+        this.dayTxt = dayTxt;
+        this.startTxt = startTxt;
+        this.endTxt = endTxt;
+        this.title = title;
+
+        this.availBo = availBo;
+
     }
 
     @Nullable
@@ -46,9 +73,13 @@ public class TimeSlotPickFragment extends DialogFragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_time_slot_pick, container, false);
 
+        ((TextView)view.findViewById(R.id.day_txt)).setText(dayTxt);
+        ((TextView)view.findViewById(R.id.frm_txt)).setText(startTxt);
+        ((TextView)view.findViewById(R.id.till_txt)).setText(endTxt);
+        ((TextView)view.findViewById(R.id.head_txt)).setText(title);
+
         daysPickerFrom = view.findViewById(R.id.dayPicker);
         hoursPickerFrom = view.findViewById(R.id.hoursPicker);
-
         hoursPickerTo = view.findViewById(R.id.hoursPicker_to);
 
         pickers.addAll(Arrays.asList(
@@ -56,6 +87,35 @@ public class TimeSlotPickFragment extends DialogFragment {
                 hoursPickerFrom,
                 hoursPickerTo
         ));
+
+        if (availBo != null){
+            hoursPickerFrom.setDefault(availBo.getFrom());
+            hoursPickerTo.setDefault(availBo.getTo());
+            daysPickerFrom.setDefault(availBo.getDay());
+        }
+
+        hoursPickerFrom.setCyclic(true);
+        hoursPickerTo.setCyclic(true);
+        daysPickerFrom.setCyclic(true);
+
+        hoursPickerFrom.setCurved(true);
+        hoursPickerTo.setCurved(true);
+        daysPickerFrom.setCurved(true);
+
+        if (!isShowDay){
+            daysPickerFrom.setVisibility(View.GONE);
+            view.findViewById(R.id.day_txt).setVisibility(View.GONE);
+        }
+
+        if (!isShowStart){
+            hoursPickerFrom.setVisibility(View.GONE);
+            view.findViewById(R.id.frm_txt).setVisibility(View.GONE);
+        }
+
+        if (!isShowEnd){
+            hoursPickerTo.setVisibility(View.GONE);
+            view.findViewById(R.id.till_txt).setVisibility(View.GONE);
+        }
 
         daysPickerFrom
                 .setOnDaySelectedListener(new WheelDayPicker.OnDaySelectedListener() {
@@ -91,13 +151,6 @@ public class TimeSlotPickFragment extends DialogFragment {
                     }
                 });
 
-        hoursPickerFrom.setCyclic(true);
-        hoursPickerTo.setCyclic(true);
-        daysPickerFrom.setCyclic(true);
-
-        hoursPickerFrom.setCurved(true);
-        hoursPickerTo.setCurved(true);
-        daysPickerFrom.setCurved(true);
 
         view.findViewById(R.id.okay_btn).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,6 +173,5 @@ public class TimeSlotPickFragment extends DialogFragment {
 
         return view;
     }
-
 
 }

@@ -707,6 +707,7 @@ public abstract class WheelPicker<V> extends View {
     }
 
     public int getDefaultItemPosition() {
+
         return adapter.getData().indexOf(defaultValue);
     }
 
