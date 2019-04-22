@@ -13,6 +13,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,14 +44,6 @@ public class PriceTrackingHelper {
     public boolean IS_LOAD_PRICE_COMPETITOR = false;
     public boolean SHOW_PREV_MRP_IN_PRICE = false;
 
-    private String CODE_PRICE_UOM = "PRICE_UOM";
-    private String CODE_PRICE_COMPETITOR = "PRICE_COMPETITOR";
-    private String CODE_PRICE_SRP = "PRICE_SRP";
-    private String CODE_PRICE_CHANGED = "PRICE_CHANGED";
-    private String CODE_PRICE_COMPLIANCE = "PRICE_COMPLIANCE";
-    private String CODE_SHOW_PREV_MRP_IN_PRICE = "PRICE_LAST_VP_MRP";
-    private String CODE_PRICE_LASTVP = "PRICE_LAST_VP";
-    private String CODE_PRICE_TAG = "PRICE_TAG";
     public ArrayList<String> mSearchTypeArray = new ArrayList<>();
 
     private ArrayAdapter<StandardListBO> mLocationAdapter;
@@ -535,7 +528,7 @@ public class PriceTrackingHelper {
         try {
             db.openDataBase();
             String sb = "select tid from PriceCheckHeader where retailerid=" +
-                    bmodel.QT(bmodel.getRetailerMasterBO().getRetailerID());
+                    StringUtils.QT(bmodel.getRetailerMasterBO().getRetailerID());
 
             if (!bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN) {
                 sb = sb + " and upload='N'";
@@ -574,6 +567,7 @@ public class PriceTrackingHelper {
     public void loadPriceCheckConfiguration(Context mContext, int subChannelId) {
         try {
 
+            String CODE_PRICE_01 = "PRICE01";
             SHOW_PRICE_PC = false;
             SHOW_PRICE_OU = false;
             SHOW_PRICE_CA = false;
@@ -592,9 +586,10 @@ public class PriceTrackingHelper {
             db.openDataBase();
 
 
+            String CODE_PRICE_UOM = "PRICE_UOM";
             String sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_UOM) + " and Flag=1 and ForSwitchSeller = 0 and subchannelid=" + subChannelId;
+                    + " where hhtCode=" + StringUtils.QT(CODE_PRICE_UOM) + " and Flag=1 and ForSwitchSeller = 0 and subchannelid=" + subChannelId;
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -604,7 +599,7 @@ public class PriceTrackingHelper {
             } else {
                 sql = "select RField from "
                         + DataMembers.tbl_HhtModuleMaster
-                        + " where hhtCode=" + bmodel.QT(CODE_PRICE_UOM) + " and Flag=1 and ForSwitchSeller = 0 and subchannelid=0";
+                        + " where hhtCode=" + StringUtils.QT(CODE_PRICE_UOM) + " and Flag=1 and ForSwitchSeller = 0 and subchannelid=0";
                 c = db.selectSQL(sql);
                 if (c != null && c.getCount() != 0) {
                     if (c.moveToNext()) {
@@ -635,7 +630,7 @@ public class PriceTrackingHelper {
 
             sql = "select RField from "
                     + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode= 'PRICE01' and ForSwitchSeller = 0 and Flag=1";
+                    + " where hhtCode= " + StringUtils.QT(CODE_PRICE_01) + " and ForSwitchSeller = 0 and Flag=1";
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
@@ -680,8 +675,9 @@ public class PriceTrackingHelper {
             }
 
 
+            String CODE_PRICE_COMPETITOR = "PRICE_COMPETITOR";
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + bmodel.QT(CODE_PRICE_COMPETITOR) + " and ForSwitchSeller = 0 and Flag=1";
+                    + " where hhtCode=" + StringUtils.QT(CODE_PRICE_COMPETITOR) + " and ForSwitchSeller = 0 and Flag=1";
 
             c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
