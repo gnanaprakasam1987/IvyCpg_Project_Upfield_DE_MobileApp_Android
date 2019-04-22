@@ -946,7 +946,7 @@
     <string name="is_distributed">Está distribuído</string>
     <string name="pls_select_chequeno">Favor de ingresar No de Cheque</string>
     <string name="average_lines">Líneas Promedio</string>
-    <string name="add_plane">Agregar a Plan</string>
+    <string name="add_plan">Agregar a Plan</string>
     <string name="non_visit">No Visita</string>
     <string name="are_you_sure_you_want_to_logout">¡Seguro quiere cerrar sesión?</string>
     <string name="vaload_heder_text">Seleccione cantidad por lote</string>

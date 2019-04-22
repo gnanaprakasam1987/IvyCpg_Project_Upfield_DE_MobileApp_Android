@@ -239,7 +239,7 @@
                 android:layout_marginStart="@dimen/profile_history_20dp"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
-                android:text="@string/add_plane"
+                android:text="@string/add_plan"
                 android:textAllCaps="false" />
 
             <Button
@@ -276,7 +276,7 @@
                 android:layout_marginStart="@dimen/profile_history_20dp"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
-                android:text="@string/add_plane"
+                android:text="@string/add_plan"
                 android:textAllCaps="false"
                 android:visibility="gone" />
 

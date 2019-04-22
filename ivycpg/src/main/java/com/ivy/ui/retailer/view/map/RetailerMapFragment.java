@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.location.Location;
-import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
 import android.support.design.widget.BottomSheetBehavior;
@@ -34,7 +33,6 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.ivy.core.base.view.BaseMapFragment;
 import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.maplib.MapWrapperLayout;
-import com.ivy.maplib.OnInfoWindowElemTouchListener;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -59,7 +57,6 @@ import java.util.Vector;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.BindViews;
 import butterknife.OnClick;
 
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
@@ -76,7 +73,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
     private TextView infoTitle;
 
-    private boolean isBywalk = false,isclickable;
+    private boolean isByWalk = false, isClickable;
 
     private Vector<Polyline> line = new Vector<>();
     private int mClick = 0;
@@ -181,33 +178,13 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         LayoutInflater layInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         this.infoWindow = (ViewGroup) layInflater.inflate(
-                R.layout.retailer_custom_info_window, (ViewGroup) null);
+                R.layout.retailer_custom_info_window, null);
 
         infoTitle = infoWindow.findViewById(R.id.title);
 
         builder = new LatLngBounds.Builder();
 
-        storeFilterSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                if (getMap() != null)
-                    getMap().clear();
-
-                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-
-                builder = new LatLngBounds.Builder();
-                isFocusRetailer = false;
-
-                if (isChecked) {
-                    presenter.fetchTodayPlannedRetailers();
-                    storeFilterSwitch.setText(getResources().getString(R.string.day_plan));
-                }else {
-                    presenter.fetchRetailerList();
-                    storeFilterSwitch.setText(getResources().getString(R.string.all_retailer));
-                }
-            }
-        });
+        storeFilterSwitch.setOnCheckedChangeListener(storeFilterCheckListener);
 
         // For 7" tablet
         boolean is7InchTablet = this.getResources().getConfiguration()
@@ -219,8 +196,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         walkDirBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isBywalk = true;
-                isclickable = true;
+                isByWalk = true;
+                isClickable = true;
                 clearRoute();
                 if (mClick == 2) {
                     if (isSameLocation(rmarker))
@@ -238,8 +215,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         carDirBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                isBywalk = false;
-                isclickable = true;
+                isByWalk = false;
+                isClickable = true;
                 clearRoute();
                 if (mClick == 2) {
                     if (isSameLocation(rmarker))
@@ -266,7 +243,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         addPlan.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (addPlan.getText().toString().equalsIgnoreCase(getString(R.string.add_plane))){
+                if (addPlan.getText().toString().equalsIgnoreCase(getString(R.string.add_plan))){
 
                     visitElementGroup.setVisibility(View.VISIBLE);
 
@@ -303,6 +280,29 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         });
     }
 
+
+    private CompoundButton.OnCheckedChangeListener storeFilterCheckListener = new CompoundButton.OnCheckedChangeListener() {
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
+            if (getMap() != null)
+                getMap().clear();
+
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+
+            builder = new LatLngBounds.Builder();
+            isFocusRetailer = false;
+
+            if (isChecked) {
+                presenter.fetchTodayPlannedRetailers();
+                storeFilterSwitch.setText(getResources().getString(R.string.day_plan));
+            }else {
+                presenter.fetchRetailerList();
+                storeFilterSwitch.setText(getResources().getString(R.string.all_retailer));
+            }
+        }
+    };
+
     private void setViewBackground(Drawable viewBackground){
         tvStartVisitDate.setBackground(viewBackground);
         tvVisitEndDate.setBackground(viewBackground);
@@ -312,8 +312,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
     @OnClick(R.id.clear_route_id)
     void clearRouteButton(){
-        isclickable = false;
-        isBywalk = false;
+        isClickable = false;
+        isByWalk = false;
         clearRoute();
         //car icon's
         carDirBtn.setBackground(ContextCompat.getDrawable(context, R.drawable.map_button_round_corner_white));
@@ -333,8 +333,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         if (bottomLayout.getVisibility() == View.GONE) {
             bottomLayout.setVisibility(View.VISIBLE);
         } else {
-            isclickable = false;
-            isBywalk = false;
+            isClickable = false;
+            isByWalk = false;
             clearRoute();
             bottomLayout.setVisibility(View.GONE);
             //car icon's
@@ -542,7 +542,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         }
 
         if (bottomLayout.getVisibility() == View.VISIBLE) {
-            isclickable = false;
+            isClickable = false;
             onInfoWindowClick(marker);
         }else {
             marker.showInfoWindow();
@@ -577,7 +577,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         }else {
             visitElementGroup.setVisibility(View.GONE);
             addPlan.setVisibility(View.VISIBLE);
-            addPlan.setText(getString(R.string.add_plane));
+            addPlan.setText(getString(R.string.add_plan));
         }
 
         tvOutletName.setText(retailerMasterBO.getRetailerName());
@@ -727,7 +727,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
                 testClearRoute = " ";
                 toTv.setText(testClearRoute);
                 mClick = 1;
-            } else if (!isclickable) {
+            } else if (!isClickable) {
                 testClearRoute = " ";
                 fromTv.setText(testClearRoute);
                 testClearRoute = " ";
@@ -765,7 +765,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
         showLoading(getResources().getString(R.string.fetching_route));
         presenter.fetchRoutePath(presenter.makeURL(markerLatLng[0].latitude, markerLatLng[0].longitude,
-                markerLatLng[1].latitude, markerLatLng[1].longitude,mapKey,isBywalk));
+                markerLatLng[1].latitude, markerLatLng[1].longitude,mapKey, isByWalk));
 
         mClick = 2;
     }

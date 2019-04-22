@@ -60,7 +60,7 @@
             android:layout_height="wrap_content"
             android:layout_margin= "@dimen/_5sdp"
             android:padding="@dimen/_5sdp"
-            android:text="@string/add_plane"
+            android:text="@string/add_plan"
             android:textColor="@color/green_productivity"
             android:visibility="visible"
             app:layout_constraintTop_toTopOf="@+id/profile_plan"
