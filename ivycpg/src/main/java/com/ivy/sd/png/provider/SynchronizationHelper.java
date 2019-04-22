@@ -808,6 +808,13 @@ SynchronizationHelper {
             exceptionTableList.add("LastVisitSOS");
         }
 
+        if (bmodel.configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
+            updateLastVisitPlanogram();
+            exceptionTableList.add("LastVisitPlanogram");
+            exceptionTableList.add("LastVisitPlanogramImageDetails");
+        }
+
+
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
             );
@@ -4100,6 +4107,70 @@ SynchronizationHelper {
         }
     }
 
+
+    private void updateLastVisitPlanogram() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        try {
+            db.createDataBase();
+            db.openDataBase();
+
+            //delete data in LastVisitSOS table
+            String sql = "select STD.retailerid from PlanogramDetails STD INNER JOIN PlanogramHeader STH ON STD.tid=STH.tid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            Cursor cur = db.selectSQL(sql);
+            if (cur != null) {
+                while (cur.moveToNext()) {
+                    sql = "Select retailerid from LastVisitPlanogram where retailerid=" + cur.getString(0);
+                    Cursor cur1 = db.selectSQL(sql);
+                    if (cur1 != null && cur1.getCount() > 0) {
+                        db.executeQ("delete from LastVisitPlanogram where retailerid=" + cur.getString(0));
+                        db.executeQ("delete from LastVisitPlanogramImageDetails where retailerid=" + cur.getString(0));
+                        cur1.close();
+                    }
+                }
+                cur.close();
+            }
+
+            // re insert  transaction data from SOS_Tracking_Detail records into LastVisitSOS
+            String sql2 = "select STD.retailerid,STD.mappingId,STD.pid,STD.Adherence,STD.ReasonId,STD.LocId from PlanogramDetails STD INNER JOIN PlanogramHeader STH ON STD.Tid=STH.Tid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            Cursor cur2 = db.selectSQL(sql2);
+            if (cur2 != null) {
+                while (cur2.moveToNext()) {
+                    db.insertSQL("LastVisitPlanogram", "retailerid,mappingId,pid,Adherence,ReasonId,LocId",
+                            cur2.getString(0)
+                                    + "," + cur2.getString(1)
+                                    + "," + cur2.getString(2)
+                                    + "," + cur2.getString(3)
+                                    + "," + cur2.getString(4)
+                                    + "," + cur2.getString(5)
+                                    + "," + cur2.getString(6)
+                                    + "," + cur2.getString(7));
+                }
+                cur2.close();
+            }
+
+            // re insert  transaction data from SOS_Tracking_Detail records into LastVisitSOS
+            String sql3 = "select STD.pid,STD.imageName,STD.mappingId,STD.ImagePath,STD.ImageId,STH.LocId,STH.RetailerId from PlanogramImageDetails STD LEFT JOIN PlanogramHeader STH ON STD.Tid=STH.Tid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            Cursor cur3 = db.selectSQL(sql3);
+            if (cur3 != null) {
+                while (cur3.moveToNext()) {
+                    db.insertSQL("LastVisitPlanogramImageDetails", "pid,imageName,mappingId,ImagePath,ImageId,LocId,RetailerId",
+                            cur2.getString(0)
+                                    + "," + cur2.getString(1)
+                                    + "," + cur2.getString(2)
+                                    + "," + cur2.getString(3)
+                                    + "," + cur2.getString(4)
+                                    + "," + cur2.getString(5)
+                                    + "," + cur2.getString(6));
+                }
+                cur3.close();
+            }
+
+            db.closeDB();
+        } catch (Exception ex) {
+            Commons.printException(ex);
+            db.closeDB();
+        }
+    }
 
     public int getTotalRetailersCount() {
         DBUtil db;

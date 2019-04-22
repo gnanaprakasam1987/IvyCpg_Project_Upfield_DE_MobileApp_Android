@@ -12,6 +12,7 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
@@ -371,6 +372,75 @@ public class PlanoGramHelper {
                 else
                     return true;
             }
+
+            if(mBModel.configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
+                // LastVisit
+                String lastVisitQuery = "SELECT PId, Adherence, ReasonID, LocID"
+                        + " FROM LastVisitPlanogram inner join  WHERE retailerId=" + mBModel.getAppDataProvider().getRetailMaster().getRetailerID();
+
+                Cursor lastVisitCursor = db.selectSQL(lastVisitQuery);
+
+                if (lastVisitCursor != null) {
+                    while (lastVisitCursor.moveToNext()) {
+                        int pid = lastVisitCursor.getInt(0);
+                        String adherence = lastVisitCursor.getString(1);
+                        String reasonID = lastVisitCursor.getString(2);
+                        int locationID = lastVisitCursor.getInt(3);
+
+                        PlanoGramBO planogram;
+                        int siz = getPlanogramMaster().size();
+
+                        for (int i = 0; i < siz; ++i) {
+                            planogram = getPlanogramMaster().get(i);
+                            if (planogram.getPid() == pid &&
+                                    (!IS_LOCATION_WISE_PLANOGRAM || planogram.getLocationID() == locationID)) {
+                                // planogram.setPlanogramCameraImgName(imageName);
+                                planogram.setAdherence(adherence);
+                                planogram.setReasonID(reasonID);
+                                //planogram.setPlanoGramCameraImgList(getPlanogramImage(planogramProductId,tId,context, locationID));
+                                break;
+                            }
+                        }
+
+                    }
+                    lastVisitCursor.close();
+                }
+
+                String lastVisitImageQuery = "SELECT ImageName,Pid,LocID"
+                        + " FROM LastVisitPlanogramImageDetails WHERE retailerId=" + mBModel.getAppDataProvider().getRetailMaster().getRetailerID();
+
+                Cursor lastVisitImageCursor = db.selectSQL(lastVisitImageQuery);
+
+                if (lastVisitImageCursor != null) {
+                    while (lastVisitImageCursor.moveToNext()) {
+                        int pid = lastVisitImageCursor.getInt(1);
+                        int locationID = lastVisitImageCursor.getInt(2);
+
+                        PlanoGramBO planogram;
+                        int siz = getPlanogramMaster().size();
+
+                        for (int i = 0; i < siz; ++i) {
+                            planogram = getPlanogramMaster().get(i);
+                            if (planogram.getPid() == pid &&
+                                    (!IS_LOCATION_WISE_PLANOGRAM || planogram.getLocationID() == locationID)) {
+                                // planogram.setPlanogramCameraImgName(imageName);
+                                ArrayList<String> imageList = planogram.getPlanoGramCameraImgList();
+                                if (imageList == null)
+                                    imageList = new ArrayList<>();
+
+                                imageList.add(lastVisitImageCursor.getString(0));
+                                planogram.setPlanoGramCameraImgList(imageList);
+                                break;
+                            }
+                        }
+
+                    }
+                    lastVisitImageCursor.close();
+                }
+
+            }
+
+            //
 
             String sql1 = "SELECT PId, PLID, ImageName, Adherence, ReasonID, LocID, IFNULL(isAuditDone,'2')"
                     + " FROM PlanogramDetails WHERE tid=" + QT(tid);

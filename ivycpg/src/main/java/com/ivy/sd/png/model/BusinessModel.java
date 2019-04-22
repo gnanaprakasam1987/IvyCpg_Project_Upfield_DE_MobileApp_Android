@@ -3517,15 +3517,60 @@ public class BusinessModel extends Application {
             db.openDataBase();
 
             Cursor c = db
-                    .selectSQL("SELECT DISTINCT ImgURL FROM PlanogramImageInfo");
+                    .selectSQL("SELECT DISTINCT ImgURL,imgId FROM PlanogramImageInfo");
             if (c != null) {
                 while (c.moveToNext()) {
-                    getDigitalContentURLS().put(
-                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
-                            DataMembers.PLANOGRAM);
+                    if (configurationMasterHelper.DIGITAL_CONTENT_SIZE != -1){
+
+                        DigitalContentModel digitalContentBO = new DigitalContentModel();
+
+                        String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                        digitalContentBO.setFileSize("2 MB ≈");
+                        digitalContentBO.setImageID(c.getInt(1));
+                        digitalContentBO.setImgUrl(downloadUrl);
+                        digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);
+                        digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+
+                        digitalContentLargeFileURLS.put(digitalContentBO.getImageID(), digitalContentBO);
+
+                    }
+                    else {
+                        getDigitalContentURLS().put(
+                                DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                                DataMembers.PLANOGRAM);
+                    }
 
                 }
                 c.close();
+            }
+
+            if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
+                c = db
+                        .selectSQL("SELECT DISTINCT ImagePath,imageId FROM LastVisitPlanogramImageDetails");
+                if (c != null) {
+                    while (c.moveToNext()) {
+                        if (configurationMasterHelper.DIGITAL_CONTENT_SIZE != -1) {
+
+                            DigitalContentModel digitalContentBO = new DigitalContentModel();
+
+                            String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                            digitalContentBO.setFileSize("2 MB ≈");
+                            digitalContentBO.setImageID(c.getInt(1));
+                            digitalContentBO.setImgUrl(downloadUrl);
+                            digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);
+                            digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+
+                            digitalContentLargeFileURLS.put(digitalContentBO.getImageID(), digitalContentBO);
+
+                        } else {
+                            getDigitalContentURLS().put(
+                                    DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                                    DataMembers.PLANOGRAM);
+                        }
+
+                    }
+                    c.close();
+                }
             }
 
             c = db.selectSQL("SELECT DISTINCT ImageURL,fileSize,imageid,imagename FROM DigitalContentMaster");
