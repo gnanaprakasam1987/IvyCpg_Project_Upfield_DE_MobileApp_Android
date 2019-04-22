@@ -83,6 +83,7 @@ import com.ivy.cpg.view.supervisor.chat.BaseInterfaceAdapter;
 import com.ivy.cpg.view.sync.AWSConnectionHelper;
 import com.ivy.cpg.view.sync.AzureConnectionHelper;
 import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
+import com.ivy.cpg.view.sync.largefiledownload.FileDownloadProvider;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -3520,15 +3521,60 @@ public class BusinessModel extends Application {
             db.openDataBase();
 
             Cursor c = db
-                    .selectSQL("SELECT DISTINCT ImgURL FROM PlanogramImageInfo");
+                    .selectSQL("SELECT DISTINCT ImgURL,imgId FROM PlanogramImageInfo");
             if (c != null) {
                 while (c.moveToNext()) {
-                    getDigitalContentURLS().put(
-                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
-                            DataMembers.PLANOGRAM);
+                    if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN){
+
+                        DigitalContentModel digitalContentBO = new DigitalContentModel();
+
+                        String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                        digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES*2));//approx 2mb
+                        digitalContentBO.setImageID(c.getInt(1));
+                        digitalContentBO.setImgUrl(downloadUrl);
+                        digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);
+                        digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+
+                        digitalContentLargeFileURLS.put(digitalContentBO.getImageID(), digitalContentBO);
+
+                    }
+                    else {
+                        getDigitalContentURLS().put(
+                                DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                                DataMembers.PLANOGRAM);
+                    }
 
                 }
                 c.close();
+            }
+
+            if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
+                c = db
+                        .selectSQL("SELECT DISTINCT ImagePath,imageId FROM LastVisitPlanogramImageDetails");
+                if (c != null) {
+                    while (c.moveToNext()) {
+                        if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
+
+                            DigitalContentModel digitalContentBO = new DigitalContentModel();
+
+                            String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                            digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES*2));// approx  2 mb
+                            digitalContentBO.setImageID(c.getInt(1));
+                            digitalContentBO.setImgUrl(downloadUrl);
+                            digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);
+                            digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+
+                            digitalContentLargeFileURLS.put(digitalContentBO.getImageID(), digitalContentBO);
+
+                        } else {
+                            getDigitalContentURLS().put(
+                                    DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                                    DataMembers.PLANOGRAM);
+                        }
+
+                    }
+                    c.close();
+                }
             }
 
             c = db.selectSQL("SELECT DISTINCT ImageURL,fileSize,imageid,imagename FROM DigitalContentMaster");
