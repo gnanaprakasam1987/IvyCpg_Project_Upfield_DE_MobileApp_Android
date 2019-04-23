@@ -163,20 +163,25 @@ public class LoadManagementFragment extends IvyBaseFragment {
                         button_buzzer.setEnabled(false);
                     }
                     else {
-                        if(loadManagementHelper.isAllMandatoryModulesCompleted(menuDB)) {
 
-                            boolean proceedDayClose=LoadManagementHelper.getInstance(getActivity().getApplicationContext()).validateDayClose(getActivity(),false,null,null);
+                        if(loadManagementHelper.isTripStarted(getActivity())) {
+                            if (loadManagementHelper.isAllMandatoryModulesCompleted(menuDB)) {
 
-                            if(proceedDayClose) {
+                                boolean proceedDayClose = LoadManagementHelper.getInstance(getActivity().getApplicationContext()).validateDayClose(getActivity(), false, null, null);
 
-                                loadManagementHelper.updateTrip(false);
-                                Toast.makeText(getActivity(), getResources().getString(R.string.trip_ended), Toast.LENGTH_LONG).show();
-                                button_buzzer.setBackground(getResources().getDrawable(R.drawable.img_buzzer_grey));
-                                button_buzzer.setEnabled(false);
+                                if (proceedDayClose) {
+
+                                    loadManagementHelper.updateTrip(false);
+                                    Toast.makeText(getActivity(), getResources().getString(R.string.trip_ended), Toast.LENGTH_LONG).show();
+                                    button_buzzer.setBackground(getResources().getDrawable(R.drawable.img_buzzer_grey));
+                                    button_buzzer.setEnabled(false);
+                                }
+                            } else {
+                                Toast.makeText(getActivity(), getResources().getString(R.string.pls_complete_all_mandatory_modules_to_close_the_day), Toast.LENGTH_LONG).show();
                             }
                         }
                         else {
-                            Toast.makeText(getActivity(), getResources().getString(R.string.pls_complete_all_mandatory_modules_to_close_the_day), Toast.LENGTH_LONG).show();
+                            Toast.makeText(getActivity(), getResources().getString(R.string.trip_not_started), Toast.LENGTH_LONG).show();
                         }
                     }
 

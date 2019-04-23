@@ -578,7 +578,7 @@ public class LoadManagementHelper {
                 StringBuilder stringBuilder=new StringBuilder();
                 stringBuilder.append(StringUtils.QT(id));
                 stringBuilder.append(","+bmodel.userMasterHelper.getUserMasterBO().getUserid());
-                stringBuilder.append(","+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                stringBuilder.append(","+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW)));
                 stringBuilder.append(","+StringUtils.QT("N"));
 
                 db.insertSQL(DataMembers.tbl_TripMaster, columns, stringBuilder.toString());
@@ -590,7 +590,7 @@ public class LoadManagementHelper {
             }
             else
                 db.updateSQL("update "+DataMembers.tbl_TripMaster
-                        +" set endDate="+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))+","+"upload='N'"
+                        +" set endDate="+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))+","+"upload='N'"
                         +" where userId="+bmodel.userMasterHelper.getUserMasterBO().getUserid());
 
         }

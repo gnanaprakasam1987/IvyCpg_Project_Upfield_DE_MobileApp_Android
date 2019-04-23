@@ -211,6 +211,7 @@
     <string name="pls_complete_all_mandatory_modules_of_start_day">Please complete all mandatory modules of start the day.</string>
     <string name="pls_complete_all_mandatory_modules_to_close_the_day">Please complete all mandatory modules to close the day.</string>
     <string name="do_you_want_to_continue_same_trip_or_end_the_trip">Do you want to continue same trip or end?.</string>
+    <string name="trip_not_started">Trip not started.</string>
 
     <string name="enter_time_slot">Enter Time Slot</string>
     <string name="select_salutation">Select Salutation</string>

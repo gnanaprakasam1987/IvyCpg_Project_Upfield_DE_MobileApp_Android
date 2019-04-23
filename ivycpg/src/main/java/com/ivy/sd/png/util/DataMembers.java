@@ -519,6 +519,7 @@ public class DataMembers {
     private static final String tbl_InvoiceDiscountDetail_cols = "OrderId,InvoiceId,Pid,Typeid,Value,Percentage,ApplyLevelid,DiscountId,IsCompanyGiven";
 
     public static final String tbl_TripMaster = "TripMaster";
+    public static final String tbl_TripMaster_cols = "uid,userId,startDate,endDate";
 
     public static final String tbl_OrderDiscountDetail = "OrderDiscountDetail";
     private static final String tbl_OrderDiscountDetail_cols = "OrderId,Pid,Typeid,Value,Percentage,ApplyLevelid,DiscountId,IsCompanyGiven";
@@ -907,6 +908,7 @@ public class DataMembers {
         uploadColumn.put(tbl_Planorama, tbl_Planorama_cols);
         uploadColumn.put(tbl_Planorama_image, tbl_Planorama_image_cols);
         uploadColumn.put(tbl_RetailerLocationDeviation, tbl_RetailerLocationDeviation_cols);
+        uploadColumn.put(tbl_TripMaster, tbl_TripMaster_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -1126,6 +1128,7 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_planogram_image_detail, tbl_planogram_image_detail_cols);
         uploadColumnWithOutRetailer.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
         uploadColumnWithOutRetailer.put(tbl_DenominationHeader, tbl_DenominationHeader_cols);
+        uploadColumnWithOutRetailer.put(tbl_TripMaster, tbl_TripMaster_cols);
     }
 
     public static final HashMap<String, String> uploadLocationTrackingColumn = new HashMap<>();
