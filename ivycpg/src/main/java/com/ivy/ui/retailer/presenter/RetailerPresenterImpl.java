@@ -5,12 +5,14 @@ import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 import com.ivy.ui.retailer.RetailerContract;
 import com.ivy.ui.retailer.data.RetailerDataManager;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -23,6 +25,10 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView> exte
     private AppDataProvider appDataProvider;
     private ProfileDataManagerImpl profileDataManager;
     private RetailerDataManager retailerDataManager;
+
+    private HashMap<String, ArrayList<DateWisePlanBo>> getAllDateRetailerPlanList;
+
+    private ArrayList<DateWisePlanBo> getSelectedDateRetailerPlanList;
 
     @Inject
     RetailerPresenterImpl(DataManager dataManager,
@@ -85,6 +91,42 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView> exte
                         getIvyView().drawRoutePath(path);
                     }
                 }));
+    }
+
+    @Override
+    public void fetchAllDateRetailerPlan() {
+        getCompositeDisposable().add(retailerDataManager.getAllDateRetailerPlanList()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<HashMap<String, ArrayList<DateWisePlanBo>>>() {
+                    @Override
+                    public void accept(HashMap<String, ArrayList<DateWisePlanBo>> listHashMap) throws Exception {
+                        getAllDateRetailerPlanList = listHashMap;
+                    }
+                }));
+    }
+
+    @Override
+    public void fetchSelectedDateRetailerPlan(String date) {
+        getCompositeDisposable().add(retailerDataManager.getRetailerPlanList(date)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<ArrayList<DateWisePlanBo>>() {
+                    @Override
+                    public void accept(ArrayList<DateWisePlanBo> listHashMap) throws Exception {
+                        getSelectedDateRetailerPlanList = listHashMap;
+                    }
+                }));
+    }
+
+    @Override
+    public HashMap<String, ArrayList<DateWisePlanBo>> getAllDateRetailerPlanList() {
+        return getAllDateRetailerPlanList.isEmpty()?new HashMap<>():getAllDateRetailerPlanList;
+    }
+
+    @Override
+    public ArrayList<DateWisePlanBo> getSelectedDateRetailerPlanList() {
+        return getSelectedDateRetailerPlanList.isEmpty()?new ArrayList<>():getSelectedDateRetailerPlanList;
     }
 
     public String makeURL(double sourcelat, double sourcelog, double destlat,

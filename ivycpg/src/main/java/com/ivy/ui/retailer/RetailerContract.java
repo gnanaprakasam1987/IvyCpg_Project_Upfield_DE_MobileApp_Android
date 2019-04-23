@@ -1,12 +1,12 @@
 package com.ivy.ui.retailer;
 
-import android.content.Context;
-
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public interface RetailerContract {
@@ -42,6 +42,14 @@ public interface RetailerContract {
          void fetchLinkRetailer();
 
          void fetchRoutePath(String url);
+
+         void fetchAllDateRetailerPlan();
+
+         void fetchSelectedDateRetailerPlan(String date);
+
+         HashMap<String, ArrayList<DateWisePlanBo>> getAllDateRetailerPlanList();
+
+         ArrayList<DateWisePlanBo> getSelectedDateRetailerPlanList();
 
     }
 }

@@ -3,8 +3,16 @@ package com.ivy.ui.offlineplan.addplan.data;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
+import com.ivy.utils.StringUtils;
+
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
+
+import io.reactivex.Single;
 
 public class AddPlanDataManagerImpl implements AddPlanDataManager {
 
@@ -33,13 +41,63 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
     }
 
     @Override
-    public void savePlan(RetailerMasterBO retailerMasterBO) {
+    public Single<Boolean> savePlan(DateWisePlanBo dateWisePlanBo) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
 
+                initDb();
+
+                try {
+                    String values = dateWisePlanBo.getPlanId() + ","
+                            + dateWisePlanBo.getDistributorId() + ","
+                            + dateWisePlanBo.getUserId() + ","
+                            + StringUtils.QT(dateWisePlanBo.getDate()) + ","
+                            + dateWisePlanBo.getEntityId() + ","
+                            + StringUtils.QT(dateWisePlanBo.getEntityType()) + ","
+                            + StringUtils.QT(dateWisePlanBo.getStatus()) + ","
+                            + dateWisePlanBo.getSequence()
+                            + StringUtils.QT(dateWisePlanBo.getStartTime()) + ","
+                            + StringUtils.QT(dateWisePlanBo.getEndTime());
+
+                    mDbUtil.insertSQL(DataMembers.tbl_date_wise_plan, DataMembers.tbl_date_wise_plan_cols, values);
+
+                    shutDownDb();
+                    return true;
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    shutDownDb();
+
+                    return false;
+                }
+            }
+        });
     }
 
     @Override
-    public void updatePlan(RetailerMasterBO retailerMasterBO) {
+    public Single<Boolean> updatePlan(DateWisePlanBo dateWisePlanBo) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
 
+                initDb();
+
+                try {
+                    shutDownDb();
+                    mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
+                            + " SET StartTime = "+dateWisePlanBo.getStartTime()+" , EndTime ="+dateWisePlanBo.getEndTime()
+                            +" where EntityId=" + dateWisePlanBo.getEntityId() +" and Date = " + StringUtils.QT(dateWisePlanBo.getDate())
+                            + " and EntityType = " + StringUtils.QT(dateWisePlanBo.getEntityType()));
+
+                    return true;
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    shutDownDb();
+
+                    return false;
+                }
+            }
+        });
     }
 
     @Override

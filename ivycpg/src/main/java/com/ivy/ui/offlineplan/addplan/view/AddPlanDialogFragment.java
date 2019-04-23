@@ -16,17 +16,29 @@ import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.cpg.view.retailercontact.RetailerContactAvailBo;
 import com.ivy.cpg.view.retailercontact.TimeSlotPickFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.CommonDialog;
+import com.ivy.ui.offlineplan.addplan.AddPlanContract;
+import com.ivy.ui.offlineplan.addplan.di.AddPlanModule;
+import com.ivy.ui.offlineplan.addplan.di.DaggerAddPlanComponent;
+import com.ivy.ui.offlineplan.addplan.presenter.AddPlanPresenterImpl;
+import com.ivy.ui.retailer.di.DaggerRetailerComponent;
+import com.ivy.ui.retailer.di.RetailerModule;
+import com.ivy.ui.retailer.view.map.RetailerMapFragment;
 import com.ivy.utils.DateTimeUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.Objects;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,11 +46,10 @@ import butterknife.OnClick;
 import butterknife.Unbinder;
 
 import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
-import static com.ivy.utils.DateTimeUtils.TIME;
 import static com.ivy.utils.DateTimeUtils.TIME_HOUR_MINS;
 
 @SuppressLint("ValidFragment")
-public class AddPlanDialogFragment extends BottomSheetDialogFragment {
+public class AddPlanDialogFragment extends BottomSheetDialogFragment implements AddPlanContract.AddPlanView {
 
     @BindView(R.id.add_plan)
     TextView addPlan;
@@ -78,6 +89,9 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment {
 
     private TimeSlotPickFragment timeSlotPickFragment;
 
+    @Inject
+    AddPlanPresenterImpl<AddPlanContract.AddPlanView> addPlanPresenter;
+
     public AddPlanDialogFragment(RetailerMasterBO retailerMaster){
         retailerMasterBO = retailerMaster;
     }
@@ -98,6 +112,8 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.retailer_plan_info_layout, null);
         dialog.setContentView(view);
 
+        initializeDi();
+
         mUnBinder = ButterKnife.bind(this, view);
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) view.getParent()).getLayoutParams();
@@ -111,57 +127,67 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment {
 
             ((BottomSheetBehavior) behavior).setState(BottomSheetBehavior.STATE_EXPANDED);
 
-            ((BottomSheetBehavior) behavior).setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-                @Override
-                public void onStateChanged(@NonNull View bottomSheet, int newState) {
-
-                    switch (newState) {
-                        case BottomSheetBehavior.STATE_DRAGGING: {
-                            break;
-                        }
-                        case BottomSheetBehavior.STATE_SETTLING: {
-                            break;
-                        }
-                        case BottomSheetBehavior.STATE_EXPANDED: {
-
-                            if (savePlan.getVisibility() == View.VISIBLE)
-                                tvStartVisitTime.setOnClickListener(startVisitTimeListener);
-                            else
-                                tvStartVisitTime.setOnClickListener(null);
-
-                            break;
-                        }
-                        case BottomSheetBehavior.STATE_COLLAPSED:
-                            savePlan.setVisibility(View.GONE);
-                            if (!"Y".equalsIgnoreCase(retailerMasterBO.getIsVisited()))
-                                addPlan.setVisibility(View.VISIBLE);
-
-                            if (!"Y".equalsIgnoreCase(retailerMasterBO.getIsVisited())
-                                    && retailerMasterBO.getIsToday() != 1 && !"Y".equalsIgnoreCase(retailerMasterBO.getIsDeviated()))
-                                visitElementGroup.setVisibility(View.GONE);
-
-                            setViewBackground(null);
-
-                            break;
-
-                        default:
-                            break;
-                        case BottomSheetBehavior.STATE_HIDDEN: {
-                            dismiss();
-                            break;
-                        }
-                    }
-                }
-
-                @Override
-                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                }
-            });
+            ((BottomSheetBehavior) behavior).setBottomSheetCallback(bottomSheetCallBack);
         }
 
         setPlanWindowValues();
 
     }
+
+    private void initializeDi(){
+        DaggerAddPlanComponent.builder()
+                .ivyAppComponent(((BusinessModel) Objects.requireNonNull((FragmentActivity)context).getApplication()).getComponent())
+                .addPlanModule(new AddPlanModule(this, context))
+                .build()
+                .inject(AddPlanDialogFragment.this);
+    }
+
+    private BottomSheetBehavior.BottomSheetCallback bottomSheetCallBack = new BottomSheetBehavior.BottomSheetCallback() {
+        @Override
+        public void onStateChanged(@NonNull View bottomSheet, int newState) {
+
+            switch (newState) {
+                case BottomSheetBehavior.STATE_DRAGGING: {
+                    break;
+                }
+                case BottomSheetBehavior.STATE_SETTLING: {
+                    break;
+                }
+                case BottomSheetBehavior.STATE_EXPANDED: {
+
+                    if (savePlan.getVisibility() == View.VISIBLE)
+                        tvStartVisitTime.setOnClickListener(startVisitTimeListener);
+                    else
+                        tvStartVisitTime.setOnClickListener(null);
+
+                    break;
+                }
+                case BottomSheetBehavior.STATE_COLLAPSED:
+                    savePlan.setVisibility(View.GONE);
+                    if (!"Y".equalsIgnoreCase(retailerMasterBO.getIsVisited()))
+                        addPlan.setVisibility(View.VISIBLE);
+
+                    if (!"Y".equalsIgnoreCase(retailerMasterBO.getIsVisited())
+                            && retailerMasterBO.getIsToday() != 1 && !"Y".equalsIgnoreCase(retailerMasterBO.getIsDeviated()))
+                        visitElementGroup.setVisibility(View.GONE);
+
+                    setViewBackground(null);
+
+                    break;
+
+                default:
+                    break;
+                case BottomSheetBehavior.STATE_HIDDEN: {
+                    dismiss();
+                    break;
+                }
+            }
+        }
+
+        @Override
+        public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+        }
+    };
 
     private View.OnClickListener startVisitTimeListener = new View.OnClickListener() {
         @Override
@@ -312,6 +338,146 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+    }
+
+    @Override
+    public void showLoading() {
+
+    }
+
+    @Override
+    public void showLoading(String message) {
+
+    }
+
+    @Override
+    public void showLoading(int strinRes) {
+
+    }
+
+    @Override
+    public void hideLoading() {
+
+    }
+
+    @Override
+    public void onError(int resId) {
+
+    }
+
+    @Override
+    public void onError(String message) {
+
+    }
+
+    @Override
+    public void showMessage(String message) {
+
+    }
+
+    @Override
+    public void showMessage(int resId) {
+
+    }
+
+    @Override
+    public boolean isNetworkConnected() {
+        return false;
+    }
+
+    @Override
+    public void hideKeyboard() {
+
+    }
+
+    @Override
+    public void setLayoutDirection(int direction) {
+
+    }
+
+    @Override
+    public void handleLayoutDirection(String language) {
+
+    }
+
+    @Override
+    public void setBlueTheme() {
+
+    }
+
+    @Override
+    public void setRedTheme() {
+
+    }
+
+    @Override
+    public void setOrangeTheme() {
+
+    }
+
+    @Override
+    public void setGreenTheme() {
+
+    }
+
+    @Override
+    public void setPinkTheme() {
+
+    }
+
+    @Override
+    public void setNavyBlueTheme() {
+
+    }
+
+    @Override
+    public void setFontSize(String fontSize) {
+
+    }
+
+    @Override
+    public void showAlert(String title, String msg) {
+
+    }
+
+    @Override
+    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener) {
+
+    }
+
+    @Override
+    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, CommonDialog.negativeOnClickListener negativeOnClickListener) {
+
+    }
+
+    @Override
+    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, boolean isCancelable) {
+
+    }
+
+    @Override
+    public void createNFCManager() {
+
+    }
+
+    @Override
+    public void resumeNFCManager() {
+
+    }
+
+    @Override
+    public void pauseNFCManager() {
+
+    }
+
+    @Override
+    public void setScreenTitle(String title) {
+
+    }
+
+    @Override
+    public void setUpToolbar(String title) {
 
     }
 }

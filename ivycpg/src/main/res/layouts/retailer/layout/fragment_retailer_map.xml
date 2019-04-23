@@ -220,7 +220,7 @@
         android:clickable="true"
         android:src="@drawable/ic_navigation"
         android:tint="@color/green_productivity"
-        android:visibility="visible"
+        android:visibility="gone"
         app:backgroundTint="@color/FullBlack"
         app:fabSize="normal"
         app:layout_constraintBottom_toTopOf="@+id/bottom_view"

@@ -1,15 +1,22 @@
 package com.ivy.ui.retailer.data;
 
+import android.database.Cursor;
+
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.di.scope.DataBaseInfo;
+import com.ivy.cpg.view.offlineplanning.OfflineDateWisePlanBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -51,6 +58,110 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
             public String call() throws Exception {
                 JSONParser jParser = new JSONParser();
                 return jParser.getJSONFromUrl(url);
+            }
+        });
+    }
+
+    @Override
+    public Single<HashMap<String, ArrayList<DateWisePlanBo>>> getAllDateRetailerPlanList() {
+        return Single.fromCallable(new Callable<HashMap<String, ArrayList<DateWisePlanBo>>>() {
+            @Override
+            public HashMap<String, ArrayList<DateWisePlanBo>> call() throws Exception {
+                HashMap<String, ArrayList<DateWisePlanBo>> datePlanHashMap= new HashMap<>();
+
+                String sql = "SELECT PlanId,DistributorId,UserId,Date,EntityId,EntityType,IFNULL(Status,''),Sequence,RetailerName,StartTime,EndTime " +
+                        " FROM " +DataMembers.tbl_date_wise_plan +
+                        " inner join RetailerMaster on RetailerID = EntityId " +
+                        " Where status != 'D' and EntityType = 'RETAILER' ";
+
+                initDb();
+
+                Cursor c = mDbUtil.selectSQL(sql);
+
+                if (c != null && c.getCount() >0) {
+                    DateWisePlanBo dateWisePlanBO;
+                    while (c.moveToNext()) {
+                        dateWisePlanBO = new DateWisePlanBo();
+
+                        dateWisePlanBO.setPlanId(c.getInt(0));
+                        dateWisePlanBO.setDistributorId(c.getInt(1));
+                        dateWisePlanBO.setUserId(c.getInt(2));
+                        dateWisePlanBO.setDate(c.getString(3));
+                        dateWisePlanBO.setEntityId(c.getInt(4));
+                        dateWisePlanBO.setEntityType(c.getString(5));
+                        dateWisePlanBO.setStatus(c.getString(6));
+                        dateWisePlanBO.setSequence(c.getInt(7));
+                        dateWisePlanBO.setName(c.getString(8));
+                        dateWisePlanBO.setEndTime(c.getString(9));
+                        dateWisePlanBO.setName(c.getString(10));
+
+                        if (dateWisePlanBO.getStatus() != null && dateWisePlanBO.getStatus().isEmpty())
+                            dateWisePlanBO.setServerData(true);
+
+                        if (datePlanHashMap.get(dateWisePlanBO.getDate()) == null) {
+                            if (!c.getString(c.getColumnIndex("Status")).equals("D")) {
+                                ArrayList<DateWisePlanBo> plannedList = new ArrayList<>();
+                                plannedList.add(dateWisePlanBO);
+                                datePlanHashMap.put(dateWisePlanBO.getDate(), plannedList);
+                            }
+                        } else {
+                            if (!c.getString(c.getColumnIndex("Status")).equals("D")) {
+                                ArrayList<DateWisePlanBo> plannedList = datePlanHashMap.get(dateWisePlanBO.getDate());
+                                plannedList.add(dateWisePlanBO);
+                                datePlanHashMap.put(dateWisePlanBO.getDate(), plannedList);
+                            }
+                        }
+                    }
+                }
+
+                shutDownDb();
+
+                return datePlanHashMap;
+            }
+        });
+    }
+
+    @Override
+    public Single<ArrayList<DateWisePlanBo>> getRetailerPlanList(String date) {
+        return Single.fromCallable(new Callable<ArrayList<DateWisePlanBo>>() {
+            @Override
+            public ArrayList<DateWisePlanBo> call() throws Exception {
+                ArrayList<DateWisePlanBo> datePlanList= new ArrayList<>();
+
+                String sql = "SELECT PlanId,DistributorId,UserId,Date,EntityId,EntityType,IFNULL(Status,''),Sequence,RetailerName,StartTime,EndTime " +
+                        " FROM " +DataMembers.tbl_date_wise_plan +
+                        " inner join RetailerMaster on RetailerID = EntityId " +
+                        " Where status != 'D' and EntityType = 'RETAILER' ";
+
+                initDb();
+
+                Cursor c = mDbUtil.selectSQL(sql);
+
+                if (c != null && c.getCount() >0) {
+                    DateWisePlanBo dateWisePlanBO;
+                    while (c.moveToNext()) {
+                        dateWisePlanBO = new DateWisePlanBo();
+
+                        dateWisePlanBO.setPlanId(c.getInt(0));
+                        dateWisePlanBO.setDistributorId(c.getInt(1));
+                        dateWisePlanBO.setUserId(c.getInt(2));
+                        dateWisePlanBO.setDate(c.getString(3));
+                        dateWisePlanBO.setEntityId(c.getInt(4));
+                        dateWisePlanBO.setEntityType(c.getString(5));
+                        dateWisePlanBO.setStatus(c.getString(6));
+                        dateWisePlanBO.setSequence(c.getInt(7));
+                        dateWisePlanBO.setName(c.getString(8));
+                        dateWisePlanBO.setStartTime(c.getString(9));
+                        dateWisePlanBO.setEndTime(c.getString(10));
+
+                        if (dateWisePlanBO.getStatus() != null && dateWisePlanBO.getStatus().isEmpty())
+                            dateWisePlanBO.setServerData(true);
+
+                        datePlanList.add(dateWisePlanBO);
+                    }
+                }
+
+                return datePlanList;
             }
         });
     }
