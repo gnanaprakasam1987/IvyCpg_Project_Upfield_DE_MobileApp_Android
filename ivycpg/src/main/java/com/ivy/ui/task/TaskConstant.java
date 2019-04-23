@@ -73,5 +73,7 @@ public class TaskConstant {
 
     public static String TASK_SERVER_IMG_PATH ;
 
+    public static final String TAB_SELECTION = "tab_selection";
+
 
 }

@@ -47,7 +47,7 @@ public interface TaskContract {
 
         void fetchTaskImageList(String taskId);
 
-        void fetchCompletedTask();
+        void fetchCompletedTask(String retailerID);
 
         void updateTaskList(int taskType, String retailerID, boolean isRetailerwise, boolean isSurveywise);
 
@@ -93,7 +93,6 @@ public interface TaskContract {
 
         boolean isShowProdLevel();
 
-        boolean isAllowImgCapture();
 
         String outDateFormat();
 

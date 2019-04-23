@@ -15,6 +15,7 @@ import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.CommonDialog;
+import com.ivy.ui.task.TaskConstant;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.FileUtils;
 
@@ -53,7 +54,7 @@ public class TaskImgListAdapter extends RecyclerView.Adapter<TaskImgListAdapter.
                 holder.deleteImg.setVisibility(View.VISIBLE);
             }
         }
-        String path = imgList.get(holder.getAdapterPosition()).getTaskImgPath() + "/" + imgList.get(holder.getAdapterPosition()).getTaskImg();
+        String path = TaskConstant.TASK_SERVER_IMG_PATH + "/" + imgList.get(holder.getAdapterPosition()).getTaskImg();
 
         // if (FileUtils.isFileExisting(path)) {
         Uri uri = FileUtils
@@ -71,7 +72,7 @@ public class TaskImgListAdapter extends RecyclerView.Adapter<TaskImgListAdapter.
         holder.deleteImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showImageDeleteAlert(imgList.get(holder.getAdapterPosition()).getTaskImg(), holder.getAdapterPosition(), imgList.get(holder.getAdapterPosition()).getTaskImgPath());
+                showImageDeleteAlert(imgList.get(holder.getAdapterPosition()).getTaskImg(), holder.getAdapterPosition());
             }
         });
 
@@ -119,12 +120,14 @@ public class TaskImgListAdapter extends RecyclerView.Adapter<TaskImgListAdapter.
         void onTakePhoto();
     }
 
-    private void showImageDeleteAlert(final String imageNameStarts, int position, String imgPath) {
+    private void showImageDeleteAlert(final String imageNameStarts, int position) {
 
         ((BaseActivity) mContext).showAlert("", mContext.getString(R.string.do_you_want_to_delete_the_image), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
-                FileUtils.deleteFiles(imgPath,
+                FileUtils.deleteFiles(FileUtils.photoFolderPath,
+                        imageNameStarts);
+                FileUtils.deleteFiles(TaskConstant.TASK_SERVER_IMG_PATH,
                         imageNameStarts);
                 imgList.remove(position);
                 notifyItemRemoved(position);

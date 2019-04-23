@@ -164,14 +164,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             screenTitle = getIntent().getExtras().getString(TaskConstant.SCREEN_TITLE, getString(R.string.task_creation));
             isTyp = getIntent().getExtras().getInt(TaskConstant.TASK_SCREEN_MODE, 0);
             taskBo = getIntent().getExtras().getParcelable(TaskConstant.TASK_OBJECT);
-            menuCode = getIntent().getExtras().getString(TaskConstant.MENU_CODE, "MENU_TASK_");
-
+            menuCode = getIntent().getExtras().getString(TaskConstant.MENU_CODE, "MENU_TASK");
         }
-        if (!isRetailerTask) {
-            taskPresenter.fetchData();
-        }
-        taskPresenter.fetchTaskCategory(menuCode);
-
     }
 
     @Override
@@ -190,8 +184,10 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             applicableTV.setVisibility(View.GONE);
             mode = "retailer";
         } else {
+            taskPresenter.fetchData();
             setUpAdapter();
         }
+        taskPresenter.fetchTaskCategory(menuCode);
         setUpCategoryAdapter();
 
         if (isTyp == 1)
@@ -234,6 +230,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         taskCategoryArrayAdapter.add(new TaskDataBO(0, getString(R.string.plain_select), 1));
         taskCategoryArrayAdapter.addAll(categoryList);
         taskCategoryArrayAdapter.notifyDataSetChanged();
+        categorySpinner.setAdapter(taskCategoryArrayAdapter);
     }
 
     @Override
@@ -412,7 +409,6 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         if (isTyp == 0)
             setUpSpinnerData(0);
 
-
     }
 
     private void setUpSpinnerData(int isFrom) {
@@ -420,9 +416,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         spinnerSelection.setVisibility(View.VISIBLE);
         switch (isFrom) {
             case 0:
-                if (!userMasterArrayAdapter.isEmpty())
-                    spinnerSelection.setAdapter(userMasterArrayAdapter);
-                enableDisableProductLevelView(View.GONE);
+                spinnerSelection.setAdapter(userMasterArrayAdapter);
+                enableDisableProductLevelView(View.INVISIBLE);
                 break;
             case 1:
                 spinnerSelection.setAdapter(channelArrayAdapter);
@@ -438,7 +433,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     }
 
     /**
-     * @param visibilityFlag 0 - Visible , 8 - Gone
+     * @param visibilityFlag 0 - Visible , 8 - inVisible
      */
     private void enableDisableProductLevelView(int visibilityFlag) {
         productLevelTV.setVisibility(visibilityFlag);
@@ -449,7 +444,6 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         taskCategoryArrayAdapter = new ArrayAdapter<>(this,
                 R.layout.spinner_blacktext_layout);
         taskCategoryArrayAdapter.setDropDownViewResource(R.layout.spinner_blacktext_list_item);
-        categorySpinner.setAdapter(taskCategoryArrayAdapter);
     }
 
     private void prepareTaskPhotoCapture() {
@@ -603,6 +597,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     }
 
+
     private int getAdapterPosition(int length, String mode) {
         for (int i = 0; i < length; i++) {
             switch (mode) {
@@ -619,12 +614,12 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                         return i;
                     break;
                 default:
-                    if (taskCategoryArrayAdapter.getItem(i).getChannelId() == taskBo.getTaskCategoryID())
+                    if (taskCategoryArrayAdapter.getItem(i).getTaskCategoryID() == taskBo.getTaskCategoryID())
                         return i;
                     break;
             }
         }
-        return 0;
+        return -1;
     }
 
 }

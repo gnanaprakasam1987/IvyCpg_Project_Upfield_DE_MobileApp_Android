@@ -241,8 +241,9 @@ public class TaskListFragment extends Fragment {
                 @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.row_task_title, null);
 
                 holder.taskCB = v.findViewById(R.id.task_title_CB);
-                holder.taskTaskOwner = v.findViewById(R.id.task_taskowner);
-                holder.taskCreatedDate = v.findViewById(R.id.task_createdOn);
+                //holder.taskTaskOwner = v.findViewById(R.id.task_taskowner);
+                //holder.taskCreatedDate = v.findViewById(R.id.
+                // );
                 holder.layoutCB = v.findViewById(R.id.layoutCB);
                 holder.layoutrow = v.findViewById(R.id.layoutBorder);
                 if (fromProfileScreen) {
@@ -250,8 +251,8 @@ public class TaskListFragment extends Fragment {
 
                 } else
                     holder.layoutCB.setVisibility(View.VISIBLE);
-                holder.taskTaskOwner.setText(" : " + task.getTaskOwner());
-                holder.taskCreatedDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat) + ", ");
+                //holder.taskTaskOwner.setText(" : " + task.getTaskOwner());
+                //holder.taskCreatedDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat) + ", ");
 
                 if (task.getIsdone().equals("1") && !holder.taskBO.isUpload()) {
                     holder.taskCB.setChecked(true);

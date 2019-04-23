@@ -22,7 +22,6 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.data.TaskDataManager;
@@ -105,14 +104,13 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                     @Override
                     public Boolean apply(ArrayList<UserMasterBO> userMasterBOS, ArrayList<ChannelBO> channelBOS, ArrayList<RetailerMasterBO> retailerMasterBOS) throws Exception {
                         mUserListBos.clear();
-                            for (UserMasterBO userBo : userMasterBOS) {
-                                if (userBo.getUserid() == appDataProvider.getUser().getUserid()) {
-                                    userBo.setUserName("Self");
-                                    break;
-                                }
+                        for (UserMasterBO userBo : userMasterBOS) {
+                            if (userBo.getUserid() == appDataProvider.getUser().getUserid()) {
+                                userBo.setUserName("Self");
+                                break;
                             }
-                            mUserListBos.addAll(userMasterBOS);
-
+                        }
+                        mUserListBos.addAll(userMasterBOS);
 
 
                         mChannelListBos.clear();
@@ -206,7 +204,31 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
     @Override
-    public void fetchCompletedTask() {
+    public void fetchCompletedTask(String retailerID) {
+        taskPreparedList = new ArrayList();
+        getIvyView().showLoading();
+        getCompositeDisposable().add(mTaskDataManager.fetchCompletedTask(retailerID)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<ArrayList<TaskDataBO>>() {
+                    @Override
+                    public void onNext(ArrayList<TaskDataBO> taskDataBOS) {
+                        taskPreparedList.clear();
+                        taskPreparedList.addAll(taskDataBOS);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getIvyView().onError("Something went wrong");
+                        getIvyView().hideLoading();
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        getIvyView().updateListData(taskPreparedList);
+                        getIvyView().hideLoading();
+                    }
+                }));
 
     }
 
@@ -313,9 +335,14 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
         if (imageName != null
                 && !imageName.isEmpty()) {
             imgBo.setTaskImg(imageName);
-            imgBo.setTaskImgPath(FileUtils.photoFolderPath);
+            imgBo.setTaskImgPath(TaskConstant.TASK_SERVER_IMG_PATH);
 
             mTaskImgList.add(imgBo);
+            try {
+                writeToFile(imageName);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
 
         } else {
@@ -329,8 +356,8 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
 
-    public void writeToFile(String data, String filename, String foldername) {
-        String path = FileUtils.photoFolderPath + foldername;
+    public void writeToFile(String filename) throws IOException {
+        String path = FileUtils.photoFolderPath;
 
         File folder = new File(path);
         if (!folder.exists()) {
@@ -338,16 +365,10 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
         }
 
         File newFile = new File(path, filename);
-        /*  newFile.createNewFile();
-          FileOutputStream fOut = new FileOutputStream(newFile);
-          OutputStreamWriter myOutWriter = new OutputStreamWriter(fOut);
-          myOutWriter.append(data);
-          myOutWriter.close();
-          fOut.flush();
-          fOut.close();*/
-        String destpath = FileUtils.photoFolderPath + "/" + DataMembers.IVYDIST_PATH + "/";
+        if (!newFile.exists())
+            newFile.createNewFile();
+        String destpath = TaskConstant.TASK_SERVER_IMG_PATH;
         copyFile(newFile, destpath, filename);
-
     }
 
 
@@ -418,6 +439,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                     @Override
                     public void accept(Boolean imgUpdated) throws Exception {
                         if (imgUpdated) {
+                            writeToFile(imageName);
                             getIvyView().showMessage(R.string.image_saved);
                         }
                     }
@@ -528,11 +550,6 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     @Override
     public boolean isShowProdLevel() {
         return mConfigurationMasterHelper.IS_SHOW_TASK_PRODUCT_LEVEL;
-    }
-
-    @Override
-    public boolean isAllowImgCapture() {
-        return mConfigurationMasterHelper.IS_ALLOW_TASK_IMG_CAPTURE;
     }
 
     @Override

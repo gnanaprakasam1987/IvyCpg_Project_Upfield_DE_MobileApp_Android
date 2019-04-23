@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -54,6 +55,9 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     @BindView(R.id.task_category_tv)
     TextView tskProdLevelTitle;
 
+    @BindView(R.id.task_due_date_tv)
+    TextView taskDueDateLabel;
+
     @BindView(R.id.task_due_date_value_tv)
     TextView taskDueDateTv;
 
@@ -81,9 +85,13 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     @BindView(R.id.task_created_date_value_tv)
     TextView createdDateValueTv;
 
+    @BindView(R.id.evidence_img_rl)
+    RelativeLayout evidenceRL;
+
 
     private TaskDataBO detailBo;
     private boolean isFromHomeSrc;
+    private int tabSelection;
     private String imageName = "";
     @Inject
     TaskContract.TaskPresenter<TaskContract.TaskView> taskPresenter;
@@ -118,6 +126,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     protected void getMessageFromAliens() {
         if (getIntent().getExtras() != null) {
             isFromHomeSrc = getIntent().getBooleanExtra(TaskConstant.FROM_HOME_SCREEN, false);
+            tabSelection = getIntent().getIntExtra(TaskConstant.TAB_SELECTION, 0);
             detailBo = getIntent().getExtras().getParcelable(TaskConstant.TASK_OBJECT);
 
         }
@@ -127,6 +136,10 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     protected void setUpViews() {
         setUnBinder(ButterKnife.bind(this));
         setUpToolBar(getString(R.string.task_detail));
+
+        if (tabSelection == 3)
+            hideViews();
+
         setUpRecyclerView();
         taskPresenter.fetchTaskImageList(detailBo.getTaskId());
     }
@@ -152,6 +165,11 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         }
     }
 
+    private void hideViews() {
+        taskDueDateLabel.setText(getString(R.string.executed_date));
+        evidenceRL.setVisibility(View.GONE);
+    }
+
     private void setUpRecyclerView() {
         LinearLayoutManager layoutManager1 = new LinearLayoutManager(this);
         layoutManager1.setOrientation(LinearLayoutManager.HORIZONTAL);
@@ -175,13 +193,18 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
         taskTitleTv.setText(detailBo.getTasktitle());
         taskProductLevelTv.setText(detailBo.getTaskCategoryDsc());
-        taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(detailBo.getTaskDueDate(), taskPresenter.outDateFormat()));
+
+        if (tabSelection == 3)
+            taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(detailBo.getTaskExecDate(), taskPresenter.outDateFormat()));
+        else
+            taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(detailBo.getTaskDueDate(), taskPresenter.outDateFormat()));
+
         taskImgRecyclerView.setAdapter(new TaskImgListAdapter(this, updatedList, true, null));
         createdByValueTv.setText(detailBo.getTaskOwner());
         createdDateValueTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
                 (detailBo.getCreatedDate(), taskPresenter.outDateFormat()));
         taskDescTv.setText(detailBo.getTaskDesc());
-        setImageIntoView(getIntent().getExtras().getString(TaskConstant.EVIDENCE_IMAGE));
+        setImageIntoView(getIntent().getExtras().getString(TaskConstant.EVIDENCE_IMAGE, ""));
 
     }
 
@@ -260,14 +283,20 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
                 + "_" + Commons.now(Commons.DATE);
 
         boolean mIsFileAvailable = FileUtils.checkForNFilesInFolder(FileUtils.photoFolderPath, 1, mFirstNameStarts);
-
-        if (mIsFileAvailable) {
+        boolean copyFileAvailable = FileUtils.checkForNFilesInFolder(TaskConstant.TASK_SERVER_IMG_PATH, 1, mFirstNameStarts);
+        if (mIsFileAvailable || copyFileAvailable) {
             showAlert("", getString(R.string.word_photocaptured_delete_retake), new CommonDialog.PositiveClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
 
-                    FileUtils.deleteFiles(FileUtils.photoFolderPath,
-                            mFirstNameStarts);
+                    if (mIsFileAvailable)
+                        FileUtils.deleteFiles(FileUtils.photoFolderPath,
+                                mFirstNameStarts);
+
+                    if (copyFileAvailable)
+                        FileUtils.deleteFiles(TaskConstant.TASK_SERVER_IMG_PATH
+                                , mFirstNameStarts);
+
                     navigateToCameraActivity();
                 }
             }, new CommonDialog.negativeOnClickListener() {

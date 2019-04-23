@@ -13,7 +13,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -38,15 +37,17 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
     private TaskClickListener taskClickListener;
     private Boolean isFromProfileSrc;
     private Boolean isFromHomeSrc;
+    private int mTabPosition;
     private final ViewBinderHelper binderHelper = new ViewBinderHelper();
 
-    public TaskListAdapter(Context mContext, ArrayList<TaskDataBO> taskDatas, String outDateFormat, TaskClickListener taskClickListener, boolean isFromProfileSrc, boolean fromHomeScreen) {
+    public TaskListAdapter(Context mContext, ArrayList<TaskDataBO> taskDatas, String outDateFormat, TaskClickListener taskClickListener, boolean isFromProfileSrc, boolean fromHomeScreen, int mTabPosition) {
         this.taskDatas = taskDatas;
         this.mContext = mContext;
         this.outDateFormat = outDateFormat;
         this.taskClickListener = taskClickListener;
         this.isFromProfileSrc = isFromProfileSrc;
         this.isFromHomeSrc = fromHomeScreen;
+        this.mTabPosition = mTabPosition;
 
         // to open only one row at a time
         binderHelper.setOpenOnlyOne(true);
@@ -71,17 +72,31 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         // put an unique string id as value, can be any string which uniquely define the data
         binderHelper.bind(holder.swipeLayout, taskBo.getTaskId());
 
+        if (mTabPosition == 3)
+            binderHelper.lockSwipe(taskBo.getTaskId());
+
 
         holder.taskTitle.setText(taskBo.getTasktitle());
         holder.taskProductLevel.setText(taskBo.getTaskCategoryDsc());
-        holder.taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
-                (taskBo.getTaskDueDate(), outDateFormat));
+        if (mTabPosition == 3)
+            holder.taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
+                    (taskBo.getTaskExecDate(), outDateFormat));
+        else
+            holder.taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
+                    (taskBo.getTaskDueDate(), outDateFormat));
 
-        holder.taskCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        holder.taskCB.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                taskBo.setChecked(isChecked);
+            public void onClick(View v) {
+                if (!taskBo.isChecked()) {
+                    holder.taskCB.setChecked(true);
+                    taskBo.setChecked(true);
+                } else {
+                    holder.taskCB.setChecked(false);
+                    taskBo.setChecked(false);
+                }
                 taskClickListener.onTaskExcutedClick(taskBo);
+
             }
         });
 
@@ -95,7 +110,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         holder.btnAttachFile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                taskClickListener.onAttachFile(taskBo.getTaskId(), taskBo.getTaskCategoryID(), taskBo.isChecked());
+                taskClickListener.onAttachFile(taskBo);
             }
         });
 
@@ -182,6 +197,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
 
             if (isFromHomeSrc)
                 taskProductLevel.setVisibility(View.GONE);
+
+            if (mTabPosition == 3) {
+                btnAttachFile.setVisibility(View.GONE);
+                taskCB.setVisibility(View.GONE);
+            }
 
         }
     }

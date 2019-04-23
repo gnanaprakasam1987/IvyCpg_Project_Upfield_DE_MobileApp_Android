@@ -14,7 +14,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.utils.DateTimeUtils;
-import com.ivy.utils.FileUtils;
 import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -119,7 +118,69 @@ public class TaskDataManagerImpl implements TaskDataManager {
 
     @Override
     public Observable<ArrayList<TaskDataBO>> fetchCompletedTask(String retailerId) {
-        return null;
+        return Observable.fromCallable(new Callable<ArrayList<TaskDataBO>>() {
+            @Override
+            public ArrayList<TaskDataBO> call() throws Exception {
+                ArrayList<TaskDataBO> taskCompleteBos = new ArrayList<>();
+                try {
+                    if (mDbUtil.isDbNullOrClosed())
+                        initDb();
+
+                    String query = "select distinct A.taskid,B.taskcode,B.taskDesc,A.retailerId,"
+                            + "(CASE WHEN ifnull(TH.TaskId,0) >0 THEN 1 ELSE 0 END) as isDone,"
+                            + "B.usercreated , B.taskowner , B.date, A.upload,A.channelid,A.userid,"
+                            + "IFNULL(B.DueDate,''),B.CategoryId,IFNULL(PL.PName,''),TH.ExecutionDate"
+                            + " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid"
+                            + " inner join TaskHistory TH on TH.TaskId=A.taskid and TH.RetailerId = " + retailerId
+                            + " left join ProductMaster PL on PL.PID=B.CategoryId"
+                            + " left join RetailerMaster RM on RM.RetailerID=A.retailerId"
+                            + " where A.retailerId=" + retailerId;
+
+                    Cursor c = mDbUtil
+                            .selectSQL(query);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            TaskDataBO taskmasterbo = new TaskDataBO();
+                            taskmasterbo.setTaskId(c.getString(0));
+                            taskmasterbo.setTasktitle(c.getString(1));
+                            taskmasterbo.setTaskDesc(c.getString(2));
+                            taskmasterbo.setRid(c.getInt(3));
+                            taskmasterbo.setUpload(c.getString(4));
+                            taskmasterbo.setIsdone(c.getString(5));
+                            taskmasterbo.setUsercreated(c.getString(6));
+                            taskmasterbo.setTaskOwner(c.getString(7));
+                            taskmasterbo.setCreatedDate(c.getString(8));
+
+                            taskmasterbo.setChannelId(c.getInt(9));
+                            taskmasterbo.setUserId(c.getInt(10));
+                            taskmasterbo.setTaskDueDate(c.getString(11));
+                            taskmasterbo.setTaskCategoryID(c.getInt(12));
+                            taskmasterbo.setTaskCategoryDsc(c.getString(13));
+                            taskmasterbo.setTaskExecDate(c.getString(14));
+
+                            if (taskmasterbo.getUserId() != 0)
+                                taskmasterbo.setMode("seller");
+                            else if (taskmasterbo.getChannelId() != 0)
+                                taskmasterbo.setMode("channel");
+                            else
+                                taskmasterbo.setMode("retailer");
+
+                            taskCompleteBos.add(taskmasterbo);
+                        }
+
+                        c.close();
+                    }
+                    shutDownDb();
+                    return taskCompleteBos;
+
+
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+                shutDownDb();
+                return taskCompleteBos;
+            }
+        });
     }
 
     /**
@@ -561,12 +622,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                         while (c.moveToNext()) {
                             TaskDataBO taskImgBo = new TaskDataBO();
                             taskImgBo.setTaskImg(c.getString(0));
-
-                            if (c.getInt(1) == 1)
-                                taskImgBo.setTaskImgPath(TaskConstant.TASK_SERVER_IMG_PATH);
-                            else
-                                taskImgBo.setTaskImgPath(FileUtils.photoFolderPath);
-
+                            taskImgBo.setTaskImgPath(TaskConstant.TASK_SERVER_IMG_PATH);
                             taskImgList.add(taskImgBo);
                         }
                         c.close();
@@ -589,31 +645,55 @@ public class TaskDataManagerImpl implements TaskDataManager {
             @Override
             public Boolean call() throws Exception {
                 try {
+                    boolean isFlag;
                     if (mDbUtil.isDbNullOrClosed())
                         initDb();
 
-                    if (serverTask == 1) {
+                    Cursor c = mDbUtil.selectSQL("Select taskId from TaskMaster Where=" + StringUtils.QT(taskId) + " And Upload='Y'");
 
-                        mDbUtil.updateSQL("UPDATE TaskMaster " +
-                                "SET status='D' WHERE taskid=" + StringUtils.QT(taskId));
-
-                        mDbUtil.updateSQL("UPDATE TaskImageDetails " +
-                                "SET status='D' WHERE TaskId=" + StringUtils.QT(taskId));
+                    if (c.getCount() > 0) {
+                        isFlag = true;
+                        c.close();
                     } else {
-                        mDbUtil.deleteSQL("TaskMaster", "taskid=" + StringUtils.QT(taskId), false);
-
-                        mDbUtil.deleteSQL(DataMembers.tbl_TaskConfigurationMaster, "taskid=" + StringUtils.QT(taskId), false);
-
-                        mDbUtil.deleteSQL("TaskImageDetails", "TaskId=" + StringUtils.QT(taskId), false);
-
+                        isFlag = false;
                     }
-                    shutDownDb();
-                    return true;
+                    return isFlag;
                 } catch (Exception ignore) {
 
                 }
-                shutDownDb();
                 return false;
+            }
+        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
+            @Override
+            public SingleSource<? extends Boolean> apply(Boolean isUploaded) throws Exception {
+                return Single.fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        try {
+                            if (serverTask == 1 || isUploaded) {
+
+                                mDbUtil.updateSQL("UPDATE TaskMaster " +
+                                        "SET status='D' WHERE taskid=" + StringUtils.QT(taskId));
+
+                                mDbUtil.updateSQL("UPDATE TaskImageDetails " +
+                                        "SET status='D' WHERE TaskId=" + StringUtils.QT(taskId));
+                            } else {
+                                mDbUtil.deleteSQL("TaskMaster", "taskid=" + StringUtils.QT(taskId), false);
+
+                                mDbUtil.deleteSQL(DataMembers.tbl_TaskConfigurationMaster, "taskid=" + StringUtils.QT(taskId), false);
+
+                                mDbUtil.deleteSQL("TaskImageDetails", "TaskId=" + StringUtils.QT(taskId), false);
+
+                            }
+                            shutDownDb();
+                            return true;
+                        } catch (Exception ignore) {
+
+                        }
+                        shutDownDb();
+                        return false;
+                    }
+                });
             }
         });
     }

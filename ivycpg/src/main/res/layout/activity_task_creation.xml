@@ -47,32 +47,8 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/task_title_tv"
                     android:layout_gravity="start|center"
-                    android:maxLength="25"
-                    />
+                    android:maxLength="25" />
 
-                <TextView
-                    android:id="@+id/task_category_tv"
-                    style="@style/TextViewNormalHighlight"
-                    android:layout_width="@dimen/spinner_width"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv"
-                    android:adjustViewBounds="true"
-                    android:padding="@dimen/_8sdp"
-                    android:layout_marginRight="@dimen/_20sdp"
-                    android:layout_marginEnd="@dimen/_20sdp"
-                    android:text="@string/category" />
-
-                <android.support.v7.widget.AppCompatSpinner
-                    android:id="@+id/task_category_spinner"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
-                    android:layout_width="@dimen/spinner_width"
-                    android:layout_height="@dimen/spinner_layout_height"
-                    android:layout_marginRight="@dimen/_20sdp"
-                    android:layout_marginEnd="@dimen/_20sdp"
-                    android:layout_below="@+id/task_category_tv"
-                    android:spinnerMode="dialog"
-
-                    />
 
                 <TextView
                     android:id="@+id/task_due_date_tv"
@@ -80,8 +56,6 @@
                     android:layout_width="@dimen/spinner_width"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv"
-                    android:layout_toEndOf="@+id/task_category_tv"
-                    android:layout_toRightOf="@+id/task_category_tv"
                     android:adjustViewBounds="true"
                     android:paddingTop="@dimen/_8sdp"
                     android:paddingBottom="@dimen/_8sdp"
@@ -93,11 +67,38 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_38sdp"
                     android:layout_below="@+id/task_due_date_tv"
-                    android:layout_toEndOf="@+id/task_category_spinner"
-                    android:layout_toRightOf="@+id/task_category_spinner"
                     android:gravity="center|start"
                     android:maxLines="1"
                     android:text="@string/due_date" />
+
+                <TextView
+                    android:id="@+id/task_category_tv"
+                    style="@style/TextViewNormalHighlight"
+                    android:layout_width="@dimen/spinner_width"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_toEndOf="@+id/task_due_date_tv"
+                    android:layout_toRightOf="@+id/task_due_date_tv"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/_8sdp"
+                    android:text="@string/category" />
+
+                <android.support.v7.widget.AppCompatSpinner
+                    android:id="@+id/task_category_spinner"
+                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                    android:layout_width="@dimen/spinner_width"
+                    android:layout_height="@dimen/spinner_layout_height"
+                    android:layout_below="@+id/task_category_tv"
+                    android:layout_alignStart="@+id/task_category_tv"
+                    android:layout_alignLeft="@+id/task_category_tv"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_toEndOf="@+id/task_due_date_btn"
+                    android:layout_toRightOf="@+id/task_due_date_btn"
+                    android:spinnerMode="dialog" />
+
             </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
@@ -231,8 +232,8 @@
         android:layout_gravity="bottom"
         android:background="?attr/customFooterBackgroundColor"
         android:gravity="center"
-        android:padding="@dimen/_3sdp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/_3sdp">
 
 
         <Button

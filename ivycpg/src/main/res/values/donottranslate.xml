@@ -207,5 +207,6 @@
     <string name="task_exec_mandatory">Need to execute the task</string>
     <string name="exec_task_not_allow_to_edit">Executed task not allow to edit</string>
     <string name="exec_task_not_allow_to_delete">Executed task not allow to delete</string>
+    <string name="executed_date">Executed Date</string>
 
 </resources>

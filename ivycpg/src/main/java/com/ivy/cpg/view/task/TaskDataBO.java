@@ -34,6 +34,7 @@ public class TaskDataBO implements Parcelable {
     private String sortName;
     private boolean orderByAsc;
     private int serverTask;
+    private String taskExecDate;
 
     protected TaskDataBO(Parcel in) {
         taskDesc = in.readString();
@@ -64,6 +65,7 @@ public class TaskDataBO implements Parcelable {
         sortName = in.readString();
         orderByAsc = in.readByte() != 0;
         serverTask = in.readInt();
+        taskExecDate = in.readString();
     }
 
     public static final Creator<TaskDataBO> CREATOR = new Creator<TaskDataBO>() {
@@ -333,6 +335,14 @@ public class TaskDataBO implements Parcelable {
         this.serverTask = serverTask;
     }
 
+    public String getTaskExecDate() {
+        return taskExecDate;
+    }
+
+    public void setTaskExecDate(String taskExecDate) {
+        this.taskExecDate = taskExecDate;
+    }
+
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(taskDesc);
@@ -363,5 +373,6 @@ public class TaskDataBO implements Parcelable {
         parcel.writeString(sortName);
         parcel.writeByte((byte) (orderByAsc ? 1 : 0));
         parcel.writeInt(serverTask);
+        parcel.writeString(taskExecDate);
     }
 }

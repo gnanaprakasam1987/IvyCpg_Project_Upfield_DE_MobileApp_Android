@@ -181,6 +181,10 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             tabOne.setText(tab_name);
             tabLayout.addTab(tabLayout.newTab().setCustomView(tabOne));
         }
+
+        if (fromHomeScreen)
+            tabLayout.removeTabAt(3);
+
     }
 
     private void setUpBottomSheet(View view) {
@@ -244,8 +248,8 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     final TaskClickListener taskClickListener = new TaskClickListener() {
         @Override
         public void onTaskExcutedClick(TaskDataBO taskDataBO) {
-            taskPresenter.updateModuleTime();
             if (isRetailerWiseTask) {
+                taskPresenter.updateModuleTime();
                 taskPresenter.updateTaskExecution(taskPresenter.getRetailerID() + "", taskDataBO);
             } else {
                 taskPresenter.updateTaskExecution(0 + "", taskDataBO);
@@ -274,8 +278,12 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             switch (isType) {
                 case 0:
                     i = new Intent(getActivity(), TaskDetailActivity.class);
-                    if (taskBO.getTaskEvidenceImg()==null)
+                    if (taskBO.getTaskEvidenceImg() == null
+                            && tabLayout.getSelectedTabPosition() == 3)
                         i.putExtra(TaskConstant.EVIDENCE_IMAGE, imageName);
+
+                    i.putExtra(TaskConstant.FROM_HOME_SCREEN, fromHomeScreen);
+                    i.putExtra(TaskConstant.TAB_SELECTION, tabLayout.getSelectedTabPosition());
                     break;
                 case 1:
                     i = new Intent(getActivity(), TaskCreationActivity.class);
@@ -297,26 +305,29 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         }
 
         @Override
-        public void onAttachFile(String taskId, int productLevelId, boolean isChecked) {
-            if (!isChecked) {
+        public void onAttachFile(TaskDataBO taskBO) {
+            if (!taskBO.isChecked()) {
                 showMessage(R.string.task_exec_mandatory);
                 return;
             }
 
 
-            mSelectedTaskId = taskId;
+            mSelectedTaskId = taskBO.getTaskId();
 
-            imageName = "TSK_" + taskId + "_" + productLevelId
+            imageName = "TSK_" + taskBO.getTaskId() + "_" + taskBO.getTaskCategoryID()
                     + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)
                     + ".jpg";
 
-            String mFirstNameStarts = "TSK_" + taskId
-                    + "_" + productLevelId
+            taskBO.setTaskEvidenceImg(imageName);
+
+            String mFirstNameStarts = "TSK_" + taskBO.getTaskId()
+                    + "_" + taskBO.getTaskCategoryID()
                     + "_" + Commons.now(Commons.DATE);
 
             boolean mIsFileAvailable = FileUtils.checkForNFilesInFolder(FileUtils.photoFolderPath, 1, mFirstNameStarts);
+            boolean copyFileAvailable = FileUtils.checkForNFilesInFolder(TaskConstant.TASK_SERVER_IMG_PATH, 1, mFirstNameStarts);
 
-            if (mIsFileAvailable)
+            if (mIsFileAvailable || copyFileAvailable)
                 showFileDeleteAlert(mFirstNameStarts);
             else
                 navigateToCameraActivity();
@@ -350,6 +361,9 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
                         FileUtils.deleteFiles(FileUtils.photoFolderPath,
                                 imageNameStarts);
+                        FileUtils.deleteFiles(TaskConstant.TASK_SERVER_IMG_PATH
+                                , imageNameStarts);
+
                         dialog.dismiss();
                         navigateToCameraActivity();
 
@@ -399,10 +413,17 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             hideBottomSheet();
         lastSelectedPos = -1;
 
-        if (taskPresenter.isShowServerTaskOnly())
+        if (taskPresenter.isShowServerTaskOnly()) {
+            getView().findViewById(R.id.tv_execution).setVisibility(View.VISIBLE);
             taskPresenter.updateTaskList(TaskConstant.SERVER_TASK, mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
-        else
+        } else if (tab.getPosition() == 3) {
+            getView().findViewById(R.id.tv_execution).setVisibility(View.GONE);
+            taskPresenter.fetchCompletedTask(mSelectedRetailerID);
+        } else {
+            getView().findViewById(R.id.tv_execution).setVisibility(View.VISIBLE);
             taskPresenter.updateTaskList(tab.getPosition(), mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
+        }
+
     }
 
     @Override
@@ -419,7 +440,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     @Override
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
 
-        recyclerView.setAdapter(new TaskListAdapter(getActivity(), updatedList, taskPresenter.outDateFormat(), taskClickListener, fromProfileScreen, fromHomeScreen));
+        recyclerView.setAdapter(new TaskListAdapter(getActivity(), updatedList, taskPresenter.outDateFormat(), taskClickListener, fromProfileScreen, fromHomeScreen, tabLayout.getSelectedTabPosition()));
 
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
             hideBottomSheet();
@@ -531,7 +552,6 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
                 taskPresenter.updateTaskExecutionImg(imageName, mSelectedTaskId);
-                showMessage(getString(R.string.photo_captured_successfully));
             } else {
                 imageName = "";
             }
