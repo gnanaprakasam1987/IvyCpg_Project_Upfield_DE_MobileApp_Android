@@ -301,8 +301,7 @@ public class TaskHelper {
         db.createDataBase();
         db.openDataBase();
 
-        String UID = QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
-                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
+        String UID = QT(retailerid + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
         String columns = "TaskId,RetailerId,Date,UId,Upload,ridSF";
         String values;
 
