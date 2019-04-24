@@ -101,6 +101,8 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
     private String mSelectedCapacity = "0";
     private String mSelectedScanReasonId = "0";
 
+    private ArrayAdapter<AssetAddDetailBO> mAssetSpinAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -215,6 +217,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
     /**
      * Preparing screen
      */
+
     private void loadData() {
 
         if (!assetTrackingHelper.NEW_ASSET_PHOTO)
@@ -230,7 +233,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
         mSelectedPOSM = tempPosm;
 
-        ArrayAdapter<AssetAddDetailBO> mAssetSpinAdapter = new ArrayAdapter<>(
+        mAssetSpinAdapter = new ArrayAdapter<>(
                 this, R.layout.spinner_bluetext_layout, posmList);
         mAssetSpinAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
@@ -852,11 +855,17 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             filterList.add(0, tempPosm);
         }
 
-        ArrayAdapter<AssetAddDetailBO> mAssetSpinAdapter = new ArrayAdapter<>(
-                this, R.layout.spinner_bluetext_layout, filterList);
-        mAssetSpinAdapter
-                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        mAsset.setAdapter(mAssetSpinAdapter);
+        updatedData(filterList);
 
+    }
+
+    public void updatedData(ArrayList<AssetAddDetailBO> filterList) {
+        mAssetSpinAdapter.clear();
+        if (filterList != null){
+            for (AssetAddDetailBO assetAddDetailBO : filterList) {
+                mAssetSpinAdapter.insert(assetAddDetailBO, mAssetSpinAdapter.getCount());
+            }
+        }
+        mAssetSpinAdapter.notifyDataSetChanged();
     }
 }
