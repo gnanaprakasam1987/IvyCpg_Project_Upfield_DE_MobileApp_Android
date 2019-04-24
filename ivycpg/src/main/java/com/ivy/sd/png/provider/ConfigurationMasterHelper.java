@@ -552,7 +552,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_NON_SALABLE_UNLOAD = "NS_UNLOAD";
     public boolean SHOW_NON_SALABLE_UNLOAD;
 
-    private static final String CODE_TO_ENABLE_TRIP = "FUN79";
+    private static final String CODE_TO_ENABLE_TRIP = "FUN80";
     public boolean IS_ENABLE_TRIP = false;
     public boolean IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP = false;
 
