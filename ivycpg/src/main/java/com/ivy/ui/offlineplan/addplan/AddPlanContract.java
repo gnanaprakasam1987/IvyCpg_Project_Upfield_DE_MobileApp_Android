@@ -8,6 +8,9 @@ public interface AddPlanContract {
 
     interface AddPlanView extends BaseIvyView{
 
+        void showUpdatedSuccessfullyMessage();
+
+        void showUpdateFailureMessage();
     }
 
     interface AddPlanPresenter<V extends AddPlanView> extends BaseIvyPresenter<V>{

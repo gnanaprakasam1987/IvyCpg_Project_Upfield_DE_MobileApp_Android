@@ -3,10 +3,8 @@ package com.ivy.ui.offlineplan.addplan.presenter;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.datamanager.DataManager;
-import com.ivy.cpg.view.offlineplanning.OfflineDateWisePlanBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.ui.offlineplan.addplan.AddPlanContract;
 import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
@@ -19,8 +17,6 @@ import javax.inject.Inject;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 
-import static com.ivy.utils.DateTimeUtils.serverDateFormat;
-
 public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extends BasePresenter<V> implements AddPlanContract.AddPlanPresenter<V>{
 
 
@@ -28,16 +24,17 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
     private final String mEntityDistributor = "DIST";
 
     private AddPlanDataManager addPlanDataManager;
-    private AppDataProvider appDataProvider;
+
+    private DataManager dataManager;
 
     @Inject
     public AddPlanPresenterImpl(DataManager dataManager, SchedulerProvider schedulerProvider
             , CompositeDisposable compositeDisposable, ConfigurationMasterHelper configurationMasterHelper
-            , V view, AddPlanDataManager addPlanDataManager, AppDataProvider appDataProvider) {
+            , V view, AddPlanDataManager addPlanDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
 
         this.addPlanDataManager = addPlanDataManager;
-        this.appDataProvider = appDataProvider;
+        this.dataManager = dataManager;
     }
 
     @Override
@@ -52,9 +49,9 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
                         if (aBoolean)
-                            getIvyView().showMessage("Plan Saved Successfully");
+                            getIvyView().showUpdatedSuccessfullyMessage();
                         else
-                            getIvyView().onError("Error Saving Plan");
+                            getIvyView().showUpdateFailureMessage();
                     }
                 })
         );
@@ -71,9 +68,9 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
                     @Override
                     public void accept(Boolean aBoolean) throws Exception {
                         if (aBoolean)
-                            getIvyView().showMessage("Plan Saved Successfully");
+                            getIvyView().showUpdatedSuccessfullyMessage();
                         else
-                            getIvyView().onError("Error Saving Plan");
+                            getIvyView().showUpdateFailureMessage();
                     }
                 })
         );
@@ -92,7 +89,7 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
         dateWisePlanBo.setPlanId(0);
         dateWisePlanBo.setDate(date);
         dateWisePlanBo.setDistributorId(retailerMasterBO.getDistributorId());
-        dateWisePlanBo.setUserId(appDataProvider.getUser().getUserid());
+        dateWisePlanBo.setUserId(dataManager.getUser().getUserid());
 
         if (retailerMasterBO.getSubdId() == 0) {
             dateWisePlanBo.setEntityType(mEntityRetailer);

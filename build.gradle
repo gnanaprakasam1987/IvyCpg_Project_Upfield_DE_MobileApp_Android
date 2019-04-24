@@ -3,10 +3,13 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven { url 'https://plugins.gradle.org/m2' }
+
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.1'
         classpath 'com.google.gms:google-services:3.2.0'
+        classpath 'com.gradle:build-scan-plugin:1.16'
     }
 }
 allprojects {
@@ -18,6 +21,14 @@ allprojects {
         maven { url "http://dl.bintray.com/chat-sdk/chat-sdk-android" }
     }
 }
+
+apply plugin: 'com.gradle.build-scan'
+
+buildScan {
+    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    licenseAgree = 'yes'
+}
+
 
 dependencies {
 }

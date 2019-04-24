@@ -480,4 +480,13 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
     public void setUpToolbar(String title) {
 
     }
+
+    @Override
+    public void showUpdatedSuccessfullyMessage() {
+    }
+
+    @Override
+    public void showUpdateFailureMessage() {
+
+    }
 }

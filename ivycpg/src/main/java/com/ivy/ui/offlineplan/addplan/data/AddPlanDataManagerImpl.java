@@ -83,12 +83,12 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                 initDb();
 
                 try {
-                    shutDownDb();
+
                     mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
                             + " SET StartTime = "+dateWisePlanBo.getStartTime()+" , EndTime ="+dateWisePlanBo.getEndTime()
                             +" where EntityId=" + dateWisePlanBo.getEntityId() +" and Date = " + StringUtils.QT(dateWisePlanBo.getDate())
                             + " and EntityType = " + StringUtils.QT(dateWisePlanBo.getEntityType()));
-
+                    shutDownDb();
                     return true;
                 } catch (Exception e) {
                     Commons.printException("" + e);
