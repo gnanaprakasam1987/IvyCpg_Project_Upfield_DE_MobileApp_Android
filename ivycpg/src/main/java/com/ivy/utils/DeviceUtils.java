@@ -10,6 +10,7 @@ import android.os.BatteryManager;
 import android.provider.Settings;
 import android.telephony.TelephonyManager;
 import android.util.DisplayMetrics;
+import android.view.WindowManager;
 
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 
@@ -109,9 +110,17 @@ public class DeviceUtils {
         return false;
     }
 
-    public static int dpToPixel(Context context ,int dp){
+    public static int dpToPixel(Context context, int dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         int pixels = (int) (dp * scale + 0.5f);
         return pixels;
+    }
+
+    public static int getDeviceWidth(Context context) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager windowmanager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        assert windowmanager != null;
+        windowmanager.getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.widthPixels;
     }
 }

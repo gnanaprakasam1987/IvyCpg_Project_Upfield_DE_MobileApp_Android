@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
@@ -47,11 +48,7 @@ public class MonthView extends FrameLayout {
     public void setLayoutManager(Context context) {
 
         recycler.setHasFixedSize(true);
-        recycler.addItemDecoration(new DividerItemDecoration(context,
-                DividerItemDecoration.HORIZONTAL));
-        recycler.addItemDecoration(new DividerItemDecoration(context,
-                DividerItemDecoration.VERTICAL));
-        recycler.setLayoutManager(new GridLayoutManager(context, columnCount));
+        recycler.setLayoutManager(new GridLayoutManager(context, columnCount, LinearLayoutManager.VERTICAL,false));
         recycler.setItemAnimator(new DefaultItemAnimator());
 
     }

@@ -9,7 +9,7 @@ public interface OfflinePlanBaseContract {
 
     }
 
-    interface OfflinePlanBasePresenter<V extends OfflinePlanBaseView> extends BaseIvyPresenter{
+    interface OfflinePlanBasePresenter<V extends OfflinePlanBaseView> extends BaseIvyPresenter<V>{
         void loadRetailersData();
         void loadAllStoresData();
         void loadTodayVisitData();

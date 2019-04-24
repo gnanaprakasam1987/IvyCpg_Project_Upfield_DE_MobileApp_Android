@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,13 +12,15 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckedTextView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.calendarlibrary.monthview.MonthView;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.CalenderBO;
+import com.ivy.ui.offlineplan.calendar.adapter.WeekFilterAdapter;
+import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.ui.offlineplan.calendar.OfflinePlanContract;
@@ -37,7 +40,6 @@ import butterknife.BindView;
 public class OfflinePlanFragment extends BaseFragment implements OfflinePlanContract.OfflinePlanView, CalendarClickListner {
 
     private String screenTitle;
-    private MonthViewAdapter monthViewAdapter;
     private ArrayAdapter<SpinnerBO> selectionAdapter;
 
     @BindView(R.id.rv_calendar)
@@ -58,10 +60,14 @@ public class OfflinePlanFragment extends BaseFragment implements OfflinePlanCont
     @BindView(R.id.rv_week)
     RecyclerView rvWeek;
 
+    @BindView(R.id.ll_titleList)
+    LinearLayout llWeekTitle;
+
     @Inject
     OfflinePlanContract.OfflinePlanPresenter<OfflinePlanContract.OfflinePlanView> presenter;
 
     private int mSelectedType = 0;
+    private final int MONTH = 0, DAY = 1, WEEK = 2;
 
     @Override
     public void initializeDi() {
@@ -123,13 +129,20 @@ public class OfflinePlanFragment extends BaseFragment implements OfflinePlanCont
 
     @Override
     public void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList) {
-        monthViewAdapter = new MonthViewAdapter(getActivity(), dayInWeekCount, mCalenderAllList, mAllowedDates, this);
+        MonthViewAdapter monthViewAdapter = new MonthViewAdapter(getActivity(), dayInWeekCount, mCalenderAllList, mAllowedDates, this);
         rvCalendar.setAdapter(monthViewAdapter);
     }
 
     @Override
     public void setMonthName(String monthName) {
         tvMonth.setText(monthName);
+    }
+
+    @Override
+    public void loadWeeks(ArrayList<String> mAllowedDates, ArrayList<CalenderBO> mCalenderAllList) {
+        rvWeek.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL,false));
+        WeekFilterAdapter weekFilterAdapter = new WeekFilterAdapter(getActivity(), mCalenderAllList, mAllowedDates);
+        rvWeek.setAdapter(weekFilterAdapter);
     }
 
     private void setSelectionAdapter() {
@@ -168,19 +181,26 @@ public class OfflinePlanFragment extends BaseFragment implements OfflinePlanCont
     }
 
     private void switchViews() {
-        final int MONTH = 0, DAY = 1, WEEK = 2;
         switch (mSelectedType) {
             case MONTH:
                 rvCalendar.setVisibility(View.VISIBLE);
+                llWeekTitle.setVisibility(View.VISIBLE);
                 rvWeek.setVisibility(View.GONE);
+                btnSwitch.setText(getResources().getString(R.string.month));
                 break;
             case DAY:
                 rvCalendar.setVisibility(View.GONE);
+                llWeekTitle.setVisibility(View.GONE);
                 rvWeek.setVisibility(View.VISIBLE);
+                btnSwitch.setText(getResources().getString(R.string.day));
+                presenter.loadDaysOfaWeek();
                 break;
             case WEEK:
+                rvCalendar.setVisibility(View.GONE);
+                llWeekTitle.setVisibility(View.GONE);
+                rvWeek.setVisibility(View.VISIBLE);
+                btnSwitch.setText(getResources().getString(R.string.week));
                 break;
-
         }
 
     }
@@ -188,5 +208,8 @@ public class OfflinePlanFragment extends BaseFragment implements OfflinePlanCont
     @Override
     public void onDateSelected(String selectedDate) {
         showMessage(selectedDate);
+        presenter.setSelectedDate(selectedDate);
+        mSelectedType = DAY;
+        switchViews();
     }
 }

@@ -5,7 +5,7 @@ import android.text.format.DateUtils;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.CalenderBO;
+import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -34,6 +34,7 @@ public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanV
     private ArrayList<String> mAllowedDates;
     private String generalPattern = "yyyy/MM/dd";
     private Calendar currentMonth = Calendar.getInstance();
+    private String mSelectedDate;
 
     @Inject
     OfflinePlanPresenterImpl(DataManager dataManager,
@@ -52,18 +53,21 @@ public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanV
     @Override
     public void setPlanDates() {
         Calendar aCalendar = Calendar.getInstance();
-        aCalendar.add(Calendar.MONTH, -2);
+        aCalendar.add(Calendar.MONTH, -1);
         aCalendar.set(Calendar.DATE, 1);
         planFromDate = DateTimeUtils.convertDateObjectToRequestedFormat(aCalendar.getTime(), generalPattern);
         Commons.print("planFromDate" + planFromDate);
 
         Calendar zCalendar = Calendar.getInstance();
-        zCalendar.add(Calendar.MONTH, 5);
+        zCalendar.add(Calendar.MONTH, 1);
         zCalendar.set(Calendar.DATE, zCalendar.getActualMaximum(Calendar.DAY_OF_MONTH));
         planToDate = DateTimeUtils.convertDateObjectToRequestedFormat(zCalendar.getTime(), generalPattern);
         Commons.print("planFromDate" + planToDate);
 
         setAllowedDates();
+
+        Calendar calendar = Calendar.getInstance();
+        mSelectedDate = DateTimeUtils.convertDateObjectToRequestedFormat(calendar.getTime(), generalPattern);
     }
 
     private void setAllowedDates() {
@@ -83,12 +87,12 @@ public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanV
     @Override
     public void loadCalendar() {
         ArrayList<CalenderBO> mCalenderAllList;
-        String[] calendarDate = getDateRange();
+        String[] calendarDate = getMonthRange();
         int dayInWeekCount = getWeekDayCount(calendarDate[0]);
         mCalenderAllList = getDaysBetweenDates(calendarDate[0], calendarDate[1]);
         getIvyView().loadCalendarView(mAllowedDates, dayInWeekCount, mCalenderAllList);
         getIvyView().setMonthName(DateTimeUtils.convertDateObjectToRequestedFormat(
-                currentMonth.getTime(),"MMMM yyyy"));
+                currentMonth.getTime(), "MMMM yyyy"));
 
     }
 
@@ -137,7 +141,24 @@ public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanV
 
     }
 
-    private String[] getDateRange() {
+    @Override
+    public void setSelectedDate(String selectedDate) {
+        mSelectedDate = selectedDate;
+    }
+
+    @Override
+    public void loadDaysOfaWeek() {
+        ArrayList<CalenderBO> mCalendarList = getWeekDays();
+
+        //adding week no at start position
+        CalenderBO cBO = new CalenderBO();
+        cBO.setDay("WK");
+        cBO.setCal_date("1");   // need to replace week no from DB
+        mCalendarList.add(0, cBO);
+        getIvyView().loadWeeks(mAllowedDates, mCalendarList);
+    }
+
+    private String[] getMonthRange() {
         Date beginning, end;
         String[] dates = new String[5];
 
@@ -196,7 +217,7 @@ public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanV
     }
 
     private ArrayList<CalenderBO> getDaysBetweenDates(String startDate, String endDate) {
-        ArrayList<CalenderBO> cal = new ArrayList<>();
+        ArrayList<CalenderBO> calLsit = new ArrayList<>();
         Date startdate = DateTimeUtils.convertStringToDateObject(startDate, generalPattern);
         Date enddate;
         enddate = addDateNew(endDate);
@@ -204,9 +225,8 @@ public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanV
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startdate);
 
-        CalenderBO cBO;
         while (calendar.getTime().before(enddate)) {
-            cBO = new CalenderBO();
+            CalenderBO cBO = new CalenderBO();
             Date result = calendar.getTime();
             SimpleDateFormat df1 = new SimpleDateFormat("dd", Locale.US);
             int d = SDUtil.convertToInt(df1.format(result));
@@ -216,20 +236,72 @@ public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanV
             cBO.setCal_date(DateTimeUtils.convertDateObjectToRequestedFormat(result, generalPattern));
             cBO.setDay(goal);
             cBO.setDate(d);
-            cal.add(cBO);
             cBO.setToday(DateUtils.isToday(result.getTime()));
+            cBO.setSelected(mSelectedDate.equalsIgnoreCase(cBO.getCal_date()));
+            calLsit.add(cBO);
+
         }
-        return cal;
+        return calLsit;
     }
 
 
     private Date addDateNew(String dateOne) {
-        Date date1 = DateTimeUtils.convertStringToDateObject(dateOne, generalPattern);
-        System.out.println(DateTimeUtils.convertDateObjectToRequestedFormat(date1, generalPattern));
         Calendar cal = Calendar.getInstance();
-        cal.setTime(date1);
+        cal.setTime(DateTimeUtils.convertStringToDateObject(dateOne, generalPattern));
         cal.add(Calendar.DAY_OF_MONTH, 1); // add 28 days
-        date1 = cal.getTime();
-        return date1;
+        return cal.getTime();
+    }
+
+    private ArrayList<CalenderBO> getWeekDays() {
+
+        Calendar startWeek = Calendar.getInstance();
+        startWeek.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
+        startWeek.setFirstDayOfWeek(Calendar.MONDAY);
+        startWeek.set(Calendar.DAY_OF_WEEK, startWeek.getFirstDayOfWeek());
+        setTimeToBeginningOfDay(startWeek);
+
+
+        Calendar endWeek = Calendar.getInstance();
+        endWeek.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
+        endWeek.set(Calendar.DAY_OF_WEEK, endWeek.getFirstDayOfWeek());
+        endWeek.add(Calendar.DATE, 7);
+        setTimeToEndOfDay(endWeek);
+
+        ArrayList<CalenderBO> calLsit = new ArrayList<>();
+
+
+        while (startWeek.getTime().before(endWeek.getTime())) {
+            CalenderBO cBO = new CalenderBO();
+            Date result = startWeek.getTime();
+            SimpleDateFormat df1 = new SimpleDateFormat("dd", Locale.US);
+            String d =df1.format(result);
+            SimpleDateFormat outFormat = new SimpleDateFormat("EE", Locale.getDefault());
+            String goal = outFormat.format(result);
+            startWeek.add(Calendar.DATE, 1);
+            cBO.setCal_date(d);
+            cBO.setDay(goal);
+            cBO.setToday(DateUtils.isToday(result.getTime()));
+            cBO.setSelected(mSelectedDate.equalsIgnoreCase(cBO.getCal_date()));
+            calLsit.add(cBO);
+
+        }
+        return calLsit;
+
+    }
+
+
+    @Override
+    public void loadRetailersData() {
+
+    }
+
+    @Override
+    public void loadAllStoresData() {
+
+    }
+
+    @Override
+    public void loadTodayVisitData() {
+
     }
 }
