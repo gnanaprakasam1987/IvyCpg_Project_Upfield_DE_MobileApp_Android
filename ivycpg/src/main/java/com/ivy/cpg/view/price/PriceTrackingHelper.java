@@ -378,7 +378,7 @@ public class PriceTrackingHelper {
                         locationBO.setPrice_pc(checkDecimalValue(locationBO.getPrice_pc(), 8, bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION));
 
                         if ((!locationBO.getPrice_ca().equals("0") && !locationBO.getPrice_ca().equals("0.0")) || (!locationBO.getMrp_ca().equals("0") && !locationBO.getMrp_ca().equals("0.0"))) {
-                            values = QT(tid) + "," + locationBO.getProductID() + ","
+                            values = QT(tid) + "," + productBO.getProductID() + ","
                                     + locationBO.getPriceChanged() + ","
                                     + QT(locationBO.getPrice_ca())
                                     + "," + locationBO.getPriceCompliance() + ","
@@ -397,7 +397,7 @@ public class PriceTrackingHelper {
                             isInserted = true;
                         }
                         if ((!locationBO.getPrice_pc().equals("0") && !locationBO.getPrice_pc().equals("0.0")) || (!locationBO.getMrp_pc().equals("0") && !locationBO.getMrp_pc().equals("0.0"))) {
-                            values = QT(tid) + "," + locationBO.getProductID() + ","
+                            values = QT(tid) + "," + productBO.getProductID() + ","
                                     + locationBO.getPriceChanged() + ","
                                     + QT(locationBO.getPrice_pc())
                                     + "," + locationBO.getPriceCompliance() + ","
@@ -416,7 +416,7 @@ public class PriceTrackingHelper {
                             isInserted = true;
                         }
                         if ((!locationBO.getPrice_oo().equals("0") && !locationBO.getPrice_oo().equals("0.0")) || (!locationBO.getMrp_ou().equals("0") && !locationBO.getMrp_ou().equals("0.0"))) {
-                            values = QT(tid) + "," + locationBO.getProductID() + ","
+                            values = QT(tid) + "," + productBO.getProductID() + ","
                                     + locationBO.getPriceChanged() + ","
                                     + QT(locationBO.getPrice_oo())
                                     + "," + locationBO.getPriceCompliance() + ","
@@ -436,7 +436,7 @@ public class PriceTrackingHelper {
                         }
 
                         if (!isInserted && (locationBO.getReasonId() != 0 || locationBO.getPriceCompliance() == 1)) {
-                            values = QT(tid) + "," + locationBO.getProductID() + ","
+                            values = QT(tid) + "," + productBO.getProductID() + ","
                                     + locationBO.getPriceChanged() + ","
                                     + QT(locationBO.getPrice_pc())
                                     + "," + locationBO.getPriceCompliance() + ","
@@ -475,13 +475,13 @@ public class PriceTrackingHelper {
         for (ProductMasterBO sku : productList) {
             for (LocationBO locationBO : sku.getLocations()) {
                 if (locationBO.getPriceCompliance() != 0 || locationBO.getPriceChanged() != 0
-                        || (!locationBO.getPrice_ca().equals("0") && locationBO.getPrice_ca().equals("."))
-                        || (!locationBO.getPrice_pc().equals("0") && locationBO.getPrice_pc().equals("."))
-                        || (!locationBO.getPrice_oo().equals("0") && locationBO.getPrice_oo().equals("."))
-                        || (!locationBO.getMrp_ca().equals("0") && locationBO.getMrp_ca().equals("."))
-                        || (!locationBO.getMrp_pc().equals("0") && locationBO.getMrp_pc().equals("."))
+                        || (!locationBO.getPrice_ca().equals("0") && !locationBO.getPrice_ca().equals("."))
+                        || (!locationBO.getPrice_pc().equals("0") && !locationBO.getPrice_pc().equals("."))
+                        || (!locationBO.getPrice_oo().equals("0") && !locationBO.getPrice_oo().equals("."))
+                        || (!locationBO.getMrp_ca().equals("0") && !locationBO.getMrp_ca().equals("."))
+                        || (!locationBO.getMrp_pc().equals("0") && !locationBO.getMrp_pc().equals("."))
                         || locationBO.getReasonId() != 0
-                        || (!locationBO.getMrp_ou().equals("0")) && locationBO.getMrp_ou().equals("."))
+                        || (!locationBO.getMrp_ou().equals("0")) && !locationBO.getMrp_ou().equals("."))
                     return true;
             }
         }
@@ -509,13 +509,18 @@ public class PriceTrackingHelper {
     public void updateLastVisitPriceAndMRP() {
         //mTaggedProducts list only used in PriceCheck screen. So updating only in mTaggedProducts
         for (ProductMasterBO productMasterBO : bmodel.productHelper.getTaggedProducts()) {
-            productMasterBO.setPrice_pc(productMasterBO.getPrevPrice_pc());
-            productMasterBO.setPrice_ca(productMasterBO.getPrevPrice_ca());
-            productMasterBO.setPrice_oo(productMasterBO.getPrevPrice_oo());
+            for(LocationBO locationBO:productMasterBO.getLocations()){
+
+                locationBO.setPrice_pc(locationBO.getPrevPrice_pc());
+                locationBO.setPrice_ca(locationBO.getPrevPrice_ca());
+                locationBO.setPrice_oo(locationBO.getPrevPrice_oo());
+
+            }
 
             productMasterBO.setMrp_pc(productMasterBO.getPrevMRP_pc());
             productMasterBO.setMrp_ca(productMasterBO.getPrevMRP_ca());
             productMasterBO.setMrp_ou(productMasterBO.getPrevMRP_ou());
+
         }
 
     }

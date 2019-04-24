@@ -243,4 +243,6 @@
     <string name="from_time_should_be_lesser">Avail From Time Should Be Lesser Than Avail Till</string>
     <string name="session_expired">Session Expired</string>
 
+    <string name="price_tag">Price Tag</string>
+
 </resources>

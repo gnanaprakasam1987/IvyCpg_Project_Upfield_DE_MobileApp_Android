@@ -163,7 +163,7 @@
                             android:layout_weight="2"
                             android:gravity="start|center"
                             android:tag="price_tag"
-                            android:text="@string/compliance"
+                            android:text="@string/price_tag"
                             android:visibility="gone" />
 
                         <LinearLayout
