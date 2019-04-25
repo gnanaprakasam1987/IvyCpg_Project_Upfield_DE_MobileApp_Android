@@ -4,7 +4,7 @@ import com.ivy.cpg.view.task.TaskDataBO;
 
 public interface TaskClickListener {
 
-    void onTaskExcutedClick(TaskDataBO taskDataBO);
+    void onTaskExecutedClick(TaskDataBO taskDataBO);
 
     void onTaskButtonClick(TaskDataBO taskBO, int isType);
 

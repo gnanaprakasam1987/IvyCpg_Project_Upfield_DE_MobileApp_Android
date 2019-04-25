@@ -99,7 +99,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
                     holder.taskCB.setChecked(false);
                     taskBo.setChecked(false);
                 }
-                taskClickListener.onTaskExcutedClick(taskBo);
+                taskClickListener.onTaskExecutedClick(taskBo);
 
             }
         });

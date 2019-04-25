@@ -180,15 +180,17 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 + DataMembers.TASK_DIGITAL_CONTENT);
         //allow only create task only for retailer if not from seller Task
         if (isRetailerTask) {
-            hideViews(View.GONE);
+            handleViewVisibility(View.GONE);
         } else {
-            taskPresenter.fetchData();
             setUpAdapter();
+            taskPresenter.fetchData();
             if (isTyp == 0)
                 setUpSpinnerData(0);
         }
-        taskPresenter.fetchTaskCategory("MENU_TASK");
+
         setUpCategoryAdapter();
+        taskPresenter.fetchTaskCategory("MENU_TASK");
+
 
         if (isTyp == 1)
             taskPresenter.fetchTaskImageList(taskBo.getTaskId());
@@ -197,7 +199,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     }
 
 
-    private void hideViews(int visibilityState) {
+    private void handleViewVisibility(int visibilityState) {
         radioGroup.setVisibility(visibilityState);
         spinnerSelection.setVisibility(visibilityState);
         applicableTV.setVisibility(visibilityState);

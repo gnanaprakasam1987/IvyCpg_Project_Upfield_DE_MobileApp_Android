@@ -49,7 +49,7 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-public class TaskFragment extends BaseFragment implements TaskContract.TaskView, TabLayout.OnTabSelectedListener {
+public class TaskFragment extends BaseFragment implements TaskContract.TaskView, TabLayout.OnTabSelectedListener, TaskClickListener {
 
     private TabLayout tabLayout;
     private RecyclerView recyclerView;
@@ -226,7 +226,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         bottomRecyclerView.setHasFixedSize(false);
         bottomRecyclerView.setNestedScrollingEnabled(false);
         bottomRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
-        bottomRecyclerView.setAdapter(new BottomSortListAdapter(getActivity(), getResources().getStringArray(R.array.task_sort_list), taskClickListener, lastSelectedPos));
+        bottomRecyclerView.setAdapter(new BottomSortListAdapter(getActivity(), getResources().getStringArray(R.array.task_sort_list), this, lastSelectedPos));
     }
 
 
@@ -247,103 +247,93 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
                 }, true);
     }
 
-    final TaskClickListener taskClickListener = new TaskClickListener() {
-        @Override
-        public void onTaskExcutedClick(TaskDataBO taskDataBO) {
-            if (isRetailerWiseTask) {
-                taskPresenter.updateModuleTime();
-                taskPresenter.updateTaskExecution(taskPresenter.getRetailerID() + "", taskDataBO);
-            } else {
-                taskPresenter.updateTaskExecution(0 + "", taskDataBO);
-            }
+    @Override
+    public void onTaskExecutedClick(TaskDataBO taskDataBO) {
+        if (isRetailerWiseTask) {
+            taskPresenter.updateModuleTime();
+            taskPresenter.updateTaskExecution(taskPresenter.getRetailerID() + "", taskDataBO);
+        } else {
+            taskPresenter.updateTaskExecution(0 + "", taskDataBO);
+        }
+    }
+
+    @Override
+    public void onTaskButtonClick(TaskDataBO taskBO, int isType) {
+        if (taskBO.getUsercreated().equals("0") && isType != 0) {
+            showMessage(R.string.server_task_can_not_be_edit);
+            return;
+        } else if (taskBO.isChecked() && isType != 0) {
+            showMessage(R.string.exec_task_not_allow_to_edit);
+            return;
         }
 
-        /**
-         * this method used to screen navigation by isType
-         * @param taskBO
-         * @param isType 0- {@link TaskDetailActivity}
-         *               1- {@link TaskCreationActivity}
-         *
-         */
-        @Override
-        public void onTaskButtonClick(TaskDataBO taskBO, int isType) {
-            if (taskBO.getUsercreated().equals("0") && isType != 0) {
-                showMessage(R.string.server_task_can_not_be_edit);
-                return;
-            } else if (taskBO.isChecked() && isType != 0) {
-                showMessage(R.string.exec_task_not_allow_to_edit);
-                return;
-            }
 
+        Intent i = null;
+        switch (isType) {
+            case 0:
+                i = new Intent(getActivity(), TaskDetailActivity.class);
+                if (taskBO.getTaskEvidenceImg() == null
+                        && tabLayout.getSelectedTabPosition() == 3)
+                    i.putExtra(TaskConstant.EVIDENCE_IMAGE, imageName);
 
-            Intent i = null;
-            switch (isType) {
-                case 0:
-                    i = new Intent(getActivity(), TaskDetailActivity.class);
-                    if (taskBO.getTaskEvidenceImg() == null
-                            && tabLayout.getSelectedTabPosition() == 3)
-                        i.putExtra(TaskConstant.EVIDENCE_IMAGE, imageName);
-
-                    i.putExtra(TaskConstant.FROM_HOME_SCREEN, fromHomeScreen);
-                    i.putExtra(TaskConstant.TAB_SELECTION, tabLayout.getSelectedTabPosition());
-                    break;
-                case 1:
-                    i = new Intent(getActivity(), TaskCreationActivity.class);
-                    i.putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask);
-                    i.putExtra(TaskConstant.MENU_CODE, menuCode);
-                    i.putExtra(TaskConstant.SCREEN_TITLE, screenTitle);
-                    i.putExtra(TaskConstant.TASK_SCREEN_MODE, isType);
-                    break;
-                case 2:
-                    taskPresenter.deleteTask(taskBO.getTaskId(), taskBO.getTaskOwner(), taskBO.getServerTask());
-                    break;
-            }
-
-            if (i != null) {
                 i.putExtra(TaskConstant.FROM_HOME_SCREEN, fromHomeScreen);
-                i.putExtra(TaskConstant.TASK_OBJECT, taskBO);
-                startActivity(i);
-            }
+                i.putExtra(TaskConstant.TAB_SELECTION, tabLayout.getSelectedTabPosition());
+                break;
+            case 1:
+                i = new Intent(getActivity(), TaskCreationActivity.class);
+                i.putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask);
+                i.putExtra(TaskConstant.MENU_CODE, menuCode);
+                i.putExtra(TaskConstant.SCREEN_TITLE, screenTitle);
+                i.putExtra(TaskConstant.TASK_SCREEN_MODE, isType);
+                break;
+            case 2:
+                taskPresenter.deleteTask(taskBO.getTaskId(), taskBO.getTaskOwner(), taskBO.getServerTask());
+                break;
         }
 
-        @Override
-        public void onAttachFile(TaskDataBO taskBO) {
-            if (!taskBO.isChecked()) {
-                showMessage(R.string.task_exec_mandatory);
-                return;
-            }
+        if (i != null) {
+            i.putExtra(TaskConstant.FROM_HOME_SCREEN, fromHomeScreen);
+            i.putExtra(TaskConstant.TASK_OBJECT, taskBO);
+            startActivity(i);
+        }
+    }
 
-
-            mSelectedTaskId = taskBO.getTaskId();
-
-            imageName = "TSK_" + taskBO.getTaskId() + "_" + taskBO.getTaskCategoryID()
-                    + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)
-                    + ".jpg";
-
-
-            String mFirstNameStarts = taskBO.getTaskEvidenceImg();
-
-
-            boolean mIsFileAvailable = FileUtils.checkForNFilesInFolder(FileUtils.photoFolderPath, 1, mFirstNameStarts);
-            boolean copyFileAvailable = FileUtils.checkForNFilesInFolder(TaskConstant.TASK_SERVER_IMG_PATH, 1, mFirstNameStarts);
-
-
-            if (mIsFileAvailable || copyFileAvailable)
-                showFileDeleteAlert(mFirstNameStarts);
-            else
-                navigateToCameraActivity();
-
-            taskBO.setTaskEvidenceImg(imageName);
-
+    @Override
+    public void onAttachFile(TaskDataBO taskBO) {
+        if (!taskBO.isChecked()) {
+            showMessage(R.string.task_exec_mandatory);
+            return;
         }
 
-        @Override
-        public void onSortItemClicked(int sortType, boolean orderByAsc) {
-            taskPresenter.orderBySortList(sortType, orderByAsc);
-            lastSelectedPos = sortType;
-            hideBottomSheet();
-        }
-    };
+
+        mSelectedTaskId = taskBO.getTaskId();
+
+        imageName = "TSK_" + taskBO.getTaskId() + "_" + taskBO.getTaskCategoryID()
+                + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)
+                + ".jpg";
+
+
+        String mFirstNameStarts = taskBO.getTaskEvidenceImg();
+
+
+        boolean mIsFileAvailable = FileUtils.checkForNFilesInFolder(FileUtils.photoFolderPath, 1, mFirstNameStarts);
+        boolean copyFileAvailable = FileUtils.checkForNFilesInFolder(TaskConstant.TASK_SERVER_IMG_PATH, 1, mFirstNameStarts);
+
+
+        if (mIsFileAvailable || copyFileAvailable)
+            showFileDeleteAlert(mFirstNameStarts);
+        else
+            navigateToCameraActivity();
+
+        taskBO.setTaskEvidenceImg(imageName);
+    }
+
+    @Override
+    public void onSortItemClicked(int sortType, boolean orderByAsc) {
+        taskPresenter.orderBySortList(sortType, orderByAsc);
+        lastSelectedPos = sortType;
+        hideBottomSheet();
+    }
 
     /**
      * Alert dialog for deleting image
@@ -437,7 +427,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     @Override
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
 
-        recyclerView.setAdapter(new TaskListAdapter(getActivity(), updatedList, taskPresenter.outDateFormat(), taskClickListener, fromProfileScreen, fromHomeScreen, tabLayout.getSelectedTabPosition()));
+        recyclerView.setAdapter(new TaskListAdapter(getActivity(), updatedList, taskPresenter.outDateFormat(), this, fromProfileScreen, fromHomeScreen, tabLayout.getSelectedTabPosition()));
 
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
             hideBottomSheet();
@@ -554,4 +544,6 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+
 }

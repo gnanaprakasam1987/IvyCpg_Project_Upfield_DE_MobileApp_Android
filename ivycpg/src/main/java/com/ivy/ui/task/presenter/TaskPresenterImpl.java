@@ -347,7 +347,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                 mTaskImgList.add(imgBo);
 
         }
-        getIvyView().updateImageListAdapter(getTaskImgList());
+        getIvyView().updateImageListAdapter(mTaskImgList);
     }
 
 
