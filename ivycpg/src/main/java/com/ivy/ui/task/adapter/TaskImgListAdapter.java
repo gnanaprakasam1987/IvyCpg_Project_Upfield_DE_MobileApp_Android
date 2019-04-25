@@ -65,7 +65,7 @@ public class TaskImgListAdapter extends RecyclerView.Adapter<TaskImgListAdapter.
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .skipMemoryCache(true)
                 .centerCrop()
-                .placeholder(R.drawable.bg_add_photo)
+                .placeholder(R.drawable.no_image_available)
                 .error(R.drawable.bg_add_photo)
                 .into(AppUtils.getRoundedImageTarget(mContext, holder.taskImg, (float) 6));
         //}

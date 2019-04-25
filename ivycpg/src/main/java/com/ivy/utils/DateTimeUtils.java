@@ -126,13 +126,10 @@ public class DateTimeUtils {
 
     public static String addDateToYear(int noOfYears) {
         Calendar cal = Calendar.getInstance();
-        Date today = cal.getTime();
         cal.add(Calendar.YEAR, noOfYears); // to get previous year add -1
-        Date nextYear = cal.getTime();
         // convert calendar to date
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
-        return DateTimeUtils.convertDateObjectToRequestedFormat(
-                cal.getTime(), DEFAULT_DATE_FORMAT);
+        return sdf.format(cal.getTime());
     }
 
 

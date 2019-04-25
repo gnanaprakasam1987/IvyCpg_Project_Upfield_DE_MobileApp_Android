@@ -285,7 +285,7 @@ public class DataMembers {
     public static final String tbl_HhtMenuMaster = "HhtMenuMaster";
 
     private static final String tbl_TaskMaster = "TaskMaster";
-    private static final String tbl_TaskMaster_cols = "taskid,taskdesc,taskcode,TaskOwner,DueDate,CategoryId,EndDate,Status";
+    private static final String tbl_TaskMaster_cols = "taskid,taskdesc,taskcode,TaskOwner,Date,DueDate,CategoryId,EndDate,Status";
 
     private static final String tbl_TaskImageDetails = "TaskImageDetails";
     private static final String tbl_TaskImageDetails_cols = "TaskId,TaskImageId,TaskImageName,Status";

@@ -186,6 +186,9 @@ public class FileUtils {
      */
     public static boolean checkForNFilesInFolder(String folderPath, int n,
                                                  String fNameStarts) {
+        if(fNameStarts==null)
+            return false;
+
         if (n < 1)
             return true;
 

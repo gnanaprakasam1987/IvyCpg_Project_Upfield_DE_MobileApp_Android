@@ -30,7 +30,6 @@ import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.ui.task.TaskConstant;
@@ -127,6 +126,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     private ArrayAdapter<TaskDataBO> taskCategoryArrayAdapter;
 
+    private ArrayList<String> capturedImgList = new ArrayList<>();
+
 
     @Override
     public int getLayoutId() {
@@ -179,15 +180,14 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 + DataMembers.TASK_DIGITAL_CONTENT);
         //allow only create task only for retailer if not from seller Task
         if (isRetailerTask) {
-            radioGroup.setVisibility(View.GONE);
-            spinnerSelection.setVisibility(View.GONE);
-            applicableTV.setVisibility(View.GONE);
-            mode = "retailer";
+            hideViews(View.GONE);
         } else {
             taskPresenter.fetchData();
             setUpAdapter();
+            if (isTyp == 0)
+                setUpSpinnerData(0);
         }
-        taskPresenter.fetchTaskCategory(menuCode);
+        taskPresenter.fetchTaskCategory("MENU_TASK");
         setUpCategoryAdapter();
 
         if (isTyp == 1)
@@ -196,6 +196,13 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             taskPresenter.addNewImage("");
     }
 
+
+    private void hideViews(int visibilityState) {
+        radioGroup.setVisibility(visibilityState);
+        spinnerSelection.setVisibility(visibilityState);
+        applicableTV.setVisibility(visibilityState);
+        mode = "retailer";
+    }
 
     @Override
     public void setTaskChannelListData(ArrayList<ChannelBO> channelList) {
@@ -215,13 +222,11 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     @Override
     public void setTaskUserListData(ArrayList<UserMasterBO> userList) {
-        if (!userList.isEmpty()) {
-            userMasterArrayAdapter.clear();
-            userMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_seller)));
-            userMasterArrayAdapter.addAll(userList);
-            userMasterArrayAdapter.notifyDataSetChanged();
-        }
-
+        userMasterArrayAdapter.clear();
+        userMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_seller)));
+        userMasterArrayAdapter.addAll(userList);
+        userMasterArrayAdapter.notifyDataSetChanged();
+        setUpSpinnerData(0);
     }
 
     @Override
@@ -238,12 +243,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         imgListRecyclerView.setAdapter(new TaskImgListAdapter(TaskCreationActivity.this, imageList, false, photoClickListener));
     }
 
-    TaskImgListAdapter.PhotoClickListener photoClickListener = new TaskImgListAdapter.PhotoClickListener() {
-        @Override
-        public void onTakePhoto() {
-            prepareTaskPhotoCapture();
-        }
-    };
+    TaskImgListAdapter.PhotoClickListener photoClickListener = this::prepareTaskPhotoCapture;
 
     @Override
     public String getTaskMode() {
@@ -301,18 +301,15 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     @Override
     public void showUpdatedDialog(int msgResId) {
-        showAlert("", getString(msgResId), new CommonDialog.PositiveClickListener() {
-            @Override
-            public void onPositiveButtonClick() {
-                if (fromHomeScreen)
-                    startActivity(new Intent(TaskCreationActivity.this,
-                            HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
-                else
-                    startActivity(new Intent(TaskCreationActivity.this,
-                            TaskActivity.class).putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerTask)
-                            .putExtra(TaskConstant.SCREEN_TITLE, screenTitle));
-                finish();
-            }
+        showAlert("", getString(msgResId), () -> {
+            if (fromHomeScreen)
+                startActivity(new Intent(TaskCreationActivity.this,
+                        HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
+            else
+                startActivity(new Intent(TaskCreationActivity.this,
+                        TaskActivity.class).putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerTask)
+                        .putExtra(TaskConstant.SCREEN_TITLE, screenTitle));
+            finish();
         });
 
     }
@@ -320,6 +317,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @Override
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
         updatedList.add(0, new TaskDataBO());
+        taskPresenter.getTaskImgList().addAll(updatedList);
         imgListRecyclerView.setAdapter(new TaskImgListAdapter(TaskCreationActivity.this, updatedList, false, photoClickListener));
         updateFieldsInEditMode(taskBo);
     }
@@ -405,27 +403,30 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         retailerMasterArrayAdapter = new ArrayAdapter<>(this,
                 R.layout.spinner_blacktext_layout);
         retailerMasterArrayAdapter.setDropDownViewResource(R.layout.spinner_blacktext_list_item);
-
-        if (isTyp == 0)
-            setUpSpinnerData(0);
-
     }
 
     private void setUpSpinnerData(int isFrom) {
         mSelectedSpinnerPos = 0;
-        spinnerSelection.setVisibility(View.VISIBLE);
+
         switch (isFrom) {
             case 0:
+                if (userMasterArrayAdapter.getCount() == 2)
+                    spinnerSelection.setVisibility(View.GONE);
                 spinnerSelection.setAdapter(userMasterArrayAdapter);
-                enableDisableProductLevelView(View.INVISIBLE);
+                if (taskPresenter.isShowProdLevel())
+                    enableDisableProductLevelView(View.INVISIBLE);
                 break;
             case 1:
+                spinnerSelection.setVisibility(View.VISIBLE);
                 spinnerSelection.setAdapter(channelArrayAdapter);
-                enableDisableProductLevelView(View.VISIBLE);
+                if (taskPresenter.isShowProdLevel())
+                    enableDisableProductLevelView(View.VISIBLE);
                 break;
             case 2:
+                spinnerSelection.setVisibility(View.VISIBLE);
                 spinnerSelection.setAdapter(retailerMasterArrayAdapter);
-                enableDisableProductLevelView(View.VISIBLE);
+                if (taskPresenter.isShowProdLevel())
+                    enableDisableProductLevelView(View.VISIBLE);
                 break;
         }
 
@@ -459,7 +460,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         else if (retailerwise_rb.isChecked())
             id = retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getTretailerId();
 
-        imageName = "TSK_" + id + "_" + mSelectedCategoryID
+        imageName = "TSK_" + id
                 + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)
                 + ".jpg";
 
@@ -496,8 +497,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            if (!taskPresenter.getTaskImgList().isEmpty()
-                    && taskPresenter.getTaskImgList().size() > 1)
+            if (!capturedImgList.isEmpty()
+                    && capturedImgList.size() > 1)
                 backButtonAlertDialog();
             else
                 backNavigation();
@@ -513,10 +514,6 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         if (fromHomeScreen)
             startActivity(new Intent(TaskCreationActivity.this,
                     HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
-        else
-            startActivity(new Intent(TaskCreationActivity.this,
-                    TaskActivity.class).putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerTask)
-                    .putExtra(TaskConstant.SCREEN_TITLE, screenTitle));
         finish();
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
@@ -525,8 +522,10 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_CODE) {
-            if (resultCode == 1)
+            if (resultCode == 1) {
+                capturedImgList.add(imageName);
                 taskPresenter.addNewImage(imageName);
+            }
 
         }
     }
@@ -543,8 +542,11 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         Calendar selectedDate = new GregorianCalendar(year, month, day);
 
         if (tag.equals(TAG_DATE_PICKER_TO)) {
-            dueDateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
-                    selectedDate.getTime(), DEFAULT_DATE_FORMAT));
+            if (selectedDate.getTimeInMillis() >= Calendar.getInstance().getTimeInMillis())
+                dueDateBtn.setText(DateTimeUtils.convertDateObjectToRequestedFormat(
+                        selectedDate.getTime(), DEFAULT_DATE_FORMAT));
+            else
+                showMessage(getString(R.string.select_future_date));
         }
     }
 
@@ -553,28 +555,24 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
      */
     private void backButtonAlertDialog() {
 
-        showAlert("", getString(R.string.photo_capture_not_saved_go_back), new CommonDialog.PositiveClickListener() {
-            @Override
-            public void onPositiveButtonClick() {
+        showAlert("", getString(R.string.photo_capture_not_saved_go_back), () -> {
 
-                if (taskPresenter.getTaskImgList().size() > 0) {
-                    for (TaskDataBO imageBo : taskPresenter.getTaskImgList())
-                        FileUtils.deleteFiles(folderPath, imageBo.getTaskImg());
-                }
-
-                backNavigation();
+            if (capturedImgList.size() > 0) {
+                for (String imageName : capturedImgList)
+                    FileUtils.deleteFiles(folderPath, imageName);
             }
-        }, new CommonDialog.negativeOnClickListener() {
-            @Override
-            public void onNegativeButtonClick() {
 
-            }
+            backNavigation();
+        }, () -> {
+
         });
     }
 
     private void updateFieldsInEditMode(@NotNull TaskDataBO taskDataObj) {
         taskTitle.setText(taskDataObj.getTasktitle());
-        categorySpinner.setSelection(getAdapterPosition(taskCategoryArrayAdapter.getCount(), TaskConstant.PRODUCT_LEVEL_WISE));
+        if (isRetailerTask)
+            categorySpinner.setSelection(getAdapterPosition(taskCategoryArrayAdapter.getCount(), TaskConstant.PRODUCT_LEVEL_WISE));
+
         dueDateBtn.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
                 taskDataObj.getTaskDueDate(), taskPresenter.outDateFormat()));
 

@@ -4,16 +4,20 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.ColorStateList;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatImageButton;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,7 +69,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
 
     @SuppressLint("SetTextI18n")
     @Override
-    public void onBindViewHolder(@NonNull TaskListAdapter.TaskListViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull TaskListViewHolder holder, int position) {
         TaskDataBO taskBo = taskDatas.get(position);
 
         // Use ViewBindHelper to restore and save the open/close state of the SwipeRevealView
@@ -111,6 +115,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             @Override
             public void onClick(View view) {
                 taskClickListener.onAttachFile(taskBo);
+                if (taskBo.isChecked())
+                    notifyItemChanged(holder.getAdapterPosition());
             }
         });
 
@@ -153,6 +159,20 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             holder.taskCB.setChecked(false);
             taskBo.setChecked(false);
         }
+
+        if (taskBo.getTaskEvidenceImg() != null
+                && !taskBo.getTaskEvidenceImg().isEmpty()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                holder.btnAttachFile.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.colorAccent)));
+            else
+                holder.btnAttachFile.setColorFilter(ContextCompat.getColor(mContext, R.color.colorAccent), PorterDuff.Mode.SRC_ATOP);
+        } else {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                holder.btnAttachFile.setImageTintList(ColorStateList.valueOf(ContextCompat.getColor(mContext, R.color.colorPrimary)));
+            else
+                holder.btnAttachFile.setColorFilter(ContextCompat.getColor(mContext, R.color.colorPrimary), PorterDuff.Mode.SRC_ATOP);
+        }
+
     }
 
     @Override
@@ -172,7 +192,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         TextView taskProductLevel;
         LinearLayout layoutCB;
         LinearLayout layoutrow;
-        ImageButton btnAttachFile;
+        AppCompatImageButton btnAttachFile;
         Button btnEditTask;
         Button btnDeleteTask;
         TextView taskDueDateTv;
@@ -231,7 +251,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
                 mContext);
         builder.setTitle("");
         builder.setMessage(mContext.getString(
-                R.string.do_you_want_to_delete_the_image));
+                R.string.do_you_want_to_delete_the_task));
 
         builder.setPositiveButton(mContext.getString(R.string.ok),
                 new android.content.DialogInterface.OnClickListener() {

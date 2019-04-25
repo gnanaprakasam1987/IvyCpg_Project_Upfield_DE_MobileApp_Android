@@ -383,7 +383,7 @@ public class LocationServiceHelper {
 
             String Tid = userMasterBO.getUserid() + ""+ DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
-            String values = QT(Tid) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME))
+            String values = QT(Tid) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
                     + "," + QT(String.valueOf(locationDetailBO.getLatitude()))
                     + "," + QT(String.valueOf(locationDetailBO.getLongitude()))
                     + "," + locationDetailBO.getAccuracy()

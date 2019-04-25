@@ -83,7 +83,8 @@
                     android:layout_toRightOf="@+id/task_due_date_tv"
                     android:adjustViewBounds="true"
                     android:padding="@dimen/_8sdp"
-                    android:text="@string/category" />
+                    android:text="@string/category"
+                    android:visibility="gone" />
 
                 <android.support.v7.widget.AppCompatSpinner
                     android:id="@+id/task_category_spinner"
@@ -97,25 +98,16 @@
                     android:layout_marginRight="@dimen/_10sdp"
                     android:layout_toEndOf="@+id/task_due_date_btn"
                     android:layout_toRightOf="@+id/task_due_date_btn"
-                    android:spinnerMode="dialog" />
+                    android:spinnerMode="dialog"
+                    android:visibility="gone" />
 
             </RelativeLayout>
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/task_img_recycler_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/first_layout"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:padding="@dimen/_8sdp" />
-
 
             <RelativeLayout
                 android:id="@+id/spinner_rl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/task_img_recycler_view"
+                android:layout_below="@+id/first_layout"
                 android:gravity="center_vertical|start"
                 android:orientation="vertical"
                 android:padding="@dimen/_8sdp">
@@ -181,10 +173,20 @@
                     android:spinnerMode="dialog" />
             </RelativeLayout>
 
-            <RelativeLayout
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/task_img_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/spinner_rl"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:padding="@dimen/_8sdp" />
+
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/task_img_recycler_view"
                 android:gravity="center"
                 android:orientation="vertical"
                 android:padding="@dimen/_8sdp">

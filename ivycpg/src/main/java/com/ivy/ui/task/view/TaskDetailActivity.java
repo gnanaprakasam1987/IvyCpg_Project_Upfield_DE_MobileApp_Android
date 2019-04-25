@@ -3,6 +3,7 @@ package com.ivy.ui.task.view;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -21,8 +22,7 @@ import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.util.CommonDialog;
-import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.adapter.TaskImgListAdapter;
@@ -40,7 +40,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class TaskDetailActivity extends BaseActivity implements TaskContract.TaskView {
+public class TaskDetailActivity extends BaseActivity implements TaskContract.TaskDetailView {
     private static final int CAMERA_REQUEST_CODE = 1;
 
     @BindView(R.id.toolbar)
@@ -136,7 +136,10 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     protected void setUpViews() {
         setUnBinder(ButterKnife.bind(this));
         setUpToolBar(getString(R.string.task_detail));
-
+        taskPresenter.createServerTaskImgPath(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
+                + taskPresenter.getUserID()
+                + DataMembers.DIGITAL_CONTENT + "/"
+                + DataMembers.TASK_DIGITAL_CONTENT);
         if (tabSelection == 3)
             hideViews();
 
@@ -180,7 +183,10 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
     @OnClick(R.id.task_evidence_image_bt)
     public void addPhotoClick() {
-        prepareTaskPhotoCapture();
+        if (detailBo.isChecked())
+            prepareTaskPhotoCapture();
+        else
+            showMessage(getString(R.string.task_exec_mandatory));
     }
 
 
@@ -204,7 +210,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         createdDateValueTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
                 (detailBo.getCreatedDate(), taskPresenter.outDateFormat()));
         taskDescTv.setText(detailBo.getTaskDesc());
-        setImageIntoView(getIntent().getExtras().getString(TaskConstant.EVIDENCE_IMAGE, ""));
+        setImageIntoView();
 
     }
 
@@ -230,21 +236,20 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
-                // detailBo.setTaskEvidenceImg(imageName);
-                taskPresenter.updateTaskExecutionImg(imageName, detailBo.getTaskId());
-                setImageIntoView(imageName);
+                taskPresenter.updateTaskExecutionImg(imageName, detailBo.getTaskId(), true);
             }
 
         }
     }
 
-    private void setImageIntoView(String imageName) {
-        if (imageName.isEmpty()) {
+    private void setImageIntoView() {
+        if (detailBo.getTaskEvidenceImg() == null
+                || detailBo.getTaskEvidenceImg().isEmpty()) {
             evidenceImgView.setVisibility(View.GONE);
         } else {
-            detailBo.setTaskEvidenceImg(imageName);
+            detailBo.setTaskEvidenceImg(detailBo.getTaskEvidenceImg());
             evidenceImgView.setVisibility(View.VISIBLE);
-            String path = FileUtils.photoFolderPath + "/" + imageName;
+            String path = TaskConstant.TASK_SERVER_IMG_PATH + "/" + detailBo.getTaskEvidenceImg();
             if (FileUtils.isFileExisting(path)) {
                 Uri uri = FileUtils
                         .getUriFromFile(getApplicationContext(), path);
@@ -262,48 +267,29 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
 
     private void prepareTaskPhotoCapture() {
-       /* int id = 0;
-        switch (detailBo.getMode()) {
-            case "seller":
-                id = detailBo.getUserId();
-                break;
-            case "retailer":
-                id = detailBo.getRid();
-                break;
-            default:
-                id = detailBo.getChannelId();
-        }*/
 
-        imageName = "TSK_" + detailBo.getTaskId() + "_" + detailBo.getTaskCategoryID()
+        imageName = "TSK_" + detailBo.getTaskId()
                 + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)
                 + ".jpg";
 
-        String mFirstNameStarts = "TSK_" + detailBo.getTaskId()
-                + "_" + detailBo.getTaskCategoryID()
-                + "_" + Commons.now(Commons.DATE);
+        String mFirstNameStarts = detailBo.getTaskEvidenceImg();
 
         boolean mIsFileAvailable = FileUtils.checkForNFilesInFolder(FileUtils.photoFolderPath, 1, mFirstNameStarts);
         boolean copyFileAvailable = FileUtils.checkForNFilesInFolder(TaskConstant.TASK_SERVER_IMG_PATH, 1, mFirstNameStarts);
         if (mIsFileAvailable || copyFileAvailable) {
-            showAlert("", getString(R.string.word_photocaptured_delete_retake), new CommonDialog.PositiveClickListener() {
-                @Override
-                public void onPositiveButtonClick() {
+            showAlert("", getString(R.string.word_photocaptured_delete_retake), () -> {
 
-                    if (mIsFileAvailable)
-                        FileUtils.deleteFiles(FileUtils.photoFolderPath,
-                                mFirstNameStarts);
+                if (mIsFileAvailable)
+                    FileUtils.deleteFiles(FileUtils.photoFolderPath,
+                            mFirstNameStarts);
 
-                    if (copyFileAvailable)
-                        FileUtils.deleteFiles(TaskConstant.TASK_SERVER_IMG_PATH
-                                , mFirstNameStarts);
+                if (copyFileAvailable)
+                    FileUtils.deleteFiles(TaskConstant.TASK_SERVER_IMG_PATH
+                            , mFirstNameStarts);
 
-                    navigateToCameraActivity();
-                }
-            }, new CommonDialog.negativeOnClickListener() {
-                @Override
-                public void onNegativeButtonClick() {
+                navigateToCameraActivity();
+            }, () -> {
 
-                }
             });
         } else
             navigateToCameraActivity();
@@ -319,5 +305,11 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         intent.putExtra(TaskConstant.FILE_PATH, _path);
         startActivityForResult(intent,
                 CAMERA_REQUEST_CODE);
+    }
+
+    @Override
+    public void updateImageView(String imageName) {
+        detailBo.setTaskEvidenceImg(imageName);
+        setImageIntoView();
     }
 }

@@ -61,7 +61,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                     String query = "select distinct A.taskid,B.taskcode,B.taskDesc,A.retailerId,A.upload,"
                             + "(CASE WHEN ifnull(TD.TaskId,0) >0 THEN 1 ELSE 0 END) as isDone,"
                             + "B.usercreated , B.taskowner , B.date, A.upload,A.channelid,A.userid,"
-                            + "IFNULL(B.DueDate,''),B.CategoryId,IFNULL(PL.PName,''),B.IsServerTask"
+                            + "IFNULL(B.DueDate,''),B.CategoryId,IFNULL(PL.PName,''),B.IsServerTask,SUBSTR(TD.ImageName,18) as eveImage"
                             + " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid"
                             + " left join TaskExecutionDetails TD on TD.TaskId=A.taskid and TD.RetailerId = " + retailerId
                             + " left join ProductMaster PL on PL.PID=B.CategoryId"
@@ -93,6 +93,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             taskmasterbo.setTaskCategoryID(c.getInt(13));
                             taskmasterbo.setTaskCategoryDsc(c.getString(14));
                             taskmasterbo.setServerTask(c.getInt(15));
+                            taskmasterbo.setTaskEvidenceImg(c.getString(16));
 
                             if (taskmasterbo.getUserId() != 0)
                                 taskmasterbo.setMode("seller");
@@ -302,7 +303,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
 
                         try {
                             if (taskDataBO.isChecked()) {
-                                values = taskDataBO.getTaskId() + ","
+                                values = StringUtils.QT(taskDataBO.getTaskId()) + ","
                                         + StringUtils.QT(retailerId) + ","
                                         + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                                         + uID + ",'N'" + ","
@@ -340,9 +341,13 @@ public class TaskDataManagerImpl implements TaskDataManager {
                     if (mDbUtil.isDbNullOrClosed())
                         initDb();
 
+                    String folderName = "Task/"
+                            + appDataProvider.getUser().getDownloadDate()
+                            .replace("/", "") + "/"
+                            + appDataProvider.getUser().getUserid() + "/";
 
                     mDbUtil.updateSQL("UPDATE TaskExecutionDetails "
-                            + " SET ImageName=" + StringUtils.QT(imageName)
+                            + " SET ImageName=" + StringUtils.QT(folderName + imageName)
                             + " WHERE TaskId=" + StringUtils.QT(taskId));
 
                     shutDownDb();
@@ -368,9 +373,11 @@ public class TaskDataManagerImpl implements TaskDataManager {
     @Override
     public Single<Boolean> addAndUpdateTask(int selectedId, TaskDataBO taskObj, String mode, ArrayList<TaskDataBO> taskImgList) {
 
-        // Remove single quotes
-        String name = taskObj.getTaskDesc().replaceAll("'", " ");
-        String title = taskObj.getTasktitle().replaceAll("'", " ");
+        //remove Quotes
+        String title = StringUtils.removeQuotes(taskObj.getTasktitle());
+        String name = StringUtils.removeQuotes(taskObj.getTaskDesc());
+
+
         String taskOwner = StringUtils.QT("self");
         String status = StringUtils.QT("I");
         // Generate Unique ID
@@ -385,7 +392,8 @@ public class TaskDataManagerImpl implements TaskDataManager {
                 + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
 
         if (!taskObj.getTaskOwner().isEmpty()
-                && !taskObj.getTaskOwner().equalsIgnoreCase("Self")) {
+                && (!taskObj.getTaskOwner().equalsIgnoreCase("Self")
+                || taskObj.getUpload().equalsIgnoreCase("Y"))) {
             id = StringUtils.QT(taskObj.getTaskId());
             taskOwner = StringUtils.QT(taskObj.getTaskOwner());
             status = StringUtils.QT("U");
@@ -421,7 +429,6 @@ public class TaskDataManagerImpl implements TaskDataManager {
                         }
                     }
 
-
                     // Insert Task into TaskMaster
                     columns_new = "taskid,taskcode,taskdesc,upload ,taskowner,date,usercreated,DueDate,CategoryId,EndDate,Status,IsServerTask";
 
@@ -439,13 +446,18 @@ public class TaskDataManagerImpl implements TaskDataManager {
                     //add task created images into TaskImageDetails table
                     columns_new = "TaskId,TaskImageId,TaskImageName,Upload,Status";
                     String imgId;
+                    String folderName = "Task/"
+                            + appDataProvider.getUser().getDownloadDate()
+                            .replace("/", "") + "/"
+                            + appDataProvider.getUser().getUserid() + "/";
+
                     for (TaskDataBO imgBO : taskImgList) {
                         if (!imgBO.getTaskImg().isEmpty()) {
                             // Generate Unique ID for image
                             imgId = StringUtils.QT(appDataProvider.getUser()
                                     .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
-                            value_new = finalTid + "," + imgId + "," + StringUtils.QT(imgBO.getTaskImg())
+                            value_new = finalTid + "," + imgId + "," + StringUtils.QT(folderName + imgBO.getTaskImg())
                                     + "," + "'N'" + "," + finalStatus;
 
                             mDbUtil.insertSQL("TaskImageDetails", columns_new, value_new);
@@ -460,69 +472,67 @@ public class TaskDataManagerImpl implements TaskDataManager {
                 }
                 return false;
             }
-        }).
+        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
+            @Override
+            public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
 
-                flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
+                return Single.fromCallable(new Callable<Boolean>() {
                     @Override
-                    public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
-
-                        return Single.fromCallable(new Callable<Boolean>() {
-                            @Override
-                            public Boolean call() throws Exception {
+                    public Boolean call() throws Exception {
 
 
-                                try {
-                                    String columns = "taskid,retailerid,usercreated,upload,date,uid,userid,channelid";
-                                    String values;
-                                    if (selectedId == -1) {// for all channel
-                                        String[] chrid = getChannelRetailerId(0);
-                                        for (String aChrid : chrid) {
+                        try {
+                            String columns = "taskid,retailerid,usercreated,upload,date,uid,userid,channelid";
+                            String values;
+                            if (selectedId == -1) {// for all channel
+                                String[] chrid = getChannelRetailerId(0);
+                                for (String aChrid : chrid) {
 
-                                            values = finalTid + "," + aChrid + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0" + "," + "0";
-                                            mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
-                                                    columns, values);
-                                        }
-
-                                    } else if (mode.equals("seller")) {
-
-                                        values = finalTid + "," + 0 + "," + "1" + "," + "'N'," + date + "," + uID + "," + selectedId + "," + "0";
-                                        mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster, columns,
-                                                values);
-                                    } else if (mode.equals("retailer")) {
-                                        if (selectedId == -2) {
-                                            String[] chrid = getRetailerIdlist();
-                                            for (String aChrid : chrid) {
-
-                                                values = finalTid + "," + aChrid + "," + "1" + ","
-                                                        + "'N'," + date + "," + uID + "," + "0" + "," + "0";
-                                                mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
-                                                        columns, values);
-                                            }
-                                        } else {
-                                            values = finalTid + "," + selectedId + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0" + "," + "0";
-                                            mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
-                                                    columns, values);
-                                        }
-                                    } else {
-
-                                        String[] chrid = getChannelRetailerId(selectedId);
-                                        for (String aChrid : chrid) {
-                                            values = finalTid + "," + aChrid + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0" + "," + selectedId;
-                                            mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
-                                                    columns, values);
-                                        }
-                                    }
-                                    shutDownDb();
-                                    return true;
-                                } catch (Exception e) {
-                                    Commons.printException(e);
+                                    values = finalTid + "," + aChrid + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0" + "," + "0";
+                                    mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
+                                            columns, values);
                                 }
-                                shutDownDb();
-                                return false;
+
+                            } else if (mode.equals("seller")) {
+
+                                values = finalTid + "," + 0 + "," + "1" + "," + "'N'," + date + "," + uID + "," + selectedId + "," + "0";
+                                mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster, columns,
+                                        values);
+                            } else if (mode.equals("retailer")) {
+                                if (selectedId == -2) {
+                                    String[] chrid = getRetailerIdlist();
+                                    for (String aChrid : chrid) {
+
+                                        values = finalTid + "," + aChrid + "," + "1" + ","
+                                                + "'N'," + date + "," + uID + "," + "0" + "," + "0";
+                                        mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
+                                                columns, values);
+                                    }
+                                } else {
+                                    values = finalTid + "," + selectedId + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0" + "," + "0";
+                                    mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
+                                            columns, values);
+                                }
+                            } else {
+
+                                String[] chrid = getChannelRetailerId(selectedId);
+                                for (String aChrid : chrid) {
+                                    values = finalTid + "," + aChrid + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0" + "," + selectedId;
+                                    mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
+                                            columns, values);
+                                }
                             }
-                        });
+                            shutDownDb();
+                            return true;
+                        } catch (Exception e) {
+                            Commons.printException(e);
+                        }
+                        shutDownDb();
+                        return false;
                     }
                 });
+            }
+        });
     }
 
     /**
@@ -611,7 +621,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                     if (mDbUtil.isDbNullOrClosed())
                         initDb();
 
-                    String query = "SELECT TMD.TaskImageName,TM.IsServerTask FROM TaskImageDetails TMD"
+                    String query = "SELECT SUBSTR(TMD.TaskImageName,18) as ImageName FROM TaskImageDetails TMD"
                             + " INNER JOIN TaskMaster TM ON TM.taskId = TMD.TaskId"
                             + " WHERE TMD.Status!='D' AND TMD.TaskId = " + StringUtils.QT(taskId);
 
@@ -649,7 +659,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                     if (mDbUtil.isDbNullOrClosed())
                         initDb();
 
-                    Cursor c = mDbUtil.selectSQL("Select taskId from TaskMaster Where=" + StringUtils.QT(taskId) + " And Upload='Y'");
+                    Cursor c = mDbUtil.selectSQL("Select taskId from TaskMaster Where taskid=" + StringUtils.QT(taskId) + " And Upload='Y'");
 
                     if (c.getCount() > 0) {
                         isFlag = true;
@@ -658,8 +668,8 @@ public class TaskDataManagerImpl implements TaskDataManager {
                         isFlag = false;
                     }
                     return isFlag;
-                } catch (Exception ignore) {
-
+                } catch (Exception e) {
+                    Commons.printException(e);
                 }
                 return false;
             }

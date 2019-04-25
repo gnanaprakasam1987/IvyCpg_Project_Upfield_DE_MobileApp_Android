@@ -23,6 +23,10 @@ public interface TaskContract {
         void updateImageListAdapter(ArrayList<TaskDataBO> imageList);
     }
 
+    interface  TaskDetailView extends TaskView{
+
+        void updateImageView(String imageName);
+    }
 
     interface TaskCreationView extends TaskView {
 
@@ -59,7 +63,7 @@ public interface TaskContract {
 
         void updateTaskExecution(String retailerID, TaskDataBO taskDataBO);
 
-        void updateTaskExecutionImg(String imageName, String taskID);
+        void updateTaskExecutionImg(String imageName, String taskID,boolean isFrmDetailSrc);
 
         ArrayList<TaskDataBO> getTaskImgList();
 

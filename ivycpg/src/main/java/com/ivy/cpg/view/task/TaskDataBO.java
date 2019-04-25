@@ -9,7 +9,7 @@ public class TaskDataBO implements Parcelable {
     private String taskId;
     private int channelId;
 
-    private String taskImg;
+    private String taskImg = "";
     private String taskImgPath;
 
     private String upload;
@@ -29,7 +29,7 @@ public class TaskDataBO implements Parcelable {
     private String taskCategoryDsc = "";
     private int taskCategoryID;
     int flag = 0;
-    private String taskEvidenceImg;
+    private String taskEvidenceImg = "";
     private String mode;
     private String sortName;
     private boolean orderByAsc;

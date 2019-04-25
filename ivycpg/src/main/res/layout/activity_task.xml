@@ -9,7 +9,7 @@
             android:id="@+id/toolbar"
             layout="@layout/material_tool_bar" />
     <fragment
-        android:id="@+id/survey_fragment"
+        android:id="@+id/task_list_fragment"
         android:name="com.ivy.ui.task.view.TaskFragment"
         android:layout_width="match_parent"
         android:layout_height="0dip"

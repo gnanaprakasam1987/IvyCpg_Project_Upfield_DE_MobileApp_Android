@@ -34,6 +34,7 @@ import com.android.volley.toolbox.Volley;
 import com.ivy.core.data.datamanager.DataManagerImpl;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.collection.CollectionHelper;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.sfdc.AccountData;
@@ -58,7 +59,6 @@ import com.ivy.sd.png.model.MyHttpConnectionNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FileUtils;
@@ -518,6 +518,22 @@ SynchronizationHelper {
 
     }
 
+    private void deleteUploadedFiles(String path){
+        try {
+
+            File f = new File(path);
+
+            File[] files = f.listFiles();
+
+            if (files != null && files.length > 0)
+                for (File file : files) {
+                    file.delete();
+                }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
     /**
      * Used to check whether external storage is available or not. It will also
      * check the space. If storage has less than 5MB space then it will be
@@ -839,21 +855,21 @@ SynchronizationHelper {
 
             deleteDBFromSD();
 
-            try {
+            //Delete uploaded images from This folder
+            //path: Android/data/com.ivy.sd.png.asean.view/files/Pictures/IvyDist
+            String ivyDistFolder = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                    + "/" + DataMembers.photoFolderName + "/";
+            deleteUploadedFiles(ivyDistFolder);
 
-                File f = new File(
-                        context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                                + "/" + DataMembers.photoFolderName + "/");
+            //Delete uploaded images from This folder
+            //path: Android/data/com.ivy.sd.png.asean.view/files/Download/21TRAN/TDC
+            String taskImages = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                    + "/" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + DataMembers.DIGITAL_CONTENT + "/"
+                    + DataMembers.TASK_DIGITAL_CONTENT + "/";
+            deleteUploadedFiles(taskImages);
 
-                File[] files = f.listFiles();
 
-                if (files != null && files.length > 0)
-                    for (File file : files) {
-                        file.delete();
-                    }
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
 
         } catch (Exception e) {
             Commons.printException("" + e);

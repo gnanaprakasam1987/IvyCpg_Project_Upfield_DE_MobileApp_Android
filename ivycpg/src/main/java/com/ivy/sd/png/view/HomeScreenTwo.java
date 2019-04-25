@@ -818,7 +818,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             DateTimeUtils.now(DateTimeUtils.TIME), MENU_TASK);
-                    Intent intent = new Intent(getApplicationContext(), TaskActivity.class);
+                    Intent intent = new Intent(HomeScreenTwo.this, TaskActivity.class);
                     intent.putExtra(TaskConstant.RETAILER_WISE_TASK, true);
                     intent.putExtra(TaskConstant.MENU_CODE, MENU_TASK);
                     startActivity(intent);
@@ -2185,7 +2185,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
-                    Intent intent = new Intent(getApplicationContext(),
+                    Intent intent = new Intent(HomeScreenTwo.this,
                             TaskActivity.class);
                     intent.putExtra(TaskConstant.CURRENT_ACTIVITY_CODE, menu.getConfigCode());
                     intent.putExtra(TaskConstant.MENU_CODE, menu.getConfigCode());
@@ -2194,6 +2194,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                     startActivity(intent);
                     isCreated = false;
+                    finish();
                 }
             } else {
                 Toast.makeText(
