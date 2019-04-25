@@ -18,9 +18,13 @@ public class ContactsTimeSlotAdapterEdit extends RecyclerView.Adapter<ContactsTi
     private Context context;
     private ArrayList<RetailerContactAvailBo> retailerContactAvailBos = new ArrayList<>();
 
-    ContactsTimeSlotAdapterEdit(Context context) {
+    private DeleteTimeSlotListener deleteTimeSlotListener;
+
+
+    ContactsTimeSlotAdapterEdit(Context context,DeleteTimeSlotListener deleteTimeSlotListener) {
         this.context = context;
         this.mInflater = LayoutInflater.from(context);
+        this.deleteTimeSlotListener = deleteTimeSlotListener;
     }
 
     public void listValues(ArrayList<RetailerContactAvailBo> retailerContactAvailBos){
@@ -55,8 +59,9 @@ public class ContactsTimeSlotAdapterEdit extends RecyclerView.Adapter<ContactsTi
         holder.deleteImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                retailerContactAvailBos.remove(retailerContactAvailBos.get(position));
-                notifyDataSetChanged();
+
+                deleteTimeSlotListener.deleteSlot(retailerContactAvailBos.get(position));
+
             }
         });
 
@@ -73,5 +78,9 @@ public class ContactsTimeSlotAdapterEdit extends RecyclerView.Adapter<ContactsTi
             timeSlot = itemView.findViewById(R.id.time_slot);
             deleteImg = itemView.findViewById(R.id.delete_img);
         }
+    }
+
+    public interface DeleteTimeSlotListener{
+        void deleteSlot(RetailerContactAvailBo contactAvailBo);
     }
 }

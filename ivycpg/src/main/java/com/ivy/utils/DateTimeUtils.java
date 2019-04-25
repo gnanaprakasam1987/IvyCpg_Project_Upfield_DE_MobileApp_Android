@@ -398,4 +398,14 @@ public class DateTimeUtils {
         return getCalendarOfDate(date).get(Calendar.DAY_OF_MONTH);
     }
 
+    public static String convertDayName(String day, String inputFormat, String outputFormat){
+        try {
+            return new SimpleDateFormat(outputFormat,Locale.US)
+                    .format(new SimpleDateFormat(inputFormat,Locale.US).parse(day));
+        }catch(Exception e){
+            Commons.printException(e);
+            return day;
+        }
+    }
+
 }

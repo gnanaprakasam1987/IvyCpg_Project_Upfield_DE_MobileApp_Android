@@ -537,7 +537,7 @@ public class DataMembers {
     public static final String tbl_ContactAvailabilityEdit = "ContactAvailabilityEdit";
 
     public static final String tbl_ContactAvailability_Cols = "CPId,CPAId,Day,StartTime,EndTime";
-    public static final String tbl_ContactAvailabilityEdit_Cols = "CPId,CPAId,Day,StartTime,EndTime,Status";
+    public static final String tbl_ContactAvailabilityEdit_Cols = "CPId,CPAId,Day,StartTime,EndTime,Status,Tid";
     private static final String tbl_RetailerEditHeader_cols = "Tid,RetailerId,Date";
     private static final String tbl_RetailerEditDetail_cols = "Tid,code,Value,RefId";
     private static final String tbl_RetailerContactEdit_cols = "Contact_Title,Contact_Title_LovId,ContactName,ContactName_LName,ContactNumber,Email,IsPrimary,Status,CPId,RetailerId,Tid,salutationLovId,IsEmailNotificationReq";
@@ -614,7 +614,7 @@ public class DataMembers {
     private static final String tbl_RetailerEntryDetails_Cols = "UId,EntryMode,ReasonId";
 
     private static final String tbl_retailerContactupload_cols = "RetailerID,contactname,ContactName_LName,ContactNumber," +
-            "contact_title,contact_title_lovid,IsPrimary,Email,salutationLovId,IsEmailNotificationReq";
+            "contact_title,contact_title_lovid,IsPrimary,Email,salutationLovId,IsEmailNotificationReq,CPID";
     private static final String tbl_retailerAddressupload_cols = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
             + "email,FaxNo,pincode,State,IsPrimary,Mobile,Region,Country,District";
     private static final String tbl_retailerAttributeupload_cols = "RetailerId,AttributeId,LevelId";
