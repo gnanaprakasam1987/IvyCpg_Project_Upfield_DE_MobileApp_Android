@@ -1104,7 +1104,7 @@ public class ProfileHelper {
                 retailerContactBo.setContactSalutationId(c.getString(c.getColumnIndex("salutationId")));
                 retailerContactBo.setIsEmailPrimary(c.getInt(c.getColumnIndex("emailPref")));
 
-                setContactAvailList(db,retailerContactBo,"ContactAvailability");
+                setContactAvailList(db,retailerContactBo,"ContactAvailability",false);
 
                 contactList.add(retailerContactBo);
             }
@@ -1140,7 +1140,7 @@ public class ProfileHelper {
                     retailerContactBo.setContactSalutationId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("salutationId")));
                     retailerContactBo.setIsEmailPrimary(retailerContactEditCurson.getInt(retailerContactEditCurson.getColumnIndex("emailPref")));
 
-                    setContactAvailList(db,retailerContactBo,"ContactAvailabilityEdit");
+                    setContactAvailList(db,retailerContactBo,"ContactAvailabilityEdit",true);
 
                     tempList.add(retailerContactBo);
                 }
@@ -1177,16 +1177,27 @@ public class ProfileHelper {
         return contactList;
     }
 
-    private void setContactAvailList(DBUtil db,RetailerContactBo retailerContactBo,String tableName){
+    private void setContactAvailList(DBUtil db,RetailerContactBo retailerContactBo,String tableName,boolean isEdit){
 
-        Cursor c = db.selectSQL("Select Day,StartTime,EndTime from "+tableName+" where CPId ="+ StringUtils.QT(retailerContactBo.getCpId()));
+        String appendStatusStr = "";
+
+        if (isEdit)
+            appendStatusStr = " ,status ";
+
+        Cursor c = db.selectSQL("Select Day,StartTime,EndTime,CPAId "+appendStatusStr+" from "+tableName+" where CPId ="+ StringUtils.QT(retailerContactBo.getCpId()));
 
         if (c != null) {
             while (c.moveToNext()) {
                 RetailerContactAvailBo availBo = new RetailerContactAvailBo();
+
                 availBo.setDay(c.getString(0));
                 availBo.setFrom(c.getString(1));
                 availBo.setTo(c.getString(2));
+                availBo.setCpaid(c.getString(3));
+
+                if (isEdit) {
+                    availBo.setStatus(c.getString(4));
+                }
 
                 retailerContactBo.getContactAvailList().add(availBo);
             }
