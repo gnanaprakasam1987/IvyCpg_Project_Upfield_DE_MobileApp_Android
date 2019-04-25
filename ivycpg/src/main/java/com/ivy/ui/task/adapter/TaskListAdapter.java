@@ -8,7 +8,6 @@ import android.content.res.ColorStateList;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatImageButton;
@@ -39,18 +38,18 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
     private Context mContext;
     private String outDateFormat;
     private TaskClickListener taskClickListener;
-    private Boolean isFromProfileSrc;
-    private Boolean isFromHomeSrc;
+    private TaskConstant.SOURCE source;
+    private Boolean isRetailerWiseTask;
     private int mTabPosition;
     private final ViewBinderHelper binderHelper = new ViewBinderHelper();
 
-    public TaskListAdapter(Context mContext, ArrayList<TaskDataBO> taskDatas, String outDateFormat, TaskClickListener taskClickListener, boolean isFromProfileSrc, boolean fromHomeScreen, int mTabPosition) {
+    public TaskListAdapter(Context mContext, ArrayList<TaskDataBO> taskDatas, String outDateFormat, TaskClickListener taskClickListener, TaskConstant.SOURCE source, boolean isRetailerWiseTask, int mTabPosition) {
         this.taskDatas = taskDatas;
         this.mContext = mContext;
         this.outDateFormat = outDateFormat;
         this.taskClickListener = taskClickListener;
-        this.isFromProfileSrc = isFromProfileSrc;
-        this.isFromHomeSrc = fromHomeScreen;
+        this.source = source;
+        this.isRetailerWiseTask = isRetailerWiseTask;
         this.mTabPosition = mTabPosition;
 
         // to open only one row at a time
@@ -134,7 +133,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             public void onClick(View view) {
                 if (taskBo.getUsercreated().equals("0"))
                     Toast.makeText(mContext, mContext.getString(R.string.server_task_can_not_be_delete), Toast.LENGTH_SHORT).show();
-                if (taskBo.isChecked())
+                else if (taskBo.isChecked())
                     Toast.makeText(mContext, mContext.getString(R.string.exec_task_not_allow_to_delete), Toast.LENGTH_SHORT).show();
                 else {
                     showDeleteAlert(holder.getAdapterPosition());
@@ -211,11 +210,12 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             btnEditTask = itemView.findViewById(R.id.edit_button);
             taskDueDateTv = itemView.findViewById(R.id.task_due_date_tv);
 
-            if (isFromProfileSrc) {
-                taskCB.setVisibility(View.GONE);
+            if (TaskConstant.SOURCE.PROFILE_SCREEN == source) {
+                btnAttachFile.setVisibility(View.GONE);
+                layoutCB.setVisibility(View.GONE);
             }
 
-            if (isFromHomeSrc)
+            if (!isRetailerWiseTask)
                 taskProductLevel.setVisibility(View.GONE);
 
             if (mTabPosition == 3) {
@@ -226,25 +226,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         }
     }
 
-
-    /*
-      Only if you need to restore open/close state when the orientation is changed.
-      Call this method in {@link android.app.Activity#onSaveInstanceState(Bundle)}
-     *//*
-    public void saveStates(Bundle outState) {
-        binderHelper.saveStates(outState);
-    }
-
-    */
-
-    /**
-     * Only if you need to restore open/close state when the orientation is changed.
-     * Call this method in {@link android.app.Activity#onRestoreInstanceState(Bundle)}
-     *//*
-    public void restoreStates(Bundle inState) {
-        binderHelper.restoreStates(inState);
-    }
-*/
     private void showDeleteAlert(int position) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(

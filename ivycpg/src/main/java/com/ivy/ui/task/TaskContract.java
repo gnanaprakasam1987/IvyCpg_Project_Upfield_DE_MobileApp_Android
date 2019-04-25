@@ -16,17 +16,21 @@ public interface TaskContract {
 
     interface TaskView extends BaseIvyView {
 
-        void showUpdatedDialog(@StringRes int msgResId);
 
         void updateListData(ArrayList<TaskDataBO> updatedList);
 
         void updateImageListAdapter(ArrayList<TaskDataBO> imageList);
+
+        void showImageUpdateMsg();
     }
 
-    interface  TaskDetailView extends TaskView{
+    interface TaskListView extends TaskView {
 
-        void updateImageView(String imageName);
+        void showTaskUpdateMsg();
+
+        void showTaskDeletedMsg();
     }
+
 
     interface TaskCreationView extends TaskView {
 
@@ -39,6 +43,12 @@ public interface TaskContract {
         void setTaskUserListData(ArrayList<UserMasterBO> userList);
 
         void setTaskCategoryListData(ArrayList<TaskDataBO> categoryList);
+
+        void showTaskTitleError();
+
+        void showTaskDescError();
+
+        void showTaskSaveAlertMsg();
     }
 
 
@@ -53,9 +63,7 @@ public interface TaskContract {
 
         void fetchCompletedTask(String retailerID);
 
-        void updateTaskList(int taskType, String retailerID, boolean isRetailerwise, boolean isSurveywise);
-
-        String[] getChannelIdsForSurvey();
+        void updateTaskList(int userCreatedTask, String retailerID, boolean isRetailerWise, boolean isSurveywise);
 
         void addNewImage(String imageName);
 
@@ -63,27 +71,17 @@ public interface TaskContract {
 
         void updateTaskExecution(String retailerID, TaskDataBO taskDataBO);
 
-        void updateTaskExecutionImg(String imageName, String taskID,boolean isFrmDetailSrc);
+        void updateTaskExecutionImg(String imageName, String taskID, boolean isFrmDetailSrc);
 
         ArrayList<TaskDataBO> getTaskImgList();
 
         void deleteTask(String taskId, String taskOwner, int serverTask);
 
-        String getSelectedRetailerId();
-
         void updateModuleTime();
-
-        ArrayList<ChannelBO> getTaskChannelList();
-
-        ArrayList<RetailerMasterBO> getTaskRetailerList();
-
-        ArrayList<UserMasterBO> getTaskUserList();
 
         int getUserID();
 
         int getRetailerID();
-
-        boolean isDeviceUser();
 
         void orderBySortList(int sortType, boolean orderBy);
 
@@ -97,7 +95,6 @@ public interface TaskContract {
 
         boolean isShowProdLevel();
 
-
         String outDateFormat();
 
         boolean validate(String taskTitle, String taskView);
@@ -105,9 +102,5 @@ public interface TaskContract {
         void saveModuleCompletion(String menuCode);
 
         boolean isNPPhotoReasonAvailable(String retailerID, String moduleName);
-
-        void createServerTaskImgPath(String serverPath);
-
-
     }
 }

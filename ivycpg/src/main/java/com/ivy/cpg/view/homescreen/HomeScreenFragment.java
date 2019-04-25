@@ -2220,7 +2220,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case MENU_TASK_NEW:
                 bndl = new Bundle();
                 bndl.putString(TaskConstant.SCREEN_TITLE, menuName);
-                bndl.putBoolean(TaskConstant.RETAILER_WISE_TASK, false);
                 bndl.putBoolean(TaskConstant.FROM_HOME_SCREEN, true);
                 bndl.putString(TaskConstant.MENU_CODE, MENU_TASK_NEW);
                 fragment = new TaskFragment();

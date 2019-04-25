@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -40,7 +41,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class TaskDetailActivity extends BaseActivity implements TaskContract.TaskDetailView {
+public class TaskDetailActivity extends BaseActivity implements TaskContract.TaskView {
     private static final int CAMERA_REQUEST_CODE = 1;
 
     @BindView(R.id.toolbar)
@@ -90,9 +91,11 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
 
     private TaskDataBO detailBo;
-    private boolean isFromHomeSrc;
+    private boolean isRetailerWiseTask;
     private int tabSelection;
     private String imageName = "";
+    private String menuCode;
+    private String screenTitle;
     @Inject
     TaskContract.TaskPresenter<TaskContract.TaskView> taskPresenter;
 
@@ -125,10 +128,11 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     @Override
     protected void getMessageFromAliens() {
         if (getIntent().getExtras() != null) {
-            isFromHomeSrc = getIntent().getBooleanExtra(TaskConstant.FROM_HOME_SCREEN, false);
+            isRetailerWiseTask = getIntent().getBooleanExtra(TaskConstant.RETAILER_WISE_TASK, false);
             tabSelection = getIntent().getIntExtra(TaskConstant.TAB_SELECTION, 0);
             detailBo = getIntent().getExtras().getParcelable(TaskConstant.TASK_OBJECT);
-
+            menuCode = getIntent().getExtras().getString(TaskConstant.MENU_CODE, "MENU_TASK");
+            screenTitle = getIntent().getExtras().getString(TaskConstant.SCREEN_TITLE, getString(R.string.task_creation));
         }
     }
 
@@ -136,10 +140,10 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     protected void setUpViews() {
         setUnBinder(ButterKnife.bind(this));
         setUpToolBar(getString(R.string.task_detail));
-        taskPresenter.createServerTaskImgPath(getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
+        TaskConstant.TASK_SERVER_IMG_PATH = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
                 + taskPresenter.getUserID()
                 + DataMembers.DIGITAL_CONTENT + "/"
-                + DataMembers.TASK_DIGITAL_CONTENT);
+                + DataMembers.TASK_DIGITAL_CONTENT;
         if (tabSelection == 3)
             hideViews();
 
@@ -162,7 +166,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
         setScreenTitle(screenTitle);
 
-        if (isFromHomeSrc) {
+        if (!isRetailerWiseTask) {
             tskProdLevelTitle.setVisibility(View.GONE);
             taskProductLevelTv.setVisibility(View.GONE);
         }
@@ -187,12 +191,6 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
             prepareTaskPhotoCapture();
         else
             showMessage(getString(R.string.task_exec_mandatory));
-    }
-
-
-    @Override
-    public void showUpdatedDialog(int msgResId) {
-
     }
 
     @Override
@@ -220,16 +218,38 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     }
 
     @Override
+    public void showImageUpdateMsg() {
+        showMessage(R.string.image_saved);
+        detailBo.setTaskEvidenceImg(imageName);
+        setImageIntoView();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            finish();
+            backNavigation();
             return true;
         }
 
         return false;
     }
+
+    private void backNavigation() {
+        if (!isRetailerWiseTask)
+            startActivity(new Intent(TaskDetailActivity.this,
+                    HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
+        else
+            startActivity(new Intent(TaskDetailActivity.this,
+                    TaskActivity.class).putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask)
+                    .putExtra(TaskConstant.SCREEN_TITLE, screenTitle)
+                    .putExtra(TaskConstant.MENU_CODE, menuCode));
+
+        finish();
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -307,9 +327,4 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
                 CAMERA_REQUEST_CODE);
     }
 
-    @Override
-    public void updateImageView(String imageName) {
-        detailBo.setTaskEvidenceImg(imageName);
-        setImageIntoView();
-    }
 }

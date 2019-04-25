@@ -49,16 +49,13 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-public class TaskFragment extends BaseFragment implements TaskContract.TaskView, TabLayout.OnTabSelectedListener, TaskClickListener {
+public class TaskFragment extends BaseFragment implements TaskContract.TaskListView, TabLayout.OnTabSelectedListener, TaskClickListener {
 
     private TabLayout tabLayout;
     private RecyclerView recyclerView;
     private Button nxtBtn;
     private LinearLayout footerLL;
-    private boolean isRetailerWiseTask;
-    private boolean fromHomeScreen;
-    private boolean isFromSurvey;
-    private boolean fromProfileScreen;
+    private boolean isChannelWise = false;
     private String mSelectedRetailerID = "0";
     private String currentActivityCode;
     private String screenTitle;
@@ -69,6 +66,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     private int lastSelectedPos = -1;
     private String mSelectedTaskId = "0";
     private String menuCode;
+    private TaskConstant.SOURCE source;
 
 
     @Inject
@@ -105,6 +103,9 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.bottomSheetLayout));
         bottomSheetBehavior.setHideable(false);
+        view.findViewById(R.id.task_bg_view).setOnClickListener(v -> {
+            hideBottomSheet();
+        });
 
         setUpBottomSheet(view);
     }
@@ -116,17 +117,17 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             bundle = Objects.requireNonNull(getActivity()).getIntent().getExtras();
 
         if (bundle != null) {
-            if (bundle.containsKey(TaskConstant.RETAILER_WISE_TASK))
-                isRetailerWiseTask = bundle.getBoolean(TaskConstant.RETAILER_WISE_TASK, false);
-
             if (bundle.containsKey(TaskConstant.FROM_HOME_SCREEN))
-                fromHomeScreen = bundle.getBoolean(TaskConstant.FROM_HOME_SCREEN, false);
+                source = TaskConstant.SOURCE.HOME_SCREEN;
 
-            if (bundle.containsKey(TaskConstant.FORM_SURVEY_SCREEN))
-                isFromSurvey = bundle.getBoolean(TaskConstant.FORM_SURVEY_SCREEN, false);
+            if (bundle.containsKey(TaskConstant.RETAILER_WISE_TASK))
+                source = TaskConstant.SOURCE.RETAILER;
+
+            if (bundle.containsKey(TaskConstant.FORM_CHANNEL_WISE))
+                isChannelWise = true;
 
             if (bundle.containsKey(TaskConstant.FROM_PROFILE_SCREEN))
-                fromProfileScreen = getArguments().getBoolean(TaskConstant.FROM_PROFILE_SCREEN, false);
+                source = TaskConstant.SOURCE.PROFILE_SCREEN;
 
             if (bundle.containsKey(TaskConstant.CURRENT_ACTIVITY_CODE))
                 currentActivityCode = bundle.getString(TaskConstant.CURRENT_ACTIVITY_CODE, "");
@@ -141,12 +142,12 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
     @Override
     protected void setUpViews() {
-        taskPresenter.createServerTaskImgPath(getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
+        TaskConstant.TASK_SERVER_IMG_PATH = getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
                 + taskPresenter.getUserID()
                 + DataMembers.DIGITAL_CONTENT + "/"
-                + DataMembers.TASK_DIGITAL_CONTENT);
+                + DataMembers.TASK_DIGITAL_CONTENT;
 
-        if (!fromProfileScreen)
+        if (TaskConstant.SOURCE.PROFILE_SCREEN != source)
             setUpActionBar();
 
         if (taskPresenter.isMoveNextActivity()) {
@@ -154,7 +155,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             nxtBtn.setOnClickListener(view -> moveNextActivity());
         }
 
-        if (isRetailerWiseTask) {
+        if (TaskConstant.SOURCE.RETAILER == source) {
             mSelectedRetailerID = String.valueOf(taskPresenter.getRetailerID());
         }
 
@@ -166,7 +167,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().supportInvalidateOptionsMenu();
+        getActivity().invalidateOptionsMenu();
     }
 
     // Add tabs to Tablayout
@@ -187,10 +188,11 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
             tabLayout.addTab(tabLayout.newTab().setCustomView(tabOne));
         }
 
-        if (fromHomeScreen)
+        if (source != TaskConstant.SOURCE.RETAILER)
             tabLayout.removeTabAt(3);
 
     }
+
 
     private void setUpBottomSheet(View view) {
 
@@ -249,7 +251,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
     @Override
     public void onTaskExecutedClick(TaskDataBO taskDataBO) {
-        if (isRetailerWiseTask) {
+        if (source == TaskConstant.SOURCE.RETAILER) {
             taskPresenter.updateModuleTime();
             taskPresenter.updateTaskExecution(taskPresenter.getRetailerID() + "", taskDataBO);
         } else {
@@ -276,12 +278,12 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
                         && tabLayout.getSelectedTabPosition() == 3)
                     i.putExtra(TaskConstant.EVIDENCE_IMAGE, imageName);
 
-                i.putExtra(TaskConstant.FROM_HOME_SCREEN, fromHomeScreen);
+                i.putExtra(TaskConstant.MENU_CODE, menuCode);
+                i.putExtra(TaskConstant.SCREEN_TITLE, screenTitle);
                 i.putExtra(TaskConstant.TAB_SELECTION, tabLayout.getSelectedTabPosition());
                 break;
             case 1:
                 i = new Intent(getActivity(), TaskCreationActivity.class);
-                i.putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask);
                 i.putExtra(TaskConstant.MENU_CODE, menuCode);
                 i.putExtra(TaskConstant.SCREEN_TITLE, screenTitle);
                 i.putExtra(TaskConstant.TASK_SCREEN_MODE, isType);
@@ -292,9 +294,10 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         }
 
         if (i != null) {
-            i.putExtra(TaskConstant.FROM_HOME_SCREEN, fromHomeScreen);
+            i.putExtra(TaskConstant.RETAILER_WISE_TASK, (source == TaskConstant.SOURCE.RETAILER));
             i.putExtra(TaskConstant.TASK_OBJECT, taskBO);
             startActivity(i);
+            getActivity().finish();
         }
     }
 
@@ -402,13 +405,13 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
         if (taskPresenter.isShowServerTaskOnly()) {
             getView().findViewById(R.id.tv_execution).setVisibility(View.VISIBLE);
-            taskPresenter.updateTaskList(TaskConstant.SERVER_TASK, mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
+            taskPresenter.updateTaskList(TaskConstant.SERVER_TASK, mSelectedRetailerID, (source == TaskConstant.SOURCE.RETAILER), isChannelWise);
         } else if (tab.getPosition() == 3) {
             getView().findViewById(R.id.tv_execution).setVisibility(View.GONE);
             taskPresenter.fetchCompletedTask(mSelectedRetailerID);
         } else {
             getView().findViewById(R.id.tv_execution).setVisibility(View.VISIBLE);
-            taskPresenter.updateTaskList(tab.getPosition(), mSelectedRetailerID, isRetailerWiseTask, isFromSurvey);
+            taskPresenter.updateTaskList(tab.getPosition(), mSelectedRetailerID, (source == TaskConstant.SOURCE.RETAILER), isChannelWise);
         }
 
     }
@@ -427,7 +430,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     @Override
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
 
-        recyclerView.setAdapter(new TaskListAdapter(getActivity(), updatedList, taskPresenter.outDateFormat(), this, fromProfileScreen, fromHomeScreen, tabLayout.getSelectedTabPosition()));
+        recyclerView.setAdapter(new TaskListAdapter(getActivity(), updatedList, taskPresenter.outDateFormat(), this, source, (source == TaskConstant.SOURCE.RETAILER), tabLayout.getSelectedTabPosition()));
 
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
             hideBottomSheet();
@@ -436,6 +439,11 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     @Override
     public void updateImageListAdapter(ArrayList<TaskDataBO> imageList) {
 
+    }
+
+    @Override
+    public void showImageUpdateMsg() {
+        showMessage(R.string.image_saved);
     }
 
     @Override
@@ -451,7 +459,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         if (!taskPresenter.isNewTask())
             menu.findItem(R.id.menu_new_task).setVisible(false);
 
-        if (!fromHomeScreen)//this is applicable for store wise task
+        if (source == TaskConstant.SOURCE.RETAILER)//this is applicable for store wise task
             menu.findItem(R.id.menu_reason).setVisible(taskPresenter.isNoTaskReason());
 
     }
@@ -480,11 +488,10 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
     // Comment by Gp, Issue while going back from Activity Menu
     private void backNavigation() {
 
-        if (isRetailerWiseTask) {
+        if (source == TaskConstant.SOURCE.RETAILER) {
             taskPresenter.updateModuleTime();
             startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-        }
-        if (fromHomeScreen)
+        } else
             startActivity(new Intent(getActivity(), HomeScreenActivity.class));
 
         getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
@@ -495,8 +502,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
         taskPresenter.updateModuleTime();
         Intent i = new Intent(getActivity(), TaskCreationActivity.class);
-        i.putExtra(TaskConstant.FROM_HOME_SCREEN, fromHomeScreen);
-        i.putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask);
+        i.putExtra(TaskConstant.RETAILER_WISE_TASK, source == TaskConstant.SOURCE.RETAILER);
         i.putExtra(TaskConstant.MENU_CODE, menuCode);
         i.putExtra(TaskConstant.SCREEN_TITLE, screenTitle);
         startActivity(i);
@@ -508,7 +514,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         ReasonPhotoDialog dialog = new ReasonPhotoDialog();
         dialog.setOnDismissListener(dialog1 -> {
             if (taskPresenter.isNPPhotoReasonAvailable(String.valueOf(taskPresenter.getRetailerID()), "MENU_TASK")) {
-                if (!fromHomeScreen) {
+                if (source == TaskConstant.SOURCE.RETAILER) {
                     taskPresenter.saveModuleCompletion(menuCode);
                     startActivity(new Intent(getActivity(),
                             HomeScreenTwo.class));
@@ -524,14 +530,6 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
         dialog.show(getActivity().getSupportFragmentManager(), TaskConstant.PHOTO_CAPTURE_DIALOG_TAG);
     }
 
-
-    @Override
-    public void showUpdatedDialog(int msgResId) {
-
-        showMessage(getString(msgResId));
-    }
-
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CAMERA_REQUEST_CODE) {
@@ -543,6 +541,17 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskView,
 
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    @Override
+    public void showTaskUpdateMsg() {
+        showMessage(R.string.task_updated_successfully);
+    }
+
+    @Override
+    public void showTaskDeletedMsg() {
+        showMessage(R.string.saved_successfully);
     }
 
 

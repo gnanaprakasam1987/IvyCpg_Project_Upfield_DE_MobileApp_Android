@@ -11,7 +11,7 @@ import io.reactivex.Single;
 
 public interface TaskDataManager extends AppDataManagerContract {
 
-    Observable<ArrayList<TaskDataBO>> fetchTaskData(String retailerId);
+    Observable<ArrayList<TaskDataBO>> fetchTaskData(String retailerId, int userCreatedTask);
 
     Observable<ArrayList<TaskDataBO>> fetchCompletedTask(String retailerId);
 

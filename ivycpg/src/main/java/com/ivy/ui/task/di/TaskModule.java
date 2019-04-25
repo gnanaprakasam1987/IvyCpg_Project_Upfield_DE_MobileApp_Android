@@ -52,10 +52,6 @@ public class TaskModule {
         return taskPresenter;
     }
 
-    @Provides
-    SurveyHelperNew provideSurveyHelperNew(){
-        return SurveyHelperNew.getInstance(mcContex);
-    }
 
 }
 
