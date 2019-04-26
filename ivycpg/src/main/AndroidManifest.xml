@@ -31,7 +31,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
-
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <uses-feature
@@ -193,9 +192,9 @@
         <activity
             android:name="com.ivy.cpg.view.order.StockAndOrder"
             android:exported="false"
+            android:hardwareAccelerated="true"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:hardwareAccelerated="true">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
 
@@ -739,8 +738,6 @@
         <activity
             android:name="com.ivy.cpg.view.order.scheme.QPSSchemeApply"
             android:screenOrientation="portrait" />
-
-
         <activity
             android:name="com.ivy.ui.activation.view.ActivationActivity"
             android:exported="false"
@@ -830,7 +827,6 @@
         <activity
             android:name="com.ivy.cpg.view.serializedAsset.AddSerializedAssetActivity"
             android:screenOrientation="portrait" />
-
         <activity
             android:name="com.ivy.cpg.view.order.moq.MOQHighlightActivity"
             android:screenOrientation="portrait" />
@@ -855,31 +851,40 @@
         <activity
             android:name="com.ivy.cpg.view.order.indicativeOrderReason.IndicativeOrderReasonActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.cpg.view.order.CollectionBeforeInvoiceActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.cpg.view.supplierselect.SupplierSelectionActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.cpg.view.order.scheme.SchemeDetailsActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.cpg.view.webview.PrivacyPolicyActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.cpg.view.login.TermsAndConditionsActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.cpg.view.Planorama.PlanoramaActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.cpg.view.Planorama.NewVisitActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.cpg.view.Planorama.PlanoramaDetailActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.cpg.view.Planorama.PlanoramaAnalysisActivty"
-            android:screenOrientation="portrait"/>
-
+        <activity
+            android:name="com.ivy.cpg.view.order.CollectionBeforeInvoiceActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.supplierselect.SupplierSelectionActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.order.scheme.SchemeDetailsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.webview.PrivacyPolicyActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.login.TermsAndConditionsActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.Planorama.PlanoramaActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.Planorama.NewVisitActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.Planorama.PlanoramaDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.Planorama.PlanoramaAnalysisActivty"
+            android:screenOrientation="portrait" />
 
         <service
             android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"
             android:enabled="true"
             android:exported="false" />
 
+        <activity android:name="com.ivy.cpg.view.DisplayAsset.DisplayAssetActivity"></activity>
     </application>
 
 </manifest>

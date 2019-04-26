@@ -5,6 +5,16 @@ public class CompanyBO {
 	private int competitorid;
 	private String competitorName = "";
 
+	public int getQuantity() {
+		return quantity;
+	}
+
+	public void setQuantity(int quantity) {
+		this.quantity = quantity;
+	}
+
+	private int quantity;
+
 	public int getCompetitorid() {
 		return competitorid;
 	}
@@ -19,6 +29,16 @@ public class CompanyBO {
 
 	public void setCompetitorName(String competitorName) {
 		this.competitorName = competitorName;
+	}
+
+	public CompanyBO(){
+
+	}
+	public CompanyBO(CompanyBO companyBO){
+
+		this.competitorid=companyBO.getCompetitorid();
+		this.competitorName=companyBO.getCompetitorName();
+
 	}
 
 	public String toString() {
