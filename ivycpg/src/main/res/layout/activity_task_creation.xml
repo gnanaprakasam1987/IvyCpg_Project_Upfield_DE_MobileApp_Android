@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <include
         android:id="@+id/toolbar"
@@ -15,29 +15,29 @@
         android:id="@+id/scroll_footer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/footer"
+        android:layout_above="@+id/save_ll"
         android:layout_below="@id/toolbar">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="@dimen/dimen_10dp">
 
-            <LinearLayout
+            <RelativeLayout
+                android:id="@+id/first_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:padding="@dimen/dimen_2dp">
 
                 <TextView
                     android:id="@+id/task_title_tv"
-                    style="@style/TextViewNormal"
+                    style="@style/TextViewNormalHighlight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
                     android:adjustViewBounds="true"
-                    android:padding="8dp"
-                    android:paddingBottom="0dp"
+                    android:padding="@dimen/_8sdp"
                     android:text="@string/plan_task" />
 
                 <EditText
@@ -45,153 +45,186 @@
                     style="@style/EditTextNormal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_below="@+id/task_title_tv"
                     android:layout_gravity="start|center"
-                    android:maxLength="25"
-                    tools:ignore="Autofill" />
-            </LinearLayout>
+                    android:maxLength="25" />
 
-            <android.support.v7.widget.CardView
+
+                <TextView
+                    android:id="@+id/task_due_date_tv"
+                    style="@style/TextViewNormalHighlight"
+                    android:layout_width="@dimen/spinner_width"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv"
+                    android:adjustViewBounds="true"
+                    android:paddingTop="@dimen/_8sdp"
+                    android:paddingBottom="@dimen/_8sdp"
+                    android:text="@string/due_date" />
+
+                <Button
+                    android:id="@+id/task_due_date_btn"
+                    style="@style/datePickerButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/_38sdp"
+                    android:layout_below="@+id/task_due_date_tv"
+                    android:gravity="center|start"
+                    android:maxLines="1"
+                    android:text="@string/due_date" />
+
+                <TextView
+                    android:id="@+id/task_category_tv"
+                    style="@style/TextViewNormalHighlight"
+                    android:layout_width="@dimen/spinner_width"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/tv"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_toEndOf="@+id/task_due_date_tv"
+                    android:layout_toRightOf="@+id/task_due_date_tv"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/_8sdp"
+                    android:text="@string/category"
+                    android:visibility="gone" />
+
+                <android.support.v7.widget.AppCompatSpinner
+                    android:id="@+id/task_category_spinner"
+                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                    android:layout_width="@dimen/spinner_width"
+                    android:layout_height="@dimen/spinner_layout_height"
+                    android:layout_below="@+id/task_category_tv"
+                    android:layout_alignStart="@+id/task_category_tv"
+                    android:layout_alignLeft="@+id/task_category_tv"
+                    android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_toEndOf="@+id/task_due_date_btn"
+                    android:layout_toRightOf="@+id/task_due_date_btn"
+                    android:spinnerMode="dialog"
+                    android:visibility="gone" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/spinner_rl"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimens_6dp"
-                card_view:cardBackgroundColor="@color/white"
-                card_view:cardUseCompatPadding="true">
+                android:layout_below="@+id/first_layout"
+                android:gravity="center_vertical|start"
+                android:orientation="vertical"
+                android:padding="@dimen/_8sdp">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <TextView
+                    android:id="@+id/applicable_tv"
+                    style="@style/TextViewNormalHighlight"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentTop="true"
+                    android:gravity="center"
+                    android:padding="@dimen/_8sdp"
+                    android:text="@string/applyto" />
+
+                <RadioGroup
+                    android:id="@+id/rg_selection"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/applicable_tv"
+                    android:layout_margin="5dp"
                     android:orientation="vertical">
 
-                    <EditText
-                        android:id="@+id/taskView"
-                        style="@style/EditTextNormal"
-                        android:layout_width="match_parent"
-                        android:layout_height="100dp"
-                        android:layout_gravity="center"
-                        android:layout_margin="@dimen/dimens_4dp"
-                        android:layout_marginStart="@dimen/list_margin"
-                        android:layout_marginLeft="@dimen/list_margin"
-                        android:layout_marginBottom="@dimen/list_margin"
-                        android:background="@drawable/feedback_edit_selector"
-                        android:cursorVisible="true"
-                        android:gravity="start|top"
-                        android:hint="@string/enter_task_description"
-                        android:inputType="textMultiLine"
-                        android:maxLength="250"
-                        android:maxLines="4"
-                        android:padding="@dimen/dimen_6dp"
-                        tools:ignore="Autofill" />
-
-                    <TextView
-                        android:id="@+id/applicable_tv"
+                    <RadioButton
+                        android:id="@+id/seller"
                         style="@style/TextViewNormal"
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="4dp"
-                        android:paddingTop="10dp"
-                        android:text="@string/applyto"
-                        android:textColor="@android:color/black"
-                        android:textSize="@dimen/text_size_primary" />
+                        android:layout_gravity="center_vertical"
+                        android:checked="true"
+                        android:text="@string/Seller" />
 
-                    <RadioGroup
-                        android:id="@+id/rg"
-                        android:layout_width="match_parent"
+                    <RadioButton
+                        android:id="@+id/Channelwise"
+                        style="@style/TextViewNormal"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:orientation="horizontal"
-                        android:weightSum="9">
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/Channelwise" />
 
-                        <RadioButton
-                            android:id="@+id/seller"
-                            style="@style/TextViewNormal"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="3"
-                            android:checked="true"
-                            android:text="@string/Seller" />
-
-                        <RadioButton
-                            android:id="@+id/Channelwise"
-                            style="@style/TextViewNormal"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="3"
-                            android:text="@string/Channelwise" />
-
-                        <RadioButton
-                            android:id="@+id/Retailerwise"
-                            style="@style/TextViewNormal"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center_vertical"
-                            android:layout_weight="3"
-                            android:text="@string/Retailerwise" />
-                    </RadioGroup>
-
-                    <LinearLayout
-                        android:id="@+id/spinner_layouts"
-                        android:layout_width="match_parent"
+                    <RadioButton
+                        android:id="@+id/Retailerwise"
+                        style="@style/TextViewNormal"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_margin="5dp"
-                        android:orientation="horizontal"
-                        android:weightSum="9">
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/Retailerwise" />
+                </RadioGroup>
 
 
-                        <Spinner
-                            android:id="@+id/spinner_seller"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/spinner_height"
-                            android:layout_weight="3"
-                            android:background="@android:color/transparent"
-                            android:paddingStart="@dimen/dimen_20dp"
-                            android:paddingLeft="@dimen/dimen_20dp"
-                            android:paddingEnd="@dimen/dimen_10dp"
-                            android:paddingRight="@dimen/dimen_10dp"
-                            android:popupTheme="@android:style/ThemeOverlay.Material.Light"
-                            tools:ignore="UnusedAttribute" />
+                <Spinner
+                    android:id="@+id/spinner_seller"
+                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                    android:layout_width="@dimen/spinner_width"
+                    android:layout_height="@dimen/spinner_layout_height"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/_20sdp"
+                    android:layout_marginLeft="@dimen/_20sdp"
+                    android:layout_toEndOf="@+id/rg_selection"
+                    android:layout_toRightOf="@+id/rg_selection"
+                    android:gravity="center_vertical"
+                    android:spinnerMode="dialog" />
+            </RelativeLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/task_img_recycler_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/spinner_rl"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:padding="@dimen/_8sdp" />
 
 
-                        <Spinner
-                            android:id="@+id/channel"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/spinner_height"
-                            android:layout_weight="3"
-                            android:background="@android:color/transparent"
-                            android:paddingStart="@dimen/dimen_20dp"
-                            android:paddingLeft="@dimen/dimen_20dp"
-                            android:paddingEnd="@dimen/dimen_10dp"
-                            android:paddingRight="@dimen/dimen_10dp"
-                            android:popupTheme="@android:style/ThemeOverlay.Material.Light"
-                            tools:ignore="UnusedAttribute" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/task_img_recycler_view"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:padding="@dimen/_8sdp">
 
+                <TextView
+                    android:id="@+id/task_desc_tv"
+                    style="@style/TextViewNormalHighlight"
+                    android:layout_width="@dimen/spinner_width"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true"
+                    android:padding="@dimen/_8sdp"
+                    android:text="@string/description" />
 
-                        <Spinner
-                            android:id="@+id/retailer"
-                            android:layout_width="0dp"
-                            android:layout_height="@dimen/spinner_height"
-                            android:layout_weight="3"
-                            android:background="@android:color/transparent"
-                            android:paddingStart="@dimen/dimen_20dp"
-                            android:paddingLeft="@dimen/dimen_20dp"
-                            android:paddingEnd="@dimen/dimen_10dp"
-                            android:paddingRight="@dimen/dimen_10dp"
-                            android:popupTheme="@android:style/ThemeOverlay.Material.Light"
-                            tools:ignore="UnusedAttribute">
+                <EditText
+                    android:id="@+id/taskView"
+                    style="@style/EditTextNormal"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_below="@+id/task_desc_tv"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/dimens_4dp"
+                    android:layout_marginStart="@dimen/list_margin"
+                    android:layout_marginLeft="@dimen/list_margin"
+                    android:layout_marginBottom="@dimen/list_margin"
+                    android:background="@drawable/feedback_edit_selector"
+                    android:cursorVisible="true"
+                    android:gravity="start|top"
+                    android:hint="@string/enter_task_description"
+                    android:inputType="textMultiLine"
+                    android:maxLength="250"
+                    android:maxLines="4"
+                    android:padding="@dimen/dimen_6dp"
+                    tools:ignore="Autofill" />
+            </RelativeLayout>
 
-                        </Spinner>
-                    </LinearLayout>
-                </LinearLayout>
-            </android.support.v7.widget.CardView>
-        </LinearLayout>
+        </RelativeLayout>
     </ScrollView>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/activity_divider_height"
-        android:layout_above="@+id/save_ll"
-        android:background="@color/divider_view_color" />
 
     <LinearLayout
         android:id="@+id/save_ll"
@@ -201,13 +234,14 @@
         android:layout_gravity="bottom"
         android:background="?attr/customFooterBackgroundColor"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/_3sdp">
 
 
         <Button
             android:id="@+id/saveTask"
             style="?attr/roundedCustomButtonNormal"
-            android:layout_gravity="center"
+            android:layout_gravity="center|end"
             android:text="@string/save"
             android:textAllCaps="false" />
 

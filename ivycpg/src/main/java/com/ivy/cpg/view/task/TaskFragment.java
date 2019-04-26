@@ -465,7 +465,10 @@ public class TaskFragment extends IvyBaseFragment {
                         }
                     } else {
 
-                        if (taskData.getRid() == 0 && taskData.getChannelId() == 0 && (taskData.getUserId() == bmodel.userMasterHelper.getUserMasterBO().getUserid() || taskData.getUserId() == 0)) {
+                        if (taskData.getRid() == 0
+                                && taskData.getChannelId() == 0
+                                && (taskData.getUserId() == bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                                || taskData.getUserId() == 0)) {
 
                             if (taskType == 1) { // server
                                 if (taskData.getUsercreated().toUpperCase()
@@ -510,14 +513,14 @@ public class TaskFragment extends IvyBaseFragment {
                 @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.row_task_title, null);
 
                 holder.taskCB = v.findViewById(R.id.task_title_CB);
-                holder.taskTaskOwner = v.findViewById(R.id.task_taskowner);
-                holder.taskCreatedDate = v.findViewById(R.id.task_createdOn);
+                //holder.taskTaskOwner = v.findViewById(R.id.task_taskowner);
+                //holder.taskCreatedDate = v.findViewById(R.id.task_createdOn);
                 holder.layoutCB = v.findViewById(R.id.layoutCB);
                 holder.layoutrow = v.findViewById(R.id.layoutBorder);
 
                 holder.layoutCB.setVisibility(View.VISIBLE);
-                holder.taskTaskOwner.setText(" : " + task.getTaskOwner());
-                holder.taskCreatedDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat) + ", ");
+                //holder.taskTaskOwner.setText(" : " + task.getTaskOwner());
+                //holder.taskCreatedDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat) + ", ");
 
                 holder.layoutrow.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -577,7 +580,7 @@ public class TaskFragment extends IvyBaseFragment {
                 });
 
                 holder.taskDescription = v
-                        .findViewById(R.id.task_description_tv);
+                        .findViewById(R.id.task_category_tv);
                 holder.taskDescription.setText(task.getTaskDesc());
                 if (task.isUpload() && task.getIsdone().equals("1")) {
                     holder.taskCB.setEnabled(false);
@@ -609,7 +612,7 @@ public class TaskFragment extends IvyBaseFragment {
         CheckBox taskCB;
         TextView taskTitle;
         TextView taskDescription;
-        TextView taskTaskOwner;
+        //TextView taskTaskOwner;
         TextView taskCreatedDate;
         RelativeLayout layoutCB;
         RelativeLayout layoutrow;

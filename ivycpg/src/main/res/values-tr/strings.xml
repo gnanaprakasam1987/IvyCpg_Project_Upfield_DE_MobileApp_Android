@@ -1306,6 +1306,7 @@
         <item>TÜMÜ</item>
         <item>VERİLENLER</item>
         <item>KENDİME AİT</item>
+        <item>Tamamlanan</item>
     </string-array>
     <string-array name="days_in_week">
         <item>Paz</item>

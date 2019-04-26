@@ -12,13 +12,19 @@
         android:id="@+id/menu_new_task"
         android:icon="@drawable/task_add"
         android:orderInCategory="100"
-        android:title="Task Create"
+        android:title="@string/task_creation"
         ivydist:showAsAction="always" />
     <item
         android:id="@+id/menu_save"
         android:icon="@drawable/icon_save"
         android:orderInCategory="101"
-        android:title="Next"
+        android:title="@string/next"
+        ivydist:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_sort"
+        android:icon="@drawable/ic_filter_icon"
+        android:orderInCategory="99"
+        android:title="@string/sort_by"
+        android:visible="false"
         ivydist:showAsAction="always" />
-
 </menu>

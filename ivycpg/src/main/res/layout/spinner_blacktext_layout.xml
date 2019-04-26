@@ -7,4 +7,5 @@
     android:gravity="center"
     android:maxLines="1"
     android:textSize="@dimen/drop_down_text_font_size"
-    android:textColor="@color/black_bg3" />
+    android:fontFamily="@font/roboto_regular"
+    android:textColor="@color/list_item_primary_text_color" />

@@ -1565,6 +1565,12 @@ public class ConfigurationMasterHelper {
     private static final String CODE_COLLECTION_DELETE = "COLL20";
     public boolean IS_COLLECTION_DELETE;
 
+    private static final String CODE_VALIDATE_DUE_DATE = "CREDITDUE01";
+    public boolean IS_VALIDATE_DUE_DAYS;
+
+    private static final String CODE_SHOW_TASK_PRODUCT_LEVEL = "TASK01";
+    public boolean IS_SHOW_TASK_PRODUCT_LEVEL;
+
     //Image upload through Azure Storage
     private static final String CODE_AZURE_UPLOAD = "IS_AZURE_UPLOAD";
     public boolean IS_AZURE_UPLOAD = false;
@@ -2736,6 +2742,8 @@ public class ConfigurationMasterHelper {
         this.IS_VOICE_TO_TEXT = hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) != null ? hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) : -1;
         this.IS_SKIP_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) : false;
         this.IS_COLLECTION_DELETE = hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) != null ? hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) : false;
+        this.IS_VALIDATE_DUE_DAYS = hashMapHHTModuleConfig.get(CODE_VALIDATE_DUE_DATE ) != null ? hashMapHHTModuleConfig.get(CODE_VALIDATE_DUE_DATE) : false;
+        this.IS_SHOW_TASK_PRODUCT_LEVEL = hashMapHHTModuleConfig.get(CODE_SHOW_TASK_PRODUCT_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TASK_PRODUCT_LEVEL) : false;
 
         this.IS_AZURE_UPLOAD = hashMapHHTModuleConfig.get(CODE_AZURE_UPLOAD) != null ? hashMapHHTModuleConfig.get(CODE_AZURE_UPLOAD) : false;
         this.IS_SHOW_RETAILER_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LAST_VISIT) : false;
@@ -3987,7 +3995,7 @@ public class ConfigurationMasterHelper {
             IS_STK_ORD_BS = false;
             IS_STK_ORD_PROJECT = false;
             SHOW_SALES_RETURN_IN_ORDER = false;
-            SHOW_SALES_RETURN_TV_IN_ORDER =false;
+            SHOW_SALES_RETURN_TV_IN_ORDER = false;
 
 
             IS_PRINT_SEQUENCE_REQUIRED = false;
@@ -4274,7 +4282,7 @@ public class ConfigurationMasterHelper {
             }
             if (codeValue != null && !codeValue.equals("")) {
                 String codeSplit[] = codeValue.split(",");
-                if(codeSplit.length==3) {
+                if (codeSplit.length == 3) {
                     if (codeSplit[0] != null && !codeSplit[0].equals(""))
                         DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = SDUtil.convertToInt(codeSplit[0]);
                     if (codeSplit[1] != null && !codeSplit[1].equals(""))
@@ -5403,11 +5411,8 @@ public class ConfigurationMasterHelper {
     }
 
 
-    public void loadRouteConfig() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
-
+    public void loadRouteConfig(DBUtil db) {
         try {
-            db.openDataBase();
             String sb = "select Rfield from HhtModuleMaster where flag=1 and hhtcode=" +
                     bmodel.QT(CODE_SHOW_ALL_ROUTE_FILTER) + " and  ForSwitchSeller = 0";
             Cursor c = db.selectSQL(sb);
@@ -5426,8 +5431,6 @@ public class ConfigurationMasterHelper {
             c.close();
         } catch (Exception e) {
             Commons.printException("" + e);
-        } finally {
-            db.closeDB();
         }
     }
 

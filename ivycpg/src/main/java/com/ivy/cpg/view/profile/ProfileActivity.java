@@ -67,6 +67,7 @@ import com.ivy.cpg.nfc.NFCReadDialogActivity;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
 import com.ivy.cpg.view.profile.otpValidation.RetailerSequenceSkipDialog;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.retailercontact.RetailerContactFragment;
@@ -102,7 +103,9 @@ import com.ivy.cpg.view.profile.orderandinvoicehistory.InvoiceHistoryFragment;
 import com.ivy.cpg.view.profile.orderandinvoicehistory.OrderHistoryFragment;
 import com.ivy.cpg.view.profile.otpValidation.OTPValidationDialog;
 import com.ivy.ui.profile.edit.view.ProfileEditActivity;
+import com.ivy.ui.task.TaskConstant;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.ui.task.view.TaskFragment;
 
 import org.json.JSONObject;
 
@@ -1386,12 +1389,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             } else if (tabName.equals(ASSET_HISTORY)) {
                 return new AssetHistoryFragment();
             } else if (tabName.equalsIgnoreCase(TASK)) {
-                TaskListFragment taskListFragment = new TaskListFragment();
+                TaskFragment taskListFragment = new TaskFragment();
                 Bundle args1 = new Bundle();
-                args1.putInt("type", 1);
-                args1.putBoolean("isRetailer", true);
-                args1.putBoolean("fromReview", false);
-                args1.putBoolean("fromProfileScreen", true);
+                args1.putBoolean(TaskConstant.RETAILER_WISE_TASK, true);
+                args1.putBoolean(TaskConstant.FROM_PROFILE_SCREEN, true);
                 taskListFragment.setArguments(args1);
                 return taskListFragment;
             } else if (tabName.equalsIgnoreCase(SALES_PER_LEVEL)) {
@@ -2145,10 +2146,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         protected Boolean doInBackground(Integer... params) {
             try {
 
-                selectedUserId = bmodel.retailerMasterBO.getSelectedUserID()+"";
+                selectedUserId = bmodel.retailerMasterBO.getSelectedUserID() + "";
 
                 String loginId = bmodel.synchronizationHelper.
-                        getSelectedUserLoginId(bmodel.retailerMasterBO.getSelectedUserID()+"",ProfileActivity.this);
+                        getSelectedUserLoginId(bmodel.retailerMasterBO.getSelectedUserID() + "", ProfileActivity.this);
                 bmodel.synchronizationHelper.updateAuthenticateTokenWithoutPassword(loginId);
 
                 bmodel.synchronizationHelper.downloadUserRetailerTranUrl();
@@ -2319,7 +2320,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 if (errorCode != null && errorCode
                         .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     bmodel.synchronizationHelper
-                            .downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.VISIT_SCREEN, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE,selectedUserId);
+                            .downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.VISIT_SCREEN, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE, selectedUserId);
                     selectedUserId = "";
                 } else {
                     String errorDownlodCode = bundle

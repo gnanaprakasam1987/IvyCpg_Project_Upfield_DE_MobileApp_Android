@@ -164,7 +164,7 @@ public class SellerDashboardFragment extends BaseFragment implements SellerDashb
     }
 
     @Override
-    public void initVariables(View view) {
+    public void init(View view) {
         dashboardListData = new ArrayList<>();
     }
 

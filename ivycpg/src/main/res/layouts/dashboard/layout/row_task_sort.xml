@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/row_sort_ll"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:background="@color/white"
+    android:gravity="center_vertical"
+    android:minHeight="@dimen/list_item_space"
+    android:orientation="horizontal"
+    android:paddingStart="@dimen/space_betwn_icon_and_text"
+    android:paddingLeft="@dimen/space_betwn_icon_and_text"
+    android:paddingRight="@dimen/space_betwn_icon_and_text">
+
+
+    <ImageView
+        android:id="@+id/list_item_icon_sort"
+        style="@style/menuIconImageView"
+        android:contentDescription="@string/sort_by"
+       />
+
+    <TextView
+        android:id="@+id/list_item_menu_sort_tv"
+        style="@style/menuNameTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/space_betwn_icon_and_text"
+        android:layout_marginLeft="@dimen/space_betwn_icon_and_text"
+        android:layout_marginEnd="@dimen/dimen_2dp"
+        android:layout_marginRight="@dimen/dimen_2dp"
+        android:fontFamily="@font/roboto_regular"
+        android:gravity="center_vertical"
+        android:text="@string/Name"
+        android:textColor="?attr/captionTextColor" />
+</LinearLayout>

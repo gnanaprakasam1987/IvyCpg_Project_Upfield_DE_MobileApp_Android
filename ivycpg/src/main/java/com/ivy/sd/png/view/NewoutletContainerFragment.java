@@ -28,6 +28,11 @@ import java.util.List;
 public class NewoutletContainerFragment extends IvyBaseFragment {
 
     private BusinessModel bmodel;
+    private boolean isFromEditProfileView;
+    private static final String SCREEN_MODE_INTENT_KEY ="screenMode";
+    private static final String RETAILERID_INTENT_KEY ="retailerId";
+    private static final Integer SCREENMODE_VIEW=1; // 1 - View Mode ;
+    private static final Integer SCREENMODE_EDIT=2; // 2 - Edit Mode
     Bundle bundle;
 
     @Override
@@ -74,7 +79,7 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
         }
     }
 
-    boolean isFromEditProfileView;
+
 
     private void initializeItem(View view) {
 
@@ -107,26 +112,26 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
                 else
                     adapter.addFragment(new NewOutletFragment(), getResources().getString(R.string.outlet));
 
+
                 if (bmodel.configurationMasterHelper.IS_CONTACT_TAB) {
 
-                    //1 - View Mode ; 2,0 - Edit Mode
-                    int screenMode = getActivity().getIntent().getIntExtra("screenMode", 0);
-                    String retailerId = bundle.getString("retailerId", "");
+                    int screenMode = getActivity().getIntent().getIntExtra(SCREEN_MODE_INTENT_KEY, 0);
+                    String retailerId = bundle.getString(RETAILERID_INTENT_KEY, "");
 
                     boolean isEdit = false;
 
                     if (isFromEditProfileView) {
                         isEdit = true;
-                        screenMode = 2;
+                        screenMode = SCREENMODE_EDIT;
                     }
 
 
                     bmodel.newOutletHelper.setRetailerContactList(new ArrayList<>());
-                    if (screenMode == 2){
+                    if (screenMode == SCREENMODE_EDIT){
                         bmodel.newOutletHelper.setRetailerContactList(bmodel.profilehelper.getContactBos(retailerId,isEdit));
                     }
 
-                    if (screenMode == 1) {
+                    if (screenMode == SCREENMODE_VIEW) {
                         Bundle bundle = new Bundle();
                         bundle.putString("RetailerId",retailerId);
                         RetailerContactFragment retailerContactFragment = new RetailerContactFragment();

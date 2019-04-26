@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
+
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/footer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="?attr/customFooterBackgroundColor"
+            android:minHeight="@dimen/footer_height"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/btn_close"
+                style="?attr/roundedCustomButtonSmall"
+                android:layout_gravity="end"
+                android:layout_margin="@dimen/target_top_margin"
+                android:gravity="center"
+                android:text="@string/close"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
+
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tabs"
+            style="@style/AppTabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_horizontal"
+            app:tabGravity="fill"
+            app:tabIndicatorHeight="4dp"
+            app:tabMode="fixed" />
+
+        <LinearLayout
+            android:id="@+id/ListHeader"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_header_height"
+            android:layout_below="@+id/tabs"
+            android:background="?attr/customListTitleBackgroundColor"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/list_padding_left_n_right"
+            android:paddingEnd="@dimen/list_padding_left_n_right">
+
+            <TextView
+                android:id="@+id/tv_task_title"
+                style="@style/TextViewListTitle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="5"
+                android:gravity="start|center_vertical"
+                android:tag="task_title_label"
+                android:text="@string/task" />
+
+
+            <TextView
+                android:id="@+id/tv_execution"
+                style="@style/TextViewListTitle"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:focusable="true"
+                android:tag="task_sort_title_label"
+                android:text="@string/taskexecution" />
+
+        </LinearLayout>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/task_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/footer"
+            android:layout_below="@+id/ListHeader"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:overScrollMode="never" />
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/task_bg_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#b1000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:visibility="gone" />
+
+    <include layout="@layout/task_bottom_sheet" />
+</android.support.design.widget.CoordinatorLayout>
+

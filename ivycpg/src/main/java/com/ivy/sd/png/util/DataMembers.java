@@ -60,6 +60,7 @@ public class DataMembers {
     public static final String PROFILE = "PRO";
     public static final String CATALOG = "CAT";
     public static final String USER = "USER";
+    public static final String TASK_DIGITAL_CONTENT = "TDC";
 
     public static final int NOTIFY_WEB_UPLOAD_SUCCESS = 32;
     public static final int NOTIFY_WEB_UPLOAD_ERROR = 33;
@@ -298,7 +299,10 @@ public class DataMembers {
     public static final String tbl_HhtMenuMaster = "HhtMenuMaster";
 
     private static final String tbl_TaskMaster = "TaskMaster";
-    private static final String tbl_TaskMaster_cols = "taskid,taskdesc,taskcode,TaskOwner";
+    private static final String tbl_TaskMaster_cols = "taskid,taskdesc,taskcode,TaskOwner,Date,DueDate,CategoryId,EndDate,Status";
+
+    private static final String tbl_TaskImageDetails = "TaskImageDetails";
+    private static final String tbl_TaskImageDetails_cols = "TaskId,TaskImageId,TaskImageName,Status";
 
     public static final String tbl_TaskConfigurationMaster = "TaskConfigurationMaster";
     private static final String tbl_TaskConfigurationMaster_cols = "taskid,retailerid,uid,date,usercreated,userid";
@@ -812,6 +816,7 @@ public class DataMembers {
         uploadColumn.put(tbl_SchemeFreeProductDetail, tbl_SchemeFreeProductDetail_cols);
         uploadColumn.put(tbl_TaskConfigurationMaster, tbl_TaskConfigurationMaster_cols);
         uploadColumn.put(tbl_TaskMaster, tbl_TaskMaster_cols);
+        uploadColumn.put(tbl_TaskImageDetails, tbl_TaskImageDetails_cols);
         uploadColumn.put(tbl_InvoiceDiscountDetail, tbl_InvoiceDiscountDetail_cols);
         uploadColumn.put(tbl_OrderDiscountDetail, tbl_OrderDiscountDetail_cols);
         uploadColumn.put(tbl_RetailerEditHeader, tbl_RetailerEditHeader_cols);
@@ -903,7 +908,7 @@ public class DataMembers {
 
         uploadColumn.put(tbl_DigitalContent_Tracking_Header, tbl_DigitalContent_Tracking_Header_cols);
         uploadColumn.put(tbl_DigitalContent_Tracking_Detail, tbl_DigitalContent_Tracking_Detail_cols);
-        uploadColumn.put(tbl_AnswerScoreDetails,tbl_AnswerScoreDetails_cols);
+        uploadColumn.put(tbl_AnswerScoreDetails, tbl_AnswerScoreDetails_cols);
 
         uploadColumn.put(tbl_Planorama, tbl_Planorama_cols);
         uploadColumn.put(tbl_Planorama_image, tbl_Planorama_image_cols);
@@ -1083,6 +1088,7 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_TaskConfigurationMaster,
                 tbl_TaskConfigurationMaster_cols);
         uploadColumnWithOutRetailer.put(tbl_TaskMaster, tbl_TaskMaster_cols);
+        uploadColumnWithOutRetailer.put(tbl_TaskImageDetails, tbl_TaskImageDetails_cols);
 
         uploadColumnWithOutRetailer.put(tbl_SOS_Tracking_Parent_Detail,
                 tbl_SOS_Tracking_Parent_Detail_cols);
@@ -1092,7 +1098,6 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_outletjoincall, tbl_outletjoincall_cols);
         uploadColumnWithOutRetailer.put(tbl_SubDepotSettlement, tbl_SubDepotSettlement_cols);
 
-        uploadColumnWithOutRetailer.put(tbl_TaskMaster, tbl_TaskMaster_cols);
         uploadColumnWithOutRetailer.put(tbl_RoadActivityHeader, tbl_RoadActivityHeader_cols);
         uploadColumnWithOutRetailer.put(tbl_RoadActivityDetail, tbl_RoadActivityDetail_cols);
         uploadColumnWithOutRetailer.put(tbl_DistInvoiceDetails, tbl_DistInvoiceDetails_cols);

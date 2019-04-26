@@ -17,6 +17,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import static com.ivy.core.IvyConstants.DEFAULT_DATE_FORMAT;
+
 public class DateTimeUtils {
 
     public static final int DATE_TIME = 2;
@@ -121,6 +123,15 @@ public class DateTimeUtils {
         }
 
     }
+
+    public static String addDateToYear(int noOfYears) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, noOfYears); // to get previous year add -1
+        // convert calendar to date
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+        return sdf.format(cal.getTime());
+    }
+
 
     /**
      * @param firstDate
