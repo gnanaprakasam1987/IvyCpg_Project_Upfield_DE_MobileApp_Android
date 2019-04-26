@@ -151,7 +151,7 @@
             <Button
                 android:id="@+id/Btn_service_Date"
                 style="@style/datePickerButton"
-                android:layout_width="@dimen/list_item_date_picker_width"
+                android:layout_width="wrap_content"
                 android:layout_height="@dimen/list_item_date_picker_height"
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_marginRight="@dimen/dimen_2dp"

@@ -343,7 +343,7 @@ public class OrderHelper {
 
 
             if (businessModel.configurationMasterHelper.IS_HANGINGORDER) {
-                updateHangingOrder(mContext, businessModel.getAppDataProvider().getRetailMaster());
+                updateHangingOrder(mContext, businessModel.getAppDataProvider().getRetailMaster(), db);
             }
 
             businessModel.getAppDataProvider().getRetailMaster()
@@ -937,7 +937,7 @@ public class OrderHelper {
 
 
                 if (businessModel.configurationMasterHelper.IS_HANGINGORDER) {
-                    updateHangingOrder(mContext, businessModel.getAppDataProvider().getRetailMaster());
+                    updateHangingOrder(mContext, businessModel.getAppDataProvider().getRetailMaster(), db);
                 }
 
                 businessModel.getAppDataProvider().getRetailMaster()
@@ -1372,9 +1372,9 @@ public class OrderHelper {
      * @param retailerId current retailer Id
      */
     public void deleteOrder(Context context, String retailerId) {
+        DBUtil db = null;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
-            );
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String orderId = "";
@@ -1429,17 +1429,18 @@ public class OrderHelper {
             db.updateSQL("update RetailerMaster set sbdDistPercent =" + businessModel.getRetailerMasterBO().getSbdPercent()
                     + " where retailerid =" + StringUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()));
 
-            db.closeDB();
-            db.closeDB();
-            businessModel.downloadIndicativeOrderedRetailer();
+            businessModel.downloadIndicativeOrderedRetailer(db);
             businessModel.updateIndicativeOrderedRetailer(businessModel.getRetailerMasterBO());
 
 
             if (businessModel.configurationMasterHelper.IS_HANGINGORDER) {
-                updateHangingOrder(context, businessModel.getRetailerMasterBO());
+                updateHangingOrder(context, businessModel.getRetailerMasterBO(), db);
             }
+
         } catch (Exception e) {
             Commons.printException("" + e);
+        } finally {
+            db.closeDB();
         }
     }
 
@@ -2017,7 +2018,7 @@ public class OrderHelper {
 
 
             if (businessModel.configurationMasterHelper.IS_HANGINGORDER) {
-                updateHangingOrder(mContext, businessModel.getRetailerMasterBO());
+                updateHangingOrder(mContext, businessModel.getRetailerMasterBO(), db);
             }
 
             /* update free products sih starts */
@@ -2480,12 +2481,8 @@ public class OrderHelper {
      * @param mContext current context
      * @param retObj   retailer object
      */
-    public void updateHangingOrder(Context mContext, RetailerMasterBO retObj) {
-        DBUtil db = null;
+    public void updateHangingOrder(Context mContext, RetailerMasterBO retObj, DBUtil db) {
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME);
-            db.createDataBase();
-            db.openDataBase();
             String retailerId = retObj.getRetailerID();
             List<String> OrderId = null;
 
@@ -2522,9 +2519,6 @@ public class OrderHelper {
             }
         } catch (Exception e) {
             Commons.printException(e);
-        } finally {
-            if (db != null)
-                db.closeDB();
         }
     }
 

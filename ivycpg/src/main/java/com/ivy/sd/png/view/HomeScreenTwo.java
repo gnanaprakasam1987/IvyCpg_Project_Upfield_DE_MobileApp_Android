@@ -89,6 +89,7 @@ import com.ivy.cpg.view.planogram.PlanoGramHelper;
 import com.ivy.cpg.view.price.PriceTrackActivity;
 import com.ivy.cpg.view.price.PriceTrackCompActivity;
 import com.ivy.cpg.view.price.PriceTrackingHelper;
+import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.cpg.view.promotion.PromotionHelper;
 import com.ivy.cpg.view.promotion.PromotionTrackingActivity;
 import com.ivy.cpg.view.retailercontract.RetailerContractActivity;
@@ -111,6 +112,7 @@ import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.task.Task;
+import com.ivy.cpg.view.task.TaskHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -130,6 +132,8 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
+import com.ivy.ui.task.TaskConstant;
+import com.ivy.ui.task.view.TaskActivity;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.StringUtils;
@@ -719,7 +723,6 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         updateMenuVisitStatus(mInStoreMenu);
 
 
-
         mSchedule = new IconicAdapter(mInStoreMenu);
 
         mTempMenuList = new Vector<>(menuDB);
@@ -816,12 +819,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } else if (i1 == R.id.menu_reminder) {
             if (!isClick) {
                 isClick = true;
-                bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                        DateTimeUtils.now(DateTimeUtils.TIME), MENU_TASK);
-                Intent intent = new Intent(getApplicationContext(), Task.class);
-                intent.putExtra("IsRetailerwisetask", true);
-                startActivity(intent);
+                if (TaskHelper.getInstance(this).getTaskData(bmodel.getRetailerMasterBO().getRetailerID()).size() > 0) {
+                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            DateTimeUtils.now(DateTimeUtils.TIME), MENU_TASK);
+                    Intent intent = new Intent(HomeScreenTwo.this, TaskActivity.class);
+                    intent.putExtra(TaskConstant.RETAILER_WISE_TASK, true);
+                    intent.putExtra(TaskConstant.MENU_CODE, MENU_TASK);
+                    startActivity(intent);
+                }
 
             }
             return true;
@@ -1783,9 +1789,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                         bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_ORDER);
 
-                        if (!bmodel.configurationMasterHelper.IS_VALIDATE_CREDIT_DAYS
+                        if ((!bmodel.configurationMasterHelper.IS_VALIDATE_DUE_DAYS || bmodel.productHelper.isDueDateExpired()) && (!bmodel.configurationMasterHelper.IS_VALIDATE_CREDIT_DAYS
                                 || bmodel.getRetailerMasterBO().getCreditDays() == 0
-                                || bmodel.productHelper.isCheckCreditPeriod()) {
+                                || bmodel.productHelper.isCheckCreditPeriod())) {
 
                             if (bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER) {
                                 if (bmodel.hasAlreadyStockChecked(bmodel
@@ -2176,7 +2182,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         } else if (menu.getConfigCode().equals(MENU_TASK) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP
-                    ) {
+            ) {
                 if (!isClick) {
                     isClick = true;
                     // finish();
@@ -2184,14 +2190,16 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
                             DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
-                    Intent intent = new Intent(getApplicationContext(),
-                            Task.class);
-                    intent.putExtra("CurrentActivityCode", menu.getConfigCode());
-                    intent.putExtra("IsRetailerwisetask", true);
-                    intent.putExtra("screentitle", menu.getMenuName());
+                    Intent intent = new Intent(HomeScreenTwo.this,
+                            TaskActivity.class);
+                    intent.putExtra(TaskConstant.CURRENT_ACTIVITY_CODE, menu.getConfigCode());
+                    intent.putExtra(TaskConstant.MENU_CODE, menu.getConfigCode());
+                    intent.putExtra(TaskConstant.RETAILER_WISE_TASK, true);
+                    intent.putExtra(TaskConstant.SCREEN_TITLE, menu.getMenuName());
 
                     startActivity(intent);
                     isCreated = false;
+                    finish();
                 }
             } else {
                 Toast.makeText(
@@ -3774,7 +3782,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                     isCreated = false;
                 }
             }
-        }else if(menu.getConfigCode().equals(MENU_PLANORMA) && hasLink == 1){
+        } else if (menu.getConfigCode().equals(MENU_PLANORMA) && hasLink == 1) {
             if (isPreviousDone(menu)
                     || bmodel.configurationMasterHelper.IS_JUMP) {
                 Intent i = new Intent(this,
@@ -5207,9 +5215,9 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 isClick = true;
                 if (bmodel.productHelper.getProductMaster().size() > 0) {
                     bmodel.configurationMasterHelper.downloadFloatingNPReasonWithPhoto(MENU_STK_ORD);
-                    if (!bmodel.configurationMasterHelper.IS_VALIDATE_CREDIT_DAYS
+                    if ((!bmodel.configurationMasterHelper.IS_VALIDATE_DUE_DAYS || bmodel.productHelper.isDueDateExpired()) && (!bmodel.configurationMasterHelper.IS_VALIDATE_CREDIT_DAYS
                             || bmodel.getRetailerMasterBO().getCreditDays() == 0
-                            || bmodel.productHelper.isCheckCreditPeriod()) {
+                            || bmodel.productHelper.isCheckCreditPeriod())) {
 
                         /** Load the stock check if opened in edit mode. **/
                         bmodel.setEditStockCheck(false);

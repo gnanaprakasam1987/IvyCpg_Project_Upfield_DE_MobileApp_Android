@@ -8,11 +8,8 @@
         android:largeScreens="true"
         android:normalScreens="true"
         android:smallScreens="true"
-        android:xlargeScreens="false" />
-
-    <!-- *** Normal Permission *** -->
-    <uses-permission android:name="android.permission.INTERNET" />
-    <!-- *** Normal Permission *** -->
+        android:xlargeScreens="false" /> <!-- *** Normal Permission *** -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- *** Normal Permission *** -->
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -20,14 +17,10 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
-    <uses-permission android:name="android.permission.NFC" />
-
-    <!-- Phone Group -->
+    <uses-permission android:name="android.permission.NFC" /> <!-- Phone Group -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.READ_LOGS" />
-    <uses-permission android:name="android.permission.CALL_PHONE" />
-
-    <!-- Camera - used for photo capture -->
+    <uses-permission android:name="android.permission.CALL_PHONE" /> <!-- Camera - used for photo capture -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
@@ -41,34 +34,17 @@
         android:required="false" />
     <uses-feature
         android:name="android.hardware.camera.autofocus"
-        android:required="false" />
-
-    <!-- External Storage - Used to save the images/media files -->
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-
-    <!-- System setting - Used to enable automatic date and time -->
-    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
-
-    <!-- To get running apps -->
-    <uses-permission android:name="android.permission.GET_TASKS" />
-
-    <!-- Location Group -->
+        android:required="false" /> <!-- External Storage - Used to save the images/media files -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- System setting - Used to enable automatic date and time -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" /> <!-- To get running apps -->
+    <uses-permission android:name="android.permission.GET_TASKS" /> <!-- Location Group -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
-    <!-- Google Map - used for map in planning screen -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" /> <!-- Google Map - used for map in planning screen -->
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
-    <uses-permission android:name="com.ivy.sd.png.asean.view.permission.MAPS_RECEIVE" />
-
-    <!-- Allows using PowerManager WakeLocks to keep processor from sleeping -->
+    <uses-permission android:name="com.ivy.sd.png.asean.view.permission.MAPS_RECEIVE" /> <!-- Allows using PowerManager WakeLocks to keep processor from sleeping -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <!-- Contact Group -->
-    <!--
-<uses-permission android:name="android.permission.GET_ACCOUNTS"/>
-    <uses-permission android:name="android.permission.USE_CREDENTIALS"/>
-    -->
     <application
         android:name="com.ivy.sd.png.model.BusinessModel"
         android:allowBackup="false"
@@ -78,6 +54,8 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/MVPTheme.Blue">
+        <activity android:name="com.ivy.ui.task.view.TaskDetailActivity"></activity>
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -389,8 +367,7 @@
         <activity
             android:name="com.ivy.cpg.view.settings.UserSettingsActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/PreferencesTheme" />
-        <!-- android:theme="@android:style/Theme.NoTitleBar.Fullscreen" -->
+            android:theme="@style/PreferencesTheme" /> <!-- android:theme="@android:style/Theme.NoTitleBar.Fullscreen" -->
         <activity
             android:name="com.ivy.cpg.view.order.scheme.SchemeApply"
             android:screenOrientation="portrait" />
@@ -469,8 +446,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.sd.png.view.CaptureSignatureActivity"
-            android:screenOrientation="portrait" />
-        <!-- IvyRetail Integration Classes -->
+            android:screenOrientation="portrait" /> <!-- IvyRetail Integration Classes -->
         <activity
             android:name="com.ivy.cpg.view.jointcall.JoinCallActivity"
             android:screenOrientation="portrait" />
@@ -759,10 +735,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name="com.ivy.cpg.view.sfdc.SalesforceAuthenticateActivity"
-            android:label="@string/app_name" />
-
-        <!-- FCM Service Registration -->
-
+            android:label="@string/app_name" /> <!-- FCM Service Registration -->
         <service android:name="com.ivy.cpg.fcmnotification.CPGFirebaseMessagingService">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -775,7 +748,6 @@
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
-
         <!--
         Set custom default icon. This is used when no icon is set for
         incoming notification messages.
@@ -866,18 +838,18 @@
         <activity
             android:name="com.ivy.cpg.view.login.TermsAndConditionsActivity"
             android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.Planorama.PlanoramaActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.Planorama.NewVisitActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.Planorama.PlanoramaDetailActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name="com.ivy.cpg.view.Planorama.PlanoramaAnalysisActivty"
-            android:screenOrientation="portrait" />
+        <activity android:name="com.ivy.ui.task.view.TaskActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.ui.task.view.TaskCreationActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.Planorama.PlanoramaActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.Planorama.NewVisitActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.Planorama.PlanoramaDetailActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.Planorama.PlanoramaAnalysisActivty"
+            android:screenOrientation="portrait"/>
 
         <service
             android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"

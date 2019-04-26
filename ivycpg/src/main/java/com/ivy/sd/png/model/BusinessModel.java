@@ -923,7 +923,7 @@ public class BusinessModel extends Application {
             sb.append("SELECT distinct Inv.InvoiceNo, Inv.InvoiceDate, Round(invNetamount,2) as Inv_amt,");
             sb.append(" Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt,");
             sb.append(" Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os,");
-            sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue),inv.DocRefNo,inv.DueDays,inv.DueDate");
+            sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue),inv.DocRefNo,inv.DueDays,inv.DueDate,payment.Date");
             sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
             sb.append(" LEFT OUTER JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid");
             sb.append(" WHERE inv.Retailerid = ");
@@ -980,6 +980,7 @@ public class BusinessModel extends Application {
                     }
                     if (!configurationMasterHelper.COMPUTE_DUE_DAYS)
                         invocieHeaderBO.setDueDays(c.getString(10));
+                    invocieHeaderBO.setCollectionDate(c.getString(12));
                     invoiceHeader.add(invocieHeaderBO);
                 }
                 c.close();
@@ -1356,12 +1357,11 @@ public class BusinessModel extends Application {
             mRetailerBOByRetailerid = new HashMap<>();
             RetailerMasterBO retailer;
 
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
-            );
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.openDataBase();
 
-            configurationMasterHelper.loadRouteConfig();
-            downloadIndicativeOrderedRetailer();
+            configurationMasterHelper.loadRouteConfig(db);
+            downloadIndicativeOrderedRetailer(db);
 
             Cursor c = db
                     .selectSQL("SELECT DISTINCT A.RetailerID, A.RetailerCode, A.RetailerName, RBM.BeatID as beatid, A.creditlimit, A.tinnumber, A.TinExpDate, A.channelID,"
@@ -1602,12 +1602,12 @@ public class BusinessModel extends Application {
                     updateRetailerPriceGRP(retailer, db);
 
                     if (configurationMasterHelper.IS_HANGINGORDER) {
-                        OrderHelper.getInstance(getContext()).updateHangingOrder(getContext(), retailer);
+                        OrderHelper.getInstance(getContext()).updateHangingOrder(getContext(), retailer,db);
                     }
                     updateIndicativeOrderedRetailer(retailer);
 
                     if (configurationMasterHelper.isRetailerBOMEnabled) {
-                        setIsBOMAchieved(retailer);
+                        setIsBOMAchieved(retailer, db);
                     }
                     getRetailerMaster().add(retailer);
 
@@ -1623,7 +1623,7 @@ public class BusinessModel extends Application {
 
 
             if (configurationMasterHelper.SHOW_DATE_ROUTE) {
-                mRetailerHelper.updatePlannedDatesInRetailerObj();
+                mRetailerHelper.updatePlannedDatesInRetailerObj(db);
                 mRetailerHelper.getPlannedRetailerFromDate();
 
             } else {
@@ -1632,20 +1632,20 @@ public class BusinessModel extends Application {
             }
 
             if (configurationMasterHelper.SHOW_MISSED_RETAILER) {
-                mRetailerHelper.downloadMissedRetailer();
+                mRetailerHelper.downloadMissedRetailer(db);
             }
 
             setWeeknoFoNewRetailer();
 
-            CollectionHelper.getInstance(ctx).updateHasPaymentIssue();
+            CollectionHelper.getInstance(ctx).updateHasPaymentIssue(db);
 
             /********************************************/
 
             if (configurationMasterHelper.IS_DAY_WISE_RETAILER_WALKINGSEQ)
                 mRetailerHelper.updateWalkingSequenceDayWise(db);
 
-            updateCurrentFITscore();
-            updateRetailersTotWgt();
+            updateCurrentFITscore(db);
+            updateRetailersTotWgt(db);
 
             if (configurationMasterHelper.SUBD_RETAILER_SELECTION | configurationMasterHelper.IS_LOAD_ONLY_SUBD) {
 
@@ -1667,7 +1667,7 @@ public class BusinessModel extends Application {
 
             }
 
-            mRetailerHelper.downloadRetailerTarget("SV");
+            mRetailerHelper.downloadRetailerTarget("SV", db);
 
             db.closeDB();
 
@@ -1694,18 +1694,16 @@ public class BusinessModel extends Application {
                 if (c.moveToNext())
                     distId = c.getInt(0);
 
-                c.close();
             }
-
+            c.close();
 
             c = db.selectSQL("SELECT IFNULL(GroupId,0) From RetailerPriceGroup WHERE DistributorID=" + distId + " AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
             if (c != null
                     && c.getCount() > 0) {
                 if (c.moveToNext())
                     retObj.setGroupId(c.getInt(0));
-
-                c.close();
             }
+            c.close();
         } catch (Exception e) {
             Commons.printException("Exception ", e);
         }
@@ -1717,12 +1715,8 @@ public class BusinessModel extends Application {
      * @See
      * {@link com.ivy.core.data.retailer.RetailerDataManagerImpl#setIsBOMAchieved(RetailerMasterBO)}
      */
-    private void setIsBOMAchieved(RetailerMasterBO Retailer) {
-        DBUtil db = null;
+    private void setIsBOMAchieved(RetailerMasterBO Retailer, DBUtil db) {
         try {
-
-            db = new DBUtil(ctx, DataMembers.DB_NAME);
-            db.openDataBase();
             String sql = "";
             Cursor c = null;
 
@@ -1747,11 +1741,9 @@ public class BusinessModel extends Application {
                 }
             }
             c.close();
-            db.closeDB();
 
         } catch (Exception e) {
             e.printStackTrace();
-            db.closeDB();
         }
     }
 
@@ -2045,13 +2037,9 @@ public class BusinessModel extends Application {
      * @See {@link RetailerDataManagerImpl#fetchIndicativeRetailers()}
      * @deprecated
      */
-    public void downloadIndicativeOrderedRetailer() {
-        DBUtil db = null;
+    public void downloadIndicativeOrderedRetailer(DBUtil db) {
         indicativeRtrList = new ArrayList<IndicativeBO>();
         try {
-            db = new DBUtil(ctx, DataMembers.DB_NAME);
-            db.createDataBase();
-            db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select distinct io.rid ,case when io.rid!=ifnull(oh.retailerid,0) then 1 else 0 end as flag ");
             sb.append("from indicativeorder io left join orderHeader oh on  io.rid=oh.retailerid");
@@ -2065,7 +2053,6 @@ public class BusinessModel extends Application {
                 }
             }
             c.close();
-            db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -3661,6 +3648,17 @@ public class BusinessModel extends Application {
                 c.close();
             }
 
+            c = db.selectSQL("SELECT DISTINCT TaskImageName FROM TaskImageDetails");
+            if (c != null) {
+                while ((c.moveToNext())) {
+                    getDigitalContentURLS().put(
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                            DataMembers.TASK_DIGITAL_CONTENT);
+
+                }
+                c.close();
+            }
+
             db.closeDB();
 
             getDigitalContentURLS().put(
@@ -4322,6 +4320,8 @@ public class BusinessModel extends Application {
                 mBucketName = mBucketDetails + "/" + "SalesReturn" + path;
             } else if (imageName.startsWith("ORD_")) {
                 mBucketName = mBucketDetails + "/" + "Order" + path;
+            } else if (imageName.startsWith("TSK_")) {
+                mBucketName = mBucketDetails + "/" + "Task" + path;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = mBucketDetails + "/" + "PhotoCapture" + path;
@@ -5038,10 +5038,8 @@ public class BusinessModel extends Application {
 
     }
 
-    public void updateCurrentFITscore() {
+    public void updateCurrentFITscore(DBUtil db) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
-            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select  AH.retailerid,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD " +
@@ -5059,7 +5057,6 @@ public class BusinessModel extends Application {
                 }
             }
             c.close();
-            db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -7389,10 +7386,8 @@ public class BusinessModel extends Application {
         return "";
     }
 
-    public void updateRetailersTotWgt() {
+    public void updateRetailersTotWgt(DBUtil db) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
-            db.openDataBase();
             Cursor c = db.selectSQL("select pieceqty,caseQty,outerQty,uomcount,dOuomQty,weight,retailerid from OrderDetail");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -7408,7 +7403,6 @@ public class BusinessModel extends Application {
 
             }
             c.close();
-            db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
         }

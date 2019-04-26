@@ -129,7 +129,7 @@ public class OutletTaskReportFragment extends IvyBaseFragment {
             loadAll();
 
             ArrayList<TaskDataBO> strings = new ArrayList<>();
-            strings.add(new TaskDataBO(0, getActivity().getResources().getString(R.string.all)));
+            strings.add(new TaskDataBO(0, getActivity().getResources().getString(R.string.all),0));
 
             //Load the Spinner element with retailer name
             strings.addAll(TaskReportHelper.getInstance(getContext()).loadTaskReportRetailerList());
