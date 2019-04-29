@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.ivy.calendarlibrary.monthview.MonthView;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.CalenderBO;
+import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.utils.DateTimeUtils;
 
@@ -70,8 +70,8 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
         int count = 1;
         for (int i = 0; i < mItems.size(); i++) {
             if (i % 8 == 0 && count <= rows) {
-                mItems.add(i, "wk" + count);
-                mItems1.add(i, "wk" + count);
+                mItems.add(i, "" + count);
+                mItems1.add(i, "" + count);
                 count++;
             }
         }
@@ -93,8 +93,8 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.month_item_calender, parent, false);
             viewHolder = new MonthViewHolder(view);
         }
-        int height = parent.getMeasuredHeight() / 5;
-        view.setMinimumHeight(height);
+        // int height = parent.getMeasuredHeight() / 6;
+        //view.setMinimumHeight(height);
         return viewHolder;
     }
 
@@ -148,19 +148,23 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
 
                 if (holder.calBO.isToday()) {
                     holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.white));
-                    holder.TVDate.setBackground(mContext.getResources().getDrawable(R.drawable.circle_blockbg));
-                } else
+                    holder.TVDate.setBackground(mContext.getResources().getDrawable(R.drawable.circle_blue_bg));
+                } else if (holder.calBO.isSelected()) {
                     holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.FullBlack));
+                    holder.TVDate.setBackground(mContext.getResources().getDrawable(R.drawable.circle_calendar_select));
+                } else {
+                    holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.FullBlack));
+                    holder.TVDate.setBackgroundColor(mContext.getResources().getColor(R.color.zxing_transparent));
+                }
 
             }
 
-            holder.rlItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (holder.calBO != null)
-                        calendarClickListner.onDateSelected(holder.calBO.getCal_date());
-
+            holder.rlItem.setOnClickListener(v -> {
+                if (holder.calBO != null) {
+                    refreshGrid(holder.calBO.getCal_date());
+                    calendarClickListner.onDateSelected(holder.calBO.getCal_date());
                 }
+
             });
         }
 
@@ -186,7 +190,7 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
     class WeekViewHolder extends RecyclerView.ViewHolder {
         TextView TvWeekNo;
 
-        public WeekViewHolder(View itemView) {
+        WeekViewHolder(View itemView) {
             super(itemView);
 
             TvWeekNo = itemView.findViewById(R.id.tv_weekno);
@@ -227,7 +231,17 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public int getItemViewType(int position) {
-
         return position % 8;
+    }
+
+    private void refreshGrid(String dateSelected) {
+
+        for (CalenderBO calenderBO : mCalenderAllList)
+            calenderBO.setSelected(false);
+        for (CalenderBO calenderBO : mCalenderAllList)
+            if (dateSelected.equalsIgnoreCase(calenderBO.getCal_date()))
+                calenderBO.setSelected(true);
+
+        notifyDataSetChanged();
     }
 }

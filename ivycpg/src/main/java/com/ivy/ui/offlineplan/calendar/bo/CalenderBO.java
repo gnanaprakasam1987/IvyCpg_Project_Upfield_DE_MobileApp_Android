@@ -1,8 +1,11 @@
-package com.ivy.sd.png.bo;
+package com.ivy.ui.offlineplan.calendar.bo;
 
 /**
  * Created by nagaganesh.n on 8/4/2016.
  */
+
+import com.ivy.sd.png.bo.BeatMasterBO;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +19,8 @@ public class CalenderBO {
     private List<BeatMasterBO> beatMasterBOArrayList =new ArrayList<>();
     private RetailerMasterBO retailerMasterBO;
     private boolean isToday;
+    private boolean isSelected;
+    private String weekDate;
 
     public CalenderBO() {
 
@@ -81,6 +86,22 @@ public class CalenderBO {
 
     public void setToday(boolean today) {
         isToday = today;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public String getWeekDate() {
+        return weekDate;
+    }
+
+    public void setWeekDate(String weekDate) {
+        this.weekDate = weekDate;
     }
 }
 

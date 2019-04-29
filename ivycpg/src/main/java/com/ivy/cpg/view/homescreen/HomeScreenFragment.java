@@ -105,11 +105,10 @@ import com.ivy.sd.png.view.NewoutletContainerFragment;
 import com.ivy.sd.png.view.PlanDeviationFragment;
 import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
+import com.ivy.ui.offlineplan.calendar.view.CalendarPlanFragment;
+import com.ivy.ui.retailer.view.map.RetailerMapFragment;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.view.TaskFragment;
-import com.ivy.ui.retailer.view.map.RetailerMapFragment;
-import com.ivy.utils.AppUtils;
-import com.ivy.ui.offlineplan.calendar.view.OfflinePlanFragment;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
@@ -1740,7 +1739,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         DenominationFragment denominationFragment = (DenominationFragment) fm.findFragmentByTag(MENU_DENOMINATION);
 
-        OfflinePlanFragment offlinePlanFragment = (OfflinePlanFragment) fm.findFragmentByTag(MENU_OFLNE_PLAN);
+        CalendarPlanFragment calendarPlanFragment = (CalendarPlanFragment) fm.findFragmentByTag(MENU_OFLNE_PLAN);
 
         RetailerMapFragment retailerMapFragment = (RetailerMapFragment) fm.findFragmentByTag(MENU_MAP_PLAN);
 
@@ -1865,8 +1864,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (denominationFragment != null && (fragmentName.equals(MENU_DENOMINATION))
                 && denominationFragment.isVisible()) {
             return;
-        } else if (offlinePlanFragment != null && (fragmentName.equals(MENU_OFLNE_PLAN))
-                && offlinePlanFragment.isVisible()) {
+        } else if (calendarPlanFragment != null && (fragmentName.equals(MENU_OFLNE_PLAN))
+                && calendarPlanFragment.isVisible()) {
             return;
         } else if (retailerMapFragment != null && (fragmentName.equals(MENU_MAP_PLAN))
                 && retailerMapFragment.isVisible()) {
@@ -1952,8 +1951,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(mQuickCallFragment);
         if (denominationFragment != null)
             ft.remove(denominationFragment);
-        if (offlinePlanFragment != null)
-            ft.remove(offlinePlanFragment);
+        if (calendarPlanFragment != null)
+            ft.remove(calendarPlanFragment);
         if (retailerMapFragment != null)
             ft.remove(retailerMapFragment);
 
@@ -2341,7 +2340,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case MENU_OFLNE_PLAN:
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
-                fragment = new OfflinePlanFragment();
+                fragment = new CalendarPlanFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_OFLNE_PLAN);

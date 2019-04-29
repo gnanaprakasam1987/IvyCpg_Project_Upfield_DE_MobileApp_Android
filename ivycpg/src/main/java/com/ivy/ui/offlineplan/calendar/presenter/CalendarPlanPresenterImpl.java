@@ -5,12 +5,12 @@ import android.text.format.DateUtils;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.CalenderBO;
+import com.ivy.ui.offlineplan.calendar.CalendarPlanContract;
+import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.ui.offlineplan.calendar.OfflinePlanContract;
-import com.ivy.ui.offlineplan.calendar.data.OfflinePlanDataManager;
+import com.ivy.ui.offlineplan.calendar.data.CalendarPlanDataManager;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.rx.SchedulerProvider;
 
@@ -27,24 +27,24 @@ import io.reactivex.disposables.CompositeDisposable;
 /**
  * Created by mansoor on 27/03/2019
  */
-public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanView>
-        extends BasePresenter<V> implements OfflinePlanContract.OfflinePlanPresenter<V> {
+public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPlanView> extends BasePresenter<V> implements CalendarPlanContract.CalendarPlanPresenter<V> {
 
-    private OfflinePlanDataManager offlinePlanDataManager;
+    private CalendarPlanDataManager calendarPlanDataManager;
     private String planFromDate, planToDate;
     private ArrayList<String> mAllowedDates;
     private String generalPattern = "yyyy/MM/dd";
-    private Calendar currentMonth = Calendar.getInstance();
+    private Calendar currentMonth;
+    private String mSelectedDate;
 
     @Inject
-    OfflinePlanPresenterImpl(DataManager dataManager,
-                             SchedulerProvider schedulerProvider,
-                             CompositeDisposable compositeDisposable,
-                             ConfigurationMasterHelper configurationMasterHelper,
-                             V view,
-                             OfflinePlanDataManager offlinePlanDataManager) {
+    CalendarPlanPresenterImpl(DataManager dataManager,
+                              SchedulerProvider schedulerProvider,
+                              CompositeDisposable compositeDisposable,
+                              ConfigurationMasterHelper configurationMasterHelper,
+                              V view,
+                              CalendarPlanDataManager calendarPlanDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
-        this.offlinePlanDataManager = offlinePlanDataManager;
+        this.calendarPlanDataManager = calendarPlanDataManager;
     }
 
     /*
@@ -52,19 +52,24 @@ public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanV
      */
     @Override
     public void setPlanDates() {
+        currentMonth = Calendar.getInstance();
+        setSelectedDate(DateTimeUtils.convertDateObjectToRequestedFormat(currentMonth.getTime(), generalPattern));
+
         Calendar aCalendar = Calendar.getInstance();
-        aCalendar.add(Calendar.MONTH, -2);
+        aCalendar.add(Calendar.MONTH, -1);
         aCalendar.set(Calendar.DATE, 1);
         planFromDate = DateTimeUtils.convertDateObjectToRequestedFormat(aCalendar.getTime(), generalPattern);
         Commons.print("planFromDate" + planFromDate);
 
         Calendar zCalendar = Calendar.getInstance();
-        zCalendar.add(Calendar.MONTH, 5);
+        zCalendar.add(Calendar.MONTH, 1);
         zCalendar.set(Calendar.DATE, zCalendar.getActualMaximum(Calendar.DAY_OF_MONTH));
         planToDate = DateTimeUtils.convertDateObjectToRequestedFormat(zCalendar.getTime(), generalPattern);
         Commons.print("planFromDate" + planToDate);
 
         setAllowedDates();
+
+
     }
 
     private void setAllowedDates() {
@@ -84,12 +89,12 @@ public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanV
     @Override
     public void loadCalendar() {
         ArrayList<CalenderBO> mCalenderAllList;
-        String[] calendarDate = getDateRange();
+        String[] calendarDate = getMonthRange();
         int dayInWeekCount = getWeekDayCount(calendarDate[0]);
         mCalenderAllList = getDaysBetweenDates(calendarDate[0], calendarDate[1]);
         getIvyView().loadCalendarView(mAllowedDates, dayInWeekCount, mCalenderAllList);
         getIvyView().setMonthName(DateTimeUtils.convertDateObjectToRequestedFormat(
-                currentMonth.getTime(),"MMMM yyyy"));
+                currentMonth.getTime(), "MMM yyyy"));
 
     }
 
@@ -138,7 +143,39 @@ public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanV
 
     }
 
-    private String[] getDateRange() {
+    @Override
+    public void setSelectedDate(String selectedDate) {
+        mSelectedDate = selectedDate;
+        currentMonth.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
+    }
+
+    private void calculateDayOfWeek() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
+        currentMonth.set(Calendar.DAY_OF_WEEK, calendar.get(Calendar.DAY_OF_WEEK));
+        setSelectedDate(DateTimeUtils.convertDateObjectToRequestedFormat(currentMonth.getTime(), generalPattern));
+    }
+
+    @Override
+    public void loadADay() {
+        Calendar date = Calendar.getInstance();
+        date.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
+
+        getIvyView().loadDayView(date);
+
+    }
+
+    @Override
+    public void loadAWeek() {
+        Calendar date = Calendar.getInstance();
+        date.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
+       date.setFirstDayOfWeek(Calendar.MONDAY);
+       date.set(Calendar.DAY_OF_WEEK, date.getFirstDayOfWeek());
+        getIvyView().loadWeekView(date);
+    }
+
+
+    private String[] getMonthRange() {
         Date beginning, end;
         String[] dates = new String[5];
 
@@ -197,7 +234,7 @@ public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanV
     }
 
     private ArrayList<CalenderBO> getDaysBetweenDates(String startDate, String endDate) {
-        ArrayList<CalenderBO> cal = new ArrayList<>();
+        ArrayList<CalenderBO> calLsit = new ArrayList<>();
         Date startdate = DateTimeUtils.convertStringToDateObject(startDate, generalPattern);
         Date enddate;
         enddate = addDateNew(endDate);
@@ -205,9 +242,8 @@ public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanV
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startdate);
 
-        CalenderBO cBO;
         while (calendar.getTime().before(enddate)) {
-            cBO = new CalenderBO();
+            CalenderBO cBO = new CalenderBO();
             Date result = calendar.getTime();
             SimpleDateFormat df1 = new SimpleDateFormat("dd", Locale.US);
             int d = SDUtil.convertToInt(df1.format(result));
@@ -217,21 +253,20 @@ public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanV
             cBO.setCal_date(DateTimeUtils.convertDateObjectToRequestedFormat(result, generalPattern));
             cBO.setDay(goal);
             cBO.setDate(d);
-            cal.add(cBO);
             cBO.setToday(DateUtils.isToday(result.getTime()));
+            cBO.setSelected(mSelectedDate.equalsIgnoreCase(cBO.getCal_date()));
+            calLsit.add(cBO);
+
         }
-        return cal;
+        return calLsit;
     }
 
 
     private Date addDateNew(String dateOne) {
-        Date date1 = DateTimeUtils.convertStringToDateObject(dateOne, generalPattern);
-        System.out.println(DateTimeUtils.convertDateObjectToRequestedFormat(date1, generalPattern));
         Calendar cal = Calendar.getInstance();
-        cal.setTime(date1);
+        cal.setTime(DateTimeUtils.convertStringToDateObject(dateOne, generalPattern));
         cal.add(Calendar.DAY_OF_MONTH, 1); // add 28 days
-        date1 = cal.getTime();
-        return date1;
+        return cal.getTime();
     }
 
 }

@@ -2,18 +2,18 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/rl_date"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
+    android:layout_height="@dimen/dimens_120dp"
+    android:background="@drawable/rectangle_transparent"
     android:orientation="vertical"
     android:padding="@dimen/dimen_2dp">
 
     <TextView
         android:id="@+id/tv_date"
         style="@style/TextViewListItemPrimary"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
         android:layout_width="@dimen/dimen_40dp"
         android:layout_height="@dimen/dimen_40dp"
-        android:layout_centerInParent="true"
-        android:gravity="center"
         android:padding="@dimen/dimen_2dp"/>
 
     <TextView

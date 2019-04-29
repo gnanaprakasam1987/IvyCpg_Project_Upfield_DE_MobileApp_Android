@@ -1,8 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ivy.ui.offlineplan.calendar.view.OfflinePlanFragment">
+    tools:context="com.ivy.ui.offlineplan.calendar.view.CalendarPlanFragment">
 
     <RelativeLayout
         android:id="@+id/llMonthHeader"
@@ -21,6 +22,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:contentDescription="@null"
+            android:focusable="true"
             android:padding="@dimen/dimen_5dp"
             android:src="@drawable/ic_chevron_left_black_24dp"
             android:tint="@color/white" />
@@ -34,6 +36,7 @@
             android:background="?attr/selectableItemBackgroundBorderless"
             android:clickable="true"
             android:contentDescription="@null"
+            android:focusable="true"
             android:padding="@dimen/dimen_5dp"
             android:src="@drawable/ic_chevron_right_black_24dp"
             android:tint="@color/white" />
@@ -43,25 +46,25 @@
             style="@style/TextViewNormal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/roboto_medium"
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/img_next"
             android:layout_toRightOf="@+id/img_next"
+            android:fontFamily="@font/roboto_medium"
             android:text="@string/text_current_month"
             android:textColor="@color/white" />
 
         <Button
             android:id="@+id/btn_switch"
             style="@style/ButtonSmallRoundCornerGrey"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:minWidth="@dimen/week_button_width"
-            android:fontFamily="@font/roboto_medium"
-            android:layout_margin="@dimen/button_padding"
-            android:textColor="@color/half_Black"
-            android:text="@string/month" />
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/card_margin"
+            android:fontFamily="@font/roboto_light"
+            android:gravity="center"
+            android:text="@string/month"
+            android:textAllCaps="false"
+            android:textColor="@color/half_Black" />
 
 
     </RelativeLayout>
@@ -69,9 +72,10 @@
     <LinearLayout
         android:id="@+id/ll_titleList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/dimen_30dp"
         android:layout_below="@+id/llMonthHeader"
         android:layout_gravity="center"
+        android:background="@color/user_hierarchy_bg_border"
         android:gravity="center"
         android:orientation="horizontal"
         android:padding="@dimen/dimen_4dp">
@@ -83,7 +87,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/week"
+            android:text="wk"
             android:textAllCaps="true"
             android:textColor="@color/black_bg1" />
 
@@ -169,15 +173,34 @@
         android:id="@+id/rv_calendar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/ll_titleList"/>
+        android:layout_below="@+id/ll_titleList" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_week"
+
+    <com.alamkanak.weekview.WeekView
+        android:id="@+id/week_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/llMonthHeader"
         android:visibility="gone"
-        android:layout_below="@+id/ll_titleList">
+        app:columnGap="8dp"
+        app:eventTextColor="@android:color/white"
+        app:headerColumnPadding="8dp"
+        app:headerColumnTextColor="@color/black_bg1"
+        app:headerRowBackgroundColor="?attr/primarycolor"
+        app:headerRowPadding="12dp"
+        app:hourHeight="60dp"
+        app:textSize="@dimen/list_header_text_size" />
 
-    </android.support.v7.widget.RecyclerView>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_retailer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/footer_margin_top"
+        android:layout_marginRight="@dimen/footer_margin_top"
+        android:layout_marginBottom="@dimen/footer_margin_top"
+        android:src="@drawable/ic_plus" />
 
 </RelativeLayout>

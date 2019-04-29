@@ -41,9 +41,8 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 import com.ivy.ui.offlineplan.addplan.view.AddPlanDialogFragment;
-import com.ivy.ui.offlineplan.calendar.view.OfflinePlanFragment;
+import com.ivy.ui.offlineplan.calendar.view.CalendarPlanFragment;
 import com.ivy.ui.retailer.RetailerContract;
 import com.ivy.ui.retailer.di.DaggerRetailerComponent;
 import com.ivy.ui.retailer.di.RetailerModule;
@@ -145,8 +144,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     }
 
     @Override
-    public void initVariables(View view) {
-
+    public void init(View view) {
         setHasOptionsMenu(true);
 
         ActionBar actionBar = ((AppCompatActivity) context).getSupportActionBar();
@@ -179,9 +177,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         walkDirBtn.setOnClickListener(directionWalkListener);
 
         carDirBtn.setOnClickListener(directionCarListener);
-
     }
-
 
     private View.OnClickListener directionWalkListener = new View.OnClickListener() {
         @Override
@@ -706,7 +702,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             FragmentManager fm = ((FragmentActivity)context).getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
 
-            OfflinePlanFragment fragment = new OfflinePlanFragment();
+            CalendarPlanFragment fragment = new CalendarPlanFragment();
             ft.replace(R.id.fragment_content, fragment,MENU_MAP_PLAN);
             ft.commit();
 
