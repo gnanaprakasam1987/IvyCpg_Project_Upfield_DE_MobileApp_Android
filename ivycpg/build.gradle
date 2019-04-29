@@ -66,6 +66,8 @@ android {
         // if true, only report errors
         ignoreWarnings true
 
+        baseline file("lint-baseline.xml")
+
     }
     signingConfigs {
         release {
@@ -224,83 +226,124 @@ static def getLayoutList(path) {
 }
 
 dependencies {
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+
+    implementation project(':ivylibrary')
+
+    implementation project(':calendarlibrary')
+
+    //Networking
+    implementation 'com.android.volley:volley:1.1.0'
+
+    // Excel Generator
+    implementation files('libs/jxl.jar')
+
+    // Printer Library
+    implementation files('libs/ZSDK_ANDROID_API.jar')
     implementation files('libs/BixolonPrinter.jar')
     implementation files('libs/tls.jar')
-    implementation 'com.android.volley:volley:1.1.0'
-    implementation files('libs/jxl.jar')
-    implementation files('libs/ZSDK_ANDROID_API.jar')
+    implementation files('libs/AEM_SCRYBE_SEP_2014.jar')
+    // Printer Library - Common Bluetooth
+    implementation files('libs/deviceutility.jar')
+
+    //BCrypt Password encryption
+    implementation files('libs/jbcrypt-0.3.jar')
+
+    // Baidu Maps
     implementation files('libs/baidumapapi_base_v3_6_1.jar')
     implementation files('libs/baidumapapi_map_v3_6_1.jar')
     implementation files('libs/baidumapapi_search_v3_6_1.jar')
-    implementation files('libs/aws-android-sdk-core-2.6.15.jar')
-    implementation files('libs/aws-android-sdk-s3-2.6.15.jar')
-    implementation files('libs/jbcrypt-0.3.jar')
-    implementation files('libs/AEM_SCRYBE_SEP_2014.jar')
+
+    // Email library
     implementation files('libs/activation.jar')
-    implementation files('libs/additionnal.jar')
     implementation files('libs/javax.mail-1.4.7.jar')
-    implementation project(':ivylibrary')
-    implementation project(':calendarlibrary')
-    implementation 'com.android.support:multidex:1.0.3'
+
+    // Support Library
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:cardview-v7:26.1.0'
     implementation 'com.android.support:palette-v7:26.1.0'
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.android.support:recyclerview-v7:26.1.0'
-    //noinspection GradleCompatible
+    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation 'com.android.support:multidex:1.0.3'
+
+    //Google Play service and maps
     implementation 'com.google.android.gms:play-services-maps:15.0.1'
-    //    implementation 'com.google.android.gms:play-services-gcm:15.0.1'
-    implementation 'com.google.firebase:firebase-messaging:17.3.0'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.google.maps.android:android-maps-utils:0.4.4'
+
+    // Firebase Library
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
+    implementation 'com.google.firebase:firebase-messaging:17.3.0'
     implementation 'com.google.firebase:firebase-database:15.0.1'
     implementation 'com.google.firebase:firebase-auth:15.1.0'
     implementation 'com.google.firebase:firebase-firestore:17.0.2'
-    implementation 'com.google.android.gms:play-services-location:15.0.1'
+
+    // Image processing
     implementation 'com.github.bumptech.glide:glide:3.7.0'
+    // Barcode reading
     implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
+
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
     implementation 'me.relex:circleindicator:1.2.2@aar'
-    implementation 'com.google.maps.android:android-maps-utils:0.4.4'
     implementation 'com.itextpdf:itextg:5.5.10'
+    implementation 'com.mindorks.android:prdownloader:0.4.0'
+    implementation 'com.elyeproj.libraries:loaderviewlibrary:1.5.0'
+
     implementation('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
         transitive = true;
     }
-    implementation files('libs/deviceutility.jar')
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-    androidTestImplementation 'com.android.support.test:runner:1.0.2'
-    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+
+    // Butter Knife
     implementation 'com.jakewharton:butterknife:8.8.1'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
+
+    // Dragger
     implementation 'com.google.dagger:dagger:2.13'
     annotationProcessor "com.google.dagger:dagger-compiler:2.13"
     implementation 'com.android.support:support-annotations:27.1.1'
+
+    // Leak Canary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.4'
-    // reactive
+
+    // RxJava
     implementation "io.reactivex.rxjava2:rxjava:$rootProject.rxjava2Version"
     implementation "io.reactivex.rxjava2:rxandroid:$rootProject.rxandroidVersion"
+
+    // Event Bus
     implementation "org.greenrobot:eventbus:$rootProject.eventBusVersion"
+
     //Chat-Sdk
     implementation 'co.chatsdk.chatsdk:chat-sdk-core:4.1.36'
     implementation 'co.chatsdk.chatsdk:chat-sdk-ui:4.1.36'
     implementation 'co.chatsdk.chatsdk:chat-sdk-firebase-adapter:4.1.29'
     implementation 'co.chatsdk.chatsdk:chat-sdk-firebase-file-storage:4.1.26'
     implementation 'co.chatsdk.chatsdk:chat-sdk-firebase-push:4.1.36'
+
     // dependencies for local unit tests
     testImplementation "junit:junit:$rootProject.ext.junitVersion"
     testImplementation "org.mockito:mockito-core:$rootProject.mockitoVersion"
     testImplementation "org.hamcrest:hamcrest-all:$rootProject.hamcrestVersion"
     testAnnotationProcessor "com.google.dagger:dagger-compiler:$rootProject.dagger2Version"
     testImplementation 'org.json:json:20140107'
-    testCompile 'org.powermock:powermock-api-mockito2:1.7.0RC2'
-    testCompile 'org.powermock:powermock-module-junit4:1.7.0'
-    testCompile 'org.powermock:powermock-core:1.7.0'
-    testCompile 'org.powermock:powermock-module-junit4-rule:1.7.0'
+    testImplementation 'org.powermock:powermock-api-mockito2:1.7.0RC2'
+    testImplementation 'org.powermock:powermock-module-junit4:1.7.0'
+    testImplementation 'org.powermock:powermock-core:1.7.0'
+    testImplementation 'org.powermock:powermock-module-junit4-rule:1.7.0'
+
+    // Unit Test Frameworks
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test:rules:1.0.2'
+
+    //SFDC SDK
     sfdcImplementation 'com.salesforce.mobilesdk:SmartSync:5.0.0'
-    implementation 'com.mindorks.android:prdownloader:0.4.0'
-    implementation 'com.elyeproj.libraries:loaderviewlibrary:1.5.0'
+
+    // Amazon S3
+    implementation files('libs/aws-android-sdk-core-2.6.15.jar')
+    implementation files('libs/aws-android-sdk-s3-2.6.15.jar')
+
     // Microsoft Azure Storage
     implementation 'com.microsoft.azure.android:azure-storage-android:0.8.0@aar'
 }

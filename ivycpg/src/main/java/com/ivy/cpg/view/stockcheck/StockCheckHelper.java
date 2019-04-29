@@ -61,6 +61,11 @@ public class StockCheckHelper {
     public boolean SHOW_STOCK_NEAREXPIRY_OU;
     public boolean SHOW_PRICE_CHANGED;
 
+    public boolean SHOW_STOCK_PRICE_TAG_AVAIL;
+    public boolean SHOW_STOCK_LOCATION_FILTER;
+    public boolean SHOW_COMB_STOCK_PRICE_TAG_AVAIL;
+    public boolean SHOW_COMB_LOCATION_FILTER;
+
 
     private StockCheckHelper(Context context) {
         this.bmodel = (BusinessModel) context.getApplicationContext();
@@ -85,7 +90,9 @@ public class StockCheckHelper {
         SHOW_STOCK_FC = false;
         CHANGE_AVAL_FLOW = false;
         SHOW_STOCK_AVGDAYS = false;
-        SHOW_STOCK_BARCODE=false;
+        SHOW_STOCK_BARCODE = false;
+        SHOW_STOCK_PRICE_TAG_AVAIL = false;
+        SHOW_STOCK_LOCATION_FILTER = false;
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
         );
@@ -148,6 +155,12 @@ public class StockCheckHelper {
                     case "BARCODE":
                         SHOW_STOCK_BARCODE = true;
                         break;
+                    case "PT":
+                        SHOW_STOCK_PRICE_TAG_AVAIL = true;
+                        break;
+                    case "LOC":
+                        SHOW_STOCK_LOCATION_FILTER = true;
+                        break;
 
 
                 }
@@ -172,6 +185,8 @@ public class StockCheckHelper {
         SHOW_STOCK_PRICECHECK_MRP_CS = false;
         SHOW_STOCK_PRICECHECK_MRP_OU = false;
         SHOW_PRICE_CHANGED = false;
+        SHOW_COMB_STOCK_PRICE_TAG_AVAIL = false;
+        SHOW_COMB_LOCATION_FILTER = false;
 
         SHOW_STOCK_NEAREXPIRY_PCS = false;
         SHOW_STOCK_NEAREXPIRY_CB = false;
@@ -267,6 +282,10 @@ public class StockCheckHelper {
                         SHOW_STOCK_PRICECHECK_MRP_OU = true;
                     else if (temp.equals("MCS"))
                         SHOW_STOCK_PRICECHECK_MRP_CS = true;
+                    else if (temp.equals("PT"))
+                        SHOW_COMB_STOCK_PRICE_TAG_AVAIL = true;
+                    else if (temp.equals("LOC"))
+                        SHOW_COMB_LOCATION_FILTER = true;
                 }
             }
         } // if scheme is on disable product wise discount
@@ -669,7 +688,7 @@ public class StockCheckHelper {
             // ClosingStock Detail entry
 
             columns = "StockID,Date,ProductID,uomqty,retailerid,uomid,msqqty,Qty,ouomid,ouomqty,"
-                    + " Shelfpqty,Shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,isAuditDone,Facing,IsOwn,PcsUOMId,RField1,RField2,RField3,isAvailable";
+                    + " Shelfpqty,Shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,isAuditDone,Facing,IsOwn,PcsUOMId,RField1,RField2,RField3,isAvailable,hasPriceTag";
 
             if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
                 columns = columns + ",Score";
@@ -755,7 +774,8 @@ public class StockCheckHelper {
                                 + "," + rField1
                                 + "," + rField2
                                 + "," + rField3
-                                + "," + availability;
+                                + "," + availability
+                                + "," + product.getLocations().get(j).getPriceTagAvailability();
 
 
                         if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED) {

@@ -22,6 +22,8 @@ import com.ivy.core.data.label.LabelsDataManager;
 import com.ivy.core.data.label.LabelsDataManagerImpl;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl;
+import com.ivy.core.data.reason.ReasonDataManager;
+import com.ivy.core.data.reason.ReasonDataManagerImpl;
 import com.ivy.core.data.retailer.RetailerDataManager;
 import com.ivy.core.data.retailer.RetailerDataManagerImpl;
 import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
@@ -36,6 +38,7 @@ import com.ivy.core.di.scope.DistributorInfo;
 import com.ivy.core.di.scope.LabelMasterInfo;
 import com.ivy.core.di.scope.OutletTimeStampInfo;
 import com.ivy.core.di.scope.PreferenceInfo;
+import com.ivy.core.di.scope.ReasonInfo;
 import com.ivy.core.di.scope.RetailerInfo;
 import com.ivy.core.di.scope.UserInfo;
 import com.ivy.lib.existing.DBUtil;
@@ -214,5 +217,11 @@ public class IvyAppModule {
     @ChannelInfo
     ChannelDataManager providesChannelDataManager(ChannelDataManagerImpl channelDataManager) {
         return channelDataManager;
+    }
+
+    @Provides
+    @ReasonInfo
+    ReasonDataManager provideReasonDataManager(ReasonDataManagerImpl reasonDataManager) {
+        return reasonDataManager;
     }
 }

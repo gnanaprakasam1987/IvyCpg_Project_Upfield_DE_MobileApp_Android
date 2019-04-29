@@ -19,6 +19,7 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FileUtils;
+import com.ivy.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -587,5 +588,22 @@ public class OutletTimeStampHelper {
         }
         return batteryPercentage;
 
+    }
+
+    public void updateRetailerDeviationTimeStamp() {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+            db.createDataBase();
+            db.openDataBase();
+            String query = "UPDATE RetailerLocationDeviation SET OutletTimeStampID = " + getUid()
+                    + " WHERE RetailerID = '"
+                    + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
+                    + "' and Date="
+                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            db.updateSQL(query);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
     }
 }

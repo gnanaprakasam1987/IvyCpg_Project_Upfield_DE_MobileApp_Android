@@ -1,117 +1,154 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<com.ivy.ui.task.view.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:minHeight="@dimen/list_card_height"
+    app:dragEdge="right">
 
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/layoutBorder"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-            android:id="@+id/layoutCB"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginStart="@dimen/dimens_10dp"
-            android:layout_marginLeft="@dimen/dimens_10dp"
-            android:layout_marginEnd="@dimen/dimens_10dp"
-            android:layout_marginRight="@dimen/dimens_10dp"
-            android:padding="@dimen/dimen_10dp">
+            android:layout_gravity="center_horizontal|end"
+            android:gravity="center"
+            android:minHeight="@dimen/list_card_height"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent">
 
-            <CheckBox
-                android:id="@+id/task_title_CB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="" />
-        </RelativeLayout>
+            <Button
+                android:id="@+id/edit_button"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="match_parent"
+                android:background="?attr/colorPrimaryDark"
+                android:drawableTop="@drawable/task_edit"
+                android:fontFamily="@font/roboto_medium"
+                android:gravity="center_vertical"
+                android:padding="@dimen/_14sdp"
+                android:text="@string/edit"
+                android:textAlignment="center"
+                android:clickable="true"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_secondary"
+                android:focusable="true" />
 
-        <RelativeLayout
+
+            <Button
+                android:id="@+id/delete_button"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/sdkOrange"
+                android:drawableTop="@drawable/ic_delete_white_24dp"
+                android:fontFamily="@font/roboto_medium"
+                android:gravity="center_vertical"
+                android:padding="@dimen/_14sdp"
+                android:text="@string/delete"
+                android:textAlignment="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_secondary" />
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_card"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/layoutBorder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_toEndOf="@+id/layoutCB"
-            android:layout_toRightOf="@+id/layoutCB"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/dimens_10dp"
-            android:paddingRight="@dimen/dimens_10dp"
-            android:paddingBottom="@dimen/dimen_10dp"
-            android:paddingEnd="@dimen/dimens_10dp">
-
-            <TextView
-                android:id="@+id/task_title_tv"
-                style="@style/TextViewListItemPrimary"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:gravity="center_vertical"
-                android:text="@string/dummy_txt"
-                android:textSize="17sp" />
-
-            <TextView
-                android:id="@+id/task_description_tv"
-                style="@style/TextViewListItemSecondaryHighlight"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/task_title_tv"
-                android:text="@string/dummy_txt" />
+            android:baselineAligned="false"
+            android:minHeight="@dimen/list_card_height"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/list_padding_left_n_right"
+            android:paddingTop="@dimen/target_top_margin"
+            android:paddingEnd="@dimen/list_padding_left_n_right"
+            android:paddingBottom="@dimen/target_top_margin"
+            tools:ignore="UselessParent">
 
 
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/task_description_tv"
-                android:layout_gravity="start|center"
-                android:gravity="start|center"
-                android:orientation="horizontal">
+                android:layout_gravity="center"
+                android:layout_weight="6"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/task_createdOn"
-                    style="@style/TextViewListItemCaption"
+                    android:id="@+id/task_title_tv"
+                    style="@style/TextViewListItemPrimary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:text="@string/dummy_txt"
-                    android:textStyle="italic" />
+                    android:textSize="17sp" />
 
                 <TextView
-                    android:id="@+id/task_taskowner_label"
-                    style="@style/TextViewListItemCaption"
+                    android:id="@+id/task_category_tv"
+                    style="@style/TextViewListItemSecondaryHighlight"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@+id/task_createdOn"
-                    android:layout_toRightOf="@+id/task_createdOn"
-                    android:text="@string/created_by"
-                    android:textStyle="italic" />
+                    android:text="@string/dummy_txt" />
 
 
                 <TextView
-                    android:id="@+id/task_taskowner"
-                    style="@style/TextViewListItemCaption"
-                    android:layout_width="match_parent"
+                    android:id="@+id/task_due_date_tv"
+                    style="@style/TextViewListItemSecondary"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_toEndOf="@+id/task_taskowner_label"
-                    android:layout_toRightOf="@+id/task_taskowner_label"
-                    android:gravity="start|center"
-                    android:text="@string/dummy_txt"
-                    android:textStyle="italic" />
+                    android:layout_gravity="center_vertical"
+                    android:gravity="center"
+                    android:text="@string/due_date" />
+
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btn_attach_photo"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical|start"
+                android:layout_weight="1"
+                android:background="@color/zxing_transparent"
+                android:contentDescription="@string/add_img_content_description"
+                android:rotation="45"
+                android:src="@drawable/ic_attach_file_black_24dp"
+                android:tint="?primarycolor" />
+
+            <LinearLayout
+                android:id="@+id/layoutCB"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <CheckBox
+                    android:id="@+id/task_title_CB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:layout_gravity="center"
+                    android:text="" />
+            </LinearLayout>
 
 
-            </RelativeLayout>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height=".5dp"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="60dp"
-            android:layout_marginLeft="60dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginRight="10dp"
-            android:background="@color/light_gray" />
-
-
-    </RelativeLayout>
-</ScrollView>
+        </LinearLayout>
+    </FrameLayout>
+</com.ivy.ui.task.view.SwipeRevealLayout>

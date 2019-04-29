@@ -1,0 +1,39 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginEnd="@dimen/_10sdp"
+    android:layout_marginRight="@dimen/_10sdp">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/_8sdp"
+        android:paddingEnd="@dimen/_10sdp"
+        android:paddingRight="@dimen/_10sdp">
+
+        <ImageView
+            android:id="@+id/task_image_view"
+            android:layout_width="@dimen/_80sdp"
+            android:layout_height="@dimen/_80sdp"
+            android:clickable="true"
+            android:contentDescription="@string/add_img_content_description"
+            android:focusable="true" />
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/delete_image_view"
+        android:layout_width="@dimen/_20sdp"
+        android:layout_height="@dimen/_20sdp"
+        android:layout_gravity="right|top"
+        android:background="@drawable/dot_circle_blue"
+        android:backgroundTint="?colorPrimaryDark"
+        android:clickable="true"
+        android:contentDescription="@string/clear_img_content_description"
+        android:focusable="true"
+        android:scaleType="centerInside"
+        android:src="@drawable/ic_clear_white_24dp"
+        android:visibility="gone"
+        tools:ignore="RtlHardcoded,UnusedAttribute" />
+
+</FrameLayout>

@@ -81,7 +81,6 @@ import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
-import com.ivy.cpg.view.task.TaskFragment;
 import com.ivy.cpg.view.tradeCoverage.VisitFragment;
 import com.ivy.cpg.view.van.LoadManagementFragment;
 import com.ivy.cpg.view.van.LoadManagementHelper;
@@ -106,6 +105,8 @@ import com.ivy.sd.png.view.NewoutletContainerFragment;
 import com.ivy.sd.png.view.PlanDeviationFragment;
 import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
+import com.ivy.ui.task.TaskConstant;
+import com.ivy.ui.task.view.TaskFragment;
 import com.ivy.utils.AppUtils;
 import com.ivy.ui.offlineplan.calendar.view.OfflinePlanFragment;
 import com.ivy.utils.DateTimeUtils;
@@ -2272,9 +2273,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 break;
             case MENU_TASK_NEW:
                 bndl = new Bundle();
-                bndl.putString("screentitle", menuName);
-                bndl.putBoolean("IsRetailerwisetask", false);
-                bndl.putBoolean("fromHomeScreen", true);
+                bndl.putString(TaskConstant.SCREEN_TITLE, menuName);
+                bndl.putBoolean(TaskConstant.FROM_HOME_SCREEN, true);
+                bndl.putString(TaskConstant.MENU_CODE, MENU_TASK_NEW);
                 fragment = new TaskFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,

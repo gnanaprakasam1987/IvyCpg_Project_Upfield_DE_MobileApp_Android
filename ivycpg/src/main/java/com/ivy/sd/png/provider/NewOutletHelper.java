@@ -2206,8 +2206,10 @@ public class NewOutletHelper {
 
                 Cursor getCpidCursor = db.selectSQL("Select CPId from RetailerContact where retailerId=" + StringUtils.QT(outlet.getRetailerId()));
 
-                if (getCpidCursor != null && getCpidCursor.moveToNext()){
-                    db.deleteSQL("ContactAvailability", "CPId=" + getCpidCursor.getString(0), false);
+                if (getCpidCursor != null && getCpidCursor.getCount() > 0) {
+                    while (getCpidCursor.moveToNext()) {
+                        db.deleteSQL("ContactAvailability", "CPId=" + getCpidCursor.getString(0), false);
+                    }
                 }
                 db.deleteSQL("RetailerMaster", "retailerId=" + StringUtils.QT(outlet.getRetailerId()), false);
                 db.deleteSQL("RetailerContact", "retailerId=" + StringUtils.QT(outlet.getRetailerId()), false);
@@ -2516,15 +2518,17 @@ public class NewOutletHelper {
     }
 
     private void addContactAvail(DBUtil db, RetailerContactBo retailerContactBo){
-        String column = "CPAId,CPId,Day,StartTime,EndTime,isLocal";
+        String column = "CPAId,CPId,Day,StartTime,EndTime,isLocal,upload";
 
         for (RetailerContactAvailBo retailerContactAvailBo : retailerContactBo.getContactAvailList()) {
+
             String value = QT(getId())
                     + "," + QT(retailerContactBo.getCpId())
                     + "," + QT(retailerContactAvailBo.getDay())
                     + "," + QT(retailerContactAvailBo.getFrom())
                     + "," + QT(retailerContactAvailBo.getTo())
-                    + "," + QT("1");
+                    + "," + QT("1")
+                    + "," + QT("N");
 
             db.insertSQL("ContactAvailability", column, value);
         }

@@ -5,6 +5,24 @@ public class RetailerContactAvailBo {
     private String day;
     private String from;
     private String to;
+    private String status="";
+    private String cpaid="";
+
+    public String getCpaid() {
+        return cpaid;
+    }
+
+    public void setCpaid(String cpaid) {
+        this.cpaid = cpaid;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
     public String getDay() {
         return day;

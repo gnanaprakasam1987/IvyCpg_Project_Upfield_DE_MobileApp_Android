@@ -131,8 +131,13 @@ public class FitScoreHelper {
         }
         setWeightageList(weightageList);
         if (weightageList.size() == 0) {
-            bmodel.productHelper.getTaggingDetails(Module);
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+            db.openDataBase();
+            int mContentLevelId = bmodel.productHelper.getContentLevel(db, Module);
+            bmodel.productHelper.getTaggingDetails(Module, mContentLevelId);
             setWeightageList(bmodel.productHelper.getProductTaggingList());
+            if(!db.isDbNullOrClosed())
+                db.closeDB();
         }
     }
 

@@ -68,7 +68,6 @@ public class BatchAllocationHelper {
 
     public void downloadBatchDetails(int channelid) {
         mBatchListByproductID = new HashMap<String, ArrayList<ProductMasterBO>>();
-        mFreeProductListByProductID = new HashMap<String, ArrayList<ProductMasterBO>>();
         ProductMasterBO productBO;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
 
@@ -115,7 +114,6 @@ public class BatchAllocationHelper {
                 String productid = "";
 
                 ArrayList<ProductMasterBO> batchList = new ArrayList<>();
-                ArrayList<ProductMasterBO> freeProductList = new ArrayList<>();
                 while (c.moveToNext()) {
                     productBO = new ProductMasterBO();
                     productBO.setProductID(c.getString(0));
@@ -124,9 +122,9 @@ public class BatchAllocationHelper {
 
                     productBO.setProductShortName(c.getString(6));
 
-                    productBO.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(10),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
-                    productBO.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(11),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
-                    productBO.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(12),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    productBO.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(10), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+                    productBO.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(11), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+                    productBO.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(12), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
 
                     productBO.setBatchid(c.getString(13));
                     productBO.setBatchNo(c.getString(14));
@@ -140,20 +138,112 @@ public class BatchAllocationHelper {
                     if (!productid.equals(productBO.getProductID())) {
                         if (!productid.equals("")) {
                             mBatchListByproductID.put(productid, batchList);
-                            mFreeProductListByProductID.put(productid,
-                                    freeProductList);
                             batchList = new ArrayList<ProductMasterBO>();
-                            freeProductList = new ArrayList<ProductMasterBO>();
                             batchList.add(productBO);
-                            freeProductList.add(productBO);
                             productid = productBO.getProductID();
                         } else {
                             batchList.add(productBO);
-                            freeProductList.add(productBO);
                             productid = productBO.getProductID();
                         }
                     } else {
                         batchList.add(productBO);
+                    }
+
+                }
+                if (batchList.size() > 0) {
+                    mBatchListByproductID.put(productid, batchList);
+                }
+            }
+            c.close();
+
+            if (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE)
+                updateBatchWiseFreeProducts(db);
+
+            db.closeDB();
+        } catch (Exception e) {
+            db.closeDB();
+        }
+    }
+
+    private void updateBatchWiseFreeProducts(DBUtil db) {
+        mFreeProductListByProductID = new HashMap<String, ArrayList<ProductMasterBO>>();
+        ProductMasterBO productBO;
+        try {
+            String str = "Price.srp1,Price1.srp1";
+            String csrp = "Price.csrp1,Price1.csrp1";
+            String osrp = "Price.osrp1,Price1.osrp1";
+            try {
+                if (bmodel.getRetailerMasterBO().getRpTypeCode()
+                        .equals("CASH")) {
+                    str = "Price.srp1,Price1.srp1";
+                    csrp = "Price.csrp1,Price1.csrp1";
+                    osrp = "Price.osrp1,Price1.osrp1";
+                } else {
+                    str = "Price.srp2,Price1.srp2";
+                    csrp = "Price.csrp2,Price1.csrp2";
+                    osrp = "Price.osrp2,Price1.osrp2";
+                }
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select  PM.pid, PM.pcode,PM.pname,0,0,PM.sih, PM.psname,PM.barcode,PM.vat,PM.isfocus,ifnull(" + str + ") as srp , ifnull(" + csrp + ") as csrp ,ifnull(" + osrp + ") as ");
+            sb.append("osrp,BM.batchid,BM.batchNum,BM.MfgDate,BM.ExpDate,FSM.qty,Price.scid,Price.priceoffvalue,Price.PriceOffId from BatchMAster BM");
+            sb.append(" inner join  ProductMaster PM on (BM.Pid= PM.pid) inner join FreeStockInHandMaster FSM on BM.batchid =FSM.batchid and FSM.pid=BM.pid ");
+            sb.append("left join PriceMaster Price1 on PM.Pid = Price1.pid AND Price1.scid=0 ");
+            sb.append("left join PriceMaster Price on PM.Pid = Price.pid  ");
+            sb.append("AND Price.scid = " + bmodel.getAppDataProvider().getRetailMaster().getGroupId() + " where ");
+            if (!bmodel.configurationMasterHelper.IS_APPLY_BATCH_PRICE_FROM_PRODUCT)
+                sb.append("BM.batchid=Price.batchid AND ");
+
+
+            sb.append(" BM.pid = PM.pid group by BM.batchid");
+
+            if (bmodel.configurationMasterHelper.IS_ORD_BY_BATCH_EXPIRY_DATE_WISE)
+                sb.append(" Order By PM.pid,BM.ExpDate asc");
+            else
+                sb.append(" Order By PM.pid,BM.MfgDate asc");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c.getCount() > 0) {
+                String productid = "";
+
+                ArrayList<ProductMasterBO> freeProductList = new ArrayList<>();
+                while (c.moveToNext()) {
+                    productBO = new ProductMasterBO();
+                    productBO.setProductID(c.getString(0));
+                    productBO.setProductCode(c.getString(1));
+                    productBO.setProductName(c.getString(2));
+
+                    productBO.setProductShortName(c.getString(6));
+
+                    productBO.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(10), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+                    productBO.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(11), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+                    productBO.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(12), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+
+                    productBO.setBatchid(c.getString(13));
+                    productBO.setBatchNo(c.getString(14));
+                    productBO.setMfgDate(c.getString(15));
+                    productBO.setExpDate(c.getString(16));
+                    productBO.setSIH(c.getInt(17));
+                    productBO.setPriceoffvalue(c.getDouble(19));
+                    productBO.setPriceOffId(c.getInt(20));
+
+
+                    if (!productid.equals(productBO.getProductID())) {
+                        if (!productid.equals("")) {
+                            mFreeProductListByProductID.put(productid,
+                                    freeProductList);
+                            freeProductList = new ArrayList<ProductMasterBO>();
+                            freeProductList.add(productBO);
+                            productid = productBO.getProductID();
+                        } else {
+                            freeProductList.add(productBO);
+                            productid = productBO.getProductID();
+                        }
+                    } else {
                         freeProductList.add(productBO);
 
                     }
@@ -162,15 +252,11 @@ public class BatchAllocationHelper {
                 if (freeProductList.size() > 0) {
                     mFreeProductListByProductID.put(productid, freeProductList);
                 }
-                if (batchList.size() > 0) {
 
-                    mBatchListByproductID.put(productid, batchList);
-                }
             }
             c.close();
-            db.closeDB();
         } catch (Exception e) {
-            db.closeDB();
+            Commons.print(e.getMessage());
         }
     }
 
@@ -207,9 +293,9 @@ public class BatchAllocationHelper {
                     productBO.setNetValue(c.getDouble(9));
                     productBO.setPriceoffvalue(c.getDouble(10));
 
-                    productBO.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(11),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
-                    productBO.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(12),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
-                    productBO.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(13),bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION,0)));
+                    productBO.setSrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(11), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+                    productBO.setCsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(12), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
+                    productBO.setOsrp(SDUtil.convertToFloat(SDUtil.format(c.getFloat(13), bmodel.configurationMasterHelper.PRECISION_COUNT_FOR_CALCULATION, 0)));
 
                     productBO.setBatchNo(c.getString(14));
 
@@ -442,7 +528,7 @@ public class BatchAllocationHelper {
                             + (product.getOrderedCaseQty() * product.getCsrp())
                             + (product.getOrderedOuterQty() * product.getOsrp());
 
-                    batchwiseTotalvalue=SDUtil.formatAsPerCalculationConfig(batchwiseTotalvalue);
+                    batchwiseTotalvalue = SDUtil.formatAsPerCalculationConfig(batchwiseTotalvalue);
 
 
                     product.setNetValue(batchwiseTotalvalue
@@ -472,7 +558,11 @@ public class BatchAllocationHelper {
         ArrayList<ProductMasterBO> batchList;
         int pieceQty = 0;
 
-        batchList = mBatchListByproductID.get(productBo.getProductID());
+        if (!bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE)
+            batchList = mBatchListByproductID.get(productBo.getProductID());
+        else
+            batchList = mFreeProductListByProductID.get(productBo.getProductID());
+
         // Arrange list in reverse order
         // Collections.sort(batchList, ProductMasterBO.DateWiseAscending);
 

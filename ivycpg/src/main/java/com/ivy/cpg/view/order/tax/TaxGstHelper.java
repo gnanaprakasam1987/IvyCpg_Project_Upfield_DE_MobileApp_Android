@@ -118,7 +118,7 @@ public class TaxGstHelper implements TaxInterface {
             db.openDataBase();
             Cursor c;
 
-            String sb = "select distinct A.pid,TM.TaxDesc,TM.taxrate,SLM.ListName,TM.TaxType,TM.minvalue,TM.maxValue,TM.applyRange,TM.groupid,ifnull(TM.parentType,0) from  productmaster A ";
+            String sb = "select distinct A.pid,TM.TaxDesc,TM.taxrate,SLM.ListName,TM.TaxType,TM.minvalue,TM.maxValue,TM.applyRange,TM.groupid,ifnull(TM.parentType,0),SLM.flex1,TM.applylevelid from  productmaster A ";
 
             if (mBusinessModel.configurationMasterHelper.IS_GST)
                 sb = sb + " inner JOIN ProductTaxMaster PTM on  PTM.pid = A.pid ";
@@ -162,6 +162,9 @@ public class TaxGstHelper implements TaxInterface {
                     taxBo.setApplyRange(c.getInt(7));
                     taxBo.setGroupId(c.getInt(8));
                     taxBo.setParentType(c.getString(9));
+                    taxBo.setTaxDesc2(c.getString(10));
+                    taxBo.setApplyLevelId(c.getInt(11));
+
                     if (!productid.equals(taxBo.getPid() + "")) {
                         if (!productid.equals("")) {
 

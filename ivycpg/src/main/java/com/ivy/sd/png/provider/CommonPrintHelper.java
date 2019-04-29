@@ -603,8 +603,6 @@ public class CommonPrintHelper {
 
                                 //Bill discount
                                 double billDiscountValue = bmodel.getOrderHeaderBO() != null ? bmodel.getOrderHeaderBO().getBillLevelDiscountValue() : 0;
-                                if (bmodel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT && !DiscountHelper.getInstance(context).isWihtHoldApplied())
-                                    billDiscountValue -= orderHelper.withHoldDiscount;
                                 mBillLevelDiscountValue = billDiscountValue;
                                 //
 
@@ -832,11 +830,6 @@ public class CommonPrintHelper {
             int extraSpace = 0;
             extraSpace = SDUtil.convertToInt(attr_space_str);
             value = alignWithLabelForSingleLine(label, formatValueInPrint(mBillLevelDiscountValue, precisionCount) + "", extraSpace);
-        } else if (tag.equalsIgnoreCase(TAG_DISCOUNT_WITH_HOLD)) {
-            if (DiscountHelper.getInstance(context).isWihtHoldApplied())
-                value = alignWithLabelForSingleLine(label, formatValueInPrint(orderHelper.withHoldDiscount, precisionCount) + "");
-            else
-                value = "";
         } else if (tag.equalsIgnoreCase(TAG_TAX_BILL)) {
             value = printBillLevelTax(precisionCount, attr_space_str);
         } else if (tag.equalsIgnoreCase(TAG_PRODUCT_LINE_TOTAL)) {
