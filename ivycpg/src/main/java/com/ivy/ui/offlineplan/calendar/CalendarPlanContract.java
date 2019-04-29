@@ -3,7 +3,6 @@ package com.ivy.ui.offlineplan.calendar;
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
-import com.ivy.ui.offlineplan.OfflinePlanBaseContract;
 import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
 
 import java.util.ArrayList;

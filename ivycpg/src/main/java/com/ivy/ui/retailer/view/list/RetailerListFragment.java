@@ -21,7 +21,7 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
     }
 
     @Override
-    public void initVariables(View view) {
+    public void init(View view) {
 
     }
 

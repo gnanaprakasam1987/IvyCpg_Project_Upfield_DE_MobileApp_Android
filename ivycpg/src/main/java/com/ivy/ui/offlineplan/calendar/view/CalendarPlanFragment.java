@@ -1,11 +1,20 @@
 package com.ivy.ui.offlineplan.calendar.view;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.TypedValue;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -22,6 +31,7 @@ import com.alamkanak.weekview.WeekViewEvent;
 import com.ivy.calendarlibrary.monthview.MonthView;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -31,6 +41,7 @@ import com.ivy.ui.offlineplan.calendar.adapter.MonthViewAdapter;
 import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
 import com.ivy.ui.offlineplan.calendar.di.CalendarPlanModule;
 import com.ivy.ui.offlineplan.calendar.di.DaggerCalendarPlanComponent;
+import com.ivy.ui.retailer.view.map.RetailerMapFragment;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,6 +53,8 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+
+import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_MAP_PLAN;
 
 
 public class CalendarPlanFragment extends BaseFragment implements CalendarPlanContract.CalendarPlanView, CalendarClickListner, WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener, WeekView.EmptyViewLongPressListener {
@@ -79,6 +92,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     private int mSelectedType = 0;
     private final int MONTH = 0, DAY = 1, WEEK = 2;
+    private Context mContext;
 
     @Override
     public void initializeDi() {
@@ -97,7 +111,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     }
 
     @Override
-    public void initVariables(View view) {
+    public void init(View view) {
         rvCalendar.setLayoutManager(getActivity());
     }
 
@@ -111,6 +125,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     protected void setUpViews() {
 
         setUpToolbar(screenTitle);
+        setHasOptionsMenu(true);
         presenter.setPlanDates();
         presenter.loadCalendar();
         setSelectionAdapter();
@@ -310,5 +325,46 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                 return hour > 11 ? (hour - 12) + " PM" : (hour == 0 ? "12 AM" : hour + " AM");
             }
         });
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        menu.findItem(R.id.filter).setVisible(false);
+        menu.findItem(R.id.calendar).setVisible(false);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_retailer_plan, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            startActivity(new Intent(getActivity(),
+                    HomeScreenActivity.class));
+            ((Activity)mContext).finish();
+            return true;
+        } else if (item.getItemId() == R.id.map_retailer) {
+
+            FragmentManager fm = ((FragmentActivity)mContext).getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+
+            RetailerMapFragment fragment = new RetailerMapFragment();
+            ft.replace(R.id.fragment_content, fragment,MENU_MAP_PLAN);
+            ft.commit();
+            return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
     }
 }

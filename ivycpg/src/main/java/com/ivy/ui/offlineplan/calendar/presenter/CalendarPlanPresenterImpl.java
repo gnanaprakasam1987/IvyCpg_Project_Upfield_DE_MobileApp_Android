@@ -269,19 +269,4 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         return cal.getTime();
     }
 
-
-    @Override
-    public void loadRetailersData() {
-
-    }
-
-    @Override
-    public void loadAllStoresData() {
-
-    }
-
-    @Override
-    public void loadTodayVisitData() {
-
-    }
 }
