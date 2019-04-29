@@ -12,7 +12,7 @@ public interface AddPlanDataManager extends AppDataManagerContract {
 
     Single<Boolean> updatePlan(DateWisePlanBo dateWisePlanBo);
 
-    void cancelPlan(RetailerMasterBO retailerMasterBO);
+    Single<Boolean> cancelPlan(DateWisePlanBo dateWisePlanBo);
 
-    void DeletePlan(RetailerMasterBO retailerMasterBO);
+    Single<Boolean> DeletePlan(DateWisePlanBo dateWisePlanBo);
 }

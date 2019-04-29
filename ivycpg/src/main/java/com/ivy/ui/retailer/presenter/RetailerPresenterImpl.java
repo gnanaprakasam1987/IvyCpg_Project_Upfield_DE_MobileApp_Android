@@ -20,7 +20,8 @@ import javax.inject.Inject;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 
-public class RetailerPresenterImpl<V extends RetailerContract.RetailerView> extends BasePresenter<V> implements RetailerContract.RetailerPresenter<V> {
+public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
+        extends BasePresenter<V> implements RetailerContract.RetailerPresenter<V> {
 
     private AppDataProvider appDataProvider;
     private ProfileDataManagerImpl profileDataManager;
@@ -29,6 +30,8 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView> exte
     private HashMap<String, ArrayList<DateWisePlanBo>> getAllDateRetailerPlanList;
 
     private ArrayList<DateWisePlanBo> getSelectedDateRetailerPlanList;
+
+    private HashMap<String,DateWisePlanBo> getSelectedDateRetailerPlanMap;
 
     @Inject
     RetailerPresenterImpl(DataManager dataManager,
@@ -111,10 +114,13 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView> exte
         getCompositeDisposable().add(retailerDataManager.getRetailerPlanList(date)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<ArrayList<DateWisePlanBo>>() {
+                .subscribe(new Consumer<HashMap<String,DateWisePlanBo>>() {
                     @Override
-                    public void accept(ArrayList<DateWisePlanBo> listHashMap) throws Exception {
-                        getSelectedDateRetailerPlanList = listHashMap;
+                    public void accept(HashMap<String,DateWisePlanBo> listHashMap) throws Exception {
+
+                        getSelectedDateRetailerPlanMap = listHashMap;
+
+                        getSelectedDateRetailerPlanList = new ArrayList<>(listHashMap.values());
                     }
                 }));
     }
@@ -127,6 +133,12 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView> exte
     @Override
     public ArrayList<DateWisePlanBo> getSelectedDateRetailerPlanList() {
         return getSelectedDateRetailerPlanList.isEmpty()?new ArrayList<>():getSelectedDateRetailerPlanList;
+    }
+
+    @Override
+    public DateWisePlanBo getSelectedRetailerPlan(String retailerId) {
+        return getSelectedDateRetailerPlanMap.get(retailerId) != null
+                ?getSelectedDateRetailerPlanMap.get(retailerId): new DateWisePlanBo();
     }
 
     public String makeURL(double sourcelat, double sourcelog, double destlat,

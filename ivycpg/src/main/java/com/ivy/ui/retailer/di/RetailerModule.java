@@ -1,7 +1,5 @@
 package com.ivy.ui.retailer.di;
 
-import android.content.Context;
-
 import com.ivy.core.di.scope.PerActivity;
 import com.ivy.ui.retailer.RetailerContract;
 import com.ivy.ui.retailer.data.RetailerDataManager;
@@ -18,11 +16,9 @@ import io.reactivex.disposables.CompositeDisposable;
 public class RetailerModule {
 
     private RetailerContract.RetailerView mView;
-    private Context mContext;
 
-    public RetailerModule(RetailerContract.RetailerView mView, Context context) {
+    public RetailerModule(RetailerContract.RetailerView mView) {
         this.mView = mView;
-        this.mContext = context;
     }
 
     @Provides

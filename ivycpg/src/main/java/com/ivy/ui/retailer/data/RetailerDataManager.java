@@ -15,5 +15,5 @@ public interface RetailerDataManager extends AppDataManagerContract {
 
     Single<HashMap<String, ArrayList<DateWisePlanBo>>> getAllDateRetailerPlanList();
 
-    Single<ArrayList<DateWisePlanBo>> getRetailerPlanList(String date);
+    Single<HashMap<String,DateWisePlanBo>> getRetailerPlanList(String date);
 }

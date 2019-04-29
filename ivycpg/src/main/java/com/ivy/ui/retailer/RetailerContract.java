@@ -51,5 +51,7 @@ public interface RetailerContract {
 
          ArrayList<DateWisePlanBo> getSelectedDateRetailerPlanList();
 
+         DateWisePlanBo getSelectedRetailerPlan(String retailerId);
+
     }
 }

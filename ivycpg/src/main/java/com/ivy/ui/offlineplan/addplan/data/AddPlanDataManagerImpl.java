@@ -56,7 +56,7 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                             + dateWisePlanBo.getEntityId() + ","
                             + StringUtils.QT(dateWisePlanBo.getEntityType()) + ","
                             + StringUtils.QT(dateWisePlanBo.getStatus()) + ","
-                            + dateWisePlanBo.getSequence()
+                            + dateWisePlanBo.getSequence()+ ","
                             + StringUtils.QT(dateWisePlanBo.getStartTime()) + ","
                             + StringUtils.QT(dateWisePlanBo.getEndTime());
 
@@ -101,12 +101,55 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
     }
 
     @Override
-    public void cancelPlan(RetailerMasterBO retailerMasterBO) {
+    public Single<Boolean> cancelPlan(DateWisePlanBo dateWisePlanBo) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
 
+                initDb();
+
+                try {
+                    mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
+                            + " SET Status = 'D'"
+                            +" where PlanId = "+dateWisePlanBo.getPlanId());
+                    shutDownDb();
+                    return true;
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    shutDownDb();
+
+                    return false;
+                }
+            }
+        });
     }
 
     @Override
-    public void DeletePlan(RetailerMasterBO retailerMasterBO) {
+    public Single<Boolean> DeletePlan(DateWisePlanBo dateWisePlanBo) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
 
+                initDb();
+
+                try {
+
+                    if (dateWisePlanBo.isServerData())
+                        mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
+                                + " SET Status = 'D'"
+                                +" where PlanId = "+dateWisePlanBo.getPlanId());
+                    else
+                        mDbUtil.deleteSQL(DataMembers.tbl_date_wise_plan,
+                            " where PlanId = "+dateWisePlanBo.getPlanId(),false);
+                    shutDownDb();
+                    return true;
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    shutDownDb();
+
+                    return false;
+                }
+            }
+        });
     }
 }

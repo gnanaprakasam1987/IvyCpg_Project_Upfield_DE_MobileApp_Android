@@ -9,6 +9,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
+import com.ivy.utils.StringUtils;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -44,7 +45,6 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
         mDbUtil.closeDB();
     }
 
-
     @Override
     public void tearDown() {
         shutDownDb();
@@ -69,10 +69,11 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
             public HashMap<String, ArrayList<DateWisePlanBo>> call() throws Exception {
                 HashMap<String, ArrayList<DateWisePlanBo>> datePlanHashMap= new HashMap<>();
 
-                String sql = "SELECT PlanId,DistributorId,UserId,Date,EntityId,EntityType,IFNULL(Status,''),Sequence,RetailerName,StartTime,EndTime " +
-                        " FROM " +DataMembers.tbl_date_wise_plan +
-                        " inner join RetailerMaster on RetailerID = EntityId " +
-                        " Where status != 'D' and EntityType = 'RETAILER' ";
+                String sql = "SELECT dwp.PlanId,dwp.DistributorId,dwp.UserId,dwp.Date,dwp.EntityId,dwp.EntityType,IFNULL(dwp.Status,'')" +
+                        ",dwp.Sequence,rm.RetailerName,StartTime,EndTime " +
+                        " FROM " +DataMembers.tbl_date_wise_plan +" as dwp "+
+                        " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
+                        " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER'";
 
                 initDb();
 
@@ -122,16 +123,16 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
     }
 
     @Override
-    public Single<ArrayList<DateWisePlanBo>> getRetailerPlanList(String date) {
-        return Single.fromCallable(new Callable<ArrayList<DateWisePlanBo>>() {
+    public Single<HashMap<String,DateWisePlanBo>> getRetailerPlanList(String date) {
+        return Single.fromCallable(new Callable<HashMap<String,DateWisePlanBo>>() {
             @Override
-            public ArrayList<DateWisePlanBo> call() throws Exception {
-                ArrayList<DateWisePlanBo> datePlanList= new ArrayList<>();
+            public HashMap<String,DateWisePlanBo> call() throws Exception {
+                HashMap<String,DateWisePlanBo> datePlanHashMap= new HashMap<>();
 
-                String sql = "SELECT PlanId,DistributorId,UserId,Date,EntityId,EntityType,IFNULL(Status,''),Sequence,RetailerName,StartTime,EndTime " +
-                        " FROM " +DataMembers.tbl_date_wise_plan +
-                        " inner join RetailerMaster on RetailerID = EntityId " +
-                        " Where status != 'D' and EntityType = 'RETAILER' ";
+                String sql = "SELECT dwp.PlanId,dwp.DistributorId,dwp.UserId,dwp.Date,dwp.EntityId,dwp.EntityType,IFNULL(dwp.Status,''),dwp.Sequence,rm.RetailerName,StartTime,EndTime " +
+                        " FROM " +DataMembers.tbl_date_wise_plan +" as dwp "+
+                        " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
+                        " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER' and dwp.Date="+ StringUtils.QT(date);
 
                 initDb();
 
@@ -157,11 +158,11 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         if (dateWisePlanBO.getStatus() != null && dateWisePlanBO.getStatus().isEmpty())
                             dateWisePlanBO.setServerData(true);
 
-                        datePlanList.add(dateWisePlanBO);
+                        datePlanHashMap.put(String.valueOf(dateWisePlanBO.getEntityId()),dateWisePlanBO);
                     }
                 }
 
-                return datePlanList;
+                return datePlanHashMap;
             }
         });
     }
@@ -205,6 +206,5 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
         }
     }
-
 
 }

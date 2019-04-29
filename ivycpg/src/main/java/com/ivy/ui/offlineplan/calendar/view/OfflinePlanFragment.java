@@ -229,11 +229,13 @@ public class OfflinePlanFragment extends BaseFragment implements OfflinePlanCont
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
 
+        menu.findItem(R.id.filter).setVisible(false);
+        menu.findItem(R.id.calendar).setVisible(false);
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.map_menu, menu);
+        inflater.inflate(R.menu.menu_retailer_plan, menu);
     }
 
 
@@ -244,13 +246,13 @@ public class OfflinePlanFragment extends BaseFragment implements OfflinePlanCont
                     HomeScreenActivity.class));
             ((Activity)context).finish();
             return true;
-        } else if (item.getItemId() == R.id.nearRet) {
+        } else if (item.getItemId() == R.id.map_retailer) {
 
             FragmentManager fm = ((FragmentActivity)context).getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
 
             RetailerMapFragment fragment = new RetailerMapFragment();
-            ft.add(R.id.fragment_content, fragment,MENU_MAP_PLAN);
+            ft.replace(R.id.fragment_content, fragment,MENU_MAP_PLAN);
             ft.commit();
             return true;
         }

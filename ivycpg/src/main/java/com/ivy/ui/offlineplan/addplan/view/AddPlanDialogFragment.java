@@ -25,6 +25,7 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.ui.offlineplan.addplan.AddPlanContract;
+import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 import com.ivy.ui.offlineplan.addplan.di.AddPlanModule;
 import com.ivy.ui.offlineplan.addplan.di.DaggerAddPlanComponent;
 import com.ivy.ui.offlineplan.addplan.presenter.AddPlanPresenterImpl;
@@ -87,14 +88,19 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
 
     private RetailerMasterBO retailerMasterBO;
 
+    private DateWisePlanBo dateWisePlanBo;
+
     private TimeSlotPickFragment timeSlotPickFragment;
 
     @Inject
     AddPlanPresenterImpl<AddPlanContract.AddPlanView> addPlanPresenter;
 
-    public AddPlanDialogFragment(RetailerMasterBO retailerMaster){
+    public AddPlanDialogFragment(RetailerMasterBO retailerMaster, DateWisePlanBo dateWisePlanBo){
         retailerMasterBO = retailerMaster;
+        this.dateWisePlanBo = dateWisePlanBo;
     }
+
+    private String date="",startTime="",endtime="";
 
     @Override
     public void onAttach(Context context) {
@@ -130,6 +136,19 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(bottomSheetCallBack);
         }
 
+        date = DateTimeUtils.now(DATE_GLOBAL);
+        startTime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
+        endtime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
+
+        if (!dateWisePlanBo.getDate().isEmpty())
+            date = dateWisePlanBo.getDate();
+
+        if (!dateWisePlanBo.getStartTime().isEmpty())
+            startTime = DateTimeUtils.convertDateTimeObjectToRequestedFormat(dateWisePlanBo.getStartTime(),"yyyy/MM/dd HH:mm:ss","HH:mm");
+
+        if (!dateWisePlanBo.getEndTime().isEmpty())
+            endtime = DateTimeUtils.convertDateTimeObjectToRequestedFormat(dateWisePlanBo.getEndTime(),"yyyy/MM/dd HH:mm:ss","HH:mm");
+
         setPlanWindowValues();
 
     }
@@ -155,10 +174,13 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
                 }
                 case BottomSheetBehavior.STATE_EXPANDED: {
 
-                    if (savePlan.getVisibility() == View.VISIBLE)
+                    if (savePlan.getVisibility() == View.VISIBLE) {
                         tvStartVisitTime.setOnClickListener(startVisitTimeListener);
-                    else
+                        tvVisitEndTime.setOnClickListener(startVisitTimeListener);
+                    }else {
                         tvStartVisitTime.setOnClickListener(null);
+                        tvVisitEndTime.setOnClickListener(null);
+                    }
 
                     break;
                 }
@@ -220,6 +242,13 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
 
     @OnClick(R.id.save_plan)
     void savePlan(){
+        if (!"Y".equals(retailerMasterBO.getIsVisited())
+                &&( retailerMasterBO.getIsToday() == 1
+                || "Y".equals(retailerMasterBO.getIsDeviated()))) {
+            addPlanPresenter.updatePlan(dateWisePlanBo.getDate(),tvStartVisitTime.getText().toString(),tvVisitEndTime.getText().toString(),retailerMasterBO);
+        }else if(!"Y".equals(retailerMasterBO.getIsVisited())){
+            addPlanPresenter.addNewPlan(dateWisePlanBo.getDate(),tvStartVisitTime.getText().toString(),tvVisitEndTime.getText().toString(),retailerMasterBO);
+        }
         dismiss();
     }
 
@@ -236,12 +265,6 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
 
                 setViewBackground(ContextCompat.getDrawable(context,R.drawable.edittext_bottom_border));
 
-                tvStartVisitDate.setText(DateTimeUtils.now(DATE_GLOBAL));
-                tvVisitEndDate.setText(DateTimeUtils.now(DATE_GLOBAL));
-
-                tvStartVisitTime.setText(DateTimeUtils.now(TIME_HOUR_MINS)+":00");
-                tvVisitEndTime.setText(DateTimeUtils.now(TIME_HOUR_MINS)+":00");
-
             }else{
 
                 addPlan.setVisibility(View.GONE);
@@ -250,15 +273,15 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
 
                 setViewBackground(ContextCompat.getDrawable(context,R.drawable.edittext_bottom_border));
 
-                tvStartVisitDate.setText(DateTimeUtils.now(DATE_GLOBAL));
-                tvVisitEndDate.setText(DateTimeUtils.now(DATE_GLOBAL));
-
-                tvStartVisitTime.setText(DateTimeUtils.now(TIME_HOUR_MINS)+":00");
-                tvVisitEndTime.setText(DateTimeUtils.now(TIME_HOUR_MINS)+":00");
-
                 tvStartVisitTime.setOnClickListener(startVisitTimeListener);
                 tvVisitEndTime.setOnClickListener(startVisitTimeListener);
             }
+
+            tvStartVisitDate.setText(date);
+            tvVisitEndDate.setText(date);
+
+            tvStartVisitTime.setText(startTime);
+            tvVisitEndTime.setText(endtime);
 
             if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED)
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -274,6 +297,9 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
 
         setViewBackground(null);
 
+        tvOutletName.setText(retailerMasterBO.getRetailerName());
+        tvOutletAddress.setText(retailerMasterBO.getAddress1());
+
         if ("Y".equals(retailerMasterBO.getIsVisited())
                 || retailerMasterBO.getIsToday() == 1
                 || "Y".equals(retailerMasterBO.getIsDeviated())) {
@@ -288,20 +314,17 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
             }else
                 addPlan.setVisibility(View.GONE);
 
+            tvStartVisitDate.setText(date);
+            tvVisitEndDate.setText(date);
+
+            tvStartVisitTime.setText(startTime);
+            tvVisitEndTime.setText(endtime);
+
         }else {
             visitElementGroup.setVisibility(View.GONE);
             addPlan.setVisibility(View.VISIBLE);
             addPlan.setText(getString(R.string.add_plan));
         }
-
-        tvOutletName.setText(retailerMasterBO.getRetailerName());
-        tvOutletAddress.setText(retailerMasterBO.getAddress1());
-
-        tvStartVisitDate.setText(DateTimeUtils.now(DATE_GLOBAL));
-        tvVisitEndDate.setText(DateTimeUtils.now(DATE_GLOBAL));
-
-        tvStartVisitTime.setText(DateTimeUtils.now(TIME_HOUR_MINS)+":00");
-        tvVisitEndTime.setText(DateTimeUtils.now(TIME_HOUR_MINS)+":00");
     }
 
     @Subscribe

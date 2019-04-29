@@ -1,13 +1,22 @@
 package com.ivy.ui.retailer.view.map;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.support.constraint.Group;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -26,16 +35,20 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.ivy.core.base.view.BaseMapFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 import com.ivy.ui.offlineplan.addplan.view.AddPlanDialogFragment;
+import com.ivy.ui.offlineplan.calendar.view.OfflinePlanFragment;
 import com.ivy.ui.retailer.RetailerContract;
 import com.ivy.ui.retailer.di.DaggerRetailerComponent;
 import com.ivy.ui.retailer.di.RetailerModule;
 import com.ivy.ui.retailer.presenter.RetailerPresenterImpl;
+import com.ivy.ui.retailerplanfilter.view.RetailerPlanFilterFragment;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.NetworkUtils;
 
@@ -54,6 +67,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
+import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_MAP_PLAN;
 
 public class RetailerMapFragment extends BaseMapFragment implements RetailerContract.RetailerView,
         GoogleMap.OnMarkerClickListener,
@@ -103,6 +117,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
     private AddPlanDialogFragment addPlanDialogFragment;
 
+    private RetailerPlanFilterFragment planFilterFragment;
+
     @Inject
     RetailerPresenterImpl<RetailerContract.RetailerView> presenter;
 
@@ -116,7 +132,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     public void initializeDi() {
         DaggerRetailerComponent.builder()
                 .ivyAppComponent(((BusinessModel) Objects.requireNonNull((FragmentActivity)context).getApplication()).getComponent())
-                .retailerModule(new RetailerModule(this, context))
+                .retailerModule(new RetailerModule(this))
                 .build()
                 .inject(RetailerMapFragment.this);
 
@@ -130,6 +146,15 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
     @Override
     public void initVariables(View view) {
+
+        setHasOptionsMenu(true);
+
+        ActionBar actionBar = ((AppCompatActivity) context).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
 
         mapWrapperLayout = view.findViewById(R.id.mapContainerLayout);
 
@@ -269,6 +294,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     @Override
     protected void setUpViews() {
         setUpToolbar(screenTitle);
+//        presenter.fetchSelectedDateRetailerPlan(date);
         presenter.fetchSelectedDateRetailerPlan("2019/03/22");
         loadMap();
     }
@@ -429,7 +455,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         }else {
             marker.showInfoWindow();
 
-            addPlanDialogFragment = new AddPlanDialogFragment(retailerMasterBO);
+            addPlanDialogFragment =
+                    new AddPlanDialogFragment(retailerMasterBO, presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID()));
             addPlanDialogFragment.show(((FragmentActivity)context).getSupportFragmentManager(),
                     "add_plan_fragment");
         }
@@ -644,5 +671,48 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         }
 
         return poly;
+    }
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        menu.findItem(R.id.map_retailer).setVisible(false);
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_retailer_plan, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            startActivity(new Intent(getActivity(),
+                    HomeScreenActivity.class));
+            ((Activity)context).finish();
+            return true;
+        } else if (item.getItemId() == R.id.filter) {
+
+            planFilterFragment =
+                    new RetailerPlanFilterFragment();
+            planFilterFragment.show(((FragmentActivity)context).getSupportFragmentManager(),
+                    "filter_plan_fragment");
+
+            return true;
+        }else if (item.getItemId() == R.id.calendar) {
+            FragmentManager fm = ((FragmentActivity)context).getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+
+            OfflinePlanFragment fragment = new OfflinePlanFragment();
+            ft.replace(R.id.fragment_content, fragment,MENU_MAP_PLAN);
+            ft.commit();
+
+            return true;
+        }
+
+        return false;
     }
 }

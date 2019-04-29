@@ -3,7 +3,7 @@ package com.ivy.ui.offlineplan.addplan;
 public class DateWisePlanBo {
 
     private int PlanId, DistributorId, UserId, EntityId, Sequence;
-    private String EntityType, Status, Date,Name,startTime,endTime;
+    private String EntityType, Status, Date="",Name,startTime="",endTime="";
     private boolean isServerData;
 
     public boolean isServerData() {

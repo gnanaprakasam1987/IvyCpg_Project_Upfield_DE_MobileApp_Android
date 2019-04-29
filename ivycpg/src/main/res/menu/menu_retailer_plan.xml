@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/map_retailer"
+        android:icon="@drawable/near_ret"
+        app:showAsAction="always"
+        android:orderInCategory="3"
+        android:title="Retailers">
+    </item>
+
+    <item
+        android:id="@+id/filter"
+        android:icon="@drawable/ic_action_filter"
+        app:showAsAction="always"
+        android:orderInCategory="3"
+        android:title="Filter">
+    </item>
+
+    <item
+        android:id="@+id/calendar"
+        android:icon="@drawable/ic_calendar"
+        app:showAsAction="always"
+        android:orderInCategory="3"
+        android:iconTint="@color/white"
+        android:title="Calendar">
+    </item>
+
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/icon_search"
+        app:showAsAction="always"
+        android:orderInCategory="3"
+        android:title="Search">
+    </item>
+
+</menu>
