@@ -29,7 +29,6 @@ import com.ivy.ui.offlineplan.calendar.CalendarPlanContract;
 import com.ivy.ui.offlineplan.calendar.adapter.CalendarClickListner;
 import com.ivy.ui.offlineplan.calendar.adapter.MonthViewAdapter;
 import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
-import com.ivy.ui.offlineplan.calendar.bo.TimeSlotsBo;
 import com.ivy.ui.offlineplan.calendar.di.CalendarPlanModule;
 import com.ivy.ui.offlineplan.calendar.di.DaggerCalendarPlanComponent;
 
@@ -65,17 +64,12 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     @BindView(R.id.btn_switch)
     Button btnSwitch;
 
-    /*@BindView(R.id.rv_week)
-    RecyclerView rvWeek;*/
-
     @BindView(R.id.ll_titleList)
     LinearLayout llWeekTitle;
 
     @BindView(R.id.fab_retailer)
     FloatingActionButton fabAddRetailer;
 
-    /*@BindView(R.id.rv_day_slots)
-    RecyclerView rvDaySlots;*/
     @BindView(R.id.week_view)
     WeekView mWeekView;
 
@@ -85,9 +79,6 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     private int mSelectedType = 0;
     private final int MONTH = 0, DAY = 1, WEEK = 2;
-    private String mSelectedDate;
-
-    private String generalPattern = "yyyy/MM/dd";
 
     @Override
     public void initializeDi() {
@@ -138,22 +129,14 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         mWeekView.setEmptyViewLongPressListener(this);
 
         ivNext.setOnClickListener(v -> {
-            if (mSelectedType == DAY || mSelectedType == WEEK)
-                presenter.onNextWeekClicked();
-            else
-                presenter.onNextMonthClicked();
+            presenter.onNextMonthClicked();
 
 
         });
 
         ivPrev.setOnClickListener(v -> {
-            if (mSelectedType == DAY || mSelectedType == WEEK) {
-                presenter.onPreviousWeekClicked();
+            presenter.onPreviousMonthClicked();
 
-            } else {
-                presenter.onPreviousMonthClicked();
-
-            }
         });
 
         btnSwitch.setOnClickListener(v -> showSelectionDialog());
@@ -173,10 +156,6 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     @Override
     public void loadDayView(Calendar date) {
-        /*rvWeek.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        int itemWidth = DeviceUtils.getDeviceWidth(Objects.requireNonNull(getActivity()))/8;
-        WeekFilterAdapter weekFilterAdapter = new WeekFilterAdapter(getActivity(), mCalenderAllList, mAllowedDates, this,itemWidth);
-        rvWeek.setAdapter(weekFilterAdapter);*/
         setupDateTimeInterpreter(false);
         mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
         mWeekView.setNumberOfVisibleDays(1);
@@ -190,18 +169,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
         mWeekView.setNumberOfVisibleDays(7);
         mWeekView.goToDate(date);
-    }
-
-    @Override
-    public void loadTimeSlotList(ArrayList<TimeSlotsBo> timeSlots) {
-        /*rvDaySlots.setLayoutManager(new LinearLayoutManager(getActivity()));
-        TimeSlotsAdapter timeSlotsAdapter = new TimeSlotsAdapter(getActivity(),timeSlots);
-        rvDaySlots.setAdapter(timeSlotsAdapter);*/
-    }
-
-    @Override
-    public void updateSelectedDate(String selectedDate) {
-        mSelectedDate = selectedDate;
+        mWeekView.setFirstDayOfWeek(Calendar.MONDAY);
     }
 
     private void setSelectionAdapter() {
@@ -243,8 +211,6 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                 llWeekTitle.setVisibility(View.VISIBLE);
                 fabAddRetailer.setVisibility(View.VISIBLE);
                 mWeekView.setVisibility(View.GONE);
-                //rvWeek.setVisibility(View.GONE);
-                //rvDaySlots.setVisibility(View.GONE);
                 btnSwitch.setText(getResources().getString(R.string.month));
                 presenter.loadCalendar();
                 break;
@@ -253,19 +219,14 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                 llWeekTitle.setVisibility(View.GONE);
                 fabAddRetailer.setVisibility(View.GONE);
                 mWeekView.setVisibility(View.VISIBLE);
-                //rvWeek.setVisibility(View.VISIBLE);
-                //rvDaySlots.setVisibility(View.VISIBLE);
                 btnSwitch.setText(getResources().getString(R.string.day));
                 presenter.loadADay();
-                //presenter.loadDayTimeSlots();
                 break;
             case WEEK:
                 rvCalendar.setVisibility(View.GONE);
                 llWeekTitle.setVisibility(View.GONE);
                 fabAddRetailer.setVisibility(View.GONE);
                 mWeekView.setVisibility(View.VISIBLE);
-                //rvWeek.setVisibility(View.VISIBLE);
-                //rvDaySlots.setVisibility(View.GONE);
                 presenter.loadAWeek();
                 btnSwitch.setText(getResources().getString(R.string.week));
                 break;
@@ -280,13 +241,6 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         mSelectedType = DAY;
         switchViews();
     }
-
-    @Override
-    public void onWeekDateSelected(String selectedDate) {
-        presenter.setSelectedDate(selectedDate);
-        presenter.loadDayTimeSlots();
-    }
-
 
     @Override
     public List<? extends WeekViewEvent> onMonthChange(int newYear, int newMonth) {
