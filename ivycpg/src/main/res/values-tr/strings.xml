@@ -945,7 +945,7 @@
     <string name="is_distributed">Dağıtılmış</string>
     <string name="pls_select_chequeno">Lütfen çek Numarası gir</string>
     <string name="average_lines">Ortalama Satır</string>
-    <string name="add_plane">Plana Ekle</string>
+    <string name="add_plan">Plana Ekle</string>
     <string name="non_visit">Ziyaret Yok</string>
     <string name="are_you_sure_you_want_to_logout">Çıkış yapmak istediğine emin misin?</string>
     <string name="vaload_heder_text">Select quality for each batch</string>

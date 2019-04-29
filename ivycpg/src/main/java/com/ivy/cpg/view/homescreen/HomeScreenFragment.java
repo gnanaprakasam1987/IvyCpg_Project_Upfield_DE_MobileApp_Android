@@ -107,6 +107,7 @@ import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.view.TaskFragment;
+import com.ivy.ui.retailer.view.map.RetailerMapFragment;
 import com.ivy.utils.AppUtils;
 import com.ivy.ui.offlineplan.calendar.view.OfflinePlanFragment;
 import com.ivy.utils.DateTimeUtils;
@@ -136,6 +137,7 @@ import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_JOINT_CALL;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_LEAVE_APR;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_LOAD_MANAGEMENT;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_LOAD_REQUEST;
+import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_MAP_PLAN;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_MVP;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_NEWRET_EDT;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_NEW_RETAILER;
@@ -1740,6 +1742,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         OfflinePlanFragment offlinePlanFragment = (OfflinePlanFragment) fm.findFragmentByTag(MENU_OFLNE_PLAN);
 
+        RetailerMapFragment retailerMapFragment = (RetailerMapFragment) fm.findFragmentByTag(MENU_MAP_PLAN);
+
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()
                 && !bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER) {
@@ -1864,6 +1868,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (offlinePlanFragment != null && (fragmentName.equals(MENU_OFLNE_PLAN))
                 && offlinePlanFragment.isVisible()) {
             return;
+        } else if (retailerMapFragment != null && (fragmentName.equals(MENU_MAP_PLAN))
+                && retailerMapFragment.isVisible()) {
+            return;
         }
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
 
@@ -1947,6 +1954,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(denominationFragment);
         if (offlinePlanFragment != null)
             ft.remove(offlinePlanFragment);
+        if (retailerMapFragment != null)
+            ft.remove(retailerMapFragment);
 
         Bundle bndl;
         Fragment fragment;

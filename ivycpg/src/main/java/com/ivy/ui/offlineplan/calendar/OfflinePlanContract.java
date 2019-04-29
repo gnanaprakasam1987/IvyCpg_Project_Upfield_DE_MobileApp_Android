@@ -1,8 +1,9 @@
 package com.ivy.ui.offlineplan.calendar;
 
+import com.ivy.core.base.presenter.BaseIvyPresenter;
+import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
 import com.ivy.sd.png.bo.CalenderBO;
-import com.ivy.ui.offlineplan.OfflinePlanBaseContract;
 
 import java.util.ArrayList;
 
@@ -11,13 +12,13 @@ import java.util.ArrayList;
  */
 public interface OfflinePlanContract {
 
-    interface OfflinePlanView extends OfflinePlanBaseContract.OfflinePlanBaseView {
+    interface OfflinePlanView extends BaseIvyView {
         void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList);
         void setMonthName(String monthName);
     }
 
     @PerActivity
-    interface OfflinePlanPresenter<V extends OfflinePlanView> extends OfflinePlanBaseContract.OfflinePlanBasePresenter{
+    interface OfflinePlanPresenter<V extends OfflinePlanView> extends BaseIvyPresenter<V>{
         void setPlanDates();
         void loadCalendar();
         void onNextMonthClicked();

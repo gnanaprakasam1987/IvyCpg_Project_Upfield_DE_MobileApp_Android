@@ -1,10 +1,21 @@
 package com.ivy.ui.offlineplan.calendar.view;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -16,6 +27,7 @@ import android.widget.TextView;
 import com.ivy.calendarlibrary.monthview.MonthView;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CalenderBO;
 import com.ivy.sd.png.bo.SpinnerBO;
@@ -25,6 +37,7 @@ import com.ivy.ui.offlineplan.calendar.adapter.CalendarClickListner;
 import com.ivy.ui.offlineplan.calendar.adapter.MonthViewAdapter;
 import com.ivy.ui.offlineplan.calendar.di.DaggerOfflinePlanComponent;
 import com.ivy.ui.offlineplan.calendar.di.OfflinePlanModule;
+import com.ivy.ui.retailer.view.map.RetailerMapFragment;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -32,6 +45,9 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import butterknife.BindView;
+
+import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_MAP_PLAN;
+import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_OFLNE_PLAN;
 
 
 public class OfflinePlanFragment extends BaseFragment implements OfflinePlanContract.OfflinePlanView, CalendarClickListner {
@@ -63,6 +79,14 @@ public class OfflinePlanFragment extends BaseFragment implements OfflinePlanCont
 
     private int mSelectedType = 0;
 
+    private Context context;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
+
     @Override
     public void initializeDi() {
         DaggerOfflinePlanComponent.builder()
@@ -81,6 +105,16 @@ public class OfflinePlanFragment extends BaseFragment implements OfflinePlanCont
 
     @Override
     public void initVariables(View view) {
+
+        setHasOptionsMenu(true);
+
+        ActionBar actionBar = ((AppCompatActivity) context).getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setDisplayShowTitleEnabled(false);
+            actionBar.setDisplayShowHomeEnabled(true);
+        }
+
         rvCalendar.setLayoutManager(getActivity());
     }
 
@@ -188,5 +222,41 @@ public class OfflinePlanFragment extends BaseFragment implements OfflinePlanCont
     @Override
     public void onDateSelected(String selectedDate) {
         showMessage(selectedDate);
+    }
+
+
+    @Override
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+
+        menu.findItem(R.id.filter).setVisible(false);
+        menu.findItem(R.id.calendar).setVisible(false);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_retailer_plan, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            startActivity(new Intent(getActivity(),
+                    HomeScreenActivity.class));
+            ((Activity)context).finish();
+            return true;
+        } else if (item.getItemId() == R.id.map_retailer) {
+
+            FragmentManager fm = ((FragmentActivity)context).getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+
+            RetailerMapFragment fragment = new RetailerMapFragment();
+            ft.replace(R.id.fragment_content, fragment,MENU_MAP_PLAN);
+            ft.commit();
+            return true;
+        }
+
+        return false;
     }
 }

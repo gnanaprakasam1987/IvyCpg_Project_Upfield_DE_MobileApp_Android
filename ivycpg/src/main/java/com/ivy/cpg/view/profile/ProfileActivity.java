@@ -166,7 +166,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private boolean isVisible = false;
     private boolean isLatLong;
     private static boolean firstLevZoom;
-    private boolean fromHomeClick = false, visitClick = false, isFromPlanning = false, isFromPlanningSub = false;
+    private boolean fromHomeClick = false,
+            visitClick = false, isFromPlanning = false,
+            isFromPlanningSub = false ,
+            isShowVisitButton = false;
 
     private List<LatLng> markerList = new ArrayList<>();
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID;
@@ -394,6 +397,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         isFromPlanning = getIntent().getBooleanExtra("isPlanning", false);
         isFromPlanningSub = getIntent().getBooleanExtra("isPlanningSub", false);
         fromMap = getIntent().getBooleanExtra("map", false);
+
+        isShowVisitButton = getIntent().getBooleanExtra("HideVisit", false);
 
         try {
             Intent arg = getIntent();
@@ -1216,7 +1221,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
                 if (isNonVisitReason)
                     cancelVisitBtn.setVisibility(View.VISIBLE);
-                startVisitBtn.setVisibility(View.VISIBLE);
+
+                if (!isShowVisitButton)
+                    startVisitBtn.setVisibility(View.VISIBLE);
+                else
+                    startVisitBtn.setVisibility(View.GONE);
+
             } else if (non_visit) {
                 deviateBtn.setVisibility(View.VISIBLE);
                 cancelVisitBtn.setVisibility(View.GONE);

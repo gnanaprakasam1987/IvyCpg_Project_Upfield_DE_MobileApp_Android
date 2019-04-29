@@ -31,6 +31,7 @@ public class DateTimeUtils {
     public static final int DATE_DOB_FORMAT_PLAIN = 10;
     public static final int TIME = 0;
     public static final int DATE = 1;
+    public static final int TIME_HOUR_MINS = 11;
     public static String defaultDateFormat = "MM/dd/yyyy";
     private static final String serverDateFormat = "yyyy/MM/dd";
     public static int DATE_TIME_ID = 3;
@@ -117,7 +118,10 @@ public class DateTimeUtils {
         } else if (DATE_DOB_FORMAT_PLAIN == dateFormat) {
             SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);
             return sdf.format(cal.getTime());
-        } else {
+        } else if (TIME_HOUR_MINS == dateFormat) {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH", Locale.ENGLISH);
+            return sdf.format(cal.getTime());
+        }else {
             SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyyHHmmss", Locale.ENGLISH);
             return sdf.format(cal.getTime());
         }

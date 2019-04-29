@@ -27,7 +27,8 @@ import io.reactivex.disposables.CompositeDisposable;
 /**
  * Created by mansoor on 27/03/2019
  */
-public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanView> extends BasePresenter<V> implements OfflinePlanContract.OfflinePlanPresenter<V> {
+public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanView>
+        extends BasePresenter<V> implements OfflinePlanContract.OfflinePlanPresenter<V> {
 
     private OfflinePlanDataManager offlinePlanDataManager;
     private String planFromDate, planToDate;
@@ -232,4 +233,5 @@ public class OfflinePlanPresenterImpl<V extends OfflinePlanContract.OfflinePlanV
         date1 = cal.getTime();
         return date1;
     }
+
 }

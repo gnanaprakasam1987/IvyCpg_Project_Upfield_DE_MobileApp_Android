@@ -253,24 +253,26 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     @Override
     public void showAlert(String title, String msg) {
         if (getActivity() instanceof BaseActivity)
-            ((BaseActivity) getActivity()).showAlert(title,msg);
+            ((BaseActivity) getActivity()).showAlert(title, msg);
         else if (getActivity() instanceof IvyBaseActivityNoActionBar)
-            ((IvyBaseActivityNoActionBar) getActivity()).showAlert(title,msg,null);
+            ((IvyBaseActivityNoActionBar) getActivity()).showAlert(title, msg, null);
     }
 
     @Override
     public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener) {
-
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).showAlert(title, msg, positiveClickListener);
+        else if (getActivity() instanceof IvyBaseActivityNoActionBar)
+            ((IvyBaseActivityNoActionBar) getActivity()).showAlert(title, msg, positiveClickListener);
     }
 
     public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, boolean isCancelable) {
-
-
+        ((BaseActivity) getActivity()).showAlert(title, msg, positiveClickListener, isCancelable);
     }
 
     @Override
     public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, CommonDialog.negativeOnClickListener negativeOnClickListener) {
-
+        ((BaseActivity) getActivity()).showAlert(title, msg, positiveClickListener, negativeOnClickListener);
     }
 
     @Override
@@ -327,11 +329,11 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
             ((IvyBaseActivityNoActionBar) getActivity()).setUpToolbar(title);
     }
 
-    public void applyAlertDialogTheme(Context context, AlertDialog.Builder builder){
+    public void applyAlertDialogTheme(Context context, AlertDialog.Builder builder) {
         if (getActivity() instanceof BaseActivity)
-            ((BaseActivity) getActivity()).applyAlertDialogTheme(context,builder);
+            ((BaseActivity) getActivity()).applyAlertDialogTheme(context, builder);
         else if (getActivity() instanceof IvyBaseActivityNoActionBar)
-            ((IvyBaseActivityNoActionBar) getActivity()).applyAlertDialogTheme(context,builder);
+            ((IvyBaseActivityNoActionBar) getActivity()).applyAlertDialogTheme(context, builder);
     }
 
     // Todo to be removed

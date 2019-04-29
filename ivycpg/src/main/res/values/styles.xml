@@ -8,6 +8,8 @@
         <item name="listcolor">@color/list_odd_item_bg</item>
         <item name="listcolor_alt">@color/list_even_item_bg</item>
 
+        <!--<item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>-->
+
     </style>
 
     <style name="MVPTheme.Blue" parent="AppTheme1.Base">
@@ -1111,6 +1113,44 @@ negative button and neutral button -->
         <item name="colorControlNormal">@color/sdkTextColorPrimary</item>
         <item name="actionBarWidgetTheme">@style/Widget.SdkTheme.ActionBar</item>
         <item name="actionBarTheme">@style/ThemeOverlay.SdkTheme.ActionBar</item>
+    </style>
+
+    <style name="Color1SwitchStyle">
+        <item name="android:thumb">@drawable/customswitchselector</item>
+        <item name="android:track">@drawable/my_custom_track</item>
+        <item name="track">@drawable/my_custom_track</item>
+
+    </style>
+
+    <style name="AppBottomSheetDialogTheme"
+        parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <style name="AppModalStyle"
+        parent="Widget.Design.BottomSheet.Modal">
+        <item name="behavior_peekHeight">@dimen/_80sdp</item>
+    </style>
+
+    <style name="ButtonNormal_Box_green" parent="ButtonNormal_Box">
+        <item name="android:colorBackground">@color/green_productivity</item>
+    </style>
+
+    <style name="ButtonNormal_Box" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="android:layout_height">@dimen/btn_round_corner_height</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/btn_round_text_color</item>
+        <item name="android:textSize">@dimen/btn_round_corner_text_size</item>
+        <item name="android:paddingLeft">@dimen/btn_round_corner_padding</item>
+        <item name="android:paddingRight">@dimen/btn_round_corner_padding</item>
+        <item name="android:minWidth">@dimen/btn_round_corner_width</item>
+        <item name="android:fontFamily">@font/baloobhai_regular</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:colorBackground">@color/grey_odd</item>
+    </style>
+
+    <style name="ButtonNormal_Box_grey" parent="ButtonNormal_Box">
+        <item name="android:colorBackground">@color/grey_odd</item>
     </style>
 
 

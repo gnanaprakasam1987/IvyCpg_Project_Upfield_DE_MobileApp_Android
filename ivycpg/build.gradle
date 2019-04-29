@@ -176,6 +176,7 @@ android {
                     'src/main/res/layouts/photocapture',
                     'src/main/res/layouts/activation',
                     'src/main/res/layouts/offline',
+                    'src/main/res/layouts/retailer',
                     'src/main/res/layouts',
                     'src/main/res'
             ]
