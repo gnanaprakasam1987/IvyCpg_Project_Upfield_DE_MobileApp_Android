@@ -1,4 +1,4 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:state_focused="true" android:drawable="@drawable/dashed_edithighlight_border" />
+    <item android:state_focused="true" android:drawable="@drawable/dashed_edit_border" />
     <item android:drawable="@drawable/dashed_edit_border" />
 </selector>

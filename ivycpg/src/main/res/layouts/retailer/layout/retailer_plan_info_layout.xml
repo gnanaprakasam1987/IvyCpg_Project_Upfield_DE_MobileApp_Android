@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:visibility="visible"
+    app:behavior_hideable="false"
+    app:behavior_peekHeight="@dimen/_80sdp"
+    android:layout_marginBottom="@dimen/_10sdp"
+    app:cardBackgroundColor="@color/white"
+    app:cardUseCompatPadding="true"
+    app:contentPadding="0dp"
+    android:clickable="true"
+    android:id="@+id/outlet_plan_window"
+    app:layout_behavior="@string/bottom_sheet_behavior">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/_10sdp"
+        android:paddingLeft="@dimen/_15sdp"
+        android:paddingRight="@dimen/_15sdp"
+        android:paddingTop="@dimen/_10sdp">
+
+        <TextView
+            android:id="@+id/tv_outlet_name"
+            style="@style/TextViewListItemValuesHighLight"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:padding="@dimen/_3sdp"
+            android:maxLength="25"
+            android:text=""
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintHorizontal_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/profile_plan"/>
+
+        <TextView
+            android:id="@+id/tv_outlet_address"
+            style="@style/TextViewListItemSecondary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:padding="@dimen/_3sdp"
+            android:text=""
+            android:textColor="#8b000000"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/profile_plan"
+            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_name" />
+
+        <ImageView
+            android:id="@+id/profile_plan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:padding="@dimen/_5sdp"
+            android:src="@drawable/ic_store_icon"
+            android:tint="@color/FullBlack"
+            app:layout_constraintStart_toEndOf="@id/tv_outlet_name"
+            app:layout_constraintEnd_toStartOf="@id/add_plan"
+            app:layout_constraintRight_toLeftOf="@id/save_plan"
+            android:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/add_plan"
+            style="@style/TextViewListItemCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5sdp"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/add_plan"
+            android:textColor="@color/green_productivity"
+            android:visibility="visible"
+            app:layout_constraintStart_toEndOf="@id/profile_plan"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_plan"
+            app:layout_constraintEnd_toStartOf="@id/save_plan"
+            app:layout_constraintTop_toTopOf="@+id/profile_plan" />
+
+        <TextView
+            android:id="@+id/save_plan"
+            style="@style/TextViewListItemCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/_5sdp"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/save"
+            android:textColor="@color/green_productivity"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/profile_plan"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/add_plan"
+            app:layout_constraintTop_toTopOf="@+id/profile_plan" />
+
+        <!--Visit Start Begins-->
+        <TextView
+            android:id="@+id/tv_visit_time_txt"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:padding="@dimen/_3sdp"
+            android:text="Visit Start Time"
+            android:textColor="#de000000"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address" />
+
+        <TextView
+            android:id="@+id/tv_visit_date"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:padding="@dimen/_3sdp"
+            android:text=""
+            android:textColor="#de000000"
+            app:layout_constraintEnd_toStartOf="@id/tv_visit_time"
+            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address" />
+
+        <TextView
+            android:id="@+id/tv_visit_time"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:padding="@dimen/_3sdp"
+            android:text=""
+            android:textColor="#de000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address" />
+        <!--Visit Start Ends-->
+
+        <!--Visit End Begins-->
+        <TextView
+            android:id="@+id/tv_visit_end_time_txt"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:padding="@dimen/_3sdp"
+            android:text="Visit End Time"
+            android:textColor="#de000000"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_visit_time_txt" />
+
+        <TextView
+            android:id="@+id/tv_visit_end_date"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/_15sdp"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:padding="@dimen/_3sdp"
+            android:text=""
+            android:textColor="#de000000"
+            app:layout_constraintEnd_toStartOf="@id/tv_visit_end_time"
+            app:layout_constraintTop_toBottomOf="@+id/tv_visit_time_txt" />
+
+        <TextView
+            android:id="@+id/tv_visit_end_time"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:padding="@dimen/_3sdp"
+            android:text=""
+            android:textColor="#de000000"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_visit_time_txt" />
+        <!--Visit End Ends-->
+
+        <!--Last Visit Begins-->
+        <TextView
+            android:id="@+id/tv_last_visit_txt"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:padding="@dimen/_3sdp"
+            android:text="Last Visit Date"
+            android:textColor="#de000000"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_visit_end_time_txt" />
+
+        <TextView
+            android:id="@+id/tv_last_visit_date"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:padding="@dimen/_3sdp"
+            android:text=""
+            android:textColor="#de000000"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_visit_end_time_txt" />
+        <!--Last Visit Ends-->
+
+        <android.support.constraint.Group
+            android:id="@+id/visitElementGroup"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:constraint_referenced_ids="tv_visit_end_time_txt,tv_visit_time,tv_visit_date,tv_visit_end_time,tv_visit_time_txt,tv_visit_end_date,tv_last_visit_txt,tv_last_visit_date" />
+
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.v7.widget.CardView>

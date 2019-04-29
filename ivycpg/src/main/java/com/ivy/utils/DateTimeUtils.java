@@ -17,6 +17,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import static com.ivy.core.IvyConstants.DEFAULT_DATE_FORMAT;
+
 public class DateTimeUtils {
 
     public static final int DATE_TIME = 2;
@@ -29,6 +31,7 @@ public class DateTimeUtils {
     public static final int DATE_DOB_FORMAT_PLAIN = 10;
     public static final int TIME = 0;
     public static final int DATE = 1;
+    public static final int TIME_HOUR_MINS = 11;
     public static String defaultDateFormat = "MM/dd/yyyy";
     private static final String serverDateFormat = "yyyy/MM/dd";
     public static int DATE_TIME_ID = 3;
@@ -115,12 +118,24 @@ public class DateTimeUtils {
         } else if (DATE_DOB_FORMAT_PLAIN == dateFormat) {
             SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);
             return sdf.format(cal.getTime());
-        } else {
+        } else if (TIME_HOUR_MINS == dateFormat) {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH", Locale.ENGLISH);
+            return sdf.format(cal.getTime());
+        }else {
             SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyyHHmmss", Locale.ENGLISH);
             return sdf.format(cal.getTime());
         }
 
     }
+
+    public static String addDateToYear(int noOfYears) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, noOfYears); // to get previous year add -1
+        // convert calendar to date
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+        return sdf.format(cal.getTime());
+    }
+
 
     /**
      * @param firstDate
@@ -396,6 +411,16 @@ public class DateTimeUtils {
 
     public static int getDay(Date date){
         return getCalendarOfDate(date).get(Calendar.DAY_OF_MONTH);
+    }
+
+    public static String convertDayName(String day, String inputFormat, String outputFormat){
+        try {
+            return new SimpleDateFormat(outputFormat,Locale.US)
+                    .format(new SimpleDateFormat(inputFormat,Locale.US).parse(day));
+        }catch(Exception e){
+            Commons.printException(e);
+            return day;
+        }
     }
 
 }

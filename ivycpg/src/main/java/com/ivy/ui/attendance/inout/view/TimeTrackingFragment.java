@@ -90,7 +90,7 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
     }
 
     @Override
-    public void initVariables(View view) {
+    public void init(View view) {
         timeTrackList = new ArrayList<>();
     }
 

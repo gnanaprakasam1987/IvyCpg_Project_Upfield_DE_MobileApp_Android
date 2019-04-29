@@ -68,6 +68,9 @@ public class SaveVanUnloadAsyncTask extends AsyncTask<Integer, Integer, Boolean>
                     || businessModel.configurationMasterHelper.COMMON_PRINT_MAESTROS) {
                 mVanUnLoadModuleHelper.getVanUnloadDetailsForPrint(mVanUnLoadModuleHelper.getTransactionId(), mContext);
             }
+
+            businessModel.saveModuleCompletion("MENU_VAN_UNLOAD", false);
+
         } catch (Exception e) {
             Commons.printException("" + e);
             return Boolean.FALSE;

@@ -457,7 +457,7 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         if (mBModel.reasonHelper.isNpReasonPhotoAvaiable(mBModel.retailerMasterBO.getRetailerID(), MENU_SERIALIZED_ASSET)) {
-                            mBModel.saveModuleCompletion(MENU_SERIALIZED_ASSET);
+                            mBModel.saveModuleCompletion(MENU_SERIALIZED_ASSET, true);
                             mBModel.outletTimeStampHelper
                                     .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                             startActivity(new Intent(getActivity(),

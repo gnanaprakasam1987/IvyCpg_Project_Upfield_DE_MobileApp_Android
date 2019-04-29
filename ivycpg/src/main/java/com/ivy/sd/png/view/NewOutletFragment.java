@@ -4829,7 +4829,8 @@ public class NewOutletFragment extends IvyBaseFragment
         spinnerHashMap = new HashMap<>();
         spinnerAdapterMap = new HashMap<>();
         int rowCount = mAttributeParentList.size();
-        selectedAttribList = new HashMap<>();
+        if(selectedAttribList==null)
+            selectedAttribList = new HashMap<>();// It may contain common attributes selected id while called from channel to load channel attribute
         for (int i = 0; i < rowCount; i++) {
             NewOutletAttributeBO parentBO = mAttributeParentList.get(i);
             if ((isCommon && mCommonAttributeList.contains(parentBO.getAttrId()))
@@ -4897,7 +4898,9 @@ public class NewOutletFragment extends IvyBaseFragment
                         });
 
                         if (screenMode == VIEW || screenMode == EDIT) {
-                            spinner.setSelection(getAttriButePostion(arrayAdapter));
+                            int selectedPosition=getAttriButePostion(arrayAdapter);
+                            spinner.setSelection(selectedPosition);
+                            selectedAttribList.put(parentAttrId, attrbList.get(selectedPosition));
                             if (screenMode == 1)
                                 spinner.setEnabled(false);
                         } else {
@@ -4935,7 +4938,9 @@ public class NewOutletFragment extends IvyBaseFragment
                         });
 
                         if (screenMode == VIEW || screenMode == EDIT) {
-                            spinner.setSelection(getAttriButePostion(arrayAdapter));
+                            int selectedPosition=getAttriButePostion(arrayAdapter);
+                            spinner.setSelection(selectedPosition);
+                            selectedAttribList.put(parentAttrId, attrbList.get(selectedPosition));
                             if (screenMode == 1)
                                 spinner.setEnabled(false);
                         } else {

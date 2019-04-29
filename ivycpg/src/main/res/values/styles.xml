@@ -8,6 +8,8 @@
         <item name="listcolor">@color/list_odd_item_bg</item>
         <item name="listcolor_alt">@color/list_even_item_bg</item>
 
+        <!--<item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>-->
+
     </style>
 
     <style name="MVPTheme.Blue" parent="AppTheme1.Base">
@@ -99,6 +101,7 @@
 
         <item name="highLightColor">@color/highlighter</item>
 
+        <item name="startAndEndOfTheDayHeaderLayoutBg">@color/startAndEndOfTheDayHeaderLayoutBg_blue</item>
 
     </style>
 
@@ -258,6 +261,9 @@ negative button and neutral button -->
         <item name="SearchViewStyle">@style/SearchViewStyle</item>
 
         <item name="highLightColor">@color/highlighter_nblue</item>
+
+        <item name="startAndEndOfTheDayHeaderLayoutBg">@color/startAndEndOfTheDayHeaderLayoutBg_blue</item>
+
     </style>
 
 
@@ -359,6 +365,8 @@ negative button and neutral button -->
 
         <item name="highLightColor">@color/highlighter_red</item>
 
+        <item name="startAndEndOfTheDayHeaderLayoutBg">@color/startAndEndOfTheDayHeaderLayoutBg_red</item>
+
     </style>
 
     <style name="MyButtonRed" parent="Base.Widget.AppCompat.Button">
@@ -458,6 +466,9 @@ negative button and neutral button -->
         <item name="SearchViewStyle">@style/SearchViewStyle</item>
 
         <item name="highLightColor">@color/highlighter_orange</item>
+
+        <item name="startAndEndOfTheDayHeaderLayoutBg">@color/startAndEndOfTheDayHeaderLayoutBg_orange</item>
+
     </style>
 
     <style name="MyButtonOrange" parent="Base.Widget.AppCompat.Button">
@@ -555,6 +566,8 @@ negative button and neutral button -->
         <item name="dashboardSpinnerSelector">@color/divider_view_color</item>
         <item name="SearchViewStyle">@style/SearchViewStyle</item>
         <item name="highLightColor">@color/highlighter_green</item>
+
+        <item name="startAndEndOfTheDayHeaderLayoutBg">@color/startAndEndOfTheDayHeaderLayoutBg_green</item>
 
     </style>
 
@@ -686,6 +699,12 @@ negative button and neutral button -->
         <item name="android:textColor">@color/FullBlack</item>
     </style>
 
+    <style name="TextViewNormalHighlight" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_primary</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="android:textColor">?attr/primarycolor</item>
+    </style>
+
 
     <style name="TextViewCaptionNormal" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/text_size_primary</item>
@@ -769,6 +788,18 @@ negative button and neutral button -->
     <style name="TextViewListItemValuesHighLight" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/text_size_primary</item>
         <item name="android:textColor">?attr/highLightColor</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+    </style>
+
+    <style name="RetailerNameListView" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/retailer_name_list</item>
+        <item name="android:textColor">?attr/listItemPrimaryTextColor</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+
+    <style name="RetailerSecondaryListView" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/retailer_address_list</item>
+        <item name="android:textColor">@color/FullBlack</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
 
@@ -1082,6 +1113,44 @@ negative button and neutral button -->
         <item name="colorControlNormal">@color/sdkTextColorPrimary</item>
         <item name="actionBarWidgetTheme">@style/Widget.SdkTheme.ActionBar</item>
         <item name="actionBarTheme">@style/ThemeOverlay.SdkTheme.ActionBar</item>
+    </style>
+
+    <style name="Color1SwitchStyle">
+        <item name="android:thumb">@drawable/customswitchselector</item>
+        <item name="android:track">@drawable/my_custom_track</item>
+        <item name="track">@drawable/my_custom_track</item>
+
+    </style>
+
+    <style name="AppBottomSheetDialogTheme"
+        parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/AppModalStyle</item>
+    </style>
+
+    <style name="AppModalStyle"
+        parent="Widget.Design.BottomSheet.Modal">
+        <item name="behavior_peekHeight">@dimen/_80sdp</item>
+    </style>
+
+    <style name="ButtonNormal_Box_green" parent="ButtonNormal_Box">
+        <item name="android:colorBackground">@color/green_productivity</item>
+    </style>
+
+    <style name="ButtonNormal_Box" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="android:layout_height">@dimen/btn_round_corner_height</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/btn_round_text_color</item>
+        <item name="android:textSize">@dimen/btn_round_corner_text_size</item>
+        <item name="android:paddingLeft">@dimen/btn_round_corner_padding</item>
+        <item name="android:paddingRight">@dimen/btn_round_corner_padding</item>
+        <item name="android:minWidth">@dimen/btn_round_corner_width</item>
+        <item name="android:fontFamily">@font/baloobhai_regular</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:colorBackground">@color/grey_odd</item>
+    </style>
+
+    <style name="ButtonNormal_Box_grey" parent="ButtonNormal_Box">
+        <item name="android:colorBackground">@color/grey_odd</item>
     </style>
 
 

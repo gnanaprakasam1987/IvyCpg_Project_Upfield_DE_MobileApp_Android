@@ -78,7 +78,7 @@
     <string name="Address">Address</string>
     <string name="Address1">Address 1</string>
     <string name="Address2">Address 2</string>
-    <string name="Seller">Seller</string>
+    <string name="Seller">Seller Wise</string>
     <string name="Channelwise">Channel Wise</string>
     <string name="Amount">Amount</string>
     <string name="retailername">Store Name</string>
@@ -130,7 +130,7 @@
     <string name="discount">Discount</string>
     <string name="print">Print</string>
     <string name="plan_task">Enter Task Title</string>
-    <string name="applyto">Applicable for</string>
+    <string name="applyto">Applicable for:</string>
     <string name="day">Day</string>
     <string name="order_report">ORDER REPORT</string>
     <string name="order_entry">Order</string>
@@ -945,7 +945,7 @@
     <string name="is_distributed">Is Distributed</string>
     <string name="pls_select_chequeno">Please Enter ChequeNo </string>
     <string name="average_lines">Average Lines</string>
-    <string name="add_plane">Add To Plan</string>
+    <string name="add_plan">Add To Plan</string>
     <string name="non_visit">No Visit</string>
     <string name="are_you_sure_you_want_to_logout"> Are you sure want to logout?</string>
     <string name="vaload_heder_text">Select quality for each batch</string>
@@ -1307,7 +1307,9 @@
         <item>All</item>
         <item>Assigned</item>
         <item>My Task</item>
+        <item>Completed</item>
     </string-array>
+
     <string-array name="days_in_week">
         <item>Sun</item>
         <item>Mon</item>

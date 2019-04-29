@@ -118,7 +118,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                                     + " , RC2.contactname as sc_name, RC2.ContactName_LName as sc_LName, RC2.ContactNumber as sc_Number,"
                                                     + " RC2.CPID as sc_CPID, IFNULL(RC2.DOB,'') as sc_DOB, RC2.contact_title as sc_title, RC2.contact_title_lovid as sc_title_lovid,"
 
-                                                    + " RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
+                                                    + " RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency, RV.lastVisitDate, RV.lastVisitedBy,"
 
                                                     + " IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RField8,RField9,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
                                                     + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,RA.District,"
@@ -310,6 +310,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                             retailer.setSupplierTaxLocId(c.getInt(c.getColumnIndex("SupplierTaxLocId")));
                                             retailer.setRidSF(c.getString(c.getColumnIndex("ridSF")));
                                             retailer.setDistrict(c.getString(c.getColumnIndex("District")));
+                                            retailer.setLastVisitDate(c.getString(c.getColumnIndex("lastVisitDate")));
+                                            retailer.setLastVisitedBy(c.getString(c.getColumnIndex("lastVisitedBy")));
 
                                             retailer.setIsToday(0);
                                             retailer.setHangingOrder(false);
@@ -351,6 +353,13 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                         }
                                     }
 
+                                    for (RetailerMasterBO retailerMasterBO : retailerMasterBOS) {
+                                        if ("P".equals(retailerMasterBO.getIsVisited())) {
+                                            appDataProvider.setPausedRetailer(retailerMasterBO);
+                                            break;
+                                        }
+
+                                    }
 
                                 } catch (Exception ignored) {
 

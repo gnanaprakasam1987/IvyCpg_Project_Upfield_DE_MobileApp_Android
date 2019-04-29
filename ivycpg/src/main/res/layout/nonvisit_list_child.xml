@@ -23,17 +23,16 @@
 
         <TextView
             android:id="@+id/outletName_tv"
-            style="@style/TextViewListItemPrimary"
+            style="@style/RetailerNameListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_left_retailer_name"
             android:layout_marginLeft="@dimen/margin_left_retailer_name"
-            android:text="@string/outlet_name"
-            android:textSize="@dimen/actionbar_subtitle_text_size" />
+            android:text="@string/outlet_name" />
 
         <TextView
             android:id="@+id/rfield4_tv"
-            style="@style/TextViewListItemSecondary"
+            style="@style/RetailerSecondaryListView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/margin_left_retailer_name"
@@ -75,7 +74,7 @@
                 android:text=""
                 android:textColor="@color/black_bg3"
                 android:textSize="@dimen/text_size_caption"
-                android:visibility="gone" />
+                android:visibility="visible" />
         </LinearLayout>
 
         <LinearLayout

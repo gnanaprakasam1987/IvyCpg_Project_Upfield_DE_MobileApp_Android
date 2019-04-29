@@ -63,7 +63,7 @@ public class SerializedAssetPresenterImpl implements SerializedAssetContractor.S
         protected String doInBackground(String... params) {
             deleteUnUsedImages();
             mAssetTrackingHelper.saveAsset(mContext.getApplicationContext(), params[0]);
-            mBModel.saveModuleCompletion(params[0]);
+            mBModel.saveModuleCompletion(params[0], true);
             return "";
         }
 

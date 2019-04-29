@@ -5,11 +5,13 @@ import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -36,9 +38,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.MapsInitializer;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.ivy.cpg.locationservice.movementtracking.MovementTracking;
 import com.ivy.cpg.primarysale.view.PrimarySaleFragment;
 import com.ivy.cpg.view.acknowledgement.AcknowledgementActivity;
@@ -82,9 +81,9 @@ import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.sellerhomescreen.SellersMapHomeFragment;
 import com.ivy.cpg.view.survey.SurveyActivityNewFragment;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
-import com.ivy.cpg.view.task.TaskFragment;
 import com.ivy.cpg.view.tradeCoverage.VisitFragment;
 import com.ivy.cpg.view.van.LoadManagementFragment;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.cpg.view.van.stockproposal.StockProposalFragment;
 import com.ivy.cpg.view.webview.WebViewActivity;
 import com.ivy.maplib.PlanningMapFragment;
@@ -94,7 +93,6 @@ import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.GenericObjectPair;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ChatApplicationHelper;
@@ -108,14 +106,17 @@ import com.ivy.sd.png.view.PlanDeviationFragment;
 import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
 import com.ivy.ui.offlineplan.calendar.view.CalendarPlanFragment;
+import com.ivy.ui.task.TaskConstant;
+import com.ivy.ui.task.view.TaskFragment;
+import com.ivy.ui.retailer.view.map.RetailerMapFragment;
+import com.ivy.utils.AppUtils;
+import com.ivy.ui.offlineplan.calendar.view.OfflinePlanFragment;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
@@ -137,6 +138,7 @@ import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_JOINT_CALL;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_LEAVE_APR;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_LOAD_MANAGEMENT;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_LOAD_REQUEST;
+import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_MAP_PLAN;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_MVP;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_NEWRET_EDT;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_NEW_RETAILER;
@@ -200,11 +202,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int TERMS_COND_REQ_CODE = 2;
     private String imageFileName;
-
-    // Map retailed variables
-    private List<MarkerOptions> markerList;
-    private List<com.baidu.mapapi.map.MarkerOptions> baiduMarkerList;
-
 
     private ListView listView;
     private ArrayList<ChannelBO> mChannelList;
@@ -404,8 +401,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
 
         /** Initialising map view **/
-        markerList = new ArrayList<>();
-        baiduMarkerList = new ArrayList<>();
         try {
             if (bmodel.configurationMasterHelper.IS_MAP) {
                 MapsInitializer.initialize(getActivity());
@@ -521,10 +516,16 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         if (leftmenuDB.size() > 0) {
             if (getActivity().getIntent().getStringExtra("menuCode") != null) {
-                for (ConfigureBO configureBO : leftmenuDB) {
-                    if (configureBO.getConfigCode().equalsIgnoreCase(getActivity().getIntent().getStringExtra("menuCode"))) {
-                        gotoNextActivity(configureBO);
-                        break;
+                if (MENU_PLANE_MAP.equals(getActivity().getIntent().getStringExtra("menuCode"))){
+                    ConfigureBO conBo = new ConfigureBO();
+                    conBo.setConfigCode(MENU_PLANE_MAP);
+                    gotoNextActivity(conBo);
+                } else {
+                    for (ConfigureBO configureBO : leftmenuDB) {
+                        if (configureBO.getConfigCode().equalsIgnoreCase(getActivity().getIntent().getStringExtra("menuCode"))) {
+                            gotoNextActivity(configureBO);
+                            break;
+                        }
                     }
                 }
             } else {
@@ -551,6 +552,16 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     }
                 }
             }
+        }
+    }
+
+    private void moveToSpecificMenu(String menuCode){
+        for (ConfigureBO configureBO : leftmenuDB) {
+            if (configureBO.getConfigCode().equalsIgnoreCase(menuCode)){
+                gotoNextActivity(configureBO);
+                break;
+            }
+
         }
     }
 
@@ -624,6 +635,42 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                                     }
                                 });
                 bmodel.applyAlertDialogTheme(builderGPS);
+                break;
+
+            case 2:
+                AlertDialog.Builder builderTrip = new AlertDialog.Builder(getActivity())
+                        .setCancelable(false)
+                        .setNegativeButton(
+                                getResources().getString(R.string.end),
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog,
+                                                        int whichButton) {
+
+                                        moveToSpecificMenu(MENU_LOAD_MANAGEMENT);
+
+                                    }
+                                });
+                if(bmodel.configurationMasterHelper.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP){
+                    builderTrip.setPositiveButton(getResources().getString(R.string.lbl_continue),
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+
+                                    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(bmodel.getApplicationContext());
+                                    sharedPreferences.edit().putString("tripExtendedDate",DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)).apply();
+
+                                    moveToSpecificMenu(MENU_VISIT);
+                                }
+                            });
+                    builderTrip.setTitle(
+                            getResources().getString(R.string.do_you_want_to_continue_same_trip_or_end_the_trip));
+                }
+                else {
+                    builderTrip.setTitle(
+                            getResources().getString(R.string.pls_end_the_previous_trip));
+                }
+
+                bmodel.applyAlertDialogTheme(builderTrip);
                 break;
         }
     }
@@ -703,7 +750,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
-            } else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
+            }else if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP&&!LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isValidTrip()){
+                    showDialog(2);
+            }
+            else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
                     && isInandOutModuleEnabled
                     && AttendanceHelper.getInstance(getContext()).isSellerWorking(getContext())) {
                 Toast.makeText(getActivity(),
@@ -1693,6 +1743,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         CalendarPlanFragment calendarPlanFragment = (CalendarPlanFragment) fm.findFragmentByTag(MENU_OFLNE_PLAN);
 
+        RetailerMapFragment retailerMapFragment = (RetailerMapFragment) fm.findFragmentByTag(MENU_MAP_PLAN);
+
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()
                 && !bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER) {
@@ -1817,6 +1869,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (calendarPlanFragment != null && (fragmentName.equals(MENU_OFLNE_PLAN))
                 && calendarPlanFragment.isVisible()) {
             return;
+        } else if (retailerMapFragment != null && (fragmentName.equals(MENU_MAP_PLAN))
+                && retailerMapFragment.isVisible()) {
+            return;
         }
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
 
@@ -1900,6 +1955,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(denominationFragment);
         if (calendarPlanFragment != null)
             ft.remove(calendarPlanFragment);
+        if (retailerMapFragment != null)
+            ft.remove(retailerMapFragment);
 
         Bundle bndl;
         Fragment fragment;
@@ -2140,7 +2197,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         MENU_ATTENDANCE);
                 break;
             case MENU_PLANE_MAP:
-                displayTodayRoute(null);
                 if (isVisit) {
                     bndl = new Bundle();
                     bndl.putString("From", MENU_VISIT_CONSTANT);
@@ -2227,9 +2283,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 break;
             case MENU_TASK_NEW:
                 bndl = new Bundle();
-                bndl.putString("screentitle", menuName);
-                bndl.putBoolean("IsRetailerwisetask", false);
-                bndl.putBoolean("fromHomeScreen", true);
+                bndl.putString(TaskConstant.SCREEN_TITLE, menuName);
+                bndl.putBoolean(TaskConstant.FROM_HOME_SCREEN, true);
+                bndl.putString(TaskConstant.MENU_CODE, MENU_TASK_NEW);
                 fragment = new TaskFragment();
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
@@ -2361,11 +2417,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         conBo.setConfigCode(MENU_PLANE_MAP);
         gotoNextActivity(conBo);
 
-    }
-
-    @Override
-    public List<MarkerOptions> getData() {
-        return markerList;
     }
 
     @Override
@@ -2555,88 +2606,6 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         mHomeScreenItemClickedListener = mListener;
     }
 
-
-    private void displayTodayRoute(String filter) {
-        LatLng latLng;
-
-        List<RetailerMasterBO> retailer = new ArrayList<>();
-        try {
-            int siz = bmodel.getRetailerMaster().size();
-            retailer.clear();
-            // Add today's retailers.
-
-            if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
-                for (int i = 0; i < siz; i++) {
-                    if (bmodel.getRetailerMaster().get(i).getIsToday() == 1) {
-                        retailer.add(bmodel.getRetailerMaster().get(i));
-                    }
-                }
-            } else {
-                for (int i = 0; i < siz; i++) {
-
-                    retailer.add(bmodel.getRetailerMaster().get(i));
-
-                }
-            }
-
-            Collections.sort(retailer,
-                    RetailerMasterBO.WalkingSequenceComparator);
-
-
-            // Add today'sdeviated retailers.
-            for (int i = 0; i < siz; i++) {
-                if (bmodel.getRetailerMaster().get(i).getIsDeviated() != null && ("Y").equals(bmodel.getRetailerMaster().get(i).getIsDeviated())) {
-                    if (filter != null) {
-                        if ((bmodel.getRetailerMaster().get(i)
-                                .getRetailerName().toLowerCase())
-                                .contains(filter.toLowerCase())) {
-                            retailer.add(bmodel.getRetailerMaster().get(i));
-                        }
-                    } else {
-                        retailer.add(bmodel.getRetailerMaster().get(i));
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-
-        try {
-
-            if (bmodel.configurationMasterHelper.IS_MAP) {
-                markerList.clear();
-                baiduMarkerList.clear();
-                for (int i = 0; i < retailer.size(); i++) {
-                    if (bmodel.configurationMasterHelper.IS_BAIDU_MAP) {
-                        Bundle bndl = new Bundle();
-                        bndl.putCharSequence("addr", retailer.get(i).getAddress1());
-                        com.baidu.mapapi.model.LatLng baidulatLng = new com.baidu.mapapi.model.LatLng(retailer.get(i).getLatitude(), retailer
-                                .get(i).getLongitude());
-                        com.baidu.mapapi.map.MarkerOptions mBMarker = new com.baidu.mapapi.map.MarkerOptions().position(baidulatLng)
-                                .title(retailer.get(i).getRetailerName())
-                                .extraInfo(bndl)
-                                .icon(com.baidu.mapapi.map.BitmapDescriptorFactory.fromResource(R.drawable.markergreen)
-                                ).animateType(com.baidu.mapapi.map.MarkerOptions.MarkerAnimateType.drop);
-                        baiduMarkerList.add(mBMarker);
-                    } else {
-                        latLng = new LatLng(retailer.get(i).getLatitude(), retailer
-                                .get(i).getLongitude());
-                        MarkerOptions mMarkerOptions = new MarkerOptions()
-                                .position(latLng)
-                                .title(retailer.get(i).getRetailerName() + "," + retailer.get(i).getRetailerID())
-                                .snippet(retailer.get(i).getAddress1())
-                                .icon(BitmapDescriptorFactory
-                                        .defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                        markerList.add(mMarkerOptions);
-                    }
-                }
-            }
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
-    }
-
-
     private void setProfileImage() {
         if (bmodel.userMasterHelper.getUserMasterBO().getImagePath() != null
                 && !"".equals(bmodel.userMasterHelper.getUserMasterBO().getImagePath())) {
@@ -2756,4 +2725,5 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     Toast.LENGTH_SHORT).show();
         }
     }
+
 }

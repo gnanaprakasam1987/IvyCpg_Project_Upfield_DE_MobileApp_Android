@@ -14,18 +14,23 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
+import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.Html;
 import android.text.InputFilter;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.com.google.gson.Gson;
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
@@ -290,6 +295,26 @@ public class AppUtils {
      */
     public static String buildAzureUrl(String appendUrl){
         return DataMembers.AZURE_CONNECTION_STRING + "/"+DataMembers.AZURE_CONTAINER+"/"+appendUrl+ DataMembers.AZURE_SAS;
+    }
+
+    /**
+     * This method used re
+     * @param context
+     * @param imageView
+     * @param radius
+     * @return
+     */
+    public static BitmapImageViewTarget getRoundedImageTarget(@NonNull final Context context, @NonNull final ImageView imageView,
+                                                              final float radius) {
+        return new BitmapImageViewTarget(imageView) {
+            @Override
+            protected void setResource(final Bitmap resource) {
+                RoundedBitmapDrawable circularBitmapDrawable =
+                        RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+                circularBitmapDrawable.setCornerRadius(radius);
+                imageView.setImageDrawable(circularBitmapDrawable);
+            }
+        };
     }
 
 

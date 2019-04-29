@@ -240,6 +240,16 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
+    public void setPausedRetailer(RetailerMasterBO retailerMasterBO) {
+          appDataProvider.setPausedRetailer(retailerMasterBO);
+    }
+
+    @Override
+    public RetailerMasterBO getPausedRetailer() {
+        return appDataProvider.getPausedRetailer();
+    }
+
+    @Override
     public Observable<ArrayList<ConfigureBO>> fetchNewActivityMenu(String menuName) {
         return appDataManager.fetchNewActivityMenu(menuName);
     }

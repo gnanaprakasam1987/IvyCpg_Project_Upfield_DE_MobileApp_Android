@@ -102,11 +102,7 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
             }
         }
 
-        if (isDayCloseChecked
-                && !mUploadHelper.isAttendanceCompleted(mContext.getApplicationContext())) {
-            view.showAttendanceNotCompletedToast();
-            return;
-        }
+
 
         if (!mBModel.isOnline()) {
             view.showNoInternetToast();

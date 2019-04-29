@@ -7,5 +7,6 @@
     android:ellipsize="marquee"
     android:padding="@dimen/target_top_margin"
     android:textSize="@dimen/drop_down_text_font_size"
-    android:textColor="@color/FullBlack"
+    android:textColor="@color/list_item_primary_text_color"
+    android:fontFamily="@font/roboto_regular"
     android:singleLine="true" />

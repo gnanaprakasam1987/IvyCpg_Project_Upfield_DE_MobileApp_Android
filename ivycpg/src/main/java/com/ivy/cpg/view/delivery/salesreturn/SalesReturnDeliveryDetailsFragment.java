@@ -221,7 +221,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                         boolean isSuccess = SalesReturnDeliveryHelper.getInstance().saveSalesReturnDelivery(getActivity(), salesReturnDeliveryDataModelsList, salesReturnDeliveryDataBo);
                         if (isSuccess) {
                             BusinessModel businessModel = (BusinessModel) getActivity().getApplicationContext();
-                            businessModel.saveModuleCompletion(HomeScreenTwo.MENU_SALES_RET_DELIVERY);
+                            businessModel.saveModuleCompletion(HomeScreenTwo.MENU_SALES_RET_DELIVERY, true);
                             Toast.makeText(getActivity(), "Saved Successfully", Toast.LENGTH_SHORT).show();
                             (getActivity()).onBackPressed();
                         }
@@ -242,7 +242,7 @@ public class SalesReturnDeliveryDetailsFragment extends Fragment {
                 boolean isSuccess = SalesReturnDeliveryHelper.getInstance().cancelSalesReturnDelivery(getActivity(), salesReturnDeliveryDataBo);
                 if (isSuccess) {
                     BusinessModel businessModel = (BusinessModel) getActivity().getApplicationContext();
-                    businessModel.saveModuleCompletion(HomeScreenTwo.MENU_SALES_RET_DELIVERY);Toast.makeText(getActivity(), "Cancel Successfully", Toast.LENGTH_SHORT).show();
+                    businessModel.saveModuleCompletion(HomeScreenTwo.MENU_SALES_RET_DELIVERY, true);Toast.makeText(getActivity(), "Cancel Successfully", Toast.LENGTH_SHORT).show();
                     (getActivity()).onBackPressed();
                 }
             }

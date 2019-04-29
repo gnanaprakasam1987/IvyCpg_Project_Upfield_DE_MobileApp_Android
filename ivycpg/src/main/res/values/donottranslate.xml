@@ -125,7 +125,7 @@
 
     <string name="value_exceeded">Value Exceeded</string>
     <string name="this_may_remove_existing_data">This may remove existing data</string>
-    <string name="created_by">Created By</string>
+    <string name="created_by">Created By </string>
 
     <string name="please_state_reason_not_visiting_store">Please state reason for not visiting following store</string>
 
@@ -185,6 +185,33 @@
     <string name="visit_created_successfully">Visit created Successfully</string>
     <string name="error_in_creating_visit">Error in creating visit</string>
     <string name="error_in_saving">Error in Saving</string>
+    <string name="my_location">My Location</string>
+    <string name="no_loc_to_display">No Location to display</string>
+    <string name="route_cleared">Route Cleared, Select Two Marker</string>
+    <string name="am_here">I\'m here</string>
+    <string name="fetching_route">Fetching route, Please wait…</string>
+    <string name="visit_completed">Completed Visit</string>
+    <string name="visit_unplanned">Unplanned Visit</string>
+    <string name="check_network_curr_loc">Check Network Connection for getting current location</string>
+    <string name="non_productive">Non Productive</string>
+    <string name="visit_paused_msg">Close paused visit to start a new visit</string>
+    <string name="pause">Pause</string>
+    <string name="resume_visit">Resume Visit</string>
+
+    <string name="complete_all_mandatory_activities_before_you_start_the_day">Complete all Mandatory activity before start the day.</string>
+    <string name="complete_all_mandatory_activities_before_you_stop_the_day">Complete all mandatory activity before end the day.</string>
+    <string name="today_you_have_uncompleted_activities">Today, You have %d uncompleted activities.</string>
+    <string name="today_you_have_completed_all_activities">Today, You have completed all activities.</string>
+    <string name="stop">End</string>
+    <string name="trip_started">Trip Started Successfully.</string>
+    <string name="trip_ended">Trip Ended Successfully.</string>
+    <string name="pls_start_the_trip">Please start the trip.</string>
+    <string name="pls_end_the_trip">Please end the trip.</string>
+    <string name="pls_end_the_previous_trip">Please end the previous trip.</string>
+    <string name="pls_complete_all_mandatory_modules_of_start_day">Please complete all mandatory modules of start the day.</string>
+    <string name="pls_complete_all_mandatory_modules_to_close_the_day">Please complete all mandatory modules to close the day.</string>
+    <string name="do_you_want_to_continue_same_trip_or_end_the_trip">Do you want to continue same trip or end?.</string>
+    <string name="trip_not_started">Trip not started.</string>
 
     <!--offline Planning-->
     <string name="month">Month</string>
@@ -217,5 +244,32 @@
 
     <string name="time_slot_already_selected">Time Slot Fall In Already Selected Timeslot</string>
     <string name="from_time_should_be_lesser">Avail From Time Should Be Lesser Than Avail Till</string>
+    <string name="session_expired">Session Expired</string>
+
+    <string name="price_tag">Price Tag</string>
+
+    <string name="select_seller">Select Seller</string>
+    <string name="task_updated_successfully">Task updated successfully…</string>
+    <string name="add_img_content_description">Add new image</string>
+    <string name="clear_img_content_description">delete image</string>
+    <string name="task_detail">Task Detail</string>
+    <string name="task_evidence">Evidence</string>
+    <string name="server_task_can_not_be_edit">Server task can not be edit</string>
+    <string name="server_task_can_not_be_delete">Server task can not be deleted</string>
+    <string name="photo_captured_successfully">Photo Captured Successfully</string>
+
+    <string-array name="task_sort_list">
+        <item>Task(A—Z)</item>
+        <item>Task(Z—A)</item>
+        <item>Category(A—Z)</item>
+        <item>Category(Z—A)</item>
+        <item>Due Date(old—new)</item>
+        <item>Due Date(new—old)</item>
+    </string-array>
+    <string name="task_exec_mandatory">Need to execute the task</string>
+    <string name="exec_task_not_allow_to_edit">Executed task not allow to edit</string>
+    <string name="exec_task_not_allow_to_delete">Executed task not allow to delete</string>
+    <string name="executed_date">Executed Date</string>
+    <string name="do_you_want_to_delete_the_task">Do you want to delete the Task?</string>
 
 </resources>

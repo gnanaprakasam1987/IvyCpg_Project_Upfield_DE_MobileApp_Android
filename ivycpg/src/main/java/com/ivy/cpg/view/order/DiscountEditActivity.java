@@ -37,7 +37,7 @@ public class DiscountEditActivity extends IvyBaseActivityNoActionBar implements 
 
     private BusinessModel bmodel;
     private Button saveButton;
-    private TextView totalval, oldTotalValue;
+    private TextView totalval, oldTotalValue,discountLable;
     private ListView lvwplist;
     private ArrayList<ProductMasterBO> mylist;
     private EditText QUANTITY, D1;
@@ -87,6 +87,8 @@ public class DiscountEditActivity extends IvyBaseActivityNoActionBar implements 
         saveButton.setTypeface(FontUtils.getFontBalooHai(this,FontUtils.FontType.REGULAR));
         totalval = findViewById(R.id.totalValue);
         oldTotalValue = findViewById(R.id.oldTotalValue);
+        discountLable = findViewById(R.id.discount_lable);
+        discountLable.setText(getResources().getText(R.string.enter) +" "+ getResources().getString(R.string.discount));
         if (bmodel.labelsMasterHelper.applyLabels(findViewById(
                 R.id.old_order_volume).getTag()) != null) {
             ((TextView) findViewById(R.id.old_order_volume))
@@ -102,6 +104,7 @@ public class DiscountEditActivity extends IvyBaseActivityNoActionBar implements 
         ((TextView) findViewById(R.id.tvTotalTitle)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
         ((TextView) findViewById(R.id.minmax)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
         ((TextView) findViewById(R.id.tvValuetitle)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
+        ((TextView) findViewById(R.id.discount_lable)).setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
         totalval.setTypeface(FontUtils.getFontRoboto(this,FontUtils.FontType.MEDIUM));
 
         if (bmodel.configurationMasterHelper.SHOW_DISCOUNTED_PRICE) {

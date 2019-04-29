@@ -2250,7 +2250,7 @@ public class OrderNewOutlet extends IvyBaseActivityNoActionBar implements OnClic
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), OrderedFlag)) {
-                        bmodel.saveModuleCompletion(OrderedFlag);
+                        bmodel.saveModuleCompletion(OrderedFlag, true);
                         bmodel.outletTimeStampHelper
                                 .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                         /*startActivity(new Intent(OrderNewOutlet.this,

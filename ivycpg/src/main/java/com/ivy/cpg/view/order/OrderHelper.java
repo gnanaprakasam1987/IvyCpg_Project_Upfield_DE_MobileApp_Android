@@ -343,7 +343,7 @@ public class OrderHelper {
 
 
             if (businessModel.configurationMasterHelper.IS_HANGINGORDER) {
-                updateHangingOrder(mContext, businessModel.getAppDataProvider().getRetailMaster());
+                updateHangingOrder(mContext, businessModel.getAppDataProvider().getRetailMaster(), db);
             }
 
             businessModel.getAppDataProvider().getRetailMaster()
@@ -481,10 +481,6 @@ public class OrderHelper {
                         businessModel.productHelper.insertBillWiseEntryDisc(db, uid);
                 }
 
-            }
-
-            if (businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
-                DiscountHelper.getInstance(mContext).insertWithHoldDiscount(db, this.getOrderId());
             }
 
             try {
@@ -941,7 +937,7 @@ public class OrderHelper {
 
 
                 if (businessModel.configurationMasterHelper.IS_HANGINGORDER) {
-                    updateHangingOrder(mContext, businessModel.getAppDataProvider().getRetailMaster());
+                    updateHangingOrder(mContext, businessModel.getAppDataProvider().getRetailMaster(), db);
                 }
 
                 businessModel.getAppDataProvider().getRetailMaster()
@@ -998,10 +994,6 @@ public class OrderHelper {
                             businessModel.productHelper.insertBillWiseEntryDisc(db, uid);
                     }
 
-                }
-
-                if (businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
-                    DiscountHelper.getInstance(mContext).insertWithHoldDiscount(db, this.getOrderId());
                 }
 
 
@@ -1380,9 +1372,9 @@ public class OrderHelper {
      * @param retailerId current retailer Id
      */
     public void deleteOrder(Context context, String retailerId) {
+        DBUtil db = null;
         try {
-            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
-            );
+            db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
             String orderId = "";
@@ -1437,17 +1429,18 @@ public class OrderHelper {
             db.updateSQL("update RetailerMaster set sbdDistPercent =" + businessModel.getRetailerMasterBO().getSbdPercent()
                     + " where retailerid =" + StringUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()));
 
-            db.closeDB();
-            db.closeDB();
-            businessModel.downloadIndicativeOrderedRetailer();
+            businessModel.downloadIndicativeOrderedRetailer(db);
             businessModel.updateIndicativeOrderedRetailer(businessModel.getRetailerMasterBO());
 
 
             if (businessModel.configurationMasterHelper.IS_HANGINGORDER) {
-                updateHangingOrder(context, businessModel.getRetailerMasterBO());
+                updateHangingOrder(context, businessModel.getRetailerMasterBO(), db);
             }
+
         } catch (Exception e) {
             Commons.printException("" + e);
+        } finally {
+            db.closeDB();
         }
     }
 
@@ -2025,7 +2018,7 @@ public class OrderHelper {
 
 
             if (businessModel.configurationMasterHelper.IS_HANGINGORDER) {
-                updateHangingOrder(mContext, businessModel.getRetailerMasterBO());
+                updateHangingOrder(mContext, businessModel.getRetailerMasterBO(), db);
             }
 
             /* update free products sih starts */
@@ -2052,8 +2045,7 @@ public class OrderHelper {
             if (businessModel.configurationMasterHelper.SHOW_DISCOUNT
                     || businessModel.configurationMasterHelper.discountType == 1
                     || businessModel.configurationMasterHelper.discountType == 2
-                    || businessModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG
-                    || businessModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
+                    || businessModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG) {
 
                 businessModel.productHelper.updateInvoiceIdInDiscountTable(db, invoiceId,
                         this.getOrderId());
@@ -2489,12 +2481,8 @@ public class OrderHelper {
      * @param mContext current context
      * @param retObj   retailer object
      */
-    public void updateHangingOrder(Context mContext, RetailerMasterBO retObj) {
-        DBUtil db = null;
+    public void updateHangingOrder(Context mContext, RetailerMasterBO retObj, DBUtil db) {
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME);
-            db.createDataBase();
-            db.openDataBase();
             String retailerId = retObj.getRetailerID();
             List<String> OrderId = null;
 
@@ -2531,9 +2519,6 @@ public class OrderHelper {
             }
         } catch (Exception e) {
             Commons.printException(e);
-        } finally {
-            if (db != null)
-                db.closeDB();
         }
     }
 
@@ -3258,7 +3243,7 @@ public class OrderHelper {
 
 
     /**
-     * Method to check whether stock is available to deliver
+     * Method to check whether stock is available to deliver (check for getFreeSIH based on config : IS_FREE_SIH_AVAILABLE
      *
      * @param orderList Orderd list
      * @return stock avilability
@@ -3267,6 +3252,7 @@ public class OrderHelper {
         try {
 
             HashMap<String, Integer> mDeliverQtyByProductId = new HashMap<>();
+            HashMap<String, Integer> mDeliveryFreeQtyByProductId = new HashMap<>();
 
             for (ProductMasterBO product : orderList) {
 
@@ -3285,6 +3271,8 @@ public class OrderHelper {
 
                 }
             }
+
+
             SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(mContext);
             if (schemeHelper.IS_SCHEME_ON) {
                 for (SchemeBO schemeBO : schemeHelper.getAppliedSchemeList()) {
@@ -3293,11 +3281,23 @@ public class OrderHelper {
                             for (SchemeProductBO freeProductBO : schemeBO.getFreeProducts()) {
                                 if (freeProductBO.getQuantitySelected() > 0) {
 
-                                    if (mDeliverQtyByProductId.get(freeProductBO.getProductId()) != null) {
-                                        int qty = mDeliverQtyByProductId.get(freeProductBO.getProductId());
-                                        mDeliverQtyByProductId.put(freeProductBO.getProductId(), (qty + freeProductBO.getQuantitySelected()));
+                                    if (!businessModel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE) {
+
+                                        if (mDeliverQtyByProductId.get(freeProductBO.getProductId()) != null) {
+                                            int qty = mDeliverQtyByProductId.get(freeProductBO.getProductId());
+                                            mDeliverQtyByProductId.put(freeProductBO.getProductId(), (qty + freeProductBO.getQuantitySelected()));
+                                        } else {
+                                            mDeliverQtyByProductId.put(freeProductBO.getProductId(), freeProductBO.getQuantitySelected());
+                                        }
+
                                     } else {
-                                        mDeliverQtyByProductId.put(freeProductBO.getProductId(), freeProductBO.getQuantitySelected());
+
+                                        if (mDeliveryFreeQtyByProductId.get(freeProductBO.getProductId()) != null) {
+                                            int qty = mDeliveryFreeQtyByProductId.get(freeProductBO.getProductId());
+                                            mDeliveryFreeQtyByProductId.put(freeProductBO.getProductId(), (qty + freeProductBO.getQuantitySelected()));
+                                        } else {
+                                            mDeliveryFreeQtyByProductId.put(freeProductBO.getProductId(), freeProductBO.getQuantitySelected());
+                                        }
                                     }
                                 }
                             }
@@ -3315,6 +3315,18 @@ public class OrderHelper {
                         return false;
                 }
             }
+
+            if (businessModel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE) {
+                for (String productId : mDeliveryFreeQtyByProductId.keySet()) {
+                    ProductMasterBO freeProduct = businessModel.productHelper.getProductMasterBOById(productId);
+                    if (freeProduct != null) {
+                        if (mDeliveryFreeQtyByProductId.get(productId) > freeProduct.getFreeSIH())
+                            return false;
+                    }
+                }
+            }
+
+
         } catch (Exception ex) {
             Commons.printException(ex);
             return false;
@@ -3530,7 +3542,14 @@ public class OrderHelper {
                         false);
                 db.deleteSQL("InvoiceDiscountDetail", "OrderID=" + uid,
                         false);
+                db.deleteSQL("OrderTaxDetails", "OrderID=" + uid,
+                        false);
                 db.deleteSQL("InvoiceTaxDetails", "OrderID=" + uid,
+                        false);
+
+                db.deleteSQL("OrderFreeIssues", "uid=" + uid,
+                        false);
+                db.deleteSQL("InvoiceFreeIssues", "uid=" + uid,
                         false);
 
                 // If Product Return Module Enabled, then deleting corresponding return transactions

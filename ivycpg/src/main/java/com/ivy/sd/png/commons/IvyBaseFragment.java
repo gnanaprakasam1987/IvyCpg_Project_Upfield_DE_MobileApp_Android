@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.FilterFiveFragment;
@@ -153,6 +152,17 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+    }
+
+    public void startActivity(Class activity) {
+        ((IvyBaseActivityNoActionBar) getActivity()).startActivity(activity);
+    }
+
+
+
+    public void startActivityAndFinish(Class activity) {
+        ((IvyBaseActivityNoActionBar) getActivity()).startActivityAndFinish(activity);
+
     }
 
 }

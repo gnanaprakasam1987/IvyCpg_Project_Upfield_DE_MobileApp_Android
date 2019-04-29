@@ -691,14 +691,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     schemeNames = discountHelper.getCompDiscountData();
             }
 
-            //Calculating with hold tax
-            double withHoldDiscount = 0;
-            if (bModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT) {
-                discountHelper.downloadBillWiseWithHoldDiscount(getApplicationContext());
-                withHoldDiscount = discountHelper.calculateWithHoldDiscount(totalOrderValue);
-                discountHelper.setWihtHoldApplied(true);
-            }
-
             // Apply Exclude Item level Tax  in Product
             if (bModel.configurationMasterHelper.SHOW_TAX) {
 
@@ -720,60 +712,13 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                 }
             }
 
-
-            // with hold tax should be removed after tax applied.
-            totalOrderValue -= withHoldDiscount;
-            orderHelper.withHoldDiscount = withHoldDiscount;
-
             listView.setAdapter(new ProductExpandableAdapter());
             for (int i = 0; i < mOrderedProductList.size(); i++) {
                 listView.expandGroup(i);
             }
 
-            //Applying Bill wise Discount
-            if (bModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
-                //find the  range of discount by using total value
-                final double billWiseRangeDiscount = discountHelper.calculateBillWiseRangeDiscount(totalOrderValue);
-                totalOrderValue = totalOrderValue - billWiseRangeDiscount;
-                enteredDiscAmtOrPercent = billWiseRangeDiscount;
+            applyBillWiseDiscAndTax();
 
-            } else if (bModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 1) {
-                // Automatically apply bill wise discount
-                final double billWiseDiscount = discountHelper.calculateBillWiseDiscount(totalOrderValue);
-                if (bModel.getOrderHeaderBO() != null) {
-                    bModel.getOrderHeaderBO().setBillLevelDiscountValue(billWiseDiscount);
-                }
-                totalOrderValue = totalOrderValue - SDUtil.convertToDouble(SDUtil.format(billWiseDiscount, bModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0));
-                enteredDiscAmtOrPercent = billWiseDiscount;
-
-            } else if (bModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {
-                // user manually enter bill wise discount
-                double discount = bModel.orderAndInvoiceHelper.restoreDiscountAmount(bModel
-                        .getRetailerMasterBO().getRetailerID());
-                double billWiseDiscount = applyDiscountMaxValidation(discount);
-                totalOrderValue = totalOrderValue - billWiseDiscount;
-            }
-
-            // Apply bill wise pay term discount
-            if (discountHelper.getBillWisePayternDiscountList() != null
-                    && discountHelper.getBillWisePayternDiscountList().size() > 0) {
-                final double billWisePayTermDiscount = discountHelper.calculateBillWisePayTermDiscount(totalOrderValue);
-                totalOrderValue = totalOrderValue - billWisePayTermDiscount;
-            }
-
-
-            //Applying bill wise tax
-            if (bModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
-                bModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
-                double billLevelTax = bModel.productHelper.taxHelper.applyBillWiseTax(totalOrderValue);
-                bModel.getOrderHeaderBO().setBillLevelTaxValue(billLevelTax);
-
-                if (bModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
-                    totalOrderValue += billLevelTax;
-                    taxValue += billLevelTax;
-                }
-
-            }
             //updating footer labels
             text_totalOrderValue.setText(bModel.formatValue(totalOrderValue));
             text_LPC.setText(String.valueOf(linesPerCall));
@@ -946,7 +891,6 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             menu.findItem(R.id.menu_calculator).setVisible(false);
 
         if ((bModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0)
-                || (bModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT && bModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 3)
                 || bModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT)
             menu.findItem(R.id.menu_store_wise_discount).setVisible(true);
         else
@@ -1345,18 +1289,8 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
     public void onDiscountDismiss(String result, int result1, int result2, int result3) {
         if (bModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
 
-            final double totalValue = discountHelper.calculateBillWiseRangeDiscount(totalOrderValue);
+            final double totalValue = discountHelper.calculateBillWiseRangeDiscount(totalOrderValue, -1);
             text_totalOrderValue.setText(bModel.formatValue(totalValue));
-
-        } else if (bModel.configurationMasterHelper.IS_WITHHOLD_DISCOUNT &&
-                bModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG &&
-                bModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 3) {
-            if (discountHelper.isWihtHoldApplied())
-                totalOrderValue -= orderHelper.withHoldDiscount;
-            else
-                totalOrderValue += orderHelper.withHoldDiscount;
-
-            text_totalOrderValue.setText(bModel.formatValue(totalOrderValue));
 
         } else if (bModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {
             try {
@@ -1479,7 +1413,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
 
-                                        createOrderPrintFile(true,orderHelper.getOrderId());
+                                        createOrderPrintFile(true, orderHelper.getOrderId());
 
                                         Intent i = new Intent(OrderSummary.this,
                                                 HomeScreenTwo.class);
@@ -1654,7 +1588,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                                                         int whichButton) {
 
                                         if (bModel.configurationMasterHelper.SHOW_PRINT_ORDER)
-                                            createOrderPrintFile(true,orderHelper.getOrderId());
+                                            createOrderPrintFile(true, orderHelper.getOrderId());
 
                                         bModel.productHelper.clearOrderTableChecked();
                                         Intent i = new Intent(OrderSummary.this, HomeScreenTwo.class);
@@ -2238,7 +2172,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     new MyThread(OrderSummary.this,
                             DataMembers.SAVEORDERANDSTOCK).start();
                     if (!orderHelper.isQuickCall)
-                        bModel.saveModuleCompletion("MENU_STK_ORD");
+                        bModel.saveModuleCompletion("MENU_STK_ORD", true);
 
 
                 } else {
@@ -2561,14 +2495,14 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
                     holder.caseQty.setText(String.valueOf(0));
 
                     //If only other UOMs are enabled but free is in outer then showing it in screen without considering UOM config.
-                    if(productBO.getQuantitySelected()>0)
+                    if (productBO.getQuantitySelected() > 0)
                         row.findViewById(R.id.llOuter).setVisibility(View.VISIBLE);
                     else row.findViewById(R.id.llOuter).setVisibility(View.GONE);
 
                 } else {
 
                     //If only other UOMs are enabled but free is in pieces then showing it in screen without considering UOM config.
-                    if(productBO.getQuantitySelected()>0)
+                    if (productBO.getQuantitySelected() > 0)
                         row.findViewById(R.id.llPiece).setVisibility(View.VISIBLE);
                     else row.findViewById(R.id.llPiece).setVisibility(View.GONE);
 
@@ -3158,9 +3092,9 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         }
     };
 
-    private void createOrderPrintFile(boolean isPrepareData,String orderId) {
+    private void createOrderPrintFile(boolean isPrepareData, String orderId) {
 
-        orderId= orderId.replace("\'", "");
+        orderId = orderId.replace("\'", "");
         if (isPrepareData) {
             if ("1".equalsIgnoreCase(bModel.retailerMasterBO.getRField4()))
                 bModel.productHelper.updateDistributorDetails();
@@ -3184,7 +3118,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         Intent i;
         if (bModel.configurationMasterHelper.SHOW_ZEBRA_TITAN
                 || bModel.configurationMasterHelper.SHOW_ZEBRA_UNIPAL
-                ) {
+        ) {
             new Thread(new Runnable() {
                 public void run() {
                     Looper.prepare();
@@ -3235,7 +3169,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             } else {
 
-                createOrderPrintFile(false,orderHelper.getOrderId());
+                createOrderPrintFile(false, orderHelper.getOrderId());
 
                 i = new Intent(OrderSummary.this,
                         CommonPrintPreviewActivity.class);
@@ -3302,7 +3236,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
             if (bModel.configurationMasterHelper.SHOW_PRINT_ORDER) {
                 bModel.mCommonPrintHelper.xmlRead("order", false, orderList, null, signatureName, null, null);
-                createOrderPrintFile(false,orderHelper.getOrderId());
+                createOrderPrintFile(false, orderHelper.getOrderId());
             }
 
             bModel.mCommonPrintHelper.xmlRead("invoice", false, orderList, null, signatureName, null, null);
@@ -3743,5 +3677,66 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
         });
         commonDialog.show();
         commonDialog.setCancelable(false);
+    }
+
+    /**
+     * Bill wise discount apply based on isFlag
+     * isFlag - 0 Discount Computation OR Apply in before tax apply
+     * isFlag - 1 Discount Computation OR Apply in after tax apply
+     */
+    private void applyBillWiseDiscAndTax() {
+
+        callBillWiseDiscount(0);
+        applyBillWiseTax();
+        callBillWiseDiscount(1);
+    }
+
+
+    private void callBillWiseDiscount(int isFlag) {
+        //Applying Bill wise Discount
+        if (bModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 0) {
+            //find the  range of discount by using total value
+            totalOrderValue = discountHelper.calculateBillWiseRangeDiscount(totalOrderValue, isFlag);
+
+            if (bModel.getOrderHeaderBO() != null)
+                enteredDiscAmtOrPercent = bModel.getOrderHeaderBO().getBillLevelDiscountValue();
+
+        } else if (bModel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bModel.configurationMasterHelper.BILL_WISE_DISCOUNT == 1) {
+            // Automatically apply bill wise discount
+            totalOrderValue = discountHelper.calculateBillWiseDiscount(totalOrderValue, isFlag);
+
+            if (bModel.getOrderHeaderBO() != null)
+                enteredDiscAmtOrPercent = bModel.getOrderHeaderBO().getBillLevelDiscountValue();
+
+            // totalOrderValue = totalOrderValue - SDUtil.convertToDouble(SDUtil.format(billWiseDiscount, bModel.configurationMasterHelper.VALUE_PRECISION_COUNT, 0));
+
+        } else if (bModel.configurationMasterHelper.SHOW_TOTAL_DISCOUNT_EDITTEXT) {
+            // user manually enter bill wise discount
+            double discount = bModel.orderAndInvoiceHelper.restoreDiscountAmount(bModel
+                    .getRetailerMasterBO().getRetailerID());
+            double billWiseDiscount = applyDiscountMaxValidation(discount);
+            totalOrderValue = totalOrderValue - billWiseDiscount;
+        }
+
+        // Apply bill wise pay term discount
+        if (discountHelper.getBillWisePayternDiscountList() != null
+                && discountHelper.getBillWisePayternDiscountList().size() > 0) {
+            totalOrderValue = discountHelper.calculateBillWisePayTermDiscount(totalOrderValue, isFlag);
+        }
+    }
+
+
+    private void applyBillWiseTax() {
+        //Applying bill wise tax
+        if (bModel.configurationMasterHelper.TAX_SHOW_INVOICE) {
+            bModel.productHelper.taxHelper.downloadBillWiseTaxDetails();
+            double billLevelTax = bModel.productHelper.taxHelper.applyBillWiseTax(totalOrderValue);
+            bModel.getOrderHeaderBO().setBillLevelTaxValue(billLevelTax);
+
+            if (bModel.configurationMasterHelper.SHOW_INCLUDE_BILL_TAX) {
+                totalOrderValue += billLevelTax;
+                taxValue += billLevelTax;
+            }
+        }
     }
 }

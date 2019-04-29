@@ -172,6 +172,9 @@ public class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolea
         bmodel.mSelectedRetailerLatitude = LocationUtil.latitude;
         bmodel.mSelectedRetailerLongitude = LocationUtil.longitude;
 
+        if (bmodel.configurationMasterHelper.SHOW_LOCATION_PASSWORD_DIALOG)
+            bmodel.outletTimeStampHelper.updateRetailerDeviationTimeStamp();
+
         if (outletTimeStampSaved) {
             Intent i = new Intent(mContext, HomeScreenTwo.class);
             i.putExtra("isLocDialog", true);

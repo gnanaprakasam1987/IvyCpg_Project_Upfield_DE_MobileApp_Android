@@ -39,7 +39,6 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -305,6 +304,8 @@ public class StockViewActivity extends IvyBaseActivityNoActionBar implements
 
         updateBrandText("Brand", -1);
 
+        // It is just a view screen, so updating once the screen is visited once
+        bmodel.saveModuleCompletion("MENU_STOCK_VIEW", false);
     }
 
     @Override

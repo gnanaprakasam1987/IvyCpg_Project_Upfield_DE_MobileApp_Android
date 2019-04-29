@@ -216,7 +216,7 @@ public class FitScoreDashboardFragment extends IvyBaseFragment {
     private void backClick() {
         bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                 .now(DateTimeUtils.TIME));
-        bmodel.saveModuleCompletion(menuCode);
+        bmodel.saveModuleCompletion(menuCode, true);
         Intent intent = new Intent(getActivity(), HomeScreenTwo.class);//HomeScreenTwo.class);
         startActivity(intent);
         getActivity().finish();

@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.ModuleTimeStampHelper;
 import com.ivy.sd.png.provider.ProductHelper;
@@ -23,10 +24,12 @@ import com.ivy.sd.png.util.Commons;
     private AlertDialog.Builder builder;
     private AlertDialog alertDialog;
 
+    BusinessModel businessModel;
 
     public SaveVanLoadAsyncTask(Context context, int selectedSubDepotId) {
         this.mContext = context;
         this.selectedSubDepotId = selectedSubDepotId;
+        businessModel=(BusinessModel)context.getApplicationContext();
 
     }
 
@@ -67,6 +70,7 @@ import com.ivy.sd.png.util.Commons;
             Toast.makeText(mContext,
                     mContext.getResources().getString(R.string.saved_successfully),
                     Toast.LENGTH_SHORT).show();
+            businessModel.saveModuleCompletion("MENU_MANUAL_VAN_LOAD", false);
             ModuleTimeStampHelper moduleTimeStampHelper = ModuleTimeStampHelper.getInstance(mContext.getApplicationContext());
             moduleTimeStampHelper.saveModuleTimeStamp("Out");
             moduleTimeStampHelper.setTid("");

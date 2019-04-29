@@ -5,8 +5,7 @@
     android:paddingStart="@dimen/list_item_padding_top_nd_bottom"
     android:gravity="center_vertical"
     android:paddingTop="@dimen/list_item_padding_top_nd_bottom"
-    android:paddingEnd="@dimen/list_item_padding_top_nd_bottom"
-    android:paddingBottom="@dimen/list_item_padding_top_nd_bottom">
+    android:paddingEnd="@dimen/list_item_padding_top_nd_bottom">
 
     <TextView
         android:id="@+id/menunametxt"
@@ -15,8 +14,9 @@
         android:layout_height="wrap_content"
         android:ellipsize="middle"
         android:layout_alignParentLeft="true"
-        android:text="MENU_NAME"
+        android:text=""
         android:singleLine="true"
+        android:layout_centerVertical="true"
         android:layout_alignParentStart="true" />
 
     <TextView
@@ -27,7 +27,8 @@
         android:layout_marginEnd="@dimen/dimen_5dp"
         android:layout_marginRight="@dimen/dimen_5dp"
         android:layout_toLeftOf="@+id/iv_done"
-        android:text="TIME_TAKEN"
+        android:text=""
+        android:layout_centerVertical="true"
         android:layout_toStartOf="@+id/iv_done" />
 
     <ImageView
@@ -37,7 +38,14 @@
         android:layout_alignParentRight="true"
         android:layout_marginEnd="@dimen/dimen_5dp"
         android:layout_marginRight="@dimen/dimen_5dp"
+        android:layout_centerVertical="true"
         android:src="@drawable/ic_tick_enable"
         android:layout_alignParentEnd="true" />
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dimens_1dp"
+        android:layout_below="@+id/iv_done"
+        android:layout_marginTop="@dimen/list_item_padding_top_nd_bottom"
+        android:background="@color/grey_odd"/>
 
 </RelativeLayout>

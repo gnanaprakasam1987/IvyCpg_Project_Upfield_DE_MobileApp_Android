@@ -468,7 +468,7 @@ public class CollectionReference extends IvyBaseActivityNoActionBar {
         protected Boolean doInBackground(String... arg0) {
             try {
                 CollectionHelper.getInstance(CollectionReference.this).saveCollectionReference(mInvioceList);
-                bmodel.saveModuleCompletion("MENU_COLLECTION_REF");
+                bmodel.saveModuleCompletion("MENU_COLLECTION_REF", true);
                 return Boolean.TRUE;
             } catch (Exception e) {
                 Commons.printException(e);

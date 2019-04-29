@@ -529,7 +529,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         if (mBModel.reasonHelper.isNpReasonPhotoAvaiable(mBModel.retailerMasterBO.getRetailerID(), MENU_ASSET)) {
-                            mBModel.saveModuleCompletion(MENU_ASSET);
+                            mBModel.saveModuleCompletion(MENU_ASSET, true);
                             mBModel.outletTimeStampHelper
                                     .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                             startActivity(new Intent(getActivity(),

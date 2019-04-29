@@ -110,7 +110,7 @@
     <string name="disc">Dist%</string>
     <string name="value">ยอดขาย</string>
     <string name="total_value">ยอดขายรวม</string>
-    <string name="tot_line">Total Lines</string>
+    <string name="tot_line">รายการสินค้า</string>
     <string name="contact_no">หมายเลขโทรศัพท์</string>
     <string name="order_date">วันที่ Order</string>
     <string name="lines">Lines</string>
@@ -223,7 +223,7 @@
     <string name="Thursday">Thursday</string>
     <string name="Friday">Friday</string>
     <string name="Saturday">Saturday</string>
-    <string name="is_not_done">is not done.</string>
+    <string name="is_not_done">ไม่สำเร็จ.</string>
     <string name="order_remarks_dialog_title">Remarks</string>
     <string name="order_po">PO</string>
     <string name="order_remarks">Remark</string>
@@ -441,7 +441,7 @@
     <string name="end_reading_should_not_be_empty">Ending reading should not be empty</string>
     <string name="ending_reading_should_be_greater_than_starting_reading">Ending Reading Should be greater than Starting Reading</string>
     <string name="isexecuted">Executed</string>
-    <string name="add_label">Add</string>
+    <string name="add_label">เพิ่ม</string>
     <string name="group_name">GName</string>
     <string name="file_export_success">File Export Success</string>
     <string name="file_export_failure">File Export Failure</string>
@@ -947,8 +947,8 @@
     <string name="is_distributed" >Is Distributed</string>
     <string name="pls_select_chequeno" >Please Enter ChequeNo </string>
     <string name="average_lines" >Average Lines</string>
-    <string name="add_plane" >Add To Plan</string>
-    <string name="non_visit" >Non Visit</string>
+    <string name="add_plan" >Add To Plan</string>
+    <string name="non_visit" >ไม่เยี่ยม</string>
     <string name="are_you_sure_you_want_to_logout" > Are you sure want to logout?</string>
     <string name="vaload_heder_text" >Select quality for each batch</string>
     <string name="total_items" >Total returned items is “%1$d”.</string>
@@ -1310,6 +1310,7 @@
         <item>All</item>
         <item>Assigned</item>
         <item>My Task</item>
+        <item>Completed</item>
     </string-array>
     <string-array name="days_in_week">
         <item>Sun</item>

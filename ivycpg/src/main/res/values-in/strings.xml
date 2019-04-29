@@ -945,7 +945,7 @@
     <string name="is_distributed">Yang Di Distribusikan</string>
     <string name="pls_select_chequeno">Mohon Masukkan No Cek</string>
     <string name="average_lines">Rata-Rata Baris</string>
-    <string name="add_plane">Masukkan Ke Dalam Rencana</string>
+    <string name="add_plan">Masukkan Ke Dalam Rencana</string>
     <string name="non_visit">Tidak Ada Visit</string>
     <string name="are_you_sure_you_want_to_logout">Apakah Anda Yakin Ingin Keluar?</string>
     <string name="vaload_heder_text">Pilih Kualitas Dari Tiap Batch</string>
@@ -1305,6 +1305,7 @@
         <item>All</item>
         <item>Assigned</item>
         <item>My Task</item>
+        <item>Completed</item>
     </string-array>
     <string-array name="days_in_week">
         <item>Sun</item>

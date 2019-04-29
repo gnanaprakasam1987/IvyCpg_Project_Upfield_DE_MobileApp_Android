@@ -58,6 +58,9 @@ public class HomeMenuConstants {
     public static final String MENU_OFLNE_PLAN = "MENU_OFLNE_PLAN"; //Offline Planning
     public static final String MENU_SUBD = "MENU_SUBD";
     public static final String MENU_Q_CALL = "MENU_QUICK_CALL";
+    public static final String MENU_MAP_PLAN = "MENU_MAP_PLAN";
+
+
 
     public static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>(){{
         put(MENU_PLANNING, R.drawable.ic_vector_planning);
@@ -100,6 +103,7 @@ public class HomeMenuConstants {
         put(MENU_SUPERVISOR_CALLANALYSIS, R.drawable.ic_new_retailer_icon);
         put(MENU_ROUTE_KPI, R.drawable.ic_vector_dashboard);
         put(MENU_DENOMINATION, R.drawable.ic_vector_dashboard);
+        put(MENU_MAP_PLAN, R.drawable.ic_show_me_map);
 
     }};
 

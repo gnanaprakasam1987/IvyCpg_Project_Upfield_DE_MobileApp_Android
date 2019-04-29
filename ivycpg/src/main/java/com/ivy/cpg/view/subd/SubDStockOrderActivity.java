@@ -2366,7 +2366,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
 
                 new MyThread(SubDStockOrderActivity.this,
                         DataMembers.SAVESUBDORDER).start();
-                bmodel.saveModuleCompletion("MENU_SUBD_ORD");
+                bmodel.saveModuleCompletion("MENU_SUBD_ORD", true);
 
 
             } else {
@@ -3467,7 +3467,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), OrderedFlag)) {
-                        bmodel.saveModuleCompletion("MENU_SUBD_ORD");
+                        bmodel.saveModuleCompletion("MENU_SUBD_ORD", true);
                         bmodel.outletTimeStampHelper
                                 .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                         startActivity(new Intent(SubDStockOrderActivity.this,

@@ -86,6 +86,7 @@ import com.ivy.cpg.view.stockcheck.CombinedStockDetailActivity;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.lib.Utils;
+import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -108,6 +109,7 @@ import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.BatchAllocation;
 import com.ivy.sd.png.view.CustomKeyBoard;
 import com.ivy.sd.png.view.FilterFiveFragment;
@@ -425,7 +427,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         }
 
         if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
-            bmodel.productHelper.getTaggingDetails("MAX_ORD_VAL"); //MAX_ORD_VAL
+            int mContentLevel = bmodel.productHelper.getContentLevel(bmodel.getContext(), "MENU_STK_ORD");
+            bmodel.productHelper.getTaggingDetails("MAX_ORD_VAL", mContentLevel); //MAX_ORD_VAL
         }
 
         String title;
@@ -4559,7 +4562,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 // Save closing stock
                 stockCheckHelper.saveClosingStock(getApplicationContext(), true);
 
-                bmodel.saveModuleCompletion(OrderedFlag);
+                bmodel.saveModuleCompletion(OrderedFlag, true);
 
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -4962,7 +4965,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 public void onDismiss(DialogInterface dialog) {
                     if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), OrderedFlag)) {
                         if (!orderHelper.isQuickCall) {
-                            bmodel.saveModuleCompletion(OrderedFlag);
+                            bmodel.saveModuleCompletion(OrderedFlag, true);
                             bmodel.outletTimeStampHelper
                                     .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                             startActivity(new Intent(StockAndOrder.this,

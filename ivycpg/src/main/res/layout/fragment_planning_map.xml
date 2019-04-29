@@ -6,11 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <com.ivy.maplib.MapWrapperLayout
+    <com.ivy.maplib.MapWrapperLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/planningmapnew"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/topimage_view"
         android:orientation="vertical">
 
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
@@ -43,7 +42,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginTop="@dimen/store_margin_top"
             android:orientation="horizontal">
 
@@ -52,7 +50,7 @@
                 style="?attr/roundedCustomButtonSmallGrey"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
+                android:layout_centerVertical="true"
                 android:orientation="horizontal"
                 android:visibility="visible"
                 android:weightSum="4">
@@ -67,7 +65,7 @@
                     android:padding="3dp"
                     android:scaleType="centerInside"
                     android:src="@drawable/dashboard_copy_list_view"
-                    android:tint="@color/colorPrimary" />
+                    android:tint="?attr/primarycolor" />
 
                 <ImageView
                     android:id="@+id/cross_line"
@@ -89,6 +87,194 @@
                     android:tint="#d7d7d7"
                     android:visibility="visible" />
             </LinearLayout>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:background="@color/white"
+                android:gravity="center"
+                app:cardBackgroundColor="@color/white"
+                app:cardCornerRadius="@dimen/dimens_4dp"
+                app:cardElevation="@dimen/dimens_1dp"
+                app:cardPreventCornerOverlap="false"
+                app:cardUseCompatPadding="true"
+                app:contentPadding="@dimen/_3sdp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="@dimen/dimen_5dp">
+
+                    <LinearLayout
+                        android:id="@+id/ll_switch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/img_legends_info"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="@dimen/dimen_5dp"
+                            android:layout_marginStart="@dimen/dimen_5dp"
+                            android:src="@drawable/map_info_legends" />
+
+
+                        <TextView
+                            android:id="@+id/tv_all"
+                            style="@style/TextViewCaptionNormal"
+                            android:layout_width="@dimen/dimens_100dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginLeft="@dimen/dimens_20dp"
+                            android:layout_marginStart="@dimen/dimens_20dp"
+                            android:background="@drawable/button_round_corner_white"
+                            android:gravity="center"
+                            android:padding="@dimen/dimens_4dp"
+                            android:text="@string/day_plan" />
+
+                        <Switch
+                            android:id="@+id/switch_plan"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginEnd="@dimen/dimen_5dp"
+                            android:layout_marginLeft="@dimen/dimens_14dp"
+                            android:layout_marginRight="@dimen/dimen_5dp"
+                            android:layout_marginStart="@dimen/dimens_14dp"
+                            android:background="@drawable/button_round_corner_white"
+                            android:checked="false"
+                            android:gravity="center"
+                            android:padding="@dimen/dimens_4dp"
+                            android:switchMinWidth="@dimen/crown_list_title_height" />
+
+                    </LinearLayout>
+
+                    <android.support.constraint.ConstraintLayout
+                        android:id="@+id/constraint_legends"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/dimens_10dp"
+                        android:visibility="gone">
+
+                        <ImageView
+                            android:id="@+id/img_legend_planned"
+                            android:layout_width="@dimen/dimens_22dp"
+                            android:layout_height="@dimen/dimens_22dp"
+                            android:src="@drawable/legend_visit_planned"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_legend_planned"
+                            app:layout_constraintEnd_toStartOf="@+id/tv_legend_planned"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/tv_legend_planned"
+                            style="@style/TextViewCaptionNormal"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_5dp"
+                            android:layout_marginStart="@dimen/dimen_5dp"
+                            android:text="@string/text_planned"
+                            app:layout_constraintStart_toEndOf="@+id/img_legend_planned"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <ImageView
+                            android:id="@+id/img_legend_completed"
+                            android:layout_width="@dimen/dimens_22dp"
+                            android:layout_height="@dimen/dimens_22dp"
+                            android:layout_marginTop="@dimen/dimens_4dp"
+                            android:src="@drawable/legend_visit_completed"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_legend_completed"
+                            app:layout_constraintEnd_toStartOf="@+id/tv_legend_completed"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_legend_planned" />
+
+                        <TextView
+                            android:id="@+id/tv_legend_completed"
+                            style="@style/TextViewCaptionNormal"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_5dp"
+                            android:layout_marginStart="@dimen/dimen_5dp"
+                            android:layout_marginTop="@dimen/dimens_4dp"
+                            android:text="@string/visit_completed"
+                            app:layout_constraintStart_toEndOf="@+id/img_legend_completed"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_legend_planned" />
+
+                        <ImageView
+                            android:id="@+id/img_legend_unplanned"
+                            android:layout_width="@dimen/dimens_22dp"
+                            android:layout_height="@dimen/dimens_22dp"
+                            android:layout_marginTop="@dimen/dimens_4dp"
+                            android:src="@drawable/legend_visit_unplanned"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_legend_unplanned"
+                            app:layout_constraintEnd_toStartOf="@+id/tv_legend_unplanned"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_legend_completed" />
+
+                        <TextView
+                            android:id="@+id/tv_legend_unplanned"
+                            style="@style/TextViewCaptionNormal"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_5dp"
+                            android:layout_marginStart="@dimen/dimen_5dp"
+                            android:layout_marginTop="@dimen/dimens_4dp"
+                            android:text="@string/visit_unplanned"
+                            app:layout_constraintStart_toEndOf="@+id/img_legend_unplanned"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_legend_completed" />
+
+                        <ImageView
+                            android:id="@+id/img_legend_non_productive"
+                            android:layout_width="@dimen/dimens_22dp"
+                            android:layout_height="@dimen/dimens_22dp"
+                            android:layout_marginTop="@dimen/dimens_4dp"
+                            android:src="@drawable/legend_visit_non_productive"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_legend_non_productive"
+                            app:layout_constraintEnd_toStartOf="@+id/tv_legend_non_productive"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_legend_unplanned" />
+
+                        <TextView
+                            android:id="@+id/tv_legend_non_productive"
+                            style="@style/TextViewCaptionNormal"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_5dp"
+                            android:layout_marginStart="@dimen/dimen_5dp"
+                            android:layout_marginTop="@dimen/dimens_4dp"
+                            android:text="@string/non_productive"
+                            app:layout_constraintStart_toEndOf="@+id/img_legend_non_productive"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_legend_unplanned" />
+
+                        <ImageView
+                            android:id="@+id/img_legend_cancelled"
+                            android:layout_width="@dimen/dimens_22dp"
+                            android:layout_height="@dimen/dimens_22dp"
+                            android:layout_marginTop="@dimen/dimens_4dp"
+                            android:src="@drawable/legend_visit_cancelled"
+                            app:layout_constraintBottom_toBottomOf="@+id/tv_legend_cancelled"
+                            app:layout_constraintEnd_toStartOf="@+id/tv_legend_cancelled"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_legend_non_productive" />
+
+                        <TextView
+                            android:id="@+id/tv_legend_cancelled"
+                            style="@style/TextViewCaptionNormal"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_5dp"
+                            android:layout_marginStart="@dimen/dimen_5dp"
+                            android:layout_marginTop="@dimen/dimens_4dp"
+                            android:text="@string/cancelled"
+                            app:layout_constraintStart_toEndOf="@+id/img_legend_cancelled"
+                            app:layout_constraintTop_toBottomOf="@+id/tv_legend_non_productive" />
+
+                    </android.support.constraint.ConstraintLayout>
+
+                </LinearLayout>
+            </android.support.v7.widget.CardView>
 
 
         </RelativeLayout>

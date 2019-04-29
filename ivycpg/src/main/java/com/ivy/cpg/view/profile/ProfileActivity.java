@@ -11,8 +11,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -34,8 +32,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.graphics.drawable.DrawableCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
@@ -70,9 +66,12 @@ import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.cpg.nfc.NFCReadDialogActivity;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
+import com.ivy.cpg.view.profile.otpValidation.RetailerSequenceSkipDialog;
+import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportHelper;
 import com.ivy.cpg.view.retailercontact.RetailerContactFragment;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
@@ -104,7 +103,9 @@ import com.ivy.cpg.view.profile.orderandinvoicehistory.InvoiceHistoryFragment;
 import com.ivy.cpg.view.profile.orderandinvoicehistory.OrderHistoryFragment;
 import com.ivy.cpg.view.profile.otpValidation.OTPValidationDialog;
 import com.ivy.ui.profile.edit.view.ProfileEditActivity;
+import com.ivy.ui.task.TaskConstant;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.ui.task.view.TaskFragment;
 
 import org.json.JSONObject;
 
@@ -165,7 +166,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private boolean isVisible = false;
     private boolean isLatLong;
     private static boolean firstLevZoom;
-    private boolean fromHomeClick = false, visitClick = false, isFromPlanning = false, isFromPlanningSub = false;
+    private boolean fromHomeClick = false,
+            visitClick = false, isFromPlanning = false,
+            isFromPlanningSub = false ,
+            isShowVisitButton = false;
 
     private List<LatLng> markerList = new ArrayList<>();
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID;
@@ -176,6 +180,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     private LatLng retLatLng, curLatLng;
     private OTPValidationDialog otpValidationDialog;
+    private RetailerSequenceSkipDialog retSeqSkipDialog;
     private android.content.DialogInterface.OnDismissListener otpPasswordDismissListenerNew;
 
     private AppBarLayout appbar;
@@ -215,6 +220,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     String dynamicReportTitle = "";
 
     String selectedUserId = "";
+    private boolean fromMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -268,6 +274,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         initilizeViews();
 
+        if ("P".equals(bmodel.getAppDataProvider().getRetailMaster().getIsVisited()))
+            startVisitBtn.setText(getResources().getString(R.string.resume_visit));
+
         setCustomFont();
 
         bundle = new Bundle();
@@ -282,7 +291,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         new LoadProfileConfigs().execute();
 
-        bmodel.isModuleDone();
+        bmodel.isModuleDone(true);
         new loadActivityMenu().execute();
 
 
@@ -387,6 +396,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         fromHomeClick = getIntent().getBooleanExtra("hometwo", false);
         isFromPlanning = getIntent().getBooleanExtra("isPlanning", false);
         isFromPlanningSub = getIntent().getBooleanExtra("isPlanningSub", false);
+        fromMap = getIntent().getBooleanExtra("map", false);
+
+        isShowVisitButton = getIntent().getBooleanExtra("HideVisit", false);
 
         try {
             Intent arg = getIntent();
@@ -859,7 +871,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     markerList.add(storeLatLng);
                     MarkerOptions options = new MarkerOptions();
                     options.position(storeLatLng);// Setting the position of the marker
-                    options.icon(BitmapDescriptorFactory.fromBitmap(getBitmapFromVectorDrawable()));
+                    options.icon(BitmapDescriptorFactory.fromResource(getMarkerIcon(retailerObj)));
 
                     if (mMap != null) {
                         mMap.addMarker(options);
@@ -887,25 +899,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             Commons.printException(e);
         }
 
-    }
-
-    private Bitmap getBitmapFromVectorDrawable() {
-        Drawable drawable = ResourcesCompat.getDrawable(getResources(), R.drawable.store_loc, null);
-        // Drawable drawable = AppCompatDrawableManager.get().getDrawable(context, R.drawable.store_loc);
-        if (drawable != null) {
-            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-                drawable = (DrawableCompat.wrap(drawable)).mutate();
-            }
-
-            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
-                    drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-            drawable.draw(canvas);
-
-            return bitmap;
-        }
-        return null;
     }
 
     /**
@@ -952,7 +945,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
             for (int i = 0; i < markerList.size(); i++) {
                 if (i == 0) {
-                    options.icon(getBitmapDescriptor(R.drawable.store_loc));//storelocation));
+                    options.icon(BitmapDescriptorFactory.fromResource(getMarkerIcon(retailerObj)));//storelocation));
                 } else if (i == 1) {
                     options1.icon(getBitmapDescriptor(R.drawable.user_loc));//(R.drawable.userlocation));
                 }
@@ -987,7 +980,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
             if (retlatlng.latitude != 0.0 && retlatlng.longitude != 0.0) {
                 latLng = retlatlng;
-                options.icon(getBitmapDescriptor(R.drawable.store_loc));
+                options.icon(BitmapDescriptorFactory.fromResource(getMarkerIcon(retailerObj)));
             } else {
                 latLng = curlatlng;
                 options.icon(getBitmapDescriptor(R.drawable.user_loc));
@@ -1228,7 +1221,12 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
                 if (isNonVisitReason)
                     cancelVisitBtn.setVisibility(View.VISIBLE);
-                startVisitBtn.setVisibility(View.VISIBLE);
+
+                if (!isShowVisitButton)
+                    startVisitBtn.setVisibility(View.VISIBLE);
+                else
+                    startVisitBtn.setVisibility(View.GONE);
+
             } else if (non_visit) {
                 deviateBtn.setVisibility(View.VISIBLE);
                 cancelVisitBtn.setVisibility(View.GONE);
@@ -1401,12 +1399,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             } else if (tabName.equals(ASSET_HISTORY)) {
                 return new AssetHistoryFragment();
             } else if (tabName.equalsIgnoreCase(TASK)) {
-                TaskListFragment taskListFragment = new TaskListFragment();
+                TaskFragment taskListFragment = new TaskFragment();
                 Bundle args1 = new Bundle();
-                args1.putInt("type", 1);
-                args1.putBoolean("isRetailer", true);
-                args1.putBoolean("fromReview", false);
-                args1.putBoolean("fromProfileScreen", true);
+                args1.putBoolean(TaskConstant.RETAILER_WISE_TASK, true);
+                args1.putBoolean(TaskConstant.FROM_PROFILE_SCREEN, true);
                 taskListFragment.setArguments(args1);
                 return taskListFragment;
             } else if (tabName.equalsIgnoreCase(SALES_PER_LEVEL)) {
@@ -1593,6 +1589,19 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     }
 
     private void validationToStartVisit() {
+
+        if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
+            if (!LoadManagementHelper.getInstance(getApplicationContext()).isTripStarted(this)) {
+                Toast.makeText(this, getResources().getString(R.string.pls_start_the_trip), Toast.LENGTH_LONG).show();
+                return;
+            }
+
+            if (!LoadManagementHelper.getInstance(getApplicationContext()).isAllMandatoryPlanningSubModulesCompleted(this)) {
+                Toast.makeText(this, getResources().getString(R.string.pls_complete_all_mandatory_modules_of_start_day), Toast.LENGTH_LONG).show();
+                return;
+            }
+        }
+
 
         // Downloaded date vs Mobile Date validation.
         if ((DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
@@ -1847,7 +1856,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         } else {
 
             if (bmodel.timer == null) {
-                bmodel.timer = new TimerCount();
+                if ("P".equals(bmodel.getAppDataProvider().getRetailMaster().getIsVisited())) {
+                    long pausedTime = getSharedPreferences("RetailerPause", MODE_PRIVATE).getLong("pausetime", 0);
+                    bmodel.timer = new TimerCount(ProfileActivity.this, pausedTime);
+                } else
+                    bmodel.timer = new TimerCount(ProfileActivity.this, 0);
             }
             isClicked = true;
             // Set the select retailer Obj in bmodel
@@ -2016,12 +2029,17 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     || !ret.getSkipActivatedDate().equals(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))) {
                 if (bmodel.configurationMasterHelper.ret_skip_flag == 1
                         || bmodel.configurationMasterHelper.ret_skip_flag == 2) {
-                    callOTPDialog(
-                            ret,
-                            bmodel.configurationMasterHelper.ret_skip_flag == 1 ? getResources()
-                                    .getString(R.string.enter_otp_skip_seq)
-                                    : getResources().getString(
-                                    R.string.select_reason_skip_seq), OTPValidationDialog.ValidationType.WALKING_SEQ);
+
+                    if (retSeqSkipDialog != null && retSeqSkipDialog.isShowing()) {
+                        retSeqSkipDialog.cancel();
+                        retSeqSkipDialog = null;
+                    }
+                    retSeqSkipDialog = new RetailerSequenceSkipDialog(this,
+                            otpPasswordDismissListenerNew, ret, bmodel.configurationMasterHelper.ret_skip_flag == 1 ? getResources()
+                            .getString(R.string.enter_otp_skip_seq)
+                            : getResources().getString(
+                            R.string.select_reason_skip_seq));
+                    retSeqSkipDialog.show();
                 } else {
                     Toast.makeText(
                             this,
@@ -2033,17 +2051,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             }
         }
         return true;
-    }
-
-    private void callOTPDialog(RetailerMasterBO ret, String strTitle, OTPValidationDialog.ValidationType flag) {
-        if (otpValidationDialog != null && otpValidationDialog.isShowing()) {
-            otpValidationDialog.cancel();
-            otpValidationDialog = null;
-        }
-        otpValidationDialog = new OTPValidationDialog(this, bmodel,
-                otpPasswordDismissListenerNew, ret, strTitle, flag);
-        otpValidationDialog.setCancelable(false);
-        otpValidationDialog.show();
     }
 
     private boolean getPreviousRetailerVisitedStatus(RetailerMasterBO retailerBO) {
@@ -2132,7 +2139,14 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     + getResources().getString(R.string.or_you_are) + " "
                     + distance + getResources().getString(R.string.mts_away);
 
-        callOTPDialog(ret, strTitle, OTPValidationDialog.ValidationType.LOCATION);
+        if (otpValidationDialog != null && otpValidationDialog.isShowing()) {
+            otpValidationDialog.cancel();
+            otpValidationDialog = null;
+        }
+        otpValidationDialog = new OTPValidationDialog(this,
+                otpPasswordDismissListenerNew, ret, strTitle, (int) distance);
+        otpValidationDialog.show();
+
     }
 
     class DownloadSupervisorData extends AsyncTask<Integer, Integer, Boolean> {
@@ -2142,10 +2156,10 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         protected Boolean doInBackground(Integer... params) {
             try {
 
-                selectedUserId = bmodel.retailerMasterBO.getSelectedUserID()+"";
+                selectedUserId = bmodel.retailerMasterBO.getSelectedUserID() + "";
 
                 String loginId = bmodel.synchronizationHelper.
-                        getSelectedUserLoginId(bmodel.retailerMasterBO.getSelectedUserID()+"",ProfileActivity.this);
+                        getSelectedUserLoginId(bmodel.retailerMasterBO.getSelectedUserID() + "", ProfileActivity.this);
                 bmodel.synchronizationHelper.updateAuthenticateTokenWithoutPassword(loginId);
 
                 bmodel.synchronizationHelper.downloadUserRetailerTranUrl();
@@ -2236,6 +2250,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     }
 
+    @Override
+    public void onDismiss() {
+
+    }
+
     private void showAlert(String msg) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(msg);
@@ -2246,6 +2265,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 //  updateCancel();
                 if (calledBy.equalsIgnoreCase(MENU_VISIT)) {
                     Intent i = new Intent(ProfileActivity.this, HomeScreenActivity.class);
+                    if (fromMap)
+                        i.putExtra("menuCode", "MENU_PLANE_MAP");
+                    else
                     i.putExtra("menuCode", "MENU_VISIT");
                     startActivity(i);
                     finish();
@@ -2308,7 +2330,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 if (errorCode != null && errorCode
                         .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     bmodel.synchronizationHelper
-                            .downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.VISIT_SCREEN, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE,selectedUserId);
+                            .downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.VISIT_SCREEN, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE, selectedUserId);
                     selectedUserId = "";
                 } else {
                     String errorDownlodCode = bundle
@@ -2328,7 +2350,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 alertDialog.dismiss();
 
                 if (bmodel.timer == null) {
-                    bmodel.timer = new TimerCount();
+                    if ("P".equals(bmodel.getAppDataProvider().getRetailMaster().getIsVisited())) {
+                        long pausedTime = getSharedPreferences("RetailerPause", MODE_PRIVATE).getLong("pausetime", 0);
+                        bmodel.timer = new TimerCount(ProfileActivity.this, pausedTime);
+                    } else
+                    bmodel.timer = new TimerCount(ProfileActivity.this, 0);
                 }
                 isClicked = false;
 
@@ -2401,5 +2427,23 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             });
         }
 
+    }
+
+    private int getMarkerIcon(RetailerMasterBO retailerMasterBO) {
+        int drawable = R.drawable.marker_visit_unscheduled;
+
+        if ("Y".equals(retailerMasterBO.getIsVisited())) {
+            if (("N").equals(retailerMasterBO.isOrdered()))
+                drawable = R.drawable.marker_visit_non_productive;
+            else
+                drawable = R.drawable.marker_visit_completed;
+        } else if (retailerMasterBO.getIsToday() == 1 || "Y".equals(retailerMasterBO.getIsDeviated()))
+            drawable = R.drawable.marker_visit_planned;
+
+        if (retailerMasterBO.isHasNoVisitReason())
+            drawable = R.drawable.marker_visit_cancelled;
+
+
+        return drawable;
     }
 }

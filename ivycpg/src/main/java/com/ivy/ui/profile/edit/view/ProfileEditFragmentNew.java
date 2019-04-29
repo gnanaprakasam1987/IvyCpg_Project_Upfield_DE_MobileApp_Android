@@ -175,7 +175,7 @@ public class ProfileEditFragmentNew extends BaseFragment
     }
 
     @Override
-    public void initVariables(View view) {
+    public void init(View view) {
 
         this.datePreviewListener = this;
         params5 = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);

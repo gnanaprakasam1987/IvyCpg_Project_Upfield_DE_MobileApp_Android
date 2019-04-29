@@ -26,12 +26,14 @@ public class PrivacyPolicyActivity extends IvyBaseActivityNoActionBar {
     @SuppressLint("SetJavaScriptEnabled")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        getWindow().requestFeature(Window.FEATURE_PROGRESS);
+
+        super.onCreate(savedInstanceState);
 
         BusinessModel bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
@@ -46,8 +48,9 @@ public class PrivacyPolicyActivity extends IvyBaseActivityNoActionBar {
             Commons.printException(e);
         }
 
-        getWindow().requestFeature(Window.FEATURE_PROGRESS);
+
         setContentView(R.layout.activity_webview_plan);
+
 
         // Makes Progress bar Visible
         getWindow().setFeatureInt( Window.FEATURE_PROGRESS, Window.PROGRESS_VISIBILITY_ON);

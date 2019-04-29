@@ -99,10 +99,10 @@
 
                         <TextView
                             android:id="@+id/tvMenuName"
-                            style="@style/TextViewListItemPrimary"
+                            style="@style/TextViewCaptionNormal"
                             android:layout_width="wrap_content"
                             android:layout_height="fill_parent"
-                            android:gravity="center" />
+                            android:gravity="center"/>
 
                         <android.support.v7.widget.RecyclerView
                             android:id="@+id/module_recylcer"
@@ -169,8 +169,8 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="@dimen/dimen_10dp"
             android:layout_marginEnd="@dimen/dimen_10dp"
-            android:layout_toStartOf="@+id/button1"
-            android:layout_toLeftOf="@+id/button1"
+            android:layout_toStartOf="@+id/img_pause"
+            android:layout_toLeftOf="@+id/img_pause"
             android:layout_toEndOf="@+id/ll_duration"
             android:layout_toRightOf="@+id/ll_duration"
             android:orientation="vertical">
@@ -184,10 +184,11 @@
                 <Spinner
                     android:id="@+id/spinnerNoorderreason"
                     style="?attr/customFooterBackgroundColor"
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="@dimen/reason_spinner_height"
                     android:layout_weight="1"
                     android:gravity="center"
+                    android:background="@android:color/transparent"
                     android:overlapAnchor="false"
 
                     />
@@ -237,6 +238,7 @@
                 android:layout_height="@dimen/reason_spinner_height"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:background="@android:color/transparent"
                 android:overlapAnchor="false" />
 
             <Spinner
@@ -246,6 +248,7 @@
                 android:layout_height="@dimen/reason_spinner_height"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:background="@android:color/transparent"
                 android:overlapAnchor="false" />
 
 
@@ -260,5 +263,18 @@
             android:onClick="onClose"
             android:text="@string/close_call"
             android:textAllCaps="false" />
+
+        <Button
+            android:id="@+id/img_pause"
+            style="?attr/roundedCustomButtonSmallTransparent"
+            android:layout_toLeftOf="@+id/button1"
+            android:layout_toStartOf="@+id/button1"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dimens_12dp"
+            android:layout_marginEnd="@dimen/dimens_12dp"
+            android:layout_marginStart="@dimen/dimens_12dp"
+            android:layout_marginLeft="@dimen/dimens_12dp"
+            android:visibility="gone"
+            android:text="@string/pause"/>
     </RelativeLayout>
 </RelativeLayout>

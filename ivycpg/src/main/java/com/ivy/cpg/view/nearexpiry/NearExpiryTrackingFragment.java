@@ -287,19 +287,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
-                mDrawerLayout.closeDrawers();
-            else {
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
-                        .now(DateTimeUtils.TIME));
-                if (isFromChild)
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                            .putExtra("isStoreMenu", true));
-                else
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().finish();
-            }
-            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            onBackButonClick();
             return true;
         } else if (i == R.id.menu_location_filter && mBModel.productHelper.getInStoreLocation().size() > 1) {
             showLocationFilterAlert();
@@ -579,7 +567,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         protected Boolean doInBackground(Void... arg0) {
             try {
                 mNearExpiryHelper.saveSKUTracking(getActivity().getApplicationContext());
-                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_NEAREXPIRY);
+                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_NEAREXPIRY, true);
                 mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
 
@@ -906,5 +894,52 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 getActivity().overridePendingTransition(0, R.anim.zoom_exit);
             mSchedule.notifyDataSetChanged();
         }
+    }
+
+    private void onBackButonClick() {
+
+        if (mNearExpiryHelper.checkDataToSave()) {
+            showAlert();
+        } else {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                mDrawerLayout.closeDrawers();
+            else {
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
+                if (isFromChild)
+                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
+                            .putExtra("isStoreMenu", true));
+                else
+                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
+                getActivity().finish();
+            }
+            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+        }
+    }
+
+    private void showAlert() {
+        CommonDialog dialog = new CommonDialog(getActivity(), getResources().getString(R.string.doyouwantgoback),
+                "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+            @Override
+            public void onPositiveButtonClick() {
+                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        .now(DateTimeUtils.TIME));
+                if (isFromChild)
+                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
+                            .putExtra("isStoreMenu", true));
+                else
+                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
+                getActivity().finish();
+                getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+
+            }
+        }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {
+            @Override
+            public void onNegativeButtonClick() {
+
+            }
+        });
+        dialog.show();
+        dialog.setCancelable(false);
     }
 }

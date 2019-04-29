@@ -635,7 +635,7 @@ public class LoyaltyPointsFragment extends IvyBaseFragment implements View.OnCli
             try {
 
                 loyalityHelper.saveLoyaltyPoints(loylatyitems);
-                bmodel.saveModuleCompletion("MENU_LOYALTY_POINTS");
+                bmodel.saveModuleCompletion("MENU_LOYALTY_POINTS", true);
                 return Boolean.TRUE;
 
             } catch (Exception e) {

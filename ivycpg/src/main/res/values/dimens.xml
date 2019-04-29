@@ -811,4 +811,6 @@
     <dimen name="wheelSelectorHeight">40dp</dimen>
 
 
+    <dimen name="retailer_name_list">18sp</dimen>
+    <dimen name="retailer_address_list">16sp</dimen>
 </resources>

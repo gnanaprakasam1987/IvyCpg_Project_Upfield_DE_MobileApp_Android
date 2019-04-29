@@ -78,7 +78,7 @@ public class DisplaySchemeTrackingActivity extends IvyBaseActivityNoActionBar {
                 @Override
                 public void onClick(View view) {
                     if (SchemeDetailsMasterHelper.getInstance(getApplicationContext()).saveDisplaySchemeTracking(getApplicationContext())) {
-                        businessModel.saveModuleCompletion(HomeScreenTwo.MENU_DISPLAY_SCH_TRACK);
+                        businessModel.saveModuleCompletion(HomeScreenTwo.MENU_DISPLAY_SCH_TRACK, true);
                         Toast.makeText(DisplaySchemeTrackingActivity.this, getResources().getString(R.string.saved_successfully), Toast.LENGTH_LONG).show();
                         startActivity(new Intent(DisplaySchemeTrackingActivity.this,
                                 HomeScreenTwo.class));
