@@ -9,13 +9,13 @@ import javax.inject.Inject;
 /**
  * Created by mansoor on 27/03/2019
  */
-public class OfflinePlanDataManagerImpl implements OfflinePlanDataManager {
+public class CalendarPlanDataManagerImpl implements CalendarPlanDataManager {
     private DBUtil mDbUtil;
 
     private AppDataProvider appDataProvider;
 
     @Inject
-    OfflinePlanDataManagerImpl(@DataBaseInfo DBUtil dbUtil, AppDataProvider appDataProvider) {
+    CalendarPlanDataManagerImpl(@DataBaseInfo DBUtil dbUtil, AppDataProvider appDataProvider) {
         mDbUtil = dbUtil;
         this.appDataProvider = appDataProvider;
     }

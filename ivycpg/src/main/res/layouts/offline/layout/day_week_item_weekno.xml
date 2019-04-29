@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/tv_wkText"
-        style="@style/TextViewListItemPrimary"
+        style="@style/TextViewListItemSecondary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
@@ -22,6 +22,7 @@
         android:layout_height="@dimen/dimen_40dp"
         android:layout_below="@+id/tv_wkText"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/card_margin"
         android:gravity="center"
         android:padding="@dimen/dimen_2dp" />
 

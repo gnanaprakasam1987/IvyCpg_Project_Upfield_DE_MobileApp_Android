@@ -1,8 +1,9 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ivy.ui.offlineplan.calendar.view.OfflinePlanFragment">
+    tools:context="com.ivy.ui.offlineplan.calendar.view.CalendarPlanFragment">
 
     <RelativeLayout
         android:id="@+id/llMonthHeader"
@@ -55,15 +56,15 @@
         <Button
             android:id="@+id/btn_switch"
             style="@style/ButtonSmallRoundCornerGrey"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_margin="@dimen/button_padding"
-            android:fontFamily="@font/roboto_medium"
-            android:minWidth="@dimen/week_button_width"
+            android:layout_centerVertical="true"
+            android:layout_margin="@dimen/card_margin"
+            android:fontFamily="@font/roboto_light"
+            android:gravity="center"
             android:text="@string/month"
-            android:textColor="@color/half_Black" />
+            android:textAllCaps="false"
+            android:textColor="@color/half_Black"/>
 
 
     </RelativeLayout>
@@ -175,13 +176,35 @@
         android:layout_below="@+id/ll_titleList" />
 
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_week"
+    <!--  <android.support.v7.widget.RecyclerView
+          android:id="@+id/rv_week"
+          android:layout_width="match_parent"
+          android:layout_height="wrap_content"
+          android:layout_below="@+id/llMonthHeader"
+          android:fitsSystemWindows="true"
+          android:visibility="gone" />
+
+      <android.support.v7.widget.RecyclerView
+          android:id="@+id/rv_day_slots"
+          android:layout_width="match_parent"
+          android:visibility="gone"
+          android:layout_height="match_parent"
+          android:layout_below="@+id/rv_week"/>-->
+
+    <com.alamkanak.weekview.WeekView
+        android:id="@+id/week_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_below="@+id/llMonthHeader"
-        android:fitsSystemWindows="true"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:columnGap="8dp"
+        app:eventTextColor="@android:color/white"
+        app:headerColumnPadding="8dp"
+        app:headerColumnTextColor="@color/black_bg1"
+        app:headerRowBackgroundColor="?attr/primarycolor"
+        app:headerRowPadding="12dp"
+        app:hourHeight="60dp"
+        app:textSize="@dimen/list_header_text_size" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_retailer"

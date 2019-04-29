@@ -3,10 +3,10 @@ package com.ivy.ui.offlineplan.calendar.di;
 import android.content.Context;
 
 import com.ivy.core.di.scope.PerActivity;
-import com.ivy.ui.offlineplan.calendar.OfflinePlanContract;
-import com.ivy.ui.offlineplan.calendar.data.OfflinePlanDataManager;
-import com.ivy.ui.offlineplan.calendar.data.OfflinePlanDataManagerImpl;
-import com.ivy.ui.offlineplan.calendar.presenter.OfflinePlanPresenterImpl;
+import com.ivy.ui.offlineplan.calendar.CalendarPlanContract;
+import com.ivy.ui.offlineplan.calendar.data.CalendarPlanDataManager;
+import com.ivy.ui.offlineplan.calendar.data.CalendarPlanDataManagerImpl;
+import com.ivy.ui.offlineplan.calendar.presenter.CalendarPlanPresenterImpl;
 import com.ivy.utils.rx.AppSchedulerProvider;
 import com.ivy.utils.rx.SchedulerProvider;
 
@@ -19,12 +19,12 @@ import io.reactivex.disposables.CompositeDisposable;
  */
 
 @Module
-public class OfflinePlanModule {
+public class CalendarPlanModule {
 
-    private OfflinePlanContract.OfflinePlanView mView;
+    private CalendarPlanContract.CalendarPlanView mView;
     private Context mContext;
 
-    public OfflinePlanModule(OfflinePlanContract.OfflinePlanView mView, Context context) {
+    public CalendarPlanModule(CalendarPlanContract.CalendarPlanView mView, Context context) {
         this.mView = mView;
         this.mContext = context;
     }
@@ -40,18 +40,18 @@ public class OfflinePlanModule {
     }
 
     @Provides
-    public OfflinePlanContract.OfflinePlanView provideView() {
+    public CalendarPlanContract.CalendarPlanView provideView() {
         return mView;
     }
 
     @Provides
     @PerActivity
-    OfflinePlanContract.OfflinePlanPresenter<OfflinePlanContract.OfflinePlanView> providesOfflinePlanPresenter(OfflinePlanPresenterImpl<OfflinePlanContract.OfflinePlanView> offlinePlanPresenter) {
+    CalendarPlanContract.CalendarPlanPresenter<CalendarPlanContract.CalendarPlanView> providesOfflinePlanPresenter(CalendarPlanPresenterImpl<CalendarPlanContract.CalendarPlanView> offlinePlanPresenter) {
         return offlinePlanPresenter;
     }
 
     @Provides
-    OfflinePlanDataManager proivdesOfflineDataManger(OfflinePlanDataManagerImpl offlinePlanDataManager) {
+    CalendarPlanDataManager proivdesOfflineDataManger(CalendarPlanDataManagerImpl offlinePlanDataManager) {
         return offlinePlanDataManager;
     }
 }

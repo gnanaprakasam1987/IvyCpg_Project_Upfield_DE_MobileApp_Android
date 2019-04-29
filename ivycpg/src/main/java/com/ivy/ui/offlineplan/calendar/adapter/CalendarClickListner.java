@@ -5,4 +5,5 @@ package com.ivy.ui.offlineplan.calendar.adapter;
  */
 public interface CalendarClickListner {
     void onDateSelected(String selectedDate);
+    void onWeekDateSelected(String selectedDate);
 }

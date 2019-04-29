@@ -151,7 +151,7 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
                     holder.TVDate.setBackground(mContext.getResources().getDrawable(R.drawable.circle_blue_bg));
                 } else if (holder.calBO.isSelected()) {
                     holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.FullBlack));
-                    holder.TVDate.setBackground(mContext.getResources().getDrawable(R.drawable.circle_light_blue_bg));
+                    holder.TVDate.setBackground(mContext.getResources().getDrawable(R.drawable.circle_calendar_select));
                 } else {
                     holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.FullBlack));
                     holder.TVDate.setBackgroundColor(mContext.getResources().getColor(R.color.zxing_transparent));
@@ -159,15 +159,12 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
 
             }
 
-            holder.rlItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (holder.calBO != null) {
-                        refreshGrid(holder.calBO.getCal_date());
-                        calendarClickListner.onDateSelected(holder.calBO.getCal_date());
-                    }
-
+            holder.rlItem.setOnClickListener(v -> {
+                if (holder.calBO != null) {
+                    refreshGrid(holder.calBO.getCal_date());
+                    calendarClickListner.onDateSelected(holder.calBO.getCal_date());
                 }
+
             });
         }
 

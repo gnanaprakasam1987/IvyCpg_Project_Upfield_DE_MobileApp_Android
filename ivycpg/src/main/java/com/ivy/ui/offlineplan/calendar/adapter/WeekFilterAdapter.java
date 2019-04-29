@@ -1,44 +1,45 @@
 package com.ivy.ui.offlineplan.calendar.adapter;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.ivy.calendarlibrary.monthview.MonthView;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
-import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Created by mansoor on 28/03/2019
  */
-public class WeekFilterAdapter extends MonthView.Adapter<RecyclerView.ViewHolder> {
+public class WeekFilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context mContext;
     private ArrayList<CalenderBO> mCalenderAllList;
     private ArrayList<String> mAllowedDates;
+    private CalendarClickListner calendarClickListner;
+    private int itemWidth;
 
-    public WeekFilterAdapter(Context context, ArrayList<CalenderBO> mCalenderAllList, ArrayList<String> mAllowedDates) {
+    public WeekFilterAdapter(Context context, ArrayList<CalenderBO> mCalenderAllList,
+                             ArrayList<String> mAllowedDates, CalendarClickListner calendarClickListner,
+                             int itemWidth) {
         mContext = context;
         this.mCalenderAllList = mCalenderAllList;
         this.mAllowedDates = mAllowedDates;
+        this.calendarClickListner = calendarClickListner;
+        this.itemWidth = itemWidth;
     }
 
 
+    @NonNull
     @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder;
         if (viewType == 0)
             viewHolder = new WeekViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.day_week_item_weekno, parent, false));
@@ -49,30 +50,20 @@ public class WeekFilterAdapter extends MonthView.Adapter<RecyclerView.ViewHolder
     }
 
     @Override
-    public RecyclerView.ViewHolder onCreateHolder(ViewGroup parent) {
-        return null;
-    }
-
-    @Override
-    public int getCount() {
-        return mCalenderAllList.size();
-    }
-
-    @Override
-    public void onBindHolder(RecyclerView.ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, int position) {
         if (position == 0) {
             WeekViewHolder holder = (WeekViewHolder) viewHolder;
             holder.tvWeekText.setText(mCalenderAllList.get(position).getDay());
-            holder.tvWeekNo.setText(mCalenderAllList.get(position).getCal_date());
+            holder.tvWeekNo.setText(mCalenderAllList.get(position).getWeekDate());
 
-            RelativeLayout.LayoutParams rel_btn = new RelativeLayout.LayoutParams(getItemWidth(), ViewGroup.LayoutParams.MATCH_PARENT);
+            RelativeLayout.LayoutParams rel_btn = new RelativeLayout.LayoutParams(itemWidth, ViewGroup.LayoutParams.MATCH_PARENT);
             holder.rlweekdate.setLayoutParams(rel_btn);
 
         } else {
             DayViewHolder holder = (DayViewHolder) viewHolder;
             holder.calBO = mCalenderAllList.get(position);
-            holder.TVDate.setText(holder.calBO.getDay());
-            holder.TvDay.setText(holder.calBO.getCal_date());
+            holder.TVDate.setText(holder.calBO.getWeekDate());
+            holder.TvDay.setText(holder.calBO.getDay());
             if (mAllowedDates.contains(holder.calBO.getCal_date())) {
                 holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.FullBlack));
                 holder.isValid = true;
@@ -86,27 +77,25 @@ public class WeekFilterAdapter extends MonthView.Adapter<RecyclerView.ViewHolder
                 holder.TVDate.setBackground(mContext.getResources().getDrawable(R.drawable.circle_blue_bg));
             } else if (holder.calBO.isSelected()) {
                 holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.FullBlack));
-                holder.TVDate.setBackground(mContext.getResources().getDrawable(R.drawable.circle_light_blue_bg));
+                holder.TVDate.setBackground(mContext.getResources().getDrawable(R.drawable.circle_calendar_select));
             } else {
                 holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.FullBlack));
                 holder.TVDate.setBackgroundColor(mContext.getResources().getColor(R.color.zxing_transparent));
             }
 
-            holder.rlItem.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (holder.calBO != null && holder.isValid) {
-                        refreshList(holder.calBO.getCal_date());
-                        // calendarClickListner.onDateSelected(holder.calBO.getCal_date());
-                    }
-
+            holder.rlItem.setOnClickListener(v -> {
+                if (holder.calBO != null && holder.isValid) {
+                    refreshList(holder.calBO.getCal_date());
+                    calendarClickListner.onWeekDateSelected(holder.calBO.getCal_date());
                 }
+
             });
 
-            RelativeLayout.LayoutParams rel_btn = new RelativeLayout.LayoutParams(getItemWidth(), ViewGroup.LayoutParams.MATCH_PARENT);
+            RelativeLayout.LayoutParams rel_btn = new RelativeLayout.LayoutParams(itemWidth, ViewGroup.LayoutParams.MATCH_PARENT);
             holder.rlItem.setLayoutParams(rel_btn);
         }
     }
+
 
     class DayViewHolder extends RecyclerView.ViewHolder {
         CalenderBO calBO;
@@ -141,6 +130,11 @@ public class WeekFilterAdapter extends MonthView.Adapter<RecyclerView.ViewHolder
         return position;
     }
 
+    @Override
+    public int getItemCount() {
+        return mCalenderAllList.size();
+    }
+
     private void refreshList(String dateSelected) {
 
         for (CalenderBO calenderBO : mCalenderAllList)
@@ -150,10 +144,5 @@ public class WeekFilterAdapter extends MonthView.Adapter<RecyclerView.ViewHolder
                 calenderBO.setSelected(true);
 
         notifyDataSetChanged();
-    }
-
-    private int getItemWidth() {
-        int width = DeviceUtils.getDeviceWidth(mContext);
-        return width / 8;
     }
 }

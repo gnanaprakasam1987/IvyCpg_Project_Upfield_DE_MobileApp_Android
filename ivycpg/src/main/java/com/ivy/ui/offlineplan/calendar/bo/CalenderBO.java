@@ -20,6 +20,7 @@ public class CalenderBO {
     private RetailerMasterBO retailerMasterBO;
     private boolean isToday;
     private boolean isSelected;
+    private String weekDate;
 
     public CalenderBO() {
 
@@ -93,6 +94,14 @@ public class CalenderBO {
 
     public void setSelected(boolean selected) {
         isSelected = selected;
+    }
+
+    public String getWeekDate() {
+        return weekDate;
+    }
+
+    public void setWeekDate(String weekDate) {
+        this.weekDate = weekDate;
     }
 }
 
