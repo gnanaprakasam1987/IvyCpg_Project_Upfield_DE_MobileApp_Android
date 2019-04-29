@@ -25,6 +25,7 @@ public class InvoiceHeaderBO {
 
     //pending invoice
     String retailerName;
+    private String collectionDate;
 
     public boolean isDebitNote() {
         return isDebitNote;
@@ -224,5 +225,13 @@ public class InvoiceHeaderBO {
 
     public void setComments(String comments) {
         this.comments = comments;
+    }
+
+    public String getCollectionDate() {
+        return collectionDate;
+    }
+
+    public void setCollectionDate(String collectionDate) {
+        this.collectionDate = collectionDate;
     }
 }

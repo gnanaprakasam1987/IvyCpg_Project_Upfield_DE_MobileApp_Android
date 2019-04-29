@@ -66,7 +66,7 @@ public class WheelDayPicker extends WheelPicker<String> {
     @Override
     protected List<String> generateAdapterValues() {
 
-        return new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.days_array)));
+        return new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.days_in_week)));
     }
 
     protected String getFormattedValue(Object value) {

@@ -38,6 +38,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.collection.CollectionBO;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnHelper;
@@ -290,7 +291,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             for (ConfigureBO configureBO : callanalysismenu) {
                 if (configureBO.getConfigCode().equalsIgnoreCase("CallA38")) {
                     contentCloseCall.setVisibility(View.VISIBLE);
-                    TVMenuName.setText(configureBO.getMenuName());
+                    TVMenuName.setText(StringUtils.isEmptyString(configureBO.getMenuName()) ? "Activity Completion Status" : configureBO.getMenuName());
                     LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
                     linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
                     ModuleAdapter moduleAdapter = new ModuleAdapter(getTimeTakenData());

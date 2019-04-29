@@ -176,12 +176,13 @@
 
                     <TextView
                         style="@style/TextViewListItemPrimary"
+                        android:id="@+id/discount_lable"
                         android:layout_width="0dp"
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:layout_weight="3"
                         android:gravity="start|center"
-                        android:text="@string/product_name"
+                        android:text="@string/discount"
                         android:textSize="@dimen/text_size_primary" />
 
 

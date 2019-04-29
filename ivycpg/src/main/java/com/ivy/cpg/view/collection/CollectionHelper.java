@@ -475,14 +475,8 @@ public class CollectionHelper {
      * @deprecated
      * @See {@link com.ivy.core.data.retailer.RetailerDataManagerImpl#updatePaymentIssue(ArrayList)}
      */
-    public void updateHasPaymentIssue() {
-        DBUtil db;
+    public void updateHasPaymentIssue(DBUtil db) {
         try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME
-            );
-            db.createDataBase();
-            db.openDataBase();
-
             String query = "select distinct retailerid from invoicemaster where hasPaymentIssue=1";
             Cursor c = db.selectSQL(query);
             if (c != null) {
@@ -499,7 +493,6 @@ public class CollectionHelper {
                 }
                 c.close();
             }
-            db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
         }

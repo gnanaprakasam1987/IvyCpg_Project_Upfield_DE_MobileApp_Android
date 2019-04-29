@@ -571,15 +571,16 @@ public class LoadManagementHelper {
 
 
             if(isTripStart) {
-                String columns="uid,userId,startDate,upload";
+                String columns="uid,userId,startDate,upload,status";
                 String id = bmodel.getAppDataProvider().getUser().getUserid()
                         + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
                 StringBuilder stringBuilder=new StringBuilder();
                 stringBuilder.append(StringUtils.QT(id));
                 stringBuilder.append(","+bmodel.userMasterHelper.getUserMasterBO().getUserid());
-                stringBuilder.append(","+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                stringBuilder.append(","+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW)));
                 stringBuilder.append(","+StringUtils.QT("N"));
+                stringBuilder.append(","+StringUtils.QT("STARTED"));
 
                 db.insertSQL(DataMembers.tbl_TripMaster, columns, stringBuilder.toString());
 
@@ -590,7 +591,7 @@ public class LoadManagementHelper {
             }
             else
                 db.updateSQL("update "+DataMembers.tbl_TripMaster
-                        +" set endDate="+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))+","+"upload='N'"
+                        +" set endDate="+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))+","+"upload='N',status='COMPLETED'"
                         +" where userId="+bmodel.userMasterHelper.getUserMasterBO().getUserid());
 
         }
@@ -642,13 +643,14 @@ public class LoadManagementHelper {
 
                 if(menuDB.get(i).getMandatory()==1) {
 
-                    if (!bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
+                     if(menuDB.get(i).getConfigCode().equalsIgnoreCase("MENU_ODAMETER")&&!OdameterHelper.getInstance(context).isOdameterStarted(context)){
+                        return false;
+                    }
+                    else if (!bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
                        return false;
                     }
-                    else if (menuDB.get(i).getConfigCode().equals(LoadManagementFragment.MENU_ODAMETER)) {
 
-                       return false;
-                    }
+
 
 
                 }

@@ -93,7 +93,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
         taskTitle = findViewById(R.id.tv);
         final Spinner channelSpinner = findViewById(R.id.channel);
         channelSpinner.setEnabled(false);
-        final Spinner retailerSpinner = findViewById(R.id.retailer);
+        final Spinner retailerSpinner = findViewById(R.id.spinner_seller);
         retailerSpinner.setEnabled(false);
         final Spinner sellerSpinner = findViewById(R.id.spinner_seller);
         sellerSpinner.setEnabled(true);
@@ -110,7 +110,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
         save.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
 
 
-        RadioGroup rb = findViewById(R.id.rg);
+        RadioGroup rb = findViewById(R.id.rg_selection);
         final RadioButton seller_rb = findViewById(R.id.seller);
         final RadioButton channelwise_rb = findViewById(R.id.Channelwise);
         final RadioButton retailerwise_rb = findViewById(R.id.Retailerwise);
@@ -160,7 +160,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
         //allow only create task only for retailer if not from seller Task
         if (!fromHomeScreen) {
             rb.setVisibility(View.GONE);
-            (this.findViewById(R.id.spinner_layouts)).setVisibility(View.GONE);
+           // (this.findViewById(R.id.task_spinner_layouts)).setVisibility(View.GONE);
             applicable_tv.setVisibility(View.GONE);
             taskHelper.mode = "retailer";
         }

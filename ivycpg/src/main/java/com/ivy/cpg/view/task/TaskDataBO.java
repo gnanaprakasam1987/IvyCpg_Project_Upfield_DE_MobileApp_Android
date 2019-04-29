@@ -1,22 +1,84 @@
 package com.ivy.cpg.view.task;
 
-public class TaskDataBO {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class TaskDataBO implements Parcelable {
 
     private String taskDesc;
     private String taskId;
     private int channelId;
+
+    private String taskImg = "";
+    private String taskImgPath;
+
     private String upload;
 
     private String tasktitle;
     private int rid;
     private String isdone;
     private String usercreated;
-    private String taskOwner;
+    private String taskOwner = "";
     private String createdDate;
     private String plannedDate;
     private boolean isUpload;
     private int userId;
     private String userName;
+    private String taskDueDate = "";
+    private String taskEndDate;
+    private String taskCategoryDsc = "";
+    private int taskCategoryID;
+    int flag = 0;
+    private String taskEvidenceImg = "";
+    private String mode;
+    private String sortName;
+    private boolean orderByAsc;
+    private int serverTask;
+    private String taskExecDate;
+
+    protected TaskDataBO(Parcel in) {
+        taskDesc = in.readString();
+        taskId = in.readString();
+        channelId = in.readInt();
+        taskImg = in.readString();
+        taskImgPath = in.readString();
+        upload = in.readString();
+        tasktitle = in.readString();
+        rid = in.readInt();
+        isdone = in.readString();
+        usercreated = in.readString();
+        taskOwner = in.readString();
+        createdDate = in.readString();
+        plannedDate = in.readString();
+        isUpload = in.readByte() != 0;
+        userId = in.readInt();
+        userName = in.readString();
+        taskDueDate = in.readString();
+        taskEndDate = in.readString();
+        taskCategoryDsc = in.readString();
+        taskCategoryID = in.readInt();
+        flag = in.readInt();
+        taskEvidenceImg = in.readString();
+        retailerName = in.readString();
+        isChecked = in.readByte() != 0;
+        mode = in.readString();
+        sortName = in.readString();
+        orderByAsc = in.readByte() != 0;
+        serverTask = in.readInt();
+        taskExecDate = in.readString();
+    }
+
+    public static final Creator<TaskDataBO> CREATOR = new Creator<TaskDataBO>() {
+        @Override
+        public TaskDataBO createFromParcel(Parcel in) {
+            return new TaskDataBO(in);
+        }
+
+        @Override
+        public TaskDataBO[] newArray(int size) {
+            return new TaskDataBO[size];
+        }
+    };
 
     public String getPlannedDate() {
         return plannedDate;
@@ -40,10 +102,17 @@ public class TaskDataBO {
 
     }
 
-    public TaskDataBO(int rid, String retailername) {
+
+    public TaskDataBO(int rid, String retailername, int flag) {
         super();
-        this.rid = rid;
-        this.taskOwner = retailername;
+        if (flag == 1) {
+            this.taskCategoryID = rid;
+            this.taskCategoryDsc = retailername;
+        } else {
+            this.rid = rid;
+            this.taskOwner = retailername;
+        }
+        this.flag = flag;
     }
 
     private boolean isChecked = false;
@@ -92,7 +161,7 @@ public class TaskDataBO {
         return usercreated;
     }
 
-    void setUsercreated(String usercreated) {
+    public void setUsercreated(String usercreated) {
         this.usercreated = usercreated;
     }
 
@@ -100,7 +169,7 @@ public class TaskDataBO {
         this.taskId = taskId;
     }
 
-    String getTaskId() {
+    public String getTaskId() {
         return taskId;
     }
 
@@ -138,14 +207,17 @@ public class TaskDataBO {
 
     @Override
     public String toString() {
-        return taskOwner;
+        if (flag == 1)
+            return taskCategoryDsc;
+        else
+            return taskOwner;
     }
 
     public boolean isUpload() {
         return isUpload;
     }
 
-    void setIsUpload(boolean isUpload) {
+    public void setIsUpload(boolean isUpload) {
         this.isUpload = isUpload;
     }
 
@@ -163,5 +235,144 @@ public class TaskDataBO {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getTaskImg() {
+        return taskImg;
+    }
+
+    public void setTaskImg(String taskImg) {
+        this.taskImg = taskImg;
+    }
+
+    public String getTaskDueDate() {
+        return taskDueDate;
+    }
+
+    public void setTaskDueDate(String taskDueDate) {
+        this.taskDueDate = taskDueDate;
+    }
+
+    public String getTaskEndDate() {
+        return taskEndDate;
+    }
+
+    public void setTaskEndDate(String taskEndDate) {
+        this.taskEndDate = taskEndDate;
+    }
+
+    public String getTaskCategoryDsc() {
+        return taskCategoryDsc;
+    }
+
+    public void setTaskCategoryDsc(String taskCategoryDsc) {
+        this.taskCategoryDsc = taskCategoryDsc;
+    }
+
+    public int getTaskCategoryID() {
+        return taskCategoryID;
+    }
+
+    public void setTaskCategoryID(int taskCategoryID) {
+        this.taskCategoryID = taskCategoryID;
+    }
+
+    public void setFlag(int flag) {
+        this.flag = flag;
+    }
+
+    public String getTaskImgPath() {
+        return taskImgPath;
+    }
+
+    public void setTaskImgPath(String taskImgPath) {
+        this.taskImgPath = taskImgPath;
+    }
+
+
+    public String getTaskEvidenceImg() {
+        return taskEvidenceImg;
+    }
+
+    public void setTaskEvidenceImg(String taskEvidenceImg) {
+        this.taskEvidenceImg = taskEvidenceImg;
+    }
+
+    public String getMode() {
+        return mode;
+    }
+
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    public String getSortName() {
+        return sortName;
+    }
+
+    public void setSortName(String sortName) {
+        this.sortName = sortName;
+    }
+
+    public boolean isOrderByAsc() {
+        return orderByAsc;
+    }
+
+    public void setOrderByAsc(boolean orderByAsc) {
+        this.orderByAsc = orderByAsc;
+    }
+
+    public int getServerTask() {
+        return serverTask;
+    }
+
+    public void setServerTask(int serverTask) {
+        this.serverTask = serverTask;
+    }
+
+    public String getTaskExecDate() {
+        return taskExecDate;
+    }
+
+    public void setTaskExecDate(String taskExecDate) {
+        this.taskExecDate = taskExecDate;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(taskDesc);
+        parcel.writeString(taskId);
+        parcel.writeInt(channelId);
+        parcel.writeString(taskImg);
+        parcel.writeString(taskImgPath);
+        parcel.writeString(upload);
+        parcel.writeString(tasktitle);
+        parcel.writeInt(rid);
+        parcel.writeString(isdone);
+        parcel.writeString(usercreated);
+        parcel.writeString(taskOwner);
+        parcel.writeString(createdDate);
+        parcel.writeString(plannedDate);
+        parcel.writeByte((byte) (isUpload ? 1 : 0));
+        parcel.writeInt(userId);
+        parcel.writeString(userName);
+        parcel.writeString(taskDueDate);
+        parcel.writeString(taskEndDate);
+        parcel.writeString(taskCategoryDsc);
+        parcel.writeInt(taskCategoryID);
+        parcel.writeInt(flag);
+        parcel.writeString(taskEvidenceImg);
+        parcel.writeString(retailerName);
+        parcel.writeByte((byte) (isChecked ? 1 : 0));
+        parcel.writeString(mode);
+        parcel.writeString(sortName);
+        parcel.writeByte((byte) (orderByAsc ? 1 : 0));
+        parcel.writeInt(serverTask);
+        parcel.writeString(taskExecDate);
     }
 }

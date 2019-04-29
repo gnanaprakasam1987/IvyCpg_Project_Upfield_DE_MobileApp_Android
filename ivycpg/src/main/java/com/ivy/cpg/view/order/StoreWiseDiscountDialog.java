@@ -113,7 +113,6 @@ public class StoreWiseDiscountDialog extends DialogFragment {
         mMinRangeTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         mMaxRangeTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
         if (mStorewiseDiscountBO != null) {
-
             mTitleTv.setText(mStorewiseDiscountBO.getDescription());
             mMinRangeTV.setText("Minimum Range  : " + mStorewiseDiscountBO.getDiscount() + "");
             mMaxRangeTV.setText("Maximum Range  : " + mStorewiseDiscountBO.getToDiscount() + "");
@@ -124,14 +123,6 @@ public class StoreWiseDiscountDialog extends DialogFragment {
             mMaxRangeTV.setText("Discount  :");
             String strDiscCnt = mEnteredDiscAmtOrPercent + "";
             mDiscountET.setText(strDiscCnt);
-        }else if (bmodel.configurationMasterHelper.SHOW_STORE_WISE_DISCOUNT_DLG && bmodel.configurationMasterHelper.BILL_WISE_DISCOUNT == 3) {
-            mTitleTv.setText(getResources().getString(R.string.withold_title));
-            mMinRangeTV.setVisibility(View.GONE);
-            mDiscountET.setVisibility(View.GONE);
-            mMaxRangeTV.setText(getResources().getString(R.string.withold_title) + "-" + OrderHelper.getInstance(getActivity()).withHoldDiscount);
-            cbwithhold.setVisibility(View.VISIBLE);
-            getView().findViewById(R.id.card_keyboard).setVisibility(View.GONE);
-            cbwithhold.setChecked(discountHelper.isWihtHoldApplied());
         }
         getView().findViewById(R.id.calcdot).setVisibility(View.VISIBLE);
         mDiscountET.setOnTouchListener(new View.OnTouchListener() {
@@ -181,12 +172,6 @@ public class StoreWiseDiscountDialog extends DialogFragment {
 
         });
 
-        cbwithhold.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                discountHelper.setWihtHoldApplied(isChecked);
-            }
-        });
         Button mDoneBTN = getView().findViewById(R.id.btn_done);
         mDoneBTN.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         mDoneBTN.setOnClickListener(new View.OnClickListener() {

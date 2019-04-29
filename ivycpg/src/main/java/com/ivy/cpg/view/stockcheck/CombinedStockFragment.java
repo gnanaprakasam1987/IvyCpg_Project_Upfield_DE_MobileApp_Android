@@ -73,10 +73,10 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CompetitorFilterFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
-import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.sd.png.view.SchemeDialog;
+import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
@@ -891,7 +891,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                         || (holder.productObj.getLocations().get(mSelectedLocationIndex).getFacingQty() > 0)
                         || holder.productObj.getIsListed() == 1
                         || holder.productObj.getIsDistributed() == 1
-                        || holder.productObj.getLocations().get(mSelectedLocationIndex).getAvailability() > -1) {
+                        || holder.productObj.getLocations().get(mSelectedLocationIndex).getAvailability() > -1
+                        || holder.productObj.getLocations().get(mSelectedLocationIndex).getPriceTagAvailability() == 1) {
                     holder.ivAvailable.setVisibility(View.VISIBLE);
                 } else
                     holder.ivAvailable.setVisibility(View.GONE);
@@ -987,7 +988,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 menu.findItem(R.id.menu_loc_filter).setVisible(false);
             else {
-                if (bmodel.productHelper.getInStoreLocation().size() < 2)
+                if (bmodel.productHelper.getInStoreLocation().size() > 1
+                        || !stockCheckHelper.SHOW_COMB_LOCATION_FILTER)
                     menu.findItem(R.id.menu_loc_filter).setVisible(false);
             }
 
@@ -1275,9 +1277,9 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     }
 
     private void loadSpecialFilterView(View view) {
-        hscrl_spl_filter =  view.findViewById(R.id.hscrl_spl_filter);
+        hscrl_spl_filter = view.findViewById(R.id.hscrl_spl_filter);
         hscrl_spl_filter.setVisibility(View.VISIBLE);
-        ll_spl_filter =  view.findViewById(R.id.ll_spl_filter);
+        ll_spl_filter = view.findViewById(R.id.ll_spl_filter);
         ll_tab_selection = view.findViewById(R.id.ll_tab_selection);
         float scale;
         int width;

@@ -284,7 +284,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_margin="4dp"
-                        android:maxLength="6"
+                        android:maxLength="9"
                         android:padding="4dp"
                         android:textSize="@dimen/total_title_size"
                         android:layout_alignParentRight="true" />

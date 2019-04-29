@@ -1059,8 +1059,10 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
                     Cursor getCpidCursor = dbUtil.selectSQL("Select CPId from RetailerContactEdit where retailerId=" + StringUtils.QT(RetailerID));
 
-                    if (getCpidCursor != null && getCpidCursor.moveToNext()){
-                        dbUtil.deleteSQL("ContactAvailabilityEdit", "CPId=" + getCpidCursor.getString(0), false);
+                    if (getCpidCursor != null && getCpidCursor.getCount() > 0) {
+                        while (getCpidCursor.moveToNext()) {
+                            dbUtil.deleteSQL("ContactAvailabilityEdit", "CPId=" + getCpidCursor.getString(0), false);
+                        }
                     }
 
                     dbUtil.deleteSQL("RetailerContactEdit",where,false);
@@ -1091,12 +1093,12 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                                             + StringUtils.QT(retailerContactBo.getStatus()) + ","
                                             + StringUtils.QT(retailerContactBo.getCpId()) + ","
                                             + StringUtils.QT(RetailerID) + ","
-                                            + StringUtils.QT(mTid)
-                                            + StringUtils.QT(retailerContactBo.getContactSalutationId())
+                                            + StringUtils.QT(mTid)+ ","
+                                            + StringUtils.QT(retailerContactBo.getContactSalutationId())+ ","
                                             + StringUtils.QT(retailerContactBo.getIsEmailPrimary()+"");
                                     dbUtil.insertSQL("RetailerContactEdit", column, value);
 
-                                    addContactAvail(dbUtil,retailerContactBo,RetailerID);
+                                    addContactAvail(dbUtil,retailerContactBo,RetailerID,mTid);
                                 }
                             }
                         }
@@ -1108,16 +1110,19 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
         });
     }
 
-    private void addContactAvail(DBUtil db, RetailerContactBo retailerContactBo,String retailerId){
-        String column = "CPAId,CPId,Day,StartTime,EndTime,isLocal";
+    private void addContactAvail(DBUtil db, RetailerContactBo retailerContactBo,String retailerId,String Tid){
+        String column = "CPAId,CPId,Day,StartTime,EndTime,Tid,status,upload";
 
         for (RetailerContactAvailBo retailerContactAvailBo : retailerContactBo.getContactAvailList()) {
-            String value = StringUtils.QT(retailerId)
+
+            String value = StringUtils.QT(retailerContactAvailBo.getCpaid()!=null&&!retailerContactAvailBo.getCpaid().isEmpty()?retailerContactAvailBo.getCpaid():retailerId)
                     + "," + StringUtils.QT(retailerContactBo.getCpId())
                     + "," + StringUtils.QT(retailerContactAvailBo.getDay())
                     + "," + StringUtils.QT(retailerContactAvailBo.getFrom())
                     + "," + StringUtils.QT(retailerContactAvailBo.getTo())
-                    + "," + StringUtils.QT("1");
+                    + "," + StringUtils.QT(Tid)
+                    + "," + StringUtils.QT(retailerContactAvailBo.getStatus())
+                    + "," + StringUtils.QT("N");
 
             db.insertSQL("ContactAvailabilityEdit", column, value);
         }

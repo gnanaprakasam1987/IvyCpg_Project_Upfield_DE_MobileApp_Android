@@ -737,6 +737,7 @@ public class SalesReturnSummery extends IvyBaseActivityNoActionBar {
             if (totalBalanceQty > 0) {
                 ProductMasterBO productMasterBO = new ProductMasterBO(product);
                 productMasterBO.setOrderedPcsQty(totalBalanceQty);
+                productMasterBO.setTotalOrderedQtyInPieces(totalBalanceQty);
                 productMasterBO.setNetValue(SDUtil.formatAsPerCalculationConfig(totalBalanceAmount));
                 mPrintList.add(productMasterBO);
             }

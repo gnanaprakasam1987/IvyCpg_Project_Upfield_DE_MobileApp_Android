@@ -53,8 +53,8 @@
                 android:layout_marginEnd="@dimen/dimen_2dp"
                 android:layout_marginRight="@dimen/dimens_4dp"
                 android:maxLines="1"
-                android:text="@string/prod_code"
                 android:tag="pcode"
+                android:text="@string/prod_code"
                 android:visibility="visible" />
 
             <TextView
@@ -113,6 +113,20 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_price_tag"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:gravity="center">
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/checkbox_price_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </RelativeLayout>
 
         <EditText
             android:id="@+id/stock_and_order_listview_sc_qty"

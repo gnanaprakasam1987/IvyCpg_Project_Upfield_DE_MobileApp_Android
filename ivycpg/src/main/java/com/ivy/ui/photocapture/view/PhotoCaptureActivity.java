@@ -81,6 +81,8 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
 
     private boolean isFromMenuClick;
 
+    private boolean isFromSurvey;
+
     @BindView(R.id.spin_parentlevel)
     Spinner productSpinner;
 
@@ -178,6 +180,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
             isFromMenuClick = getIntent().getExtras().getBoolean("isFromMenuClick", false);
             isFromChild = getIntent().getBooleanExtra("isFromChild", false);
             title = getIntent().getExtras().getString("screen_title", "");
+            isFromSurvey = getIntent().getExtras().getBoolean("fromSurvey");
         }
 
     }
@@ -385,7 +388,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         showAlert("", getResources().getString(R.string.saved_successfully), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
-                if (!isFromMenuClick) {
+                if (isFromSurvey) {
                     finish();
                 } else {
                     Intent intent = new Intent(PhotoCaptureActivity.this,
@@ -833,7 +836,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                         FileUtils.deleteFiles(folderPath, image);
                 }
 
-                if (!isFromMenuClick) {
+                if (isFromSurvey) {
                     finish();
                 } else {
 

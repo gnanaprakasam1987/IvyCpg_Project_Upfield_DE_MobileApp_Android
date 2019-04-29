@@ -30,7 +30,7 @@ public class DummyLaunchActivity extends Activity {
         if (!BuildConfig.DEBUG)
             Fabric.with(this, new Crashlytics());
         DBUtil.isEncrypted = ApplicationConfigs.isEncrypted;
-        if (ApplicationConfigs.withActivation) {
+        if (ApplicationConfigs.withActivation && BuildConfig.FLAVOR.equals("aws")) {
             appPreferences = PreferenceManager.getDefaultSharedPreferences(this);
             appUrl = appPreferences.getString("appUrlNew", "");
             if (appUrl.equals("")) {

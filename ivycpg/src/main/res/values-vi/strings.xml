@@ -1305,6 +1305,7 @@
         <item>All</item>
         <item>Assigned</item>
         <item>My Task</item>
+        <item>Completed</item>
     </string-array>
     <string-array name="days_in_week">
         <item>CN</item>

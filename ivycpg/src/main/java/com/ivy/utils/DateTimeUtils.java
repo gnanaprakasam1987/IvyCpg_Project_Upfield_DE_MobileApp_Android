@@ -17,6 +17,8 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import static com.ivy.core.IvyConstants.DEFAULT_DATE_FORMAT;
+
 public class DateTimeUtils {
 
     public static final int DATE_TIME = 2;
@@ -125,6 +127,15 @@ public class DateTimeUtils {
         }
 
     }
+
+    public static String addDateToYear(int noOfYears) {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.YEAR, noOfYears); // to get previous year add -1
+        // convert calendar to date
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+        return sdf.format(cal.getTime());
+    }
+
 
     /**
      * @param firstDate
@@ -400,6 +411,16 @@ public class DateTimeUtils {
 
     public static int getDay(Date date){
         return getCalendarOfDate(date).get(Calendar.DAY_OF_MONTH);
+    }
+
+    public static String convertDayName(String day, String inputFormat, String outputFormat){
+        try {
+            return new SimpleDateFormat(outputFormat,Locale.US)
+                    .format(new SimpleDateFormat(inputFormat,Locale.US).parse(day));
+        }catch(Exception e){
+            Commons.printException(e);
+            return day;
+        }
     }
 
 }

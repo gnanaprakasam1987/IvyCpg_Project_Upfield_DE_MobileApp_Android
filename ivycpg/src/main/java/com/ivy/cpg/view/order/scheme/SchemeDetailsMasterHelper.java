@@ -435,7 +435,7 @@ public class SchemeDetailsMasterHelper {
             sb.append(" AND SCM.locationid in(0,").append(locationId).append(")");
             sb.append(" AND SCM.accountid in(0,").append(accountId).append(")");
             sb.append(" AND SCM.PriorityProductId in(0,").append(priorityProductId).append(")");
-            sb.append(" (AND OP.GroupID IN(").append(mValidGrpIds).append(")").append(" OR OP.GroupID IS NULL) ");// if given scheme is not mapped for attribute wise  than IS NULL condition will work
+            sb.append(" (AND (OP.GroupID IN(").append(mValidGrpIds).append(")").append(" OR OP.GroupID IS NULL) ");// if given scheme is not mapped for attribute wise  than IS NULL condition will work
             sb.append(" AND SAC.schemeApplyCOunt !=0 ").append(orderBy);
 
             Cursor c = db.selectSQL(sb.toString());
@@ -3778,8 +3778,12 @@ public class SchemeDetailsMasterHelper {
      * @param schemeProductBo Free product Bo
      * @param db              Database Object
      */
-    private void reduceFreeProductFromSIHBatchWise(SchemeProductBO schemeProductBo,
-                                                   DBUtil db) {
+    private void reduceFreeProductFromSIHBatchWise(SchemeProductBO schemeProductBo, DBUtil db) {
+
+        String stockTable = "StockInHandMaster";
+        if (bModel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE)
+            stockTable = "FreeStockInHandMaster";
+
         ArrayList<SchemeProductBatchQty> freeProductBatchList = schemeProductBo
                 .getBatchWiseQty();
         ProductMasterBO productBo = bModel.productHelper
@@ -3787,7 +3791,7 @@ public class SchemeDetailsMasterHelper {
         if (freeProductBatchList != null) {
             for (SchemeProductBatchQty schemeProductBatchQty : freeProductBatchList) {
                 if (schemeProductBatchQty.getQty() > 0) {
-                    db.executeQ("update StockInHandMaster set upload='N',qty=(case when  ifnull(qty,0)>"
+                    db.executeQ("update " + stockTable + " set upload='N',qty=(case when  ifnull(qty,0)>"
                             + schemeProductBatchQty.getQty()
                             + " then ifnull(qty,0)-"
                             + schemeProductBatchQty.getQty()
