@@ -7,9 +7,19 @@ public interface RetailerPlanFilterContract {
 
     interface RetailerPlanFilterView extends BaseIvyView{
 
+        void showNotVisitedRow();
+
+        void showTaskDueDateRow();
+
+        void showLastVisitRow();
+
+        void filterValidationSuccess(RetailerPlanFilterBo planFilterBo);
+
+        void filterValidationFailure();
     }
 
     interface RetailerPlanFilterPresenter<V extends RetailerPlanFilterView> extends BaseIvyPresenter<V>{
-
+        void prepareConfiguration();
+        void validateFilterObject(RetailerPlanFilterBo planFilterBo);
     }
 }

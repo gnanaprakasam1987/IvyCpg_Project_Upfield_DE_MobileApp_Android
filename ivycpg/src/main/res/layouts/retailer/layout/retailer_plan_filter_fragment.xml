@@ -1,139 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/material_tool_bar"
-        app:layout_scrollFlags="scroll|enterAlways" />
-
-    <android.support.v7.widget.AppCompatCheckBox
-        android:id="@+id/not_visited_check_box"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="@dimen/_14sdp"
-        android:text="Not Visited"
-        android:button="@null"
-        android:paddingLeft="@dimen/_10sdp"
-        android:paddingRight="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_10sdp"
-        android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"/>
+    android:paddingBottom="@dimen/_10sdp">
 
     <TextView
-        android:id="@+id/task_due_date_txt"
+        android:id="@+id/filter_text"
+        style="@style/HeadingStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/TextViewCaptionNormal"
-        android:text="Task Due Date"
-        app:layout_constraintTop_toBottomOf="@+id/not_visited_check_box"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:layout_marginLeft="@dimen/_10sdp"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:minHeight="?attr/actionBarSize"
+        android:paddingBottom="@dimen/_10sdp"
+        android:paddingLeft="@dimen/_10sdp"
+        android:paddingTop="@dimen/_10sdp"
+        android:text="@string/filter_by"
+        android:textColor="@color/white" />
+
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/filter_text"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/filter_text"
         android:layout_marginRight="@dimen/_10sdp"
-        android:paddingTop="@dimen/_3sdp"
-        android:paddingBottom="@dimen/_3sdp"/>
+        android:paddingLeft="@dimen/_5sdp"
+        android:paddingRight="@dimen/_5sdp"
+        android:src="@drawable/ic_close_icon_white" />
 
-    <TextView
-        android:id="@+id/task_due_from_date"
-        android:layout_width="@dimen/_120sdp"
-        android:layout_height="wrap_content"
-        android:text="From"
-        android:gravity="start"
-        app:layout_constraintTop_toBottomOf="@+id/task_due_date_txt"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginLeft="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:paddingTop="@dimen/_10sdp"
-        android:paddingBottom="@dimen/_10sdp"
-        android:paddingLeft="@dimen/_10sdp"
-        android:background="@drawable/border_only"/>
-
-    <TextView
-        android:id="@+id/task_due_to_date"
-        android:layout_width="@dimen/_120sdp"
-        android:layout_height="wrap_content"
-        android:text="To"
-        android:gravity="start"
-        app:layout_constraintTop_toBottomOf="@+id/task_due_date_txt"
-        app:layout_constraintStart_toEndOf="@+id/task_due_from_date"
-        android:layout_marginLeft="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:paddingTop="@dimen/_10sdp"
-        android:paddingBottom="@dimen/_10sdp"
-        android:paddingLeft="@dimen/_10sdp"
-        android:background="@drawable/border_only"/>
-
-    <TextView
-        android:id="@+id/last_vist_date_txt"
+    <ScrollView
         android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/filter_btn"
+        android:layout_below="@+id/filter_text"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/dynamic_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.AppCompatCheckBox
+                android:id="@+id/not_visited_check_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:button="@null"
+                android:drawableRight="?android:attr/listChoiceIndicatorMultiple"
+                android:paddingLeft="@dimen/_10sdp"
+                android:paddingRight="@dimen/_10sdp"
+                android:text="Not Visited"
+                android:textSize="@dimen/_14sdp" />
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/task_due_date_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/task_due_date_txt"
+                    style="@style/TextViewCaptionNormal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:paddingBottom="@dimen/_3sdp"
+                    android:paddingTop="@dimen/_3sdp"
+                    android:text="Task Due Date"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/task_due_from_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/border_only"
+                    android:gravity="start"
+                    android:paddingBottom="@dimen/_10sdp"
+                    android:paddingLeft="@dimen/_10sdp"
+                    android:paddingTop="@dimen/_10sdp"
+                    android:text="From"
+                    app:layout_constraintEnd_toStartOf="@+id/task_due_to_date"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/task_due_date_txt" />
+
+                <TextView
+                    android:id="@+id/task_due_to_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/border_only"
+                    android:gravity="start"
+                    android:paddingBottom="@dimen/_10sdp"
+                    android:paddingLeft="@dimen/_10sdp"
+                    android:paddingTop="@dimen/_10sdp"
+                    android:text="To"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/task_due_from_date"
+                    app:layout_constraintTop_toBottomOf="@+id/task_due_date_txt" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/task_last_vivit_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_20sdp">
+
+                <TextView
+                    android:id="@+id/last_vist_date_txt"
+                    style="@style/TextViewCaptionNormal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:paddingBottom="@dimen/_3sdp"
+                    android:paddingTop="@dimen/_3sdp"
+                    android:text="Last Visit Date" />
+
+                <TextView
+                    android:id="@+id/last_visit_from_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/border_only"
+                    android:gravity="start"
+                    android:paddingBottom="@dimen/_10sdp"
+                    android:paddingLeft="@dimen/_10sdp"
+                    android:paddingTop="@dimen/_10sdp"
+                    android:text="From"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/last_vist_date_txt"
+                    app:layout_constraintEnd_toStartOf="@+id/last_visit_to_date"/>
+
+                <TextView
+                    android:id="@+id/last_visit_to_date"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:layout_marginRight="@dimen/_10sdp"
+                    android:layout_marginTop="@dimen/_15sdp"
+                    android:background="@drawable/border_only"
+                    android:gravity="start"
+                    android:paddingBottom="@dimen/_10sdp"
+                    android:paddingLeft="@dimen/_10sdp"
+                    android:paddingTop="@dimen/_10sdp"
+                    android:text="To"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/last_visit_from_date"
+                    app:layout_constraintTop_toBottomOf="@+id/last_vist_date_txt" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </LinearLayout>
+    </ScrollView>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/clear_btn"
+        style="@style/ButtonNormal"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/TextViewCaptionNormal"
-        android:text="Last Visit Date"
-        app:layout_constraintTop_toBottomOf="@+id/task_due_to_date"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:layout_marginLeft="@dimen/_10sdp"
+        android:layout_alignParentBottom="true"
         android:layout_marginRight="@dimen/_10sdp"
-        android:paddingTop="@dimen/_3sdp"
-        android:paddingBottom="@dimen/_3sdp"/>
-
-    <TextView
-        android:id="@+id/last_visit_from_date"
-        android:layout_width="@dimen/_120sdp"
-        android:layout_height="wrap_content"
-        android:text="From"
-        android:gravity="start"
-        app:layout_constraintTop_toBottomOf="@+id/last_vist_date_txt"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginLeft="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:paddingTop="@dimen/_10sdp"
-        android:paddingBottom="@dimen/_10sdp"
-        android:paddingLeft="@dimen/_10sdp"
-        android:background="@drawable/border_only"/>
-
-    <TextView
-        android:id="@+id/last_visit_to_date"
-        android:layout_width="@dimen/_120sdp"
-        android:layout_height="wrap_content"
-        android:text="To"
-        android:gravity="start"
-        app:layout_constraintTop_toBottomOf="@+id/last_vist_date_txt"
-        app:layout_constraintStart_toEndOf="@+id/last_visit_from_date"
-        android:layout_marginLeft="@dimen/_20sdp"
-        android:layout_marginTop="@dimen/_15sdp"
-        android:paddingTop="@dimen/_10sdp"
-        android:paddingBottom="@dimen/_10sdp"
-        android:paddingLeft="@dimen/_10sdp"
-        android:background="@drawable/border_only"
-        />
-
+        android:layout_toLeftOf="@+id/filter_btn"
+        android:text="@string/clear" />
 
     <android.support.v7.widget.AppCompatButton
         android:id="@+id/filter_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/filter"
         style="@style/ButtonNormal_Box_green"
-        android:layout_marginRight="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:layout_marginBottom="@dimen/_10sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/last_visit_from_date"/>
-
-    <android.support.v7.widget.AppCompatButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/clear"
-        style="@style/ButtonNormal"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
         android:layout_marginRight="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:layout_marginBottom="@dimen/_10sdp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/filter_btn"
-        app:layout_constraintTop_toBottomOf="@+id/last_visit_from_date"/>
+        android:text="@string/filter" />
 
-
-</android.support.constraint.ConstraintLayout>
+</RelativeLayout>

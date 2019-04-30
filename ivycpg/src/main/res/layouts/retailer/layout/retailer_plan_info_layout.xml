@@ -49,61 +49,80 @@
             android:padding="@dimen/_3sdp"
             android:text=""
             android:textColor="#8b000000"
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/profile_plan"
+            app:layout_constraintEnd_toEndOf="@+id/tv_outlet_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_outlet_name" />
 
         <ImageView
             android:id="@+id/profile_plan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/_5sdp"
             android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_marginRight="@dimen/_10sdp"
-            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"
             android:padding="@dimen/_5sdp"
             android:src="@drawable/ic_store_icon"
-            android:tint="@color/FullBlack"
+            android:tint="@color/blue_week_background"
             app:layout_constraintStart_toEndOf="@id/tv_outlet_name"
             app:layout_constraintEnd_toStartOf="@id/add_plan"
-            app:layout_constraintRight_toLeftOf="@id/save_plan"
+            app:layout_constraintTop_toTopOf="@+id/tv_outlet_name"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_outlet_address"
             android:visibility="visible"/>
 
-        <TextView
+        <ImageView
             android:id="@+id/add_plan"
             style="@style/TextViewListItemCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_5sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"
             android:padding="@dimen/_5sdp"
-            android:text="@string/add_plan"
-            android:textColor="@color/green_productivity"
-            android:visibility="visible"
+            android:src="@drawable/ic_add"
+            android:visibility="gone"
+            android:tint="@color/blue_week_background"
             app:layout_constraintStart_toEndOf="@id/profile_plan"
-            app:layout_constraintBottom_toBottomOf="@+id/profile_plan"
-            app:layout_constraintEnd_toStartOf="@id/save_plan"
-            app:layout_constraintTop_toTopOf="@+id/profile_plan" />
+            app:layout_constraintEnd_toStartOf="@id/edit_plan"
+            app:layout_constraintTop_toTopOf="@+id/tv_outlet_name"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_outlet_address"/>
 
-        <TextView
+        <ImageView
+            android:id="@+id/edit_plan"
+            style="@style/TextViewListItemCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:padding="@dimen/_5sdp"
+            android:src="@drawable/ic_edit"
+            android:visibility="gone"
+            android:tint="@color/blue_week_background"
+            app:layout_constraintStart_toEndOf="@id/add_plan"
+            app:layout_constraintEnd_toStartOf="@id/save_plan"
+            app:layout_constraintTop_toTopOf="@+id/tv_outlet_name"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_outlet_address" />
+
+        <ImageView
             android:id="@+id/save_plan"
             style="@style/TextViewListItemCaption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/_5sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"
             android:padding="@dimen/_5sdp"
-            android:text="@string/save"
-            android:textColor="@color/green_productivity"
+            android:src="@drawable/icon_save"
             android:visibility="gone"
+            android:tint="@color/blue_week_background"
             app:layout_constraintBottom_toBottomOf="@+id/profile_plan"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/add_plan"
+            app:layout_constraintStart_toEndOf="@id/edit_plan"
             app:layout_constraintTop_toTopOf="@+id/profile_plan" />
 
         <!--Visit Start Begins-->
         <TextView
             android:id="@+id/tv_visit_time_txt"
-            style="@style/TextViewListItemPrimary"
+            style="@style/TextViewCaptionNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_15sdp"
@@ -111,13 +130,12 @@
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
             android:text="Visit Start Time"
-            android:textColor="#de000000"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address" />
 
         <TextView
             android:id="@+id/tv_visit_date"
-            style="@style/TextViewListItemPrimary"
+            style="@style/TextViewNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/_15sdp"
@@ -126,13 +144,12 @@
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
             android:text=""
-            android:textColor="#de000000"
             app:layout_constraintEnd_toStartOf="@id/tv_visit_time"
             app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address" />
 
         <TextView
             android:id="@+id/tv_visit_time"
-            style="@style/TextViewListItemPrimary"
+            style="@style/TextViewNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_15sdp"
@@ -140,7 +157,6 @@
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
             android:text=""
-            android:textColor="#de000000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address" />
         <!--Visit Start Ends-->
@@ -148,7 +164,7 @@
         <!--Visit End Begins-->
         <TextView
             android:id="@+id/tv_visit_end_time_txt"
-            style="@style/TextViewListItemPrimary"
+            style="@style/TextViewCaptionNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_15sdp"
@@ -156,13 +172,12 @@
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
             android:text="Visit End Time"
-            android:textColor="#de000000"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_visit_time_txt" />
 
         <TextView
             android:id="@+id/tv_visit_end_date"
-            style="@style/TextViewListItemPrimary"
+            style="@style/TextViewNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/_15sdp"
@@ -171,13 +186,12 @@
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
             android:text=""
-            android:textColor="#de000000"
             app:layout_constraintEnd_toStartOf="@id/tv_visit_end_time"
             app:layout_constraintTop_toBottomOf="@+id/tv_visit_time_txt" />
 
         <TextView
             android:id="@+id/tv_visit_end_time"
-            style="@style/TextViewListItemPrimary"
+            style="@style/TextViewNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_15sdp"
@@ -185,7 +199,6 @@
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
             android:text=""
-            android:textColor="#de000000"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_visit_time_txt" />
         <!--Visit End Ends-->
@@ -193,7 +206,7 @@
         <!--Last Visit Begins-->
         <TextView
             android:id="@+id/tv_last_visit_txt"
-            style="@style/TextViewListItemPrimary"
+            style="@style/TextViewCaptionNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_15sdp"
@@ -201,13 +214,12 @@
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
             android:text="Last Visit Date"
-            android:textColor="#de000000"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_visit_end_time_txt" />
 
         <TextView
             android:id="@+id/tv_last_visit_date"
-            style="@style/TextViewListItemPrimary"
+            style="@style/TextViewNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_15sdp"
@@ -215,7 +227,6 @@
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
             android:text=""
-            android:textColor="#de000000"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_visit_end_time_txt" />
         <!--Last Visit Ends-->

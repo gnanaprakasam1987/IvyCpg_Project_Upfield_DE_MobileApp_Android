@@ -1,42 +1,65 @@
 package com.ivy.ui.retailerplanfilter.view;
 
 import android.app.Dialog;
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
-import android.view.Menu;
-import android.view.MenuInflater;
+import android.support.v7.widget.AppCompatCheckBox;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.widget.DatePicker;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.ivy.core.base.view.BaseBottomSheetDialogFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.ui.retailerplanfilter.FilterObjectBo;
+import com.ivy.ui.retailerplanfilter.RetailerPlanFilterBo;
 import com.ivy.ui.retailerplanfilter.RetailerPlanFilterContract;
 import com.ivy.ui.retailerplanfilter.di.DaggerRetailerPlanFilterComponent;
-import com.ivy.ui.retailerplanfilter.di.RetailerPlanFilterComponent;
 import com.ivy.ui.retailerplanfilter.di.RetailerPlanFilterModule;
 import com.ivy.ui.retailerplanfilter.presenter.RetailerPlanFilterPresenterImpl;
+import com.ivy.utils.DeviceUtils;
 
+import org.greenrobot.eventbus.EventBus;
+
+import java.util.Calendar;
 import java.util.Objects;
 
 import javax.inject.Inject;
 
-public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment implements RetailerPlanFilterContract.RetailerPlanFilterView{
+import butterknife.BindView;
+import butterknife.OnClick;
+
+public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
+        implements RetailerPlanFilterContract.RetailerPlanFilterView,DatePickerViewDialog.DateSelectListener {
 
     private BottomSheetBehavior bottomSheetBehavior;
 
+    @BindView(R.id.not_visited_check_box)
+    AppCompatCheckBox notVisitedCheckBox;
+
+    @BindView(R.id.task_due_from_date)
+    TextView taskFromDate;
+
+    @BindView(R.id.task_due_to_date)
+    TextView taskToDate;
+
+    @BindView(R.id.last_visit_from_date)
+    TextView lastVisitFromDate;
+
+    @BindView(R.id.last_visit_to_date)
+    TextView lastVisitToDate;
+
     @Inject
     RetailerPlanFilterPresenterImpl<RetailerPlanFilterContract.RetailerPlanFilterView> presenter;
+
+    private DatePickerViewDialog picker;
+
+    private String date = "2019/04/22";
 
     @Override
     public void initializeDi(){
@@ -57,17 +80,6 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment im
     @Override
     public void initVariables(Dialog dialog,View view) {
 
-        setHasOptionsMenu(true);
-
-        ActionBar actionBar = ((AppCompatActivity) context).getSupportActionBar();
-        if (actionBar != null) {
-            actionBar.setDisplayHomeAsUpEnabled(true);
-            actionBar.setDisplayShowTitleEnabled(false);
-            actionBar.setDisplayShowHomeEnabled(true);
-        }
-
-        setScreenTitle(getString(R.string.filter_by));
-
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) view.getParent()).getLayoutParams();
         CoordinatorLayout.Behavior behavior = params.getBehavior();
 
@@ -75,12 +87,72 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment im
 
             bottomSheetBehavior = ((BottomSheetBehavior) behavior);
 
-            bottomSheetBehavior.setPeekHeight(1000);
+            bottomSheetBehavior.setPeekHeight(DeviceUtils.getDisplayMetrics(context).heightPixels);
 
             ((BottomSheetBehavior) behavior).setState(BottomSheetBehavior.STATE_EXPANDED);
 
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(bottomSheetCallBack);
         }
+    }
+
+    @OnClick({R.id.task_due_from_date,R.id.task_due_to_date,R.id.last_visit_from_date,R.id.last_visit_to_date})
+    void dateSelectListener(TextView textView){
+
+        String date = textView.getText().toString().contains("/")?textView.getText().toString():"";
+
+        showDatePicker(date,textView);
+    }
+
+    @OnClick(R.id.close)
+    void closeIconClick(){
+        dismiss();
+    }
+
+    @OnClick(R.id.clear_btn)
+    void clearButtonListener(){
+        dismiss();
+    }
+
+    @OnClick(R.id.filter_btn)
+    void filterButtonListener(){
+
+        RetailerPlanFilterBo planFilterBo = new RetailerPlanFilterBo();
+        planFilterBo.setNotVisited(notVisitedCheckBox.isChecked());
+        planFilterBo.setLastVisitDate(new FilterObjectBo(lastVisitFromDate.getText().toString(),
+                lastVisitToDate.getText().toString()));
+        planFilterBo.setTaskDate(new FilterObjectBo(taskFromDate.getText().toString(),
+                taskToDate.getText().toString()));
+
+        presenter.validateFilterObject(planFilterBo);
+    }
+
+    private void showDatePicker(String date,View view) {
+        // date picker dialog
+
+        int day;
+        int month;
+        int year;
+
+        if (!date.isEmpty()) {
+            String[] splitDate = date.split("/");
+
+            day = SDUtil.convertToInt(splitDate[2]);
+            month = SDUtil.convertToInt(splitDate[1]);
+            year = SDUtil.convertToInt(splitDate[0]);
+
+        }else{
+            Calendar c = Calendar.getInstance();
+            year = c.get(Calendar.YEAR);
+            month = c.get(Calendar.MONTH);
+            day = c.get(Calendar.DAY_OF_MONTH);
+        }
+
+        picker = new DatePickerViewDialog(context, R.style.SellerDatePickerStyle, this,
+                day, month, year,view);
+        picker.updateDate(year, month - 1, day);
+
+        picker.show();
+
     }
 
     private BottomSheetBehavior.BottomSheetCallback bottomSheetCallBack = new BottomSheetBehavior.BottomSheetCallback() {
@@ -130,4 +202,46 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment im
         return false;
     }
 
+    @Override
+    public void onDateSet(View view, String date) {
+
+        ((TextView)view).setText(date);
+
+    }
+
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+
+    }
+
+    @Override
+    public void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+
+    }
+
+
+    @Override
+    public void showNotVisitedRow() {
+
+    }
+
+    @Override
+    public void showTaskDueDateRow() {
+
+    }
+
+    @Override
+    public void showLastVisitRow() {
+
+    }
+
+    @Override
+    public void filterValidationSuccess(RetailerPlanFilterBo planFilterBo) {
+        EventBus.getDefault().post(planFilterBo);
+        dismiss();
+    }
+
+    @Override
+    public void filterValidationFailure() {
+    }
 }

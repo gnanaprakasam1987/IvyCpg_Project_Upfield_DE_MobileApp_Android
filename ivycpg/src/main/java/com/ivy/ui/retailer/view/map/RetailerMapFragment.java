@@ -47,10 +47,12 @@ import com.ivy.ui.retailer.RetailerContract;
 import com.ivy.ui.retailer.di.DaggerRetailerComponent;
 import com.ivy.ui.retailer.di.RetailerModule;
 import com.ivy.ui.retailer.presenter.RetailerPresenterImpl;
+import com.ivy.ui.retailerplanfilter.RetailerPlanFilterBo;
 import com.ivy.ui.retailerplanfilter.view.RetailerPlanFilterFragment;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.NetworkUtils;
 
+import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -682,7 +684,6 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         inflater.inflate(R.menu.menu_retailer_plan, menu);
     }
 
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
@@ -710,5 +711,13 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         }
 
         return false;
+    }
+
+    @Subscribe
+    public void onMessageEvent(Object obj) {
+
+        if (obj instanceof RetailerPlanFilterBo){
+
+        }
     }
 }
