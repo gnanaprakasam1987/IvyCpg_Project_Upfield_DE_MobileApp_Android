@@ -3,6 +3,16 @@ package com.ivy.sd.png.bo;
 public class CompanyBO {
 
 	private int competitorid;
+
+	public int getIsOwn() {
+		return isOwn;
+	}
+
+	public void setIsOwn(int isOwn) {
+		this.isOwn = isOwn;
+	}
+
+	private int isOwn;
 	private String competitorName = "";
 
 	public int getQuantity() {

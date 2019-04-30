@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -13,20 +15,27 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.CompanyBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class DisplayAssetActivity extends IvyBaseActivityNoActionBar {
 
     private ExpandableListView expandableListView;
     private DisplayAssetHelper displayAssetHelper;
     private Toolbar toolbar;
+    private TextView label_company_name,textview_company_count,textview_other_count;
+    private LinearLayout layout_status;
+    private TextView textView_status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +47,14 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar {
             menuName=getIntent().getExtras().getString("menuName");
 
         toolbar = findViewById(R.id.toolbar);
+
+        label_company_name = findViewById(R.id.label_company_name);
+        textview_company_count = findViewById(R.id.textview_company_count);
+        textview_other_count = findViewById(R.id.textview_other_count);
+
+        layout_status = findViewById(R.id.layout_status);
+        textView_status = findViewById(R.id.textview_status);
+
         if (toolbar != null) {
 
             setSupportActionBar(toolbar);
@@ -113,6 +130,33 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar {
                     }
                 });
 
+                holder.editText_quantity=row.findViewById(R.id.image_quantity);
+                holder.editText_quantity.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+
+                        try {
+                            int qty = Integer.valueOf(editable.toString());
+                            assetList.get(groupPosition).getCompanyList().get(childPosition).setQuantity(qty);
+                        }
+                        catch (Exception ex){
+                            Commons.printException(ex);
+                        }
+
+                        refreshStatus();
+                    }
+                });
+
 
                 row.setTag(holder);
             } else {
@@ -161,6 +205,7 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar {
                 holder.textView_assetName = row.findViewById(R.id.texview_asset_name);
 
 
+
                 row.setTag(holder);
             } else {
                 holder = (ViewHolder) row.getTag();
@@ -204,4 +249,55 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar {
 
     }
 
+    private void refreshStatus(){
+
+        HashMap<Integer,Double> totalWeightageCompanywise=new HashMap<>();
+       // int totalOwnCompanyCount=0;
+        double totalOwnCompanyWeightage=0;
+        String ownCompanyName="";
+
+        for(AssetTrackingBO assetTrackingBO:displayAssetHelper.getDisplayAssetList()){
+           for(CompanyBO companyBO:assetTrackingBO.getCompanyList()){
+               if(companyBO.getIsOwn()==1){
+                  // totalOwnCompanyCount+=companyBO.getQuantity();
+                   totalOwnCompanyWeightage+=(companyBO.getQuantity()*assetTrackingBO.getWeightage());
+
+                   ownCompanyName=companyBO.getCompetitorName();
+               }
+               else {
+                   double weightage=0;
+                   if(totalWeightageCompanywise.get(companyBO.getCompetitorid())!=null)
+                       weightage=totalWeightageCompanywise.get(companyBO.getCompetitorid());
+
+                   totalWeightageCompanywise.put(companyBO.getCompetitorid(),weightage+(companyBO.getQuantity()*assetTrackingBO.getWeightage()));
+               }
+           }
+        }
+
+        double otherCompanyMaxValue=0;
+        for(int companyId:totalWeightageCompanywise.keySet()){
+
+            if(totalWeightageCompanywise.get(companyId)>otherCompanyMaxValue)
+                otherCompanyMaxValue=totalWeightageCompanywise.get(companyId);
+        }
+
+        label_company_name.setText(ownCompanyName);
+        textview_company_count.setText(String.valueOf(totalOwnCompanyWeightage));
+        textview_other_count.setText(String.valueOf(otherCompanyMaxValue));
+
+
+
+        if(otherCompanyMaxValue<totalOwnCompanyWeightage){
+            layout_status.setBackground(getResources().getDrawable(R.color.green_productivity));
+            textView_status.setText(getResources().getString(R.string.advantage));
+        }
+        else if(otherCompanyMaxValue==totalOwnCompanyWeightage){
+            layout_status.setBackground(getResources().getDrawable(R.color.colorPrimaryOrange));
+            textView_status.setText(getResources().getString(R.string.equal));
+        }
+        else {
+            layout_status.setBackground(getResources().getDrawable(R.color.colorPrimaryRed));
+            textView_status.setText(getResources().getString(R.string.dis_advantage));
+        }
+    }
 }

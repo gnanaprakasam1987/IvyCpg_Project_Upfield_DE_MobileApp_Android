@@ -56,7 +56,7 @@ public class DisplayAssetHelper {
             db.openDataBase();
 
             ArrayList<CompanyBO> companyList=new ArrayList<>();
-            sb.append("select companyId,CompanyName from CompanyMaster");
+            sb.append("select companyId,CompanyName,isOwn from CompanyMaster");
             Cursor c = db.selectSQL(sb.toString());
             if (c.getCount() > 0) {
                 CompanyBO companyBO;
@@ -64,6 +64,7 @@ public class DisplayAssetHelper {
                     companyBO=new CompanyBO();
                     companyBO.setCompetitorid(c.getInt(0));
                     companyBO.setCompetitorName(c.getString(1));
+                    companyBO.setIsOwn(c.getInt(2));
 
                     companyList.add(companyBO);
 
