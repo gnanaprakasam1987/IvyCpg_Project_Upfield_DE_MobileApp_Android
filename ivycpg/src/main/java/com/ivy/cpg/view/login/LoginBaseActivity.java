@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.ivy.cpg.view.attendance.AttendanceActivity;
+import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadProvider;
 import com.ivy.cpg.view.sync.largefiledownload.FileDownloadProvider;
 import com.ivy.sd.png.asean.view.BuildConfig;
@@ -175,7 +177,10 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
 
     @Override
     public void finishActivity() {
-        finish();
+        if (businessModel.synchronizationHelper.checkDataForSyncLogUpload())
+            new UploadSyncLog().execute();
+        else
+            finish();
     }
 
     @Override
@@ -631,5 +636,27 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
         progressDialog.show();
     }
 
+    class UploadSyncLog extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            showProgressDialog("Uploading Sync Log Details");
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            UploadHelper mUploadHelper = UploadHelper.getInstance(LoginBaseActivity.this);
+            mUploadHelper.uploadSyncLogDetails();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void s) {
+            super.onPostExecute(s);
+            dismissAlertDialog();
+            finish();
+        }
+    }
 
 }

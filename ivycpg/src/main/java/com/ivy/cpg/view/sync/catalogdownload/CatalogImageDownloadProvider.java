@@ -324,7 +324,6 @@ public class CatalogImageDownloadProvider {
                             //storeCatalogDownloadStatus(downloadId,CatalogDownloadConstants.STATUS_ERROR);
                         }
                     });
-
             storeCatalogDownloadStatus(downloadId, CatalogDownloadConstants.DOWNLOADING);
         }
 

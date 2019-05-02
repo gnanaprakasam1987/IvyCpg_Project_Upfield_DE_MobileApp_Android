@@ -4,7 +4,6 @@ import android.app.IntentService;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.ivy.lib.Utils;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.DateTimeUtils;
@@ -20,8 +19,6 @@ public class DownloadService extends IntentService {
 
     public DownloadService() {
         super(DownloadService.class.getName());
-        // TODO Auto-generated constructor stub
-
     }
 
     @Override
@@ -145,18 +142,17 @@ public class DownloadService extends IntentService {
                 break;
             case SynchronizationHelper.VOLLEY_DOWNLOAD_INSERT:
 
-                Intent downloadInsertIntent = null;
+                Intent downloadInsertIntent;
 
                 if (response == SynchronizationHelper.VOLLEY_SUCCESS_RESPONSE) {
                     ArrayList<String> tablelist = intent.getStringArrayListExtra(SynchronizationHelper.JSON_OBJECT_TABLE_LIST);
-
                     try {
-                        String tablename = "";
+                        String tablename;
 
                         for (int i = 0; i < tablelist.size(); i++) {
                             tablename = tablelist.get(i);
                             JSONObject jsonLoginObject = bmodel.synchronizationHelper.getmJsonObjectResponseByTableName().get(tablename);
-                            String errorLoginCode = null;
+                            String errorLoginCode;
                             try {
                                 errorLoginCode = jsonLoginObject
                                         .getString(SynchronizationHelper.ERROR_CODE);

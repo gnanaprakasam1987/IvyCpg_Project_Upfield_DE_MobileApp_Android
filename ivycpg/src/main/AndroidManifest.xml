@@ -851,6 +851,8 @@
             android:screenOrientation="portrait"/>
         <activity android:name="com.ivy.cpg.view.Planorama.PlanoramaAnalysisActivty"
             android:screenOrientation="portrait"/>
+        <activity android:name="com.ivy.cpg.view.reports.syncreport.SyncReportActivity"
+            android:screenOrientation="portrait"/>
 
 
         <service

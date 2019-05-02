@@ -293,6 +293,23 @@ SynchronizationHelper {
 
     private boolean isSFDC = !BuildConfig.FLAVOR.equalsIgnoreCase("aws");
 
+    private String syncLogId;
+    private String syncStatus = SynchronizationHelper.SYNC_STATUS_COMPLETED;
+
+    public static final String SYNC_TYPE_DOWNLOAD = "DOWNLOAD";
+    public static final String SYNC_TYPE_UPLOAD = "UPLOAD";
+    public static final String SYNC_TYPE_DGT_DOWNLOAD = "DGTDOWNLOAD";
+    public static final String SYNC_TYPE_DGT_UPLOAD= "DGTUPLOAD";
+
+    public static final String SYNC_STATUS_COMPLETED= "COMPLETED";
+    public static final String SYNC_STATUS_FAILED = "FAILED";
+    public static final String SYNC_STATUS_PARTIAL = "PARTIAL";
+    public static final String SYNC_TYPE_NO_INTERNET = "NO INTERNET";
+    public static final String SYNC_TYPE_CONN_LOST= "CONNECTION LOST";
+
+
+
+
 
     protected SynchronizationHelper(Context context) {
         this.context = context;
@@ -1068,7 +1085,8 @@ SynchronizationHelper {
                     "union select count(Tid) from RetailerScoreDetails where upload='N'" +
                     "union select count(uid) from DenominationHeader where upload='N'" +
                     "union select count(uid) from DenominationDetails where upload='N'" +
-                    "union select count(Tid) from RetailerLocationDeviation where upload='N'";
+                    "union select count(Tid) from RetailerLocationDeviation where upload='N'" +
+                    "union select count(TransactionId) from SyncLogDetails where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -1313,6 +1331,7 @@ SynchronizationHelper {
                     db.multiInsert(queryString.toString());
                 }
                 db.closeDB();
+                insertSyncTableDetails(tablename, valueList.size());
                 tablename = null;
             }
 
@@ -1381,6 +1400,11 @@ SynchronizationHelper {
                 } else if (whichDownload == DownloadType.DISTRIBUTOR_WISE_DOWNLOAD) {
                     json.put("IsDistributor", 1);
                     insert = DISTRIBUTOR_WISE_DOWNLOAD_INSERT;
+                }
+
+                if (insert == VOLLEY_DOWNLOAD_INSERT) {
+                    bmodel.synchronizationHelper.insertSyncHeader(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SYNC_TYPE_DOWNLOAD,
+                            0, SYNC_STATUS_COMPLETED, mDownloadUrlList.size());
                 }
 
                 mURLList = new HashMap<>();
@@ -1492,7 +1516,7 @@ SynchronizationHelper {
     private void downloadMasterSFDC(final String url, final FROM_SCREEN isFromWhere,
                                     final int totalListCount, final int which) {
 
-
+        String start_time = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
         mJsonObjectResponseByTableName = new HashMap<>();
         final long startTime = System.nanoTime();
         try {
@@ -1519,6 +1543,9 @@ SynchronizationHelper {
             public void onErrorResponse(VolleyError error) {
                 Commons.print("Volley error " + error);
                 Commons.print("AuthFailureError 7");
+                insertSyncApiDetails(url,
+                        start_time
+                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), error.toString());
             }
         }
 
@@ -1547,6 +1574,9 @@ SynchronizationHelper {
                     bmodel.isTokenUpdated = false;
                     new getRefreshedAuthTokenSFDC(isFromWhere, null).execute();*/
                 }
+                insertSyncApiDetails(url,
+                        start_time
+                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), volleyError.toString());
                 return super.parseNetworkError(volleyError);
             }
 
@@ -1689,6 +1719,12 @@ SynchronizationHelper {
 
 
                     }
+                    insertSyncApiDetails(url,
+                            start_time
+                            , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "");
+                    if ((totalListCount == mDownloadUrlCount) && which == VOLLEY_DOWNLOAD_INSERT) {
+                        updateSyncLogDetails(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), syncStatus);
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1716,14 +1752,17 @@ SynchronizationHelper {
                         i.putExtra(ERROR_CODE, "E32");
                     } else if (error instanceof NoConnectionError) {
                         i.putExtra(ERROR_CODE, "E06");
+                        syncStatus = SYNC_TYPE_NO_INTERNET;
                     } else if (error instanceof ServerError) {
                         i.putExtra(ERROR_CODE, "E01");
                     } else if (error instanceof NetworkError) {
                         i.putExtra(ERROR_CODE, "E01");
+                        syncStatus = SYNC_TYPE_CONN_LOST;
                     } else if (error instanceof ParseError) {
                         i.putExtra(ERROR_CODE, "E31");
                     } else {
                         i.putExtra(ERROR_CODE, "E01");
+                        syncStatus = SYNC_STATUS_FAILED;
                     }
 
                     context.startService(i);
@@ -1739,19 +1778,28 @@ SynchronizationHelper {
                             i.putExtra(ERROR_CODE, "E32");
                         } else if (error instanceof NoConnectionError) {
                             i.putExtra(ERROR_CODE, "E06");
+                            syncStatus = SYNC_TYPE_NO_INTERNET;
                         } else if (error instanceof ServerError) {
                             i.putExtra(ERROR_CODE, "E01");
                         } else if (error instanceof NetworkError) {
                             i.putExtra(ERROR_CODE, "E01");
+                            syncStatus = SYNC_TYPE_CONN_LOST;
                         } else if (error instanceof ParseError) {
                             i.putExtra(ERROR_CODE, "E31");
                         } else {
                             i.putExtra(ERROR_CODE, "E01");
+                            syncStatus = SYNC_STATUS_FAILED;
                         }
 
                         context.startService(i);
                         deleteAllRequestQueue();
                     }
+                }
+                insertSyncApiDetails(url,
+                        start_time
+                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), error.toString());
+                if ((totalListCount == mDownloadUrlCount) && which == VOLLEY_DOWNLOAD_INSERT) {
+                    updateSyncLogDetails(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), syncStatus);
                 }
             }
         };
@@ -1897,6 +1945,7 @@ SynchronizationHelper {
     private void callVolley(final String url, final FROM_SCREEN isFromWhere,
                             final int totalListCount, final int which, JSONObject headerInfo) {
         JsonObjectRequest jsonObjectRequest;
+        String start_time = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
         try {
 
             headerInfo.put(MOBILE_DATE_TIME, Utils.getDate("yyyy/MM/dd HH:mm:ss"));
@@ -1923,6 +1972,9 @@ SynchronizationHelper {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                insertSyncApiDetails(url,
+                        start_time
+                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), error.toString());
                 Commons.printException("Volley Error", error);
             }
         }
@@ -1947,6 +1999,9 @@ SynchronizationHelper {
 
             @Override
             protected VolleyError parseNetworkError(VolleyError volleyError) {
+                insertSyncApiDetails(url,
+                        start_time
+                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), volleyError.toString());
                 return super.parseNetworkError(volleyError);
             }
 
@@ -2082,7 +2137,12 @@ SynchronizationHelper {
                             }
                         }
                     }
-
+                    insertSyncApiDetails(url,
+                            start_time
+                            , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "");
+                    if ((totalListCount == mDownloadUrlCount) && which == VOLLEY_DOWNLOAD_INSERT) {
+                        updateSyncLogDetails(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), syncStatus);
+                    }
                 } catch (Exception e) {
                     Commons.printException("" + e);
                 }
@@ -2106,14 +2166,17 @@ SynchronizationHelper {
                         i.putExtra(ERROR_CODE, "E32");
                     } else if (error instanceof NoConnectionError) {
                         i.putExtra(ERROR_CODE, "E06");
+                        syncStatus = SYNC_TYPE_NO_INTERNET;
                     } else if (error instanceof ServerError) {
                         i.putExtra(ERROR_CODE, "E01");
                     } else if (error instanceof NetworkError) {
                         i.putExtra(ERROR_CODE, "E01");
+                        syncStatus = SYNC_TYPE_CONN_LOST;
                     } else if (error instanceof ParseError) {
                         i.putExtra(ERROR_CODE, "E31");
                     } else {
                         i.putExtra(ERROR_CODE, "E01");
+                        syncStatus = SYNC_STATUS_FAILED;
                     }
 
                     context.startService(i);
@@ -2130,6 +2193,12 @@ SynchronizationHelper {
                         i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, new ArrayList<String>());
                         context.startService(i);
                     }
+                }
+                insertSyncApiDetails(url,
+                        start_time
+                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), error.toString());
+                if ((totalListCount == mDownloadUrlCount) && which == VOLLEY_DOWNLOAD_INSERT) {
+                    updateSyncLogDetails(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), syncStatus);
                 }
             }
         };
@@ -4842,4 +4911,166 @@ SynchronizationHelper {
         return loginId;
     }
 
+    /**
+     * Method used to insert details about sync upload/download
+     *
+     * @param startTime   - Start Time of the process
+     * @param endTime     - End Time of the process
+     * @param syncType    - Download,Upload,DigitalContentDownload and DigitalContentUpload
+     * @param photosCount - Number of photos downloaded/uploaded successfully
+     * @param syncStatus  - FAILED,PARTIAL,NO INTERNET and CONNECTION LOST
+     * @param totalCount  - Total number of images or files or records
+     */
+    public void insertSyncHeader(String startTime, String endTime, String syncType, int photosCount, String syncStatus, int totalCount) {
+
+        try {
+            String userID;
+            String downloadedDate;
+            if (bmodel.getAppDataProvider().getUser() != null) {
+                syncLogId = bmodel.getAppDataProvider().getUser().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS);
+                userID = bmodel.getAppDataProvider().getUser().getUserid() + "";
+                downloadedDate = bmodel.getAppDataProvider().getUser().getDownloadDate();
+            } else {
+                syncLogId = "0" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS);
+                userID = "0";
+                downloadedDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
+            }
+                DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+                db.createDataBase();
+                db.openDataBase();
+
+                String query = "select transactionid from synclogdetails where synctype=";
+            if (SYNC_TYPE_DGT_DOWNLOAD.equals(syncType))
+                query = query + StringUtils.QT(SYNC_TYPE_DOWNLOAD);
+            else if (SYNC_TYPE_DGT_UPLOAD.equals(syncType))
+                query = query + StringUtils.QT(SYNC_TYPE_UPLOAD);
+
+                Cursor cursor = db.selectSQL(query);
+                if (cursor != null) {
+                    if (cursor.moveToNext()) {
+                        syncLogId = cursor.getString(0);
+                    }
+                    cursor.close();
+                }
+
+                if (SYNC_TYPE_DGT_DOWNLOAD.equals(syncType))
+                db.updateSQL("update SyncLogDetails set userid=" + StringUtils.QT(bmodel.getAppDataProvider().getUser().getUserid() + "")
+                        +",downloadeddate=" + StringUtils.QT(bmodel.getAppDataProvider().getUser().getDownloadDate())
+                                + " where synctype=" + StringUtils.QT(SYNC_TYPE_DOWNLOAD));
+
+                String columns = "userid,appversionnumber,osname,osversion,devicename,synctype,starttime,endtime,photoscount,syncstatus,upload,transactionid,downloadeddate,totalcount";
+
+                String values = StringUtils.QT(userID) + "," + StringUtils.QT(AppUtils.getApplicationVersionName(context))
+                        + "," + StringUtils.QT("Android")
+                        + "," + StringUtils.QT(android.os.Build.VERSION.RELEASE) + "," + StringUtils.QT(android.os.Build.MANUFACTURER + " " +android.os.Build.MODEL)
+                        + "," + StringUtils.QT(syncType) + "," + StringUtils.QT(startTime)
+                        + "," + StringUtils.QT(endTime) + "," + photosCount
+                        + "," + StringUtils.QT(syncStatus) + ",'N'"
+                        + "," + StringUtils.QT(syncLogId) + "," + StringUtils.QT(downloadedDate)
+                        + "," + totalCount;
+                db.insertSQL("SyncLogDetails", columns,
+                        values);
+                db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+    }
+
+    /**
+     * Method used to insert Api download details
+     *
+     * @param apiName   - Name of the api
+     * @param startTime - Start Time of hitting the api
+     * @param endTime   - Api finished time
+     * @param errorInfo - Error message while hitting the api
+     */
+    private void insertSyncApiDetails(String apiName, String startTime, String endTime, String errorInfo) {
+
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+            db.createDataBase();
+            db.openDataBase();
+
+            String status = StringUtils.isEmptyString(errorInfo) ? "Success" : "Failure";
+
+            String columns = "Tid,apiname,starttime,endtime,errorinfo,status";
+
+            String values = StringUtils.QT(syncLogId) + "," + StringUtils.QT(apiName)
+                    + "," + StringUtils.QT(startTime)
+                    + "," + StringUtils.QT(endTime)
+                    + "," + StringUtils.QT(errorInfo) + "," + StringUtils.QT(status);
+            db.insertSQL("SyncDownloadApiStatus", columns,
+                    values);
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    /**
+     * Method to insert downloaded table details
+     *
+     * @param tableName - Name of the table
+     * @param lineCount - Total number of records inserted into the table
+     */
+    private void insertSyncTableDetails(String tableName, int lineCount) {
+
+        try {
+            if (!StringUtils.isEmptyString(syncLogId)) {
+                DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+                db.createDataBase();
+                db.openDataBase();
+
+                String columns = "Tid,tablename,linecount";
+
+                String values = StringUtils.QT(syncLogId) + "," + StringUtils.QT(tableName)
+                        + "," + lineCount;
+                db.insertSQL("SyncDownloadTableStatus", columns,
+                        values);
+                db.closeDB();
+            }
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    /**
+     * Method to update endtime of sync download
+     * @param endTime - Download completed time
+     */
+    private void updateSyncLogDetails(String endTime, String syncStatus) {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+            db.createDataBase();
+            db.openDataBase();
+            db.updateSQL("update SyncLogDetails set endtime=" + StringUtils.QT(endTime)
+                    + ",syncstatus=" + StringUtils.QT(syncStatus)
+                    + " where synctype=" + StringUtils.QT(SYNC_TYPE_DOWNLOAD));
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    public boolean checkDataForSyncLogUpload() {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor cursor = db.selectSQL("select count(transactionid) from synclogdetails where upload ='N'");
+            if (cursor != null) {
+                if (cursor.moveToNext()) {
+                    return cursor.getInt(0) > 0;
+                }
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return false;
+    }
 }

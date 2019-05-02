@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/contract_header"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/list_header_height"
+            android:orientation="horizontal"
+            android:background="@color/black_bg1">
+
+            <TextView
+                android:id="@+id/labelSNO"
+                style="@style/TextViewListTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/dimens_2dp"
+                android:text="@string/serial_no"
+                android:layout_weight="2.5" />
+
+
+            <TextView
+                android:id="@+id/labelApiName"
+                style="@style/TextViewListTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/dimens_2dp"
+                android:text="API Name" />
+
+            <TextView
+                android:id="@+id/labelTableName"
+                style="@style/TextViewListTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="5"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/dimens_2dp"
+                android:text="Table Name" />
+
+            <TextView
+                android:id="@+id/labelNoOfRec"
+                style="@style/TextViewListTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/dimens_2dp"
+                android:text="No. Of Records" />
+
+            <TextView
+                android:id="@+id/labelTotalTime"
+                style="@style/TextViewListTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="4"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/dimens_2dp"
+                android:text="Total Time Taken" />
+
+            <TextView
+                android:id="@+id/labelTotalImages"
+                style="@style/TextViewListTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="@dimen/dimens_2dp"
+                android:text="Total Images" />
+
+        </LinearLayout>
+        <ListView
+            android:id="@+id/listView_contract"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:cacheColorHint="@null"
+            android:divider="@android:color/white"
+            android:dividerHeight="1dp"
+            android:fitsSystemWindows="true" />
+    </LinearLayout>
+
+</HorizontalScrollView>

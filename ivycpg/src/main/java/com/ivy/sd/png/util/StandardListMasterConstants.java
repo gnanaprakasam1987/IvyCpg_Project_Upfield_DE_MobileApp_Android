@@ -108,6 +108,7 @@ public class StandardListMasterConstants {
 
 	public static final String MENU_INV_SALES_RETURN_REPORT = "MENU_SALES_RET_REPORT";
 	public static final String OTP_SKIP_REASON_TYPE = "GPS_VIOLATION";
+	public static final String MENU_SYNC_REPORT = "MENU_SYNC_REPORT";
 
 	public static final HashMap<String,String> mActivityCodeByMenuCode=new HashMap<>();
 
