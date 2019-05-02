@@ -13,8 +13,13 @@ import android.os.Environment;
 import android.os.StatFs;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.NonNull;
 import android.support.v4.content.FileProvider;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.widget.ImageView;
 
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -191,6 +196,9 @@ public class FileUtils {
      */
     public static boolean checkForNFilesInFolder(String folderPath, int n,
                                                  String fNameStarts) {
+        if(fNameStarts==null)
+            return false;
+
         if (n < 1)
             return true;
 

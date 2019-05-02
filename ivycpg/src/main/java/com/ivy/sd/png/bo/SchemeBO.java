@@ -82,6 +82,7 @@ public class SchemeBO {
     private int isFreeCombination = 0;
     private int isAutoApply = 0;
     private String freeType;
+    private double maximumSlab;
 
     public boolean isSihAvailableForFreeProducts() {
         return sihAvailableForFreeProducts;
@@ -841,5 +842,13 @@ public class SchemeBO {
 
     public void setVariantCount(int variantCount) {
         this.variantCount = variantCount;
+    }
+
+    public double getMaximumSlab() {
+        return maximumSlab;
+    }
+
+    public void setMaximumSlab(double maximumSlab) {
+        this.maximumSlab = maximumSlab;
     }
 }

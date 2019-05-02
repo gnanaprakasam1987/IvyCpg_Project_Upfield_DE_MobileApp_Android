@@ -321,6 +321,7 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                 }
 
 
+                bmodel.saveModuleCompletion("MENU_VANLOAD_STOCK_VIEW", false);
             } catch (Exception e) {
                 Commons.printException("" + e);
                 return Boolean.FALSE;
@@ -362,6 +363,8 @@ public class VanLoadStockApplyActivity extends IvyBaseActivityNoActionBar implem
                 flag = mManuvalVanloadFlagByuid.get(uid);
             }
             bmodel.stockreportmasterhelper.rejectVanload(uid, flag);
+            bmodel.saveModuleCompletion("MENU_VANLOAD_STOCK_VIEW", false);
+
             return true;
         }
 

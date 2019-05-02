@@ -7,6 +7,8 @@ import android.preference.PreferenceManager;
 import android.support.v7.widget.AppCompatEditText;
 import android.util.SparseArray;
 
+import com.ivy.cpg.view.retailercontact.RetailerContactAvailBo;
+import com.ivy.cpg.view.retailercontact.RetailerContactBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.AddressBO;
 import com.ivy.sd.png.bo.CensusLocationBO;
@@ -27,14 +29,17 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.profile.ProfileConstant;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
-
-import com.ivy.cpg.view.retailercontact.RetailerContactBo;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.Locale;
 import java.util.Vector;
 
 public class NewOutletHelper {
@@ -2198,10 +2203,18 @@ public class NewOutletHelper {
             NewOutletBO outlet = getNewoutlet();
 
             if (isEdit) {
-                db.deleteSQL("RetailerMaster", "retailerId=" + bmodel.QT(outlet.getRetailerId()), false);
-                db.deleteSQL("RetailerContact", "retailerId=" + bmodel.QT(outlet.getRetailerId()), false);
-                db.deleteSQL("RetailerAddress", "retailerId=" + bmodel.QT(outlet.getRetailerId()), false);
-                db.deleteSQL("RetailerAttribute", "retailerId=" + bmodel.QT(outlet.getRetailerId()), false);
+
+                Cursor getCpidCursor = db.selectSQL("Select CPId from RetailerContact where retailerId=" + StringUtils.QT(outlet.getRetailerId()));
+
+                if (getCpidCursor != null && getCpidCursor.getCount() > 0) {
+                    while (getCpidCursor.moveToNext()) {
+                        db.deleteSQL("ContactAvailability", "CPId=" + getCpidCursor.getString(0), false);
+                    }
+                }
+                db.deleteSQL("RetailerMaster", "retailerId=" + StringUtils.QT(outlet.getRetailerId()), false);
+                db.deleteSQL("RetailerContact", "retailerId=" + StringUtils.QT(outlet.getRetailerId()), false);
+                db.deleteSQL("RetailerAddress", "retailerId=" + StringUtils.QT(outlet.getRetailerId()), false);
+                db.deleteSQL("RetailerAttribute", "retailerId=" + StringUtils.QT(outlet.getRetailerId()), false);
                 db.updateSQL("Update NewRetailerSurveyResultHeader set retailerID = '" + getId() + "' where retailerID = '" + outlet.getRetailerId() + "'");
                 db.updateSQL("Update NewRetailerSurveyResultDetail set retailerID = '" + getId() + "' where retailerID = '" + outlet.getRetailerId() + "'");
             } else {
@@ -2282,7 +2295,7 @@ public class NewOutletHelper {
             bmodel.setNewlyaddedRetailer(getId());
 
             column = "RetailerID,contactname,ContactName_LName,contactNumber," +
-                    "contact_title,contact_title_lovid,IsPrimary,Email,Upload";
+                    "contact_title,contact_title_lovid,IsPrimary,Email,Upload,salutationLovId,IsEmailNotificationReq,CPID";
 
             if (bmodel.configurationMasterHelper.IS_CONTACT_TAB) {
                 if (retailerContactList != null && retailerContactList.size() > 0) {
@@ -2296,8 +2309,14 @@ public class NewOutletHelper {
                                 + "," + QT(retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1") ? "0" : retailerContactBo.getContactTitleLovId())
                                 + "," + retailerContactBo.getIsPrimary()
                                 + "," + QT(retailerContactBo.getContactMail())
-                                + "," + QT("N");
+                                + "," + QT("N")
+                                + "," + QT(retailerContactBo.getContactSalutationId())
+                                + "," + QT(retailerContactBo.getIsEmailPrimary()+"")
+                                + "," +QT(retailerContactBo.getCpId());
                         db.insertSQL("RetailerContact", column, value);
+
+                        if (retailerContactBo.getContactAvailList().size() > 0)
+                            addContactAvail(db,retailerContactBo);
                     }
                     retailerContactList.clear();
                 }
@@ -2311,7 +2330,10 @@ public class NewOutletHelper {
                             + "," + getNewoutlet().getContact1titlelovid()
                             + "," + 1
                             + "," + QT("")
-                            + "," + QT("N");
+                            + "," + QT("N")
+                            + "," + QT("")
+                            + "," + QT("")
+                            + "," +QT("");
                     db.insertSQL("RetailerContact", column, value);
                 }
                 if (outlet.getContactpersonname2() != null && !outlet.getContactpersonname2().trim().equals("")) {
@@ -2323,7 +2345,10 @@ public class NewOutletHelper {
                             + "," + getNewoutlet().getContact2titlelovid()
                             + "," + 0
                             + "," + QT("")
-                            + "," + QT("N");
+                            + "," + QT("N")
+                            + "," + QT("")
+                            + "," + QT("")
+                            + "," +QT("");
                     db.insertSQL("RetailerContact", column, value);
                 }
             }
@@ -2490,6 +2515,23 @@ public class NewOutletHelper {
         }
 
         return true;
+    }
+
+    private void addContactAvail(DBUtil db, RetailerContactBo retailerContactBo){
+        String column = "CPAId,CPId,Day,StartTime,EndTime,isLocal,upload";
+
+        for (RetailerContactAvailBo retailerContactAvailBo : retailerContactBo.getContactAvailList()) {
+
+            String value = QT(getId())
+                    + "," + QT(retailerContactBo.getCpId())
+                    + "," + QT(retailerContactAvailBo.getDay())
+                    + "," + QT(retailerContactAvailBo.getFrom())
+                    + "," + QT(retailerContactAvailBo.getTo())
+                    + "," + QT("1")
+                    + "," + QT("N");
+
+            db.insertSQL("ContactAvailability", column, value);
+        }
     }
 
     public String getRetailerId_edit() {
@@ -2771,6 +2813,32 @@ public class NewOutletHelper {
         return contactTitleList;
     }
 
+    public ArrayList<StandardListBO> downlaodContactSalutation() {
+        StandardListBO contactTitle;
+        ArrayList<StandardListBO> contactTitleList = new ArrayList<>();
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT ListId,ListCode,ListName from StandardListMaster where ListType='CONTACT_SALUTATION'");
+            if (c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    contactTitle = new StandardListBO();
+                    contactTitle.setListID(c.getString(0));
+                    contactTitle.setListName(c.getString(2));
+                    contactTitleList.add(contactTitle);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+
+        return contactTitleList;
+    }
+
     public ArrayList<CensusLocationBO> getCensusLocationList() {
         return censusLocationList;
     }
@@ -2847,5 +2915,38 @@ public class NewOutletHelper {
         setCensusLocationList(pincodeList);
     }
 
+    public boolean isBetweenTime(String fromTime, String toTime, String compareTime, boolean isFromTime){
+
+        try {
+            Date time1 = new SimpleDateFormat("HH:mm", Locale.US).parse(fromTime);
+            Calendar calendar1 = Calendar.getInstance();
+            calendar1.setTime(time1);
+
+            Date time2 = new SimpleDateFormat("HH:mm", Locale.US).parse(toTime);
+            Calendar calendar2 = Calendar.getInstance();
+            calendar2.setTime(time2);
+
+            Date d = new SimpleDateFormat("HH:mm", Locale.US).parse(compareTime);
+            Calendar calendar3 = Calendar.getInstance();
+            calendar3.setTime(d);
+
+            Date x = calendar3.getTime();
+            if (isFromTime) {
+                if (x.equals(calendar1.getTime())
+                        || (x.after(calendar1.getTime()) && x.before(calendar2.getTime()))) {
+                    return true;
+                }
+            }else{
+                if ((x.after(calendar1.getTime()) && x.before(calendar2.getTime()))
+                        || x.equals(calendar2.getTime())) {
+                    return true;
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 
 }

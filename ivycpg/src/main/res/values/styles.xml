@@ -99,6 +99,7 @@
 
         <item name="highLightColor">@color/highlighter</item>
 
+        <item name="startAndEndOfTheDayHeaderLayoutBg">@color/startAndEndOfTheDayHeaderLayoutBg_blue</item>
 
     </style>
 
@@ -258,6 +259,9 @@ negative button and neutral button -->
         <item name="SearchViewStyle">@style/SearchViewStyle</item>
 
         <item name="highLightColor">@color/highlighter_nblue</item>
+
+        <item name="startAndEndOfTheDayHeaderLayoutBg">@color/startAndEndOfTheDayHeaderLayoutBg_blue</item>
+
     </style>
 
 
@@ -359,6 +363,8 @@ negative button and neutral button -->
 
         <item name="highLightColor">@color/highlighter_red</item>
 
+        <item name="startAndEndOfTheDayHeaderLayoutBg">@color/startAndEndOfTheDayHeaderLayoutBg_red</item>
+
     </style>
 
     <style name="MyButtonRed" parent="Base.Widget.AppCompat.Button">
@@ -458,6 +464,9 @@ negative button and neutral button -->
         <item name="SearchViewStyle">@style/SearchViewStyle</item>
 
         <item name="highLightColor">@color/highlighter_orange</item>
+
+        <item name="startAndEndOfTheDayHeaderLayoutBg">@color/startAndEndOfTheDayHeaderLayoutBg_orange</item>
+
     </style>
 
     <style name="MyButtonOrange" parent="Base.Widget.AppCompat.Button">
@@ -555,6 +564,8 @@ negative button and neutral button -->
         <item name="dashboardSpinnerSelector">@color/divider_view_color</item>
         <item name="SearchViewStyle">@style/SearchViewStyle</item>
         <item name="highLightColor">@color/highlighter_green</item>
+
+        <item name="startAndEndOfTheDayHeaderLayoutBg">@color/startAndEndOfTheDayHeaderLayoutBg_green</item>
 
     </style>
 
@@ -686,6 +697,12 @@ negative button and neutral button -->
         <item name="android:textColor">@color/FullBlack</item>
     </style>
 
+    <style name="TextViewNormalHighlight" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_primary</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="android:textColor">?attr/primarycolor</item>
+    </style>
+
 
     <style name="TextViewCaptionNormal" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/text_size_primary</item>
@@ -769,6 +786,18 @@ negative button and neutral button -->
     <style name="TextViewListItemValuesHighLight" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/text_size_primary</item>
         <item name="android:textColor">?attr/highLightColor</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+    </style>
+
+    <style name="RetailerNameListView" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/retailer_name_list</item>
+        <item name="android:textColor">?attr/listItemPrimaryTextColor</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
+    </style>
+
+    <style name="RetailerSecondaryListView" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/retailer_address_list</item>
+        <item name="android:textColor">@color/FullBlack</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
 

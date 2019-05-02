@@ -805,7 +805,7 @@ public class AdvancePaymentDialogFragment extends IvyBaseFragment
         protected void onPostExecute(Object o) {
             super.onPostExecute(o);
             Toast.makeText(getActivity(), getActivity().getResources().getString(R.string.save_advance_payment), Toast.LENGTH_SHORT).show();
-            bmodel.saveModuleCompletion("MENU_COLLECTION");
+            bmodel.saveModuleCompletion("MENU_COLLECTION", true);
             // clearing the object's after saved
             if (rcheckedId == 0)
                 clearPaymentObject(StandardListMasterConstants.CASH);

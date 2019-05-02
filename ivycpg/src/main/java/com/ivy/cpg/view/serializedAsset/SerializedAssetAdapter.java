@@ -368,10 +368,23 @@ public class SerializedAssetAdapter extends BaseAdapter {
                         holder.reason1Spin.setSelection(0);
                         holder.mConditionSpin.setEnabled(true);
                         holder.mConditionSpin.setSelection(0);
-                        holder.mInstallDate.setEnabled(!holder.assetBO.getmLastInstallDate().isEmpty());
+                        holder.mInstallDate.setEnabled(holder.assetBO.getmLastInstallDate().isEmpty());
                         holder.mServiceDate.setEnabled(true);
-                    } else {
 
+                        if (!holder.assetBO.getmLastInstallDate().isEmpty())
+                            holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.assetBO.getInstallDate(), outPutDateFormat));
+                        else {
+                            holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                            holder.mInstallDate.setText(holder.assetBO.getInstallDate());
+                        }
+                        if (!holder.assetBO.getServiceDate().isEmpty())
+                            holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.assetBO.getServiceDate(), outPutDateFormat));
+                        else {
+                            holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                            holder.mServiceDate.setText(holder.assetBO.getServiceDate());
+                        }
+
+                    } else {
                         holder.availQtyRB.setChecked(false);
                         holder.assetBO.setAvailQty(0);
                         holder.reason1Spin.setEnabled(true);
@@ -381,18 +394,19 @@ public class SerializedAssetAdapter extends BaseAdapter {
                         holder.mConditionSpin.setSelection(0);
                         holder.mInstallDate.setEnabled(false);
                         holder.mServiceDate.setEnabled(false);
-                        /*holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-                        holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));*/
 
                         if (!holder.assetBO.getmLastInstallDate().isEmpty())
                             holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.assetBO.getInstallDate(), outPutDateFormat));
-                        else
-                            holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-
+                        else {
+                            holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                            holder.mInstallDate.setText(holder.assetBO.getInstallDate());
+                        }
                         if (!holder.assetBO.getServiceDate().isEmpty())
                             holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(holder.assetBO.getServiceDate(), outPutDateFormat));
-                        else
-                            holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                        else {
+                            holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                            holder.mServiceDate.setText(holder.assetBO.getServiceDate());
+                        }
 
                     }
 
@@ -512,7 +526,7 @@ public class SerializedAssetAdapter extends BaseAdapter {
                     .getItemIndex(holder.assetBO.getConditionID(),
                             mAssetPresenter.getAssetConditionList(), false));
 
-            holder.mInstallDate.setEnabled(!holder.assetBO.getmLastInstallDate().isEmpty());
+            holder.mInstallDate.setEnabled(holder.assetBO.getmLastInstallDate().isEmpty());
             holder.mServiceDate.setEnabled(true);
 
         } else {

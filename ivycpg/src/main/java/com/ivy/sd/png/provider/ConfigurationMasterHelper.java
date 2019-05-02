@@ -552,6 +552,11 @@ public class ConfigurationMasterHelper {
     private static final String CODE_NON_SALABLE_UNLOAD = "NS_UNLOAD";
     public boolean SHOW_NON_SALABLE_UNLOAD;
 
+    private static final String CODE_TO_ENABLE_TRIP = "FUN80";
+    public boolean IS_ENABLE_TRIP = false;
+    public boolean IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP = false;
+
+
     /**
      * RoadActivity config *
      */
@@ -1195,6 +1200,8 @@ public class ConfigurationMasterHelper {
     public boolean IS_SOS_RETAIN_LAST_VISIT_TRAN;
     public static final String CODE_SOS_RETAIN_LAST_VISIT_TRAN = "SOS02";
 
+    public boolean IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN;
+    public static final String CODE_PLANOGRAM_RETAIN_LAST_VISIT_TRAN = "PLANO01";
 
     public static final String CODE_PERRPT_REFRESH = "PERFRPTSYNC";
 
@@ -1558,9 +1565,20 @@ public class ConfigurationMasterHelper {
     private static final String CODE_COLLECTION_DELETE = "COLL20";
     public boolean IS_COLLECTION_DELETE;
 
+    private static final String CODE_VALIDATE_DUE_DATE = "CREDITDUE01";
+    public boolean IS_VALIDATE_DUE_DAYS;
+
+    private static final String CODE_SHOW_TASK_PRODUCT_LEVEL = "TASK01";
+    public boolean IS_SHOW_TASK_PRODUCT_LEVEL;
+
     //Image upload through Azure Storage
     private static final String CODE_AZURE_UPLOAD = "IS_AZURE_UPLOAD";
     public boolean IS_AZURE_UPLOAD = false;
+
+    private static final String CODE_SHOW_RETAILER_LAST_VISIT = "RTRS33";
+    public boolean IS_SHOW_RETAILER_LAST_VISIT;
+    public boolean IS_SHOW_RETAILER_LAST_VISITEDBY;
+    public int ret_skip_otp_flag = 0; // 1 Show reason spinner, 0 otp edittext
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2303,6 +2321,7 @@ public class ConfigurationMasterHelper {
         this.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SURVEY_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SOS_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) : false;
+        this.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN=hashMapHHTModuleConfig.get(CODE_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SF_NORM_CHECK = hashMapHHTModuleConfig.get(CODE_CHECK_NORM) != null ? hashMapHHTModuleConfig.get(CODE_CHECK_NORM) : false;
         this.IS_CATALOG_IMG_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) != null ? hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) : false;
         this.IS_MULTI_STOCKORDER = hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) != null ? hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) : false;
@@ -2723,8 +2742,19 @@ public class ConfigurationMasterHelper {
         this.IS_VOICE_TO_TEXT = hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) != null ? hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) : -1;
         this.IS_SKIP_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) : false;
         this.IS_COLLECTION_DELETE = hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) != null ? hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) : false;
+        this.IS_VALIDATE_DUE_DAYS = hashMapHHTModuleConfig.get(CODE_VALIDATE_DUE_DATE ) != null ? hashMapHHTModuleConfig.get(CODE_VALIDATE_DUE_DATE) : false;
+        this.IS_SHOW_TASK_PRODUCT_LEVEL = hashMapHHTModuleConfig.get(CODE_SHOW_TASK_PRODUCT_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TASK_PRODUCT_LEVEL) : false;
 
         this.IS_AZURE_UPLOAD = hashMapHHTModuleConfig.get(CODE_AZURE_UPLOAD) != null ? hashMapHHTModuleConfig.get(CODE_AZURE_UPLOAD) : false;
+        this.IS_SHOW_RETAILER_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LAST_VISIT) : false;
+        this.IS_SHOW_RETAILER_LAST_VISITEDBY = isShowLastVisitedBy();
+
+        this.IS_ENABLE_TRIP = hashMapHHTModuleConfig.get(CODE_TO_ENABLE_TRIP) != null ? hashMapHHTModuleConfig.get(CODE_TO_ENABLE_TRIP) : false;
+        if(hashMapHHTModuleOrder.get(CODE_TO_ENABLE_TRIP) != null && hashMapHHTModuleOrder.get(CODE_TO_ENABLE_TRIP)==1)
+        this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP =true;
+        else this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP =false;
+        this.ret_skip_otp_flag = hashMapHHTModuleOrder.get(CODE_SHOW_LOCATION_PWD_DIALOG) != null ? hashMapHHTModuleOrder.get(CODE_SHOW_LOCATION_PWD_DIALOG) : 0;
+
     }
 
     private boolean isInOutModule() {
@@ -3262,7 +3292,7 @@ public class ConfigurationMasterHelper {
             );
             db.openDataBase();
 
-            String sql = "select hhtCode, flag, RField,MName from "
+            String sql = "select hhtCode, flag, RField,MName,RField1 from "
                     + DataMembers.tbl_HhtMenuMaster
                     + " where  flag=1 and MenuType="
                     + bmodel.QT(MENU_LOAD_MANAGEMENT) + " and lang="
@@ -3278,6 +3308,7 @@ public class ConfigurationMasterHelper {
                     con.setFlag(c.getInt(1));
                     con.setModule_Order(c.getInt(2));
                     con.setMenuName(c.getString(3));
+                    con.setMandatory(c.getInt(4));
                     loadmanagementmenuconfig.add(con);
 
                 }
@@ -3303,7 +3334,7 @@ public class ConfigurationMasterHelper {
             );
             db.openDataBase();
 
-            String sql = "select hhtCode, flag, RField,MName from "
+            String sql = "select hhtCode, flag, RField,MName,RField1 from "
                     + DataMembers.tbl_HhtMenuMaster
                     + " where  flag=1 and MenuType="
                     + bmodel.QT(MENU_PLANNING_SUB) + " and lang="
@@ -3319,6 +3350,7 @@ public class ConfigurationMasterHelper {
                     con.setFlag(c.getInt(1));
                     con.setModule_Order(c.getInt(2));
                     con.setMenuName(c.getString(3));
+                    con.setMandatory(c.getInt(4));
                     config.add(con);
 
                 }
@@ -3963,7 +3995,7 @@ public class ConfigurationMasterHelper {
             IS_STK_ORD_BS = false;
             IS_STK_ORD_PROJECT = false;
             SHOW_SALES_RETURN_IN_ORDER = false;
-            SHOW_SALES_RETURN_TV_IN_ORDER =false;
+            SHOW_SALES_RETURN_TV_IN_ORDER = false;
 
 
             IS_PRINT_SEQUENCE_REQUIRED = false;
@@ -4250,7 +4282,7 @@ public class ConfigurationMasterHelper {
             }
             if (codeValue != null && !codeValue.equals("")) {
                 String codeSplit[] = codeValue.split(",");
-                if(codeSplit.length==3) {
+                if (codeSplit.length == 3) {
                     if (codeSplit[0] != null && !codeSplit[0].equals(""))
                         DEFAULT_NUMBER_OF_DAYS_TO_DELIVER_ORDER = SDUtil.convertToInt(codeSplit[0]);
                     if (codeSplit[1] != null && !codeSplit[1].equals(""))
@@ -5379,11 +5411,8 @@ public class ConfigurationMasterHelper {
     }
 
 
-    public void loadRouteConfig() {
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
-
+    public void loadRouteConfig(DBUtil db) {
         try {
-            db.openDataBase();
             String sb = "select Rfield from HhtModuleMaster where flag=1 and hhtcode=" +
                     bmodel.QT(CODE_SHOW_ALL_ROUTE_FILTER) + " and  ForSwitchSeller = 0";
             Cursor c = db.selectSQL(sb);
@@ -5402,8 +5431,6 @@ public class ConfigurationMasterHelper {
             c.close();
         } catch (Exception e) {
             Commons.printException("" + e);
-        } finally {
-            db.closeDB();
         }
     }
 
@@ -6246,6 +6273,28 @@ public class ConfigurationMasterHelper {
     public boolean isAuditEnabled() {
 
         return IS_TEAMLEAD && IS_AUDIT_USER;
+    }
+
+    private boolean isShowLastVisitedBy() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        db.openDataBase();
+
+        String sql = "SELECT hhtCode, RField FROM "
+                + DataMembers.tbl_HhtModuleMaster
+                + " WHERE flag='1' AND hhtCode='RTRS33' and ForSwitchSeller = 0";
+        Cursor c = db.selectSQL(sql);
+        if (c != null && c.getCount() != 0) {
+            while (c.moveToNext()) {
+                if (c.getString(1).equalsIgnoreCase("1")) {
+                    return true;
+                }
+            }
+            c.close();
+        }
+        db.closeDB();
+
+
+        return false;
     }
 
 }

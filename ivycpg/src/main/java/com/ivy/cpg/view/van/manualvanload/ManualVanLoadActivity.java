@@ -704,6 +704,7 @@ public class ManualVanLoadActivity extends IvyBaseActivityNoActionBar implements
                                                         int whichButton) {
                                         //new SaveVanLoad().execute();
                                         new SaveVanLoadAsyncTask(ManualVanLoadActivity.this, selectedSubDepotId).execute();
+
                                     }
                                 })
                         .setNegativeButton(R.string.cancel,

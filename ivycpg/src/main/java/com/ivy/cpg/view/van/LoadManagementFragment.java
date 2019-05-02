@@ -17,8 +17,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivy.cpg.view.dashboard.olddashboard.DashBoardActivity;
 import com.ivy.cpg.view.planogram.PlanoGramActivity;
@@ -31,6 +35,7 @@ import com.ivy.cpg.view.van.damagestock.DamageStockHelper;
 import com.ivy.cpg.view.van.manualvanload.ManualVanLoadActivity;
 import com.ivy.cpg.view.van.manualvanload.ManualVanLoadHelper;
 import com.ivy.cpg.view.van.odameter.OdaMeterScreen;
+import com.ivy.cpg.view.van.odameter.OdameterHelper;
 import com.ivy.cpg.view.van.stockproposal.StockProposalModuleHelper;
 import com.ivy.cpg.view.van.stockproposal.StockProposalScreen;
 import com.ivy.cpg.view.van.stockview.StockViewActivity;
@@ -66,7 +71,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
     private final String MENU_STOCK_PROPOSAL = "MENU_STOCK_PROPOSAL";
     private final String MENU_MANUAL_VAN_LOAD = "MENU_MANUAL_VAN_LOAD";
-    private final String MENU_ODAMETER = "MENU_ODAMETER";
+    public static final String MENU_ODAMETER = "MENU_ODAMETER";
     private final String MENU_STOCK_VIEW = "MENU_STOCK_VIEW";
     private final String MENU_VANLOAD_STOCK_VIEW = "MENU_VANLOAD_STOCK_VIEW";
     private final String MENU_VAN_UNLOAD = "MENU_VAN_UNLOAD";
@@ -77,6 +82,9 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private final String MENU_DASH_DAY = "MENU_DASH_DAY";
     private final String MENU_DAMAGE_STOCK = "MENU_DAMAGE_STOCK";
     private static final String MENU_SURVEY01_SW = "MENU_SURVEY01_SW";
+    private static final String MENU_SRTDAY_SURVEY = "MENU_SRTDAY_SURVEY";
+    private static final String MENU_ENDDAY_SURVEY = "MENU_ENDDAY_SURVEY";
+
 
     private String fromScreen = "";
 
@@ -86,6 +94,15 @@ public class LoadManagementFragment extends IvyBaseFragment {
     private boolean isClick = false;
     private LoadManagementHelper loadManagementHelper;
     private StockProposalModuleHelper stockProposalModuleHelper;
+
+    private Button button_buzzer;
+    ListView listView;
+    MenuBaseAdapter adapter;
+
+    TextView textView_status_primary,textView_status_secondary;
+    Vector<ConfigureBO> menuDB = new Vector<>();
+
+    private RelativeLayout layout_trip;
 
     @Override
     public void onAttach(Context context) {
@@ -125,20 +142,98 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 fromScreen = getArguments().getString("from");
             }
 
-            Vector<ConfigureBO> menuDB = new Vector<>();
+
+
+            layout_trip=view.findViewById(R.id.layout_trip);
+            if(!bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
+                layout_trip.setVisibility(View.GONE);
+            }
+
+            textView_status_primary = view.findViewById(R.id.textView_status_primary);
+            textView_status_secondary = view.findViewById(R.id.textView_status_secondary);
+
+            button_buzzer =view.findViewById(R.id.imageview_buzzer);
+            button_buzzer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(fromScreen.equals("MENU_PLANNING_SUB")) {
+                        loadManagementHelper.updateTrip(true);
+                        Toast.makeText(getActivity(),getResources().getString(R.string.trip_started),Toast.LENGTH_LONG).show();
+                        button_buzzer.setBackground(getResources().getDrawable(R.drawable.img_buzzer_grey));
+                        button_buzzer.setEnabled(false);
+                    }
+                    else {
+
+                        if(loadManagementHelper.isTripStarted(getActivity())) {
+                            if (loadManagementHelper.isAllMandatoryModulesCompleted(menuDB)) {
+
+                                boolean proceedDayClose = LoadManagementHelper.getInstance(getActivity().getApplicationContext()).validateDayClose(getActivity(), false, null, null);
+
+                                if (proceedDayClose) {
+
+                                    loadManagementHelper.updateTrip(false);
+                                    Toast.makeText(getActivity(), getResources().getString(R.string.trip_ended), Toast.LENGTH_LONG).show();
+                                    button_buzzer.setBackground(getResources().getDrawable(R.drawable.img_buzzer_grey));
+                                    button_buzzer.setEnabled(false);
+                                }
+                            } else {
+                                Toast.makeText(getActivity(), getResources().getString(R.string.pls_complete_all_mandatory_modules_to_close_the_day), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                        else {
+                            Toast.makeText(getActivity(), getResources().getString(R.string.trip_not_started), Toast.LENGTH_LONG).show();
+                        }
+                    }
+
+
+
+
+                }
+            });
 
             if(fromScreen.equals("MENU_PLANNING_SUB")){
+                button_buzzer.setText(getResources().getString(R.string.start));
+
+                if(loadManagementHelper.isTripStarted(getActivity())) {
+                    button_buzzer.setBackground(getResources().getDrawable(R.drawable.img_buzzer_grey));
+                    button_buzzer.setEnabled(false);
+                }
+                else {
+                    button_buzzer.setBackground(getResources().getDrawable(R.drawable.image_buzzer_green));
+                }
+
+
                 menuDB = bmodel.configurationMasterHelper
                         .downloadPlanningSubMenu();
             } else {
+                button_buzzer.setText(getResources().getString(R.string.stop));
+                textView_status_secondary.setText(getResources().getString(R.string.complete_all_mandatory_activities_before_you_stop_the_day));
+
+                if(loadManagementHelper.isTripEnded(getActivity())) {
+                    button_buzzer.setBackground(getResources().getDrawable(R.drawable.img_buzzer_grey));
+                    button_buzzer.setEnabled(false);
+                }
+                else {
+                    button_buzzer.setBackground(getResources().getDrawable(R.drawable.image_buzzer_red));
+                }
+
                 menuDB = bmodel.configurationMasterHelper
                         .downloadLoadManagementMenu();
+
             }
 
 
-            ListView listView = view.findViewById(R.id.listView1);
+
+
+
+
+
+
+            listView = view.findViewById(R.id.listView1);
             listView.setCacheColorHint(0);
-            listView.setAdapter(new MenuBaseAdapter(menuDB));
+
+            adapter=new MenuBaseAdapter(menuDB);
+            listView.setAdapter(adapter);
 
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -174,6 +269,9 @@ public class LoadManagementFragment extends IvyBaseFragment {
             }
         }
 
+        updateMenuVisitStatus(menuDB);
+        if(adapter!=null)
+            adapter.notifyDataSetChanged();
     }
 
 
@@ -321,6 +419,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     configureBO.setMenuName(menuItem.getMenuName());
                     configureBO.setConfigCode(MENU_TASK_REPORT);
 
+                    bmodel.saveModuleCompletion(MENU_TASK_REPORT, false);
+
                     Intent intent = new Intent(getActivity(), ReportActivity.class);
                     Bundle bun = new Bundle();
                     bun.putSerializable("config", configureBO);
@@ -337,6 +437,20 @@ public class LoadManagementFragment extends IvyBaseFragment {
                 }
                 break;
             case MENU_SURVEY01_SW:
+                if (!isClick) {
+                    isClick = true;
+                    new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
+                }
+
+                break;
+            case MENU_SRTDAY_SURVEY:
+                if (!isClick) {
+                    isClick = true;
+                    new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
+                }
+
+                break;
+            case MENU_ENDDAY_SURVEY:
                 if (!isClick) {
                     isClick = true;
                     new DownloadMethodsAsyncTask(getActivity(), downloadAsyncTaskInterface, menuItem.getConfigCode(), menuItem.getMenuName()).execute();
@@ -382,12 +496,27 @@ public class LoadManagementFragment extends IvyBaseFragment {
 
                 holder.menuBTN = convertView
                         .findViewById(R.id.list_item_menu_tv_loadmgt);
+                holder.imageView_mandatory= convertView
+                        .findViewById(R.id.img_mandatory);
 
                 convertView.setOnClickListener(new View.OnClickListener() {
 
                     @Override
                     public void onClick(View v) {
 
+                        if(fromScreen.equals("MENU_PLANNING_SUB")){
+                            if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP&&!loadManagementHelper.isTripStarted(getActivity())) {
+                                Toast.makeText(getActivity(),getResources().getString(R.string.pls_start_the_trip),Toast.LENGTH_LONG).show();
+                                return;
+                            }
+
+                        }
+                       /* else {
+                            if(!loadManagementHelper.isTripEnded(getActivity())) {
+                                Toast.makeText(getActivity(),getResources().getString(R.string.pls_end_the_trip),Toast.LENGTH_LONG).show();
+                                return;
+                            }
+                        }*/
                         gotoNextActivity(holder.config);
                     }
                 });
@@ -402,15 +531,148 @@ public class LoadManagementFragment extends IvyBaseFragment {
             holder.menuBTN.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
             holder.menuBTN.setText(configTemp.getMenuName());
 
+            if(configTemp.isDone()){
+                holder.imageView_mandatory.setVisibility(View.VISIBLE);
+                holder.imageView_mandatory.setImageResource(R.drawable.blue_trick);
+            }
+            else {
+                if(configTemp.getMandatory()==1) {
+                    holder.imageView_mandatory.setVisibility(View.VISIBLE);
+                    holder.imageView_mandatory.setImageResource(R.drawable.img_mandatory);
+                }
+                else holder.imageView_mandatory.setVisibility(View.INVISIBLE);
+            }
+
             return convertView;
         }
 
         class ViewHolder {
             private ConfigureBO config;
             private TextView menuBTN;
+            private ImageView imageView_mandatory;
         }
     }
 
+    private void updateMenuVisitStatus(Vector<ConfigureBO> menuDB){
+
+        bmodel.isModuleDone(false);
+
+        int count_moduleCompleted=0;
+        boolean isMandatoryModulesAvailable=false;
+
+        try {
+            for (int i = 0; i < menuDB.size(); i++) {
+                menuDB.get(i).setDone(false);
+            }
+
+
+            for (int i = 0; i < menuDB.size(); i++) {
+
+                if(menuDB.get(i).getMandatory()==1){
+                    isMandatoryModulesAvailable=true;
+                }
+
+                if (menuDB.get(i).getConfigCode().equals(MENU_STOCK_PROPOSAL)) {
+                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
+                        menuDB.get(i).setDone(true);
+                        count_moduleCompleted+=1;
+                    }
+                }
+                else if (menuDB.get(i).getConfigCode().equals(MENU_MANUAL_VAN_LOAD)) {
+                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
+                        menuDB.get(i).setDone(true);
+                        count_moduleCompleted += 1;
+                    }
+                }
+                else if (menuDB.get(i).getConfigCode().equals(MENU_ODAMETER)) {
+
+                    if(fromScreen.equals("MENU_PLANNING_SUB")) {
+                        menuDB.get(i).setDone(OdameterHelper.getInstance(getActivity().getApplicationContext()).isOdameterStarted(getActivity()));
+                    }
+                    else {
+                        menuDB.get(i).setDone(OdameterHelper.getInstance(getActivity().getApplicationContext()).isOdameterEnded(getActivity()));
+
+                    }
+
+                    if(menuDB.get(i).isDone())
+                        count_moduleCompleted+=1;
+                }
+                else if (menuDB.get(i).getConfigCode().equals(MENU_STOCK_VIEW)) {
+                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
+                        menuDB.get(i).setDone(true);
+                        count_moduleCompleted += 1;
+                    }
+                }
+                else if (menuDB.get(i).getConfigCode().equals(MENU_VANLOAD_STOCK_VIEW)) {
+                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
+                        menuDB.get(i).setDone(true);
+                        count_moduleCompleted += 1;
+                    }
+                }
+                else if (menuDB.get(i).getConfigCode().equals(MENU_VAN_UNLOAD)) {
+                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
+                        menuDB.get(i).setDone(true);
+                        count_moduleCompleted += 1;
+                    }
+                }
+                else if (menuDB.get(i).getConfigCode().equals(MENU_VAN_PLANOGRAM)) {
+                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
+                        menuDB.get(i).setDone(true);
+                        count_moduleCompleted += 1;
+                    }
+                }
+                else if (menuDB.get(i).getConfigCode().equals(MENU_LOAD_WEBVIEW)) {
+                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
+                        menuDB.get(i).setDone(true);
+                        count_moduleCompleted += 1;
+                    }
+                }
+                else if (menuDB.get(i).getConfigCode().equals(MENU_PLANNING)) {
+                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
+                        menuDB.get(i).setDone(true);
+                        count_moduleCompleted += 1;
+                    }
+                }
+                else if (menuDB.get(i).getConfigCode().equals(MENU_TASK_REPORT)) {
+                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
+                        menuDB.get(i).setDone(true);
+                        count_moduleCompleted += 1;
+                    }
+                }
+                else if (menuDB.get(i).getConfigCode().equals(MENU_DASH_DAY)) {
+                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
+                        menuDB.get(i).setDone(true);
+                        count_moduleCompleted += 1;
+                    }
+                }
+                else if (menuDB.get(i).getConfigCode().equals(MENU_DAMAGE_STOCK)) {
+                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
+                        menuDB.get(i).setDone(true);
+                        count_moduleCompleted += 1;
+                    }
+                }
+                else if (menuDB.get(i).getConfigCode().equals(MENU_SURVEY01_SW)) {
+                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
+                        menuDB.get(i).setDone(true);
+                        count_moduleCompleted += 1;
+                    }
+                }
+            }
+
+            int count_uncompleted=menuDB.size()-count_moduleCompleted;
+            if(count_uncompleted>0)
+            textView_status_primary.setText(getResources().getString(R.string.today_you_have_uncompleted_activities,count_uncompleted));
+            else
+                textView_status_primary.setText(getResources().getString(R.string.today_you_have_completed_all_activities));
+
+            if(!isMandatoryModulesAvailable){
+                textView_status_secondary.setVisibility(View.GONE);
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -564,6 +826,30 @@ public class LoadManagementFragment extends IvyBaseFragment {
                         showMessage(getString(R.string.data_not_mapped));
                     }
                     break;
+                case MENU_SRTDAY_SURVEY:
+                    SurveyHelperNew surveyHelper1=SurveyHelperNew.getInstance(getActivity().getApplicationContext());
+                    if (surveyHelper1.getSurvey() != null
+                            && surveyHelper1.getSurvey().size() > 0) {
+                        bmodel.mSelectedActivityName = menuName;
+                        bmodel.mSelectedActivityConfigCode = menuCode;
+                        surveyHelper1.loadSurveyConfig(MENU_SRTDAY_SURVEY);
+                        navigateToActivity(MENU_SRTDAY_SURVEY, menuName, SurveyActivityNew.class);
+                    } else {
+                        showMessage(getString(R.string.data_not_mapped));
+                    }
+                    break;
+                case MENU_ENDDAY_SURVEY:
+                    SurveyHelperNew surveyHelper2=SurveyHelperNew.getInstance(getActivity().getApplicationContext());
+                    if (surveyHelper2.getSurvey() != null
+                            && surveyHelper2.getSurvey().size() > 0) {
+                        bmodel.mSelectedActivityName = menuName;
+                        bmodel.mSelectedActivityConfigCode = menuCode;
+                        surveyHelper2.loadSurveyConfig(MENU_ENDDAY_SURVEY);
+                        navigateToActivity(MENU_ENDDAY_SURVEY, menuName, SurveyActivityNew.class);
+                    } else {
+                        showMessage(getString(R.string.data_not_mapped));
+                    }
+                    break;
                 default:
                     break;
             }
@@ -652,6 +938,14 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     updateModuleWiseTimeStampDetails(menuCode);
                     break;
                 case MENU_SURVEY01_SW:
+                    loadSellerSurveyData(menuCode);
+                    updateModuleWiseTimeStampDetails(menuCode);
+                    break;
+                case MENU_SRTDAY_SURVEY:
+                    loadSellerSurveyData(menuCode);
+                    updateModuleWiseTimeStampDetails(menuCode);
+                    break;
+                case MENU_ENDDAY_SURVEY:
                     loadSellerSurveyData(menuCode);
                     updateModuleWiseTimeStampDetails(menuCode);
                     break;

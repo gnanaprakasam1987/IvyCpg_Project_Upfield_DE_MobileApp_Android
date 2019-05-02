@@ -2,6 +2,7 @@ package com.ivy.cpg.view.retailercontact;
 
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,13 +10,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.utils.StringUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
@@ -37,12 +39,17 @@ public class RetailerContactFragment extends IvyBaseFragment {
     private ArrayList<RetailerContactBo> retailerContactList;
     private HashMap<String, String> contactMenuMap;
 
-    private static String CODE_CONTACTNAME = "CONTACTNAME";
-    private static String CODE_CONTACTNUMBER = "CONTACTNUMBER";
-    private static String CODE_CONTACTPRIMARY = "CONTACTPRIMARY";
-    private static String CODE_CONTACTMAIL = "CONTACTMAIL";
-    private static String CODE_CONTACTAVAILABILITY = "CONTACTAVAILABILITY"; // for future devlopement
+    private final String CODE_CONTACTNAME = "CONTACTNAME";
+    private final String CODE_CONTACTNUMBER = "CONTACTNUMBER";
+    private final String CODE_CONTACTPRIMARY = "CONTACTPRIMARY";
+    private final String CODE_CONTACTMAIL = "CONTACTMAIL";
+    private final String CODE_CONTACTAVAILABILITY = "CONTACTAVAILABILITY";
+    private final String CODE_CONTACTEMAILPREF = "CONTACTEMAILPREF";
+    private final String CODE_CONTACTDESIGNATION = "CONTACTDESIGNATION";
+    private final String CODE_CONTACTSALUTATION = "CONTACTSALUTATION";
     private AppSchedulerProvider appSchedulerProvider;
+
+    private String retailerId ="";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,6 +58,8 @@ public class RetailerContactFragment extends IvyBaseFragment {
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
+        retailerId =  getArguments() != null?getArguments().getString("RetailerId"):"";
 
         view = inflater.inflate(R.layout.fragment_retailer_contact, container,
                 false);
@@ -91,7 +100,7 @@ public class RetailerContactFragment extends IvyBaseFragment {
     }
 
     private void getDataToPopulate() {
-        new CompositeDisposable().add((Disposable) bmodel.profilehelper.downloadRetailerContact(bmodel.getRetailerMasterBO().getRetailerID(), false)
+        new CompositeDisposable().add((Disposable) bmodel.profilehelper.downloadRetailerContact(retailerId, false)
                 .subscribeOn(appSchedulerProvider.io())
                 .observeOn(appSchedulerProvider.ui())
                 .subscribeWith(arrayListObserver()));
@@ -176,12 +185,15 @@ public class RetailerContactFragment extends IvyBaseFragment {
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
             final RetailerContactBo retailerContactBo = items.get(position);
+
+            String salutation = "";
+            if (contactMenuMap.get(CODE_CONTACTSALUTATION) != null ){
+                if (StringUtils.isEmptyString(retailerContactBo.getSalutationTitle()))
+                    salutation = retailerContactBo.getSalutationTitle();
+            }
+
             if (contactMenuMap.get(CODE_CONTACTNAME) != null) {
-                if (retailerContactBo.getTitle().length() > 0)
-                    holder.title.setText(retailerContactBo.getTitle());
-                else
-                    holder.title.setVisibility(View.GONE);
-                holder.firstName.setText(retailerContactBo.getFistname() + " " + retailerContactBo.getLastname());
+                holder.firstName.setText(salutation +" " +retailerContactBo.getFistname() + " " + retailerContactBo.getLastname());
             }
 
             if (contactMenuMap.get(CODE_CONTACTPRIMARY) != null) {
@@ -202,6 +214,40 @@ public class RetailerContactFragment extends IvyBaseFragment {
             else
                 holder.textCEmail.setVisibility(View.GONE);
 
+            if (contactMenuMap.get(CODE_CONTACTDESIGNATION) != null) {
+                if (StringUtils.isEmptyString(retailerContactBo.getTitle()))
+                    holder.title.setText(retailerContactBo.getTitle());
+                else
+                    holder.title.setVisibility(View.GONE);
+            }
+
+            if (contactMenuMap.get(CODE_CONTACTEMAILPREF) != null && retailerContactBo.getIsEmailPrimary() == 1)
+                holder.imgViewEmail.setVisibility(View.VISIBLE);
+            else
+                holder.imgViewEmail.setVisibility(View.GONE);
+
+            if (contactMenuMap.get(CODE_CONTACTAVAILABILITY) != null && retailerContactBo.getContactAvailList().size() > 0) {
+                holder.timeSlotLayout.setVisibility(View.VISIBLE);
+                holder.rvTimeslot.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+                ContactsTimeSlotAdapter timeSlotAdapter = new ContactsTimeSlotAdapter(getActivity(),retailerContactBo.getContactAvailList());
+                holder.rvTimeslot.setAdapter(timeSlotAdapter);
+            }else
+                holder.timeSlotLayout.setVisibility(View.GONE);
+
+            holder.imgShrinkView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (retailerContactBo.getContactAvailList().size() > 0 && holder.rvTimeslot.getVisibility() == View.VISIBLE) {
+                        holder.rvTimeslot.setVisibility(View.GONE);
+                        holder.imgShrinkView.setImageResource(R.drawable.ic_action_up);
+                    }else if (retailerContactBo.getContactAvailList().size() > 0) {
+                        holder.rvTimeslot.setVisibility(View.VISIBLE);
+                        holder.imgShrinkView.setImageResource(R.drawable.ic_action_down);
+                    }
+
+                }
+            });
+
         }
 
         @Override
@@ -213,7 +259,10 @@ public class RetailerContactFragment extends IvyBaseFragment {
 
             private TextView title, firstName;
             private TextView textCno, textCEmail;
-            private ImageView ivIsPrimary, ivIsdelete;
+            private ImageView ivIsPrimary, ivIsdelete,imgViewEmail;
+            private RelativeLayout timeSlotLayout;
+            private RecyclerView rvTimeslot;
+            private ImageView imgShrinkView;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -224,13 +273,13 @@ public class RetailerContactFragment extends IvyBaseFragment {
                 textCno = itemView.findViewById(R.id.tvContactNo);
                 textCEmail = itemView.findViewById(R.id.tvEmail);
                 ivIsdelete = itemView.findViewById(R.id.ivIsdelete);
-                title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                firstName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                textCno.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                textCEmail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                imgViewEmail = itemView.findViewById(R.id.img_email_pref);
+
+                timeSlotLayout = itemView.findViewById(R.id.time_slot_layout);
+                imgShrinkView = itemView.findViewById(R.id.img_shrink_view);
+                rvTimeslot = itemView.findViewById(R.id.rv_timeslot);
 
                 if (contactMenuMap.get(CODE_CONTACTNAME) == null) {
-                    title.setVisibility(View.GONE);
                     firstName.setVisibility(View.GONE);
                 }
 
@@ -242,6 +291,15 @@ public class RetailerContactFragment extends IvyBaseFragment {
 
                 if (contactMenuMap.get(CODE_CONTACTMAIL) == null)
                     textCEmail.setVisibility(View.GONE);
+
+                if (contactMenuMap.get(CODE_CONTACTAVAILABILITY) == null)
+                    timeSlotLayout.setVisibility(View.GONE);
+//
+                if (contactMenuMap.get(CODE_CONTACTDESIGNATION) == null)
+                    title.setVisibility(View.GONE);
+
+                if (contactMenuMap.get(CODE_CONTACTEMAILPREF) == null)
+                    imgViewEmail.setVisibility(View.GONE);
 
                 ivIsdelete.setVisibility(View.GONE);
 

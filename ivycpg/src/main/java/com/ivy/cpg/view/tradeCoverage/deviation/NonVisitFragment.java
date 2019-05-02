@@ -158,6 +158,11 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
                         showAlert(getResources().getString(
                                 R.string.saved_successfully));
                     }
+
+                    @Override
+                    public void onDismiss() {
+
+                    }
                 });
                 comReasonDialog.show();
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();

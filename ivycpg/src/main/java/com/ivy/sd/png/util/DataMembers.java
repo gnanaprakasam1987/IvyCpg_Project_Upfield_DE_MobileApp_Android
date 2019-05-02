@@ -60,6 +60,7 @@ public class DataMembers {
     public static final String PROFILE = "PRO";
     public static final String CATALOG = "CAT";
     public static final String USER = "USER";
+    public static final String TASK_DIGITAL_CONTENT = "TDC";
 
     public static final int NOTIFY_WEB_UPLOAD_SUCCESS = 32;
     public static final int NOTIFY_WEB_UPLOAD_ERROR = 33;
@@ -298,7 +299,10 @@ public class DataMembers {
     public static final String tbl_HhtMenuMaster = "HhtMenuMaster";
 
     private static final String tbl_TaskMaster = "TaskMaster";
-    private static final String tbl_TaskMaster_cols = "taskid,taskdesc,taskcode,TaskOwner";
+    private static final String tbl_TaskMaster_cols = "taskid,taskdesc,taskcode,TaskOwner,Date,DueDate,CategoryId,EndDate,Status";
+
+    private static final String tbl_TaskImageDetails = "TaskImageDetails";
+    private static final String tbl_TaskImageDetails_cols = "TaskId,TaskImageId,TaskImageName,Status";
 
     public static final String tbl_TaskConfigurationMaster = "TaskConfigurationMaster";
     private static final String tbl_TaskConfigurationMaster_cols = "taskid,retailerid,uid,date,usercreated,userid";
@@ -339,6 +343,7 @@ public class DataMembers {
     public static final String tbl_orderHeaderRequest = "OrderHeaderRequest";
     public static final String tbl_orderDetailRequest = "OrderDetailRequest";
     public static final String tbl_retailerPotential = "RetailerPotential";
+    public static final String tbl_contactAvailability = "ContactAvailability";
 
     private static final String tbl_deviateReasontableupload = "deviateReasontable";
     private static final String tbl_SbdMerchandisingHeaderupload = "SbdMerchandisingHeader";
@@ -410,7 +415,7 @@ public class DataMembers {
     private static final String tbl_InvoiceDetailsUpload_cols = "InvoiceId,ProductId,Qty,Rate,UomId,uomCount,pcsQty,caseQty,d1,d2,d3,DA,outerQty,dOuomQty,dOuomid,batchid,casePrice,outerPrice,pcsUOMId,OrderType,totalamount,PriceOffId,PriceOffValue,isFreeProduct,weight,hasSerial,TaxAmount,SchemeAmount,DiscountAmount,NetAmount,HsnCode,RField1";
     private static final String tbl_PaymentUpload_cols = "uid,BillNumber,Amount,CashMode,ChequeNumber,ChequeDate,BankID,BranchCode,RetailerID,BeatID,Date,remark,payType,ImageName,GroupId,StatusLovId,totaldiscount,DistributorID,receiptno,refid,RefNo,PrintFilePath,DistParentID,BankName,BranchName,ridSF,VisitId";
     private static final String tbl_CollectionDocument_cols = "uid,BillNumber,ContactName,ContactNumber,RetailerID,DocRefNo,ReasonID,Remarks,SignaturePath";
-    private static final String tbl_OutletTimestampupload_cols = "VisitID,BeatID,VisitDate,RetailerID,TimeIn,TimeOut,latitude,longitude,JFlag,gpsAccuracy,gpsDistance,gpsCompliance,Sequence,Feedback,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,outLatitude,outLongitude,OrderValue,lpc,RetailerName,ridSF";
+    private static final String tbl_OutletTimestampupload_cols = "VisitID,BeatID,VisitDate,RetailerID,TimeIn,TimeOut,latitude,longitude,JFlag,gpsAccuracy,gpsDistance,gpsCompliance,Sequence,Feedback,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,outLatitude,outLongitude,OrderValue,lpc,RetailerName,ridSF,tripUid";
     private static final String tbl_OutletTimestampImageupload_cols = "uid,imageName";
     private static final String tbl_retailerMasterupload_cols = "RetailerID,RetailerName,SubChannelid,Beatid,VisitDays,LocationId,creditlimit,RPTypeId,tinnumber,RField3,distributorId,taxtypeid,contractstatuslovid,classid,AccountId,VatNo,creditPeriod,ProfileImagePath,inSEZ,GSTNumber,RField5,RField6,TinExpDate,pan_number,food_licence_number,food_licence_exp_date,DLNo,DLNoExpDate,RField4,RField7,userid";
     private static final String tbl_deviateReasontableupload_cols = "uid,retailerid,date,reasonid,DistributorID,remarks,ridSF";
@@ -428,7 +433,7 @@ public class DataMembers {
     private static final String tbl_AnswerImageDetail_cols = "qid,uid,imgName";
 
     private static final String tbl_vanload_cols = "pid,uid,qty,date,outerQty,caseQty,pcsQty,duomQty,duomid,dOuomQty,dOuomId,BatchId,batchno,SubDepotId";
-    private static final String tbl_odameter_cols = "uid,start,end,starttime,endtime,startlatitude,startlongitude,endlatitude,endlongitude,date";
+    private static final String tbl_odameter_cols = "uid,start,end,starttime,endtime,startlatitude,startlongitude,endlatitude,endlongitude,date,tripUid";
     private static final String tbl_AssetHeader_Cols = "uid,Date,RetailerId,remark,TypeLovId,tgtTotal,achTotal,Weightage,Score,distributorid,ridSF,VisitId,refid";
     private static final String tbl_AssetDetail_Cols = "uid,AssetID,AvailQty,ImageName,ReasonID,SerialNumber,Mappingid,Productid,installdate,servicedate,conditionId,CompQty,locid,PosmGroupLovId,isExecuted,Score,TgtLocId,isAuditDone";
     private static final String tbl_AssetImgInfo_Cols = "uid,AssetID,ImageName,Mappingid,PId,locid";
@@ -485,7 +490,7 @@ public class DataMembers {
     private static final String tbl_PriceHeader_cols = "Tid,RetailerId,Date,TimeZone,distributorid,Weightage,Score,ridSF,VisitId";
 
     private static final String tbl_PriceDetail = "PriceCheckDetail";
-    private static final String tbl_PriceDetail_cols = "Tid,PId,Changed,Price,Compliance,ReasonId,Own,UomID,Mrp,mop,price_change_reasonid,Score";
+    private static final String tbl_PriceDetail_cols = "Tid,PId,Changed,Price,Compliance,ReasonId,Own,UomID,Mrp,mop,price_change_reasonid,Score,inStoreLocId,hasPriceTag";
 
     private static final String tbl_attendancedetail = "AttendanceDetail";
     private static final String tbl_attendancedetail_cols = "Tid,DateIn,Atd_ID,ReasonID,FromDate,ToDate,Timezone,Status,Remarks,Session,jointUserId,LeaveType_LovId,TotalDays,timeSpent,userid";
@@ -517,6 +522,9 @@ public class DataMembers {
     public static final String tbl_InvoiceDiscountDetail = "InvoiceDiscountDetail";
     private static final String tbl_InvoiceDiscountDetail_cols = "OrderId,InvoiceId,Pid,Typeid,Value,Percentage,ApplyLevelid,DiscountId,IsCompanyGiven";
 
+    public static final String tbl_TripMaster = "TripMaster";
+    public static final String tbl_TripMaster_cols = "uid,userId,startDate,endDate,status";
+
     public static final String tbl_OrderDiscountDetail = "OrderDiscountDetail";
     private static final String tbl_OrderDiscountDetail_cols = "OrderId,Pid,Typeid,Value,Percentage,ApplyLevelid,DiscountId,IsCompanyGiven";
 
@@ -530,9 +538,13 @@ public class DataMembers {
     public static final String tbl_RetailerEditHeader = "RetailerEditHeader";
     public static final String tbl_RetailerEditDetail = "RetailerEditDetail";
     public static final String tbl_RetailerContactEdit = "RetailerContactEdit";
+    public static final String tbl_ContactAvailabilityEdit = "ContactAvailabilityEdit";
+
+    public static final String tbl_ContactAvailability_Cols = "CPId,CPAId,Day,StartTime,EndTime";
+    public static final String tbl_ContactAvailabilityEdit_Cols = "CPId,CPAId,Day,StartTime,EndTime,Status,Tid";
     private static final String tbl_RetailerEditHeader_cols = "Tid,RetailerId,Date";
     private static final String tbl_RetailerEditDetail_cols = "Tid,code,Value,RefId";
-    private static final String tbl_RetailerContactEdit_cols = "Contact_Title,Contact_Title_LovId,ContactName,ContactName_LName,ContactNumber,Email,IsPrimary,Status,CPId,RetailerId,Tid";
+    private static final String tbl_RetailerContactEdit_cols = "Contact_Title,Contact_Title_LovId,ContactName,ContactName_LName,ContactNumber,Email,IsPrimary,Status,CPId,RetailerId,Tid,salutationLovId,IsEmailNotificationReq";
 
 
     private static final String tbl_RetailerVerification = "RetailerVerification";
@@ -606,7 +618,7 @@ public class DataMembers {
     private static final String tbl_RetailerEntryDetails_Cols = "UId,EntryMode,ReasonId";
 
     private static final String tbl_retailerContactupload_cols = "RetailerID,contactname,ContactName_LName,ContactNumber," +
-            "contact_title,contact_title_lovid,IsPrimary,Email";
+            "contact_title,contact_title_lovid,IsPrimary,Email,salutationLovId,IsEmailNotificationReq,CPID";
     private static final String tbl_retailerAddressupload_cols = "RetailerID,Address1,Address2,Address3,ContactNumber,City,latitude,longitude,"
             + "email,FaxNo,pincode,State,IsPrimary,Mobile,Region,Country,District";
     private static final String tbl_retailerAttributeupload_cols = "RetailerId,AttributeId,LevelId";
@@ -703,6 +715,9 @@ public class DataMembers {
 
     private static final String tbl_AnswerScoreDetails = "AnswerScoreDetail";
     private static final String tbl_AnswerScoreDetails_cols = "Uid,SurveyId,qid,score";
+
+    private static final String tbl_RetailerLocationDeviation = "RetailerLocationDeviation";
+    private static final String tbl_RetailerLocationDeviation_cols = "Tid,ReasonID,RetailerID,Date,Type,ExpectedRadius,ActualRadius,OutletTimeStampID";
 
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
@@ -801,6 +816,7 @@ public class DataMembers {
         uploadColumn.put(tbl_SchemeFreeProductDetail, tbl_SchemeFreeProductDetail_cols);
         uploadColumn.put(tbl_TaskConfigurationMaster, tbl_TaskConfigurationMaster_cols);
         uploadColumn.put(tbl_TaskMaster, tbl_TaskMaster_cols);
+        uploadColumn.put(tbl_TaskImageDetails, tbl_TaskImageDetails_cols);
         uploadColumn.put(tbl_InvoiceDiscountDetail, tbl_InvoiceDiscountDetail_cols);
         uploadColumn.put(tbl_OrderDiscountDetail, tbl_OrderDiscountDetail_cols);
         uploadColumn.put(tbl_RetailerEditHeader, tbl_RetailerEditHeader_cols);
@@ -854,6 +870,9 @@ public class DataMembers {
         uploadColumn.put(tbl_orderDetailRequest, tbl_OrderDetailRequest_cols);
         uploadColumn.put(tbl_retailerPotential, tbl_RetailerPotential_cols);
 
+        uploadColumn.put(tbl_contactAvailability, tbl_ContactAvailability_Cols);
+        uploadColumn.put(tbl_ContactAvailabilityEdit, tbl_ContactAvailabilityEdit_Cols);
+
 
         uploadColumn.put(tbl_loyaltyredemptionheader, tbl_tbl_loyaltyredemptionheader_cols);
         uploadColumn.put(tbl_loyaltyredemptiondetail, tbl_loyaltyredemptiondetail_cols);
@@ -889,10 +908,12 @@ public class DataMembers {
 
         uploadColumn.put(tbl_DigitalContent_Tracking_Header, tbl_DigitalContent_Tracking_Header_cols);
         uploadColumn.put(tbl_DigitalContent_Tracking_Detail, tbl_DigitalContent_Tracking_Detail_cols);
-        uploadColumn.put(tbl_AnswerScoreDetails,tbl_AnswerScoreDetails_cols);
+        uploadColumn.put(tbl_AnswerScoreDetails, tbl_AnswerScoreDetails_cols);
 
         uploadColumn.put(tbl_Planorama, tbl_Planorama_cols);
         uploadColumn.put(tbl_Planorama_image, tbl_Planorama_image_cols);
+        uploadColumn.put(tbl_RetailerLocationDeviation, tbl_RetailerLocationDeviation_cols);
+        uploadColumn.put(tbl_TripMaster, tbl_TripMaster_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -1024,6 +1045,9 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_display_scheme_tracking_header, tbl_display_scheme_tracking_cols);
         uploadColumnWithRetailer.put(tbl_date_wise_plan, tbl_date_wise_plan_cols);
 
+        uploadColumnWithRetailer.put(tbl_contactAvailability, tbl_ContactAvailability_Cols);
+        uploadColumnWithRetailer.put(tbl_ContactAvailabilityEdit, tbl_ContactAvailabilityEdit_Cols);
+
         uploadColumnWithRetailer.put(tbl_CollectionDueHeader, tbl_CollectionDueHeader_cols);
         uploadColumnWithRetailer.put(tbl_CollectionDueDetails, tbl_CollectionDueDetails_cols);
         uploadColumnWithRetailer.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
@@ -1043,6 +1067,7 @@ public class DataMembers {
 
         uploadColumnWithRetailer.put(tbl_OrderFreeIssues, tbl_OrderFreeIssues_cols);
         uploadColumnWithRetailer.put(tbl_InvoiceFreeIssues, tbl_InvoiceFreeIssues_cols);
+        uploadColumn.put(tbl_RetailerLocationDeviation, tbl_RetailerLocationDeviation_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();
@@ -1063,6 +1088,7 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_TaskConfigurationMaster,
                 tbl_TaskConfigurationMaster_cols);
         uploadColumnWithOutRetailer.put(tbl_TaskMaster, tbl_TaskMaster_cols);
+        uploadColumnWithOutRetailer.put(tbl_TaskImageDetails, tbl_TaskImageDetails_cols);
 
         uploadColumnWithOutRetailer.put(tbl_SOS_Tracking_Parent_Detail,
                 tbl_SOS_Tracking_Parent_Detail_cols);
@@ -1072,7 +1098,6 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_outletjoincall, tbl_outletjoincall_cols);
         uploadColumnWithOutRetailer.put(tbl_SubDepotSettlement, tbl_SubDepotSettlement_cols);
 
-        uploadColumnWithOutRetailer.put(tbl_TaskMaster, tbl_TaskMaster_cols);
         uploadColumnWithOutRetailer.put(tbl_RoadActivityHeader, tbl_RoadActivityHeader_cols);
         uploadColumnWithOutRetailer.put(tbl_RoadActivityDetail, tbl_RoadActivityDetail_cols);
         uploadColumnWithOutRetailer.put(tbl_DistInvoiceDetails, tbl_DistInvoiceDetails_cols);
@@ -1108,6 +1133,7 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_planogram_image_detail, tbl_planogram_image_detail_cols);
         uploadColumnWithOutRetailer.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
         uploadColumnWithOutRetailer.put(tbl_DenominationHeader, tbl_DenominationHeader_cols);
+        uploadColumnWithOutRetailer.put(tbl_TripMaster, tbl_TripMaster_cols);
     }
 
     public static final HashMap<String, String> uploadLocationTrackingColumn = new HashMap<>();
@@ -1194,6 +1220,9 @@ public class DataMembers {
         uploadNewRetailerColumn.put(tbl_retailerAttribute, tbl_retailerAttributeupload_cols);
         uploadNewRetailerColumn.put(tbl_orderHeaderRequest, tbl_OrderHeaderRequest_cols);
         uploadNewRetailerColumn.put(tbl_retailerPotential, tbl_RetailerPotential_cols);
+
+        uploadNewRetailerColumn.put(tbl_contactAvailability, tbl_ContactAvailability_Cols);
+        uploadNewRetailerColumn.put(tbl_ContactAvailabilityEdit, tbl_ContactAvailabilityEdit_Cols);
 
     }
 

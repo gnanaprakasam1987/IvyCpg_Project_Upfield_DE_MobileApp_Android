@@ -893,7 +893,7 @@ public class SODAssetFragment extends IvyBaseFragment implements
             try {
                 mSODAssetHelper
                         .saveSalesFundamentalDetails(HomeScreenTwo.MENU_SOD_ASSET, mAssetsForDialog);
-                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOD_ASSET);
+                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SOD_ASSET, true);
                 mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
                 return Boolean.TRUE;

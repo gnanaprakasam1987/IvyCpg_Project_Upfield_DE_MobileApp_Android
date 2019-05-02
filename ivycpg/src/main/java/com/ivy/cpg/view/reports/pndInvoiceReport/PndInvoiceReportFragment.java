@@ -74,7 +74,8 @@ public class PndInvoiceReportFragment extends IvyBaseFragment {
 
         compositeDisposable.add((Disposable) PendingInvoiceHelper.getInstance().downloadPndInvoice(getActivity().getApplicationContext())
                 .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread()).subscribeWith(new DisposableObserver<ArrayList<PndInvoiceReportBo>>() {
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableObserver<ArrayList<PndInvoiceReportBo>>() {
                     @Override
                     public void onNext(ArrayList<PndInvoiceReportBo> pndInvList) {
                         if (pndInvList.size() > 0) {
@@ -88,12 +89,12 @@ public class PndInvoiceReportFragment extends IvyBaseFragment {
                     @Override
                     public void onError(Throwable e) {
                         //alertDialog.dismiss();
+                        Toast.makeText(getActivity(), getResources().getString(R.string.unable_to_load_data), Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onComplete() {
                         //alertDialog.dismiss();
-                        Toast.makeText(getActivity(), getResources().getString(R.string.unable_to_load_data), Toast.LENGTH_SHORT).show();
                     }
                 }));
     }

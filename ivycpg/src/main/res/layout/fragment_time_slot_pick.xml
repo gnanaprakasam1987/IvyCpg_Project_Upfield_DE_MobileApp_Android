@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/_5sdp">
+
+    <TextView
+        style="@style/HeadingStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Contact Availability"
+        android:gravity="center"
+        android:paddingTop="@dimen/_5sdp"
+        android:paddingBottom="@dimen/_5sdp"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/white"
+        android:textSize="@dimen/_14sdp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/_35sdp"
+        android:layout_marginRight="@dimen/_35sdp"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:orientation="horizontal"
+        android:padding="@dimen/_5sdp">
+
+        <TextView
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Available Day"
+            android:gravity="center"
+            android:textSize="@dimen/_12sdp" />
+
+        <TextView
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Available From"
+            android:gravity="center"
+            android:textSize="@dimen/_12sdp" />
+
+        <TextView
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Available Till"
+            android:gravity="center"
+            android:textSize="@dimen/_12sdp" />
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_200sdp"
+        android:layout_marginLeft="@dimen/_35sdp"
+        android:layout_marginRight="@dimen/_35sdp"
+        android:padding="@dimen/_5sdp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:baselineAligned="false">
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <com.ivy.cpg.view.retailercontact.customview.WheelDayPicker
+                    android:id="@+id/dayPicker"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:wheel_atmospheric="true"
+                    app:wheel_item_align="center"
+                    android:layout_centerHorizontal="true"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal">
+
+                <com.ivy.cpg.view.retailercontact.customview.WheelHourPicker
+                    android:id="@+id/hoursPicker"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    app:wheel_atmospheric="true"
+                    app:wheel_item_align="center"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_horizontal">
+
+                <com.ivy.cpg.view.retailercontact.customview.WheelHourPicker
+                    android:id="@+id/hoursPicker_to"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    app:wheel_atmospheric="true"
+                    app:wheel_item_align="center"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <View
+            android:id="@+id/dtSelector"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/wheelSelectorHeight"
+            android:layout_centerVertical="true"
+            android:alpha="0.2"
+            android:background="@color/picker_default_selector_color" />
+
+
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/okay_btn"
+        style="?attr/roundedCustomButtonSmall"
+        android:text="@string/ok"
+        android:textAllCaps="false"
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:layout_marginRight="@dimen/_20sdp" />
+
+
+</LinearLayout>

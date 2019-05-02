@@ -66,7 +66,7 @@ public class AssetPresenterImpl implements AssetContractor.AssetPresenter {
         protected String doInBackground(String... params) {
             deleteUnUsedImages();
             mAssetTrackingHelper.saveAsset(mContext.getApplicationContext(), params[0]);
-            mBModel.saveModuleCompletion(params[0]);
+            mBModel.saveModuleCompletion(params[0], true);
             return "";
         }
 

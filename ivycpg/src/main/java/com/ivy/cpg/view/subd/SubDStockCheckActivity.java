@@ -2127,7 +2127,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                 // Save closing stock
                 stockCheckHelper.saveClosingStock(getApplicationContext(),true);
 
-                bmodel.saveModuleCompletion("MENU_SUBD_STOCK");
+                bmodel.saveModuleCompletion("MENU_SUBD_STOCK", true);
 
                 return Boolean.TRUE;
             } catch (Exception e) {
@@ -3044,7 +3044,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), OrderedFlag)) {
-                        bmodel.saveModuleCompletion("MENU_SUBD_STOCK");
+                        bmodel.saveModuleCompletion("MENU_SUBD_STOCK", true);
                         bmodel.outletTimeStampHelper
                                 .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                         startActivity(new Intent(SubDStockCheckActivity.this,

@@ -59,6 +59,8 @@ public class HomeMenuConstants {
     public static final String MENU_SUBD = "MENU_SUBD";
     public static final String MENU_Q_CALL = "MENU_QUICK_CALL";
 
+
+
     public static final HashMap<String, Integer> menuIcons = new HashMap<String, Integer>(){{
         put(MENU_PLANNING, R.drawable.ic_vector_planning);
         put(MENU_VISIT, R.drawable.ic_vector_tradecoverage);

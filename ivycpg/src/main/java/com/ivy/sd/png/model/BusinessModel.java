@@ -83,6 +83,8 @@ import com.ivy.cpg.view.supervisor.chat.BaseInterfaceAdapter;
 import com.ivy.cpg.view.sync.AWSConnectionHelper;
 import com.ivy.cpg.view.sync.AzureConnectionHelper;
 import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
+import com.ivy.cpg.view.sync.largefiledownload.FileDownloadProvider;
+import com.ivy.cpg.view.van.odameter.OdameterHelper;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -921,7 +923,7 @@ public class BusinessModel extends Application {
             sb.append("SELECT distinct Inv.InvoiceNo, Inv.InvoiceDate, Round(invNetamount,2) as Inv_amt,");
             sb.append(" Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt,");
             sb.append(" Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os,");
-            sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue),inv.DocRefNo,inv.DueDays,inv.DueDate");
+            sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue),inv.DocRefNo,inv.DueDays,inv.DueDate,payment.Date");
             sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
             sb.append(" LEFT OUTER JOIN PaymentDiscountDetail PD ON payment.uid = PD.uid");
             sb.append(" WHERE inv.Retailerid = ");
@@ -978,6 +980,7 @@ public class BusinessModel extends Application {
                     }
                     if (!configurationMasterHelper.COMPUTE_DUE_DAYS)
                         invocieHeaderBO.setDueDays(c.getString(10));
+                    invocieHeaderBO.setCollectionDate(c.getString(12));
                     invoiceHeader.add(invocieHeaderBO);
                 }
                 c.close();
@@ -1354,12 +1357,11 @@ public class BusinessModel extends Application {
             mRetailerBOByRetailerid = new HashMap<>();
             RetailerMasterBO retailer;
 
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
-            );
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.openDataBase();
 
-            configurationMasterHelper.loadRouteConfig();
-            downloadIndicativeOrderedRetailer();
+            configurationMasterHelper.loadRouteConfig(db);
+            downloadIndicativeOrderedRetailer(db);
 
             Cursor c = db
                     .selectSQL("SELECT DISTINCT A.RetailerID, A.RetailerCode, A.RetailerName, RBM.BeatID as beatid, A.creditlimit, A.tinnumber, A.TinExpDate, A.channelID,"
@@ -1391,7 +1393,7 @@ public class BusinessModel extends Application {
                             + " , IFNULL(RC2.contactname,'') as sc_name, IFNULL(RC2.ContactName_LName,'') as sc_LName, RC2.ContactNumber as sc_Number,"
                             + " RC2.CPID as sc_CPID, IFNULL(RC2.DOB,'') as sc_DOB, RC2.contact_title as sc_title, RC2.contact_title_lovid as sc_title_lovid,"
 
-                            + "RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency,"
+                            + "RV.PlannedVisitCount, RV.VisitDoneCount, RV.VisitFrequency, RV.lastVisitDate, RV.lastVisitedBy,"
 
                             + " IFNULL(RACH.monthly_acheived,0) as MonthlyAcheived, IFNULL(creditPeriod,'') as creditPeriod,RField5,RField6,RField7,RField8,RField9,RPP.ProductId as priorityBrand,SalesType,A.isSameZone, A.GSTNumber,A.InSEZ,A.DLNo,A.DLNoExpDate,IFNULL(A.SubDId,0) as SubDId,"
                             + " A.pan_number,A.food_licence_number,A.food_licence_exp_date,RA.Mobile,RA.FaxNo,RA.Region,RA.Country,RA.District,"
@@ -1589,6 +1591,8 @@ public class BusinessModel extends Application {
                     retailer.setSupplierTaxLocId(c.getInt(c.getColumnIndex("SupplierTaxLocId")));
                     retailer.setRidSF(c.getString(c.getColumnIndex("ridSF")));
                     retailer.setDistrict(c.getString(c.getColumnIndex("District")));
+                    retailer.setLastVisitDate(c.getString(c.getColumnIndex("lastVisitDate")));
+                    retailer.setLastVisitedBy(c.getString(c.getColumnIndex("lastVisitedBy")));
 
                     retailer.setIsToday(0);
                     retailer.setHangingOrder(false);
@@ -1598,12 +1602,12 @@ public class BusinessModel extends Application {
                     updateRetailerPriceGRP(retailer, db);
 
                     if (configurationMasterHelper.IS_HANGINGORDER) {
-                        OrderHelper.getInstance(getContext()).updateHangingOrder(getContext(), retailer);
+                        OrderHelper.getInstance(getContext()).updateHangingOrder(getContext(), retailer,db);
                     }
                     updateIndicativeOrderedRetailer(retailer);
 
                     if (configurationMasterHelper.isRetailerBOMEnabled) {
-                        setIsBOMAchieved(retailer);
+                        setIsBOMAchieved(retailer, db);
                     }
                     getRetailerMaster().add(retailer);
 
@@ -1619,7 +1623,7 @@ public class BusinessModel extends Application {
 
 
             if (configurationMasterHelper.SHOW_DATE_ROUTE) {
-                mRetailerHelper.updatePlannedDatesInRetailerObj();
+                mRetailerHelper.updatePlannedDatesInRetailerObj(db);
                 mRetailerHelper.getPlannedRetailerFromDate();
 
             } else {
@@ -1628,20 +1632,20 @@ public class BusinessModel extends Application {
             }
 
             if (configurationMasterHelper.SHOW_MISSED_RETAILER) {
-                mRetailerHelper.downloadMissedRetailer();
+                mRetailerHelper.downloadMissedRetailer(db);
             }
 
             setWeeknoFoNewRetailer();
 
-            CollectionHelper.getInstance(ctx).updateHasPaymentIssue();
+            CollectionHelper.getInstance(ctx).updateHasPaymentIssue(db);
 
             /********************************************/
 
             if (configurationMasterHelper.IS_DAY_WISE_RETAILER_WALKINGSEQ)
                 mRetailerHelper.updateWalkingSequenceDayWise(db);
 
-            updateCurrentFITscore();
-            updateRetailersTotWgt();
+            updateCurrentFITscore(db);
+            updateRetailersTotWgt(db);
 
             if (configurationMasterHelper.SUBD_RETAILER_SELECTION | configurationMasterHelper.IS_LOAD_ONLY_SUBD) {
 
@@ -1655,7 +1659,15 @@ public class BusinessModel extends Application {
                 codeCleanUpUtil.setSubDMaster(getSubDMaster());
             }
 
-            mRetailerHelper.downloadRetailerTarget("SV");
+            for (RetailerMasterBO retailerMasterBO : getRetailerMaster()) {
+                if ("P".equals(retailerMasterBO.getIsVisited())) {
+                    appDataProvider.setPausedRetailer(retailerMasterBO);
+                    break;
+                }
+
+            }
+
+            mRetailerHelper.downloadRetailerTarget("SV", db);
 
             db.closeDB();
 
@@ -1682,18 +1694,16 @@ public class BusinessModel extends Application {
                 if (c.moveToNext())
                     distId = c.getInt(0);
 
-                c.close();
             }
-
+            c.close();
 
             c = db.selectSQL("SELECT IFNULL(GroupId,0) From RetailerPriceGroup WHERE DistributorID=" + distId + " AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
             if (c != null
                     && c.getCount() > 0) {
                 if (c.moveToNext())
                     retObj.setGroupId(c.getInt(0));
-
-                c.close();
             }
+            c.close();
         } catch (Exception e) {
             Commons.printException("Exception ", e);
         }
@@ -1705,12 +1715,8 @@ public class BusinessModel extends Application {
      * @See
      * {@link com.ivy.core.data.retailer.RetailerDataManagerImpl#setIsBOMAchieved(RetailerMasterBO)}
      */
-    private void setIsBOMAchieved(RetailerMasterBO Retailer) {
-        DBUtil db = null;
+    private void setIsBOMAchieved(RetailerMasterBO Retailer, DBUtil db) {
         try {
-
-            db = new DBUtil(ctx, DataMembers.DB_NAME);
-            db.openDataBase();
             String sql = "";
             Cursor c = null;
 
@@ -1735,11 +1741,9 @@ public class BusinessModel extends Application {
                 }
             }
             c.close();
-            db.closeDB();
 
         } catch (Exception e) {
             e.printStackTrace();
-            db.closeDB();
         }
     }
 
@@ -2033,13 +2037,9 @@ public class BusinessModel extends Application {
      * @See {@link RetailerDataManagerImpl#fetchIndicativeRetailers()}
      * @deprecated
      */
-    public void downloadIndicativeOrderedRetailer() {
-        DBUtil db = null;
+    public void downloadIndicativeOrderedRetailer(DBUtil db) {
         indicativeRtrList = new ArrayList<IndicativeBO>();
         try {
-            db = new DBUtil(ctx, DataMembers.DB_NAME);
-            db.createDataBase();
-            db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select distinct io.rid ,case when io.rid!=ifnull(oh.retailerid,0) then 1 else 0 end as flag ");
             sb.append("from indicativeorder io left join orderHeader oh on  io.rid=oh.retailerid");
@@ -2053,7 +2053,6 @@ public class BusinessModel extends Application {
                 }
             }
             c.close();
-            db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -2543,12 +2542,15 @@ public class BusinessModel extends Application {
 
                 if (!outlet.getReasonid().equals("0")) {
                     bool = true;
+                    String ridSF = "";
+                    if (getAppDataProvider().getRetailMaster() != null && getAppDataProvider().getRetailMaster().getRidSF() != null)
+                        ridSF = getAppDataProvider().getRetailMaster().getRidSF();
                     values = id + "," + StringUtils.QT(outlet.getRetailerid()) + ","
                             + outlet.getBeatId() + "," + StringUtils.QT(outlet.getDate())
                             + "," + StringUtils.QT(outlet.getReasonid()) + ","
                             + StringUtils.QT(getStandardListId(outlet.getReasontype()))
                             + "," + StringUtils.QT("N") + "," + outlet.getDistributorID()
-                            + "," + StringUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
+                            + "," + StringUtils.QT(ridSF);
 
                     db.insertSQL("Nonproductivereasonmaster", columns, values);
                 }
@@ -2611,7 +2613,7 @@ public class BusinessModel extends Application {
                     + "," + StringUtils.QT(getAppDataProvider().getRetailMaster().getRidSF());
 
             db.insertSQL("Nonproductivereasonmaster", columns, values);
-            if (!outlet.getCollectionReasonID().equals("0")) {
+            if (outlet.getCollectionReasonID() != null && !outlet.getCollectionReasonID().equals("0")) {
                 String uid = StringUtils.QT(getAppDataProvider().getUser()
                         .getDistributorid()
                         + ""
@@ -2837,7 +2839,7 @@ public class BusinessModel extends Application {
             db.createDataBase();
             db.openDataBase();
 
-            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,IsOwn,facing from "
+            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,IsOwn,facing,hasPriceTag from "
                     + DataMembers.tbl_LastVisitStock
                     + " where retailerid=" + retailerId;
 
@@ -2857,6 +2859,7 @@ public class BusinessModel extends Application {
                     int reasonID = orderDetailCursor.getInt(10);
                     int isOwn = orderDetailCursor.getInt(11);
                     int facing = orderDetailCursor.getInt(12);
+                    int priceTag = orderDetailCursor.getInt(13);
                     int pouring = 0;
                     int cocktail = 0;
 
@@ -2866,7 +2869,7 @@ public class BusinessModel extends Application {
 
                     setStockCheckQtyDetails(productId, shelfpqty, shelfcqty,
                             whpqty, whcqty, whoqty, shelfoqty, locationId,
-                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, menucode, availability);
+                            isDistributed, isListed, reasonID, 0, isOwn, facing, pouring, cocktail, menucode, availability, priceTag);
 
                 }
                 orderDetailCursor.close();
@@ -2950,7 +2953,7 @@ public class BusinessModel extends Application {
             // if (remarksHelper.getRemarksBO().getModuleCode()
             // .equals(StandardListMasterConstants.MENU_STOCK))
             // remarksHelper.getRemarksBO().setTid(stockID);
-            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,isAuditDone,IsOwn,Facing,RField1,RField2,isAvailable from "
+            String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,isAuditDone,IsOwn,Facing,RField1,RField2,isAvailable,hasPriceTag from "
                     + DataMembers.tbl_closingstockdetail
                     + " where stockId="
                     + QT(stockID) + "";
@@ -2974,10 +2977,11 @@ public class BusinessModel extends Application {
                     int pouring = orderDetailCursor.getInt(14);
                     int cocktail = orderDetailCursor.getInt(15);
                     int availability = orderDetailCursor.getInt(16);
+                    int priceTag = orderDetailCursor.getInt(17);
 
                     setStockCheckQtyDetails(productId, shelfpqty, shelfcqty,
                             whpqty, whcqty, whoqty, shelfoqty, locationId,
-                            isDistributed, isListed, reasonID, audit, isOwn, facing, pouring, cocktail, menuCode, availability);
+                            isDistributed, isListed, reasonID, audit, isOwn, facing, pouring, cocktail, menuCode, availability, priceTag);
 
                 }
                 orderDetailCursor.close();
@@ -3044,7 +3048,7 @@ public class BusinessModel extends Application {
                                          int shelfcqty, int whpqty, int whcqty, int whoqty, int shelfoqty,
                                          int locationId, int isDistributed, int isListed, int reasonID,
                                          int audit, int isOwn, int facing, int pouring, int cocktail,
-                                         String menuCode, int availability) {
+                                         String menuCode, int availability, int priceTag) {
 
         //mTaggedProducts list only used in StockCheck screen. So updating only in mTaggedProducts
         ProductMasterBO product = null;
@@ -3093,6 +3097,7 @@ public class BusinessModel extends Application {
                     product.getLocations().get(j).setIsPouring(pouring);
                     product.getLocations().get(j).setCockTailQty(cocktail);
                     product.getLocations().get(j).setAvailability(availability);
+                    product.getLocations().get(j).setPriceTagAvailability(priceTag);
 
                     int totalStockQty = (shelfpqty + (shelfcqty * product.getCaseSize()) + (shelfoqty * product.getOutersize()));
                     product.setTotalStockQty(product.getTotalStockQty() + totalStockQty);
@@ -3504,15 +3509,60 @@ public class BusinessModel extends Application {
             db.openDataBase();
 
             Cursor c = db
-                    .selectSQL("SELECT DISTINCT ImgURL FROM PlanogramImageInfo");
+                    .selectSQL("SELECT DISTINCT ImgURL,imgId FROM PlanogramImageInfo");
             if (c != null) {
                 while (c.moveToNext()) {
-                    getDigitalContentURLS().put(
-                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
-                            DataMembers.PLANOGRAM);
+                    if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN){
+
+                        DigitalContentModel digitalContentBO = new DigitalContentModel();
+
+                        String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                        digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES*2));//approx 2mb
+                        digitalContentBO.setImageID(c.getInt(1));
+                        digitalContentBO.setImgUrl(downloadUrl);
+                        digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);
+                        digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+
+                        digitalContentLargeFileURLS.put(digitalContentBO.getImageID(), digitalContentBO);
+
+                    }
+                    else {
+                        getDigitalContentURLS().put(
+                                DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                                DataMembers.PLANOGRAM);
+                    }
 
                 }
                 c.close();
+            }
+
+            if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
+                c = db
+                        .selectSQL("SELECT DISTINCT ImagePath,imageId FROM LastVisitPlanogramImageDetails");
+                if (c != null) {
+                    while (c.moveToNext()) {
+                        if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
+
+                            DigitalContentModel digitalContentBO = new DigitalContentModel();
+
+                            String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                            digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES*2));// approx  2 mb
+                            digitalContentBO.setImageID(c.getInt(1));
+                            digitalContentBO.setImgUrl(downloadUrl);
+                            digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);
+                            digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+
+                            digitalContentLargeFileURLS.put(digitalContentBO.getImageID(), digitalContentBO);
+
+                        } else {
+                            getDigitalContentURLS().put(
+                                    DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                                    DataMembers.PLANOGRAM);
+                        }
+
+                    }
+                    c.close();
+                }
             }
 
             c = db.selectSQL("SELECT DISTINCT ImageURL,fileSize,imageid,imagename FROM DigitalContentMaster");
@@ -3593,6 +3643,17 @@ public class BusinessModel extends Application {
                     getDigitalContentURLS().put(
                             DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                             DataMembers.PROFILE);
+
+                }
+                c.close();
+            }
+
+            c = db.selectSQL("SELECT DISTINCT TaskImageName FROM TaskImageDetails");
+            if (c != null) {
+                while ((c.moveToNext())) {
+                    getDigitalContentURLS().put(
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                            DataMembers.TASK_DIGITAL_CONTENT);
 
                 }
                 c.close();
@@ -3895,12 +3956,12 @@ public class BusinessModel extends Application {
      * Update the visited status in DB as well as loaded objects. In
      * retailerMaster isVisited field will be set to 'Y'
      */
-    public void updateIsVisitedFlag() {
+    public void updateIsVisitedFlag(String flag) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
             );
             db.openDataBase();
-            db.updateSQL("Update RetailerBeatMapping set isVisited='Y' where RetailerID ="
+            db.updateSQL("Update RetailerBeatMapping set isVisited=" + QT(flag) + " where RetailerID ="
                     + getRetailerMasterBO().getRetailerID()
                     + " AND BeatID=" + getRetailerMasterBO().getBeatID());
 
@@ -3912,12 +3973,17 @@ public class BusinessModel extends Application {
                 RetailerMasterBO ret = retailerMaster.get(i);
                 if (ret.getRetailerID().equals(
                         getRetailerMasterBO().getRetailerID())) {
-                    ret.setIsVisited("Y");
+                    ret.setIsVisited(flag);
                 }
             }
 
             // Updated selected object flag
-            getRetailerMasterBO().setIsVisited("Y");
+            getRetailerMasterBO().setIsVisited(flag);
+
+            if ("P".equals(flag))
+                getAppDataProvider().setPausedRetailer(getRetailerMasterBO());
+            else
+                getAppDataProvider().setPausedRetailer(null);
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -4254,6 +4320,8 @@ public class BusinessModel extends Application {
                 mBucketName = mBucketDetails + "/" + "SalesReturn" + path;
             } else if (imageName.startsWith("ORD_")) {
                 mBucketName = mBucketDetails + "/" + "Order" + path;
+            } else if (imageName.startsWith("TSK_")) {
+                mBucketName = mBucketDetails + "/" + "Task" + path;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = mBucketDetails + "/" + "PhotoCapture" + path;
@@ -4756,21 +4824,25 @@ public class BusinessModel extends Application {
      * This has been moved to  Dbhelper
      * @See {@link AppDataManagerImpl#saveModuleCompletion(String)}
      */
-    public boolean saveModuleCompletion(String menuName) {
+    public boolean saveModuleCompletion(String menuName, boolean isRetailerModule) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
             );
             db.createDataBase();
             db.openDataBase();
 
+            String retailerId = "0";
+            if (isRetailerModule)
+                retailerId = getRetailerMasterBO().getRetailerID();
+
             Cursor c = db
                     .selectSQL("SELECT * FROM ModuleCompletionReport WHERE RetailerId="
-                            + getRetailerMasterBO().getRetailerID() + " AND MENU_CODE = " + QT(menuName));
+                            + retailerId + " AND MENU_CODE = " + QT(menuName));
 
             if (c.getCount() == 0) {
                 String columns = "Retailerid,MENU_CODE";
 
-                String values = getRetailerMasterBO().getRetailerID() + ","
+                String values = retailerId + ","
                         + QT(menuName);
 
                 db.insertSQL("ModuleCompletionReport", columns, values);
@@ -4812,15 +4884,20 @@ public class BusinessModel extends Application {
     }
 
 
-    public void isModuleDone() {
+    public void isModuleDone(boolean isRetailerBasedModule) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
             );
             db.openDataBase();
+            String query = "Select MENU_CODE from ModuleCompletionReport "
+                    + " where retailerid=";
+            if (isRetailerBasedModule)
+                query += getRetailerMasterBO().getRetailerID();
+            else query += 0;
+
+
             Cursor c = db
-                    .selectSQL("Select MENU_CODE from ModuleCompletionReport "
-                            + " where retailerid="
-                            + QT(getRetailerMasterBO().getRetailerID()));
+                    .selectSQL(query);
 
             mModuleCompletionResult = new HashMap<String, String>();
 
@@ -4961,10 +5038,8 @@ public class BusinessModel extends Application {
 
     }
 
-    public void updateCurrentFITscore() {
+    public void updateCurrentFITscore(DBUtil db) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
-            );
             db.openDataBase();
             Cursor c = db
                     .selectSQL("select  AH.retailerid,sum((AD.score*SM.weight)/100) Total from AnswerScoreDetail AD " +
@@ -4982,7 +5057,6 @@ public class BusinessModel extends Application {
                 }
             }
             c.close();
-            db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -7312,10 +7386,8 @@ public class BusinessModel extends Application {
         return "";
     }
 
-    public void updateRetailersTotWgt() {
+    public void updateRetailersTotWgt(DBUtil db) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
-            db.openDataBase();
             Cursor c = db.selectSQL("select pieceqty,caseQty,outerQty,uomcount,dOuomQty,weight,retailerid from OrderDetail");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -7331,7 +7403,6 @@ public class BusinessModel extends Application {
 
             }
             c.close();
-            db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
         }
@@ -7458,7 +7529,7 @@ public class BusinessModel extends Application {
             String path = "/"
                     + userMasterHelper.getUserMasterBO().getDownloadDate()
                     .replace("/", "") + "/"
-                    + userMasterHelper.getUserMasterBO().getUserid()+ "/";
+                    + userMasterHelper.getUserMasterBO().getUserid() + "/";
 
 
             if (imageName.startsWith("AT_") || imageName.startsWith("NAT_")) {
@@ -7468,7 +7539,7 @@ public class BusinessModel extends Application {
             } else if (imageName.startsWith("SGN_")) {
                 mBucketName = "Invoice" + path + imageName;
             } else if (imageName.startsWith("INIT_")) {
-                mBucketName = "Initiative" + path  + imageName;
+                mBucketName = "Initiative" + path + imageName;
             } else if (imageName.startsWith("PT_")) {
                 mBucketName = "Promotion" + path + imageName;
             } else if (imageName.startsWith("SOD_")) {
@@ -7517,25 +7588,25 @@ public class BusinessModel extends Application {
                 } else {
 
                     mBucketName =
-                            + userMasterHelper.getUserMasterBO
-                            ().getDistributorid()
-                            + "/"
-                            + userMasterHelper.getUserMasterBO().getUserid()
-                            + "/"
-                            + userMasterHelper.getUserMasterBO
-                            ().getDownloadDate()
-                            .replace("/", "")+ imageName;
+                            +userMasterHelper.getUserMasterBO
+                                    ().getDistributorid()
+                                    + "/"
+                                    + userMasterHelper.getUserMasterBO().getUserid()
+                                    + "/"
+                                    + userMasterHelper.getUserMasterBO
+                                    ().getDownloadDate()
+                                    .replace("/", "") + imageName;
                 }
             }
 
-            mBucketName = DataMembers.AZURE_ROOT_DIRECTORY+"/"+mBucketName;
+            mBucketName = DataMembers.AZURE_ROOT_DIRECTORY + "/" + mBucketName;
 
-            CloudBlockBlob cloudBlockBlob =null;
-            if (ConfigurationMasterHelper.ACCESS_KEY_ID.equalsIgnoreCase(IvyConstants.SAS_KEY_TYPE)){
-                String downloadURL = AppUtils.buildAzureUrl(mBucketName) ;
+            CloudBlockBlob cloudBlockBlob = null;
+            if (ConfigurationMasterHelper.ACCESS_KEY_ID.equalsIgnoreCase(IvyConstants.SAS_KEY_TYPE)) {
+                String downloadURL = AppUtils.buildAzureUrl(mBucketName);
                 cloudBlockBlob = new CloudBlockBlob(new URI(downloadURL));
-            }else {
-                 cloudBlobContainer.getBlockBlobReference(mBucketName);
+            } else {
+                cloudBlobContainer.getBlockBlobReference(mBucketName);
             }
 
             if (fileInputStream != null && cloudBlockBlob != null) {

@@ -108,7 +108,7 @@ public class VideoDownloadListAdapter extends RecyclerView.Adapter<VideoDownload
             if (digitalContentBOS.get(position).getFileSize() != null){
                 bytesTotalMB = Double.parseDouble(digitalContentBOS.get(position).getFileSize()) / (double) FileDownloadProvider.MB_IN_BYTES;
             }
-            holder.detailTextView.setText("0.0 MB/"+df.format(bytesTotalMB)+"MB");
+            holder.detailTextView.setText("0.0 MB/"+df.format(bytesTotalMB)+"MB ≈");
         }else if (digitalContentBOS.get(position).getDownloadDetail()!=null)
             holder.detailTextView.setText(digitalContentBOS.get(position).getDownloadDetail());
 

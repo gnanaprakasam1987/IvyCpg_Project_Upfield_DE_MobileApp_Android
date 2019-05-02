@@ -57,7 +57,7 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
             AppSchedulerProvider appSchedulerProvider = new AppSchedulerProvider();
             ArrayList<RetailerContactBo> retailerContactList=new ArrayList<>();
             bmodel.newOutletHelper.setRetailerContactList(retailerContactList); //Just for clear the old contact list
-            new CompositeDisposable().add((Disposable) bmodel.profilehelper.downloadRetailerContact(bmodel.getRetailerMasterBO().getRetailerID(), true)
+            new CompositeDisposable().add((Disposable) bmodel.profilehelper.downloadRetailerContact(bmodel.getAppDataProvider().getRetailMaster().getRetailerID(), true)
                     .subscribeOn(appSchedulerProvider.io())
                     .observeOn(appSchedulerProvider.ui())
                     .subscribeWith(arrayListObserver()));
@@ -79,6 +79,7 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
                 Fragment fragment = new NewoutletContainerFragment();
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("isEdit",true);
+                bundle.putString("retailerId", bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
                 fragment.setArguments(bundle);
                 getSupportFragmentManager().beginTransaction()
                         .replace(R.id.fragment_frame, fragment, fragment.getClass().getSimpleName())

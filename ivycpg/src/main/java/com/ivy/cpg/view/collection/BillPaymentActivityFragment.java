@@ -511,8 +511,8 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
             updatePayableAmt();
 
             collectionHelper.saveCollection(mSelecteInvoiceList, mPaymentList);
-            bmodel.saveModuleCompletion("MENU_COLLECTION");
-            bmodel.saveModuleCompletion("MENU_COLLECTION");
+            bmodel.saveModuleCompletion("MENU_COLLECTION", true);
+            bmodel.saveModuleCompletion("MENU_COLLECTION", true);
             if (bmodel.configurationMasterHelper.COMMON_PRINT_INTERMEC)
                 appendString = print2inchDataforCollectionReport();
             else
@@ -798,7 +798,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                     sb.append(LineFeed(1));
                 }
 
-                for (int i = 0; i < 47; i++) {
+                for (int i = 0; i < 40; i++) {
                     sb.append("-");
                 }
                 sb.append(LineFeed(1));
@@ -845,7 +845,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 sb.append(" ");
                 sb.append(LineFeed(1));
 
-                for (int i = 0; i < 47; i++) {
+                for (int i = 0; i < 40; i++) {
                     sb.append("-");
                 }
                 sb.append(LineFeed(1));
@@ -853,14 +853,14 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 sb.append(doPrintFormatingLeft("Inv No", 10));
                 sb.append(LineFeed(1));
 
-                sb.append(doPrintAddSpace(0, 9));
+                sb.append(doPrintAddSpace(0, 6));
                 sb.append(doPrintFormatingLeft("Type", 10));
-                sb.append(doPrintFormatingLeft("Date", 12));
+                sb.append(doPrintFormatingLeft("Date", 14));
                 sb.append(doPrintFormatingLeft("Ref Num", 8));
                 sb.append(doPrintFormatingLeft(String.format("%10s", "Total"), 13));
                 sb.append(LineFeed(1));
 
-                for (int i = 0; i < 47; i++) {
+                for (int i = 0; i < 40; i++) {
                     sb.append("-");
                 }
                 sb.append(LineFeed(1));
@@ -898,9 +898,9 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                         }
                     }
 
-                    sb.append(doPrintAddSpace(0, 9));
+                    sb.append(doPrintAddSpace(0, 6));
                     sb.append(doPrintFormatingLeft(tempStr, 10));
-                    sb.append(doPrintFormatingLeft(payBO.getChequeDate() + "", 12));
+                    sb.append(doPrintFormatingLeft(payBO.getChequeDate() + "", 14));
 
 
                     if (!payBO.getCashMode().equals(StandardListMasterConstants.CREDIT_NOTE) && !payBO.getCashMode().equals(StandardListMasterConstants.ADVANCE_PAYMENT))
@@ -920,7 +920,7 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                     totalDiscount += payBO.getAppliedDiscountAmount();
 
                 }
-                for (int i = 0; i < 47; i++) {
+                for (int i = 0; i < 40; i++) {
                     sb.append("-");
                 }
                 sb.append(LineFeed(1));
@@ -932,15 +932,15 @@ public class BillPaymentActivityFragment extends IvyBaseFragment implements View
                 sb.append(String.format("%14s", bmodel.formatBasedOnCurrency(total)));
                 sb.append(LineFeed(1));
 
-                for (int i = 0; i < 47; i++) {
+                for (int i = 0; i < 40; i++) {
                     sb.append("-");
                 }
                 sb.append(LineFeed(1));
 
                 sb.append(LineFeed(1));
-                sb.append(doPrintFormatingLeft("Comments: ----------------------------------------------", 47));
+                sb.append(doPrintFormatingLeft("Comments: --------------------------------------------", 44));
                 sb.append(LineFeed(2));
-                sb.append(doPrintFormatingLeft("Signature: ---------------------------------------------", 47));
+                sb.append(doPrintFormatingLeft("Signature: ---------------------------------------------", 44));
                 sb.append(LineFeed(2));
 
                 return sb.toString();

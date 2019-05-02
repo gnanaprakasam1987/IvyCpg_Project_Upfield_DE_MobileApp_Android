@@ -331,13 +331,13 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
     public void startActivity(Class activity) {
         Intent intent = new Intent(this, activity);
         startActivity(intent);
-
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
 
     public void startActivityAndFinish(Class activity) {
         startActivity(activity);
         finish();
-
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
     protected static final int REQUEST_CHECK_SETTINGS = 1000;
     GoogleApiClient googleApiClient;

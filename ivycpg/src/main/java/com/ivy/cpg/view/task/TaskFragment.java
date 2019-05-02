@@ -22,6 +22,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.sd.png.util.view.OnSingleClickListener;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.utils.DateTimeUtils;
@@ -388,7 +390,7 @@ public class TaskFragment extends IvyBaseFragment {
                 public void onDismiss(DialogInterface dialog) {
                     if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), "MENU_TASK")) {
                         if (!fromHomeScreen) {
-                            bmodel.saveModuleCompletion("MENU_TASK");
+                            bmodel.saveModuleCompletion("MENU_TASK", true);
                             startActivity(new Intent(getActivity(),
                                     HomeScreenTwo.class));
                             getActivity().finish();
@@ -463,7 +465,10 @@ public class TaskFragment extends IvyBaseFragment {
                         }
                     } else {
 
-                        if (taskData.getRid() == 0 && taskData.getChannelId() == 0 && (taskData.getUserId() == bmodel.userMasterHelper.getUserMasterBO().getUserid() || taskData.getUserId() == 0)) {
+                        if (taskData.getRid() == 0
+                                && taskData.getChannelId() == 0
+                                && (taskData.getUserId() == bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                                || taskData.getUserId() == 0)) {
 
                             if (taskType == 1) { // server
                                 if (taskData.getUsercreated().toUpperCase()
@@ -508,14 +513,14 @@ public class TaskFragment extends IvyBaseFragment {
                 @SuppressLint("InflateParams") View v = inflater.inflate(R.layout.row_task_title, null);
 
                 holder.taskCB = v.findViewById(R.id.task_title_CB);
-                holder.taskTaskOwner = v.findViewById(R.id.task_taskowner);
-                holder.taskCreatedDate = v.findViewById(R.id.task_createdOn);
+                //holder.taskTaskOwner = v.findViewById(R.id.task_taskowner);
+                //holder.taskCreatedDate = v.findViewById(R.id.task_createdOn);
                 holder.layoutCB = v.findViewById(R.id.layoutCB);
                 holder.layoutrow = v.findViewById(R.id.layoutBorder);
 
                 holder.layoutCB.setVisibility(View.VISIBLE);
-                holder.taskTaskOwner.setText(" : " + task.getTaskOwner());
-                holder.taskCreatedDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat) + ", ");
+                //holder.taskTaskOwner.setText(" : " + task.getTaskOwner());
+                //holder.taskCreatedDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(task.getCreatedDate(), ConfigurationMasterHelper.outDateFormat) + ", ");
 
                 holder.layoutrow.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -527,6 +532,29 @@ public class TaskFragment extends IvyBaseFragment {
                             holder.taskCB.setChecked(false);
                             holder.taskBO.setChecked(false);
                         }
+
+                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
+                        if (IsRetailerwisetask) {
+                            taskHelper.saveTask(bmodel
+                                    .getRetailerMasterBO()
+                                    .getRetailerID(), holder.taskBO);
+                        } else {
+                            taskHelper.saveTask(0 + "",
+                                    holder.taskBO);
+                        }
+                    }
+                });
+                holder.layoutCB.setOnClickListener(new OnSingleClickListener() {
+                    @Override
+                    public void onSingleClick(View v) {
+                        holder.taskCB.setChecked(!holder.taskCB.isChecked());
+                    }
+                });
+                holder.taskCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                    @Override
+                    public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                        holder.taskCB.setChecked(isChecked);
+                        holder.taskBO.setChecked(isChecked);
 
                         bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
                         if (IsRetailerwisetask) {
@@ -552,7 +580,7 @@ public class TaskFragment extends IvyBaseFragment {
                 });
 
                 holder.taskDescription = v
-                        .findViewById(R.id.task_description_tv);
+                        .findViewById(R.id.task_category_tv);
                 holder.taskDescription.setText(task.getTaskDesc());
                 if (task.isUpload() && task.getIsdone().equals("1")) {
                     holder.taskCB.setEnabled(false);
@@ -584,7 +612,7 @@ public class TaskFragment extends IvyBaseFragment {
         CheckBox taskCB;
         TextView taskTitle;
         TextView taskDescription;
-        TextView taskTaskOwner;
+        //TextView taskTaskOwner;
         TextView taskCreatedDate;
         RelativeLayout layoutCB;
         RelativeLayout layoutrow;

@@ -301,8 +301,7 @@ public class TaskHelper {
         db.createDataBase();
         db.openDataBase();
 
-        String UID = QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
-                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
+        String UID = QT(retailerid + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
         String columns = "TaskId,RetailerId,Date,UId,Upload,ridSF";
         String values;
 
@@ -312,7 +311,7 @@ public class TaskHelper {
             values = QT(taskBO.getTaskId()) + "," + QT(retailerid) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + UID + ",'N'" + ","
                      + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
             db.insertSQL("TaskExecutionDetails", columns, values);
-            bmodel.saveModuleCompletion("MENU_TASK");
+            bmodel.saveModuleCompletion("MENU_TASK", true);
         } else {
 
             Cursor c = db.selectSQL("Select * from TaskExecutionDetails");

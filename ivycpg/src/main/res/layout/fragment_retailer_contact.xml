@@ -12,6 +12,7 @@
         android:drawSelectorOnTop="false"
         android:layout_marginTop="@dimen/card_margin"
         android:fitsSystemWindows="true"
+        android:nestedScrollingEnabled="false"
         android:scrollbarAlwaysDrawHorizontalTrack="true"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:scrollbars="none" />

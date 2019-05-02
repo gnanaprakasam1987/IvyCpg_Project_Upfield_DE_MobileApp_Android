@@ -803,5 +803,14 @@
     <dimen name="rippleStrokeWidth">1dp</dimen>
     <dimen name="rippleRadius">10dp</dimen>
 
+    <dimen name="WheelItemTextSize">24sp</dimen>
+    <dimen name="WheelItemSpace">12dp</dimen>
+    <dimen name="WheelIndicatorSize">2dp</dimen>
+    <dimen name="WheelMargins">8dp</dimen>
+    <dimen name="wheel_spacing">30dp</dimen>
+    <dimen name="wheelSelectorHeight">40dp</dimen>
 
+
+    <dimen name="retailer_name_list">18sp</dimen>
+    <dimen name="retailer_address_list">16sp</dimen>
 </resources>

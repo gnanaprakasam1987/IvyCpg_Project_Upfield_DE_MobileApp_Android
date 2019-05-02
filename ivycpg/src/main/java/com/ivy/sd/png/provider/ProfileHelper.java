@@ -11,7 +11,9 @@ import android.support.v4.content.FileProvider;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.asset.bo.AssetHistoryBO;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
+import com.ivy.cpg.view.retailercontact.RetailerContactAvailBo;
 import com.ivy.cpg.view.retailercontact.RetailerContactBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.BuildConfig;
@@ -19,7 +21,6 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.OrderHistoryBO;
 import com.ivy.sd.png.bo.PlanningOutletBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.cpg.view.asset.bo.AssetHistoryBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
@@ -27,6 +28,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
+import com.ivy.utils.StringUtils;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -36,6 +38,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
+import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
@@ -634,7 +637,7 @@ public class ProfileHelper {
                             .selectSQL("select A.Tgt,A.Ach,RField from SkuWiseTarget A where A.Pid="
                                     + c.getInt(0)
                                     + " and A.date < "
-                                    + bmodel.QT(DashBoardHelper.getFirstDateOfCurrentMonth("yyyy/MM/dd"))
+                                    + StringUtils.QT(DashBoardHelper.getFirstDateOfCurrentMonth("yyyy/MM/dd"))
                                     + "  and Rid="
                                     + bmodel.getRetailerMasterBO()
                                     .getRetailerID()
@@ -693,7 +696,7 @@ public class ProfileHelper {
                                 .selectSQL("select A.Tgt,A.Ach,RField from SkuWiseTarget A where A.Pid="
                                         + c.getInt(0)
                                         + " and A.date < "
-                                        + bmodel.QT(DashBoardHelper.getFirstDateOfCurrentMonth("yyyy/MM/dd"))
+                                        + StringUtils.QT(DashBoardHelper.getFirstDateOfCurrentMonth("yyyy/MM/dd"))
                                         + "  and Rid="
                                         + bmodel.getRetailerMasterBO()
                                         .getRetailerID()
@@ -801,12 +804,12 @@ public class ProfileHelper {
                     + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             String insertHeader = "insert into RetailerEditHeader (tid,RetailerId,date)" +
-                    "values (" + bmodel.QT(tid)
+                    "values (" + StringUtils.QT(tid)
                     + "," + bmodel.getRetailerMasterBO().getRetailerID()
-                    + "," + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ")";
+                    + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ")";
             db.executeQ(insertHeader);
             String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)" +
-                    "values (" + bmodel.QT(tid)
+                    "values (" + StringUtils.QT(tid)
                     + ",'PRO23','1'," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
             db.executeQ(insertquery);
 
@@ -1014,7 +1017,7 @@ public class ProfileHelper {
 
     private String getGivenLovId() {
         String givenLovId = "";
-        String sql = " Select RField from HhtModuleMaster where hhtCode = " + bmodel.QT(ConfigurationMasterHelper.CODE_SHOW_AVG_SALES_PER_LEVEL) + " and flag =1 and ForSwitchSeller = 0";
+        String sql = " Select RField from HhtModuleMaster where hhtCode = " + StringUtils.QT(ConfigurationMasterHelper.CODE_SHOW_AVG_SALES_PER_LEVEL) + " and flag =1 and ForSwitchSeller = 0";
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
         );
         db.openDataBase();
@@ -1036,7 +1039,7 @@ public class ProfileHelper {
                 HashMap<String, String> contactMenuMap = new HashMap<>();
 
                 try {
-                    String sql = " Select HHTCode,MName from HhtMenuMaster where MenuType = " + bmodel.QT("RETAILER_CONTACT") + " and flag =1";
+                    String sql = " Select HHTCode,MName from HhtMenuMaster where MenuType = " + StringUtils.QT("RETAILER_CONTACT") + " and flag =1";
                     DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
                     );
                     db.openDataBase();
@@ -1061,16 +1064,23 @@ public class ProfileHelper {
 
 
     public Observable<ArrayList<RetailerContactBo>> downloadRetailerContact(final String retailerID, final boolean isEdit) {
-        return Observable.create(new ObservableOnSubscribe<ArrayList<RetailerContactBo>>() {
+
+        return Observable.fromCallable(new Callable<ArrayList<RetailerContactBo>>() {
             @Override
-            public void subscribe(ObservableEmitter<ArrayList<RetailerContactBo>> subscriber) throws Exception {
-                ArrayList<RetailerContactBo> contactList = new ArrayList<>();
-                try {
-                    String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,RC.contact_title_lovid as contact_title_lovid,"
-                            + " ifnull(RC.contactname,'') as cName,ifnull(RC.contactname_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,RC.CPID  as cpid,"
-                            + " ifnull(RC.Email,'') as email from RetailerContact RC "
-                            + " Left join StandardListMaster SM on SM.ListId= RC.contact_title_lovid "
-                            + " Where RC.RetailerId =" + bmodel.QT(retailerID);
+            public ArrayList<RetailerContactBo> call() throws Exception {
+                return getContactBos(retailerID,isEdit);
+            }
+        });
+    }
+
+    public ArrayList<RetailerContactBo> getContactBos(final String retailerID, final boolean isEdit){
+        ArrayList<RetailerContactBo> contactList = new ArrayList<>();
+
+        String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,RC.contact_title_lovid as contact_title_lovid,"
+                + " ifnull(RC.contactname,'') as cName,ifnull(RC.contactname_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,RC.CPID  as cpid,"
+                + " ifnull(RC.Email,'') as email,ifnull(RC.salutationLovId,'') as salutationId, ifnull(RC.IsEmailNotificationReq,0) as emailPref from RetailerContact RC "
+                + " Left join StandardListMaster SM on SM.ListId= RC.contact_title_lovid "
+                + " Where RC.RetailerId =" + StringUtils.QT(retailerID);
 
                     DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
                     );
@@ -1090,17 +1100,20 @@ public class ProfileHelper {
                             retailerContactBo.setContactMail(c.getString(c.getColumnIndex("email")));
                             retailerContactBo.setIsPrimary(c.getInt(c.getColumnIndex("isPrimary")));
                             retailerContactBo.setCpId(c.getString(c.getColumnIndex("cpid")));
-                            contactList.add(retailerContactBo);
+            retailerContactBo.setContactSalutationId(c.getString(c.getColumnIndex("salutationId")));
+                retailerContactBo.setIsEmailPrimary(c.getInt(c.getColumnIndex("emailPref")));
+
+                setContactAvailList(db,retailerContactBo,"ContactAvailability",false);                contactList.add(retailerContactBo);
                         }
                         c.close();
                     }
 
 
-                    if (isEdit) {
-                        String retailerContactEditQuery = "select ifnull(RC.Contact_Title,'') as contactTitle, ifNull(SM.ListName,'') as listName, RC.Contact_Title_LovId as contact_title_lovid, ifnull(RC.ContactName,'') as cName,ifnull(RC.ContactName_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,Rc.CPId as cpid,Rc.Status as status ,"
-                                + " ifnull(RC.Email,'') as email from RetailerContactEdit RC "
-                                + " Left join StandardListMaster SM on SM.ListId= RC.Contact_Title_LovId "
-                                + " Where RC.RetailerId =" + bmodel.QT(retailerID);
+        if (isEdit) {
+            String retailerContactEditQuery = "select ifnull(RC.Contact_Title,'') as contactTitle, ifNull(SM.ListName,'') as listName, RC.Contact_Title_LovId as contact_title_lovid, ifnull(RC.ContactName,'') as cName,ifnull(RC.ContactName_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,Rc.CPId as cpid,Rc.Status as status ,"
+                    + " ifnull(RC.Email,'') as email,ifnull(RC.salutationLovId,'') as salutationId, ifnull(RC.IsEmailNotificationReq,0) as emailPref from RetailerContactEdit RC "
+                    + " Left join StandardListMaster SM on SM.ListId= RC.Contact_Title_LovId "
+                    + " Where RC.RetailerId =" + StringUtils.QT(retailerID);
 
                         Cursor retailerContactEditCurson = db.selectSQL(retailerContactEditQuery);
                         if (retailerContactEditCurson != null) {
@@ -1120,46 +1133,71 @@ public class ProfileHelper {
                                 retailerContactBo.setIsPrimary(retailerContactEditCurson.getInt(retailerContactEditCurson.getColumnIndex("isPrimary")));
                                 retailerContactBo.setStatus(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("status")));
                                 retailerContactBo.setCpId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cpid")));
-                                tempList.add(retailerContactBo);
+            retailerContactBo.setContactSalutationId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("salutationId")));
+                    retailerContactBo.setIsEmailPrimary(retailerContactEditCurson.getInt(retailerContactEditCurson.getColumnIndex("emailPref")));
+
+                    setContactAvailList(db,retailerContactBo,"ContactAvailabilityEdit",true);                    tempList.add(retailerContactBo);
                             }
                             retailerContactEditCurson.close();
 
                             /*Update the edited contact list */
                             for (int i = 0; i < contactList.size(); i++) {
 
-                                String parentCpId = contactList.get(i).getCpId();
+                    String parentCpId = contactList.get(i).getCpId();
 
-                                for (int j = 0; j < tempList.size(); j++) {
+                    for (RetailerContactBo retailerContactBoTemp : tempList) {
 
-                                    String editedCpId = tempList.get(j).getCpId();
+                        String editedCpId = retailerContactBoTemp.getCpId();
 
-                                    if (parentCpId.equalsIgnoreCase(editedCpId)) {
-                                        contactList.set(i, tempList.get(j));
-                                        break;
-                                    }
-                                }
-
-                            }
-
-                            /*Add the new contact list */
-                            for (int i = 0; i < tempList.size(); i++) {
-                                if (tempList.get(i).getStatus().equalsIgnoreCase("I")) {
-                                    contactList.add(tempList.get(i));
-                                }
-                            }
+                        if (parentCpId.equalsIgnoreCase(editedCpId)) {
+                            contactList.set(i, retailerContactBoTemp);
+                            break;
                         }
                     }
 
-                    db.closeDB();
-                    subscriber.onNext(contactList);
-                    subscriber.onComplete();
-                } catch (Exception exception) {
-                    Commons.printException(exception);
-                    subscriber.onError(exception);
-                    subscriber.onComplete();
+                }
+
+                /*Add the new contact list */
+                for (RetailerContactBo retailerContactBo :  tempList) {
+                    if (retailerContactBo.getStatus().equalsIgnoreCase("I")) {
+                        contactList.add(retailerContactBo);
+                    }
                 }
             }
-        });
+        }
+
+        db.closeDB();
+
+        return contactList;
+    }
+
+
+
+    private void setContactAvailList(DBUtil db,RetailerContactBo retailerContactBo,String tableName,boolean isEdit){
+
+        String appendStatusStr = "";
+
+        if (isEdit)
+            appendStatusStr = " ,status ";
+
+        Cursor c = db.selectSQL("Select Day,StartTime,EndTime,CPAId "+appendStatusStr+" from "+tableName+" where CPId ="+ StringUtils.QT(retailerContactBo.getCpId()));
+
+        if (c != null) {
+            while (c.moveToNext()) {
+                RetailerContactAvailBo availBo = new RetailerContactAvailBo();
+
+                availBo.setDay(c.getString(0));
+                availBo.setFrom(c.getString(1));
+                availBo.setTo(c.getString(2));
+                availBo.setCpaid(c.getString(3));
+
+                if (isEdit) {
+                    availBo.setStatus(c.getString(4));
+                }
+
+                retailerContactBo.getContactAvailList().add(availBo);
+            }
+        }
     }
 
 
@@ -1187,7 +1225,7 @@ public class ProfileHelper {
                         query = query + " and MenuType= 'NEWRETAILER_CONTACT' ";
 
 
-                    query = query + " and lang=" + bmodel.QT(locale) + " order by MNumber";
+                    query = query + " and lang=" + StringUtils.QT(locale) + " order by MNumber";
 
                     Cursor c = db.selectSQL(query);
                     ConfigureBO con;

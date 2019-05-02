@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="fill_parent"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginEnd="@dimen/list_margin"
     android:layout_marginStart="@dimen/list_margin"
@@ -46,9 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text=""
-                android:textColor="@color/half_Black"
-                android:textSize="@dimen/text_size_primary" />
+                android:text="name" />
 
             <TextView
                 android:id="@+id/tvTitle"
@@ -56,9 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text=""
-                android:textColor="@color/half_Black"
-                android:textSize="@dimen/text_size_secondary" />
+                android:text="Superviso"/>
 
             <TextView
                 android:id="@+id/tvContactNo"
@@ -66,9 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text=""
-                android:textColor="@color/half_Black"
-                android:textSize="@dimen/text_size_secondary" />
+                android:text="991827090" />
 
             <TextView
                 android:id="@+id/tvEmail"
@@ -76,11 +70,66 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text=""
-                android:textColor="@color/half_Black"
-                android:textSize="@dimen/text_size_secondary" />
+                android:text="a.sajen91" />
+
+            <RelativeLayout
+                android:id="@+id/time_slot_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/_5sdp">
+
+                <TextView
+                    android:id="@+id/tv_time_slot"
+                    style="@style/TextViewListItemCaption"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:paddingTop="@dimen/_3sdp"
+                    android:paddingBottom="@dimen/_3sdp"
+                    android:text="Contact Availability"
+                    android:visibility="visible"
+                    android:drawablePadding="@dimen/_10sdp"
+                    android:gravity="center_vertical"/>
+
+                <ImageView
+                    android:id="@+id/img_shrink_view"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_action_down"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignTop="@+id/tv_time_slot"
+                    android:layout_alignBottom="@+id/tv_time_slot"
+                    android:layout_centerVertical="true"
+                    android:paddingLeft="@dimen/_5sdp"
+                    android:paddingRight="@dimen/_5sdp"
+                    android:visibility="visible"
+                    android:layout_marginRight="@dimen/_5sdp"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:layout_below="@+id/tv_time_slot"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/_20sdp"
+                    android:paddingLeft="@dimen/_5sdp"
+                    android:paddingRight="@dimen/_5sdp"
+                    android:id="@+id/rv_timeslot"
+                    android:visibility="visible"
+                    android:numColumns="2" />
+
+
+            </RelativeLayout>
 
         </LinearLayout>
+
+        <ImageView
+            android:id="@+id/img_email_pref"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/_5sdp"
+            android:src="@drawable/ic_email_dark"
+            android:layout_toLeftOf="@+id/llItem"
+            android:visibility="visible"
+            android:layout_below="@+id/ivIsPrimary"/>
 
 
         <ImageView
@@ -95,4 +144,5 @@
             card_view:layout_constraintBottom_toBottomOf="parent" />
 
     </RelativeLayout>
+
 </android.support.v7.widget.CardView>

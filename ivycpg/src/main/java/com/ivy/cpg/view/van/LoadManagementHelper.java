@@ -1,9 +1,19 @@
 package com.ivy.cpg.view.van;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.text.format.DateUtils;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.CheckBox;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkError;
@@ -18,17 +28,26 @@ import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.ivy.cpg.view.sync.UploadHelper;
+import com.ivy.cpg.view.sync.UploadPresenterImpl;
+import com.ivy.cpg.view.van.odameter.OdameterHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.ConfigureBO;
+import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.SubDepotBo;
 import com.ivy.sd.png.bo.VanLoadMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.NonVisitReasonDialog;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +56,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Vector;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Single;
@@ -54,6 +74,8 @@ public class LoadManagementHelper {
     private static final String TAG_JSON_OBJ = "json_obj_req";
     private static final String TAG = "LoadManagementHelper";
     private RequestQueue mRequestQueue;
+
+    public static String TRIP_CONSTANT="TRIP";
 
     private LoadManagementHelper(Context context) {
         this.context = context;
@@ -445,5 +467,321 @@ public class LoadManagementHelper {
         }
 
         return json;
+    }
+
+    public boolean isTripStarted(Context context){
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        try {
+            db.openDataBase();
+            db.createDataBase();
+            Cursor c = db.selectSQL("select startDate from TripMaster where userId="+bmodel.userMasterHelper.getUserMasterBO().getUserid());
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    if (c.moveToNext()) {
+
+                        String startDate=c.getString(0);
+                        if(startDate!=null&&!startDate.equals(""))
+                            return true;
+                    }
+                }
+            }
+            c.close();
+        } catch (Exception e) {
+            Commons.printException(e);
+        } finally {
+            db.closeDB();
+        }
+
+        return false;
+    }
+
+    public String getTripId(){
+
+        String tripId="";
+
+        try {
+            SharedPreferences sharedPreferences = AppUtils.getSharedPreferenceByName(bmodel.getApplicationContext(), TRIP_CONSTANT);
+            tripId = sharedPreferences.getString("tripId", "");
+
+            if (tripId.equals("")) {
+
+                DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+
+                db.openDataBase();
+                db.createDataBase();
+                Cursor c = db.selectSQL("select uid from TripMaster where userId=" + bmodel.userMasterHelper.getUserMasterBO().getUserid());
+                if (c != null) {
+                    if (c.getCount() > 0) {
+                        if (c.moveToNext()) {
+                            tripId = c.getString(0);
+                        }
+                    }
+                }
+
+                if(c!=null)
+                c.close();
+
+
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+
+        return tripId;
+
+    }
+
+    public boolean isTripEnded(Context context){
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        try {
+            db.openDataBase();
+            db.createDataBase();
+            Cursor c = db.selectSQL("select endDate from TripMaster where userId="+bmodel.userMasterHelper.getUserMasterBO().getUserid());
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    if (c.moveToNext()) {
+
+                        String endDate=c.getString(0);
+                        if(endDate!=null&&!endDate.equals(""))
+                            return true;
+                    }
+                }
+            }
+            c.close();
+        } catch (Exception e) {
+            Commons.printException(e);
+        } finally {
+            db.closeDB();
+        }
+
+        return false;
+    }
+
+    public boolean updateTrip(boolean isTripStart){
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+
+        try {
+            db.openDataBase();
+            db.createDataBase();
+
+
+
+            if(isTripStart) {
+                String columns="uid,userId,startDate,upload,status";
+                String id = bmodel.getAppDataProvider().getUser().getUserid()
+                        + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
+
+                StringBuilder stringBuilder=new StringBuilder();
+                stringBuilder.append(StringUtils.QT(id));
+                stringBuilder.append(","+bmodel.userMasterHelper.getUserMasterBO().getUserid());
+                stringBuilder.append(","+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW)));
+                stringBuilder.append(","+StringUtils.QT("N"));
+                stringBuilder.append(","+StringUtils.QT("STARTED"));
+
+                db.insertSQL(DataMembers.tbl_TripMaster, columns, stringBuilder.toString());
+
+                SharedPreferences sharedPreferences = AppUtils.getSharedPreferenceByName(bmodel.getApplicationContext(), TRIP_CONSTANT);
+
+                sharedPreferences.edit().putString("tripId",id);
+                sharedPreferences.edit().apply();
+            }
+            else
+                db.updateSQL("update "+DataMembers.tbl_TripMaster
+                        +" set endDate="+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))+","+"upload='N',status='COMPLETED'"
+                        +" where userId="+bmodel.userMasterHelper.getUserMasterBO().getUserid());
+
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+
+        return false;
+
+    }
+
+    public boolean isAllMandatoryModulesCompleted(Vector<ConfigureBO> menuDB){
+
+        for (int i = 0; i < menuDB.size(); i++) {
+
+            if(menuDB.get(i).getMandatory()==1) {
+
+                if (!bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
+                    return false;
+                }
+                else if (menuDB.get(i).getConfigCode().equals(LoadManagementFragment.MENU_ODAMETER)) {
+
+                    return false;
+                }
+
+
+            }
+        }
+
+        return true;
+    }
+
+    public boolean isAllMandatoryPlanningSubModulesCompleted(Context context){
+
+
+        Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
+                .downloadPlanningSubMenu();
+
+        bmodel.isModuleDone(false);
+
+
+        try {
+            for (int i = 0; i < menuDB.size(); i++) {
+                menuDB.get(i).setDone(false);
+            }
+
+
+            for (int i = 0; i < menuDB.size(); i++) {
+
+                if(menuDB.get(i).getMandatory()==1) {
+
+                     if(menuDB.get(i).getConfigCode().equalsIgnoreCase("MENU_ODAMETER")&&!OdameterHelper.getInstance(context).isOdameterStarted(context)){
+                        return false;
+                    }
+                    else if (!bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
+                       return false;
+                    }
+
+
+
+
+                }
+            }
+
+
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+
+        return true;
+    }
+
+    public boolean isValidTrip(){
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(bmodel.getApplicationContext());
+        String tripExtendedDate = sharedPreferences.getString("tripExtendedDate", "");
+        if(!tripExtendedDate.equals("")&&DateTimeUtils.getDateCount(tripExtendedDate,DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),"yyyy/MM/dd")==0)
+            return true;
+
+
+        String tripStartDate="";
+        db.openDataBase();
+        db.createDataBase();
+        Cursor c = db.selectSQL("select startDate from TripMaster where userId=" + bmodel.userMasterHelper.getUserMasterBO().getUserid());
+        if (c != null) {
+            if (c.getCount() > 0) {
+                if (c.moveToNext()) {
+                    tripStartDate = c.getString(0);
+                }
+            }
+        }
+
+        if(c!=null)
+            c.close();
+
+
+        int difference=DateTimeUtils.getDateCount(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),tripStartDate,"yyyy/MM/dd");
+
+        if(difference>0)
+            return false;
+
+
+        return true;
+    }
+
+    private NonVisitReasonDialog nvrd;
+    public boolean validateDayClose(Context context, boolean isFromSyncScreen, UploadPresenterImpl presenter, CheckBox dayCloseCheckBox){
+
+        if (bmodel.getAppDataProvider().getPausedRetailer() != null) {
+            Toast.makeText(context, R.string.visit_paused_msg, Toast.LENGTH_LONG).show();
+            if (dayCloseCheckBox != null)
+            dayCloseCheckBox.setChecked(false);
+            return false;
+        }
+
+        if (bmodel.outletTimeStampHelper
+                .isJointCall(bmodel.userMasterHelper.getUserMasterBO()
+                        .getJoinCallUserList())) {
+            bmodel.showAlert(
+                    context.getResources().getString(
+                            R.string.logout_joint_user_dayclose), 0);
+           // dayCloseCheckBox.setChecked(false);
+            return false;
+        }
+
+        if (DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
+                "yyyy/MM/dd") < 0) {
+            Toast.makeText(context,
+                    context.getResources().getString(R.string.download_date_mismatch),
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        if (bmodel.configurationMasterHelper.SHOW_CLOSE_DAY_VALID) {
+            if (bmodel.configurationMasterHelper.isOdaMeterOn() && !bmodel.endjourneyclicked) {
+                bmodel.showAlert(
+                        context.getResources()
+                                .getString(
+                                        R.string.journey_not_ended),
+                        0);
+
+                return false;
+
+            }
+        }
+
+        if (!UploadHelper.getInstance(context.getApplicationContext()).isAttendanceCompleted(context.getApplicationContext())) {
+            bmodel.showAlert(
+                    context.getResources()
+                            .getString(R.string.attendance_activity_not_completed), 0);
+            return false;
+        }
+
+        final Vector<NonproductivereasonBO> nonProductiveRetailersVector = bmodel.getMissedCallRetailers();
+        if ((nonProductiveRetailersVector.size() != 0 && bmodel.configurationMasterHelper.HAS_NO_VISIT_REASON_VALIDATION)) {
+
+
+            nvrd = new NonVisitReasonDialog(context, nonProductiveRetailersVector);
+            nvrd.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                    if (nonProductiveRetailersVector.size() == 0) {
+
+                        if(isFromSyncScreen) {
+                            dayCloseCheckBox.setChecked(true);
+                            presenter.updateDayCloseStatus(true);
+                        }
+                    }
+                }
+            });
+
+            nvrd.show();
+            DisplayMetrics displaymetrics = new DisplayMetrics();
+            ((WindowManager) context.getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(displaymetrics);
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            Window window = nvrd.getWindow();
+            lp.copyFrom(window.getAttributes());
+            lp.width = displaymetrics.widthPixels - 50;
+            lp.height = (int) (displaymetrics.heightPixels / 1.1);
+            window.setAttributes(lp);
+
+            return false;
+
+        }
+
+
+
+        return true;
     }
 }

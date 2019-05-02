@@ -1,8 +1,13 @@
 package com.ivy.cpg.view.retailercontact;
 
+import android.app.Activity;
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -23,8 +28,10 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -32,13 +39,17 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
@@ -52,27 +63,32 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableObserver;
 
 
-public class ContactCreationFragment extends IvyBaseFragment {
+public class ContactCreationFragment extends IvyBaseFragment implements ContactsTimeSlotAdapterEdit.DeleteTimeSlotListener{
     private BusinessModel bmodel;
     private ArrayList<ConfigureBO> contactConfig;
 
-    private  String CODE_CONTACTNAME = "CONTACTNAME";
-    private  String CODE_CONTACTNUMBER = "CONTACTNUMBER";
-    private  String CODE_CONTACTPRIMARY = "CONTACTPRIMARY";
-    private  String CODE_CONTACTMAIL = "CONTACTMAIL";
-    private boolean ISCONTACTNAME, ISCONTACTNO, ISCONTACTPRIMARY, ISCONTACTEMAIL;
+    private String CODE_CONTACTNAME = "CONTACTNAME";
+    private String CODE_CONTACTNUMBER = "CONTACTNUMBER";
+    private String CODE_CONTACTPRIMARY = "CONTACTPRIMARY";
+    private String CODE_CONTACTMAIL = "CONTACTMAIL";
+    private String CODE_CONTACTAVAILABILITY = "CONTACTAVAILABILITY";
+    private String CODE_CONTACTEMAILPREF = "CONTACTEMAILPREF";
+    private String CODE_CONTACTDESIGNATION = "CONTACTDESIGNATION";
+    private String CODE_CONTACTSALUTATION = "CONTACTSALUTATION";
+    private boolean ISCONTACTNAME, ISCONTACTNO, ISCONTACTPRIMARY,
+            ISCONTACTEMAIL, IS_CONTACTAVAILABILITY , IS_CONTACTEMAILPREF ,
+            IS_CONTACTDESIGNATION , IS_CONTACTSALUTATION ;
     private Unbinder unbinder;
 
     //for editing new contact . created through newoutlet
     private boolean isEdit = false;
     private boolean isProfileEdit = false;
     private RetailerContactBo retailerContactBo = new RetailerContactBo();
-    private ArrayList<StandardListBO> mcontactTitleList;
     private ArrayAdapter<StandardListBO> contactTitleAdapter;
+    private ArrayAdapter<StandardListBO> contactSalutationAdapter;
     private ArrayList<RetailerContactBo> contactList;
     private HashMap<String, ConfigureBO> menuMap = new HashMap<>();
 
-    private ArrayList<RetailerContactBo> retailerContactList;
     private ArrayList<InputFilter> inputFilters = new ArrayList<>();
     //views
     @BindView(R.id.tvTitlePrimary)
@@ -106,10 +122,40 @@ public class ContactCreationFragment extends IvyBaseFragment {
     @BindView(R.id.etOthers)
     EditText etOthers;
 
+    @BindView(R.id.salutation_Title)
+    TextView tvSalutationTitle;
+
+    @BindView(R.id.tvTitlePrimaryEmail)
+    TextView tvIsPrimaryEmail;
+
+    @BindView(R.id.tv_time_slot)
+    TextView tvTimslotText;
+
+    @BindView(R.id.add_time_slot)
+    ImageView addTimeSlot;
+
+    @BindView(R.id.cbIsPrimaryEmail)
+    CheckBox cbIsPrimaryEmail;
+
+    @BindView(R.id.sp_salutation)
+    Spinner salutationSpinner;
 
     @BindView(R.id.rv_contacts)
     RecyclerView rvContacts;
-    private AppSchedulerProvider appSchedulerProvider;
+
+    @BindView(R.id.rv_timeslot)
+    RecyclerView rvTimeslot;
+
+    @BindView(R.id.time_slot_layout)
+    RelativeLayout timeSlotLayout;
+
+    @BindView(R.id.img_shrink_view)
+    ImageView imgShrinkView;
+
+    private Context context;
+
+    private ContactsTimeSlotAdapterEdit timeSlotAdapter;
+    private TimeSlotPickFragment timeSlotPickFragment;
 
     public static ContactCreationFragment getInstance(boolean isFromEditProfileView) {
         ContactCreationFragment creationFragment = new ContactCreationFragment();
@@ -120,9 +166,19 @@ public class ContactCreationFragment extends IvyBaseFragment {
     }
 
     @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        bmodel = (BusinessModel) context.getApplicationContext();
+        bmodel.setContext(getActivity());
+
+        this.context = context;
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        getActivity().getWindow().setSoftInputMode(
+        ((Activity)context).getWindow().setSoftInputMode(
                 WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
 
         View view = inflater.inflate(R.layout.fragment_contact_creation, container, false);
@@ -133,20 +189,49 @@ public class ContactCreationFragment extends IvyBaseFragment {
         addPrimaryCheckBoxChangedListener();
         addTitleSpinnertemSelectedListener();
 
+        addTimePickerListener();
+
+        imgShrinkView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!retailerContactBo.getContactAvailList().isEmpty() && rvTimeslot.getVisibility() == View.VISIBLE) {
+                    rvTimeslot.setVisibility(View.GONE);
+                    imgShrinkView.setImageResource(R.drawable.ic_action_up);
+                }else if (!retailerContactBo.getContactAvailList().isEmpty()) {
+                    rvTimeslot.setVisibility(View.VISIBLE);
+                    imgShrinkView.setImageResource(R.drawable.ic_action_down);
+                }
+
+            }
+        });
+
         return view;
     }
 
+    private void addTimePickerListener() {
+
+        addTimeSlot.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                FragmentTransaction ft = ((FragmentActivity) context).getSupportFragmentManager().beginTransaction();
+                timeSlotPickFragment = new TimeSlotPickFragment();
+                timeSlotPickFragment.setCancelable(true);
+                timeSlotPickFragment.show(ft, "TimeSlotFragment");
+            }
+        });
+    }
+
     private void initializeViews() {
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+
         Bundle bundle = getArguments();
         if (bundle == null)
-            bundle = getActivity().getIntent().getExtras();
+            bundle = ((Activity)context).getIntent().getExtras();
         if (bundle != null) {
             isProfileEdit = bundle.getBoolean("isEdit", false);
         }
 
-        appSchedulerProvider = new AppSchedulerProvider();
+        AppSchedulerProvider appSchedulerProvider = new AppSchedulerProvider();
         new CompositeDisposable().add((Disposable) bmodel.profilehelper.downloadContactModuleConfig(isProfileEdit)
                 .subscribeOn(appSchedulerProvider.io())
                 .observeOn(appSchedulerProvider.ui())
@@ -162,10 +247,15 @@ public class ContactCreationFragment extends IvyBaseFragment {
                     CODE_CONTACTNUMBER = "N" + CODE_CONTACTNUMBER;
                     CODE_CONTACTPRIMARY = "N" + CODE_CONTACTPRIMARY;
                     CODE_CONTACTMAIL = "N" + CODE_CONTACTMAIL;
+
+                    CODE_CONTACTAVAILABILITY = "N" + CODE_CONTACTAVAILABILITY;
+                    CODE_CONTACTDESIGNATION = "N" + CODE_CONTACTDESIGNATION;
+                    CODE_CONTACTEMAILPREF = "N" + CODE_CONTACTEMAILPREF;
+                    CODE_CONTACTSALUTATION = "N" + CODE_CONTACTSALUTATION;
                 }
                 contactConfig = configureBOS;
                 populateData();
-                if (contactConfig.size() == 0)
+                if (contactConfig.isEmpty())
                     showMessage(getString(R.string.retailer_contact_menu));
             }
 
@@ -181,10 +271,19 @@ public class ContactCreationFragment extends IvyBaseFragment {
         };
     }
 
-
     @Override
     public void onStart() {
         super.onStart();
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+
+    }
+
+    @Override
+    public void onStop() {
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 
     @Override
@@ -192,7 +291,6 @@ public class ContactCreationFragment extends IvyBaseFragment {
         super.onDestroy();
         unbinder.unbind();
     }
-
 
     @OnClick({R.id.addbutton, R.id.clear_button})
     public void buttonOnclick(Button button) {
@@ -221,6 +319,10 @@ public class ContactCreationFragment extends IvyBaseFragment {
                                 break;
                             }
                         }
+                        for (RetailerContactAvailBo availBo : retailerContactBo.getContactAvailList()){
+                            if (availBo.getStatus().isEmpty())
+                                availBo.setStatus("U");
+                        }
                     } else {
                         int count = 0;
                         for (int i = 0; i < contactList.size(); i++) {
@@ -234,7 +336,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                                     + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
                             contactList.add(retailerContactBo);
                         } else
-                            showMessage(getActivity().getString(R.string.max_contacts_added));
+                            showMessage(context.getString(R.string.max_contacts_added));
                     }
                 } else {
                     if (isEdit) {
@@ -250,7 +352,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                                     + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
                             contactList.add(retailerContactBo);
                         } else
-                            showMessage(getActivity().getString(R.string.max_contacts_added));
+                            showMessage(context.getString(R.string.max_contacts_added));
 
                     }
                 }
@@ -261,7 +363,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
             }
 
         } else {
-            showMessage(getActivity().getString(R.string.no_data_tosave));
+            showMessage(context.getString(R.string.no_data_tosave));
         }
     }
 
@@ -273,12 +375,14 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setFistname("");
                 else {
-                    if (StringUtils.validRegex(menuMap.get(CODE_CONTACTNAME).getRegex(), s.toString().trim())) {
-                        etFirstName.setSelection(s.toString().length());
-                        retailerContactBo.setFistname(s.toString().trim());
-                    } else {
-                        s.delete(length - 1, length);
-                        showMessage(getResources().getString(R.string.enter_valid) + " " + menuMap.get(CODE_CONTACTNAME).getMenuName());
+                    if (menuMap.get(CODE_CONTACTNAME) != null ) {
+                        if (StringUtils.validRegex(menuMap.get(CODE_CONTACTNAME).getRegex(), s.toString().trim())) {
+                            etFirstName.setSelection(s.toString().length());
+                            retailerContactBo.setFistname(s.toString().trim());
+                        } else {
+                            s.delete(length - 1, length);
+                            showMessage(getResources().getString(R.string.enter_valid) + " " + menuMap.get(CODE_CONTACTNAME).getMenuName());
+                        }
                     }
                 }
 
@@ -300,12 +404,14 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setLastname("");
                 else {
-                    if (StringUtils.validRegex(menuMap.get(CODE_CONTACTNAME).getRegex(), s.toString().trim())) {
-                        etLastName.setSelection(s.toString().length());
-                        retailerContactBo.setLastname(s.toString().trim());
-                    } else {
-                        s.delete(length - 1, length);
-                        showMessage(getResources().getString(R.string.enter_valid) + " " + menuMap.get(CODE_CONTACTNAME).getMenuName());
+                    if (menuMap.get(CODE_CONTACTNAME) != null ) {
+                        if (StringUtils.validRegex(menuMap.get(CODE_CONTACTNAME).getRegex(), s.toString().trim())) {
+                            etLastName.setSelection(s.toString().length());
+                            retailerContactBo.setLastname(s.toString().trim());
+                        } else {
+                            s.delete(length - 1, length);
+                            showMessage(getResources().getString(R.string.enter_valid) + " " + menuMap.get(CODE_CONTACTNAME).getMenuName());
+                        }
                     }
                 }
 
@@ -326,12 +432,14 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setContactNumber("");
                 else {
-                    if (StringUtils.validRegex(menuMap.get(CODE_CONTACTNUMBER).getRegex(), s.toString().trim())) {
-                        etPhno.setSelection(s.toString().length());
-                        retailerContactBo.setContactNumber(s.toString().trim());
-                    } else {
-                        s.delete(length - 1, length);
-                        showMessage(getResources().getString(R.string.enter_valid) + " " + menuMap.get(CODE_CONTACTNAME).getMenuName());
+                    if (menuMap.get(CODE_CONTACTNUMBER) != null) {
+                        if (StringUtils.validRegex(menuMap.get(CODE_CONTACTNUMBER).getRegex(), s.toString().trim())) {
+                            etPhno.setSelection(s.toString().length());
+                            retailerContactBo.setContactNumber(s.toString().trim());
+                        } else {
+                            s.delete(length - 1, length);
+                            showMessage(getResources().getString(R.string.enter_valid) + " " + menuMap.get(CODE_CONTACTNAME).getMenuName());
+                        }
                     }
                 }
             }
@@ -351,6 +459,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 if (s.toString().trim().equals(""))
                     retailerContactBo.setContactMail("");
                 else {
+                    if (menuMap.get(CODE_CONTACTMAIL) != null)
                     if (StringUtils.validRegex(menuMap.get(CODE_CONTACTMAIL).getRegex(), s.toString().trim())) {
                         etEmail.setSelection(s.toString().length());
                         retailerContactBo.setContactMail(s.toString().trim());
@@ -400,10 +509,10 @@ public class ContactCreationFragment extends IvyBaseFragment {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    if (isPrimaryAvaiable()) {
+                    if (isPrimaryAvaiable(true)) {
                         if (!isEdit) {
                             cbIsPrimary.setChecked(false);
-                            showMessage(getActivity().getString(R.string.primary_contact_available));
+                            showMessage(context.getString(R.string.primary_contact_available));
                         } else {
                             if (retailerContactBo.getIsPrimary() == 0) {
                                 cbIsPrimary.setChecked(false);
@@ -414,6 +523,28 @@ public class ContactCreationFragment extends IvyBaseFragment {
                     }
                 } else
                     retailerContactBo.setIsPrimary(0);
+            }
+        });
+
+        cbIsPrimaryEmail.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    if (isPrimaryAvaiable(false)) {
+                        if (!isEdit) {
+                            cbIsPrimaryEmail.setChecked(false);
+                            showMessage(context.getString(R.string.primary_email_pref_already_given
+                            ));
+                        } else {
+                            if (retailerContactBo.getIsEmailPrimary() == 0) {
+                                cbIsPrimaryEmail.setChecked(false);
+                            }
+                        }
+                    } else {
+                        retailerContactBo.setIsEmailPrimary(1);
+                    }
+                } else
+                    retailerContactBo.setIsEmailPrimary(0);
             }
         });
 
@@ -445,106 +576,159 @@ public class ContactCreationFragment extends IvyBaseFragment {
             }
         });
 
+        salutationSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                StandardListBO standardListBO = (StandardListBO) parent.getSelectedItem();
+
+                if (SDUtil.convertToInt(standardListBO.getListID()) > 0)
+                    retailerContactBo.setSalutationTitle(standardListBO.getListName());
+
+
+                retailerContactBo.setContactSalutationId(standardListBO.getListID());
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
     }
 
     private void populateData() {
         rvContacts.setHasFixedSize(false);
         rvContacts.setNestedScrollingEnabled(false);
         rvContacts.setLayoutManager(new LinearLayoutManager(getActivity()));
-        rvContacts.addItemDecoration(new DividerItemDecoration(rvContacts.getContext(), DividerItemDecoration.HORIZONTAL));
-        addbutton.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
+        rvContacts.addItemDecoration(new DividerItemDecoration(rvContacts.getContext(), DividerItemDecoration.VERTICAL));
 
         for (ConfigureBO configureBO : contactConfig) {
             if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTPRIMARY)) {
                 ISCONTACTPRIMARY = true;
                 tvTitlePrimary.setText(configureBO.getMenuName());
-            }
-            if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTNAME)) {
+            } else if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTNAME)) {
                 ISCONTACTNAME = true;
                 menuMap.put(CODE_CONTACTNAME, configureBO);
-            }
-            if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTNUMBER)) {
+            } else if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTNUMBER)) {
                 ISCONTACTNO = true;
                 tvTitlePhno.setText(configureBO.getMenuName());
                 menuMap.put(CODE_CONTACTNUMBER, configureBO);
                 addLengthFilter(configureBO.getRegex());
                 checkRegex(configureBO.getRegex());
-                if (inputFilters != null && inputFilters.size() > 0 && etPhno != null) {
+                if (inputFilters != null && !inputFilters.isEmpty() && etPhno != null) {
                     InputFilter[] stockArr = new InputFilter[inputFilters.size()];
                     stockArr = inputFilters.toArray(stockArr);
                     etPhno.setFilters(stockArr);
                     if (inputFilters.size() == 2)
                         etPhno.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
-            }
-            if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTMAIL)) {
+            } else if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTMAIL)) {
                 ISCONTACTEMAIL = true;
                 tvTitleEmail.setText(configureBO.getMenuName());
                 menuMap.put(CODE_CONTACTMAIL, configureBO);
                 addLengthFilter(configureBO.getRegex());
                 checkRegex(configureBO.getRegex());
-                if (inputFilters != null && inputFilters.size() > 0 && etEmail != null) {
+                if (inputFilters != null && !inputFilters.isEmpty() && etEmail != null) {
                     InputFilter[] stockArr = new InputFilter[inputFilters.size()];
                     stockArr = inputFilters.toArray(stockArr);
                     etEmail.setFilters(stockArr);
                     if (inputFilters.size() == 2)
                         etEmail.setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
                 }
+            } else if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTAVAILABILITY)) {
+                IS_CONTACTAVAILABILITY = true;
+                tvTimslotText.setText(configureBO.getMenuName());
+            } else if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTEMAILPREF)) {
+                IS_CONTACTEMAILPREF = true;
+                tvIsPrimaryEmail.setText(configureBO.getMenuName());
+            } else if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTDESIGNATION)) {
+                IS_CONTACTDESIGNATION = true;
+                tvTitle.setText(configureBO.getMenuName());
+            } else if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTSALUTATION)) {
+                IS_CONTACTSALUTATION = true;
+                tvSalutationTitle.setText(configureBO.getMenuName());
             }
+
         }
         if (!ISCONTACTPRIMARY) {
             tvTitlePrimary.setVisibility(View.GONE);
             cbIsPrimary.setVisibility(View.GONE);
-        } else
-            tvTitlePrimary.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        }
 
+
+        if (!IS_CONTACTSALUTATION) {
+            salutationSpinner.setVisibility(View.GONE);
+            tvSalutationTitle.setVisibility(View.GONE);
+        } else {
+            ArrayList<StandardListBO> list = bmodel.newOutletHelper.downlaodContactSalutation();
+            ArrayList<StandardListBO> mcontactSalutationList = new ArrayList<>();
+            mcontactSalutationList.add(0, new StandardListBO("-1", getResources().getString(R.string.select_str) + " " + "Title"));
+            mcontactSalutationList.addAll(list);
+
+            contactSalutationAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, mcontactSalutationList);
+            contactSalutationAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+            salutationSpinner.setAdapter(contactSalutationAdapter);
+        }
 
         if (!ISCONTACTNAME) {
-            tvTitle.setVisibility(View.GONE);
-            sp_reason.setVisibility(View.GONE);
             tvTitleFirstName.setVisibility(View.GONE);
             etFirstName.setVisibility(View.GONE);
             tvTitleLastName.setVisibility(View.GONE);
             etLastName.setVisibility(View.GONE);
-        } else {
-            tvTitle.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            tvTitleFirstName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            tvTitleLastName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-            ArrayList<StandardListBO> list = bmodel.newOutletHelper.downlaodContactTitle();
-            mcontactTitleList = new ArrayList<>();
-            mcontactTitleList.add(0, new StandardListBO("-1", getResources().getString(R.string.select_str) + " " + "Title"));
-            mcontactTitleList.addAll(list);
-
-            mcontactTitleList.add(list.size() + 1, new StandardListBO("0", "Others"));
-            Commons.print("Size Contact List title : " + bmodel.newOutletHelper.getContactTitleList().size());
-            contactTitleAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_spinner_item, mcontactTitleList);
-            contactTitleAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            sp_reason.setAdapter(contactTitleAdapter);
         }
 
         if (!ISCONTACTNO) {
             tvTitlePhno.setVisibility(View.GONE);
             etPhno.setVisibility(View.GONE);
-        } else
-            tvTitlePhno.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        }
 
         if (!ISCONTACTEMAIL) {
             tvTitleEmail.setVisibility(View.GONE);
             etEmail.setVisibility(View.GONE);
-        } else
-            tvTitleEmail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
+        }
+
+        if (!IS_CONTACTAVAILABILITY) {
+            timeSlotLayout.setVisibility(View.GONE);
+        } else {
+            timeSlotAdapter = new ContactsTimeSlotAdapterEdit(context,this);
+            rvTimeslot.setLayoutManager(new GridLayoutManager(context,2));
+            rvTimeslot.setAdapter(timeSlotAdapter);
+            timeSlotAdapter.listValues(retailerContactBo.getContactAvailList());
+            timeSlotAdapter.notifyDataSetChanged();
+        }
+
+        if (!IS_CONTACTEMAILPREF) {
+            cbIsPrimaryEmail.setVisibility(View.GONE);
+            tvIsPrimaryEmail.setVisibility(View.GONE);
+        }
+
+        if (!IS_CONTACTDESIGNATION) {
+            tvTitle.setVisibility(View.GONE);
+            sp_reason.setVisibility(View.GONE);
+        } else {
+            ArrayList<StandardListBO> list = bmodel.newOutletHelper.downlaodContactTitle();
+            ArrayList<StandardListBO> mcontactTitleList = new ArrayList<>();
+            mcontactTitleList.add(0, new StandardListBO("-1", getResources().getString(R.string.select_str) + " " + "Title"));
+            mcontactTitleList.addAll(list);
+
+            mcontactTitleList.add(list.size() + 1, new StandardListBO("0", "Others"));
+            Commons.print("Size Contact List title : " + bmodel.newOutletHelper.getContactTitleList().size());
+            contactTitleAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, mcontactTitleList);
+            contactTitleAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+            sp_reason.setAdapter(contactTitleAdapter);
+        }
 
         loadRecyclerView();
-
 
     }
 
     private void loadRecyclerView() {
         contactList = bmodel.newOutletHelper.getRetailerContactList();
         ArrayList<RetailerContactBo> contactListTemp = new ArrayList<>();
-        for (int i = 0; i < contactList.size(); i++) {
-            if (!contactList.get(i).getStatus().equalsIgnoreCase("D")) {
-                contactListTemp.add(contactList.get(i));
+        for (RetailerContactBo retailerContactBo : contactList) {
+            if (!retailerContactBo.getStatus().equalsIgnoreCase("D")) {
+                contactListTemp.add(retailerContactBo);
             }
         }
         ContactsAdapter contactsAdapter = new ContactsAdapter(contactListTemp);
@@ -554,13 +738,20 @@ public class ContactCreationFragment extends IvyBaseFragment {
     private void clearViews() {
         retailerContactBo = new RetailerContactBo();
         sp_reason.setSelection(0);
+        salutationSpinner.setSelection(0);
         etEmail.setText("");
         etPhno.setText("");
         etOthers.setText("");
         etFirstName.setText("");
         etLastName.setText("");
         cbIsPrimary.setChecked(false);
+        cbIsPrimaryEmail.setChecked(false);
         isEdit = false;
+
+        if (timeSlotAdapter != null) {
+            timeSlotAdapter.listValues(retailerContactBo.getContactAvailList());
+            timeSlotAdapter.notifyDataSetChanged();
+        }
     }
 
     private boolean hasdata() {
@@ -568,7 +759,8 @@ public class ContactCreationFragment extends IvyBaseFragment {
         if (retailerContactBo.getFistname().length() > 0 || retailerContactBo.getLastname().length() > 0 ||
                 (!retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1") && retailerContactBo.getContactTitleLovId().length() > 0) ||
                 retailerContactBo.getTitle().length() > 0 || retailerContactBo.getContactMail().length() > 0
-                || retailerContactBo.getContactNumber().length() > 0) {
+                || retailerContactBo.getContactNumber().length() > 0
+                || !retailerContactBo.getContactAvailList().isEmpty()) {
             isData = true;
 
         }
@@ -581,7 +773,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
             if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTNAME)) {
                 //first Name
                 if (retailerContactBo.getFistname().length() == 0 && configureBO.getMandatory() == 1) {
-                    showMessage(getActivity().getString(R.string.enter_first_name));
+                    showMessage(context.getString(R.string.enter_first_name));
                     etFirstName.requestFocus();
                     return false;
                 } else if (retailerContactBo.getFistname().length() > 0) {
@@ -594,7 +786,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 }
                 //last name
                 if (retailerContactBo.getLastname().length() == 0 && configureBO.getMandatory() == 1) {
-                    showMessage(getActivity().getString(R.string.enter_last_name));
+                    showMessage(context.getString(R.string.enter_last_name));
                     etLastName.requestFocus();
                     return false;
                 } else if (retailerContactBo.getLastname().length() > 0) {
@@ -605,31 +797,12 @@ public class ContactCreationFragment extends IvyBaseFragment {
                         return false;
                     }
                 }
-                //title spinner
-                if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1")) {
-                    showMessage(getActivity().getString(R.string.select_contact_title));
-                    return false;
-                }
-                //others edit text
-                if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("0") &&
-                        retailerContactBo.getTitle().length() == 0 && configureBO.getMandatory() == 1) {
-                    showMessage(getActivity().getString(R.string.enter_other_name));
-                    etOthers.requestFocus();
-                    return false;
-                } else if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("0") &&
-                        retailerContactBo.getTitle().length() > 0) {
-                    if (configureBO.getMaxLengthNo() > 0
-                            && retailerContactBo.getTitle().length() > configureBO.getMaxLengthNo()) {
-                        showMessage(configureBO.getMenuName() + " Length Must Be " + configureBO.getMaxLengthNo());
-                        etOthers.requestFocus();
-                        return false;
-                    }
-                }
+
             }
             //phone number
             if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTNUMBER)) {
                 if (retailerContactBo.getContactNumber().length() == 0 && configureBO.getMandatory() == 1) {
-                    showMessage(getActivity().getString(R.string.enter) + " " + configureBO.getMenuName());
+                    showMessage(context.getString(R.string.enter) + " " + configureBO.getMenuName());
                     etPhno.requestFocus();
                     return false;
                 } else if (retailerContactBo.getContactNumber().length() > 0) {
@@ -643,7 +816,7 @@ public class ContactCreationFragment extends IvyBaseFragment {
             //email Id
             if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTMAIL)) {
                 if (retailerContactBo.getContactMail().length() == 0 && configureBO.getMandatory() == 1) {
-                    showMessage(getActivity().getString(R.string.enter) + " " + configureBO.getMenuName());
+                    showMessage(context.getString(R.string.enter) + " " + configureBO.getMenuName());
                     etEmail.requestFocus();
                     return false;
                 } else if (retailerContactBo.getContactMail().length() > 0) {
@@ -653,10 +826,50 @@ public class ContactCreationFragment extends IvyBaseFragment {
                         return false;
                     }
                     if (!StringUtils.isValidEmail(retailerContactBo.getContactMail())) {
-                        showMessage(getActivity().getString(R.string.invalid_email_address));
+                        showMessage(context.getString(R.string.invalid_email_address));
                         etEmail.requestFocus();
                         return false;
                     }
+                }
+            }
+
+            //title spinner
+            if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTDESIGNATION)) {
+                //title spinner
+                if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1")) {
+                    showMessage(context.getString(R.string.select_contact_title));
+                    return false;
+                }
+                //others edit text
+                if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("0") &&
+                        retailerContactBo.getTitle().length() == 0 && configureBO.getMandatory() == 1) {
+                    showMessage(context.getString(R.string.enter_other_name));
+                    etOthers.requestFocus();
+                    return false;
+                } else if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("0") &&
+                        retailerContactBo.getTitle().length() > 0) {
+                    if (configureBO.getMaxLengthNo() > 0
+                            && retailerContactBo.getTitle().length() > configureBO.getMaxLengthNo()) {
+                        showMessage(configureBO.getMenuName() + " Length Must Be " + configureBO.getMaxLengthNo());
+                        etOthers.requestFocus();
+                        return false;
+                    }
+                }
+            }
+
+            //Salutation
+            if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTSALUTATION)) {
+                if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("-1")) {
+                    showMessage(context.getString(R.string.select_salutation));
+                    return false;
+                }
+            }
+
+            //Contact Availability Time Slots
+            if (configureBO.getConfigCode().equalsIgnoreCase(CODE_CONTACTAVAILABILITY)){
+                if (configureBO.getMandatory() == 1 && retailerContactBo.getContactAvailList().isEmpty()){
+                    showMessage(context.getString(R.string.enter_time_slot));
+                    return false;
                 }
             }
         }
@@ -664,12 +877,47 @@ public class ContactCreationFragment extends IvyBaseFragment {
         return true;
     }
 
-    private boolean isPrimaryAvaiable() {
-        for (RetailerContactBo retailerContactBo : contactList)
-            if (retailerContactBo.getIsPrimary() == 1 && !retailerContactBo.getStatus().equalsIgnoreCase("D"))
+    private boolean isPrimaryAvaiable(boolean isContactPrimaryChk) {
+        for (RetailerContactBo retailerContactBo : contactList) {
+            if (isContactPrimaryChk && retailerContactBo.getIsPrimary() == 1
+                    && !retailerContactBo.getStatus().equalsIgnoreCase("D"))
                 return true;
+            else if (!isContactPrimaryChk && retailerContactBo.getIsEmailPrimary() == 1
+                    && !retailerContactBo.getStatus().equalsIgnoreCase("D"))
+                return true;
+        }
 
         return false;
+    }
+
+    @Override
+    public void deleteSlot(RetailerContactAvailBo contactAvailBo) {
+
+        if (isProfileEdit)
+            if ("I".equalsIgnoreCase(contactAvailBo.getStatus()))
+                retailerContactBo.getContactAvailList().remove(contactAvailBo);
+            else
+                for (RetailerContactAvailBo availBo :retailerContactBo.getContactAvailList()) {
+                    if (contactAvailBo.equals(availBo))
+                        availBo.setStatus("D");
+                }
+        else
+            retailerContactBo.getContactAvailList().remove(contactAvailBo);
+
+
+        updateTimeSlotList();
+    }
+
+    private void updateTimeSlotList() {
+        ArrayList<RetailerContactAvailBo> contactAvailBos = new ArrayList<>();
+        for (RetailerContactAvailBo retailerContactAvailBo: retailerContactBo.getContactAvailList()){
+            if (!"D".equalsIgnoreCase(retailerContactAvailBo.getStatus()))
+                contactAvailBos.add(retailerContactAvailBo);
+
+        }
+
+        timeSlotAdapter.listValues(contactAvailBos);
+        timeSlotAdapter.notifyDataSetChanged();
     }
 
     public class ContactsAdapter extends RecyclerView.Adapter<ContactsAdapter.ViewHolder> {
@@ -698,12 +946,22 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
             RetailerContactBo retailerContactBo = items.get(position);
 
+            String salutation = "";
+
+            if (IS_CONTACTSALUTATION) {
+                if (StringUtils.isEmptyString(retailerContactBo.getSalutationTitle()))
+                    salutation = retailerContactBo.getSalutationTitle();
+            }
+
             if (ISCONTACTNAME) {
-                if (retailerContactBo.getTitle().length() > 0)
+                holder.textName.setText(salutation + " " + retailerContactBo.getFistname() + " " + retailerContactBo.getLastname());
+            }
+
+            if (IS_CONTACTDESIGNATION) {
+                if (StringUtils.isEmptyString(retailerContactBo.getTitle()))
                     holder.title.setText(retailerContactBo.getTitle());
                 else
                     holder.title.setVisibility(View.GONE);
-                holder.textName.setText(retailerContactBo.getFistname() + " " + retailerContactBo.getLastname());
             }
 
             if (ISCONTACTPRIMARY) {
@@ -740,6 +998,38 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 }
             });
 
+            if (IS_CONTACTEMAILPREF && retailerContactBo.getIsEmailPrimary() == 1)
+                holder.imgViewEmail.setVisibility(View.VISIBLE);
+            else
+                holder.imgViewEmail.setVisibility(View.GONE);
+
+            if (IS_CONTACTAVAILABILITY && !retailerContactBo.getContactAvailList().isEmpty()) {
+                holder.timeSlotLayout.setVisibility(View.VISIBLE);
+                holder.rvTimeslot.setLayoutManager(new GridLayoutManager(context, 2));
+
+                ArrayList<RetailerContactAvailBo> availBos = new ArrayList<>();
+                for (RetailerContactAvailBo availBo : retailerContactBo.getContactAvailList())
+                    if (!"D".equalsIgnoreCase(availBo.getStatus()))
+                        availBos.add(availBo);
+
+                ContactsTimeSlotAdapter timeSlotAdapter = new ContactsTimeSlotAdapter(context,availBos);
+                holder.rvTimeslot.setAdapter(timeSlotAdapter);
+            }else
+                holder.timeSlotLayout.setVisibility(View.GONE);
+
+            holder.imgShrinkView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (!retailerContactBo.getContactAvailList().isEmpty() && holder.rvTimeslot.getVisibility() == View.VISIBLE) {
+                        holder.rvTimeslot.setVisibility(View.GONE);
+                        holder.imgShrinkView.setImageResource(R.drawable.ic_action_up);
+                    }else if (!retailerContactBo.getContactAvailList().isEmpty()) {
+                        holder.rvTimeslot.setVisibility(View.VISIBLE);
+                        holder.imgShrinkView.setImageResource(R.drawable.ic_action_down);
+                    }
+
+                }
+            });
         }
 
         @Override
@@ -751,8 +1041,11 @@ public class ContactCreationFragment extends IvyBaseFragment {
 
             private TextView title, textName;
             private TextView textCno, textCEmail;
-            private ImageView ivIsPrimary, ivIsdelete;
+            private ImageView ivIsPrimary, ivIsdelete, imgViewEmail;
             private LinearLayout llItem;
+            private RelativeLayout timeSlotLayout;
+            private RecyclerView rvTimeslot;
+            private ImageView imgShrinkView;
 
             public ViewHolder(View itemView) {
                 super(itemView);
@@ -763,12 +1056,13 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 ivIsdelete = itemView.findViewById(R.id.ivIsdelete);
                 textCno = itemView.findViewById(R.id.tvContactNo);
                 textCEmail = itemView.findViewById(R.id.tvEmail);
-                llItem = itemView.findViewById(R.id.llItem);
+                imgViewEmail = itemView.findViewById(R.id.img_email_pref);
 
-                title.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                textName.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.REGULAR));
-                textCno.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                textCEmail.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
+                timeSlotLayout = itemView.findViewById(R.id.time_slot_layout);
+                imgShrinkView = itemView.findViewById(R.id.img_shrink_view);
+                rvTimeslot = itemView.findViewById(R.id.rv_timeslot);
+
+                llItem = itemView.findViewById(R.id.llItem);
 
                 if (!ISCONTACTNAME) {
                     title.setVisibility(View.GONE);
@@ -784,12 +1078,14 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 if (!ISCONTACTEMAIL)
                     textCEmail.setVisibility(View.GONE);
 
+                if (!IS_CONTACTAVAILABILITY)
+                    timeSlotLayout.setVisibility(View.GONE);
+
                 ivIsdelete.setVisibility(View.VISIBLE);
 
             }
         }
     }
-
 
     private void deleteContact(RetailerContactBo retailerContact) {
 
@@ -799,11 +1095,16 @@ public class ContactCreationFragment extends IvyBaseFragment {
                 if (contactList.get(i).getCpId().equalsIgnoreCase(retailerContact.getCpId())) {
                     if (contactList.get(i).getStatus().equalsIgnoreCase("I")) {
                         contactList.remove(i);
-                    } else
+                    } else {
+                        for (RetailerContactAvailBo availBo : contactList.get(i).getContactAvailList()){
+                            availBo.setStatus("D");
+                        }
                         contactList.set(i, retailerContact);
+                    }
                     break;
                 }
             }
+
         } else {
             for (int i = 0; i < contactList.size(); i++) {
                 if (contactList.get(i).getCpId().equalsIgnoreCase(retailerContact.getCpId())) {
@@ -829,10 +1130,21 @@ public class ContactCreationFragment extends IvyBaseFragment {
         this.retailerContactBo.setCpId(retailerContactBo.getCpId());
         this.retailerContactBo.setStatus(retailerContactBo.getStatus());
 
+        this.retailerContactBo.setContactSalutationId(retailerContactBo.getContactSalutationId());
+        this.retailerContactBo.setIsEmailPrimary(retailerContactBo.getIsEmailPrimary());
+
+        this.retailerContactBo.getContactAvailList().addAll(retailerContactBo.getContactAvailList());
+
         if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("0") && retailerContactBo.getTitle().length() == 0)
             sp_reason.setSelection(0);
         else
             sp_reason.setSelection(getSpinnerPostion(retailerContactBo.getContactTitleLovId()));
+
+        if (retailerContactBo.getContactSalutationId().equalsIgnoreCase("0") && retailerContactBo.getSalutationTitle().length() == 0)
+            salutationSpinner.setSelection(0);
+        else
+            salutationSpinner.setSelection(getSalutationPostion(retailerContactBo.getContactSalutationId()));
+
         if (retailerContactBo.getContactTitleLovId().equalsIgnoreCase("0") && retailerContactBo.getTitle().length() > 0)
             etOthers.setText(retailerContactBo.getTitle());
         etEmail.setText(retailerContactBo.getContactMail());
@@ -842,6 +1154,16 @@ public class ContactCreationFragment extends IvyBaseFragment {
         if (retailerContactBo.getIsPrimary() == 1)
             cbIsPrimary.setChecked(true);
 
+        if (retailerContactBo.getIsEmailPrimary() == 1)
+            cbIsPrimaryEmail.setChecked(true);
+
+        if (timeSlotAdapter != null) {
+            timeSlotAdapter.listValues(retailerContactBo.getContactAvailList());
+            timeSlotAdapter.notifyDataSetChanged();
+        }
+
+
+
     }
 
     private int getSpinnerPostion(String listId) {
@@ -849,6 +1171,19 @@ public class ContactCreationFragment extends IvyBaseFragment {
         if (contactTitleAdapter != null)
             for (int i = 0; i < contactTitleAdapter.getCount(); i++) {
                 StandardListBO tempBo = contactTitleAdapter.getItem(i);
+                assert tempBo != null;
+                if (tempBo.getListID().equalsIgnoreCase(listId)) {
+                    return i;
+                }
+            }
+        return default_value;
+    }
+
+    private int getSalutationPostion(String listId) {
+        int default_value = 0;
+        if (contactSalutationAdapter != null)
+            for (int i = 0; i < contactSalutationAdapter.getCount(); i++) {
+                StandardListBO tempBo = contactSalutationAdapter.getItem(i);
                 assert tempBo != null;
                 if (tempBo.getListID().equalsIgnoreCase(listId)) {
                     return i;
@@ -913,6 +1248,31 @@ public class ContactCreationFragment extends IvyBaseFragment {
         } catch (Exception ex) {
             Commons.printException("regex check", ex);
         }
+    }
+
+    @Subscribe
+    public void onMessageEvent(RetailerContactAvailBo contactAvailBo) {
+
+        for (RetailerContactAvailBo timeSlot : retailerContactBo.getContactAvailList()){
+            if (timeSlot.getDay().contains(contactAvailBo.getDay())){
+                if (bmodel.newOutletHelper.isBetweenTime(timeSlot.getFrom(),timeSlot.getTo(),contactAvailBo.getFrom(),true)){
+                    Toast.makeText(context, context.getString(R.string.time_slot_already_selected), Toast.LENGTH_SHORT).show();
+                    return;
+                }else if (bmodel.newOutletHelper.isBetweenTime(timeSlot.getFrom(),timeSlot.getTo(),contactAvailBo.getTo(),false)){
+                    Toast.makeText(context, context.getString(R.string.time_slot_already_selected), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+        }
+
+        contactAvailBo.setStatus("I");
+
+        retailerContactBo.getContactAvailList().add(contactAvailBo);
+
+        if (timeSlotPickFragment != null)
+            timeSlotPickFragment.dismiss();
+
+        updateTimeSlotList();
     }
 
 }

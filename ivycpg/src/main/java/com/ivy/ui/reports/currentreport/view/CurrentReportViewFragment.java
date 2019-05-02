@@ -67,7 +67,7 @@ public class CurrentReportViewFragment extends BaseFragment implements ICurrentR
     }
 
     @Override
-    public void initVariables(View view) {
+    public void init(View view) {
         spinnerBrand.setOnItemSelectedListener(this);
     }
 

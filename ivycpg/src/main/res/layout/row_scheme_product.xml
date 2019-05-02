@@ -284,7 +284,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentEnd="true"
                         android:layout_margin="4dp"
-                        android:maxLength="6"
+                        android:maxLength="9"
                         android:padding="4dp"
                         android:textSize="@dimen/total_title_size"
                         android:layout_alignParentRight="true" />
@@ -378,6 +378,16 @@
     </LinearLayout>
         <TextView
             android:id="@+id/text_stock_availability"
+            style="@style/TextViewListItemCaption"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:maxLines="2"
+            android:textColor="@color/RED"
+            android:text="@string/stock_not_available"
+            android:visibility="gone"/>
+        <TextView
+            android:id="@+id/text_maxslab"
             style="@style/TextViewListItemCaption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

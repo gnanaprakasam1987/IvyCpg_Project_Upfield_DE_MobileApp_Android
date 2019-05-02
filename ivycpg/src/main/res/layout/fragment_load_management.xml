@@ -5,7 +5,58 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+<RelativeLayout
+    android:id="@+id/layout_trip"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dimen_10dp"
+    android:background="?startAndEndOfTheDayHeaderLayoutBg">
+    <Button
+        android:id="@+id/imageview_buzzer"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:background="@drawable/image_buzzer_green"
+        android:scaleType="fitCenter"
+        android:text="@string/start"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
 
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_toRightOf="@+id/imageview_buzzer"
+        android:layout_centerVertical="true"
+        android:padding="@dimen/dimen_10dp"
+        >
+    <TextView
+        android:id="@+id/textView_status_primary"
+        style="@style/TextViewListItemPrimary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/list_margin"
+        android:layout_marginRight="@dimen/list_margin"
+        android:layout_weight="1"
+        android:ellipsize="marquee"
+        android:text="@string/today_you_have_uncompleted_activities"
+        />
+    <TextView
+        android:id="@+id/textView_status_secondary"
+        style="@style/TextViewListItemSecondary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/list_margin"
+        android:layout_marginRight="@dimen/list_margin"
+        android:layout_weight="1"
+        android:ellipsize="marquee"
+        android:text="@string/complete_all_mandatory_activities_before_you_start_the_day"
+        />
+
+    </LinearLayout>
+
+</RelativeLayout>
 
     <ListView
         android:id="@+id/listView1"

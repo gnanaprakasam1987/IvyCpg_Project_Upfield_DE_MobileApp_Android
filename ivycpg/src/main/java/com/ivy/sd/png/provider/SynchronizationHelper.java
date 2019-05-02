@@ -34,6 +34,7 @@ import com.android.volley.toolbox.Volley;
 import com.ivy.core.data.datamanager.DataManagerImpl;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.collection.CollectionHelper;
+import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.cpg.view.sfdc.AccountData;
@@ -58,7 +59,7 @@ import com.ivy.sd.png.model.MyHttpConnectionNew;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FileUtils;
@@ -518,6 +519,22 @@ SynchronizationHelper {
 
     }
 
+    private void deleteUploadedFiles(String path){
+        try {
+
+            File f = new File(path);
+
+            File[] files = f.listFiles();
+
+            if (files != null && files.length > 0)
+                for (File file : files) {
+                    file.delete();
+                }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
     /**
      * Used to check whether external storage is available or not. It will also
      * check the space. If storage has less than 5MB space then it will be
@@ -648,7 +665,8 @@ SynchronizationHelper {
             String sql;
             Cursor c;
 
-            sql = "select count(*) from stockinhandmaster where upload='N'";
+            sql = "select count(*) from stockinhandmaster where upload='N' " +
+                    "union select count(*) from NonSalableSIHMaster where upload='N'";
 
             c = db.selectSQL(sql);
             if (c != null) {
@@ -777,7 +795,7 @@ SynchronizationHelper {
 
 
         // updating last visit data from transaction table before delete
-        if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN) {
+        if (true||bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN) {
             updateLastVisitPrice();
             exceptionTableList.add("LastVisitPrice");
         }
@@ -806,6 +824,13 @@ SynchronizationHelper {
             updateLastVisitSOS();
             exceptionTableList.add("LastVisitSOS");
         }
+
+        if (bmodel.configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
+            updateLastVisitPlanogram();
+            exceptionTableList.add("LastVisitPlanogram");
+            exceptionTableList.add("LastVisitPlanogramImageDetails");
+        }
+
 
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -839,21 +864,21 @@ SynchronizationHelper {
 
             deleteDBFromSD();
 
-            try {
+            //Delete uploaded images from This folder
+            //path: Android/data/com.ivy.sd.png.asean.view/files/Pictures/IvyDist
+            String ivyDistFolder = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+                    + "/" + DataMembers.photoFolderName + "/";
+            deleteUploadedFiles(ivyDistFolder);
 
-                File f = new File(
-                        context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                                + "/" + DataMembers.photoFolderName + "/");
+            //Delete uploaded images from This folder
+            //path: Android/data/com.ivy.sd.png.asean.view/files/Download/21TRAN/TDC
+            String taskImages = context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)
+                    + "/" + bmodel.userMasterHelper.getUserMasterBO().getUserid()
+                    + DataMembers.DIGITAL_CONTENT + "/"
+                    + DataMembers.TASK_DIGITAL_CONTENT + "/";
+            deleteUploadedFiles(taskImages);
 
-                File[] files = f.listFiles();
 
-                if (files != null && files.length > 0)
-                    for (File file : files) {
-                        file.delete();
-                    }
-            } catch (Exception e) {
-                Commons.printException("" + e);
-            }
 
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -1042,7 +1067,8 @@ SynchronizationHelper {
                     "union select count(Tid) from RetailerScoreHeader where upload='N'" +
                     "union select count(Tid) from RetailerScoreDetails where upload='N'" +
                     "union select count(uid) from DenominationHeader where upload='N'" +
-                    "union select count(uid) from DenominationDetails where upload='N'";
+                    "union select count(uid) from DenominationDetails where upload='N'" +
+                    "union select count(Tid) from RetailerLocationDeviation where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -2516,7 +2542,7 @@ SynchronizationHelper {
                         + bmodel.QT(CASE_TYPE) + "and b.batchid = pm.batchid");
                 sb.append(" left join temp_vanload as c on pm.pid=c.pid  and pm.uid=c.uid and c.uomcode="
                         + bmodel.QT(OUTER_TYPE) + "and c.batchid = pm.batchid");
-                sb.append(" group by pm.uid,pm.pid,a.batchid,b.batchid,c.batchid order by pm.uid,pm.pid ");
+                sb.append(" group by pm.uid,pm.pid,a.batchid,b.batchid,c.batchid order by pm.rowid,pm.uid,pm.pid ");
                 db.executeQ(sb.toString());
                 db.deleteSQL("temp_vanload", null, true);
             }
@@ -3884,7 +3910,7 @@ SynchronizationHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String sql = "select pid,price,mrp,PH.retailerid,uomid,own from PriceCheckDetail PD"
+            String sql = "select pid,price,mrp,PH.retailerid,uomid,own,hasPriceTag from PriceCheckDetail PD"
                     + " INNER JOIN PriceCheckHeader PH ON PD.tid=PH.tid where date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor cur = db.selectSQL(sql);
             if (cur != null) {
@@ -3892,10 +3918,10 @@ SynchronizationHelper {
                     sql = "Select pid from LastVisitPrice where pid=" + cur.getString(0) + " and rid=" + cur.getString(3) + " and uomid=" + cur.getString(4);
                     Cursor cur1 = db.selectSQL(sql);
                     if (cur1 != null && cur1.getCount() > 0) {
-                        db.updateSQL("update LastVisitPrice set price=" + cur.getString(1) + ",mrp=" + cur.getString(2) + " where pid=" + cur.getString(0) + " and rid=" + cur.getString(3) + " and uomid=" + cur.getString(4));
+                        db.updateSQL("update LastVisitPrice set price=" + cur.getString(1) + ",mrp=" + cur.getString(2) + " where pid=" + cur.getString(0) + " and rid=" + cur.getString(3) + " and uomid=" + cur.getString(4) + " and hasPriceTag=" + cur.getInt(6));
                         cur1.close();
                     } else {
-                        db.insertSQL("LastVisitPrice", "rid,pid,uomid,price,mrp,isown", cur.getString(3) + "," + cur.getString(0) + "," + cur.getString(4) + "," + cur.getString(1) + "," + cur.getString(2) + "," + cur.getString(5));
+                        db.insertSQL("LastVisitPrice", "rid,pid,uomid,price,mrp,isown,hasPriceTag", cur.getString(3) + "," + cur.getString(0) + "," + cur.getString(4) + "," + cur.getString(1) + "," + cur.getString(2) + "," + cur.getString(5) + "," + cur.getInt(6));
                     }
                 }
                 cur.close();
@@ -3913,7 +3939,7 @@ SynchronizationHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String sql = "select SH.retailerid,productId,shelfpqty,shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,IsOwn,Facing"
+            String sql = "select SH.retailerid,productId,shelfpqty,shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,IsOwn,Facing,hasPriceTag"
                     + " from ClosingStockDetail SD INNER JOIN ClosingStockHeader SH ON SD.stockId=SH.stockId where SH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor cur = db.selectSQL(sql);
             if (cur != null) {
@@ -3924,14 +3950,14 @@ SynchronizationHelper {
                         db.updateSQL("update LastVisitStock set shelfpqty=" + cur.getString(2) + ",shelfcqty=" + cur.getString(3) + ",shelfoqty=" + cur.getString(4)
                                 + ",whpqty=" + cur.getString(5) + ",whcqty=" + cur.getString(6) + ",whoqty=" + cur.getString(7) + ",LocId=" + cur.getString(8)
                                 + ",isDistributed=" + cur.getString(9) + ",isListed=" + cur.getString(10) + ",reasonID=" + cur.getString(11)
-                                + ",IsOwn=" + cur.getString(12) + ",Facing=" + cur.getString(13)
+                                + ",IsOwn=" + cur.getString(12) + ",Facing=" + cur.getString(13) + ",hasPriceTag=" + cur.getInt(14)
 
                                 + " where productid=" + cur.getString(1) + " and retailerid=" + cur.getString(0) + " and LocId=" + cur.getString(8));
                         cur1.close();
                     } else {
-                        db.insertSQL("LastVisitStock", "retailerid,productId,shelfpqty,shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,IsOwn,facing", cur.getString(0) + "," + cur.getString(1) + "," + cur.getString(2) + "," + cur.getString(3) + "," + cur.getString(4) + "," + cur.getString(5)
+                        db.insertSQL("LastVisitStock", "retailerid,productId,shelfpqty,shelfcqty,shelfoqty,whpqty,whcqty,whoqty,LocId,isDistributed,isListed,reasonID,IsOwn,facing,hasPriceTag", cur.getString(0) + "," + cur.getString(1) + "," + cur.getString(2) + "," + cur.getString(3) + "," + cur.getString(4) + "," + cur.getString(5)
                                 + "," + cur.getString(6) + "," + cur.getString(7) + "," + cur.getString(8) + "," + cur.getString(9) + "," + cur.getString(10)
-                                + "," + cur.getString(11) + "," + cur.getString(12) + "," + cur.getString(13));
+                                + "," + cur.getString(11) + "," + cur.getString(12) + "," + cur.getString(13) + "," + cur.getInt(14));
 
                     }
                 }
@@ -4098,6 +4124,69 @@ SynchronizationHelper {
         }
     }
 
+
+    private void updateLastVisitPlanogram() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        try {
+            db.createDataBase();
+            db.openDataBase();
+
+            //delete data in LastVisitSOS table
+            String sql = "select STD.retailerid from PlanogramDetails STD INNER JOIN PlanogramHeader STH ON STD.tid=STH.tid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            Cursor cur = db.selectSQL(sql);
+            if (cur != null) {
+                while (cur.moveToNext()) {
+                    sql = "Select retailerid from LastVisitPlanogram where retailerid=" + cur.getString(0);
+                    Cursor cur1 = db.selectSQL(sql);
+                    if (cur1 != null && cur1.getCount() > 0) {
+                        db.executeQ("delete from LastVisitPlanogram where retailerid=" + cur.getString(0));
+                        db.executeQ("delete from LastVisitPlanogramImageDetails where retailerid=" + cur.getString(0));
+                        cur1.close();
+                    }
+                }
+                cur.close();
+            }
+
+            // re insert  transaction data from SOS_Tracking_Detail records into LastVisitSOS
+            String sql2 = "select STD.retailerid,STD.mappingId,STD.pid,STD.Adherence,STD.ReasonId,STD.LocId from PlanogramDetails STD INNER JOIN PlanogramHeader STH ON STD.Tid=STH.Tid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            Cursor cur2 = db.selectSQL(sql2);
+            if (cur2 != null) {
+                while (cur2.moveToNext()) {
+                    db.insertSQL("LastVisitPlanogram", "retailerid,mappingId,pid,Adherence,ReasonId,LocId",
+                            cur2.getString(0)
+                                    + "," + cur2.getString(1)
+                                    + "," + cur2.getString(2)
+                                    + "," + cur2.getString(3)
+                                    + "," + cur2.getString(4)
+                                    + "," + cur2.getString(5));
+                }
+                cur2.close();
+            }
+
+            // re insert  transaction data from SOS_Tracking_Detail records into LastVisitSOS
+            String sql3 = "select STD.pid,STD.imageName,STD.mappingId,STD.ImagePath,STD.ImageId,STH.LocId,STH.RetailerId from PlanogramImageDetails STD LEFT JOIN PlanogramDetails STH ON STD.Tid=STH.Tid LEFT JOIN PlanogramHeader PH ON STD.tid=PH.tid where PH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + " group by STD.tid,STD.pid,STD.imageId";
+            Cursor cur3 = db.selectSQL(sql3);
+            if (cur3 != null) {
+                while (cur3.moveToNext()) {
+                    db.insertSQL("LastVisitPlanogramImageDetails", "pid,imageName,mappingId,ImagePath,ImageId,LocId,RetailerId",
+                            cur3.getString(0)
+                                    + "," + StringUtils.QT(cur3.getString(1))
+                                    + "," + cur3.getString(2)
+                                    + "," + StringUtils.QT(cur3.getString(3))
+                                    + "," + cur3.getString(4)
+                                    + "," + cur3.getString(5)
+                                    + "," + cur3.getString(6));
+                }
+                cur3.close();
+            }
+
+            db.closeDB();
+        } catch (Exception ex) {
+            Commons.printException(ex);
+            db.closeDB();
+        }
+    }
 
     public int getTotalRetailersCount() {
         DBUtil db;
@@ -4729,14 +4818,14 @@ SynchronizationHelper {
 
     }
 
-    public String getSelectedUserLoginId(String userId,Context context){
+    public String getSelectedUserLoginId(String userId, Context context) {
         String loginId = "";
         try {
 
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("select loginid from UserMaster where userid = '"+userId+"'");
+                    .selectSQL("select loginid from UserMaster where userid = '" + userId + "'");
             if (c != null) {
                 if (c.moveToNext()) {
                     loginId = c.getString(0);

@@ -2122,7 +2122,7 @@ public class NewOutletFragment extends IvyBaseFragment
                             edittextinputLayout.setError(getResources().getString(R.string.enter_valid) + " " + profileConfig.get(i).getMenuName());
                             editText[i].addTextChangedListener(watcher);
                             break;
-                        } else if (length > 0 && !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
+                        } /*else if (length > 0 && !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
 
                             validate = false;
                             scrollToSpecificEditText(edittextinputLayout);
@@ -2131,7 +2131,7 @@ public class NewOutletFragment extends IvyBaseFragment
                             edittextinputLayout.setError(getResources().getString(R.string.enter_valid) + " " + profileConfig.get(i).getMenuName());
                             editText[i].addTextChangedListener(watcher);
                             break;
-                        }
+                        }*/
 
                     }
 
@@ -4829,7 +4829,8 @@ public class NewOutletFragment extends IvyBaseFragment
         spinnerHashMap = new HashMap<>();
         spinnerAdapterMap = new HashMap<>();
         int rowCount = mAttributeParentList.size();
-        selectedAttribList = new HashMap<>();
+        if(selectedAttribList==null)
+            selectedAttribList = new HashMap<>();// It may contain common attributes selected id while called from channel to load channel attribute
         for (int i = 0; i < rowCount; i++) {
             NewOutletAttributeBO parentBO = mAttributeParentList.get(i);
             if ((isCommon && mCommonAttributeList.contains(parentBO.getAttrId()))
@@ -4897,7 +4898,9 @@ public class NewOutletFragment extends IvyBaseFragment
                         });
 
                         if (screenMode == VIEW || screenMode == EDIT) {
-                            spinner.setSelection(getAttriButePostion(arrayAdapter));
+                            int selectedPosition=getAttriButePostion(arrayAdapter);
+                            spinner.setSelection(selectedPosition);
+                            selectedAttribList.put(parentAttrId, attrbList.get(selectedPosition));
                             if (screenMode == 1)
                                 spinner.setEnabled(false);
                         } else {
@@ -4935,7 +4938,9 @@ public class NewOutletFragment extends IvyBaseFragment
                         });
 
                         if (screenMode == VIEW || screenMode == EDIT) {
-                            spinner.setSelection(getAttriButePostion(arrayAdapter));
+                            int selectedPosition=getAttriButePostion(arrayAdapter);
+                            spinner.setSelection(selectedPosition);
+                            selectedAttribList.put(parentAttrId, attrbList.get(selectedPosition));
                             if (screenMode == 1)
                                 spinner.setEnabled(false);
                         } else {
@@ -6337,6 +6342,11 @@ public class NewOutletFragment extends IvyBaseFragment
 
                 deleteNewRetailer();
                 bmodel.downloadRetailerMaster();
+                if (bmodel.configurationMasterHelper.CALC_QDVP3)
+                    bmodel.updateSurveyScoreHistoryRetailerWise();
+
+                bmodel.downloadVisit_Actual_Achieved();
+
                 alertDialog.dismiss();
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.data_download_successfully),

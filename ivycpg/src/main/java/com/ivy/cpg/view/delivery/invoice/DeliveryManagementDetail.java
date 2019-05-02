@@ -743,7 +743,7 @@ public class DeliveryManagementDetail extends IvyBaseActivityNoActionBar impleme
         @Override
         protected Void doInBackground(Void... params) {
             deliveryManagementHelper.saveDeliveryManagement(mInvoiceId, invoiceStatus, signName, signPath, contactName, contactNo);
-            bmodel.saveModuleCompletion("MENU_DELIVERY_MGMT");
+            bmodel.saveModuleCompletion("MENU_DELIVERY_MGMT", true);
 
             return null;
         }
