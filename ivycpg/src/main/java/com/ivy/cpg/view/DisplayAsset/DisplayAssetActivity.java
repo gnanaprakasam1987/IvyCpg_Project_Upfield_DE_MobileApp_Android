@@ -12,23 +12,26 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CompanyBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
+import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class DisplayAssetActivity extends IvyBaseActivityNoActionBar {
+public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements DisplayAssetContractor.View {
 
     private ExpandableListView expandableListView;
     private DisplayAssetHelper displayAssetHelper;
@@ -36,12 +39,17 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar {
     private TextView label_company_name,textview_company_count,textview_other_count;
     private LinearLayout layout_status;
     private TextView textView_status;
+    DisplayAssetPresenterImpl presenter;
+    BusinessModel businessModel;
+    Button button_save;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_display_asset);
 
+        businessModel=(BusinessModel)getApplicationContext();
+        businessModel.setContext(this);
         String menuName="";
         if(getIntent().getExtras()!=null)
             menuName=getIntent().getExtras().getString("menuName");
@@ -65,9 +73,25 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar {
         }
 
         displayAssetHelper=DisplayAssetHelper.getInstance(this);
+        presenter=new DisplayAssetPresenterImpl(this,businessModel,displayAssetHelper);
+        presenter.setView(this);
 
         expandableListView=findViewById(R.id.listview_assets);
         expandableListView.setAdapter(new MyAdapter(displayAssetHelper.getDisplayAssetList()));
+
+        button_save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if(presenter.saveDisplayAssets(DisplayAssetActivity.this)){
+                    Toast.makeText(DisplayAssetActivity.this,getResources().getString(R.string.saved_successfully),Toast.LENGTH_LONG).show();
+
+                }
+                else {
+                    Toast.makeText(DisplayAssetActivity.this,getResources().getString(R.string.error_in_saving),Toast.LENGTH_LONG).show();
+                }
+            }
+        });
     }
 
     @Override
@@ -120,13 +144,28 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar {
                 holder.imageView_minus.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        holder.editText_quantity.setText(String.valueOf(doMinus(Integer.parseInt(holder.editText_quantity.getText().toString()))));
+
+                        int value=Integer.parseInt(holder.editText_quantity.getText().toString());
+                        if(value>0){
+                            value-=1;
+                        }
+                        else
+                            value=0;
+
+                        holder.editText_quantity.setText(String.valueOf(value));
                     }
                 });
                 holder.imageView_plus.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        holder.editText_quantity.setText(String.valueOf(doPlus(Integer.parseInt(holder.editText_quantity.getText().toString()))));
+                        int value=Integer.parseInt(holder.editText_quantity.getText().toString());
+                        value+=1;
+                        if(value<0){
+                            value=0;
+                        }
+
+
+                        holder.editText_quantity.setText(String.valueOf(value));
                     }
                 });
 
@@ -153,7 +192,7 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar {
                             Commons.printException(ex);
                         }
 
-                        refreshStatus();
+                        presenter.refreshStatus();
                     }
                 });
 
@@ -235,69 +274,32 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar {
 
     }
 
-    public int doMinus(int currentValue){
-
-        if(currentValue>0){
-            return currentValue-=1;
-        }
-        else
-        return 0;
-    }
-    public int doPlus(int currentValue){
-
-            return currentValue+=1;
-
-    }
-
-    private void refreshStatus(){
-
-        HashMap<Integer,Double> totalWeightageCompanywise=new HashMap<>();
-       // int totalOwnCompanyCount=0;
-        double totalOwnCompanyWeightage=0;
-        String ownCompanyName="";
-
-        for(AssetTrackingBO assetTrackingBO:displayAssetHelper.getDisplayAssetList()){
-           for(CompanyBO companyBO:assetTrackingBO.getCompanyList()){
-               if(companyBO.getIsOwn()==1){
-                  // totalOwnCompanyCount+=companyBO.getQuantity();
-                   totalOwnCompanyWeightage+=(companyBO.getQuantity()*assetTrackingBO.getWeightage());
-
-                   ownCompanyName=companyBO.getCompetitorName();
-               }
-               else {
-                   double weightage=0;
-                   if(totalWeightageCompanywise.get(companyBO.getCompetitorid())!=null)
-                       weightage=totalWeightageCompanywise.get(companyBO.getCompetitorid());
-
-                   totalWeightageCompanywise.put(companyBO.getCompetitorid(),weightage+(companyBO.getQuantity()*assetTrackingBO.getWeightage()));
-               }
-           }
-        }
-
-        double otherCompanyMaxValue=0;
-        for(int companyId:totalWeightageCompanywise.keySet()){
-
-            if(totalWeightageCompanywise.get(companyId)>otherCompanyMaxValue)
-                otherCompanyMaxValue=totalWeightageCompanywise.get(companyId);
-        }
-
-        label_company_name.setText(ownCompanyName);
-        textview_company_count.setText(String.valueOf(totalOwnCompanyWeightage));
-        textview_other_count.setText(String.valueOf(otherCompanyMaxValue));
 
 
+    @Override
+    public void updateStatus(String companyName,double ownCompanyWeightage,double otherCompanyMaxWeightage,int flag) {
 
-        if(otherCompanyMaxValue<totalOwnCompanyWeightage){
+        label_company_name.setText(companyName);
+        textview_company_count.setText(String.valueOf(ownCompanyWeightage));
+        textview_other_count.setText(String.valueOf(otherCompanyMaxWeightage));
+
+        if(flag==1){
             layout_status.setBackground(getResources().getDrawable(R.color.green_productivity));
             textView_status.setText(getResources().getString(R.string.advantage));
         }
-        else if(otherCompanyMaxValue==totalOwnCompanyWeightage){
+        else if(flag==2){
             layout_status.setBackground(getResources().getDrawable(R.color.colorPrimaryOrange));
             textView_status.setText(getResources().getString(R.string.equal));
         }
-        else {
+        else if(flag==3) {
             layout_status.setBackground(getResources().getDrawable(R.color.colorPrimaryRed));
             textView_status.setText(getResources().getString(R.string.dis_advantage));
         }
+        else {
+            layout_status.setVisibility(View.GONE);
+        }
+
     }
+
+
 }

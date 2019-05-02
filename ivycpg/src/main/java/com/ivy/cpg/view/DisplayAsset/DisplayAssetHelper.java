@@ -10,6 +10,8 @@ import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 
@@ -103,5 +105,64 @@ public class DisplayAssetHelper {
 
         return clone;
     }
+
+    public boolean saveDisplayAsset(Context context,String status,double ownCompanyScore,double otherCompanyMaxScore){
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+        );
+        try {
+
+            db.openDataBase();
+            String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
+                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
+
+            String headerColumns = "Uid,RetailerId,ridSF,visitId,Date,status,ownShare,competitorShare";
+            String detailColumns = "Uid,CompetitorId,DisplayAssetId,count,weightage,score";
+
+
+
+
+            boolean isData=false;
+            for(AssetTrackingBO assetTrackingBO:getDisplayAssetList()) {
+                for (CompanyBO companyBO : assetTrackingBO.getCompanyList()) {
+
+                    String detailValues = id + ","
+                            + companyBO.getCompetitorid() + ","
+                            + assetTrackingBO.getAssetID() + "," + companyBO.getQuantity() + ","
+                            + assetTrackingBO.getWeightage() + ","
+                            + (companyBO.getQuantity()*assetTrackingBO.getWeightage());
+
+                    db.insertSQL(DataMembers.tbl_DisplayAssetTDetails, detailColumns,
+                            detailValues);
+                    isData=true;
+                }
+            }
+
+            if(isData) {
+                String headerValues = id + ","
+                        + mBusinessModel.getRetailerMasterBO().getRetailerID() + ","
+                        + StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRidSF())
+                        + "," + StringUtils.QT(mBusinessModel.getAppDataProvider().getUniqueId()) + ","
+                        + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                        + StringUtils.QT(status)+
+                        ","+ownCompanyScore+","+otherCompanyMaxScore;
+
+                db.insertSQL(DataMembers.tbl_DisplayAssetHeader, headerColumns,
+                        headerValues);
+            }
+
+
+
+            db.closeDB();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+            return false;
+        }
+
+        return true;
+    }
+
 
 }
