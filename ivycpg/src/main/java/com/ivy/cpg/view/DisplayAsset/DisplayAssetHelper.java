@@ -43,9 +43,6 @@ public class DisplayAssetHelper {
         return mDisplayAssetList;
     }
 
-    public void setDisplayAssetList(ArrayList<AssetTrackingBO> mDisplayAssetList) {
-        this.mDisplayAssetList = mDisplayAssetList;
-    }
 
     public void downloadDisplayAssets(Context context){
 
@@ -97,7 +94,7 @@ public class DisplayAssetHelper {
         }
     }
 
-    public static ArrayList<CompanyBO> cloneCompanyList(
+    private static ArrayList<CompanyBO> cloneCompanyList(
             ArrayList<CompanyBO> list) {
         ArrayList<CompanyBO> clone = new ArrayList<>(list.size());
         for (CompanyBO item : list)
@@ -113,7 +110,7 @@ public class DisplayAssetHelper {
         try {
 
             db.openDataBase();
-            String id = mBusinessModel.userMasterHelper.getUserMasterBO().getUserid()
+            String id = mBusinessModel.getAppDataProvider().getUser().getUserid()
                     + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             String headerColumns = "Uid,RetailerId,ridSF,visitId,Date,status,ownShare,competitorShare";
@@ -140,7 +137,7 @@ public class DisplayAssetHelper {
 
             if(isData) {
                 String headerValues = id + ","
-                        + mBusinessModel.getRetailerMasterBO().getRetailerID() + ","
+                        +  mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID() + ","
                         + StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRidSF())
                         + "," + StringUtils.QT(mBusinessModel.getAppDataProvider().getUniqueId()) + ","
                         + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","

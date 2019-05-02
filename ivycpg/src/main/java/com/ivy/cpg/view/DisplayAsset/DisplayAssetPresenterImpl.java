@@ -3,27 +3,19 @@ package com.ivy.cpg.view.DisplayAsset;
 import android.content.Context;
 
 import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
-import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CompanyBO;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.DateTimeUtils;
-import com.ivy.utils.StringUtils;
-
-import java.util.ArrayList;
 import java.util.HashMap;
 
 public class DisplayAssetPresenterImpl implements DisplayAssetContractor.presenter{
 
-    Context context;
-    BusinessModel businessModel;
-    DisplayAssetHelper displayAssetHelper;
-    DisplayAssetContractor.View assetView;
-    String displayAssetStatus;
+    private Context context;
+    private BusinessModel businessModel;
+    private DisplayAssetHelper displayAssetHelper;
+    private DisplayAssetContractor.View assetView;
+    private String displayAssetStatus;
 
-    double ownCompanyScore,otherCompanyMaxScore;
+    private double ownCompanyScore,otherCompanyMaxScore;
 
     public DisplayAssetPresenterImpl(Context mContext, BusinessModel mBModel,DisplayAssetHelper displayAssetHelper){
 
@@ -101,7 +93,7 @@ public class DisplayAssetPresenterImpl implements DisplayAssetContractor.present
 
     }
 
-    public String getDisplayAssetStatus() {
+    private String getDisplayAssetStatus() {
         return displayAssetStatus;
     }
 

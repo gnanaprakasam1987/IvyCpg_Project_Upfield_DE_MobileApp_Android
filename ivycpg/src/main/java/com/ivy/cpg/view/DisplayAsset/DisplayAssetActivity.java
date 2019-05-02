@@ -1,14 +1,12 @@
 package com.ivy.cpg.view.DisplayAsset;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
@@ -22,14 +20,12 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.CompanyBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements DisplayAssetContractor.View {
 
@@ -66,10 +62,12 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
         if (toolbar != null) {
 
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
-            setScreenTitle(menuName);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            if(getSupportActionBar()!=null) {
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+                setScreenTitle(menuName);
+                getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+            }
         }
 
         displayAssetHelper=DisplayAssetHelper.getInstance(this);
