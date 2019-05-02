@@ -93,8 +93,6 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.month_item_calender, parent, false);
             viewHolder = new MonthViewHolder(view);
         }
-        // int height = parent.getMeasuredHeight() / 6;
-        //view.setMinimumHeight(height);
         return viewHolder;
     }
 
@@ -154,7 +152,7 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
                     holder.TVDate.setBackground(mContext.getResources().getDrawable(R.drawable.circle_calendar_select));
                 } else {
                     holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.FullBlack));
-                    holder.TVDate.setBackgroundColor(mContext.getResources().getColor(R.color.zxing_transparent));
+                    holder.TVDate.setBackgroundColor(mContext.getResources().getColor(R.color.transparent));
                 }
 
             }

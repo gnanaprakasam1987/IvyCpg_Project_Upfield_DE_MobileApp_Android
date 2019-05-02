@@ -9,22 +9,25 @@
 
     <TextView
         android:id="@+id/tv_date"
-        style="@style/TextViewListItemPrimary"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
+        style="@style/TextViewNormal"
         android:layout_width="@dimen/dimen_40dp"
         android:layout_height="@dimen/dimen_40dp"
-        android:padding="@dimen/dimen_2dp"/>
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/list_margin"
+        android:gravity="center"
+        android:padding="@dimen/dimen_2dp" />
 
     <TextView
         android:id="@+id/tv_retailers"
-        style="@style/TextViewListItemSecondaryHighlight"
+        style="@style/TextViewCaptionNormal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_date"
         android:layout_centerHorizontal="true"
+        android:layout_marginStart="@dimen/dimen_2dp"
+        android:layout_marginLeft="@dimen/dimen_2dp"
         android:layout_marginTop="@dimen/dimen_2dp"
-        android:gravity="center" />
+        android:gravity="start" />
 
 </RelativeLayout>
 

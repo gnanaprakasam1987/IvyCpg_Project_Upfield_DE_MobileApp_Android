@@ -24,11 +24,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.alamkanak.weekview.DateTimeInterpreter;
-import com.alamkanak.weekview.MonthLoader;
-import com.alamkanak.weekview.WeekView;
-import com.alamkanak.weekview.WeekViewEvent;
 import com.ivy.calendarlibrary.monthview.MonthView;
+import com.ivy.calendarlibrary.weekview.DateTimeInterpreter;
+import com.ivy.calendarlibrary.weekview.MonthLoader;
+import com.ivy.calendarlibrary.weekview.WeekView;
+import com.ivy.calendarlibrary.weekview.WeekViewEvent;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
@@ -42,6 +42,7 @@ import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
 import com.ivy.ui.offlineplan.calendar.di.CalendarPlanModule;
 import com.ivy.ui.offlineplan.calendar.di.DaggerCalendarPlanComponent;
 import com.ivy.ui.retailer.view.map.RetailerMapFragment;
+import com.ivy.utils.DateTimeUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -142,20 +143,30 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
         // Set long press listener for empty view
         mWeekView.setEmptyViewLongPressListener(this);
+        mWeekView.setXScrollingSpeed(0);
+        mWeekView.setTimeTextPaint(getResources().getColor(R.color.black_bg1));
 
         ivNext.setOnClickListener(v -> {
-            presenter.onNextMonthClicked();
-
+            if (mSelectedType == DAY)
+                presenter.onNextDayClicked();
+            else if (mSelectedType == WEEK)
+                presenter.onNextWeekClicked();
+            else
+                presenter.onNextMonthClicked();
 
         });
 
         ivPrev.setOnClickListener(v -> {
-            presenter.onPreviousMonthClicked();
+            if (mSelectedType == DAY)
+                presenter.onPreviousDayClicked();
+            else if (mSelectedType == WEEK)
+                presenter.onPreviousWeekClicked();
+            else
+                presenter.onPreviousMonthClicked();
 
         });
 
         btnSwitch.setOnClickListener(v -> showSelectionDialog());
-
     }
 
     @Override
@@ -184,7 +195,6 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
         mWeekView.setNumberOfVisibleDays(7);
         mWeekView.goToDate(date);
-        mWeekView.setFirstDayOfWeek(Calendar.MONDAY);
     }
 
     private void setSelectionAdapter() {
@@ -261,16 +271,16 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     public List<? extends WeekViewEvent> onMonthChange(int newYear, int newMonth) {
         List<WeekViewEvent> events = new ArrayList<>();
         Calendar startTime = Calendar.getInstance();
-        startTime.set(Calendar.HOUR_OF_DAY, 3);
-        startTime.set(Calendar.MINUTE, 0);
-        startTime.set(Calendar.MONTH, newMonth - 1);
-        startTime.set(Calendar.YEAR, newYear);
-        Calendar endTime = (Calendar) startTime.clone();
-        endTime.add(Calendar.HOUR, 1);
-        endTime.set(Calendar.MONTH, newMonth - 1);
-        WeekViewEvent event = new WeekViewEvent(1, "Retailer 123", startTime, endTime);
-        event.setColor(getResources().getColor(R.color.Orange));
-        events.add(event);
+        startTime.setTime(DateTimeUtils.convertStringToDateObject("2019/05/01", "yyyy/MM/dd"));
+        if (newMonth == startTime.get(Calendar.MONTH) + 1) {
+            startTime.set(Calendar.HOUR_OF_DAY, 3);
+            startTime.set(Calendar.MINUTE, 0);
+            Calendar endTime = (Calendar) startTime.clone();
+            endTime.add(Calendar.HOUR, 1);
+            WeekViewEvent event = new WeekViewEvent(1, "Retailer 123", "Retailer Address", startTime, endTime);
+            event.setColor(getResources().getColor(R.color.colorBlueripple_selected));
+            events.add(event);
+        }
 
 
         startTime = Calendar.getInstance();
@@ -278,12 +288,12 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         startTime.set(Calendar.MINUTE, 0);
         startTime.set(Calendar.MONTH, newMonth - 1);
         startTime.set(Calendar.YEAR, newYear);
-        endTime = (Calendar) startTime.clone();
+        Calendar endTime = (Calendar) startTime.clone();
         endTime.set(Calendar.HOUR_OF_DAY, 7);
         endTime.set(Calendar.MINUTE, 0);
         endTime.set(Calendar.MONTH, newMonth - 1);
-        event = new WeekViewEvent(10, "Retailer 007", startTime, endTime);
-        event.setColor(getResources().getColor(R.color.colorPrimaryDarkGreen));
+        WeekViewEvent event = new WeekViewEvent(10, "Retailer 007", startTime, endTime);
+        event.setColor(getResources().getColor(R.color.colorBlueripple_selected));
         events.add(event);
 
         return events;
@@ -304,25 +314,33 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     }
 
-    private void setupDateTimeInterpreter(final boolean shortDate) {
+    private void setupDateTimeInterpreter(final boolean weekDate) {
         mWeekView.setDateTimeInterpreter(new DateTimeInterpreter() {
             @Override
             public String interpretDate(Calendar date) {
-                SimpleDateFormat weekdayNameFormat = new SimpleDateFormat("EEE", Locale.getDefault());
-                String weekday = weekdayNameFormat.format(date.getTime());
-                SimpleDateFormat format = new SimpleDateFormat(" M/d", Locale.getDefault());
-
-                // All android api level do not have a standard way of getting the first letter of
-                // the week day name. Hence we get the first char programmatically.
-                // Details: http://stackoverflow.com/questions/16959502/get-one-letter-abbreviation-of-week-day-of-a-date-in-java#answer-16959657
-                if (shortDate)
-                    weekday = String.valueOf(weekday.charAt(0));
-                return weekday.toUpperCase() + format.format(date.getTime());
+                String dayText = "";
+                if (weekDate) {
+                    SimpleDateFormat weekdayNameFormat = new SimpleDateFormat("EEE", Locale.getDefault());
+                    String weekday = weekdayNameFormat.format(date.getTime());
+                    SimpleDateFormat format = new SimpleDateFormat(" d", Locale.getDefault());
+                    dayText = String.valueOf(weekday.charAt(0)).toUpperCase() + format.format(date.getTime());
+                } else {
+                    dayText = DateTimeUtils.convertDateObjectToRequestedFormat(date.getTime(), "d,EEEE");
+                }
+                return dayText;
             }
 
             @Override
             public String interpretTime(int hour) {
-                return hour > 11 ? (hour - 12) + " PM" : (hour == 0 ? "12 AM" : hour + " AM");
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                calendar.set(Calendar.MINUTE, 0);
+                try {
+                    return DateTimeUtils.convertDateObjectToRequestedFormat(calendar.getTime(), "HH:mm");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return "";
+                }
             }
         });
     }
@@ -346,15 +364,15 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         if (item.getItemId() == android.R.id.home) {
             startActivity(new Intent(getActivity(),
                     HomeScreenActivity.class));
-            ((Activity)mContext).finish();
+            ((Activity) mContext).finish();
             return true;
         } else if (item.getItemId() == R.id.map_retailer) {
 
-            FragmentManager fm = ((FragmentActivity)mContext).getSupportFragmentManager();
+            FragmentManager fm = ((FragmentActivity) mContext).getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
 
             RetailerMapFragment fragment = new RetailerMapFragment();
-            ft.replace(R.id.fragment_content, fragment,MENU_MAP_PLAN);
+            ft.replace(R.id.fragment_content, fragment, MENU_MAP_PLAN);
             ft.commit();
             return true;
         }

@@ -176,20 +176,21 @@
         android:layout_below="@+id/ll_titleList" />
 
 
-    <com.alamkanak.weekview.WeekView
+    <com.ivy.calendarlibrary.weekview.WeekView
         android:id="@+id/week_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/llMonthHeader"
         android:visibility="gone"
         app:columnGap="8dp"
-        app:eventTextColor="@android:color/white"
+        app:eventTextColor="@color/keypad_bg_color"
         app:headerColumnPadding="8dp"
-        app:headerColumnTextColor="@color/black_bg1"
+        app:headerColumnTextColor="@color/white"
         app:headerRowBackgroundColor="?attr/primarycolor"
         app:headerRowPadding="12dp"
-        app:hourHeight="60dp"
-        app:textSize="@dimen/list_header_text_size" />
+        app:hourHeight="@dimen/dimen_60dp"
+        app:textSize="@dimen/list_header_text_size"
+        app:todayHeaderTextColor="?attr/accentcolor" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_retailer"
