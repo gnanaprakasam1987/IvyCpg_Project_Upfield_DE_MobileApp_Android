@@ -368,7 +368,7 @@ public class SerializedAssetAdapter extends BaseAdapter {
                         holder.reason1Spin.setSelection(0);
                         holder.mConditionSpin.setEnabled(true);
                         holder.mConditionSpin.setSelection(0);
-                        holder.mInstallDate.setEnabled(!holder.assetBO.getmLastInstallDate().isEmpty());
+                        holder.mInstallDate.setEnabled(holder.assetBO.getmLastInstallDate().isEmpty());
                         holder.mServiceDate.setEnabled(true);
 
                         if (!holder.assetBO.getmLastInstallDate().isEmpty())
@@ -526,7 +526,7 @@ public class SerializedAssetAdapter extends BaseAdapter {
                     .getItemIndex(holder.assetBO.getConditionID(),
                             mAssetPresenter.getAssetConditionList(), false));
 
-            holder.mInstallDate.setEnabled(!holder.assetBO.getmLastInstallDate().isEmpty());
+            holder.mInstallDate.setEnabled(holder.assetBO.getmLastInstallDate().isEmpty());
             holder.mServiceDate.setEnabled(true);
 
         } else {
