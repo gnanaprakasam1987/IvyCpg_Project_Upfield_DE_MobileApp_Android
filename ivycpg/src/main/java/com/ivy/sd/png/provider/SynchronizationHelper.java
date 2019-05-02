@@ -831,6 +831,10 @@ SynchronizationHelper {
             exceptionTableList.add("LastVisitPlanogramImageDetails");
         }
 
+        if(bmodel.configurationMasterHelper.IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN){
+            updateLastVisitDisplayAsset();
+            exceptionTableList.add("LastVisitDisplayAsset");
+        }
 
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -4187,6 +4191,49 @@ SynchronizationHelper {
             db.closeDB();
         }
     }
+
+    private void updateLastVisitDisplayAsset() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        try {
+            db.createDataBase();
+            db.openDataBase();
+
+            String sql = "select STD.retailerid from DisplayAssetTrackingDetails STD INNER JOIN DisplayAssetTrackingHeader STH ON STD.uid=STH.uid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            Cursor cur = db.selectSQL(sql);
+            if (cur != null) {
+                while (cur.moveToNext()) {
+                    sql = "Select retailerid from LastVisitDisplayAsset where retailerid=" + cur.getString(0);
+                    Cursor cur1 = db.selectSQL(sql);
+                    if (cur1 != null && cur1.getCount() > 0) {
+                        db.executeQ("delete from LastVisitDisplayAsset where retailerid=" + cur.getString(0));
+                        cur1.close();
+                    }
+                }
+                cur.close();
+            }
+
+            String sql2 = "select STH.retailerid,STD.CompetitorId,STD.DisplayAssetId,STD.count from DisplayAssetTrackingDetails STD INNER JOIN DisplayAssetTrackingHeader STH ON STD.uid=STH.uid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            Cursor cur2 = db.selectSQL(sql2);
+            if (cur2 != null) {
+                while (cur2.moveToNext()) {
+                    db.insertSQL("LastVisitDisplayAsset", "retailerid,CompetitorId,DisplayAssetId,count",
+                            cur2.getString(0)
+                                    + "," + cur2.getString(1)
+                                    + "," + cur2.getString(2)
+                                    + "," + cur2.getString(3));
+                }
+                cur2.close();
+            }
+
+
+
+            db.closeDB();
+        } catch (Exception ex) {
+            Commons.printException(ex);
+            db.closeDB();
+        }
+    }
+
 
     public int getTotalRetailersCount() {
         DBUtil db;

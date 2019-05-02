@@ -71,7 +71,7 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
         }
 
         displayAssetHelper=DisplayAssetHelper.getInstance(this);
-        presenter=new DisplayAssetPresenterImpl(this,businessModel,displayAssetHelper);
+        presenter=new DisplayAssetPresenterImpl(displayAssetHelper);
         presenter.setView(this);
 
         expandableListView=findViewById(R.id.listview_assets);

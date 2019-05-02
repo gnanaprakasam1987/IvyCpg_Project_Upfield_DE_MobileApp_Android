@@ -9,18 +9,14 @@ import java.util.HashMap;
 
 public class DisplayAssetPresenterImpl implements DisplayAssetContractor.presenter{
 
-    private Context context;
-    private BusinessModel businessModel;
     private DisplayAssetHelper displayAssetHelper;
     private DisplayAssetContractor.View assetView;
     private String displayAssetStatus;
 
     private double ownCompanyScore,otherCompanyMaxScore;
 
-    public DisplayAssetPresenterImpl(Context mContext, BusinessModel mBModel,DisplayAssetHelper displayAssetHelper){
+    public DisplayAssetPresenterImpl(DisplayAssetHelper displayAssetHelper){
 
-        this.context=mContext;
-        this.businessModel=mBModel;
         this.displayAssetHelper=displayAssetHelper;
 
     }

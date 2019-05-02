@@ -1203,6 +1203,9 @@ public class ConfigurationMasterHelper {
     public boolean IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN;
     public static final String CODE_PLANOGRAM_RETAIN_LAST_VISIT_TRAN = "PLANO01";
 
+    public boolean IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN;
+    public static final String CODE_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN = "DASSET01";
+
     public static final String CODE_PERRPT_REFRESH = "PERFRPTSYNC";
 
     public boolean IS_SF_NORM_CHECK;
@@ -2754,6 +2757,8 @@ public class ConfigurationMasterHelper {
         this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP =true;
         else this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP =false;
         this.ret_skip_otp_flag = hashMapHHTModuleOrder.get(CODE_SHOW_LOCATION_PWD_DIALOG) != null ? hashMapHHTModuleOrder.get(CODE_SHOW_LOCATION_PWD_DIALOG) : 0;
+
+        this.IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN=hashMapHHTModuleConfig.get(CODE_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) : false;
 
     }
 
