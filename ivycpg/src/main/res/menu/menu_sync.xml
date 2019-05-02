@@ -16,7 +16,7 @@
 
     <item
         android:id="@+id/menu_sync_report"
-        IvyDist:showAsAction="ifRoom"
+        IvyDist:showAsAction="collapseActionView"
         android:icon="@drawable/ic_action_icon_reports"
         android:title="@string/report"
         android:orderInCategory="1015"/>
@@ -42,5 +42,12 @@
         android:title="@string/file_download"
         android:orderInCategory="1016"
         android:visible="false"/>
+
+    <item
+        android:id="@+id/menu_download_report"
+        IvyDist:showAsAction="collapseActionView"
+        android:icon="@drawable/ic_action_icon_reports"
+        android:title="Download Report"
+        android:orderInCategory="1017"/>
 
 </menu>
