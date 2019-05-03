@@ -41,6 +41,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -103,7 +104,8 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
     private boolean isSerialNumberCaptured;
 
     private ArrayAdapter<AssetAddDetailBO> mAssetSpinAdapter;
-
+    private TextView txtNFCLabel, txtSerialNo;
+    String nfcTag = "", serialNoTag = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -122,19 +124,19 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             setScreenTitle(getResources().getString(R.string.addnewasset));
         }
 
-        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
-                R.id.txtNFCLabel).getTag()) != null)
-            ((TextView) findViewById(R.id.txtNFCLabel))
-                    .setText(mBModel.labelsMasterHelper
-                            .applyLabels(findViewById(
-                                    R.id.txtNFCLabel).getTag()));
+        txtNFCLabel = findViewById(R.id.txtNFCLabel);
+        ((TextView) findViewById(R.id.txtNFCLabel)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(R.id.txtNFCLabel).getTag()) != null){
+            nfcTag = mBModel.labelsMasterHelper.applyLabels(findViewById(R.id.txtNFCLabel).getTag());
+            ((TextView) findViewById(R.id.txtNFCLabel)).setText(nfcTag);
+        }
 
-        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
-                R.id.label_scan).getTag()) != null)
-            ((TextView) findViewById(R.id.label_scan))
-                    .setText(mBModel.labelsMasterHelper
-                            .applyLabels(findViewById(
-                                    R.id.label_scan).getTag()));
+        txtSerialNo = findViewById(R.id.label_scan);
+        ((TextView) findViewById(R.id.label_scan)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(R.id.label_scan).getTag()) != null) {
+            serialNoTag = mBModel.labelsMasterHelper.applyLabels(findViewById(R.id.label_scan).getTag());
+            ((TextView) findViewById(R.id.label_scan)).setText(serialNoTag);
+        }
 
         if (mBModel.labelsMasterHelper.applyLabels(findViewById(
                 R.id.label_asset_type).getTag()) != null)
@@ -532,6 +534,22 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             try {
                 if (mAsset.getSelectedItemPosition() != 0
                         && serialNoValidation()) {
+                    if(editext_NFC_number.getText().toString().trim().equals("")){
+                        Toast.makeText(AddSerializedAssetActivity.this,
+                                getResources()
+                                        .getString(
+                                                R.string.enter) + " " + nfcTag,
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    if(mSNO.getText().toString().trim().equals("")){
+                        Toast.makeText(AddSerializedAssetActivity.this,
+                                getResources()
+                                        .getString(
+                                                R.string.enter) + " " + serialNoTag,
+                                Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     if (!assetTrackingHelper
                             .getUniqueSerialNo(mSNO.getText()
                                     .toString())) {
