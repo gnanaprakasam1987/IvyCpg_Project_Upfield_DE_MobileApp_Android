@@ -734,11 +734,27 @@ public class WeekView extends View {
             String dayLabel = getDateTimeInterpreter().interpretDate(day);
             if (dayLabel == null)
                 throw new IllegalStateException("A DateTimeInterpreter must not return null date");
-            canvas.drawText(dayLabel, startPixel + mWidthPerDay / 2, mHeaderTextHeight + mHeaderRowPadding, sameDay ? mTodayHeaderTextPaint : mHeaderTextPaint);
+            //canvas.drawText(dayLabel, startPixel + mWidthPerDay / 2, mHeaderTextHeight + mHeaderRowPadding, sameDay ? mTodayHeaderTextPaint : mHeaderTextPaint);
+            drawMultiLineText(dayLabel, startPixel + mWidthPerDay / 2, mHeaderTextHeight + mHeaderRowPadding, sameDay ? mTodayHeaderTextPaint : mHeaderTextPaint, canvas);
             drawAllDayEvents(day, startPixel, canvas);
             startPixel += mWidthPerDay + mColumnGap;
         }
 
+    }
+
+    void drawMultiLineText(String str, float x, float y, Paint paint, Canvas canvas) {
+        String[] lines = str.split("\n");
+        float txtSize = -paint.ascent() + paint.descent();
+        paint.setTextAlign(Paint.Align.CENTER);
+
+        if (paint.getStyle() == Paint.Style.FILL_AND_STROKE || paint.getStyle() == Paint.Style.STROKE) {
+            txtSize += paint.getStrokeWidth(); //add stroke width to the text size
+        }
+        float lineSpace = txtSize * 0.2f;  //default line spacing
+
+        for (int i = 0; i < lines.length; ++i) {
+            canvas.drawText(lines[i], x, y + (txtSize + lineSpace) * i, paint);
+        }
     }
 
     /**
@@ -884,9 +900,11 @@ public class WeekView extends View {
         }
 
         // Prepare the location of the event.
-        if (event.getLocation() != null) {
-            bob.append("\n"); // A newline
-            bob.append(event.getLocation());
+        if (getNumberOfVisibleDays() == 1) {
+            if (event.getLocation() != null) {
+                bob.append("\n"); // A newline
+                bob.append(event.getLocation());
+            }
         }
 
         int availableHeight = (int) (rect.bottom - originalTop - mEventPadding * 2);
@@ -1460,7 +1478,7 @@ public class WeekView extends View {
         mTimeTextPaint.setColor(timeTextPaint);
     }
 
-    public int getTimeTextColor(){
+    public int getTimeTextColor() {
         return mTimeTextColor;
     }
 

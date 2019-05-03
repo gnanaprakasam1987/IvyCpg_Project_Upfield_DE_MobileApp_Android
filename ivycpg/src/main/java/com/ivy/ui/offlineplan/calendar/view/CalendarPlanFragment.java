@@ -11,6 +11,8 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.text.SpannableStringBuilder;
+import android.text.style.StyleSpan;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -35,6 +37,7 @@ import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 import com.ivy.ui.offlineplan.calendar.CalendarPlanContract;
 import com.ivy.ui.offlineplan.calendar.adapter.CalendarClickListner;
 import com.ivy.ui.offlineplan.calendar.adapter.MonthViewAdapter;
@@ -94,6 +97,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     private int mSelectedType = 0;
     private final int MONTH = 0, DAY = 1, WEEK = 2;
     private Context mContext;
+    private MonthViewAdapter monthViewAdapter;
 
     @Override
     public void initializeDi() {
@@ -171,7 +175,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     @Override
     public void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList) {
-        MonthViewAdapter monthViewAdapter = new MonthViewAdapter(getActivity(), dayInWeekCount, mCalenderAllList, mAllowedDates, this);
+        monthViewAdapter = new MonthViewAdapter(getActivity(), dayInWeekCount, mCalenderAllList, mAllowedDates, this);
         rvCalendar.setAdapter(monthViewAdapter);
     }
 
@@ -186,7 +190,6 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
         mWeekView.setNumberOfVisibleDays(1);
         mWeekView.goToDate(date);
-
     }
 
     @Override
@@ -195,6 +198,11 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
         mWeekView.setNumberOfVisibleDays(7);
         mWeekView.goToDate(date);
+    }
+
+    @Override
+    public void refreshGrid() {
+        monthViewAdapter.notifyDataSetChanged();
     }
 
     private void setSelectionAdapter() {
@@ -256,7 +264,6 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                 btnSwitch.setText(getResources().getString(R.string.week));
                 break;
         }
-
     }
 
     @Override
@@ -266,6 +273,12 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         mSelectedType = DAY;
         switchViews();
     }
+
+    @Override
+    public ArrayList<DateWisePlanBo> getDaysPlan(String date) {
+        return presenter.getADayPlan(date);
+    }
+
 
     @Override
     public List<? extends WeekViewEvent> onMonthChange(int newYear, int newMonth) {
@@ -278,23 +291,34 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
             Calendar endTime = (Calendar) startTime.clone();
             endTime.add(Calendar.HOUR, 1);
             WeekViewEvent event = new WeekViewEvent(1, "Retailer 123", "Retailer Address", startTime, endTime);
-            event.setColor(getResources().getColor(R.color.colorBlueripple_selected));
+            event.setColor(R.attr.colorPrimary);
             events.add(event);
         }
 
 
         startTime = Calendar.getInstance();
-        startTime.set(Calendar.HOUR_OF_DAY, 5);
-        startTime.set(Calendar.MINUTE, 0);
-        startTime.set(Calendar.MONTH, newMonth - 1);
-        startTime.set(Calendar.YEAR, newYear);
-        Calendar endTime = (Calendar) startTime.clone();
-        endTime.set(Calendar.HOUR_OF_DAY, 7);
-        endTime.set(Calendar.MINUTE, 0);
-        endTime.set(Calendar.MONTH, newMonth - 1);
-        WeekViewEvent event = new WeekViewEvent(10, "Retailer 007", startTime, endTime);
-        event.setColor(getResources().getColor(R.color.colorBlueripple_selected));
-        events.add(event);
+        startTime.setTime(DateTimeUtils.convertStringToDateObject("2019/05/01", "yyyy/MM/dd"));
+        if (newMonth == startTime.get(Calendar.MONTH) + 1) {
+            startTime.set(Calendar.HOUR_OF_DAY, 4);
+            startTime.set(Calendar.MINUTE, 0);
+            Calendar endTime = (Calendar) startTime.clone();
+            endTime.add(Calendar.HOUR, 1);
+            WeekViewEvent event = new WeekViewEvent(1, "Retailer 123", "Retailer Address", startTime, endTime);
+            event.setColor(R.attr.colorPrimary);
+            events.add(event);
+        }
+
+        startTime = Calendar.getInstance();
+        startTime.setTime(DateTimeUtils.convertStringToDateObject("2019/05/02", "yyyy/MM/dd"));
+        if (newMonth == startTime.get(Calendar.MONTH) + 1) {
+            startTime.set(Calendar.HOUR_OF_DAY, 4);
+            startTime.set(Calendar.MINUTE, 0);
+            Calendar endTime = (Calendar) startTime.clone();
+            endTime.add(Calendar.HOUR, 1);
+            WeekViewEvent event = new WeekViewEvent(1, "Retailer 123", "Retailer Address", startTime, endTime);
+            event.setColor(R.attr.colorPrimary);
+            events.add(event);
+        }
 
         return events;
     }
@@ -323,7 +347,14 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                     SimpleDateFormat weekdayNameFormat = new SimpleDateFormat("EEE", Locale.getDefault());
                     String weekday = weekdayNameFormat.format(date.getTime());
                     SimpleDateFormat format = new SimpleDateFormat(" d", Locale.getDefault());
-                    dayText = String.valueOf(weekday.charAt(0)).toUpperCase() + format.format(date.getTime());
+
+                    SpannableStringBuilder bob = new SpannableStringBuilder();
+                    bob.append(weekday);
+                    bob.setSpan(new StyleSpan(android.graphics.Typeface.BOLD), 0, bob.length(), 0);
+                    bob.append(' ');
+                    bob.append("\n"); // A newline
+                    bob.append(format.format(date.getTime()));
+                    dayText = bob.toString();
                 } else {
                     dayText = DateTimeUtils.convertDateObjectToRequestedFormat(date.getTime(), "d,EEEE");
                 }

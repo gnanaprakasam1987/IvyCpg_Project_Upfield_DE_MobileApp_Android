@@ -2,6 +2,10 @@ package com.ivy.ui.offlineplan.calendar.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextUtils;
+import android.text.style.BulletSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +14,8 @@ import android.widget.TextView;
 
 import com.ivy.calendarlibrary.monthview.MonthView;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.DateWisePlanBO;
+import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.utils.DateTimeUtils;
@@ -155,6 +161,13 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
                     holder.TVDate.setBackgroundColor(mContext.getResources().getColor(R.color.transparent));
                 }
 
+                ArrayList<DateWisePlanBo> planList = calendarClickListner.getDaysPlan(holder.calBO.getCal_date());
+                if (planList.size() > 0) {
+                    holder.TvRetailer.setText(mContext.getResources().getString(R.string.plan_retailer_name, planList.get(0).getName()));
+                    if (planList.size() > 1)
+                        holder.TvExtras.setText(mContext.getResources().getString(R.string.plus_more, planList.size() - 1));
+
+                }
             }
 
             holder.rlItem.setOnClickListener(v -> {
@@ -170,7 +183,7 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
 
     class MonthViewHolder extends RecyclerView.ViewHolder {
         CalenderBO calBO;
-        TextView TVDate, TvRetailer;
+        TextView TVDate, TvRetailer, TvExtras;
         Boolean isValid = false;
         Boolean isDataPresent = false;
         RelativeLayout rlItem;
@@ -180,6 +193,7 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
 
             TVDate = itemView.findViewById(R.id.tv_date);
             TvRetailer = itemView.findViewById(R.id.tv_retailers);
+            TvExtras = itemView.findViewById(R.id.tv_extras);
             rlItem = itemView.findViewById(R.id.rl_date);
 
         }

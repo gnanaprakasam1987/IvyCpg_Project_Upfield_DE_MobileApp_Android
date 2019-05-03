@@ -272,4 +272,7 @@
     <string name="executed_date">Executed Date</string>
     <string name="do_you_want_to_delete_the_task">Do you want to delete the Task?</string>
 
+    <string name="plus_more">\u2022+%d More</string>
+    <string name="plan_retailer_name">\u2022+%s More</string>
+
 </resources>

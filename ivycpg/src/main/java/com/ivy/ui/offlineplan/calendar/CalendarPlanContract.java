@@ -4,6 +4,7 @@ import com.ivy.calendarlibrary.weekview.WeekViewEvent;
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
+import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
 
 import java.util.ArrayList;
@@ -23,6 +24,8 @@ public interface CalendarPlanContract {
         void loadDayView(Calendar date);
 
         void loadWeekView(Calendar date);
+
+        void refreshGrid();
     }
 
     @PerActivity
@@ -50,5 +53,7 @@ public interface CalendarPlanContract {
         void onPreviousWeekClicked();
 
         List<WeekViewEvent> getEvents(int newYear, int newMonth);
+
+        ArrayList<DateWisePlanBo> getADayPlan(String date);
     }
 }

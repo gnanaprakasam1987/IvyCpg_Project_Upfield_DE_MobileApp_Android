@@ -70,7 +70,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 HashMap<String, ArrayList<DateWisePlanBo>> datePlanHashMap= new HashMap<>();
 
                 String sql = "SELECT dwp.PlanId,dwp.DistributorId,dwp.UserId,dwp.Date,dwp.EntityId,dwp.EntityType,IFNULL(dwp.Status,'')" +
-                        ",dwp.Sequence,rm.RetailerName,StartTime,EndTime " +
+                        ",dwp.Sequence,rm.RetailerName,dwp.StartTime,dwp.EndTime " +
                         " FROM " +DataMembers.tbl_date_wise_plan +" as dwp "+
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
                         " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER'";
@@ -93,24 +93,20 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         dateWisePlanBO.setStatus(c.getString(6));
                         dateWisePlanBO.setSequence(c.getInt(7));
                         dateWisePlanBO.setName(c.getString(8));
-                        dateWisePlanBO.setEndTime(c.getString(9));
-                        dateWisePlanBO.setName(c.getString(10));
+                        dateWisePlanBO.setStartTime(c.getString(9));
+                        dateWisePlanBO.setEndTime(c.getString(10));
 
                         if (dateWisePlanBO.getStatus() != null && dateWisePlanBO.getStatus().isEmpty())
                             dateWisePlanBO.setServerData(true);
 
                         if (datePlanHashMap.get(dateWisePlanBO.getDate()) == null) {
-                            if (!c.getString(c.getColumnIndex("Status")).equals("D")) {
                                 ArrayList<DateWisePlanBo> plannedList = new ArrayList<>();
                                 plannedList.add(dateWisePlanBO);
                                 datePlanHashMap.put(dateWisePlanBO.getDate(), plannedList);
-                            }
                         } else {
-                            if (!c.getString(c.getColumnIndex("Status")).equals("D")) {
                                 ArrayList<DateWisePlanBo> plannedList = datePlanHashMap.get(dateWisePlanBO.getDate());
                                 plannedList.add(dateWisePlanBO);
                                 datePlanHashMap.put(dateWisePlanBO.getDate(), plannedList);
-                            }
                         }
                     }
                 }

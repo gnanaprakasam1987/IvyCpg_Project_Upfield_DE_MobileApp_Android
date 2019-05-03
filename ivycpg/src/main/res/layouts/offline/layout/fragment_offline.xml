@@ -183,13 +183,19 @@
         android:layout_below="@+id/llMonthHeader"
         android:visibility="gone"
         app:columnGap="8dp"
-        app:eventTextColor="@color/keypad_bg_color"
+        app:dayBackgroundColor="#05000000"
+        app:eventCornerRadius="@dimen/dimen_4dp"
+        app:eventMarginVertical="@dimen/dimen_1dp"
+        app:eventTextColor="@color/white"
+        app:eventTextSize="@dimen/list_header_secondary_text_size"
+        app:headerColumnBackground="#ffffffff"
         app:headerColumnPadding="8dp"
         app:headerColumnTextColor="@color/white"
         app:headerRowBackgroundColor="?attr/primarycolor"
-        app:headerRowPadding="12dp"
         app:hourHeight="@dimen/dimen_60dp"
+        app:overlappingEventGap="@dimen/dimen_4dp"
         app:textSize="@dimen/list_header_text_size"
+        app:todayBackgroundColor="#05000000"
         app:todayHeaderTextColor="?attr/accentcolor" />
 
     <android.support.design.widget.FloatingActionButton

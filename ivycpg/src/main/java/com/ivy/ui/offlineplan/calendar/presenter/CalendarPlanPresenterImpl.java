@@ -6,6 +6,7 @@ import com.ivy.calendarlibrary.weekview.WeekViewEvent;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 import com.ivy.ui.offlineplan.calendar.CalendarPlanContract;
 import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -20,12 +21,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
 
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 
 /**
  * Created by mansoor on 27/03/2019
@@ -39,6 +42,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     private String generalPattern = "yyyy/MM/dd";
     private Calendar currentMonth;
     private String mSelectedDate;
+    private HashMap<String, ArrayList<DateWisePlanBo>> plannedListMap;
 
     @Inject
     CalendarPlanPresenterImpl(DataManager dataManager,
@@ -75,6 +79,8 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
 
         setAllowedDates();
 
+        plannedListMap = new HashMap<>();
+
 
     }
 
@@ -92,6 +98,19 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         }
     }
 
+    private void loadPlannedDataFromDb() {
+        getCompositeDisposable().add(retailerDataManager.getAllDateRetailerPlanList()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<HashMap<String, ArrayList<DateWisePlanBo>>>() {
+                    @Override
+                    public void accept(HashMap<String, ArrayList<DateWisePlanBo>> listHashMap) throws Exception {
+                        plannedListMap = listHashMap;
+
+                    }
+                }));
+    }
+
     @Override
     public void loadCalendar() {
         ArrayList<CalenderBO> mCalenderAllList;
@@ -101,6 +120,18 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         getIvyView().loadCalendarView(mAllowedDates, dayInWeekCount, mCalenderAllList);
         getIvyView().setMonthName(DateTimeUtils.convertDateObjectToRequestedFormat(
                 currentMonth.getTime(), "MMM yyyy"));
+        getCompositeDisposable().add(retailerDataManager.getAllDateRetailerPlanList()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<HashMap<String, ArrayList<DateWisePlanBo>>>() {
+                    @Override
+                    public void accept(HashMap<String, ArrayList<DateWisePlanBo>> listHashMap) throws Exception {
+                        plannedListMap = listHashMap;
+                        getIvyView().refreshGrid();
+
+                    }
+                }));
+
 
     }
 
@@ -294,6 +325,12 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         events.add(event);
 
         return events;
+    }
+
+    @Override
+    public ArrayList<DateWisePlanBo> getADayPlan(String date) {
+        return plannedListMap.get(date) != null
+                ? plannedListMap.get(date) : new ArrayList<>();
     }
 
     @Override
