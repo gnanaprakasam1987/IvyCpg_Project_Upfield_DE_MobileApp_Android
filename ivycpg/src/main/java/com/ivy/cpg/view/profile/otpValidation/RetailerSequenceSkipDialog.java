@@ -61,7 +61,7 @@ public class RetailerSequenceSkipDialog extends Dialog implements View.OnClickLi
         titleBar.setText(strTitle);
 
         this.otpPasswordDismissListener = otpPasswordDismissListener;
-        otpValidationHelper = new OTPValidationHelper(context.getApplicationContext());
+        otpValidationHelper = OTPValidationHelper.getInstance(context);
 
         mContext = context;
         this.bmodel = (BusinessModel)context.getApplicationContext();

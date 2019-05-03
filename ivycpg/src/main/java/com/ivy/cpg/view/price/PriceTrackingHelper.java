@@ -36,7 +36,7 @@ public class PriceTrackingHelper {
     public boolean SHOW_PRICE_COMPLIANCE;
     public boolean SHOW_PRICE_TAG_CHECK;
     public boolean SHOW_PRICE_LASTVP;
-    public boolean IS_PRICE_CHANGE_REASON;
+    public int IS_PRICE_CHANGE_REASON;
     public boolean SHOW_PRICE_LOCATION_FILTER;
 
     // 0 - product ,1 - Competitor product , 2 - Product & Competitior product
@@ -509,7 +509,7 @@ public class PriceTrackingHelper {
     public void updateLastVisitPriceAndMRP() {
         //mTaggedProducts list only used in PriceCheck screen. So updating only in mTaggedProducts
         for (ProductMasterBO productMasterBO : bmodel.productHelper.getTaggedProducts()) {
-            for(LocationBO locationBO:productMasterBO.getLocations()){
+            for (LocationBO locationBO : productMasterBO.getLocations()) {
 
                 locationBO.setPrice_pc(locationBO.getPrevPrice_pc());
                 locationBO.setPrice_ca(locationBO.getPrevPrice_ca());
@@ -580,7 +580,7 @@ public class PriceTrackingHelper {
             SHOW_PRICE_CHANGED = false;
             SHOW_PRICE_COMPLIANCE = false;
             LOAD_PRICE_COMPETITOR = 0;
-            IS_PRICE_CHANGE_REASON = false;
+            IS_PRICE_CHANGE_REASON = 0;
             IS_LOAD_PRICE_COMPETITOR = false;
             SHOW_PREV_MRP_IN_PRICE = false;
             SHOW_PRICE_LASTVP = false;
@@ -610,8 +610,9 @@ public class PriceTrackingHelper {
                     if (c.moveToNext()) {
                         codeValue = c.getString(0);
                     }
+                    c.close();
                 }
-                c.close();
+
             }
 
             if (codeValue != null) {
@@ -652,33 +653,46 @@ public class PriceTrackingHelper {
                         case "SRP":
                             this.SHOW_PRICE_SRP = true;
                             break;
-                        case "PC":
-                            this.SHOW_PRICE_COMPLIANCE = true;
-                            break;
                         case "PT":
                             this.SHOW_PRICE_TAG_CHECK = true;
                             break;
-                        case "PREVMRP":
+                        case "LMRP":
                             this.SHOW_PREV_MRP_IN_PRICE = true;
                             break;
-                        case "LVP":
+                        case "LSRP":
                             this.SHOW_PRICE_LASTVP = true;
                             break;
-                        case "PCHG":
-                            this.SHOW_PRICE_CHANGED = true;
-                            break;
-                        case "PRSNCHG":
-                            this.IS_PRICE_CHANGE_REASON = true;
-                            break;
-                        case "LOC":
-                            this.SHOW_PRICE_LOCATION_FILTER = true;
-                            break;
-
                     }
 
                 }
             }
 
+
+            String CODE_PRICE_CHANGED = "PRICE_CHANGED";
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + StringUtils.QT(CODE_PRICE_CHANGED) + " and ForSwitchSeller = 0 and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.SHOW_PRICE_CHANGED = true;
+                    this.IS_PRICE_CHANGE_REASON = c.getInt(0);
+                }
+                c.close();
+            }
+
+
+            String CODE_PRICE_COMPLIANCE = "PRICE_COMPLIANCE";
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + StringUtils.QT(CODE_PRICE_COMPLIANCE) + " and ForSwitchSeller = 0 and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.SHOW_PRICE_COMPLIANCE = true;
+                }
+                c.close();
+            }
 
             String CODE_PRICE_COMPETITOR = "PRICE_COMPETITOR";
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
@@ -693,6 +707,17 @@ public class PriceTrackingHelper {
                 c.close();
             }
 
+            String CODE_PRICE_LOCATION = "PRICE02";
+            sql = "select RField from "
+                    + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + StringUtils.QT(CODE_PRICE_LOCATION) + " and ForSwitchSeller = 0 and Flag=1";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    this.SHOW_PRICE_LOCATION_FILTER = true;
+                }
+                c.close();
+            }
 
             db.closeDB();
         } catch (Exception e) {

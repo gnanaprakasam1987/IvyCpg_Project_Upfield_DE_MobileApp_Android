@@ -1,5 +1,6 @@
 package com.ivy.ui.photocapture.presenter;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.label.LabelsDataManager;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManager;
@@ -32,6 +33,8 @@ import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.TestScheduler;
 
+import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
+import static com.ivy.utils.DateTimeUtils.now;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
@@ -306,7 +309,10 @@ public class PhotoCapturePresenterTest {
 
         HashMap<String, PhotoCaptureLocationBO> mockMap = new HashMap<>();
         given(photoCaptureDataManager.updatePhotoCaptureDetails(mockMap)).willReturn(Single.just(true));
-        given(outletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME))).willReturn(Single.just(true));
+        String date = DateTimeUtils.now(DATE_GLOBAL) + " " + DateTimeUtils.now(DateTimeUtils.TIME);
+        if (mockConfigurationHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
+            date = IvyConstants.DEFAULT_TIME_CONSTANT;
+        given(outletTimeStampDataManager.updateTimeStampModuleWise(date)).willReturn(Single.just(true));
         given(mDataManager.updateModuleTime(HomeScreenTwo.MENU_PHOTO)).willReturn(Single.just(true));
 
         mPresenter.onSaveButtonClick();
@@ -324,7 +330,10 @@ public class PhotoCapturePresenterTest {
 
         HashMap<String, PhotoCaptureLocationBO> mockMap = new HashMap<>();
         given(photoCaptureDataManager.updatePhotoCaptureDetails(mockMap)).willReturn(Single.just(false));
-        given(outletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME))).willReturn(Single.just(true));
+        String date = DateTimeUtils.now(DATE_GLOBAL) + " " + DateTimeUtils.now(DateTimeUtils.TIME);
+        if (mockConfigurationHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
+            date = IvyConstants.DEFAULT_TIME_CONSTANT;
+        given(outletTimeStampDataManager.updateTimeStampModuleWise(date)).willReturn(Single.just(true));
         given(mDataManager.updateModuleTime(HomeScreenTwo.MENU_PHOTO)).willReturn(Single.just(true));
 
         mPresenter.onSaveButtonClick();
@@ -342,7 +351,10 @@ public class PhotoCapturePresenterTest {
 
         HashMap<String, PhotoCaptureLocationBO> mockMap = new HashMap<>();
         given(photoCaptureDataManager.updatePhotoCaptureDetails(mockMap)).willReturn(Single.just(true));
-        given(outletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME))).willReturn(Single.just(false));
+        String date = DateTimeUtils.now(DATE_GLOBAL) + " " + DateTimeUtils.now(DateTimeUtils.TIME);
+        if (mockConfigurationHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
+            date = IvyConstants.DEFAULT_TIME_CONSTANT;
+        given(outletTimeStampDataManager.updateTimeStampModuleWise(date)).willReturn(Single.just(false));
         given(mDataManager.updateModuleTime(HomeScreenTwo.MENU_PHOTO)).willReturn(Single.just(true));
 
         mPresenter.onSaveButtonClick();
@@ -359,7 +371,10 @@ public class PhotoCapturePresenterTest {
 
         HashMap<String, PhotoCaptureLocationBO> mockMap = new HashMap<>();
         given(photoCaptureDataManager.updatePhotoCaptureDetails(mockMap)).willReturn(Single.just(true));
-        given(outletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME))).willReturn(Single.just(true));
+        String date = DateTimeUtils.now(DATE_GLOBAL) + " " + DateTimeUtils.now(DateTimeUtils.TIME);
+        if (mockConfigurationHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
+            date = IvyConstants.DEFAULT_TIME_CONSTANT;
+        given(outletTimeStampDataManager.updateTimeStampModuleWise(date)).willReturn(Single.just(true));
         given(mDataManager.updateModuleTime(HomeScreenTwo.MENU_PHOTO)).willReturn(Single.just(false));
 
         mPresenter.onSaveButtonClick();
@@ -373,8 +388,10 @@ public class PhotoCapturePresenterTest {
 
     @Test
     public void testUpdateModuleTime() {
-
-        given(outletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME))).willReturn(Single.just(true));
+        String date = DateTimeUtils.now(DATE_GLOBAL) + " " + DateTimeUtils.now(DateTimeUtils.TIME);
+        if (mockConfigurationHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
+            date = IvyConstants.DEFAULT_TIME_CONSTANT;
+        given(outletTimeStampDataManager.updateTimeStampModuleWise(date)).willReturn(Single.just(true));
 
         mPresenter.updateModuleTime();
         testScheduler.triggerActions();
