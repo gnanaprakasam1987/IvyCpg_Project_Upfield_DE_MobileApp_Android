@@ -1047,7 +1047,7 @@ public class SerializedAssetHelper {
 
 
             StringBuilder sb = new StringBuilder();
-            sb.append("select distinct P.AssetId,P.AssetName,SAM.SerialNumber,SBD.Productid,AllocationRefId,");
+            sb.append("select distinct P.AssetId,P.AssetName,SAM.SerialNumber,AllocationRefId,");
             sb.append("ifnull(P.assettype,'') as AssetTypeId,P.capacity as capacity,");
             sb.append("P.vendorid as vendorid,P.modelid as modelid,ifnull(SAVM.name,'') as name,");
             sb.append("ifnull((select SLM.Listname from StandardListMaster SLM where SLM.ListId=P.modelid and SLM.ListType='ASSET_MODEL_TYPE'),'') as ModelName,");
@@ -1073,8 +1073,7 @@ public class SerializedAssetHelper {
                     }
                     assetBO.setNewInstallDate(" ");
                     assetBO.setFlag("N");
-                    assetBO.setBrand(c.getString(3));
-                    assetBO.setReferenceId(c.getInt(4));
+                    assetBO.setReferenceId(c.getInt(3));
                     assetBO.setCapacity(c.getInt(c.getColumnIndex("capacity")));
                     assetBO.setVendorId(c.getString(c.getColumnIndex("vendorid")));
                     assetBO.setVendorName(c.getString(c.getColumnIndex("name")));
@@ -1142,12 +1141,11 @@ public class SerializedAssetHelper {
      * @param posmId     POSM Id
      * @param mSno       SNO
      * @param mSbdId     SBD Id
-     * @param mBrandId   Brand ID
      * @param reasonId   Reason ID
      * @param moduleName Module Name
      */
     public void deleteAsset(Context mContext, String posmId, String mSno,
-                            String mSbdId, String mBrandId, String reasonId, String moduleName, String NFCId, int refId) {
+                            String mSbdId, String reasonId, String moduleName, String NFCId, int refId) {
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
         );
