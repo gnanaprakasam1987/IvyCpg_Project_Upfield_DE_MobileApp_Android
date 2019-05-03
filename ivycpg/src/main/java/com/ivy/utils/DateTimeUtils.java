@@ -35,7 +35,7 @@ public class DateTimeUtils {
     public static final int TIME = 0;
     public static final int DATE = 1;
     public static final int TIME_HOUR_MINS = 11;
-    public static String defaultDateFormat = "MM/dd/yyyy";
+    public static final String defaultDateFormat = "MM/dd/yyyy";
     private static final String serverDateFormat = "yyyy/MM/dd";
     public static int DATE_TIME_ID = 3;
 
@@ -430,6 +430,19 @@ public class DateTimeUtils {
             Commons.printException(e);
             return day;
         }
+    }
+
+    public static Date getDate(String date,String format){
+        Calendar calendar = Calendar.getInstance();
+        try {
+            Date dateVal = new SimpleDateFormat(format, Locale.US).parse(date);
+            calendar.setTime(dateVal);
+        }catch (Exception e){
+            Commons.printException(e);
+        }
+
+        return calendar.getTime();
+
     }
 
 }

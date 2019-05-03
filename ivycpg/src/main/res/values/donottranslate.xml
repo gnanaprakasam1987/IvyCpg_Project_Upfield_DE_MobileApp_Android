@@ -271,6 +271,10 @@
     <string name="exec_task_not_allow_to_delete">Executed task not allow to delete</string>
     <string name="executed_date">Executed Date</string>
     <string name="do_you_want_to_delete_the_task">Do you want to delete the Task?</string>
+
+    <string name="last_visit_date">Last Visit Date</string>
+    <string name="task_due_date">Task Due Date</string>
+
     <string name="location_validation">Location Validation</string>
     <string name="location_mismatch_msg">Mismatch in Outelt location and your current location.</string>
     <string name="serial_no_reason_mandatory">Reason Mandatory if serial# not captured</string>
