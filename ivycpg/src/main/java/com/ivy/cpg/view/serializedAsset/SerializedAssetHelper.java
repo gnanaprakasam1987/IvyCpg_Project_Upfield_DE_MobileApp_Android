@@ -44,6 +44,7 @@ public class SerializedAssetHelper {
     private static final String ASSET_BARCODE_REASON = "BARCODE_REASON";
     private static final String CODE_ASSET_SERVICE = "SAT11";
     private static final String CODE_NEW_ASSET_PHOTO = "SAT12";
+    private static final String CODE_HIDE_SERIAL_NO_REASON = "SAT13";
     public boolean SHOW_ASSET_REASON;
     public boolean SHOW_ASSET_PHOTO;
     public boolean SHOW_ASSET_CONDITION;
@@ -66,6 +67,8 @@ public class SerializedAssetHelper {
     public boolean SHOW_ASSET_CAPACITY;
     public boolean SHOW_ASSET_MODEL;
     public boolean SHOW_ASSET_TYPE;
+    public boolean SHOW_SERIAL_NO_REASON;
+    public boolean IS_SERIAL_NO_NOT_MANDATORY;
 
     //
 
@@ -161,6 +164,8 @@ public class SerializedAssetHelper {
             SHOW_ASSET_MODEL = false;
             SHOW_ASSET_CAPACITY = false;
             SHOW_ASSET_TYPE = false;
+            SHOW_SERIAL_NO_REASON = false;
+            IS_SERIAL_NO_NOT_MANDATORY = false;
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
             );
@@ -205,6 +210,10 @@ public class SerializedAssetHelper {
                         NEW_ASSET_PHOTO = true;
                         if ("1".equals(c.getString(1)))
                             NEW_ASSET_PHOTO_MANDATORY = true;
+                    } else if (CODE_HIDE_SERIAL_NO_REASON.equalsIgnoreCase(c.getString(0))) {
+                        SHOW_SERIAL_NO_REASON = true;
+                        if ("1".equals(c.getString(1)))
+                            IS_SERIAL_NO_NOT_MANDATORY = true;
                     }
                 }
                 c.close();
