@@ -42,4 +42,5 @@ public class IvyConstants {
     public static final int AUDIT_DEFAULT = 2;
 
     public static final String SAS_KEY_TYPE ="SAS";
+    public static final String DEFAULT_TIME_CONSTANT = "1970/01/01 00:00:00";
 }

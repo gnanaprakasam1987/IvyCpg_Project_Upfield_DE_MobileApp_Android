@@ -268,5 +268,7 @@
     <string name="exec_task_not_allow_to_delete">Executed task not allow to delete</string>
     <string name="executed_date">Executed Date</string>
     <string name="do_you_want_to_delete_the_task">Do you want to delete the Task?</string>
+    <string name="location_validation">Location Validation</string>
+    <string name="location_mismatch_msg">Mismatch in Outelt location and your current location.</string>
 
 </resources>
