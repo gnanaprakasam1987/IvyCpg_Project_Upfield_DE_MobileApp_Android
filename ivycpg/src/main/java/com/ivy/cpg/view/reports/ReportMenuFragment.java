@@ -195,8 +195,7 @@ public class ReportMenuFragment extends IvyBaseFragment {
                 }
                 break;
             case StandardListMasterConstants.MENU_PND_INVOICE_REPORT:
-                 CollectionHelper.getInstance(getActivity()).updateInvoiceDiscountAmount();
-                gotoReportActivity(config);
+                new UpdatePendingInvoice(config).execute();
                 break;
             case StandardListMasterConstants.MENU_ORDER_REPORT:
 
@@ -554,6 +553,49 @@ public class ReportMenuFragment extends IvyBaseFragment {
             } else {
                 showToast();
             }
+        }
+
+    }
+
+    class UpdatePendingInvoice extends AsyncTask<Integer, Integer, Boolean> {
+
+        private AlertDialog.Builder builder;
+        private AlertDialog alertDialog;
+        private ConfigureBO config = null;
+
+        public UpdatePendingInvoice(ConfigureBO config) {
+            this.config = config;
+        }
+
+
+        protected void onPreExecute() {
+            builder = new AlertDialog.Builder(getActivity());
+
+            customProgressDialog(builder, getResources().getString(R.string.loading));
+            alertDialog = builder.create();
+            alertDialog.show();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(Integer... params) {
+            try {
+                CollectionHelper.getInstance(getActivity()).updateInvoiceDiscountAmount();
+            } catch (Exception e) {
+                Commons.printException("" + e);
+                return Boolean.FALSE;
+            }
+            return Boolean.TRUE;
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+            // TO DO Auto-generated method stub
+
+        }
+
+        protected void onPostExecute(Boolean result) {
+            alertDialog.dismiss();
+            gotoReportActivity(config);
         }
 
     }
