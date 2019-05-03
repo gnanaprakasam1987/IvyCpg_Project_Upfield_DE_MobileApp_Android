@@ -623,7 +623,7 @@ public class DashBoardHelper {
                     + " inner join BeatMaster on RouteID = BeatID "
                     + " where interval= '" + interval + "' "
                     + " AND "
-                    + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate())
                     + " between RK.fromdate and RK.todate group by SLM.Listid,RKD.KPiid order by DisplaySeq,RKD.KPiid asc";
             Cursor c = db.selectSQL(sql);
             if (c != null) {
@@ -1277,7 +1277,7 @@ public class DashBoardHelper {
                     + " and interval= "
                     + bmodel.QT(interval)
                     + " AND "
-                    + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate())
                     + " between SK.fromdate and SK.todate "
                     + (userid.equals("0") ? " and SK.isSummary=1" : "")
                     + " group by SLM.Listid order by DisplaySeq asc";
@@ -3608,7 +3608,7 @@ public class DashBoardHelper {
 
         if (!bmodel.configurationMasterHelper.IS_INVOICE) {
             sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
-            sb.append("where upload!='X' and OrderDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+            sb.append("where upload!='X' and OrderDate=" + QT(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()));
             c = db
                     .selectSQL(sb.toString());
             if (c != null) {
@@ -3622,7 +3622,7 @@ public class DashBoardHelper {
             }
         } else {
             sb.append("select  count(distinct retailerid),sum(linespercall),sum(invoiceAmount) from Invoicemaster ");
-            sb.append("where InvoiceDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+            sb.append("where InvoiceDate=" + QT(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()));
             c = db
                     .selectSQL(sb.toString());
             if (c != null) {
@@ -3636,7 +3636,7 @@ public class DashBoardHelper {
         }
         sb = new StringBuffer();
         sb.append("select  sum(mspvalues),count(distinct orderid) from OrderHeader ");
-        sb.append("where upload!='X' and OrderDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+        sb.append("where upload!='X' and OrderDate=" + QT(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate()));
         c = db
                 .selectSQL(sb.toString());
         if (c != null) {
