@@ -272,4 +272,6 @@
     <string name="location_mismatch_msg">Mismatch in Outelt location and your current location.</string>
     <string name="serial_no_reason_mandatory">Reason Mandatory if serial# not captured</string>
     <string name="choose_asset">Choose Asset</string>
+    <string name="already_exist">Already Exist</string>
+    <string name="serial_no">Serial Number</string>
 </resources>
