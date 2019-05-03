@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.GenericObjectPair;
@@ -211,7 +212,10 @@ public class SubDFragment extends IvyBaseFragment {
                 String time = DateTimeUtils.now(DateTimeUtils.TIME);
                 String temp = DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
-                bmodel.outletTimeStampHelper.setTimeIn(date + " " + time);
+                String dateTime = date + " " + time;
+                if (bmodel.configurationMasterHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
+                    dateTime = IvyConstants.DEFAULT_TIME_CONSTANT;
+                bmodel.outletTimeStampHelper.setTimeIn(dateTime);
                 bmodel.outletTimeStampHelper.setUid(StringUtils.QT("OTS" + temp));
 
                 bmodel.outletTimeStampHelper.saveTimeStamp(

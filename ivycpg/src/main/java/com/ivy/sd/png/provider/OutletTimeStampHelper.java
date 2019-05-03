@@ -6,8 +6,10 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.os.BatteryManager;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.core.data.app.AppDataProviderImpl;
 import com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl;
+import com.ivy.cpg.view.profile.otpValidation.OTPValidationHelper;
 import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
@@ -23,6 +25,10 @@ import com.ivy.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
+import static com.ivy.utils.DateTimeUtils.getTimeZone;
+import static com.ivy.utils.DateTimeUtils.now;
 
 public class OutletTimeStampHelper {
 
@@ -254,11 +260,14 @@ public class OutletTimeStampHelper {
 
             String columns = " VisitID , BeatID , VisitDate , RetailerID , TimeIn ,TimeOut,RetailerName,RetailerCode,latitude,longitude,JFlag,gpsaccuracy,gpsdistance,gpsCompliance,sequence,DistributorID,Battery,LocationProvider,IsLocationEnabled,IsDeviated,OrderValue,lpc,ridSF,tripUid";
 
+            String dateTime = date + " " + timeIn;
+            if (bmodel.configurationMasterHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
+                dateTime = IvyConstants.DEFAULT_TIME_CONSTANT;
 
             String values = getUid() + ","
                     + bmodel.retailerMasterBO.getBeatID() + "," + QT(date)
                     + "," + QT(bmodel.retailerMasterBO.getRetailerID()) + ","
-                    + QT(date + " " + timeIn) + "," + QT(date + " " + timeIn)
+                    + QT(dateTime) + "," + QT(dateTime)
                     + "," + QT(bmodel.retailerMasterBO.getRetailerName().replace("'","''")) + ","
                     + QT(bmodel.retailerMasterBO.getRetailerCode()) + ","
                     + QT(LocationUtil.latitude + "") + ","
@@ -326,6 +335,11 @@ public class OutletTimeStampHelper {
             db.createDataBase();
             db.openDataBase();
             String dateTime = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL) + " " + timeOut;
+            String timeIn = getTimeIn();
+            if (bmodel.configurationMasterHelper.IS_DISABLE_CALL_ANALYSIS_TIMER) {
+                dateTime = IvyConstants.DEFAULT_TIME_CONSTANT;
+                timeIn = IvyConstants.DEFAULT_TIME_CONSTANT;
+            }
             String query = "UPDATE OutletTimeStamp SET TimeOut = '" + dateTime
                     + "',feedback=" + bmodel.QT(reasonDesc)
                     + ", OrderValue = " + QT(String.valueOf(bmodel.getOrderValue()))
@@ -339,7 +353,7 @@ public class OutletTimeStampHelper {
                     + ", lpc = " + bmodel.retailerMasterBO.getTotalLines()
                     + "  WHERE RetailerID = '"
                     + bmodel.retailerMasterBO.getRetailerID()
-                    + "' AND TimeIn = '" + getTimeIn() + "'";
+                    + "' AND TimeIn = '" + timeIn + "'";
             db.updateSQL(query);
             db.closeDB();
         } catch (Exception e) {
@@ -353,7 +367,7 @@ public class OutletTimeStampHelper {
      *
      * @param date   module start-in date
      * @param timeIn module start-in time
-     * @See {@link com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl#saveTimeStampModuleWise(String, String, String)}
+     * @See {@link com.ivy.core.data.outlettime.OutletTimeStampDataManagerImpl#saveTimeStampModuleWise(String, String)}
      * @deprecated This has been Migrated to MVP pattern
      */
     public void saveTimeStampModuleWise(String date, String timeIn, String moduleCode) {
@@ -364,6 +378,8 @@ public class OutletTimeStampHelper {
             db.openDataBase();
 
             timeInModuleWise = QT(date + " " + timeIn);
+            if (bmodel.configurationMasterHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
+                timeInModuleWise = QT(IvyConstants.DEFAULT_TIME_CONSTANT);
 
             bmodel.codeCleanUpUtil.setModuleTime(timeInModuleWise);
             String values = getUid() + ","
@@ -392,6 +408,8 @@ public class OutletTimeStampHelper {
             db.createDataBase();
             db.openDataBase();
             String dateTime = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL) + " " + timeOut;
+            if (bmodel.configurationMasterHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
+                dateTime = IvyConstants.DEFAULT_TIME_CONSTANT;
             String query = "UPDATE OutletTimeStampDetail SET TimeOut = '" + dateTime
                     + "'  WHERE RetailerID = '"
                     + bmodel.retailerMasterBO.getRetailerID()
@@ -595,12 +613,28 @@ public class OutletTimeStampHelper {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
+            OTPValidationHelper otpValidationHelper = OTPValidationHelper.getInstance(context);
             String query = "UPDATE RetailerLocationDeviation SET OutletTimeStampID = " + getUid()
-                    + " WHERE RetailerID = '"
-                    + bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
-                    + "' and Date="
-                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+                    + " WHERE tid = "
+                    + otpValidationHelper.tid;
             db.updateSQL(query);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    /**
+     * Method to delete transaction from RetailerLocationDeviation table when there is no activity done.
+     */
+    public void deleteTimeStampRetailerDeviation() {
+        try {
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
+            db.createDataBase();
+            db.openDataBase();
+            db.deleteSQL("RetailerLocationDeviation", "retailerid="
+                    + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + " AND UID=" + getUid(), false);
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);

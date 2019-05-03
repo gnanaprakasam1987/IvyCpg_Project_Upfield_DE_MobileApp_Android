@@ -79,8 +79,7 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
                 try {
 
                     initDb();
-                    String dateTime = now(DATE_GLOBAL) + " " + timeOut;
-                    String query = "UPDATE OutletTimeStampDetail SET TimeOut = '" + dateTime
+                    String query = "UPDATE OutletTimeStampDetail SET TimeOut = '" + timeOut
                             + "'  WHERE RetailerID = '"
                             + mDataManager.getRetailMaster().getRetailerID()
                             + "' AND TimeIn = " + mDataManager.getModuleIntime() + " AND UID = " + mDataManager.getUniqueId();
@@ -101,15 +100,15 @@ public class OutletTimeStampDataManagerImpl implements OutletTimeStampDataManage
     /**
      * Used to set Time Stamp.
      *
-     * @param date   module start-in date
-     * @param timeIn module start-in time
+     * @param datetimeIn   module start-in date and time,
+     * if FUN81(restrict to capture user time) is enabled IVYCostants default time or else current date and time.
      */
     @Override
-    public Completable saveTimeStampModuleWise(final String date, final String timeIn, final String moduleCode) {
+    public Completable saveTimeStampModuleWise(final String datetimeIn, final String moduleCode) {
         return Completable.fromCallable(new Callable() {
             @Override
             public Void call() {
-                mDataManager.setModuleInTime(QT(date + " " + timeIn));
+                mDataManager.setModuleInTime(QT(datetimeIn));
                 try {
 
                     initDb();
