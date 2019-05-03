@@ -1315,7 +1315,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     if (bmodel.isDigitalContentAvailable()) {
 
 
-                        if (bmodel.configurationMasterHelper.IS_AZURE_UPLOAD) {
+                        if (bmodel.configurationMasterHelper.IS_AZURE_CLOUD_STORAGE) {
                             AzureConnectionHelper.getInstance().setAzureCredentials(getActivity());
                             try {
                                 downloaderThread = new DownloaderThreadNew(getActivity(),activityHandler,bmodel.getDigitalContentURLS(),
@@ -1325,7 +1325,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                                 Commons.printException(e);
                                 bmodel.showAlert(context.getString(R.string.error_message_general), 0);
                             }
-                        } else if (bmodel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
+                        } else if (bmodel.configurationMasterHelper.IS_S3_CLOUD_STORAGE) {
                             AWSConnectionHelper.getInstance().setAmazonS3Credentials(getActivity());
                             transferUtility = new TransferUtility(AWSConnectionHelper.getInstance().getS3Connection(), getActivity());
 
@@ -2184,7 +2184,7 @@ public class SynchronizationFragment extends IvyBaseFragment
 
             if (response == SynchronizationHelper.NEXT_METHOD.DIGITAL_CONTENT_AVALILABLE) {
 
-                if (bmodel.configurationMasterHelper.IS_AZURE_UPLOAD) {
+                if (bmodel.configurationMasterHelper.IS_AZURE_CLOUD_STORAGE) {
                     AzureConnectionHelper.getInstance().setAzureCredentials(getActivity());
                     try {
                         downloaderThread = new DownloaderThreadNew(getActivity(),activityHandler,bmodel.getDigitalContentURLS(),
@@ -2194,7 +2194,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                         Commons.printException(e);
                         bmodel.showAlert(context.getString(R.string.error_message_general), 0);
                     }
-                } else if (bmodel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
+                } else if (bmodel.configurationMasterHelper.IS_S3_CLOUD_STORAGE) {
                     AWSConnectionHelper.getInstance().setAmazonS3Credentials(getActivity());
                     transferUtility = new TransferUtility(AWSConnectionHelper.getInstance().getS3Connection(), getActivity());
 

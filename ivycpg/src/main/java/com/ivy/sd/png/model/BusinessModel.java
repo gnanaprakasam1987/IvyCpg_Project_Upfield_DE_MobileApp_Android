@@ -3438,34 +3438,37 @@ public class BusinessModel extends Application {
      */
     public void getimageDownloadURL() {
         try {
-            boolean isAmazonUpload = false;
-            boolean isAzureUpload = false;
+            boolean isAmazonCloud = false;
+            boolean isSFDCCloud = false;
+            boolean isAzureCloud = false;
 
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
             );
             db.createDataBase();
             db.openDataBase();
             Cursor c = db
-                    .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'ISAMAZON_IMGUPLOAD' and flag = 1 and ForSwitchSeller = 0");
+                    .selectSQL("SELECT Rfield FROM HHTModuleMaster where hhtCode = 'CLOUD_STORAGE' and flag = 1 and ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
-                    isAmazonUpload = true;
-                }
-                c.close();
-            }
-
-            c = db
-                    .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'IS_AZURE_UPLOAD' and flag = 1 and ForSwitchSeller = 0");
-            if (c != null) {
-                while (c.moveToNext()) {
-                    isAzureUpload = true;
+                    if(c.getInt(0)==0){
+                        isAzureCloud=true;
+                    }
+                    else if(c.getInt(0)==1){
+                        isAmazonCloud=true;
+                    }
+                    else if(c.getInt(0)==2){
+                        isAzureCloud=true;
+                    }
+                    else {
+                        isAmazonCloud=true;
+                    }
                 }
                 c.close();
             }
 
             c = null;
 
-            if (!isAmazonUpload && !isAzureUpload) {
+            if (!isAmazonCloud && !isAzureCloud) {
                 c = db
                         .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_HOST'");
                 if (c != null) {
