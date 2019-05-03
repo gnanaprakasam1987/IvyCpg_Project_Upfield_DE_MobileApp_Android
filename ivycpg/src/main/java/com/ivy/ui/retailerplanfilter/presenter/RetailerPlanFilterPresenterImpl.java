@@ -18,6 +18,10 @@ import javax.inject.Inject;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 
+import static com.ivy.ui.retailerplanfilter.RetailerPlanFilterConstants.CODE_IS_NOT_VISITED;
+import static com.ivy.ui.retailerplanfilter.RetailerPlanFilterConstants.CODE_LAST_VISIT_DATE;
+import static com.ivy.ui.retailerplanfilter.RetailerPlanFilterConstants.CODE_TASK_DUE_DATE;
+
 public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContract.RetailerPlanFilterView>
         extends BasePresenter<V> implements RetailerPlanFilterContract.RetailerPlanFilterPresenter<V> {
 
@@ -42,34 +46,62 @@ public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContrac
                 .subscribe(new Consumer<ArrayList<String>>() {
                     @Override
                     public void accept(ArrayList<String> listValues) throws Exception {
+
                         setConfigurationList(listValues);
+                        prepareScreenData();
                     }
                 }));
     }
 
     @Override
     public void validateFilterObject(RetailerPlanFilterBo planFilterBo) {
-         if (planFilterBo.getLastVisitDate() != null){
 
-         }
+        if (planFilterBo.getLastVisitDate() != null
+                && (planFilterBo.getLastVisitDate().getStringOne() == null
+                || planFilterBo.getLastVisitDate().getStringTwo() == null)){
+            getIvyView().filterValidationFailure("Please Check Last Visit Date Fields");
+        }else if (planFilterBo.getTaskDate() != null
+                && (planFilterBo.getTaskDate().getStringOne() == null
+                || planFilterBo.getTaskDate().getStringTwo() == null)){
+            getIvyView().filterValidationFailure("Please Check Task Due Date Fields");
+        }else
+            getIvyView().filterValidationSuccess();
     }
 
+    @Override
+    public void getRetailerFilterArray(RetailerPlanFilterBo planFilterBo) {
+        getCompositeDisposable().add(retailerPlanFilterDataManager.getFilterValues(planFilterBo)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<ArrayList<String>>() {
+                    @Override
+                    public void accept(ArrayList<String> retailerIds) throws Exception {
+
+                        getIvyView().filteredRetailerIds(retailerIds);
+
+                    }
+                }));
+    }
+
+    @Override
     public boolean isConfigureAvail(String configuration) {
         return configurationList !=null && configurationList.contains(configuration);
     }
 
-    public void setConfigurationList(ArrayList<String> configurationList) {
+    private void setConfigurationList(ArrayList<String> configurationList) {
         this.configurationList = configurationList;
     }
 
     private void prepareScreenData(){
-        if (configurationList.contains(RetailerPlanFilterConstants.CODE_IS_NOT_VISITED))
-            getIvyView().showNotVisitedRow();
 
-        if (configurationList.contains(RetailerPlanFilterConstants.CODE_TASK_DUE_DATE))
-            getIvyView().showTaskDueDateRow();
-
-        if (configurationList.contains(RetailerPlanFilterConstants.CODE_LAST_VISIT_DATE))
-            getIvyView().showLastVisitRow();
+        for (String configName : configurationList) {
+            if (configName.equalsIgnoreCase(CODE_IS_NOT_VISITED)){
+                getIvyView().showNotVisitedRow();
+            }else if (configName.equalsIgnoreCase(CODE_TASK_DUE_DATE)){
+                getIvyView().showTaskDueDateRow();
+            }else if (configName.equalsIgnoreCase(CODE_LAST_VISIT_DATE)){
+                getIvyView().showLastVisitRow();
+            }
+        }
     }
 }

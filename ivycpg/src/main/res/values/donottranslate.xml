@@ -272,4 +272,7 @@
     <string name="executed_date">Executed Date</string>
     <string name="do_you_want_to_delete_the_task">Do you want to delete the Task?</string>
 
+    <string name="last_visit_date">Last Visit Date</string>
+    <string name="task_due_date">Task Due Date</string>
+
 </resources>

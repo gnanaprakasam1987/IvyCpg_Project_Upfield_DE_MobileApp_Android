@@ -1,5 +1,6 @@
 package com.ivy.ui.retailerplanfilter.view;
 
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
@@ -9,7 +10,7 @@ import android.support.v7.widget.AppCompatCheckBox;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.DatePicker;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.core.base.view.BaseBottomSheetDialogFragment;
@@ -26,6 +27,7 @@ import com.ivy.utils.DeviceUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Objects;
 
@@ -34,32 +36,37 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.ivy.ui.retailerplanfilter.RetailerPlanFilterConstants.CODE_IS_NOT_VISITED;
+import static com.ivy.ui.retailerplanfilter.RetailerPlanFilterConstants.CODE_LAST_VISIT_DATE;
+import static com.ivy.ui.retailerplanfilter.RetailerPlanFilterConstants.CODE_TASK_DUE_DATE;
+
+@SuppressLint("ValidFragment")
 public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
         implements RetailerPlanFilterContract.RetailerPlanFilterView,DatePickerViewDialog.DateSelectListener {
 
     private BottomSheetBehavior bottomSheetBehavior;
 
-    @BindView(R.id.not_visited_check_box)
     AppCompatCheckBox notVisitedCheckBox;
 
-    @BindView(R.id.task_due_from_date)
     TextView taskFromDate;
 
-    @BindView(R.id.task_due_to_date)
     TextView taskToDate;
 
-    @BindView(R.id.last_visit_from_date)
     TextView lastVisitFromDate;
 
-    @BindView(R.id.last_visit_to_date)
     TextView lastVisitToDate;
+
+    @BindView(R.id.dynamic_layout)
+    LinearLayout dynamicViewLayout;
 
     @Inject
     RetailerPlanFilterPresenterImpl<RetailerPlanFilterContract.RetailerPlanFilterView> presenter;
 
-    private DatePickerViewDialog picker;
+    private RetailerPlanFilterBo planFilterBo;
 
-    private String date = "2019/04/22";
+    public RetailerPlanFilterFragment(RetailerPlanFilterBo planFilterBo){
+        this.planFilterBo = planFilterBo;
+    }
 
     @Override
     public void initializeDi(){
@@ -87,46 +94,72 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
 
             bottomSheetBehavior = ((BottomSheetBehavior) behavior);
 
+            bottomSheetBehavior.setHideable(true);
+
             bottomSheetBehavior.setPeekHeight(DeviceUtils.getDisplayMetrics(context).heightPixels);
 
             ((BottomSheetBehavior) behavior).setState(BottomSheetBehavior.STATE_EXPANDED);
 
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(bottomSheetCallBack);
         }
+
+        presenter.prepareConfiguration();
     }
 
-    @OnClick({R.id.task_due_from_date,R.id.task_due_to_date,R.id.last_visit_from_date,R.id.last_visit_to_date})
-    void dateSelectListener(TextView textView){
+    public void dateSelectListener(TextView textView,String minimumDate){
 
-        String date = textView.getText().toString().contains("/")?textView.getText().toString():"";
+        String selectedDate = textView.getText().toString().equalsIgnoreCase(getString(R.string.select_date))?"":textView.getText().toString();
+        minimumDate = minimumDate.equalsIgnoreCase(getString(R.string.select_date))?"":minimumDate;
 
-        showDatePicker(date,textView);
+        showDatePicker(selectedDate,minimumDate,textView);
     }
 
     @OnClick(R.id.close)
     void closeIconClick(){
-        dismiss();
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     @OnClick(R.id.clear_btn)
     void clearButtonListener(){
-        dismiss();
+
+        if (planFilterBo != null)
+            planFilterBo = new RetailerPlanFilterBo();
+
+        if (presenter.isConfigureAvail(CODE_IS_NOT_VISITED))
+            notVisitedCheckBox.setChecked(false);
+
+        if (presenter.isConfigureAvail(CODE_LAST_VISIT_DATE)) {
+            lastVisitFromDate.setText("");
+            lastVisitToDate.setText("");
+        }
+        if (presenter.isConfigureAvail(CODE_TASK_DUE_DATE)) {
+            taskFromDate.setText("");
+            taskToDate.setText("");
+        }
+
+        EventBus.getDefault().post("CLEAR");
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     @OnClick(R.id.filter_btn)
     void filterButtonListener(){
 
-        RetailerPlanFilterBo planFilterBo = new RetailerPlanFilterBo();
-        planFilterBo.setNotVisited(notVisitedCheckBox.isChecked());
-        planFilterBo.setLastVisitDate(new FilterObjectBo(lastVisitFromDate.getText().toString(),
+        planFilterBo = new RetailerPlanFilterBo();
+
+        if (presenter.isConfigureAvail(CODE_IS_NOT_VISITED))
+            planFilterBo.setIsNotVisited(notVisitedCheckBox.isChecked()?1:0);
+
+        if (presenter.isConfigureAvail(CODE_LAST_VISIT_DATE))
+            planFilterBo.setLastVisitDate(new FilterObjectBo(lastVisitFromDate.getText().toString(),
                 lastVisitToDate.getText().toString()));
-        planFilterBo.setTaskDate(new FilterObjectBo(taskFromDate.getText().toString(),
+        if (presenter.isConfigureAvail(CODE_TASK_DUE_DATE))
+            planFilterBo.setTaskDate(new FilterObjectBo(taskFromDate.getText().toString(),
                 taskToDate.getText().toString()));
 
         presenter.validateFilterObject(planFilterBo);
     }
 
-    private void showDatePicker(String date,View view) {
+    private void showDatePicker(String date,String minimumDate,View view) {
         // date picker dialog
 
         int day;
@@ -136,23 +169,31 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
         if (!date.isEmpty()) {
             String[] splitDate = date.split("/");
 
-            day = SDUtil.convertToInt(splitDate[2]);
-            month = SDUtil.convertToInt(splitDate[1]);
-            year = SDUtil.convertToInt(splitDate[0]);
+            day = SDUtil.convertToInt(splitDate[0]);
+            month = SDUtil.convertToInt(splitDate[1]) - 1;
+            year = SDUtil.convertToInt(splitDate[2]);
 
         }else{
             Calendar c = Calendar.getInstance();
             year = c.get(Calendar.YEAR);
-            month = c.get(Calendar.MONTH);
+            month = c.get(Calendar.MONTH) -1 ;
             day = c.get(Calendar.DAY_OF_MONTH);
         }
 
-        picker = new DatePickerViewDialog(context, R.style.SellerDatePickerStyle, this,
-                day, month, year,view);
-        picker.updateDate(year, month - 1, day);
+        DatePickerViewDialog picker = new DatePickerViewDialog(context, R.style.SellerDatePickerStyle, this,
+                day, month, year, view);
+
+        if (!minimumDate.isEmpty()) {
+            boolean isFromDate = false;
+            if (view.getId() == R.id.task_due_from_date)
+                isFromDate = true;
+
+            picker.compareDate(minimumDate,isFromDate );
+        }
+
+        picker.updateDate(year, month, day);
 
         picker.show();
-
     }
 
     private BottomSheetBehavior.BottomSheetCallback bottomSheetCallBack = new BottomSheetBehavior.BottomSheetCallback() {
@@ -195,7 +236,7 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            dismiss();
+            bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             return true;
         }
 
@@ -204,9 +245,12 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
 
     @Override
     public void onDateSet(View view, String date) {
-
         ((TextView)view).setText(date);
+    }
 
+    @Override
+    public void dateValidationError(String error) {
+        showMessage(error);
     }
 
     @Override
@@ -219,29 +263,103 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
 
     }
 
-
     @Override
     public void showNotVisitedRow() {
+        View view = getLayoutInflater().inflate(R.layout.not_visit_check_box_layout, null);
+        notVisitedCheckBox = view.findViewById(R.id.not_visited_check_box);
 
+        if (planFilterBo != null)
+            notVisitedCheckBox.setChecked(planFilterBo.getIsNotVisited()>0);
+
+        dynamicViewLayout.addView(view);
     }
 
     @Override
     public void showTaskDueDateRow() {
+        View view = getLayoutInflater().inflate(R.layout.date_layout, null);
+        taskFromDate = view.findViewById(R.id.task_due_from_date);
+        taskToDate = view.findViewById(R.id.task_due_to_date);
 
+        taskFromDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dateSelectListener(taskFromDate,"");
+            }
+        });
+
+        taskToDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (taskFromDate.getText().toString().equalsIgnoreCase(getString(R.string.select_date))){
+                    showMessage("Select From Date");
+                    return;
+                }
+
+                dateSelectListener(taskToDate,taskFromDate.getText().toString());
+            }
+        });
+
+        ((TextView)view.findViewById(R.id.task_due_date_txt)).setText(getString(R.string.task_due_date));
+
+        if (planFilterBo != null && planFilterBo.getTaskDate() != null){
+            taskFromDate.setText(planFilterBo.getTaskDate().getStringOne());
+            taskToDate.setText(planFilterBo.getTaskDate().getStringTwo());
+        }
+
+        dynamicViewLayout.addView(view);
     }
 
     @Override
     public void showLastVisitRow() {
+        View view = getLayoutInflater().inflate(R.layout.date_layout, null);
+        lastVisitFromDate = view.findViewById(R.id.task_due_from_date);
+        lastVisitToDate = view.findViewById(R.id.task_due_to_date);
 
+        lastVisitFromDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dateSelectListener(lastVisitFromDate,"");
+            }
+        });
+
+        lastVisitToDate.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (lastVisitFromDate.getText().toString().equalsIgnoreCase(getString(R.string.select_date))){
+                    showMessage("Select From Date");
+                    return;
+                }
+                dateSelectListener(lastVisitToDate,lastVisitFromDate.getText().toString());
+            }
+        });
+
+        if (planFilterBo != null && planFilterBo.getLastVisitDate() != null){
+            lastVisitFromDate.setText(planFilterBo.getLastVisitDate().getStringOne());
+            lastVisitToDate.setText(planFilterBo.getLastVisitDate().getStringTwo());
+        }
+
+        ((TextView)view.findViewById(R.id.task_due_date_txt)).setText(getString(R.string.last_visit_date));
+
+        dynamicViewLayout.addView(view);
     }
 
     @Override
-    public void filterValidationSuccess(RetailerPlanFilterBo planFilterBo) {
+    public void filterValidationSuccess() {
+        presenter.getRetailerFilterArray(planFilterBo);
+    }
+
+    @Override
+    public void filterValidationFailure(String error) {
+        showMessage(error);
+    }
+
+    @Override
+    public void filteredRetailerIds(ArrayList<String> retailerIds) {
+
+        planFilterBo.setRetailerIds(retailerIds);
+
         EventBus.getDefault().post(planFilterBo);
-        dismiss();
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
-    @Override
-    public void filterValidationFailure() {
-    }
 }

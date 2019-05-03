@@ -8,7 +8,12 @@ import android.view.View;
 import android.widget.DatePicker;
 
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.DateTimeUtils;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class DatePickerViewDialog extends DatePickerDialog implements DialogInterface.OnClickListener{
@@ -20,6 +25,9 @@ public class DatePickerViewDialog extends DatePickerDialog implements DialogInte
     private View view;
 
     private DatePicker datePicker;
+
+    private String compareDate;
+    private boolean isFromDate;
 
     public DatePickerViewDialog(Context context, int resId, DateSelectListener callBack,
                                 int year, int monthOfYear, int dayOfMonth,View view) {
@@ -37,6 +45,11 @@ public class DatePickerViewDialog extends DatePickerDialog implements DialogInte
         this.setCancelable(false);
     }
 
+    public void compareDate(String compareDate,boolean isFromDate){
+        this.compareDate = compareDate;
+        this.isFromDate =  isFromDate;
+    }
+
     @Override
     public void onDateChanged(@NonNull DatePicker view, int year, int month, int day) {
         super.onDateChanged(view, year, month, day);
@@ -51,17 +64,31 @@ public class DatePickerViewDialog extends DatePickerDialog implements DialogInte
                 if (callBack != null ) {
                     datePicker.clearFocus();
 
-                    String date = String.format(Locale.US,"%02d/%02d/%04d", datePicker.getDayOfMonth(),datePicker.getMonth(), datePicker.getYear());
+                    String date = String.format(Locale.US,"%02d/%02d/%04d",
+                            datePicker.getDayOfMonth(),
+                            datePicker.getMonth() + 1,
+                            datePicker.getYear());
 
-                    callBack.onDateSet(view, date);
                     mYear = datePicker.getYear();
                     mMonth = datePicker.getMonth();
                     mDay = datePicker.getDayOfMonth();
+
+                    if (compareDate != null && !compareDate.isEmpty()){
+
+                        if (isFromDate && DateTimeUtils.getDate(date,"dd/MM/yyyy").after(DateTimeUtils.getDate(compareDate,"dd/MM/yyyy"))){
+                            callBack.dateValidationError("From Date should not be more than Till Date");
+                            return;
+                        }else if(DateTimeUtils.getDate(date,"dd/MM/yyyy").before(DateTimeUtils.getDate(compareDate,"dd/MM/yyyy"))){
+                            callBack.dateValidationError("Till Date should not be less than From Date");
+                            return;
+                        }
+                    }
+
+                    callBack.onDateSet(view, date);
+
                 }
                 break;
             case BUTTON_NEGATIVE:
-                if (callBack != null )
-
                 cancel();
                 break;
         }
@@ -70,6 +97,8 @@ public class DatePickerViewDialog extends DatePickerDialog implements DialogInte
     public interface DateSelectListener extends DatePicker.OnDateChangedListener, OnDateSetListener {
         void onDateSet(View view, String date);
 
+        void dateValidationError(String error);
+
         @Override
         void onDateSet(DatePicker view, int year, int month, int dayOfMonth);
 
@@ -77,10 +106,5 @@ public class DatePickerViewDialog extends DatePickerDialog implements DialogInte
         void onDateChanged(DatePicker view, int year, int monthOfYear, int dayOfMonth);
     }
 
-    private String convertTwoDigitFormat(int val){
-        if (String.valueOf(val).length() == 1)
-            return "0"+val;
-        else
-            return val+"";
-    }
+
 }

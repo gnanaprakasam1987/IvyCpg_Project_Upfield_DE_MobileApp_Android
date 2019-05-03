@@ -52,6 +52,7 @@ import com.ivy.ui.retailerplanfilter.view.RetailerPlanFilterFragment;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.NetworkUtils;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -122,6 +123,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
     @Inject
     RetailerPresenterImpl<RetailerContract.RetailerView> presenter;
+
+    private RetailerPlanFilterBo planFilterBo;
 
     @Override
     public void onAttach(Context context) {
@@ -232,6 +235,9 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             builder = new LatLngBounds.Builder();
             isFocusRetailer = false;
 
+            if (planFilterBo != null && planFilterBo.getRetailerIds().isEmpty())
+                return;
+
             if (isChecked) {
                 presenter.fetchTodayPlannedRetailers();
                 storeFilterSwitch.setText(getResources().getString(R.string.day_plan));
@@ -304,6 +310,10 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
             if (retailerMasterBO.getLatitude() != 0 && retailerMasterBO.getLongitude() != 0) {
 
+                if (planFilterBo != null){
+                    if (!planFilterBo.getRetailerIds().contains(retailerMasterBO.getRetailerID()))
+                        continue;
+                }
                 addMarkerToMap(prepareMarkerOption(retailerMasterBO,builder));
 
                 isFocusRetailer = true;
@@ -333,6 +343,10 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     public void populateTodayPlannedRetailers(RetailerMasterBO todayPlannedRetailer){
 
         if (todayPlannedRetailer.getLatitude() != 0 && todayPlannedRetailer.getLongitude() != 0) {
+            if (planFilterBo != null ){
+                if (!planFilterBo.getRetailerIds().contains(todayPlannedRetailer.getRetailerID()))
+                    return;
+            }
             addMarkerToMap(prepareMarkerOption(todayPlannedRetailer, builder));
             isFocusRetailer = true;
         }
@@ -694,7 +708,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         } else if (item.getItemId() == R.id.filter) {
 
             planFilterFragment =
-                    new RetailerPlanFilterFragment();
+                    new RetailerPlanFilterFragment(planFilterBo);
             planFilterFragment.show(((FragmentActivity)context).getSupportFragmentManager(),
                     "filter_plan_fragment");
 
@@ -717,7 +731,40 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     public void onMessageEvent(Object obj) {
 
         if (obj instanceof RetailerPlanFilterBo){
-
+            planFilterBo = ((RetailerPlanFilterBo)obj);
+            getMap().clear();
+            presenter.prepareFilteredRetailerList(((RetailerPlanFilterBo)obj).getRetailerIds());
+        }else if(obj instanceof String){
+            if (((String)obj).equalsIgnoreCase("CLEAR")){
+                if (planFilterBo != null) {
+                    planFilterBo = null;
+                    getMap().clear();
+                    if (storeFilterSwitch.isChecked()) {
+                        presenter.fetchTodayPlannedRetailers();
+                        storeFilterSwitch.setText(getResources().getString(R.string.day_plan));
+                    }else {
+                        presenter.fetchRetailerList();
+                        storeFilterSwitch.setText(getResources().getString(R.string.all_retailer));
+                    }
+                }
+            }else if ("NODATA".equalsIgnoreCase((String)obj)){
+                getMap().clear();
+            }
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+
+    }
+
+    @Override
+    public void onStop() {
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
+        super.onStop();
     }
 }

@@ -53,5 +53,7 @@ public interface RetailerContract {
 
          DateWisePlanBo getSelectedRetailerPlan(String retailerId);
 
+         void prepareFilteredRetailerList(ArrayList<String> retailerIds);
+
     }
 }

@@ -1,19 +1,22 @@
 package com.ivy.ui.retailerplanfilter;
 
+import java.util.ArrayList;
+
 public class RetailerPlanFilterBo {
 
-    private boolean isNotVisited;
+    private int isNotVisited;
     private FilterObjectBo taskDate;
     private FilterObjectBo lastVisitDate;
 
+    private ArrayList<String> retailerIds;
 
 
-    public boolean isNotVisited() {
+    public int getIsNotVisited() {
         return isNotVisited;
     }
 
-    public void setNotVisited(boolean notVisited) {
-        isNotVisited = notVisited;
+    public void setIsNotVisited(int isNotVisited) {
+        this.isNotVisited = isNotVisited;
     }
 
     public FilterObjectBo getTaskDate() {
@@ -30,5 +33,13 @@ public class RetailerPlanFilterBo {
 
     public void setLastVisitDate(FilterObjectBo lastVisitDate) {
         this.lastVisitDate = lastVisitDate;
+    }
+
+    public ArrayList<String> getRetailerIds() {
+        return retailerIds;
+    }
+
+    public void setRetailerIds(ArrayList<String> retailerIds) {
+        this.retailerIds = retailerIds;
     }
 }
