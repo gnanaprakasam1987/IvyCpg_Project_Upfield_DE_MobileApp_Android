@@ -100,6 +100,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
     private String mSelectedType = "0";
     private String mSelectedCapacity = "0";
     private String mSelectedScanReasonId = "0";
+    private boolean isSerialNumberCaptured;
 
     private ArrayAdapter<AssetAddDetailBO> mAssetSpinAdapter;
 
@@ -249,6 +250,8 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                                        int position, long arg3) {
 
                 mSelectedPOSM = mAssetSpinAdapter.getItem(position);
+                enableBarCodeViews(true);
+
 
             }
 
@@ -528,7 +531,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
             try {
                 if (mAsset.getSelectedItemPosition() != 0
-                        && (!mSNO.getText().toString().isEmpty() || !mSelectedScanReasonId.equals("0"))) {
+                        && serialNoValidation()) {
                     if (!assetTrackingHelper
                             .getUniqueSerialNo(mSNO.getText()
                                     .toString())) {
@@ -555,13 +558,23 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                                         .getString(
                                                 R.string.serial_number_already_exists),
                                 Toast.LENGTH_SHORT).show();
+                        //enabled edit option if serial no already exists
+                        enableBarCodeViews(true);
                     }
                 } else {
-                    Toast.makeText(
-                            this,
-                            getResources().getString(
-                                    R.string.no_assets_exists),
-                            Toast.LENGTH_SHORT).show();
+
+                    if (mAsset.getSelectedItemPosition() == 0)
+                        showMessage(getString(R.string.choose_asset));
+
+                    else if (assetTrackingHelper.SHOW_SERIAL_NO_REASON
+                            && mSelectedScanReasonId.equals("0"))
+                        showMessage(getString(
+                                R.string.serial_no_reason_mandatory));
+
+                    else if ((assetTrackingHelper.SHOW_SERIAL_NO_REASON
+                            && !assetTrackingHelper.IS_SERIAL_NO_NOT_MANDATORY))
+                        showMessage(getString(
+                                R.string.enter_serial_no));
                 }
 
             } catch (Exception e) {
@@ -601,6 +614,25 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         }
     }
 
+    private boolean serialNoValidation() {
+
+        if (assetTrackingHelper.SHOW_ASSET_BARCODE
+                && assetTrackingHelper.SHOW_SERIAL_NO_REASON) {
+
+            if (isSerialNumberCaptured
+                    && mSNO.getText().length() > 3)
+                return true;
+            else if (!assetTrackingHelper.IS_SERIAL_NO_NOT_MANDATORY
+                    && mSNO.getText().length() > 3 && !mSelectedScanReasonId.equals("0"))
+                return true;
+
+            else return assetTrackingHelper.IS_SERIAL_NO_NOT_MANDATORY
+                        && !mSelectedScanReasonId.equals("0");
+        } else
+            return mSNO.getText().length() > 3;
+
+    }
+
     private void saveNewAsset() {
         setAddAssetDetails();
         mBModel.saveModuleCompletion(HomeScreenTwo.MENU_SERIALIZED_ASSET, true);
@@ -637,6 +669,8 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                         , Toast.LENGTH_LONG).show();
             }
         }
+        if (!assetTrackingHelper.SHOW_SERIAL_NO_REASON)
+            findViewById(R.id.barcode_reason_layout).setVisibility(View.GONE);
 
     }
 
@@ -694,13 +728,13 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                     if (result.getContents() == null) {
                         Toast.makeText(this, getResources().getString(R.string.serial_no_not_captured_kindly_choose_reason), Toast.LENGTH_LONG).show();
                         barcodeNoReasonSpinner.setSelection(0);
-                        barcodeNoReasonSpinner.setEnabled(true);
-                        mSNO.setEnabled(true);
+                        enableBarCodeViews(true);
+                        isSerialNumberCaptured = false;
                     } else {
                         mSNO.setText(result.getContents());
-                        mSNO.setEnabled(false);
-                        barcodeNoReasonSpinner.setEnabled(false);
                         barcodeNoReasonSpinner.setSelection(0);
+                        enableBarCodeViews(false);
+                        isSerialNumberCaptured = true;
                     }
                 }
             }
@@ -867,5 +901,10 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             }
         }
         mAssetSpinAdapter.notifyDataSetChanged();
+    }
+
+    private void enableBarCodeViews(boolean flag) {
+        barcodeNoReasonSpinner.setEnabled(flag);
+        mSNO.setEnabled(flag);
     }
 }
