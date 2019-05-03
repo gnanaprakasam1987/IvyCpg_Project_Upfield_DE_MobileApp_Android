@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.location.LocationUtil;
@@ -160,7 +161,10 @@ public class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolea
         String date = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
         String time = DateTimeUtils.now(DateTimeUtils.TIME);
 
-        bmodel.outletTimeStampHelper.setTimeIn(date + " " + time);
+        String dateTime = date + " " + time;
+        if (bmodel.configurationMasterHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
+            dateTime = IvyConstants.DEFAULT_TIME_CONSTANT;
+        bmodel.outletTimeStampHelper.setTimeIn(dateTime);
         bmodel.outletTimeStampHelper.setUid(StringUtils.QT("OTS" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)));
 
 
@@ -172,7 +176,8 @@ public class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolea
         bmodel.mSelectedRetailerLatitude = LocationUtil.latitude;
         bmodel.mSelectedRetailerLongitude = LocationUtil.longitude;
 
-        if (bmodel.configurationMasterHelper.SHOW_LOCATION_PASSWORD_DIALOG)
+        if (bmodel.configurationMasterHelper.SHOW_LOCATION_PASSWORD_DIALOG && (bmodel.configurationMasterHelper.ret_skip_otp_flag == 1
+                || bmodel.configurationMasterHelper.ret_skip_otp_flag == 2))
             bmodel.outletTimeStampHelper.updateRetailerDeviationTimeStamp();
 
         if (outletTimeStampSaved) {

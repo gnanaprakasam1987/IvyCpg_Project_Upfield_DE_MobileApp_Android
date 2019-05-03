@@ -2,6 +2,7 @@ package com.ivy.ui.task.presenter;
 
 import android.arch.lifecycle.LifecycleObserver;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.channel.ChannelDataManager;
@@ -43,6 +44,8 @@ import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Function3;
 import io.reactivex.observers.DisposableObserver;
+
+import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
 
 public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePresenter<V> implements TaskContract.TaskPresenter<V>, LifecycleObserver {
 
@@ -438,8 +441,12 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
 
     @Override
     public void updateModuleTime() {
-        getCompositeDisposable().add(mOutletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils
-                .now(DateTimeUtils.TIME)).subscribeOn(getSchedulerProvider().io())
+        String date = DateTimeUtils.now(DATE_GLOBAL) + " " + DateTimeUtils
+                .now(DateTimeUtils.TIME);
+        if (mConfigurationMasterHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
+            date = IvyConstants.DEFAULT_TIME_CONSTANT;
+        getCompositeDisposable().add(mOutletTimeStampDataManager.updateTimeStampModuleWise(date)
+                .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(aBoolean -> {
 

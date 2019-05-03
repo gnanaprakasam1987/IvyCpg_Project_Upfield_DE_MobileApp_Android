@@ -1,6 +1,7 @@
 package com.ivy.utils;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.StringDef;
 
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -9,6 +10,8 @@ import com.ivy.sd.png.util.DataMembers;
 
 import org.joda.time.DateTime;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,6 +38,12 @@ public class DateTimeUtils {
     public static final String defaultDateFormat = "MM/dd/yyyy";
     private static final String serverDateFormat = "yyyy/MM/dd";
     public static int DATE_TIME_ID = 3;
+
+    @StringDef({DateFormats.SERVER_DATE_FORMAT})
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface DateFormats{
+        String SERVER_DATE_FORMAT = "yyyy/MM/dd";
+    }
 
     private DateTimeUtils() {
 

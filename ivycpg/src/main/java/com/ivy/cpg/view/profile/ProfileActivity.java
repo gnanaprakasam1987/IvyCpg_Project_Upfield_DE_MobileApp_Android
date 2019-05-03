@@ -66,6 +66,7 @@ import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.cpg.nfc.NFCReadDialogActivity;
 import com.ivy.cpg.view.dashboard.DashBoardHelper;
 import com.ivy.cpg.view.dashboard.sellerdashboard.SellerDashboardFragment;
+import com.ivy.cpg.view.profile.otpValidation.OTPValidationHelper;
 import com.ivy.cpg.view.profile.otpValidation.RetailerSequenceSkipDialog;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.reports.dynamicReport.DynamicReportFragment;
@@ -93,11 +94,9 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.TimerCount;
 import com.ivy.cpg.view.profile.assetHistory.AssetHistoryFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.profile.mslUnsold.MSLUnsoldFragment;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.PlanningVisitActivity;
-import com.ivy.cpg.view.task.TaskListFragment;
 import com.ivy.cpg.view.profile.userSelection.UserSelectionDialogue;
 import com.ivy.cpg.view.profile.orderandinvoicehistory.InvoiceHistoryFragment;
 import com.ivy.cpg.view.profile.orderandinvoicehistory.OrderHistoryFragment;
@@ -221,6 +220,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     String selectedUserId = "";
     private boolean fromMap;
+    private boolean isLocValDone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -251,6 +251,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             @Override
             public void onDismiss(DialogInterface dialog) {
                 dialog.dismiss();
+                isLocValDone = true;
                 validationToStartVisit();
             }
         };
@@ -1694,7 +1695,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         }
 
         // Retailer and User location validation using radius
-        if (bmodel.configurationMasterHelper.SHOW_LOCATION_PASSWORD_DIALOG) {
+        if (bmodel.configurationMasterHelper.SHOW_LOCATION_PASSWORD_DIALOG && !isLocValDone) {
             if (!checkUserIsNearByRetailer(bmodel.getRetailerMasterBO()))
                 return;
         }
@@ -1855,7 +1856,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         } else {
 
-            if (bmodel.timer == null) {
+            if (bmodel.timer == null && !bmodel.configurationMasterHelper.IS_DISABLE_CALL_ANALYSIS_TIMER) {
                 if ("P".equals(bmodel.getAppDataProvider().getRetailMaster().getIsVisited())) {
                     long pausedTime = getSharedPreferences("RetailerPause", MODE_PRIVATE).getLong("pausetime", 0);
                     bmodel.timer = new TimerCount(ProfileActivity.this, pausedTime);
@@ -2127,25 +2128,54 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
 
     private void showToastMessage(RetailerMasterBO ret, float distance) {
-        String strTitle;
-        if (distance == -1)
-            strTitle = getResources().getString(
-                    R.string.retailer_location_not_assigned);
-        else if (distance == -2)
-            strTitle = getResources().getString(
-                    R.string.not_able_to_find_user_location);
-        else
-            strTitle = getResources().getString(R.string.need_otp)
-                    + getResources().getString(R.string.or_you_are) + " "
-                    + distance + getResources().getString(R.string.mts_away);
+        if (bmodel.configurationMasterHelper.ret_skip_otp_flag == 0 || bmodel.configurationMasterHelper.ret_skip_otp_flag == 1) {
+            String strTitle;
+            if (distance == -1)
+                strTitle = getResources().getString(
+                        R.string.retailer_location_not_assigned);
+            else if (distance == -2)
+                strTitle = getResources().getString(
+                        R.string.not_able_to_find_user_location);
+            else
+                strTitle = getResources().getString(R.string.need_otp)
+                        + getResources().getString(R.string.or_you_are) + " "
+                        + distance + getResources().getString(R.string.mts_away);
 
-        if (otpValidationDialog != null && otpValidationDialog.isShowing()) {
-            otpValidationDialog.cancel();
-            otpValidationDialog = null;
+            if (otpValidationDialog != null && otpValidationDialog.isShowing()) {
+                otpValidationDialog.cancel();
+                otpValidationDialog = null;
+            }
+            otpValidationDialog = new OTPValidationDialog(this,
+                    otpPasswordDismissListenerNew, ret, strTitle, (int) distance);
+            otpValidationDialog.show();
+        } else if (bmodel.configurationMasterHelper.ret_skip_otp_flag == 2) {
+            CommonDialog commonDialog1 = new CommonDialog(this,
+                    getResources().getString(R.string.location_validation),
+                    getResources().getString(R.string.location_mismatch_msg),
+                    getResources().getString(R.string.bt_proceed),
+                    new CommonDialog.PositiveClickListener() {
+                        @Override
+                        public void onPositiveButtonClick() {
+                            OTPValidationHelper otpValidationHelper = OTPValidationHelper.getInstance(ProfileActivity.this);
+                            String status = otpValidationHelper.saveOTPSkipReason(0, ret, "ALERT", (int) distance);
+                            if ("1".equals(status)) {
+                                isLocValDone = true;
+                                validationToStartVisit();
+                            }
+
+                        }
+                    });
+
+            commonDialog1.show();
+            commonDialog1.setCancelable(false);
+        } else if (bmodel.configurationMasterHelper.ret_skip_otp_flag == 3) {
+            CommonDialog commonDialog1 = new CommonDialog(this,
+                    getResources().getString(R.string.location_validation),
+                    getResources().getString(R.string.location_mismatch_msg),
+                    getResources().getString(R.string.ok));
+            commonDialog1.show();
+            commonDialog1.setCancelable(false);
         }
-        otpValidationDialog = new OTPValidationDialog(this,
-                otpPasswordDismissListenerNew, ret, strTitle, (int) distance);
-        otpValidationDialog.show();
 
     }
 
@@ -2349,7 +2379,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             case SynchronizationHelper.DOWNLOAD_FINISH_UPDATE:
                 alertDialog.dismiss();
 
-                if (bmodel.timer == null) {
+                if (bmodel.timer == null && !bmodel.configurationMasterHelper.IS_DISABLE_CALL_ANALYSIS_TIMER) {
                     if ("P".equals(bmodel.getAppDataProvider().getRetailMaster().getIsVisited())) {
                         long pausedTime = getSharedPreferences("RetailerPause", MODE_PRIVATE).getLong("pausetime", 0);
                         bmodel.timer = new TimerCount(ProfileActivity.this, pausedTime);

@@ -1463,7 +1463,7 @@ public class CollectionHelper {
                     invoiceHeaderBO.setInvoiceDate(c.getString(1));
                     invoiceHeaderBO.setInvoiceAmount(c.getDouble(2));
                     invoiceHeaderBO.setPaidAmount(c.getDouble(3));
-                    setInvoiceDiscoutAmount(invoiceHeaderBO);
+                    setInvoiceDiscoutAmount(invoiceHeaderBO, db);
                 }
             }
             c.close();
@@ -1492,7 +1492,7 @@ public class CollectionHelper {
                     invoiceHeaderBO.setInvoiceDate(c.getString(1));
                     invoiceHeaderBO.setInvoiceAmount(c.getDouble(2));
                     invoiceHeaderBO.setPaidAmount(c.getDouble(3));
-                    setInvoiceDiscoutAmount(invoiceHeaderBO);
+                    setInvoiceDiscoutAmount(invoiceHeaderBO, db);
                 }
             }
             c.close();
@@ -1508,15 +1508,15 @@ public class CollectionHelper {
      *
      * @param invoiceHeaderBO header bo
      */
-    private void setInvoiceDiscoutAmount(InvoiceHeaderBO invoiceHeaderBO) {
+    private void setInvoiceDiscoutAmount(InvoiceHeaderBO invoiceHeaderBO, DBUtil db) {
         try {
             double discountedAmount;
             double invoiceAmount;
             String updateQuery;
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-            );
-            db.createDataBase();
-            db.openDataBase();
+//            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+//            );
+//            db.createDataBase();
+//            db.openDataBase();
             // configuration for discount slab apply or not
 
             invoiceAmount = Utils.round(invoiceHeaderBO.getInvoiceAmount(),
@@ -1582,7 +1582,7 @@ public class CollectionHelper {
                         + " and upload='Y'";
                 db.executeQ(updateQuery);
             }
-            db.closeDB();
+//            db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
         }

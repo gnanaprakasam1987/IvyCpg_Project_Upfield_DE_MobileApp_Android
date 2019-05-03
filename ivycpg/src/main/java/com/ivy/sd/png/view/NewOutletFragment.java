@@ -2122,7 +2122,7 @@ public class NewOutletFragment extends IvyBaseFragment
                             edittextinputLayout.setError(getResources().getString(R.string.enter_valid) + " " + profileConfig.get(i).getMenuName());
                             editText[i].addTextChangedListener(watcher);
                             break;
-                        } else if (length > 0 && !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
+                        } /*else if (length > 0 && !isValidGSTINWithPAN(editText[i].getText().toString().trim())) {
 
                             validate = false;
                             scrollToSpecificEditText(edittextinputLayout);
@@ -2131,7 +2131,7 @@ public class NewOutletFragment extends IvyBaseFragment
                             edittextinputLayout.setError(getResources().getString(R.string.enter_valid) + " " + profileConfig.get(i).getMenuName());
                             editText[i].addTextChangedListener(watcher);
                             break;
-                        }
+                        }*/
 
                     }
 
