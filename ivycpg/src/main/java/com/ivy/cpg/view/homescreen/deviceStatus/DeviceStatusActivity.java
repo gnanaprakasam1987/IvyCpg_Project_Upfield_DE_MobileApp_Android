@@ -82,10 +82,11 @@ public class DeviceStatusActivity extends IvyBaseActivityNoActionBar {
 
 		int status1 = batteryStatus.getIntExtra(BatteryManager.EXTRA_LEVEL, -1);
 		currentStatus = String.valueOf(status1);
-		status = updateListItem();
 
 		LocationManager service = (LocationManager) getSystemService(LOCATION_SERVICE);
 		enabled = service.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+		status = updateListItem();
 
 		// Check if enabled and if not send user to the GPS settings
 
