@@ -351,7 +351,7 @@ public class RemoveSerializedAssetActivity extends IvyBaseActivityNoActionBar {
      */
     private void removeAsset() {
 
-        String mReasonID, mBrandId;
+        String mReasonID;
         String mSBDId;
         String mPOSMIdDialog;
         String mSNODialog;
@@ -365,12 +365,11 @@ public class RemoveSerializedAssetActivity extends IvyBaseActivityNoActionBar {
                         mPOSMIdDialog = assetTrackingBO.getPOSM();
                         mSNODialog = assetTrackingBO.getSNO();
                         mSBDId = assetTrackingBO.getSBDId();
-                        mBrandId = assetTrackingBO.getBrand();
                         if (!assetTrackingBO.getReason1ID().equalsIgnoreCase("0")) {
                             mReasonID = assetTrackingBO.getReason1ID();
                             assetTrackingHelper
                                     .deleteAsset(getApplicationContext(), mPOSMIdDialog,
-                                            mSNODialog, mSBDId, mBrandId, mReasonID, mModuleName,assetTrackingBO.getNFCTagId(),assetTrackingBO.getReferenceId());
+                                            mSNODialog, mSBDId, mReasonID, mModuleName,assetTrackingBO.getNFCTagId(),assetTrackingBO.getReferenceId());
 
                             itr.remove();
                         }
