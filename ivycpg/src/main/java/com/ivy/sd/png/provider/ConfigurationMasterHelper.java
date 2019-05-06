@@ -96,8 +96,9 @@ public class ConfigurationMasterHelper {
     // Added in 43 version
     // Image upload through Amazon or on Premises
     private static final String CODE_CLOUD_STORAGE = "CLOUD_STORAGE";
+    public boolean IS_CLOUD_STORAGE_AVAILABLE;
     public boolean IS_SFDC_CLOUD_STORAGE;
-    public boolean IS_S3_CLOUD_STORAGE;
+    public boolean IS_S3_CLOUD_STORAGE=true;// default storage.
     public boolean IS_AZURE_CLOUD_STORAGE;
 
     // Show Tax in Invoice
@@ -2169,21 +2170,24 @@ public class ConfigurationMasterHelper {
         this.SHOW_SALES_RETURN_IN_INVOICE = hashMapHHTModuleConfig.get(CODE_SALES_RETURN_IN_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SALES_RETURN_IN_INVOICE) : false;
         this.SHOW_CREDIT_INVOICE_COUNT = hashMapHHTModuleConfig.get(CODE_CREDIT_INVOICE_COUNT) != null ? hashMapHHTModuleConfig.get(CODE_CREDIT_INVOICE_COUNT) : false;
 
-        if(hashMapHHTModuleConfig.get(CODE_CLOUD_STORAGE) != null ? hashMapHHTModuleConfig.get(CODE_CLOUD_STORAGE) : false){
+        IS_CLOUD_STORAGE_AVAILABLE=hashMapHHTModuleConfig.get(CODE_CLOUD_STORAGE) != null ? hashMapHHTModuleConfig.get(CODE_CLOUD_STORAGE) : false;
+        if(IS_CLOUD_STORAGE_AVAILABLE){
             int cloudStorageType=hashMapHHTModuleOrder.get(CODE_CLOUD_STORAGE);
             if(cloudStorageType==0){
-                IS_SFDC_CLOUD_STORAGE=true;
+                IS_S3_CLOUD_STORAGE=true;
             }
             else if(cloudStorageType==1){
-                IS_S3_CLOUD_STORAGE=true;
+                IS_SFDC_CLOUD_STORAGE=true;
             }
             else if(cloudStorageType==2){
                 IS_AZURE_CLOUD_STORAGE=true;
             }
             else {
+                // default flag
                 IS_S3_CLOUD_STORAGE=true;
             }
         }
+
 
         this.IS_MULTIPLE_JOINCALL = hashMapHHTModuleConfig.get(CODE_MULTIPLE_JOINCALL) != null ? hashMapHHTModuleConfig.get(CODE_MULTIPLE_JOINCALL) : false;
         this.IS_ALLOW_SURVEY_WITHOUT_JOINTCALL = hashMapHHTModuleConfig.get(CODE_ALLOW_SURVEY) != null ? hashMapHHTModuleConfig.get(CODE_ALLOW_SURVEY) : false;

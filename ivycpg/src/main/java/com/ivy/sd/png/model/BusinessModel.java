@@ -3438,7 +3438,7 @@ public class BusinessModel extends Application {
      */
     public void getimageDownloadURL() {
         try {
-            boolean isAmazonCloud = false;
+            boolean isAmazonCloud = true;
             boolean isSFDCCloud = false;
             boolean isAzureCloud = false;
 
@@ -3451,10 +3451,10 @@ public class BusinessModel extends Application {
             if (c != null) {
                 while (c.moveToNext()) {
                     if(c.getInt(0)==0){
-                        isAzureCloud=true;
+                        isAmazonCloud=true;
                     }
                     else if(c.getInt(0)==1){
-                        isAmazonCloud=true;
+                        isSFDCCloud=true;
                     }
                     else if(c.getInt(0)==2){
                         isAzureCloud=true;

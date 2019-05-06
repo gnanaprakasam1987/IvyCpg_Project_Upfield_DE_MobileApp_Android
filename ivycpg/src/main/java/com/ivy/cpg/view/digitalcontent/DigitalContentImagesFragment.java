@@ -309,6 +309,21 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
                         openImages(((VHItem) holder).filename,product);
                     }
                 });
+
+                if(product.isAllowSharing()){
+                    ((VHItem) holder).imageView_share.setVisibility(View.VISIBLE);
+                }
+                else {
+                    ((VHItem) holder).imageView_share.setVisibility(View.GONE);
+                }
+                ((VHItem) holder).imageView_share.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mDigitalContentHelper.shareDigitalContent(getActivity(),product.getDescription(),((VHItem) holder).filename);
+                    }
+                });
+
+
             } else if (holder instanceof VHHeader) {
                 ((VHHeader) holder).month_label.setText(items.get(position).getHeaderTitle());
             } else if (holder instanceof VHGroupHeader) {
@@ -344,7 +359,7 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
 
         class VHItem extends RecyclerView.ViewHolder {
             TextView mProductNameDescription, date, mProductName, month_label;
-            ImageView image;
+            ImageView image,imageView_share;
             String filename;
 
             public VHItem(View v) {
@@ -352,6 +367,7 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
                 mProductNameDescription = (TextView) v
                         .findViewById(R.id.closePRODNAME);
                 image = (ImageView) v.findViewById(R.id.icon);
+                imageView_share = (ImageView) v.findViewById(R.id.imageview_share);
                 date = (TextView) v.findViewById(R.id.date);
                 mProductName = (TextView) v.findViewById(R.id.prodName);
                 month_label = (TextView) v.findViewById(R.id.month_label);

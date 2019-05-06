@@ -49,13 +49,14 @@
                     android:visibility="gone" />
             </RelativeLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/pdt_details_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/layoutimage"
                 android:minHeight="40dp"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                >
 
                 <TextView
                     android:id="@+id/closePRODNAME"
@@ -67,7 +68,8 @@
                     android:padding="@dimen/dimen_2dp"
                     android:text="@string/Product_details"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textColor="?attr/textColorPrimary" />
+                    android:textColor="?attr/textColorPrimary"
+                    android:layout_toLeftOf="@+id/imageview_share"/>
 
                 <TextView
                     android:id="@+id/date"
@@ -77,8 +79,21 @@
                     android:padding="@dimen/dimen_2dp"
                     android:text="@string/date"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                    android:textColor="@color/gray_text" />
-            </LinearLayout>
+                    android:textColor="@color/gray_text"
+                    android:layout_below="@+id/closePRODNAME"
+                    android:layout_toLeftOf="@+id/imageview_share"/>
+
+                <ImageView
+                    android:id="@+id/imageview_share"
+                    android:layout_width="@dimen/dimen_30dp"
+                    android:layout_height="@dimen/dimen_20dp"
+                    android:src="@drawable/ic_email"
+                    android:tint="?attr/textColorPrimary"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+
+                    />
+            </RelativeLayout>
             <!--<LinearLayout-->
             <!--android:id="@+id/pdt_details_layout"-->
             <!--android:layout_width="match_parent"-->

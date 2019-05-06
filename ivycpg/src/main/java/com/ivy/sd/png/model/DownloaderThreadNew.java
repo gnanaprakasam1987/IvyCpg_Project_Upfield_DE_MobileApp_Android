@@ -107,7 +107,7 @@ public class DownloaderThreadNew extends Thread {
         } else {
             try {
 
-                boolean isAmazonCloud = false;
+                boolean isAmazonCloud = true;
                 boolean isAzureCloud = false;
                 boolean isSFDCCloud = false;
                 DBUtil db = new DBUtil(parentActivity, DataMembers.DB_NAME
@@ -119,10 +119,10 @@ public class DownloaderThreadNew extends Thread {
                 if (c != null) {
                     while (c.moveToNext()) {
                         if(c.getInt(0)==0){
-                            isSFDCCloud=true;
+                            isAmazonCloud=true;
                         }
                         else if(c.getInt(0)==1){
-                            isAmazonCloud=true;
+                            isSFDCCloud=true;
                         }
                         else if(c.getInt(0)==2){
                             isAzureCloud=true;
