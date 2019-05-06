@@ -1,4 +1,4 @@
-package com.ivy.ui.filter;
+package com.ivy.ui.retailer.filter;
 
 public class RetailerPlanFilterConstants {
 
