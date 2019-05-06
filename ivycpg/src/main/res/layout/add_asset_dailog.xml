@@ -76,6 +76,7 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/label_scan"
             style="@style/TextViewCaptionNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

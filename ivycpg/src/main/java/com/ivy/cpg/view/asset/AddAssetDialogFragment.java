@@ -37,6 +37,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FontUtils;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -63,7 +64,8 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
     private int mDay;
     Button btnSave, btnCancel;
     private String append = "";
-
+    private TextView txtSerialNo;
+    private String serialNoTag;
     private final AssetTrackingBO assetBo = new AssetTrackingBO();
     AssetTrackingHelper assetTrackingHelper;
 
@@ -82,6 +84,14 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         Context context = getActivity();
         mBModel = (BusinessModel) context.getApplicationContext();
         assetTrackingHelper = AssetTrackingHelper.getInstance(context);
+
+        txtSerialNo = view.findViewById(R.id.label_scan);
+        serialNoTag = getResources().getString(R.string.serial_no);
+        ((TextView) view.findViewById(R.id.label_scan)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
+        if (mBModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.label_scan).getTag()) != null) {
+            serialNoTag = mBModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.label_scan).getTag());
+            txtSerialNo.setText(serialNoTag);
+        }
 
         mAsset = view.findViewById(R.id.spinner_asset);
         mBrand = view.findViewById(R.id.spinner_brand);
@@ -321,9 +331,8 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                                 getActivity(),
                                 getResources()
                                         .getString(
-                                                R.string.enter_serial_no),
+                                                R.string.enter) + " " + serialNoTag,
                                 Toast.LENGTH_SHORT).show();
-                        return;
                     }
                     if (!assetTrackingHelper
                             .getUniqueSerialNo(mSNO.getText()
@@ -343,10 +352,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
                     } else {
                         Toast.makeText(
-                                getActivity(),
-                                getResources()
-                                        .getString(
-                                                R.string.serial_number_already_exists),
+                                getActivity(),serialNoTag + " " + getResources().getString(R.string.already_exist),
                                 Toast.LENGTH_SHORT).show();
                     }
                 } else {
