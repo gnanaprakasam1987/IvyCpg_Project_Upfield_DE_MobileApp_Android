@@ -1,13 +1,13 @@
-package com.ivy.ui.retailerplanfilter.presenter;
+package com.ivy.ui.filter.presenter;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
-import com.ivy.ui.retailerplanfilter.RetailerPlanFilterBo;
-import com.ivy.ui.retailerplanfilter.RetailerPlanFilterConstants;
-import com.ivy.ui.retailerplanfilter.RetailerPlanFilterContract;
-import com.ivy.ui.retailerplanfilter.data.RetailerPlanFilterDataManager;
+import com.ivy.ui.filter.RetailerPlanFilterBo;
+import com.ivy.ui.filter.RetailerPlanFilterConstants;
+import com.ivy.ui.filter.RetailerPlanFilterContract;
+import com.ivy.ui.filter.data.RetailerPlanFilterDataManager;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
@@ -18,9 +18,9 @@ import javax.inject.Inject;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 
-import static com.ivy.ui.retailerplanfilter.RetailerPlanFilterConstants.CODE_IS_NOT_VISITED;
-import static com.ivy.ui.retailerplanfilter.RetailerPlanFilterConstants.CODE_LAST_VISIT_DATE;
-import static com.ivy.ui.retailerplanfilter.RetailerPlanFilterConstants.CODE_TASK_DUE_DATE;
+import static com.ivy.ui.filter.RetailerPlanFilterConstants.CODE_IS_NOT_VISITED;
+import static com.ivy.ui.filter.RetailerPlanFilterConstants.CODE_LAST_VISIT_DATE;
+import static com.ivy.ui.filter.RetailerPlanFilterConstants.CODE_TASK_DUE_DATE;
 
 public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContract.RetailerPlanFilterView>
         extends BasePresenter<V> implements RetailerPlanFilterContract.RetailerPlanFilterPresenter<V> {

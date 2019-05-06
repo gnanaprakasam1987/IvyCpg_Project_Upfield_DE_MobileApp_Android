@@ -1,4 +1,4 @@
-package com.ivy.ui.retailerplanfilter;
+package com.ivy.ui.filter;
 
 import java.util.ArrayList;
 
