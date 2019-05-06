@@ -141,6 +141,17 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
                 ?getSelectedDateRetailerPlanMap.get(retailerId): new DateWisePlanBo();
     }
 
+    @Override
+    public void prepareFilteredRetailerList(ArrayList<String> retailerIds) {
+        for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
+            if (retailerIds.contains(retailerMasterBO.getRetailerID())) {
+                getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
+            }
+        }
+
+        getIvyView().focusMarker();
+    }
+
     public String makeURL(double sourcelat, double sourcelog, double destlat,
                           double destlog,String key,boolean isBywalk) {
         String mode;
