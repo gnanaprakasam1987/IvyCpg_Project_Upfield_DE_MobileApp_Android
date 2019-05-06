@@ -867,13 +867,21 @@ public class SynchronizationFragment extends IvyBaseFragment
                 case DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC:
                     dismissCurrentProgressDialog();
                     if (isSwitchUser) {
-                        getActivity().finish();
+                        //getActivity().finish();
                         /*BusinessModel.loadActivity(getActivity(),
                                 DataMembers.actHomeScreen);*/
-                        moveToHomeScreenActivity();
+                       // moveToHomeScreenActivity();
+                        if (bmodel.synchronizationHelper.checkDataForSyncLogUpload())
+                            new UploadSyncLog().execute();
+                        else {
+                            getActivity().finish();
+                            moveToHomeScreenActivity();
+                        }
                     } else {
                         bmodel.daySpinnerPositon = 0;
                         bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
+                        if (bmodel.synchronizationHelper.checkDataForSyncLogUpload())
+                            new UploadSyncLog().execute();
                     }
 
                     isClicked = false;
@@ -980,6 +988,8 @@ public class SynchronizationFragment extends IvyBaseFragment
                         sdsd.show();
                         lastSyncTimeHelper.updateUploadedTime();
                         updateLastTransactionTimeInView();
+                        if (bmodel.synchronizationHelper.checkDataForSyncLogUpload())
+                            new UploadSyncLog().execute();
                     }
                     break;
                 case DataMembers.NOTIFY_UPLOAD_ERROR:
@@ -995,6 +1005,8 @@ public class SynchronizationFragment extends IvyBaseFragment
                     bmodel.showAlert(
                             getResources().getString(
                                     R.string.images_sucessfully_uploaded), 0);
+                    if (bmodel.synchronizationHelper.checkDataForSyncLogUpload())
+                        new UploadSyncLog().execute();
                     break;
                 case DataMembers.NOTIFY_UPLOAD_ERROR_IMAGE:
                     alertDialog.dismiss();
@@ -1025,6 +1037,8 @@ public class SynchronizationFragment extends IvyBaseFragment
                     sdsd = new SyncDownloadStatusDialog(getActivity(), getResources().getString(
                             R.string.successfully_uploaded), displaymetrics);
                     sdsd.show();
+                    if (bmodel.synchronizationHelper.checkDataForSyncLogUpload())
+                        new UploadSyncLog().execute();
                     break;
                 case DataMembers.NOTIFY_EXPORT_SUCCESS:
                     try {
@@ -1361,12 +1375,16 @@ public class SynchronizationFragment extends IvyBaseFragment
                 case DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC:
                     dismissCurrentProgressDialog();
                     if (isSwitchUser) {
-                        getActivity().finish();
-                       /* BusinessModel.loadActivity(getActivity(),
-                                DataMembers.actHomeScreen);*/
-                        moveToHomeScreenActivity();
+                        if (bmodel.synchronizationHelper.checkDataForSyncLogUpload())
+                            new UploadSyncLog().execute();
+                        else {
+                            getActivity().finish();
+                            moveToHomeScreenActivity();
+                        }
                     } else {
                         bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
+                        if (bmodel.synchronizationHelper.checkDataForSyncLogUpload())
+                            new UploadSyncLog().execute();
                     }
                     isClicked = false;
                     break;
@@ -2207,12 +2225,16 @@ public class SynchronizationFragment extends IvyBaseFragment
                 downloaderThread.start();
             } else {
                 if (isSwitchUser) {
-                    getActivity().finish();
-                   /* BusinessModel.loadActivity(getActivity(),
-                            DataMembers.actHomeScreen);*/
-                    moveToHomeScreenActivity();
+                    if (bmodel.synchronizationHelper.checkDataForSyncLogUpload())
+                        new UploadSyncLog().execute();
+                    else {
+                        getActivity().finish();
+                        moveToHomeScreenActivity();
+                    }
                 } else {
                     bmodel.showAlert(getResources().getString(R.string.downloaded_successfully), 8);
+                    if (bmodel.synchronizationHelper.checkDataForSyncLogUpload())
+                        new UploadSyncLog().execute();
                 }
                 isClicked = false;
                 // getActivity().finish();
@@ -2570,5 +2592,35 @@ public class SynchronizationFragment extends IvyBaseFragment
         editor.putString("application", "");
         editor.putString("activationKey", "");
         editor.commit();
+    }
+
+    class UploadSyncLog extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+                builder = new AlertDialog.Builder(getActivity());
+
+                customProgressDialog(builder, "Uploading Sync Log Details");
+                alertDialog = builder.create();
+                alertDialog.show();
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            UploadHelper mUploadHelper = UploadHelper.getInstance(getActivity());
+            mUploadHelper.uploadSyncLogDetails();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void s) {
+            super.onPostExecute(s);
+            alertDialog.dismiss();
+            if (isSwitchUser) {
+                getActivity().finish();
+                moveToHomeScreenActivity();
+            }
+        }
     }
 }

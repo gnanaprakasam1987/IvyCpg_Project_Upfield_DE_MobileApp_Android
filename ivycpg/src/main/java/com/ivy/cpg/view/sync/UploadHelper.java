@@ -26,11 +26,11 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.network.TLSSocketFactory;
@@ -59,6 +59,8 @@ import javax.net.ssl.HttpsURLConnection;
 
 import static com.ivy.lib.Utils.QT;
 import static com.ivy.sd.png.provider.SynchronizationHelper.JSON_DATA_KEY;
+import static com.ivy.sd.png.provider.SynchronizationHelper.SYNC_STATUS_COMPLETED;
+import static com.ivy.sd.png.provider.SynchronizationHelper.SYNC_STATUS_FAILED;
 import static com.ivy.sd.png.provider.SynchronizationHelper.access_token;
 import static com.ivy.sd.png.provider.SynchronizationHelper.instance_url;
 
@@ -138,18 +140,20 @@ public class UploadHelper {
             db.openDataBase();
 
             JSONObject jsonObjData = new JSONObject();
-            ;
+            String initTime = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
             if (flag == DataMembers.SYNCUPLOAD || flag == DataMembers.SYNC_EXPORT) {
                 Set<String> keys = DataMembers.uploadColumn.keySet();
 
                 jsonObjData = new JSONObject();
                 for (String tableName : keys) {
-                    JSONArray jsonArray = prepareDataForUploadJSON(db,
-                            handlerr, tableName,
-                            DataMembers.uploadColumn.get(tableName));
+                    if (!DataMembers.tbl_SyncLogDetails.equalsIgnoreCase(tableName)) {
+                        JSONArray jsonArray = prepareDataForUploadJSON(db,
+                                handlerr, tableName,
+                                DataMembers.uploadColumn.get(tableName));
 
-                    if (jsonArray.length() > 0)
-                        jsonObjData.put(tableName, jsonArray);
+                        if (jsonArray.length() > 0)
+                            jsonObjData.put(tableName, jsonArray);
+                    }
                 }
                 Commons.print("jsonObjData.toString():0:"
                         + jsonObjData.toString());
@@ -474,10 +478,18 @@ public class UploadHelper {
             if(BuildConfig.FLAVOR.equalsIgnoreCase("aws")){
                 int response = getResponseFlag(context, jsonObjData, jsonFormatter, url);
 
+                String syncStatus;
                 if (response == -1)
                     return response;
 
                 responseMessage = handleUploadresponse(flag, context, response);
+                if (responseMessage == 1) {
+                    syncStatus = SynchronizationHelper.SYNC_STATUS_COMPLETED;
+                } else {
+                    syncStatus = SynchronizationHelper.SYNC_STATUS_FAILED;
+                }
+                businessModel.synchronizationHelper.insertSyncHeader(initTime, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SynchronizationHelper.SYNC_TYPE_UPLOAD,
+                        0, syncStatus,  1);
             }else {
                 final JSONObject finalJsonObjData = jsonObjData;
                 businessModel.synchronizationHelper.getAuthToken(new SynchronizationHelper.VolleyResponseCallbackInterface() {
@@ -531,6 +543,7 @@ public class UploadHelper {
         /*StringBuilder url = new StringBuilder();
         url.append(DataMembers.SERVER_URL);
         url.append(appendurl);*/
+        String initTime = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
         Commons.print("Json data " + data);
         MyjsonarrayPostRequest jsonObjectRequest;
 
@@ -624,6 +637,15 @@ public class UploadHelper {
                                 }
                                 Commons.print("After Responce");
 
+                                String syncStatus;
+                                if (responseMsg == 1) {
+                                    syncStatus = SYNC_STATUS_COMPLETED;
+                                } else {
+                                    syncStatus = SYNC_STATUS_FAILED;
+                                }
+                                businessModel.synchronizationHelper.insertSyncHeader(initTime, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SynchronizationHelper.SYNC_TYPE_UPLOAD,
+                                        0, syncStatus,  1);
+
                                 if (responseMsg == 1) {
                                     handler.sendEmptyMessage(
                                             DataMembers.NOTIFY_UPLOADED);
@@ -651,7 +673,8 @@ public class UploadHelper {
                     System.gc();
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOAD_ERROR);
-
+                    businessModel.synchronizationHelper.insertSyncHeader(initTime, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SynchronizationHelper.SYNC_TYPE_UPLOAD,
+                            0, SYNC_STATUS_FAILED,  1);
                 }
             }) {
                 @Override
@@ -1204,9 +1227,11 @@ public class UploadHelper {
             Set<String> keys = updateTableMap.keySet();
             Commons.print(keys.size() + "size");
             for (String tableName : keys) {
-                String query = "update " + tableName
-                        + " set upload='Y' where upload='N'";
-                db.updateSQL(query);
+                if (!DataMembers.tbl_SyncLogDetails.equalsIgnoreCase(tableName)) {
+                    String query = "update " + tableName
+                            + " set upload='Y' where upload='N'";
+                    db.updateSQL(query);
+                }
             }
 
             db.closeDB();
@@ -1553,5 +1578,267 @@ public class UploadHelper {
         return res;
     }
 
+    /**
+     * Method to upload synclogdetails. This method will get hit after normal upload/download.
+     */
+    public void uploadSyncLogDetails() {
+
+        try {
+            JSONObject jsonObjData = new JSONObject();
+            JSONArray jsonArray = prepareDataForSyncLogUpload();
+            if (jsonArray.length() > 0)
+                jsonObjData.put(DataMembers.tbl_SyncLogDetails, jsonArray);
+
+            JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
+
+            try {
+                if (!"0".equals(businessModel.getAppDataProvider().getUser().getBackupSellerID())) {
+                    jsonFormatter.addParameter("UserId", businessModel.getAppDataProvider().getUser().getBackupSellerID());
+                    jsonFormatter.addParameter("WorkingFor", businessModel.getAppDataProvider().getUser().getUserid());
+                } else {
+                    jsonFormatter.addParameter("UserId", businessModel.getAppDataProvider().getUser().getUserid());
+                }
+
+                jsonFormatter.addParameter("DistributorId", businessModel.getAppDataProvider().getUser().getDistributorid());
+                jsonFormatter.addParameter("BranchId", businessModel.getAppDataProvider().getUser().getBranchId());
+                jsonFormatter.addParameter("LoginId", businessModel.getAppDataProvider().getUser().getLoginName());
+                jsonFormatter.addParameter("DeviceId",
+                        DeviceUtils.getIMEINumber(mContext));
+                jsonFormatter.addParameter("VersionCode",
+                        AppUtils.getApplicationVersionNumber(mContext));
+                jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, AppUtils.getApplicationVersionName(mContext));
+                jsonFormatter.addParameter("OrganisationId", businessModel.getAppDataProvider().getUser().getOrganizationId());
+                jsonFormatter.addParameter("ParentPositionIds", businessModel.getUserParentPosition());
+                if (businessModel.synchronizationHelper.isDayClosed()) {
+                    int varianceDwnDate = DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                            businessModel.getAppDataProvider().getUser().getDownloadDate(),
+                            DateTimeUtils.DateFormats.SERVER_DATE_FORMAT);
+                    if (varianceDwnDate == 0) {
+                        jsonFormatter.addParameter("MobileDateTime",
+                                DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
+                    }
+                    if (varianceDwnDate > 0) {
+                        jsonFormatter.addParameter("MobileDateTime",
+                                businessModel.synchronizationHelper.getLastTransactedDate());
+                    }
+                } else
+                    jsonFormatter.addParameter("MobileDateTime",
+                            DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
+
+                jsonFormatter.addParameter("MobileUTCDateTime",
+                        DateTimeUtils.now(DateTimeUtils.GMT_DATE_TIME));
+                jsonFormatter.addParameter("DownloadedDataDate",
+                        businessModel.getAppDataProvider().getUser().getDownloadDate());
+                jsonFormatter.addParameter("VanId", businessModel.getAppDataProvider().getUser().getVanId());
+                jsonFormatter.addParameter("platform", "Android");
+                jsonFormatter.addParameter("osversion",
+                        android.os.Build.VERSION.RELEASE);
+                jsonFormatter.addParameter("firmware", "");
+                jsonFormatter.addParameter("model", Build.MODEL);
+                String LastDayClose = "";
+                if (businessModel.synchronizationHelper.isDayClosed()) {
+                    LastDayClose = businessModel.getAppDataProvider().getUser()
+                            .getDownloadDate();
+                }
+                jsonFormatter.addParameter("LastDayClose", LastDayClose);
+                jsonFormatter.addParameter("DataValidationKey", businessModel.synchronizationHelper.generateChecksum(jsonObjData.toString()));
+
+                String url = businessModel.synchronizationHelper.getUploadUrl("UPLDTRAN");
+
+                if(BuildConfig.FLAVOR.equalsIgnoreCase("aws")){
+                    int response = getResponseFlag(mContext, jsonObjData, jsonFormatter, url);
+                    if (response == 1)
+                    updateFlagSyncLogDetails();
+                }else {
+                    final JSONObject finalJsonObjData = jsonObjData;
+                    businessModel.synchronizationHelper.getAuthToken(new SynchronizationHelper.VolleyResponseCallbackInterface() {
+                        @Override
+                        public String onSuccess(String result) {
+                            uploadSyncLogSFDC(finalJsonObjData);
+                            return "";
+                        }
+
+                        @Override
+                        public String onFailure(String errorresult) {
+                            return "";
+                        }
+                    });
+
+                }
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+        } catch (JSONException jsonException) {
+            Commons.printException(jsonException);
+
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+    }
+
+    /**
+     * Method to upload synclogdetails for SFDC
+     * @param data - Prepared Json data contains synclogdetails column and values
+     */
+    private void uploadSyncLogSFDC(final JSONObject data) {
+
+        MyjsonarrayPostRequest jsonObjectRequest;
+
+        uniqueTransactionID = businessModel.getAppDataProvider().getUser().getUserid()
+                + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
+
+
+        try {
+            data.put("MessageId",uniqueTransactionID);
+            HttpsURLConnection.setDefaultSSLSocketFactory(new TLSSocketFactory());
+
+        } catch (KeyManagementException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }catch (JSONException ex){
+            ex.printStackTrace();
+        }
+        StringBuilder sb = new StringBuilder();
+        sb.append(instance_url);
+
+        sb.append(businessModel.synchronizationHelper.getUploadUrl("UPLDTRAN"));
+        try {
+
+            jsonObjectRequest = new MyjsonarrayPostRequest(
+                    Request.Method.POST, sb.toString(),data,
+                    new Response.Listener<JSONArray>() {
+                        @Override
+                        public void onResponse(JSONArray jsonObject) {
+                            Commons.print(" RES: " + jsonObject);
+                            System.gc();
+
+                            try {
+
+                                int response = 0;
+                                if (jsonObject.toString().contains("Response")) {
+                                    response= jsonObject.getJSONObject(0).getInt("Response");
+                                }
+
+                                if (response == 1) {
+                                    updateFlagSyncLogDetails();
+                                }
+
+                            } catch (JSONException e) {
+                                handler.sendEmptyMessage(
+                                        DataMembers.NOTIFY_UPLOAD_ERROR);
+                            }
+
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+
+                    System.gc();
+
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", "OAuth " + access_token);
+                    headers.put("Content_Type", "application/json");
+                    if (businessModel.synchronizationHelper.isDayClosed()) {
+                        int varianceDwnDate = DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                businessModel.getAppDataProvider().getUser().getDownloadDate(),
+                                "yyyy/MM/dd");
+                        if (varianceDwnDate == 0) {
+                            headers.put("MobileDate",
+                                    DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
+                        }
+                        if (varianceDwnDate > 0) {
+                            headers.put("MobileDate",
+                                    businessModel.synchronizationHelper.getLastTransactedDate());
+                        }
+                    }
+
+                    return headers;
+                }
+
+                @Override
+                protected Map<String, String> getParams() throws AuthFailureError {
+                    //Map<String, String> params = new HashMap<String, String>();
+                    return new HashMap<>();
+                }
+
+            };
+
+            RetryPolicy policy = new DefaultRetryPolicy(
+                    (int) TimeUnit.SECONDS.toMillis(30),
+                    0,
+                    DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+            jsonObjectRequest.setRetryPolicy(policy);
+            jsonObjectRequest.setShouldCache(false);
+
+            addToRequestQueue(jsonObjectRequest, "");
+
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+    }
+
+    /**
+     * Method to prepare Json data for SyncLog upload
+     * @return Json array contains SyncLogDetails table columns and values
+     */
+    private JSONArray prepareDataForSyncLogUpload() {
+
+        JSONArray jsonArray = new JSONArray();
+
+        try {
+            DBUtil db = new DBUtil(mContext.getApplicationContext(), DataMembers.DB_NAME);
+            db.createDataBase();
+            db.openDataBase();
+            Cursor cursor;
+            String columnArray[] = DataMembers.tbl_SyncLogDetails_cols.split(",");
+            String sql = "select " + DataMembers.tbl_SyncLogDetails_cols + " from " + DataMembers.tbl_SyncLogDetails
+                    + " where upload='N'";
+            cursor = db.selectSQL(sql);
+            if (cursor != null) {
+                if (cursor.getCount() > 0) {
+                    while (cursor.moveToNext()) {
+                        JSONObject jsonObjRow = new JSONObject();
+                        int count = 0;
+                        for (String col : columnArray) {
+                            String value = cursor.getString(count);
+                            jsonObjRow.put(col, value);
+                            count++;
+                        }
+                        jsonArray.put(jsonObjRow);
+                    }
+                }
+
+                cursor.close();
+
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return jsonArray;
+    }
+
+    /**
+     * Method to update upload flag for synclogdetails table
+     */
+    private void updateFlagSyncLogDetails() {
+        try {
+            DBUtil db = new DBUtil(mContext.getApplicationContext(), DataMembers.DB_NAME);
+            db.createDataBase();
+            db.openDataBase();
+            String query = "update synclogdetails set upload='Y' where upload='N'";
+            db.updateSQL(query);
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
 
 }

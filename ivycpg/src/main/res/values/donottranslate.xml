@@ -274,4 +274,9 @@
     <string name="dis_advantage">Dis Advantage</string>
     <string name="equal">Equal</string>
 
+    <string name="location_validation">Location Validation</string>
+    <string name="location_mismatch_msg">Mismatch in Outelt location and your current location.</string>
+    <string name="serial_no_reason_mandatory">Reason Mandatory if serial# not captured</string>
+    <string name="choose_asset">Choose Asset</string>
+    <string name="already_exist">Already Exist</string>
 </resources>

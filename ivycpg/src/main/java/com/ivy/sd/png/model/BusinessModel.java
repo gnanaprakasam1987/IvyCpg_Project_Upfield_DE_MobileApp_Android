@@ -314,7 +314,7 @@ public class BusinessModel extends Application {
 
     //
 
-    private int uploadFileSize = -1;
+    private int uploadFileCount = -1;
     private int successCount = 0;
     private boolean isErrorOccured = false;
     private File sfFiles[] = null;
@@ -4229,14 +4229,14 @@ public class BusinessModel extends Application {
 
             sfFiles = folder.listFiles();
 
-            uploadFileSize = sfFiles.length;
+            uploadFileCount = sfFiles.length;
             successCount = 0;
             isErrorOccured = false;
 
             String tag = "Business Model";
-            Commons.print(tag + ",ss : " + uploadFileSize);
+            Commons.print(tag + ",ss : " + uploadFileCount);
 
-            for (int i = 0; i < uploadFileSize; i++) {
+            for (int i = 0; i < uploadFileCount; i++) {
 
                 String filename = sfFiles[i].getName();
                 //  print invoice file not upload to server
@@ -4258,7 +4258,7 @@ public class BusinessModel extends Application {
     private void getResponseForUploadImageToAmazonCloud(String
                                                                 imageName, TransferUtility tm, final Handler mHandler) {
         try {
-
+            String start_time = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
             final File image = new File(folder, "/" + imageName);
             String mBucketName;
             String mBucketDetails = DataMembers.S3_BUCKET + "/"
@@ -4351,10 +4351,9 @@ public class BusinessModel extends Application {
                         transferState) {
                     if (transferState == TransferState.COMPLETED) {
                         successCount = successCount + 1;
-                        if (successCount == uploadFileSize) {
+                        if (successCount == uploadFileCount) {
                             fileDeleteAfterUpload();
                             myUpload.cleanTransferListener();
-                            successCount = 0;
                             sentMessageToHandler
                                     (DataMembers.NOTIFY_WEB_UPLOAD_SUCCESS,
                                             "Images uploaded Successfully",
@@ -4369,7 +4368,6 @@ public class BusinessModel extends Application {
                                     (DataMembers.NOTIFY_WEB_UPLOAD_ERROR,
                                             "Image Upload Failed!", mHandler);
                         }
-                        return;
                     } else if (transferState == TransferState.CANCELED) {
                         myUpload.cleanTransferListener();
                         if (!isErrorOccured) {
@@ -4378,7 +4376,20 @@ public class BusinessModel extends Application {
                                     (DataMembers.NOTIFY_WEB_UPLOAD_ERROR,
                                             "Image Upload Canceled!", mHandler);
                         }
-                        return;
+                    }
+                    if ((successCount == uploadFileCount) || isErrorOccured) {
+                        String status = SynchronizationHelper.SYNC_STATUS_COMPLETED;
+                        if (isErrorOccured) {
+                            if (successCount == 0)
+                                status = SynchronizationHelper.SYNC_STATUS_FAILED;
+                            else if (successCount > 0)
+                                status = SynchronizationHelper.SYNC_STATUS_PARTIAL;
+                        } else
+                            status = SynchronizationHelper.SYNC_STATUS_COMPLETED;
+                        synchronizationHelper.insertSyncHeader(start_time, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SynchronizationHelper.SYNC_TYPE_DGT_UPLOAD,
+                                successCount, status, uploadFileCount);
+                        if (successCount == uploadFileCount)
+                            successCount = 0;
                     }
                 }
 
@@ -4397,8 +4408,6 @@ public class BusinessModel extends Application {
                                         "Image Upload Failed!", mHandler);
 
                     }
-                    return;
-
                 }
             });
 
@@ -7487,6 +7496,7 @@ public class BusinessModel extends Application {
 
     //Azure ImageUpload
     void uploadImageToAzureCloud(Handler handler) {
+        String start_time = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
         AzureConnectionHelper.getInstance().setAzureCredentials(getApplicationContext());
         try {
 
@@ -7494,9 +7504,9 @@ public class BusinessModel extends Application {
 
             sfFiles = folder.listFiles();
 
-            uploadFileSize = sfFiles.length;
+            uploadFileCount = sfFiles.length;
             isErrorOccured = false;
-            for (int i = 0; i < uploadFileSize; i++) {
+            for (int i = 0; i < uploadFileCount; i++) {
 
                 String filename = sfFiles[i].getName();
                 //  print invoice file not upload to server
@@ -7504,8 +7514,10 @@ public class BusinessModel extends Application {
                 getResponseForUploadImageToAzureStorageCloud(filename, AzureConnectionHelper.getInstance().initializeAzureStorageConnection(), handler);
 
             }
-            if (successCount == uploadFileSize) {
+            if (successCount == uploadFileCount) {
                 fileDeleteAfterUpload();
+                synchronizationHelper.insertSyncHeader(start_time, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SynchronizationHelper.SYNC_TYPE_DGT_UPLOAD,
+                        successCount, SynchronizationHelper.SYNC_STATUS_COMPLETED, uploadFileCount);
                 successCount = 0;
                 sentMessageToHandler
                         (DataMembers.NOTIFY_WEB_UPLOAD_SUCCESS,
@@ -7516,8 +7528,9 @@ public class BusinessModel extends Application {
                 sentMessageToHandler
                         (DataMembers.NOTIFY_WEB_UPLOAD_ERROR,
                                 "Image Upload Failed!", handler);
+                synchronizationHelper.insertSyncHeader(start_time, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SynchronizationHelper.SYNC_TYPE_DGT_UPLOAD,
+                        successCount, SynchronizationHelper.SYNC_STATUS_FAILED, uploadFileCount);
             }
-
         } catch (Exception e) {
             Commons.printException(e);
         }

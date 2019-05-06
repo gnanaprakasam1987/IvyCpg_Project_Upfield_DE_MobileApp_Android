@@ -5371,6 +5371,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             bmodel.outletTimeStampHelper.deleteTimeStamp();
             bmodel.outletTimeStampHelper.deleteTimeStampImages();
             bmodel.outletTimeStampHelper.deleteImagesFromFolder();
+            bmodel.outletTimeStampHelper.deleteTimeStampRetailerDeviation();
 
         } else {
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils

@@ -1577,7 +1577,13 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_RETAILER_LAST_VISIT = "RTRS33";
     public boolean IS_SHOW_RETAILER_LAST_VISIT;
     public boolean IS_SHOW_RETAILER_LAST_VISITEDBY;
-    public int ret_skip_otp_flag = 0; // 1 Show reason spinner, 0 otp edittext
+    public int ret_skip_otp_flag = 0; // 0 otp edittext, 1 Show reason spinner, 2 Soft Alert, 3 Hard Alert
+
+    private static final String CODE_SHOW_PAUSE_CALL_ANALYSIS = "FUN81";
+    public boolean IS_SHOW_PAUSE_CALL_ANALYSIS = true;
+
+    private static final String CODE_DISABLE_CALL_ANALAYSIS_TIMER = "FUN82";
+    public boolean IS_DISABLE_CALL_ANALYSIS_TIMER = true;
 
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
@@ -2771,6 +2777,7 @@ public class ConfigurationMasterHelper {
         this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP =true;
         else this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP =false;
         this.ret_skip_otp_flag = hashMapHHTModuleOrder.get(CODE_SHOW_LOCATION_PWD_DIALOG) != null ? hashMapHHTModuleOrder.get(CODE_SHOW_LOCATION_PWD_DIALOG) : 0;
+        this.IS_DISABLE_CALL_ANALYSIS_TIMER = hashMapHHTModuleConfig.get(CODE_DISABLE_CALL_ANALAYSIS_TIMER) != null ? hashMapHHTModuleConfig.get(CODE_DISABLE_CALL_ANALAYSIS_TIMER) : false;
 
         this.IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN=hashMapHHTModuleConfig.get(CODE_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) : false;
 

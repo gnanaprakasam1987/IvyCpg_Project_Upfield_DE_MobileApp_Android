@@ -6,6 +6,7 @@ import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.OnLifecycleEvent;
 import android.support.annotation.NonNull;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.label.LabelsDataManager;
@@ -35,6 +36,9 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function3;
 import io.reactivex.observers.DisposableObserver;
+
+import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
+import static com.ivy.utils.DateTimeUtils.now;
 
 public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptureView> extends BasePresenter<V> implements PhotoCaptureContract.PhotoCapturePresenter<V>, LifecycleObserver {
 
@@ -170,8 +174,11 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
     @Override
     public void updateModuleTime() {
 
-        getCompositeDisposable().add(mOutletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils
-                .now(DateTimeUtils.TIME))
+        String date = DateTimeUtils.now(DATE_GLOBAL) + " " + DateTimeUtils
+                .now(DateTimeUtils.TIME);
+        if (mConfigurationMasterHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
+            date = IvyConstants.DEFAULT_TIME_CONSTANT;
+        getCompositeDisposable().add(mOutletTimeStampDataManager.updateTimeStampModuleWise(date)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<Boolean>() {
@@ -236,8 +243,12 @@ public class PhotoCapturePresenterImpl<V extends PhotoCaptureContract.PhotoCaptu
     @Override
     public void onSaveButtonClick() {
         getIvyView().showLoading();
+        String date = DateTimeUtils.now(DATE_GLOBAL) + " " + DateTimeUtils
+                .now(DateTimeUtils.TIME);
+        if (mConfigurationMasterHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
+            date = IvyConstants.DEFAULT_TIME_CONSTANT;
         getCompositeDisposable().add(Single.zip(photoCaptureDataManager.updatePhotoCaptureDetails(editedData),
-                mOutletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME)),
+                mOutletTimeStampDataManager.updateTimeStampModuleWise(date),
                 getDataManager().updateModuleTime(HomeScreenTwo.MENU_PHOTO),
                 new Function3<Boolean, Boolean, Boolean, Boolean>() {
                     @Override
