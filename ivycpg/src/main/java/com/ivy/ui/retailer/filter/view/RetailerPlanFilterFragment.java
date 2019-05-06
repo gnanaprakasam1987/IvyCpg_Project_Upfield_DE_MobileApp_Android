@@ -1,4 +1,4 @@
-package com.ivy.ui.filter.view;
+package com.ivy.ui.retailer.filter.view;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
@@ -17,12 +17,12 @@ import com.ivy.core.base.view.BaseBottomSheetDialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.ui.filter.FilterObjectBo;
-import com.ivy.ui.filter.RetailerPlanFilterBo;
-import com.ivy.ui.filter.RetailerPlanFilterContract;
-import com.ivy.ui.filter.di.DaggerRetailerPlanFilterComponent;
-import com.ivy.ui.filter.di.RetailerPlanFilterModule;
-import com.ivy.ui.filter.presenter.RetailerPlanFilterPresenterImpl;
+import com.ivy.ui.retailer.filter.FilterObjectBo;
+import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
+import com.ivy.ui.retailer.filter.RetailerPlanFilterContract;
+import com.ivy.ui.retailer.filter.di.DaggerRetailerPlanFilterComponent;
+import com.ivy.ui.retailer.filter.di.RetailerPlanFilterModule;
+import com.ivy.ui.retailer.filter.presenter.RetailerPlanFilterPresenterImpl;
 import com.ivy.utils.DeviceUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -36,9 +36,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.ivy.ui.filter.RetailerPlanFilterConstants.CODE_IS_NOT_VISITED;
-import static com.ivy.ui.filter.RetailerPlanFilterConstants.CODE_LAST_VISIT_DATE;
-import static com.ivy.ui.filter.RetailerPlanFilterConstants.CODE_TASK_DUE_DATE;
+import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_IS_NOT_VISITED;
+import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_LAST_VISIT_DATE;
+import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_TASK_DUE_DATE;
 
 @SuppressLint("ValidFragment")
 public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment

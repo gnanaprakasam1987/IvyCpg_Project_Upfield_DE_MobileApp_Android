@@ -1,7 +1,7 @@
-package com.ivy.ui.filter.data;
+package com.ivy.ui.retailer.filter.data;
 
 import com.ivy.core.data.AppDataManagerContract;
-import com.ivy.ui.filter.RetailerPlanFilterBo;
+import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
 
 import java.util.ArrayList;
 

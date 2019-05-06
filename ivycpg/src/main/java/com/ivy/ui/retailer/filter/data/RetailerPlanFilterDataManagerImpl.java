@@ -1,4 +1,4 @@
-package com.ivy.ui.filter.data;
+package com.ivy.ui.retailer.filter.data;
 
 import android.database.Cursor;
 import android.text.format.DateUtils;
@@ -7,7 +7,7 @@ import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
-import com.ivy.ui.filter.RetailerPlanFilterBo;
+import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
@@ -18,9 +18,9 @@ import javax.inject.Inject;
 
 import io.reactivex.Single;
 
-import static com.ivy.ui.filter.RetailerPlanFilterConstants.CODE_IS_NOT_VISITED;
-import static com.ivy.ui.filter.RetailerPlanFilterConstants.CODE_LAST_VISIT_DATE;
-import static com.ivy.ui.filter.RetailerPlanFilterConstants.CODE_TASK_DUE_DATE;
+import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_IS_NOT_VISITED;
+import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_LAST_VISIT_DATE;
+import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_TASK_DUE_DATE;
 
 public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterDataManager {
 

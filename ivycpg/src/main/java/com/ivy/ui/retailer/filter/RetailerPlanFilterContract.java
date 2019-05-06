@@ -1,4 +1,4 @@
-package com.ivy.ui.filter;
+package com.ivy.ui.retailer.filter;
 
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
