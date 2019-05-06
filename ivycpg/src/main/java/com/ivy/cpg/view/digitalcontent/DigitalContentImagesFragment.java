@@ -319,7 +319,13 @@ public class DigitalContentImagesFragment extends IvyBaseFragment {
                 ((VHItem) holder).imageView_share.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        mDigitalContentHelper.shareDigitalContent(getActivity(),product.getDescription(),((VHItem) holder).filename);
+                        try {
+                            mDigitalContentHelper.shareDigitalContent(getActivity(), product.getDescription(), ((VHItem) holder).filename);
+                        }
+                        catch (Exception ex){
+                            Toast.makeText(getActivity(),getResources().getString(R.string.error_in_sending_email),Toast.LENGTH_LONG).show();
+                            Commons.printException(ex);
+                        }
                     }
                 });
 
