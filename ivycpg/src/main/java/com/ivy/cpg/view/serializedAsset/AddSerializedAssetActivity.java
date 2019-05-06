@@ -132,6 +132,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         }
 
         txtSerialNo = findViewById(R.id.label_scan);
+        serialNoTag = getResources().getString(R.string.serial_no);
         ((TextView) findViewById(R.id.label_scan)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         if (mBModel.labelsMasterHelper.applyLabels(findViewById(R.id.label_scan).getTag()) != null) {
             serialNoTag = mBModel.labelsMasterHelper.applyLabels(findViewById(R.id.label_scan).getTag());
@@ -571,10 +572,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
                     } else {
                         Toast.makeText(
-                                this,
-                                getResources()
-                                        .getString(
-                                                R.string.serial_number_already_exists),
+                                this,serialNoTag + " " + getResources().getString(R.string.already_exist),
                                 Toast.LENGTH_SHORT).show();
                         //enabled edit option if serial no already exists
                         enableBarCodeViews(true);
@@ -616,10 +614,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                     takePhoto();
                 } else {
                     Toast.makeText(
-                            this,
-                            getResources()
-                                    .getString(
-                                            R.string.serial_number_already_exists),
+                            this,serialNoTag + " " + getResources().getString(R.string.already_exist),
                             Toast.LENGTH_SHORT).show();
                 }
             } else {
