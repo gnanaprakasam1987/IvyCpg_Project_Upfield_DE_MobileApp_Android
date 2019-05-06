@@ -1,4 +1,4 @@
-package com.ivy.ui.retailerplanfilter.view;
+package com.ivy.ui.filter.view;
 
 import android.app.DatePickerDialog;
 import android.content.Context;

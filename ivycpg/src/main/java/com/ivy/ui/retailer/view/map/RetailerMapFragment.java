@@ -47,8 +47,8 @@ import com.ivy.ui.retailer.RetailerContract;
 import com.ivy.ui.retailer.di.DaggerRetailerComponent;
 import com.ivy.ui.retailer.di.RetailerModule;
 import com.ivy.ui.retailer.presenter.RetailerPresenterImpl;
-import com.ivy.ui.retailerplanfilter.RetailerPlanFilterBo;
-import com.ivy.ui.retailerplanfilter.view.RetailerPlanFilterFragment;
+import com.ivy.ui.filter.RetailerPlanFilterBo;
+import com.ivy.ui.filter.view.RetailerPlanFilterFragment;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.NetworkUtils;
 

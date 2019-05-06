@@ -1,9 +1,9 @@
-package com.ivy.ui.retailerplanfilter.di;
+package com.ivy.ui.filter.di;
 
 import com.ivy.core.di.scope.PerActivity;
-import com.ivy.ui.retailerplanfilter.RetailerPlanFilterContract;
-import com.ivy.ui.retailerplanfilter.data.RetailerPlanFilterDataManager;
-import com.ivy.ui.retailerplanfilter.data.RetailerPlanFilterDataManagerImpl;
+import com.ivy.ui.filter.RetailerPlanFilterContract;
+import com.ivy.ui.filter.data.RetailerPlanFilterDataManager;
+import com.ivy.ui.filter.data.RetailerPlanFilterDataManagerImpl;
 import com.ivy.utils.rx.AppSchedulerProvider;
 import com.ivy.utils.rx.SchedulerProvider;
 
