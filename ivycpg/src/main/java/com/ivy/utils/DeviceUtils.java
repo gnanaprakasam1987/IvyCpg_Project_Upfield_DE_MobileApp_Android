@@ -123,4 +123,8 @@ public class DeviceUtils {
         windowmanager.getDefaultDisplay().getMetrics(displayMetrics);
         return displayMetrics.widthPixels;
     }
+
+    public static DisplayMetrics getDisplayMetrics(Context context){
+        return context.getResources().getDisplayMetrics();
+    }
 }

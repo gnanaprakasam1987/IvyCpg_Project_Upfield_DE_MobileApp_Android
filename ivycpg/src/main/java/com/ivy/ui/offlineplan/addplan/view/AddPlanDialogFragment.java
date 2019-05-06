@@ -15,6 +15,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.profile.ProfileActivity;
@@ -53,7 +54,10 @@ import static com.ivy.utils.DateTimeUtils.TIME_HOUR_MINS;
 public class AddPlanDialogFragment extends BottomSheetDialogFragment implements AddPlanContract.AddPlanView {
 
     @BindView(R.id.add_plan)
-    TextView addPlan;
+    ImageView addPlan;
+
+    @BindView(R.id.edit_plan)
+    ImageView editPlan;
 
     @BindView(R.id.tv_outlet_name)
     TextView tvOutletName;
@@ -80,7 +84,7 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
     Group visitElementGroup;
 
     @BindView(R.id.save_plan)
-    TextView savePlan;
+    ImageView savePlan;
 
     private BottomSheetBehavior bottomSheetBehavior;
 
@@ -126,6 +130,7 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
         CoordinatorLayout.Behavior behavior = params.getBehavior();
 
         addPlan.setOnClickListener(addToPlanListener);
+        editPlan.setOnClickListener(addToPlanListener);
 
         if (behavior != null && behavior instanceof BottomSheetBehavior) {
 
@@ -186,8 +191,10 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
                 }
                 case BottomSheetBehavior.STATE_COLLAPSED:
                     savePlan.setVisibility(View.GONE);
-                    if (!"Y".equalsIgnoreCase(retailerMasterBO.getIsVisited()))
+                    if (!"Y".equalsIgnoreCase(retailerMasterBO.getIsVisited())) {
                         addPlan.setVisibility(View.VISIBLE);
+                        editPlan.setVisibility(View.VISIBLE);
+                    }
 
                     if (!"Y".equalsIgnoreCase(retailerMasterBO.getIsVisited())
                             && retailerMasterBO.getIsToday() != 1 && !"Y".equalsIgnoreCase(retailerMasterBO.getIsDeviated()))
@@ -255,27 +262,24 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
     private View.OnClickListener addToPlanListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if (addPlan.getText().toString().equalsIgnoreCase(getString(R.string.add_plan))){
+            if (addPlan.getVisibility() == View.VISIBLE){
 
                 visitElementGroup.setVisibility(View.VISIBLE);
-
-                addPlan.setVisibility(View.GONE);
-
-                savePlan.setVisibility(View.VISIBLE);
 
                 setViewBackground(ContextCompat.getDrawable(context,R.drawable.edittext_bottom_border));
 
             }else{
-
-                addPlan.setVisibility(View.GONE);
-
-                savePlan.setVisibility(View.VISIBLE);
 
                 setViewBackground(ContextCompat.getDrawable(context,R.drawable.edittext_bottom_border));
 
                 tvStartVisitTime.setOnClickListener(startVisitTimeListener);
                 tvVisitEndTime.setOnClickListener(startVisitTimeListener);
             }
+
+            addPlan.setVisibility(View.GONE);
+            editPlan.setVisibility(View.GONE);
+
+            savePlan.setVisibility(View.VISIBLE);
 
             tvStartVisitDate.setText(date);
             tvVisitEndDate.setText(date);
@@ -308,11 +312,13 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
 
             tvLastVisitDate.setText(retailerMasterBO.getLastVisitDate());
 
+            addPlan.setVisibility(View.GONE);
+
             if (!"Y".equals(retailerMasterBO.getIsVisited())) {
-                addPlan.setVisibility(View.VISIBLE);
-                addPlan.setText(getString(R.string.edit));
-            }else
-                addPlan.setVisibility(View.GONE);
+                editPlan.setVisibility(View.VISIBLE);
+            }else {
+                editPlan.setVisibility(View.GONE);
+            }
 
             tvStartVisitDate.setText(date);
             tvVisitEndDate.setText(date);
@@ -323,7 +329,7 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
         }else {
             visitElementGroup.setVisibility(View.GONE);
             addPlan.setVisibility(View.VISIBLE);
-            addPlan.setText(getString(R.string.add_plan));
+            editPlan.setVisibility(View.GONE);
         }
     }
 

@@ -80,7 +80,7 @@ public abstract class BaseMapFragment extends BaseFragment implements BaseIvyVie
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
-        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
+//        mMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(context, R.raw.map_style));
 
         onMapReady();
 

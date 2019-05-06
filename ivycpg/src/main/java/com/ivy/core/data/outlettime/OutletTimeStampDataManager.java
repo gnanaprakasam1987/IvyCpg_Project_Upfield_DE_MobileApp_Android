@@ -12,7 +12,7 @@ public interface OutletTimeStampDataManager extends AppDataManagerContract {
 
     Single<Boolean> updateTimeStampModuleWise(String timeOut);
 
-    Completable saveTimeStampModuleWise(String date, String timeIn, String moduleCode);
+    Completable saveTimeStampModuleWise(String datetimeIn, String moduleCode);
 
     Completable deleteTimeStamps();
 

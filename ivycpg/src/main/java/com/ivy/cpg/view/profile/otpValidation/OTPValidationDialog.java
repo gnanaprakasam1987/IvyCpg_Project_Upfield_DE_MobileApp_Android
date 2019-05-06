@@ -64,7 +64,7 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
         titleBar.setText(strTitle);
 
         this.otpPasswordDismissListener = otpPasswordDismissListener;
-        otpValidationHelper = new OTPValidationHelper(context.getApplicationContext());
+        otpValidationHelper = OTPValidationHelper.getInstance(context);
 
         mContext = context;
         this.bmodel = (BusinessModel)context.getApplicationContext();
@@ -207,9 +207,11 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
                 alertDialog.dismiss();
             switch (result) {
                 case "1":
-                    mRetailerBO.setOtpActivatedDate(DateTimeUtils
+                    if (bmodel.configurationMasterHelper.ret_skip_otp_flag == 0) {
+                        mRetailerBO.setOtpActivatedDate(DateTimeUtils
                                 .now(DateTimeUtils.DATE_GLOBAL));
-                    otpValidationHelper.saveOTPActivatedDate(mRetailerBO.getRetailerID(), 1);
+                        otpValidationHelper.saveOTPActivatedDate(mRetailerBO.getRetailerID(), 1);
+                    }
                     doDismiss();
                     break;
                 case "-1":
@@ -239,8 +241,9 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
         protected String doInBackground(Void... params) {
 
             try {
-                if (bmodel.configurationMasterHelper.ret_skip_otp_flag == 1)
-                    return saveOTPSkipReason(reasonID,"REASON");
+                if (bmodel.configurationMasterHelper.ret_skip_otp_flag == 1) {
+                    return otpValidationHelper.saveOTPSkipReason(reasonID, mRetailerBO, "REASON", actualRadius);
+                }
                 else {
                     String sucessStaus = bmodel
                             .checkOTP(
@@ -250,7 +253,7 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
                                             StandardListMasterConstants.SLM_RET_GPS_CODE,
                                             StandardListMasterConstants.OTP_LIST_CODE));
                     if ("1".equals(sucessStaus))
-                        saveOTPSkipReason(reasonID,"OTP");
+                        otpValidationHelper.saveOTPSkipReason(reasonID, mRetailerBO,"OTP", actualRadius);
                     return sucessStaus;
                 }
             } catch (Exception e) {
@@ -277,57 +280,6 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
         } catch (Exception e) {
             Commons.printException(e);
         }
-    }
-
-    private String saveOTPSkipReason(int reasonID, String reasonType) {
-
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-            );
-            String values;
-            db.createDataBase();
-            db.openDataBase();
-
-            String id;
-
-            String columns = "Tid,RetailerID,ReasonID,Date,Type,ExpectedRadius,ActualRadius,upload";
-
-            id = StringUtils.QT(bmodel.getAppDataProvider().getUser()
-                    .getDistributorid()
-                    + ""
-                    + bmodel.getAppDataProvider().getUser().getUserid()
-                    + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
-
-            values = id
-                    + ","
-                    + StringUtils.QT(mRetailerBO.getRetailerID())
-                    + ","
-                    + reasonID
-                    + ","
-                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-                    + "," + StringUtils.QT(reasonType)
-                    + "," + mRetailerBO.getGpsDistance()
-                    + "," + actualRadius
-                    + "," + StringUtils.QT("N");
-
-            db.deleteSQL(
-                    "RetailerLocationDeviation",
-                    "RetailerID="
-                            + StringUtils.QT(mRetailerBO.getRetailerID())
-                            + " and Type="
-                            + StringUtils.QT(reasonType)
-                            + " and Date="
-                            + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)), false);
-
-            db.insertSQL("RetailerLocationDeviation", columns, values);
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-            return "-4";
-        }
-
-        return "1";
     }
 
 }

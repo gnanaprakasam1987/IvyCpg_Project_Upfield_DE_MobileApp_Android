@@ -195,6 +195,9 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 mNoOrderCameraBTN.setVisibility(View.GONE);
             }
 
+            if (bmodel.configurationMasterHelper.IS_SHOW_PAUSE_CALL_ANALYSIS)
+                img_pause.setVisibility(View.VISIBLE);
+
             mNoOrderCameraBTN.setOnClickListener(this);
 
             if (bmodel.configurationMasterHelper.SHOW_GLOBAL_NO_ORDER_REASON && (hasOrderScreenEnabled() && (hasActivityDone() || bmodel.configurationMasterHelper.SHOW_NO_ORDER_REASON)
@@ -298,8 +301,6 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     rvModule.setLayoutManager(linearLayoutManager);
                     rvModule.setItemAnimator(new DefaultItemAnimator());
                     rvModule.setAdapter(moduleAdapter);
-                } else if ("CallA41".equalsIgnoreCase(configureBO.getConfigCode())) {
-                    img_pause.setVisibility(View.VISIBLE);
                 }
             }
 
@@ -336,6 +337,9 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
 
             tv_edt_time_taken = findViewById(R.id.edt_time_taken);
             tv_edt_time_taken.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.THIN));
+
+            if (bmodel.configurationMasterHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
+                findViewById(R.id.ll_duration).setVisibility(View.GONE);
 
             Button btn_close = findViewById(R.id.button1);
             btn_close.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
@@ -374,6 +378,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                         bmodel.outletTimeStampHelper.deleteTimeStamp();
                         bmodel.outletTimeStampHelper.deleteTimeStampImages();
                         bmodel.outletTimeStampHelper.deleteImagesFromFolder();
+                        bmodel.outletTimeStampHelper.deleteTimeStampRetailerDeviation();
 
                     } else {
                         bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
@@ -1478,6 +1483,7 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
             bmodel.outletTimeStampHelper.deleteTimeStamp();
             bmodel.outletTimeStampHelper.deleteTimeStampImages();
             bmodel.outletTimeStampHelper.deleteImagesFromFolder();
+            bmodel.outletTimeStampHelper.deleteTimeStampRetailerDeviation();
 
         } else {
             bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils

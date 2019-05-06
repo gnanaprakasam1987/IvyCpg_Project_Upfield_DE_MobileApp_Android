@@ -57,6 +57,7 @@ import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportFragment;
 import com.ivy.cpg.view.reports.slaesvolumereport.SalesVolumeReportFragment;
 import com.ivy.cpg.view.reports.slaesvolumereport.SalesVolumeReportHelper;
 import com.ivy.cpg.view.reports.soho.SalesReturnReportFragmentSOHO;
+import com.ivy.cpg.view.reports.syncreport.SyncReportFragment;
 import com.ivy.cpg.view.reports.taskexcutionreport.TaskExecutionReportFragment;
 import com.ivy.cpg.view.reports.taskreport.TaskReportFragment;
 import com.ivy.cpg.view.reports.userlogreport.LogReportFragment;
@@ -547,6 +548,10 @@ public class ReportActivity extends BaseActivity implements BaseIvyView,
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_ORDER_FULFILL_REPORT)){
             OrderFulfillmentReport mOrderFulfillmentReportFragmnet = new OrderFulfillmentReport();
             transaction.replace(R.id.fragment_content, mOrderFulfillmentReportFragmnet);
+            commitFragment(transaction, config);
+        } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SYNC_REPORT)){
+            SyncReportFragment syncReportFragment = new SyncReportFragment();
+            transaction.replace(R.id.fragment_content, syncReportFragment);
             commitFragment(transaction, config);
         }
     }

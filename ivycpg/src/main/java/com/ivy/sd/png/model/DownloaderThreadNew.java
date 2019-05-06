@@ -16,9 +16,12 @@ import com.ivy.core.IvyConstants;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 import com.microsoft.azure.storage.blob.BlobRequestOptions;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
 import com.microsoft.azure.storage.blob.CloudBlockBlob;
@@ -59,6 +62,9 @@ public class DownloaderThreadNew extends Thread {
     private CloudBlobContainer cloudBlobContainer;
 
     private boolean alertshown = false;
+    private BusinessModel bmodel;
+    private String start_time = "";
+    private int successCount = 0;
 
     /**
      * Instantiates a new DownloaderThread object.
@@ -78,6 +84,9 @@ public class DownloaderThreadNew extends Thread {
         activityHandler = h;
         userID = Userid;
         tm = transferUtility;
+        bmodel = (BusinessModel) inParentActivity.getApplicationContext();
+        if (StringUtils.isEmptyString(start_time))
+            start_time = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
     }
 
     public DownloaderThreadNew(Context context, Handler handler,  HashMap<String, String> imgUrls,int userID, CloudBlobContainer cloudBlobContainer) {
@@ -88,6 +97,9 @@ public class DownloaderThreadNew extends Thread {
         if (imgUrls != null) {
             downloadUrls = imgUrls;
         }
+        bmodel = (BusinessModel) context.getApplicationContext();
+        if (StringUtils.isEmptyString(start_time))
+            start_time = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
     }
 
     /**
@@ -410,6 +422,7 @@ public class DownloaderThreadNew extends Thread {
                                         public void onStateChanged(int i, TransferState transferState) {
 
                                             if (transferState == TransferState.COMPLETED) {
+                                                successCount++;
                                                 responseCount++;
                                                 downloadPercentage = (int) (((float) responseCount / (float) mTotalSize) * 100);
                                             } else if (transferState == TransferState.FAILED) {
@@ -431,6 +444,15 @@ public class DownloaderThreadNew extends Thread {
                                                 msg = Message.obtain(activityHandler,
                                                         DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC, 0, 0);
                                                 activityHandler.sendMessage(msg);
+                                                String status = SynchronizationHelper.SYNC_STATUS_COMPLETED;
+                                                 if (successCount == 0)
+                                                    status = SynchronizationHelper.SYNC_STATUS_FAILED;
+                                                 else if (successCount < mTotalSize)
+                                                     status = SynchronizationHelper.SYNC_STATUS_PARTIAL;
+
+                                                bmodel.synchronizationHelper.insertSyncHeader(start_time, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SynchronizationHelper.SYNC_TYPE_DGT_DOWNLOAD,
+                                                        successCount, status, mTotalSize);
+                                                successCount = 0;
                                             }
 
                                         }
@@ -551,7 +573,6 @@ public class DownloaderThreadNew extends Thread {
                         } catch (Exception e) {
 
                             Commons.printException("Error in URL," + "" + e);
-                            continue;
                         }
 
                     }

@@ -719,6 +719,9 @@ public class DataMembers {
     private static final String tbl_RetailerLocationDeviation = "RetailerLocationDeviation";
     private static final String tbl_RetailerLocationDeviation_cols = "Tid,ReasonID,RetailerID,Date,Type,ExpectedRadius,ActualRadius,OutletTimeStampID";
 
+    public static final String tbl_SyncLogDetails = "SyncLogDetails";
+    public static final String tbl_SyncLogDetails_cols = "TransactionId,UserId,AppVersionNumber,OSName,OSVersion,DeviceName,SyncType,StartTime,EndTime,PhotosCount,SyncStatus,DownloadedDate,TotalCount";
+
     public static final HashMap<String, String> uploadColumn = new HashMap<>();
 
     static {
@@ -914,6 +917,7 @@ public class DataMembers {
         uploadColumn.put(tbl_Planorama_image, tbl_Planorama_image_cols);
         uploadColumn.put(tbl_RetailerLocationDeviation, tbl_RetailerLocationDeviation_cols);
         uploadColumn.put(tbl_TripMaster, tbl_TripMaster_cols);
+        uploadColumn.put(tbl_SyncLogDetails, tbl_SyncLogDetails_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();

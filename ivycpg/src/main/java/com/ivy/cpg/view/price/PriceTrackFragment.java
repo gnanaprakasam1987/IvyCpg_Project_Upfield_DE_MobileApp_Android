@@ -634,7 +634,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     private void nextButtonClick() {
         try {
             if (priceTrackingHelper.hasDataTosave(businessModel.productHelper.getTaggedProducts())) {
-                if (priceTrackingHelper.IS_PRICE_CHANGE_REASON)
+                if (priceTrackingHelper.IS_PRICE_CHANGE_REASON == 1)
                     if (priceTrackingHelper.hasPriceChangeReason(businessModel.productHelper.getTaggedProducts()))
                         new SaveAsyncTask().execute();
                     else
@@ -1012,7 +1012,6 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         RelativeLayout rl_PriceChanged, rl_PriceCompliance, rl_PriceTag;
         TextView mProductCodeTV;
 
-        RelativeLayout rl_prev_price;
         LinearLayout ll_prev_case, ll_prev_oo, ll_prev_pc, ll_prev_price_Lty;
         LinearLayout ll_prev_mrp_main_Lty, ll_prev_mrp_ca_Lty, ll_prev_mrp_oo_Lty, ll_prev_mrp_pc_Lty;
         String srpText;
@@ -1124,7 +1123,6 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                 holder.tv_prev_mrp_pc_label = row.findViewById(R.id.prev_mrp_pc_label);
 
 
-                holder.rl_prev_price = row.findViewById(R.id.rl_prev_price_n_mrp_layout);
                 holder.ll_prev_case = row.findViewById(R.id.ll_prev_price_ca);
                 holder.ll_prev_pc = row.findViewById(R.id.ll_prev_price_pc);
                 holder.ll_prev_oo = row.findViewById(R.id.ll_prev_price_oo);
@@ -1156,7 +1154,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                             holder.mPcPrice.setEnabled(false);
                             holder.mOoPrice.setEnabled(false);
 
-                            if (priceTrackingHelper.IS_PRICE_CHANGE_REASON) {
+                            if (priceTrackingHelper.IS_PRICE_CHANGE_REASON == 1) {
                                 holder.mReason_price_change.setEnabled(false);
                                 holder.mReason_price_change.setSelected(false);
                                 holder.mReason_price_change.setSelection(0);
@@ -1196,7 +1194,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                             holder.mSKUBO.getLocations().get(priceTrackingHelper.mSelectedLocationIndex).setPriceChanged(1);
                             holder.mChanged.setChecked(true);
 
-                            if (priceTrackingHelper.IS_PRICE_CHANGE_REASON) {
+                            if (priceTrackingHelper.IS_PRICE_CHANGE_REASON == 1) {
                                 holder.mReason_price_change.setEnabled(true);
                                 holder.mReason_price_change.setSelected(true);
                                 holder.mReason_price_change.setSelection(0);
@@ -1451,9 +1449,6 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
                 }
 
-                if (!priceTrackingHelper.SHOW_PRICE_LASTVP && !priceTrackingHelper.SHOW_PREV_MRP_IN_PRICE) {
-                    holder.rl_prev_price.setVisibility(View.GONE);
-                }
 
                 if (priceTrackingHelper.SHOW_PRICE_CA) {
                     if (priceTrackingHelper.SHOW_PRICE_LASTVP)
@@ -1476,7 +1471,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
                 if (priceTrackingHelper.SHOW_PRICE_CHANGED) {
                     holder.rl_PriceChanged.setVisibility(View.VISIBLE);
-                    if (priceTrackingHelper.IS_PRICE_CHANGE_REASON)
+                    if (priceTrackingHelper.IS_PRICE_CHANGE_REASON == 1)
                         holder.mReason_price_change.setVisibility(View.VISIBLE);
                     holder.mCaPrice.setEnabled(false);
                     holder.mPcPrice.setEnabled(false);
@@ -1577,7 +1572,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                 if (holder.mSKUBO.getLocations().get(priceTrackingHelper.mSelectedLocationIndex).getPriceChanged() == 1) {
                     holder.mChanged.setChecked(true);
 
-                    if (priceTrackingHelper.IS_PRICE_CHANGE_REASON)
+                    if (priceTrackingHelper.IS_PRICE_CHANGE_REASON == 1)
                         holder.mReason_price_change.setEnabled(true);
 
 
@@ -1604,7 +1599,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                     holder.mCaPrice.setEnabled(false);
                     holder.mPcPrice.setEnabled(false);
                     holder.mOoPrice.setEnabled(false);
-                    if (priceTrackingHelper.IS_PRICE_CHANGE_REASON)
+                    if (priceTrackingHelper.IS_PRICE_CHANGE_REASON == 1)
                         holder.mReason_price_change.setEnabled(false);
 
                 }

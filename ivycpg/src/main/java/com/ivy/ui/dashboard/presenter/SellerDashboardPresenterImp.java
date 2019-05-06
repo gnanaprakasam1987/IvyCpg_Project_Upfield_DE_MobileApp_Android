@@ -5,6 +5,7 @@ import android.arch.lifecycle.LifecycleObserver;
 import android.arch.lifecycle.LifecycleOwner;
 import android.arch.lifecycle.OnLifecycleEvent;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.core.ViewTags;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.app.AppDataProvider;
@@ -69,6 +70,7 @@ import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_TLS;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_VAL;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.CODE_VIP;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.P3M;
+import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
 
 public class SellerDashboardPresenterImp<V extends SellerDashboardContract.SellerDashboardView> extends BasePresenter<V> implements SellerDashboardContract.SellerDashboardPresenter<V>, LifecycleObserver {
 
@@ -146,8 +148,11 @@ public class SellerDashboardPresenterImp<V extends SellerDashboardContract.Selle
 
     @Override
     public void updateTimeStampModuleWise() {
-        getCompositeDisposable().add(mOutletTimeStampDataManager.updateTimeStampModuleWise(DateTimeUtils
-                .now(DateTimeUtils.TIME))
+        String date = DateTimeUtils.now(DATE_GLOBAL) + " " + DateTimeUtils
+                .now(DateTimeUtils.TIME);
+        if (getConfigurationMasterHelper().IS_DISABLE_CALL_ANALYSIS_TIMER)
+            date = IvyConstants.DEFAULT_TIME_CONSTANT;
+        getCompositeDisposable().add(mOutletTimeStampDataManager.updateTimeStampModuleWise(date)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(aBoolean -> {

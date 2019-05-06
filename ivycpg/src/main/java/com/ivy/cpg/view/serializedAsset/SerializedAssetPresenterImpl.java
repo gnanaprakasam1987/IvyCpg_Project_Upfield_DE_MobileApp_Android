@@ -302,7 +302,7 @@ public class SerializedAssetPresenterImpl implements SerializedAssetContractor.S
                         mSelectedSerial.equals(assetBO.getSerialNo())) {
                     assetBO.setImageName(imagePath);
                     assetBO.setImgName(mSelectedImageName);
-                    ArrayList<String> imageList = assetBO.getImageList();
+                    ArrayList<String> imageList = new ArrayList<>();//assetBO.getImageList();
                     imageList.add(imagePath);
                     assetBO.setImageList(imageList);
                     break;

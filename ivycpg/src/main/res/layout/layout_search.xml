@@ -60,16 +60,16 @@
                 android:layout_height="@dimen/filter_icon"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:background="@drawable/btn_productfilter_" />
+                android:background="@drawable/btn_productfilter_"
+                android:visibility="gone"/>
 
             <EditText
                 android:id="@+id/edt_searchproductName"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/filter_icon"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/dimen_5dp"
                 android:layout_toLeftOf="@+id/btn_clear"
-                android:layout_toRightOf="@+id/btn_filter_popup"
                 android:background="@android:color/transparent"
                 android:gravity="start|center_vertical"
                 android:imeOptions="actionDone"
