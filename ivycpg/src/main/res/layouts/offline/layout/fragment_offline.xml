@@ -1,6 +1,7 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.ivy.ui.offlineplan.calendar.view.CalendarPlanFragment">
@@ -254,14 +255,21 @@
             app:todayBackgroundColor="#05000000"
             app:todayHeaderTextColor="?attr/accentcolor" />
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab_retailer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"
-            android:src="@drawable/ic_plus"
-            app:useCompatPadding="true" />
+
     </RelativeLayout>
+
+
+    <include layout="@layout/retailer_info_bottomsheet" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_retailer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_plus"
+        app:layout_anchor="@+id/bottomsheet"
+        app:layout_anchorGravity="top|end"
+        app:useCompatPadding="true" />
 </android.support.design.widget.CoordinatorLayout>

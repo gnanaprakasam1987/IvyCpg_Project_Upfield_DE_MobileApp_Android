@@ -2,22 +2,17 @@ package com.ivy.ui.offlineplan.calendar.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Spannable;
-import android.text.SpannableString;
-import android.text.TextUtils;
-import android.text.style.BulletSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.calendarlibrary.monthview.MonthView;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.DateWisePlanBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
@@ -170,7 +165,14 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
                 }
             }
 
-            holder.rlItem.setOnClickListener(v -> {
+            holder.llDate.setOnClickListener(v -> {
+                if (holder.calBO != null) {
+                    refreshGrid(holder.calBO.getCal_date());
+                    calendarClickListner.onDateNoSelected(holder.calBO.getCal_date());
+                }
+            });
+
+            holder.lltext.setOnClickListener(v -> {
                 if (holder.calBO != null) {
                     refreshGrid(holder.calBO.getCal_date());
                     calendarClickListner.onDateSelected(holder.calBO.getCal_date());
@@ -186,7 +188,7 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
         TextView TVDate, TvRetailer, TvExtras;
         Boolean isValid = false;
         Boolean isDataPresent = false;
-        RelativeLayout rlItem;
+        LinearLayout llDate,lltext;
 
         MonthViewHolder(View itemView) {
             super(itemView);
@@ -194,7 +196,8 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
             TVDate = itemView.findViewById(R.id.tv_date);
             TvRetailer = itemView.findViewById(R.id.tv_retailers);
             TvExtras = itemView.findViewById(R.id.tv_extras);
-            rlItem = itemView.findViewById(R.id.rl_date);
+            llDate = itemView.findViewById(R.id.llDate);
+            lltext = itemView.findViewById(R.id.lltext);
 
         }
     }

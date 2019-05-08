@@ -282,5 +282,6 @@
     <string name="already_exist">Already Exist</string>
     <string name="plus_more">\u2022+%d More</string>
     <string name="plan_retailer_name">\u2022+%s More</string>
+    <string name="visit_hours"> Visit Hour : %s - %s</string>
 
 </resources>

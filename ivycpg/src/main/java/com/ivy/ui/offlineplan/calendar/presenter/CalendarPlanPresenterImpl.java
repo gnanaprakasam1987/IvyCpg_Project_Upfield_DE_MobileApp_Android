@@ -98,19 +98,6 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         }
     }
 
-    private void loadPlannedDataFromDb() {
-        getCompositeDisposable().add(retailerDataManager.getAllDateRetailerPlanList()
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<HashMap<String, ArrayList<DateWisePlanBo>>>() {
-                    @Override
-                    public void accept(HashMap<String, ArrayList<DateWisePlanBo>> listHashMap) throws Exception {
-                        plannedListMap = listHashMap;
-
-                    }
-                }));
-    }
-
     @Override
     public void loadCalendar() {
         ArrayList<CalenderBO> mCalenderAllList;
@@ -364,6 +351,11 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     public ArrayList<DateWisePlanBo> getADayPlan(String date) {
         return plannedListMap.get(date) != null
                 ? plannedListMap.get(date) : new ArrayList<>();
+    }
+
+    @Override
+    public void loadInfoBottomSheet() {
+        getIvyView().loadBottomSheet(getADayPlan(mSelectedDate));
     }
 
     @Override

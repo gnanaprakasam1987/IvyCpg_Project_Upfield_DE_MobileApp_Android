@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.RectF;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -33,6 +36,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 import com.ivy.ui.offlineplan.calendar.CalendarPlanContract;
+import com.ivy.ui.offlineplan.calendar.adapter.BottmSheetRetailerInfoAdapter;
 import com.ivy.ui.offlineplan.calendar.adapter.CalendarClickListner;
 import com.ivy.ui.offlineplan.calendar.adapter.MonthViewAdapter;
 import com.ivy.ui.offlineplan.calendar.adapter.WeekFilterAdapter;
@@ -86,6 +90,11 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     @BindView(R.id.radioGrp)
     RadioGroup rbgSelection;
 
+    @BindView(R.id.coordinator)
+    CoordinatorLayout coordinatorLayout;
+
+    RecyclerView rvRetailerInfo;
+
     @Inject
     CalendarPlanContract.CalendarPlanPresenter<CalendarPlanContract.CalendarPlanView> presenter;
 
@@ -93,6 +102,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     private final int MONTH = 0, DAY = 1, WEEK = 2;
     private Context mContext;
     private MonthViewAdapter monthViewAdapter;
+    private BottomSheetBehavior behavior;
 
     @Override
     public void initializeDi() {
@@ -126,8 +136,11 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
         setUpToolbar(screenTitle);
         setHasOptionsMenu(true);
+        initRetailerInfoBottmSheet();
         presenter.setPlanDates();
         presenter.loadCalendar();
+
+        rvWeek.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
         if (DeviceUtils.isTabletDevice(Objects.requireNonNull(getActivity())))
             mWeekView.setHeaderColumnPadding((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, getResources().getDimension(R.dimen.time_column_width), getResources().getDisplayMetrics()));
@@ -184,6 +197,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                     fabAddRetailer.setVisibility(View.GONE);
                     rvWeek.setVisibility(View.VISIBLE);
                     mWeekView.setVisibility(View.VISIBLE);
+                    hideBottomSheet();
                     presenter.loadADay();
                 } else {
                     mSelectedType = WEEK;
@@ -192,18 +206,54 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                     fabAddRetailer.setVisibility(View.GONE);
                     rvWeek.setVisibility(View.VISIBLE);
                     mWeekView.setVisibility(View.VISIBLE);
+                    hideBottomSheet();
                     presenter.loadAWeek();
                 }
-
-
             }
         });
+
+        fabAddRetailer.setOnClickListener(v -> {
+            showMessage("test");
+        });
+    }
+
+    private void initRetailerInfoBottmSheet() {
+        View persistentbottomSheet = coordinatorLayout.findViewById(R.id.bottomsheet);
+        rvRetailerInfo = persistentbottomSheet.findViewById(R.id.rvRetailerInfo);
+        rvRetailerInfo.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+
+        behavior = BottomSheetBehavior.from(persistentbottomSheet);
+
+        if (behavior != null)
+            behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                    switch (newState) {
+                        case BottomSheetBehavior.STATE_HIDDEN:
+                            break;
+                        case BottomSheetBehavior.STATE_EXPANDED:
+                            break;
+                        case BottomSheetBehavior.STATE_COLLAPSED:
+                            break;
+                        case BottomSheetBehavior.STATE_DRAGGING:
+                            break;
+                        case BottomSheetBehavior.STATE_SETTLING:
+                            break;
+                    }
+                }
+
+                @Override
+                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+                }
+            });
     }
 
     @Override
     public void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList) {
         monthViewAdapter = new MonthViewAdapter(getActivity(), dayInWeekCount, mCalenderAllList, mAllowedDates, this);
         rvCalendar.setAdapter(monthViewAdapter);
+        hideBottomSheet();
     }
 
     @Override
@@ -235,9 +285,25 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     @Override
     public void loadTopWeekView(ArrayList<CalenderBO> mCalenderAllList, ArrayList<String> mAllowedDates) {
         int itemWidth = DeviceUtils.getDeviceWidth(Objects.requireNonNull(getActivity())) / 8;
-        rvWeek.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
-        WeekFilterAdapter weekFilterAdapter = new WeekFilterAdapter(getActivity(), mCalenderAllList, mAllowedDates, this, itemWidth, mSelectedType == DAY);
-        rvWeek.setAdapter(weekFilterAdapter);
+        rvWeek.setAdapter(new WeekFilterAdapter(getActivity(), mCalenderAllList, mAllowedDates, this, itemWidth, mSelectedType == DAY));
+    }
+
+    @Override
+    public void loadBottomSheet(ArrayList<DateWisePlanBo> retailerInfoList) {
+        if (retailerInfoList.size() > 0) {
+            if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+            rvRetailerInfo.setAdapter(new BottmSheetRetailerInfoAdapter(getActivity(), retailerInfoList));
+        } else {
+            hideBottomSheet();
+        }
+    }
+
+    private void hideBottomSheet() {
+        if (behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
     }
 
 
@@ -259,6 +325,13 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     @Override
     public ArrayList<DateWisePlanBo> getDaysPlan(String date) {
         return presenter.getADayPlan(date);
+    }
+
+    @Override
+    public void onDateNoSelected(String selectedDate) {
+        showMessage(selectedDate);
+        presenter.setSelectedDate(selectedDate);
+        presenter.loadInfoBottomSheet();
     }
 
 

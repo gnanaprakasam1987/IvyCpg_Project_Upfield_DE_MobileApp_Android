@@ -28,6 +28,8 @@ public interface CalendarPlanContract {
         void refreshGrid();
 
         void loadTopWeekView(ArrayList<CalenderBO> mCalenderAllList,ArrayList<String> mAllowedDates);
+
+        void loadBottomSheet(ArrayList<DateWisePlanBo> retailerInfoList);
     }
 
     @PerActivity
@@ -57,5 +59,7 @@ public interface CalendarPlanContract {
         List<WeekViewEvent> getEvents(int newYear, int newMonth);
 
         ArrayList<DateWisePlanBo> getADayPlan(String date);
+
+        void loadInfoBottomSheet();
     }
 }
