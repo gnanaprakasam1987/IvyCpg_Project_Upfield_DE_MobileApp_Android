@@ -9,5 +9,6 @@ import java.util.ArrayList;
  */
 public interface CalendarClickListner {
     void onDateSelected(String selectedDate);
+    void onWeekDateSelected(String selectedDate);
     ArrayList<DateWisePlanBo> getDaysPlan(String date);
 }

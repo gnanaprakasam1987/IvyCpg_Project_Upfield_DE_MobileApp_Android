@@ -712,7 +712,7 @@ public class WeekView extends View {
             startPixel += mWidthPerDay + mColumnGap;
         }
 
-        // Hide everything in the first cell (top left corner).
+        /*// Hide everything in the first cell (top left corner).
         canvas.clipRect(0, 0, mTimeTextWidth + mHeaderColumnPadding * 2, mHeaderHeight + mHeaderRowPadding * 2, Region.Op.REPLACE);
         canvas.drawRect(0, 0, mTimeTextWidth + mHeaderColumnPadding * 2, mHeaderHeight + mHeaderRowPadding * 2, mHeaderBackgroundPaint);
 
@@ -738,7 +738,7 @@ public class WeekView extends View {
             drawMultiLineText(dayLabel, startPixel + mWidthPerDay / 2, mHeaderTextHeight + mHeaderRowPadding, sameDay ? mTodayHeaderTextPaint : mHeaderTextPaint, canvas);
             drawAllDayEvents(day, startPixel, canvas);
             startPixel += mWidthPerDay + mColumnGap;
-        }
+        }*/
 
     }
 

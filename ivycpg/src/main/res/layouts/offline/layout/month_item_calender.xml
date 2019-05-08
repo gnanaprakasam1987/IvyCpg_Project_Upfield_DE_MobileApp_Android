@@ -18,8 +18,8 @@
         <TextView
             android:id="@+id/tv_date"
             style="@style/TextViewNormal"
-            android:layout_width="@dimen/dimen_40dp"
-            android:layout_height="@dimen/dimen_40dp"
+            android:layout_width="@dimen/dimens_40dp"
+            android:layout_height="@dimen/dimens_40dp"
             android:gravity="center" />
     </LinearLayout>
 

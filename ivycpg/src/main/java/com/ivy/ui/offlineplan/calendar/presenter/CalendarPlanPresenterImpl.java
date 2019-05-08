@@ -137,6 +137,15 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
 
     @Override
     public void loadADay() {
+        ArrayList<CalenderBO> mCalendarList = getWeekDays();
+
+        //adding week no at start position
+        CalenderBO cBO = new CalenderBO();
+        cBO.setDay("WK");
+        cBO.setWeekDate("1");   // need to replace week no from DB
+        mCalendarList.add(0, cBO);
+
+        getIvyView().loadTopWeekView(mCalendarList, mAllowedDates);
         Calendar date = Calendar.getInstance();
         date.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
         getIvyView().loadDayView(date);
@@ -147,6 +156,18 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
 
     @Override
     public void loadAWeek() {
+        //data for top view horizonatal list
+
+        ArrayList<CalenderBO> mCalendarList = getWeekDays();
+
+        //adding week no at start position
+        CalenderBO cBO = new CalenderBO();
+        cBO.setDay("WK");
+        cBO.setWeekDate("1");   // need to replace week no from DB
+        mCalendarList.add(0, cBO);
+
+        getIvyView().loadTopWeekView(mCalendarList, mAllowedDates);
+
         Calendar date = Calendar.getInstance();
         date.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
         date.setFirstDayOfWeek(Calendar.MONDAY);
@@ -252,7 +273,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     }
 
     @Override
-    public void onNextWeekClicked() {
+    public void onNextWeekClicked(boolean isDaySelected) {
         currentMonth.add(Calendar.WEEK_OF_YEAR, 1);
         Calendar toCalendar = Calendar.getInstance();
         Date dateTo = DateTimeUtils.convertStringToDateObject(planToDate, generalPattern);
@@ -261,14 +282,20 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
             if (toCalendar.get(Calendar.YEAR) != currentMonth.get(Calendar.YEAR)) {
                 if (toCalendar.get(Calendar.MONTH) - currentMonth.get(Calendar.MONTH) <= 0) {
                     setSelectedDate(DateTimeUtils.convertDateObjectToRequestedFormat(currentMonth.getTime(), generalPattern));
-                    loadAWeek();
+                    if (isDaySelected)
+                        loadADay();
+                    else
+                        loadAWeek();
                 } else {
                     currentMonth.add(Calendar.WEEK_OF_YEAR, -1);
                     getIvyView().showMessage(R.string.endOfPeriod);
                 }
             } else {
                 setSelectedDate(DateTimeUtils.convertDateObjectToRequestedFormat(currentMonth.getTime(), generalPattern));
-                loadAWeek();
+                if (isDaySelected)
+                    loadADay();
+                else
+                    loadAWeek();
             }
         } else {
             currentMonth.add(Calendar.WEEK_OF_YEAR, -1);
@@ -277,7 +304,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     }
 
     @Override
-    public void onPreviousWeekClicked() {
+    public void onPreviousWeekClicked(boolean isDaySelected) {
         currentMonth.add(Calendar.WEEK_OF_YEAR, -1);
         Calendar fromCalendar = Calendar.getInstance();
         Date dateTo = DateTimeUtils.convertStringToDateObject(planFromDate, generalPattern);
@@ -286,14 +313,20 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
             if (fromCalendar.get(Calendar.YEAR) != currentMonth.get(Calendar.YEAR)) {
                 if (fromCalendar.get(Calendar.MONTH) - currentMonth.get(Calendar.MONTH) >= 0) {
                     setSelectedDate(DateTimeUtils.convertDateObjectToRequestedFormat(currentMonth.getTime(), generalPattern));
-                    loadAWeek();
+                    if (isDaySelected)
+                        loadADay();
+                    else
+                        loadAWeek();
                 } else {
                     currentMonth.add(Calendar.WEEK_OF_YEAR, +1);
                     getIvyView().showMessage(R.string.endOfPeriod);
                 }
             } else {
                 setSelectedDate(DateTimeUtils.convertDateObjectToRequestedFormat(currentMonth.getTime(), generalPattern));
-                loadAWeek();
+                if (isDaySelected)
+                    loadADay();
+                else
+                    loadAWeek();
             }
         } else {
             currentMonth.add(Calendar.WEEK_OF_YEAR, +1);
@@ -432,6 +465,43 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         cal.setTime(DateTimeUtils.convertStringToDateObject(dateOne, generalPattern));
         cal.add(Calendar.DAY_OF_MONTH, 1); // add 28 days
         return cal.getTime();
+    }
+
+    private ArrayList<CalenderBO> getWeekDays() {
+
+        Calendar startWeek = Calendar.getInstance();
+        startWeek.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
+        startWeek.setFirstDayOfWeek(Calendar.MONDAY);
+        startWeek.set(Calendar.DAY_OF_WEEK, startWeek.getFirstDayOfWeek());
+        setTimeToBeginningOfDay(startWeek);
+
+
+        Calendar endWeek = Calendar.getInstance();
+        endWeek.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
+        endWeek.set(Calendar.DAY_OF_WEEK, endWeek.getFirstDayOfWeek());
+        endWeek.add(Calendar.DATE, 7);
+        setTimeToEndOfDay(endWeek);
+
+        ArrayList<CalenderBO> calLsit = new ArrayList<>();
+
+
+        while (startWeek.getTime().before(endWeek.getTime())) {
+            CalenderBO cBO = new CalenderBO();
+            Date result = startWeek.getTime();
+            SimpleDateFormat df1 = new SimpleDateFormat("d", Locale.US);
+            String d = df1.format(result);
+            SimpleDateFormat outFormat = new SimpleDateFormat("EE", Locale.getDefault());
+            String goal = outFormat.format(result);
+            startWeek.add(Calendar.DATE, 1);
+            cBO.setCal_date(DateTimeUtils.convertDateObjectToRequestedFormat(result, generalPattern));
+            cBO.setDay(goal);
+            cBO.setWeekDate(d);
+            cBO.setToday(DateUtils.isToday(result.getTime()));
+            cBO.setSelected(mSelectedDate.equalsIgnoreCase(cBO.getCal_date()));
+            calLsit.add(cBO);
+        }
+        return calLsit;
+
     }
 
 }

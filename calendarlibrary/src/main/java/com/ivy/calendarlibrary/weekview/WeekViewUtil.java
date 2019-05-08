@@ -1,5 +1,9 @@
 package com.ivy.calendarlibrary.weekview;
 
+import android.content.Context;
+import android.util.DisplayMetrics;
+import android.view.WindowManager;
+
 import java.util.Calendar;
 
 /**
@@ -36,4 +40,13 @@ public class WeekViewUtil {
         today.set(Calendar.MILLISECOND, 0);
         return today;
     }
+
+    public static int getDeviceWidth(Context context) {
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        WindowManager windowmanager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        assert windowmanager != null;
+        windowmanager.getDefaultDisplay().getMetrics(displayMetrics);
+        return displayMetrics.widthPixels;
+    }
+
 }

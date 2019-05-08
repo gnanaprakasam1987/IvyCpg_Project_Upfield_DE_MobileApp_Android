@@ -10,8 +10,8 @@
     <TextView
         android:id="@+id/tv_weekno"
         style="@style/TextViewNormal"
-        android:layout_width="@dimen/dimen_40dp"
-        android:layout_height="@dimen/dimen_40dp"
+        android:layout_width="@dimen/dimens_40dp"
+        android:layout_height="@dimen/dimens_40dp"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/list_margin"
         android:gravity="center"

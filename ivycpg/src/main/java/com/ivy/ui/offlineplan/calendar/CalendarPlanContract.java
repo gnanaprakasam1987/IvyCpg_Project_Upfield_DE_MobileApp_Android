@@ -26,6 +26,8 @@ public interface CalendarPlanContract {
         void loadWeekView(Calendar date);
 
         void refreshGrid();
+
+        void loadTopWeekView(ArrayList<CalenderBO> mCalenderAllList,ArrayList<String> mAllowedDates);
     }
 
     @PerActivity
@@ -48,9 +50,9 @@ public interface CalendarPlanContract {
 
         void onPreviousDayClicked();
 
-        void onNextWeekClicked();
+        void onNextWeekClicked(boolean isDaySelected);
 
-        void onPreviousWeekClicked();
+        void onPreviousWeekClicked(boolean isDaySelected);
 
         List<WeekViewEvent> getEvents(int newYear, int newMonth);
 
