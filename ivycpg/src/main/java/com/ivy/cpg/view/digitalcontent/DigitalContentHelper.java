@@ -475,6 +475,7 @@ public class DigitalContentHelper {
                         + DataMembers.DIGITAL_CONTENT + "/"
                         + DataMembers.DIGITALCONTENT + "/" + fileName);
 
+        if(file.exists()){
         if (Build.VERSION.SDK_INT >= 24) {
             path = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file);
         } else {
@@ -497,7 +498,11 @@ public class DigitalContentHelper {
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_STREAM, path);
         context.startActivity(intent);
-
+        } else {
+            Toast.makeText(context,
+                    context.getResources().getString(R.string.file_not_found),
+                    Toast.LENGTH_SHORT).show();
+        }
 
     }
 }

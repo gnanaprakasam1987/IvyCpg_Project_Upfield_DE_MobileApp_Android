@@ -924,6 +924,8 @@ public class DataMembers {
         uploadColumn.put(tbl_RetailerLocationDeviation, tbl_RetailerLocationDeviation_cols);
         uploadColumn.put(tbl_TripMaster, tbl_TripMaster_cols);
         uploadColumn.put(tbl_SyncLogDetails, tbl_SyncLogDetails_cols);
+        uploadColumn.put(tbl_DisplayAssetHeader, tbl_DisplayAsseteader_cols);
+        uploadColumn.put(tbl_DisplayAssetTDetails, tbl_DisplayAssetDetail_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -1077,7 +1079,10 @@ public class DataMembers {
 
         uploadColumnWithRetailer.put(tbl_OrderFreeIssues, tbl_OrderFreeIssues_cols);
         uploadColumnWithRetailer.put(tbl_InvoiceFreeIssues, tbl_InvoiceFreeIssues_cols);
-        uploadColumn.put(tbl_RetailerLocationDeviation, tbl_RetailerLocationDeviation_cols);
+        uploadColumnWithRetailer.put(tbl_RetailerLocationDeviation, tbl_RetailerLocationDeviation_cols);
+
+        uploadColumnWithRetailer.put(tbl_DisplayAssetHeader, tbl_DisplayAsseteader_cols);
+        uploadColumnWithRetailer.put(tbl_DisplayAssetTDetails, tbl_DisplayAssetDetail_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();

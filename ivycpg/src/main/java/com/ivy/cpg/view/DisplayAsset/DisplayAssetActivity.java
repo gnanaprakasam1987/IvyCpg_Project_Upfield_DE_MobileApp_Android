@@ -58,6 +58,7 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
 
         layout_status = findViewById(R.id.layout_status);
         textView_status = findViewById(R.id.textview_status);
+        button_save = findViewById(R.id.btn_save);
 
         if (toolbar != null) {
 
@@ -76,6 +77,10 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
 
         expandableListView=findViewById(R.id.listview_assets);
         expandableListView.setAdapter(new MyAdapter(displayAssetHelper.getDisplayAssetList()));
+        int size=displayAssetHelper.getDisplayAssetList().size();
+        for (int i = 0; i < size; i++) {
+            (expandableListView).expandGroup(i);
+        }
 
         button_save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,6 +206,7 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
             }
 
             holder.textView_companyName.setText(assetList.get(groupPosition).getCompanyList().get(childPosition).getCompetitorName());
+            holder.editText_quantity.setText(String.valueOf(assetList.get(groupPosition).getCompanyList().get(childPosition).getQuantity()));
 
             return row;
         }
@@ -267,7 +273,8 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
 
     class ViewHolder {
         TextView textView_assetName,textView_companyName;
-        ImageView imageView_plus,imageView_minus;
+        Button imageView_minus;
+        Button imageView_plus;
         EditText editText_quantity;
 
     }
@@ -277,7 +284,9 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
     @Override
     public void updateStatus(String companyName,double ownCompanyWeightage,double otherCompanyMaxWeightage,int flag) {
 
+        if(!companyName.equals(""))
         label_company_name.setText(companyName);
+        else label_company_name.setText("Own");
         textview_company_count.setText(String.valueOf(ownCompanyWeightage));
         textview_other_count.setText(String.valueOf(otherCompanyMaxWeightage));
 

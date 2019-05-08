@@ -3811,6 +3811,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 if(assetHelper.getDisplayAssetList().size()>0) {
                     Intent i = new Intent(this,
                             DisplayAssetActivity.class);
+                    i.putExtra("menuName",menu.getMenuName());
                     i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
                     startActivity(i);
                     finish();

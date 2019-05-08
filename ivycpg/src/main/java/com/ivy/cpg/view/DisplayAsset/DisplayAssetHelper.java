@@ -123,7 +123,7 @@ public class DisplayAssetHelper {
             for(AssetTrackingBO assetTrackingBO:getDisplayAssetList()) {
                 for (CompanyBO companyBO : assetTrackingBO.getCompanyList()) {
 
-                    String detailValues = id + ","
+                    String detailValues = StringUtils.QT(id) + ","
                             + companyBO.getCompetitorid() + ","
                             + assetTrackingBO.getAssetID() + "," + companyBO.getQuantity() + ","
                             + assetTrackingBO.getWeightage() + ","
@@ -136,10 +136,10 @@ public class DisplayAssetHelper {
             }
 
             if(isData) {
-                String headerValues = id + ","
+                String headerValues = StringUtils.QT(id) + ","
                         +  mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID() + ","
                         + StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRidSF())
-                        + "," + StringUtils.QT(mBusinessModel.getAppDataProvider().getUniqueId()) + ","
+                        + "," + mBusinessModel.getAppDataProvider().getUniqueId() + ","
                         + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                         + StringUtils.QT(status)+
                         ","+ownCompanyScore+","+otherCompanyMaxScore;

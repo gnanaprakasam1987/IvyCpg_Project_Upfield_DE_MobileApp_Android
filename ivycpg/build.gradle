@@ -36,7 +36,7 @@ static def fetchRevisionNumber() {
 }
 
 def majorVersion = 2
-def minorVersion = 139
+def minorVersion = 140
 def patchVersion = 0
 def verCode = 1390
 def revNumber = fetchRevisionNumber()
