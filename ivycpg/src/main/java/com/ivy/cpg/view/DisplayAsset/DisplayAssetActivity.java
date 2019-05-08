@@ -308,5 +308,15 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
 
     }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
 
+        if(android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            expandableListView.setIndicatorBounds(expandableListView.getRight()-100, expandableListView.getWidth());
+        } else {
+            expandableListView.setIndicatorBoundsRelative(expandableListView.getRight()-100, expandableListView.getWidth());
+        }
+
+    }
 }
