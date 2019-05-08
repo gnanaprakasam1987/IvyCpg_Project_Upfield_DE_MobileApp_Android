@@ -76,6 +76,16 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
         );
     }
 
+    @Override
+    public void cancelPlan(DateWisePlanBo dateWisePlanBo) {
+        addPlanDataManager.cancelPlan(dateWisePlanBo);
+    }
+
+    @Override
+    public void deletePlan(DateWisePlanBo dateWisePlanBo) {
+        addPlanDataManager.DeletePlan(dateWisePlanBo);
+    }
+
     private DateWisePlanBo preparePlanObjects(String date, String startTime, String endTime,RetailerMasterBO retailerMasterBO){
 
         date = DateTimeUtils.convertToServerDateFormat(date, "yyyy/MM/dd");

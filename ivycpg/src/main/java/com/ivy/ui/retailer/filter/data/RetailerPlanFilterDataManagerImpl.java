@@ -1,31 +1,35 @@
 package com.ivy.ui.retailer.filter.data;
 
 import android.database.Cursor;
-import android.text.format.DateUtils;
+import android.text.TextUtils;
 
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
+import com.ivy.ui.retailer.filter.RetailerPlanFilterConstants;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.Single;
 
 import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_IS_NOT_VISITED;
 import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_LAST_VISIT_DATE;
 import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_TASK_DUE_DATE;
+import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.hhtCodeList;
 
 public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterDataManager {
 
     private DBUtil mDbUtil;
-    private ArrayList<String> configurationList ;
 
     @Inject
     RetailerPlanFilterDataManagerImpl(@DataBaseInfo DBUtil dbUtil){
@@ -48,13 +52,31 @@ public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterData
     }
 
     @Override
-    public Single<ArrayList<String>> prepareConfigurationMaster() {
-        return Single.fromCallable(new Callable<ArrayList<String>>() {
+    public Observable<ArrayList<String>> prepareConfigurationMaster() {
+        return Observable.fromCallable(new Callable<ArrayList<String>>() {
             @Override
             public ArrayList<String> call() throws Exception {
                 ArrayList<String> listValues = new ArrayList<>();
 
+                int size = hhtCodeList.size();
+
+//                String hhtCodes ="("+TextUtils.join(",", Collections.nCopies(size, "?")) + "),";
+
+//                String hhtCodes = TextUtils.join(",", RetailerPlanFilterConstants.hhtCodeList.toArray(new String[RetailerPlanFilterConstants.hhtCodeList.size()])) ;
+
+//                String queryStr = "Select hhtcode from HhtModuleMaster where hhtCode in"+hhtCodes;
+
                 initDb();
+
+//                Cursor c = mDbUtil.selectSQL(queryStr,hhtCodeList.toArray(new String[hhtCodeList.size()]));
+//
+//                if (c != null&& c.getCount() > 0) {
+//                    while (c.moveToNext()) {
+//                        if (hhtCodeList.contains(c.getString(0))) {
+//                            listValues.add(c.getString(0));
+//                        }
+//                    }
+//                }
 
                 listValues.add(CODE_IS_NOT_VISITED);
                 listValues.add(CODE_TASK_DUE_DATE);
@@ -63,6 +85,54 @@ public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterData
                 shutDownDb();
 
                 return listValues;
+            }
+        });
+    }
+
+    public Observable<HashMap<String,AttributeBO>> prepareAttributeList(){
+        return Observable.fromCallable(new Callable<HashMap<String,AttributeBO>>() {
+            @Override
+            public HashMap<String,AttributeBO> call() throws Exception {
+                HashMap<String,AttributeBO> mapValues = new HashMap<>();
+
+                String queryStr = "Select EAM.AttributeId,EAM.AttributeName,EAM.Sequence,EAM1.AttributeId,EAM1.AttributeName from EntityAttributeMaster EAM " +
+                        "inner join EntityAttributeMaster as EAM1 on EAM.AttributeId = EAM1.ParentId where EAM.parentId = 0 " +
+                        "order by EAM.Sequence,EAM.AttributeId ASC";
+
+                initDb();
+
+                Cursor c = mDbUtil.selectSQL(queryStr);
+                if (c != null&& c.getCount() > 0) {
+                    while (c.moveToNext()) {
+
+                        if (mapValues.get(c.getString(0)) == null) {
+                            AttributeBO attributeBO = new AttributeBO();
+                            attributeBO.setAttributeId(c.getInt(0));
+                            attributeBO.setAttributeName(c.getString(1));
+
+                            AttributeBO attributeBOSub = new AttributeBO();
+                            attributeBOSub.setAttributeId(c.getInt(3));
+                            attributeBOSub.setAttributeName(c.getString(4));
+
+                            attributeBO.getAttributeBOHashMap().put(c.getString(3),attributeBOSub);
+
+                            mapValues.put(c.getString(0), attributeBO);
+                        } else {
+                            AttributeBO attributeBO = mapValues.get(c.getString(0));
+
+                            AttributeBO attributeBOSub = new AttributeBO();
+                            attributeBOSub.setAttributeId(c.getInt(3));
+                            attributeBOSub.setAttributeName(c.getString(4));
+
+                            attributeBO.getAttributeBOHashMap().put(c.getString(3),attributeBOSub);
+
+                        }
+                    }
+                }
+
+                shutDownDb();
+
+                return mapValues;
             }
         });
     }
@@ -77,6 +147,10 @@ public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterData
                 StringBuilder queryStrng = new StringBuilder();
 
                 queryStrng.append("Select rm.RetailerId from RetailerMaster as rm ");
+
+                if (planFilterBo.getIsNotVisited() > 0)
+                    queryStrng.append(" inner join OutletTimestamp as ots on ots.RetailerID = rm.retailerId ");
+
 
                 if (planFilterBo.getLastVisitDate() != null) {
                     queryStrng.append(" inner join RetailerVisit as rv on rv.RetailerID = rm.retailerId ");
