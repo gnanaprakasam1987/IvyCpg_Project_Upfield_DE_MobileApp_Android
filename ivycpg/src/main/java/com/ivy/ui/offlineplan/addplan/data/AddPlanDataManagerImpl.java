@@ -134,12 +134,7 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
 
                 try {
 
-                    if (dateWisePlanBo.isServerData())
-                        mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
-                                + " SET Status = 'D'"
-                                +" where PlanId = "+dateWisePlanBo.getPlanId());
-                    else
-                        mDbUtil.deleteSQL(DataMembers.tbl_date_wise_plan,
+                    mDbUtil.deleteSQL(DataMembers.tbl_date_wise_plan,
                             " where PlanId = "+dateWisePlanBo.getPlanId(),false);
                     shutDownDb();
                     return true;

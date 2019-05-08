@@ -16,5 +16,7 @@ public interface AddPlanContract {
     interface AddPlanPresenter<V extends AddPlanView> extends BaseIvyPresenter<V>{
         void addNewPlan(String date, String startTime, String endTime,RetailerMasterBO retailerMasterBO);
         void updatePlan(String date, String startTime, String endTime,RetailerMasterBO retailerMasterBO);
+        void cancelPlan(DateWisePlanBo dateWisePlanBo);
+        void deletePlan(DateWisePlanBo dateWisePlanBo);
     }
 }

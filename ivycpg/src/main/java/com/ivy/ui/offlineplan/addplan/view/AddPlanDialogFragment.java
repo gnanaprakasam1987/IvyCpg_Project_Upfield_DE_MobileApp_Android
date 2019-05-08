@@ -15,7 +15,6 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.profile.ProfileActivity;
@@ -30,9 +29,6 @@ import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 import com.ivy.ui.offlineplan.addplan.di.AddPlanModule;
 import com.ivy.ui.offlineplan.addplan.di.DaggerAddPlanComponent;
 import com.ivy.ui.offlineplan.addplan.presenter.AddPlanPresenterImpl;
-import com.ivy.ui.retailer.di.DaggerRetailerComponent;
-import com.ivy.ui.retailer.di.RetailerModule;
-import com.ivy.ui.retailer.view.map.RetailerMapFragment;
 import com.ivy.utils.DateTimeUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -53,11 +49,20 @@ import static com.ivy.utils.DateTimeUtils.TIME_HOUR_MINS;
 @SuppressLint("ValidFragment")
 public class AddPlanDialogFragment extends BottomSheetDialogFragment implements AddPlanContract.AddPlanView {
 
-    @BindView(R.id.add_plan)
-    ImageView addPlan;
+    @BindView(R.id.tv_add)
+    TextView addPlan;
 
-    @BindView(R.id.edit_plan)
-    ImageView editPlan;
+    @BindView(R.id.tv_edit)
+    TextView editPlan;
+
+    @BindView(R.id.tv_save)
+    TextView savePlan;
+
+    @BindView(R.id.tv_cancel)
+    TextView cancelPlan;
+
+    @BindView(R.id.tv_delete)
+    TextView deletePlan;
 
     @BindView(R.id.tv_outlet_name)
     TextView tvOutletName;
@@ -82,9 +87,6 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
 
     @BindView(R.id.visitElementGroup)
     Group visitElementGroup;
-
-    @BindView(R.id.save_plan)
-    ImageView savePlan;
 
     private BottomSheetBehavior bottomSheetBehavior;
 
@@ -145,13 +147,13 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
         startTime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
         endtime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
 
-        if (!dateWisePlanBo.getDate().isEmpty())
+        if (dateWisePlanBo != null && !dateWisePlanBo.getDate().isEmpty())
             date = dateWisePlanBo.getDate();
 
-        if (!dateWisePlanBo.getStartTime().isEmpty())
+        if (dateWisePlanBo != null && !dateWisePlanBo.getStartTime().isEmpty())
             startTime = DateTimeUtils.convertDateTimeObjectToRequestedFormat(dateWisePlanBo.getStartTime(),"yyyy/MM/dd HH:mm:ss","HH:mm");
 
-        if (!dateWisePlanBo.getEndTime().isEmpty())
+        if (dateWisePlanBo != null && !dateWisePlanBo.getEndTime().isEmpty())
             endtime = DateTimeUtils.convertDateTimeObjectToRequestedFormat(dateWisePlanBo.getEndTime(),"yyyy/MM/dd HH:mm:ss","HH:mm");
 
         setPlanWindowValues();
@@ -235,7 +237,7 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
         }
     };
 
-    @OnClick(R.id.profile_plan)
+    @OnClick(R.id.tv_profile)
     void viewProfile(){
 //        presenter.setRetailerMasterBo(retailerMasterBO);
         Intent i = new Intent(context, ProfileActivity.class);
@@ -247,16 +249,30 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
         startActivity(i);
     }
 
-    @OnClick(R.id.save_plan)
+    @OnClick(R.id.tv_save)
     void savePlan(){
         if (!"Y".equals(retailerMasterBO.getIsVisited())
                 &&( retailerMasterBO.getIsToday() == 1
-                || "Y".equals(retailerMasterBO.getIsDeviated()))) {
+                || "Y".equals(retailerMasterBO.getIsDeviated())) && dateWisePlanBo != null) {
             addPlanPresenter.updatePlan(dateWisePlanBo.getDate(),tvStartVisitTime.getText().toString(),tvVisitEndTime.getText().toString(),retailerMasterBO);
         }else if(!"Y".equals(retailerMasterBO.getIsVisited())){
-            addPlanPresenter.addNewPlan(dateWisePlanBo.getDate(),tvStartVisitTime.getText().toString(),tvVisitEndTime.getText().toString(),retailerMasterBO);
+            addPlanPresenter.addNewPlan(date,tvStartVisitTime.getText().toString(),tvVisitEndTime.getText().toString(),retailerMasterBO);
         }
         dismiss();
+    }
+
+    @OnClick(R.id.tv_mail)
+    void sendEmail(){
+    }
+
+    @OnClick(R.id.tv_cancel)
+    void cancelPlan(){
+        addPlanPresenter.cancelPlan(dateWisePlanBo);
+    }
+
+    @OnClick(R.id.tv_delete)
+    void deletePlan(){
+        addPlanPresenter.deletePlan(dateWisePlanBo);
     }
 
     private View.OnClickListener addToPlanListener = new View.OnClickListener() {
@@ -314,6 +330,17 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
 
             addPlan.setVisibility(View.GONE);
 
+            if (dateWisePlanBo == null){
+                cancelPlan.setVisibility(View.GONE);
+                deletePlan.setVisibility(View.GONE);
+            }else if (dateWisePlanBo.isServerData() && !"Y".equals(retailerMasterBO.getIsVisited())){
+                cancelPlan.setVisibility(View.VISIBLE);
+                deletePlan.setVisibility(View.GONE);
+            }else if (!dateWisePlanBo.isServerData() && !"Y".equals(retailerMasterBO.getIsVisited())){
+                cancelPlan.setVisibility(View.GONE);
+                deletePlan.setVisibility(View.VISIBLE);
+            }
+
             if (!"Y".equals(retailerMasterBO.getIsVisited())) {
                 editPlan.setVisibility(View.VISIBLE);
             }else {
@@ -331,6 +358,7 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
             addPlan.setVisibility(View.VISIBLE);
             editPlan.setVisibility(View.GONE);
         }
+
     }
 
     @Subscribe

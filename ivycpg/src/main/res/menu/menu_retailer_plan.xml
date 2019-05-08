@@ -32,6 +32,7 @@
         android:icon="@drawable/icon_search"
         app:showAsAction="always"
         android:orderInCategory="3"
+        app:actionViewClass="android.support.v7.widget.SearchView"
         android:title="Search">
     </item>
 

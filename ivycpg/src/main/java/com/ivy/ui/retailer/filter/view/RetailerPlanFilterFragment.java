@@ -9,12 +9,15 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ivy.core.base.view.BaseBottomSheetDialogFragment;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.ui.retailer.filter.FilterObjectBo;
@@ -129,16 +132,14 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
             notVisitedCheckBox.setChecked(false);
 
         if (presenter.isConfigureAvail(CODE_LAST_VISIT_DATE)) {
-            lastVisitFromDate.setText("");
-            lastVisitToDate.setText("");
+            lastVisitFromDate.setText(getString(R.string.select_date));
+            lastVisitToDate.setText(getString(R.string.select_date));
         }
         if (presenter.isConfigureAvail(CODE_TASK_DUE_DATE)) {
-            taskFromDate.setText("");
-            taskToDate.setText("");
+            taskFromDate.setText(getString(R.string.select_date));
+            taskToDate.setText(getString(R.string.select_date));
         }
 
-        EventBus.getDefault().post("CLEAR");
-        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     @OnClick(R.id.filter_btn)
@@ -344,8 +345,43 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
     }
 
     @Override
+    public void showAttributeSpinner() {
+
+        ArrayList<AttributeBO> attributeBOList = new ArrayList<>(presenter.getAttributeMapValues().values());
+
+        for (AttributeBO attributeBO : attributeBOList){
+            View view = getLayoutInflater().inflate(R.layout.attribute_spinner_layout, null);
+
+            ((TextView)view.findViewById(R.id.spinner_txt)).setText(attributeBO.getAttributeName());
+
+            Spinner attributeSpinner = view.findViewById(R.id.spinner_attribute);
+
+            ArrayAdapter<AttributeBO> attributeAdapter  = new ArrayAdapter<AttributeBO>(context,
+                    android.R.layout.simple_spinner_item,
+                    new ArrayList<>(attributeBO.getAttributeBOHashMap().values()));
+            attributeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+            attributeSpinner.setAdapter(attributeAdapter);
+
+            dynamicViewLayout.addView(view);
+
+        }
+    }
+
+    @Override
     public void filterValidationSuccess() {
         presenter.getRetailerFilterArray(planFilterBo);
+    }
+
+    @Override
+    public void clearFilter() {
+        EventBus.getDefault().post("CLEAR");
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+    }
+
+    @Override
+    public void noFilterRecord() {
+        EventBus.getDefault().post("NODATA");
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     @Override

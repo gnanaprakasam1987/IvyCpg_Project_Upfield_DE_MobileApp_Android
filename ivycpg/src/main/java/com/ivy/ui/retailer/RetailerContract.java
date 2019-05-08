@@ -4,6 +4,7 @@ import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
+import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ public interface RetailerContract {
 
          DateWisePlanBo getSelectedRetailerPlan(String retailerId);
 
-         void prepareFilteredRetailerList(ArrayList<String> retailerIds);
+         void prepareFilteredRetailerList(RetailerPlanFilterBo planFilterBo, String filter);
 
     }
 }
