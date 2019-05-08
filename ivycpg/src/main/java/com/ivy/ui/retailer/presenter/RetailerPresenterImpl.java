@@ -9,6 +9,7 @@ import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 import com.ivy.ui.retailer.RetailerContract;
 import com.ivy.ui.retailer.data.RetailerDataManager;
+import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
@@ -27,11 +28,13 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
     private ProfileDataManagerImpl profileDataManager;
     private RetailerDataManager retailerDataManager;
 
-    private HashMap<String, ArrayList<DateWisePlanBo>> getAllDateRetailerPlanList;
+    private HashMap<String, ArrayList<DateWisePlanBo>> allDateRetailerPlanList;
 
-    private ArrayList<DateWisePlanBo> getSelectedDateRetailerPlanList;
+    private ArrayList<DateWisePlanBo> selectedDateRetailerPlanList;
 
-    private HashMap<String,DateWisePlanBo> getSelectedDateRetailerPlanMap;
+    private HashMap<String,DateWisePlanBo> selectedDateRetailerPlanMap;
+
+    private ArrayList<RetailerMasterBO> visibleRetailerList = new ArrayList<>();
 
     @Inject
     RetailerPresenterImpl(DataManager dataManager,
@@ -52,21 +55,28 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
         return appDataProvider.getRetailerMasters();
     }
 
+    public ArrayList<RetailerMasterBO> getVisibleRetailerList() {
+        return visibleRetailerList;
+    }
+
     @Override
     public void fetchRetailerList() {
-
         getIvyView().populateRetailers(loadRetailerList());
-
+        visibleRetailerList.clear();
+        visibleRetailerList.addAll(loadRetailerList());
     }
 
     @Override
     public void fetchTodayPlannedRetailers() {
 
-        for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
+        visibleRetailerList.clear();
+
+        for (RetailerMasterBO retailerMasterBO : loadRetailerList()) {
             if ("Y".equals(retailerMasterBO.getIsVisited())
                     || retailerMasterBO.getIsToday() == 1
                     || "Y".equals(retailerMasterBO.getIsDeviated())) {
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
+                visibleRetailerList.add(retailerMasterBO);
             }
         }
 
@@ -104,7 +114,7 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
                 .subscribe(new Consumer<HashMap<String, ArrayList<DateWisePlanBo>>>() {
                     @Override
                     public void accept(HashMap<String, ArrayList<DateWisePlanBo>> listHashMap) throws Exception {
-                        getAllDateRetailerPlanList = listHashMap;
+                        allDateRetailerPlanList = listHashMap;
                     }
                 }));
     }
@@ -118,36 +128,58 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
                     @Override
                     public void accept(HashMap<String,DateWisePlanBo> listHashMap) throws Exception {
 
-                        getSelectedDateRetailerPlanMap = listHashMap;
+                        selectedDateRetailerPlanMap = listHashMap;
 
-                        getSelectedDateRetailerPlanList = new ArrayList<>(listHashMap.values());
+                        selectedDateRetailerPlanList = new ArrayList<>(listHashMap.values());
                     }
                 }));
     }
 
     @Override
     public HashMap<String, ArrayList<DateWisePlanBo>> getAllDateRetailerPlanList() {
-        return getAllDateRetailerPlanList.isEmpty()?new HashMap<>():getAllDateRetailerPlanList;
+        return allDateRetailerPlanList.isEmpty()?new HashMap<>(): allDateRetailerPlanList;
     }
 
     @Override
     public ArrayList<DateWisePlanBo> getSelectedDateRetailerPlanList() {
-        return getSelectedDateRetailerPlanList.isEmpty()?new ArrayList<>():getSelectedDateRetailerPlanList;
+        return selectedDateRetailerPlanList.isEmpty()?new ArrayList<>(): selectedDateRetailerPlanList;
     }
 
     @Override
     public DateWisePlanBo getSelectedRetailerPlan(String retailerId) {
-        return getSelectedDateRetailerPlanMap.get(retailerId) != null
-                ?getSelectedDateRetailerPlanMap.get(retailerId): new DateWisePlanBo();
+        return selectedDateRetailerPlanMap.get(retailerId);
     }
 
     @Override
-    public void prepareFilteredRetailerList(ArrayList<String> retailerIds) {
-        for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
-            if (retailerIds.contains(retailerMasterBO.getRetailerID())) {
+    public void prepareFilteredRetailerList(RetailerPlanFilterBo planFilterBo, String filter) {
+
+        ArrayList<String> retailerIds = new ArrayList<>();
+        if (planFilterBo != null) {
+            retailerIds = planFilterBo.getRetailerIds();
+        }
+
+        ArrayList<RetailerMasterBO> visibleRetailerList = new ArrayList<>();
+
+        for (RetailerMasterBO retailerMasterBO : this.visibleRetailerList) {
+
+            if (planFilterBo != null && !filter.isEmpty() && planFilterBo.getRetailerIds().contains(retailerMasterBO.getRetailerID())
+                        && retailerMasterBO.getRetailerName().contains(filter)){
+
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
+                visibleRetailerList.add(retailerMasterBO);
+
+            }else if (planFilterBo != null && filter.isEmpty() && retailerIds.contains(retailerMasterBO.getRetailerID())) {
+                getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
+                visibleRetailerList.add(retailerMasterBO);
+            }
+            else if (planFilterBo == null && !filter.isEmpty() && retailerMasterBO.getRetailerName().contains(filter)) {
+                getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
+                visibleRetailerList.add(retailerMasterBO);
             }
         }
+
+        this.visibleRetailerList.clear();
+        this.visibleRetailerList.addAll(visibleRetailerList);
 
         getIvyView().focusMarker();
     }

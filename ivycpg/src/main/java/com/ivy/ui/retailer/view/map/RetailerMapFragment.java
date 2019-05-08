@@ -1,6 +1,7 @@
 package com.ivy.ui.retailer.view.map;
 
 import android.app.Activity;
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -12,6 +13,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.SwitchCompat;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -471,6 +473,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
                     new AddPlanDialogFragment(retailerMasterBO, presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID()));
             addPlanDialogFragment.show(((FragmentActivity)context).getSupportFragmentManager(),
                     "add_plan_fragment");
+
+            presenter.setRetailerMasterBo(retailerMasterBO);
         }
         return false;
     }
@@ -693,9 +697,37 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
     }
 
+    private String searchText ="";
+
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_retailer_plan, menu);
+
+        SearchManager searchManager = (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        ImageView searchClose = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
+        searchClose.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
+
+        searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(((Activity)context).getComponentName()) : null);
+        SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextChange(String newText) {
+
+                getMap().clear();
+
+                presenter.prepareFilteredRetailerList(planFilterBo,newText.toLowerCase());
+                searchText = newText;
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return true;
+            }
+
+        };
+        searchView.setOnQueryTextListener(textChangeListener);
     }
 
     @Override
@@ -731,22 +763,33 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     public void onMessageEvent(Object obj) {
 
         if (obj instanceof RetailerPlanFilterBo){
+
             planFilterBo = ((RetailerPlanFilterBo)obj);
+
+            if (planFilterBo.getRetailerIds().isEmpty()) {
+                onMessageEvent("NODATA");
+                return;
+            }
+
             getMap().clear();
-            presenter.prepareFilteredRetailerList(((RetailerPlanFilterBo)obj).getRetailerIds());
+
+            presenter.prepareFilteredRetailerList(((RetailerPlanFilterBo)obj),searchText.toLowerCase());
         }else if(obj instanceof String){
             if (((String)obj).equalsIgnoreCase("CLEAR")){
+
                 if (planFilterBo != null) {
                     planFilterBo = null;
-                    getMap().clear();
-                    if (storeFilterSwitch.isChecked()) {
-                        presenter.fetchTodayPlannedRetailers();
-                        storeFilterSwitch.setText(getResources().getString(R.string.day_plan));
-                    }else {
-                        presenter.fetchRetailerList();
-                        storeFilterSwitch.setText(getResources().getString(R.string.all_retailer));
-                    }
                 }
+
+                getMap().clear();
+                if (storeFilterSwitch.isChecked()) {
+                    presenter.fetchTodayPlannedRetailers();
+                    storeFilterSwitch.setText(getResources().getString(R.string.day_plan));
+                }else {
+                    presenter.fetchRetailerList();
+                    storeFilterSwitch.setText(getResources().getString(R.string.all_retailer));
+                }
+
             }else if ("NODATA".equalsIgnoreCase((String)obj)){
                 getMap().clear();
             }

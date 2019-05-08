@@ -1,5 +1,7 @@
 package com.ivy.sd.png.bo;
 
+import java.util.HashMap;
+
 /**
  * Created by rajkumar.s on 16-02-2016.
  */
@@ -88,5 +90,15 @@ public class AttributeBO {
     @Override
     public String toString() {
         return attributeName;
+    }
+
+    private HashMap<String,AttributeBO> attributeBOHashMap =new HashMap<>();
+
+    public HashMap<String, AttributeBO> getAttributeBOHashMap() {
+        return attributeBOHashMap;
+    }
+
+    public void setAttributeBOHashMap(HashMap<String, AttributeBO> attributeBOHashMap) {
+        this.attributeBOHashMap = attributeBOHashMap;
     }
 }

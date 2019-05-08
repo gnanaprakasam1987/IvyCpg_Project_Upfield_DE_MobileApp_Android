@@ -37,8 +37,7 @@
             android:text=""
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/profile_plan"/>
+            app:layout_constraintStart_toStartOf="parent"/>
 
         <TextView
             android:id="@+id/tv_outlet_address"
@@ -55,69 +54,161 @@
             app:layout_constraintEnd_toEndOf="@+id/tv_outlet_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_outlet_name" />
 
-        <ImageView
-            android:id="@+id/profile_plan"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tv_profile"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_marginRight="@dimen/_5sdp"
-            android:padding="@dimen/_5sdp"
-            android:src="@drawable/ic_store_icon"
-            android:tint="@color/blue_week_background"
-            app:layout_constraintStart_toEndOf="@id/tv_outlet_name"
-            app:layout_constraintEnd_toStartOf="@id/add_plan"
-            app:layout_constraintTop_toTopOf="@+id/tv_outlet_name"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_outlet_address"
-            android:visibility="visible"/>
+            android:gravity="center_vertical|left"
+            android:text="Profile"
+            android:drawableStart="@drawable/ic_store_black_24dp"
+            android:drawableLeft="@drawable/ic_store_black_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:background="@drawable/curved_end_bg"
+            android:textColor="@color/FullBlack"
+            android:paddingLeft="@dimen/_10sdp"
+            android:paddingRight="@dimen/_10sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:drawablePadding="@dimen/_5sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address"/>
 
-        <ImageView
-            android:id="@+id/add_plan"
-            style="@style/TextViewListItemCaption"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tv_mail"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_marginRight="@dimen/_5sdp"
-            android:padding="@dimen/_5sdp"
-            android:src="@drawable/ic_add"
-            android:visibility="gone"
-            android:tint="@color/blue_week_background"
-            app:layout_constraintStart_toEndOf="@id/profile_plan"
-            app:layout_constraintEnd_toStartOf="@id/edit_plan"
-            app:layout_constraintTop_toTopOf="@+id/tv_outlet_name"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_outlet_address"/>
+            android:gravity="center_vertical|left"
+            android:text="Email"
+            android:drawableStart="@drawable/ic_mail_black_24dp"
+            android:drawableLeft="@drawable/ic_mail_black_24dp"
+            app:layout_constraintStart_toEndOf="@+id/tv_profile"
+            android:background="@drawable/curved_end_bg"
+            android:textColor="@color/FullBlack"
+            android:paddingLeft="@dimen/_10sdp"
+            android:paddingRight="@dimen/_10sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:drawablePadding="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_profile"
+            app:layout_constraintTop_toTopOf="@+id/tv_profile"
+            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address"/>
 
-        <ImageView
-            android:id="@+id/edit_plan"
-            style="@style/TextViewListItemCaption"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_marginRight="@dimen/_5sdp"
-            android:padding="@dimen/_5sdp"
-            android:src="@drawable/ic_edit"
+            android:gravity="center_vertical|left"
+            android:text="Cancel"
+            android:drawableStart="@drawable/ic_cancel_black_24dp"
+            android:drawableLeft="@drawable/ic_cancel_black_24dp"
+            app:layout_constraintStart_toEndOf="@+id/tv_mail"
+            android:background="@drawable/curved_end_bg"
+            android:textColor="@color/FullBlack"
+            android:paddingLeft="@dimen/_10sdp"
+            android:paddingRight="@dimen/_10sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:drawablePadding="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_profile"
+            app:layout_constraintTop_toTopOf="@+id/tv_profile"
             android:visibility="gone"
-            android:tint="@color/blue_week_background"
-            app:layout_constraintStart_toEndOf="@id/add_plan"
-            app:layout_constraintEnd_toStartOf="@id/save_plan"
-            app:layout_constraintTop_toTopOf="@+id/tv_outlet_name"
-            app:layout_constraintBottom_toBottomOf="@+id/tv_outlet_address" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address"/>
 
-        <ImageView
-            android:id="@+id/save_plan"
-            style="@style/TextViewListItemCaption"
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/tv_delete"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_marginRight="@dimen/_5sdp"
-            android:padding="@dimen/_5sdp"
-            android:src="@drawable/icon_save"
+            android:gravity="center_vertical|left"
+            android:text="Delete"
+            android:drawableStart="@drawable/ic_delete_black_24dp"
+            android:drawableLeft="@drawable/ic_delete_black_24dp"
+            app:layout_constraintStart_toEndOf="@+id/tv_cancel"
+            android:background="@drawable/curved_end_bg"
+            android:textColor="@color/FullBlack"
+            android:paddingLeft="@dimen/_10sdp"
+            android:paddingRight="@dimen/_10sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:drawablePadding="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
             android:visibility="gone"
-            android:tint="@color/blue_week_background"
-            app:layout_constraintBottom_toBottomOf="@+id/profile_plan"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/edit_plan"
-            app:layout_constraintTop_toTopOf="@+id/profile_plan" />
+            app:layout_constraintBottom_toBottomOf="@+id/tv_profile"
+            app:layout_constraintTop_toTopOf="@+id/tv_profile"
+            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address"/>
+
+        <TextView
+            android:id="@+id/tv_add"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:text="Add"
+            android:drawableStart="@drawable/ic_note_add_black_24dp"
+            android:drawableLeft="@drawable/ic_note_add_black_24dp"
+            app:layout_constraintStart_toEndOf="@+id/tv_delete"
+            android:background="@drawable/curved_end_bg"
+            android:paddingLeft="@dimen/_10sdp"
+            android:paddingRight="@dimen/_10sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:drawablePadding="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:textColor="@color/FullBlack"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_profile"
+            app:layout_constraintTop_toTopOf="@+id/tv_profile"
+            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address"/>
+
+        <TextView
+            android:id="@+id/tv_edit"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:text="Edit"
+            android:drawableStart="@drawable/ic_edit_black_24dp"
+            android:drawableLeft="@drawable/ic_edit_black_24dp"
+            app:layout_constraintStart_toEndOf="@id/tv_add"
+            android:background="@drawable/curved_end_bg"
+            android:textColor="@color/FullBlack"
+            android:paddingLeft="@dimen/_10sdp"
+            android:paddingRight="@dimen/_10sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:drawablePadding="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_profile"
+            app:layout_constraintTop_toTopOf="@+id/tv_profile"
+            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address"/>
+
+        <TextView
+            android:id="@+id/tv_save"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|left"
+            android:text="Save"
+            android:drawableStart="@drawable/ic_save_black_24dp"
+            android:drawableLeft="@drawable/ic_save_black_24dp"
+            app:layout_constraintStart_toEndOf="@id/tv_edit"
+            android:background="@drawable/curved_end_bg"
+            android:textColor="@color/FullBlack"
+            android:paddingLeft="@dimen/_10sdp"
+            android:paddingRight="@dimen/_10sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:drawablePadding="@dimen/_5sdp"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_profile"
+            app:layout_constraintTop_toTopOf="@+id/tv_profile"
+            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address"/>
 
         <!--Visit Start Begins-->
         <TextView
@@ -131,7 +222,7 @@
             android:padding="@dimen/_3sdp"
             android:text="Visit Start Time"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_profile" />
 
         <TextView
             android:id="@+id/tv_visit_date"
@@ -139,26 +230,26 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/_15sdp"
-            android:layout_marginTop="@dimen/_15sdp"
             android:gravity="center_vertical|left"
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
             android:text=""
             app:layout_constraintEnd_toStartOf="@id/tv_visit_time"
-            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address" />
+            app:layout_constraintTop_toTopOf="@+id/tv_visit_time_txt"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_visit_time_txt"/>
 
         <TextView
             android:id="@+id/tv_visit_time"
             style="@style/TextViewNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_15sdp"
             android:gravity="center_vertical|left"
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
             android:text=""
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address" />
+            app:layout_constraintTop_toTopOf="@+id/tv_visit_time_txt"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_visit_time_txt"/>
         <!--Visit Start Ends-->
 
         <!--Visit End Begins-->
@@ -181,26 +272,26 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/_15sdp"
-            android:layout_marginTop="@dimen/_15sdp"
             android:gravity="center_vertical|left"
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
             android:text=""
             app:layout_constraintEnd_toStartOf="@id/tv_visit_end_time"
-            app:layout_constraintTop_toBottomOf="@+id/tv_visit_time_txt" />
+            app:layout_constraintTop_toTopOf="@+id/tv_visit_end_time_txt"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_visit_end_time_txt" />
 
         <TextView
             android:id="@+id/tv_visit_end_time"
             style="@style/TextViewNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_15sdp"
             android:gravity="center_vertical|left"
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
             android:text=""
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_visit_time_txt" />
+            app:layout_constraintTop_toTopOf="@+id/tv_visit_end_time_txt"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_visit_end_time_txt" />
         <!--Visit End Ends-->
 
         <!--Last Visit Begins-->
@@ -222,13 +313,13 @@
             style="@style/TextViewNormal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_15sdp"
             android:gravity="center_vertical|left"
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
             android:text=""
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_visit_end_time_txt" />
+            app:layout_constraintTop_toTopOf="@+id/tv_last_visit_txt"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_last_visit_txt" />
         <!--Last Visit Ends-->
 
         <android.support.constraint.Group
@@ -237,7 +328,6 @@
             android:layout_height="wrap_content"
             android:visibility="visible"
             app:constraint_referenced_ids="tv_visit_end_time_txt,tv_visit_time,tv_visit_date,tv_visit_end_time,tv_visit_time_txt,tv_visit_end_date,tv_last_visit_txt,tv_last_visit_date" />
-
 
     </android.support.constraint.ConstraintLayout>
 

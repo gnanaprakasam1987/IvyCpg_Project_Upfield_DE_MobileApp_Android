@@ -2,6 +2,8 @@ package com.ivy.ui.retailer.filter.presenter;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.sd.png.bo.AttributeBO;
+import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
 import com.ivy.ui.retailer.filter.RetailerPlanFilterContract;
@@ -9,11 +11,15 @@ import com.ivy.ui.retailer.filter.data.RetailerPlanFilterDataManager;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
+import io.reactivex.observers.DisposableObserver;
 
 import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_IS_NOT_VISITED;
 import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_LAST_VISIT_DATE;
@@ -24,6 +30,7 @@ public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContrac
 
     private ArrayList<String> configurationList ;
     private RetailerPlanFilterDataManager retailerPlanFilterDataManager;
+    private HashMap<String, AttributeBO> attributeMapValues;
 
     @Inject
     RetailerPlanFilterPresenterImpl(DataManager dataManager, SchedulerProvider schedulerProvider,
@@ -37,15 +44,33 @@ public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContrac
 
     @Override
     public void prepareConfiguration() {
-        getCompositeDisposable().add(retailerPlanFilterDataManager.prepareConfigurationMaster()
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<ArrayList<String>>() {
+        getCompositeDisposable().add(Observable.zip(
+                retailerPlanFilterDataManager.prepareConfigurationMaster(),
+                retailerPlanFilterDataManager.prepareAttributeList(),
+                new BiFunction<ArrayList<String>, HashMap<String, AttributeBO>, Boolean>() {
                     @Override
-                    public void accept(ArrayList<String> listValues) throws Exception {
+                    public Boolean apply(ArrayList<String> configListValues,
+                                         HashMap<String, AttributeBO> attributeMapValues) throws Exception {
 
-                        setConfigurationList(listValues);
+                        setConfigurationList(configListValues);
+                        setAttributeMapValues(attributeMapValues);
+
+                        return true;
+                    }
+                }).subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<Boolean>() {
+                    @Override
+                    public void onNext(Boolean aBoolean) {
                         prepareScreenData();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                    }
+
+                    @Override
+                    public void onComplete() {
                     }
                 }));
     }
@@ -61,8 +86,15 @@ public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContrac
                 && (planFilterBo.getTaskDate().getStringOne() == null
                 || planFilterBo.getTaskDate().getStringTwo() == null)){
             getIvyView().filterValidationFailure("Please Check Task Due Date Fields");
-        }else
-            getIvyView().filterValidationSuccess();
+        }else {
+
+            if (planFilterBo.getIsNotVisited() == 0
+                    && planFilterBo.getLastVisitDate() == null
+                    && planFilterBo.getTaskDate() == null){
+                getIvyView().clearFilter();
+            }else
+                getIvyView().filterValidationSuccess();
+        }
     }
 
     @Override
@@ -73,6 +105,7 @@ public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContrac
                 .subscribe(new Consumer<ArrayList<String>>() {
                     @Override
                     public void accept(ArrayList<String> retailerIds) throws Exception {
+
 
                         getIvyView().filteredRetailerIds(retailerIds);
 
@@ -89,6 +122,14 @@ public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContrac
         this.configurationList = configurationList;
     }
 
+    public HashMap<String, AttributeBO> getAttributeMapValues() {
+        return attributeMapValues;
+    }
+
+    public void setAttributeMapValues(HashMap<String, AttributeBO> attributeMapValues) {
+        this.attributeMapValues = attributeMapValues;
+    }
+
     private void prepareScreenData(){
 
         for (String configName : configurationList) {
@@ -100,5 +141,8 @@ public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContrac
                 getIvyView().showLastVisitRow();
             }
         }
+
+        getIvyView().showAttributeSpinner();
+
     }
 }
