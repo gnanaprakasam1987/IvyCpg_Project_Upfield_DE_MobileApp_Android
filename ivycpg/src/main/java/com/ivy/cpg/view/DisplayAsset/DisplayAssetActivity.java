@@ -38,6 +38,7 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
     DisplayAssetPresenterImpl presenter;
     BusinessModel businessModel;
     Button button_save;
+    int lastExpandedGroup=-1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,9 +79,19 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
         expandableListView=findViewById(R.id.listview_assets);
         expandableListView.setAdapter(new MyAdapter(displayAssetHelper.getDisplayAssetList()));
         int size=displayAssetHelper.getDisplayAssetList().size();
-        for (int i = 0; i < size; i++) {
-            (expandableListView).expandGroup(i);
+        if(size>0){
+            expandableListView.expandGroup(0);
         }
+        expandableListView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener() {
+            @Override
+            public void onGroupExpand(int groupPosition) {
+                if (lastExpandedGroup != -1
+                        && groupPosition != lastExpandedGroup) {
+                    expandableListView.collapseGroup(lastExpandedGroup);
+                }
+                lastExpandedGroup = groupPosition;
+            }
+        });
 
         button_save.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,6 +104,10 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
                 else {
                     Toast.makeText(DisplayAssetActivity.this,getResources().getString(R.string.error_in_saving),Toast.LENGTH_LONG).show();
                 }
+                startActivity(new Intent(DisplayAssetActivity.this,
+                        HomeScreenTwo.class));
+                finish();
+                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             }
         });
     }
@@ -246,6 +261,7 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
                         parent, false);
                 holder = new ViewHolder();
                 holder.textView_assetName = row.findViewById(R.id.texview_asset_name);
+
 
 
 

@@ -6,6 +6,16 @@ import java.util.ArrayList;
 
 public class AssetTrackingBO {
     private int assetID;
+
+    public String getDisplayAssetId() {
+        return displayAssetId;
+    }
+
+    public void setDisplayAssetId(String displayAssetId) {
+        this.displayAssetId = displayAssetId;
+    }
+
+    private String displayAssetId;
     private int Target;
     private int audit = 2;
     private int competitorQty;

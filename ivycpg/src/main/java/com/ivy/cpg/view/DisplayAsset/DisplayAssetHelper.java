@@ -78,7 +78,7 @@ public class DisplayAssetHelper {
                 AssetTrackingBO assetTrackingBO;
                 while (c.moveToNext()) {
                     assetTrackingBO=new AssetTrackingBO();
-                    assetTrackingBO.setAssetID(c.getInt(0));
+                    assetTrackingBO.setDisplayAssetId(c.getString(0));
                     assetTrackingBO.setAssetName(c.getString(1));
                     assetTrackingBO.setWeightage(c.getDouble(2));
                     assetTrackingBO.setCompanyList(cloneCompanyList(companyList));
@@ -125,7 +125,7 @@ public class DisplayAssetHelper {
 
                     String detailValues = StringUtils.QT(id) + ","
                             + companyBO.getCompetitorid() + ","
-                            + assetTrackingBO.getAssetID() + "," + companyBO.getQuantity() + ","
+                            + StringUtils.QT(assetTrackingBO.getDisplayAssetId()) + "," + companyBO.getQuantity() + ","
                             + assetTrackingBO.getWeightage() + ","
                             + (companyBO.getQuantity()*assetTrackingBO.getWeightage());
 
@@ -148,7 +148,8 @@ public class DisplayAssetHelper {
                         headerValues);
             }
 
-
+            mBusinessModel.outletTimeStampHelper
+                    .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
 
             db.closeDB();
 
