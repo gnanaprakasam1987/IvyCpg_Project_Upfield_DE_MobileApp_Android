@@ -575,7 +575,7 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
 
 
     /**
-     * Method used to validate lat long values.
+     * Method used to validateData lat long values.
      *
      * @param lat
      * @param lng

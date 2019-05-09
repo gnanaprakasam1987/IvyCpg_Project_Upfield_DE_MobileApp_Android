@@ -3,9 +3,9 @@ package com.ivy.ui.photocapture;
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
-import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
-import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
-import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
+import com.ivy.ui.photocapture.model.PhotoCaptureLocationBO;
+import com.ivy.ui.photocapture.model.PhotoCaptureProductBO;
+import com.ivy.ui.photocapture.model.PhotoTypeMasterBO;
 
 import java.util.ArrayList;
 import java.util.HashMap;

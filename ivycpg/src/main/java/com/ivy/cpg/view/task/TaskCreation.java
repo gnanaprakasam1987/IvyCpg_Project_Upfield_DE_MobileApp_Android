@@ -229,7 +229,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
                     if (reBo.getTretailerName().equalsIgnoreCase(getResources().getString(R.string.all_retailer))) {
                         retailerid = -2;
                     } else {
-                        retailerid = reBo.getTretailerId();
+                        retailerid = reBo.getRetailerId();
                     }
                 }
 

@@ -99,6 +99,6 @@
         android:focusable="true"
         android:visibility="gone" />
 
-    <include layout="@layout/task_bottom_sheet" />
+    <include layout="@layout/sort_by_bottom_sheet" />
 </android.support.design.widget.CoordinatorLayout>
 

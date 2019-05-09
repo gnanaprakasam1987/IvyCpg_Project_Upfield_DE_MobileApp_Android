@@ -23,6 +23,7 @@
 
     <color name="blue_week_background">#103e6f</color>
     <color name="select_week_color">#93c1f2</color>
+    <color name="heading_bg_color_blue">#EEF7FF</color>
 
     <!--List item Header background color-->
     <color name="list_title_bg_color">#212121</color>

@@ -19,7 +19,7 @@ import android.widget.TextView;
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.base.view.BaseIvyView;
-import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
+import com.ivy.ui.photocapture.model.PhotoCaptureLocationBO;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
