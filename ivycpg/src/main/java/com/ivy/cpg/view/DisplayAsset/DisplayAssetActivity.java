@@ -187,7 +187,6 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
                     }
                 });
 
-                holder.editText_quantity=row.findViewById(R.id.image_quantity);
                 holder.editText_quantity.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

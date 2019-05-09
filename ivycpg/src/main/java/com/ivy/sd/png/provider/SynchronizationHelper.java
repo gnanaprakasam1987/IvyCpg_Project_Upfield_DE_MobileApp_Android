@@ -4221,17 +4221,19 @@ SynchronizationHelper {
                 cur.close();
             }
 
-            String sql2 = "select STD.retailerid,STD.mappingId,STD.pid,STD.Adherence,STD.ReasonId,STD.LocId,STD.ComplianceStatus,STD.ComplianceStatusComplianceStatus,STD.CompliancePercentage from PlanogramDetails STD INNER JOIN PlanogramHeader STH ON STD.Tid=STH.Tid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            String sql2 = "select STD.retailerid,STD.mappingId,STD.pid,STD.Adherence,STD.ReasonId,STD.LocId,STD.ComplianceStatus,STD.CompliancePercentage from PlanogramDetails STD INNER JOIN PlanogramHeader STH ON STD.Tid=STH.Tid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor cur2 = db.selectSQL(sql2);
             if (cur2 != null) {
                 while (cur2.moveToNext()) {
-                    db.insertSQL("LastVisitPlanogram", "retailerid,mappingId,pid,Adherence,ReasonId,LocId,ComplianceStatus,",
+                    db.insertSQL("LastVisitPlanogram", "retailerid,mappingId,pid,Adherence,ReasonId,LocId,ComplianceStatus,CompliancePercentage",
                             cur2.getString(0)
                                     + "," + cur2.getString(1)
                                     + "," + cur2.getString(2)
                                     + "," + cur2.getString(3)
                                     + "," + cur2.getString(4)
-                                    + "," + cur2.getString(5));
+                                    + "," + cur2.getString(5)
+                                    + "," + StringUtils.QT(cur2.getString(6))
+                                    + "," + cur2.getString(7));
                 }
                 cur2.close();
             }

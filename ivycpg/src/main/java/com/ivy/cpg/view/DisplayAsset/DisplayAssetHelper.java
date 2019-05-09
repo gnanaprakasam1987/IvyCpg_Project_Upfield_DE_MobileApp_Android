@@ -110,6 +110,20 @@ public class DisplayAssetHelper {
         try {
 
             db.openDataBase();
+
+            String query = "select uid from DisplayAssetTrackingHeader where retailerid ="
+                    + mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID();
+
+            Cursor c = db.selectSQL(query);
+            if (c.getCount() > 0) {
+                c.moveToNext();
+                db.deleteSQL(DataMembers.tbl_DisplayAssetHeader,
+                        "uid=" + StringUtils.QT(c.getString(0)), false);
+                db.deleteSQL(DataMembers.tbl_DisplayAssetTDetails,
+                        "uid=" + StringUtils.QT(c.getString(0)), false);
+
+            }
+
             String id = mBusinessModel.getAppDataProvider().getUser().getUserid()
                     + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
@@ -164,4 +178,75 @@ public class DisplayAssetHelper {
     }
 
 
+    public void loadDisplayAssetInEditMode(Context context){
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        try {
+            db.openDataBase();
+
+            if(true||mBusinessModel.configurationMasterHelper.IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) {
+                // LastVisit
+                String lastVisitQuery = "SELECT CompetitorId,DisplayAssetId,count"
+                        + " FROM LastVisitDisplayAsset WHERE retailerId=" + mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID();
+
+                Cursor lastVisitCursor = db.selectSQL(lastVisitQuery);
+
+                if (lastVisitCursor != null) {
+                    while (lastVisitCursor.moveToNext()) {
+                        for(AssetTrackingBO assetTrackingBO:getDisplayAssetList()) {
+                            for (CompanyBO companyBO : assetTrackingBO.getCompanyList()) {
+                                if(lastVisitCursor.getString(1).equals(assetTrackingBO.getDisplayAssetId())&&lastVisitCursor.getInt(0)==companyBO.getCompetitorid()){
+                                    companyBO.setQuantity(lastVisitCursor.getInt(2));
+                                }
+
+                            }
+                        }
+
+                    }
+                    lastVisitCursor.close();
+                }
+            }
+
+            String tid = "";
+            String sql = "SELECT uid FROM DisplayAssetTrackingHeader WHERE RetailerId = "
+                    +  mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID() + " AND Date = "
+                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + " and (upload='N')";
+
+            Cursor orderHeaderCursor = db.selectSQL(sql);
+            if (orderHeaderCursor != null) {
+                if (orderHeaderCursor.moveToNext())
+                    tid = orderHeaderCursor.getString(0);
+            }
+
+            orderHeaderCursor.close();
+
+            if(!tid.trim().isEmpty()){
+
+                String sql1 = "SELECT CompetitorId, DisplayAssetId, count"
+                        + " FROM DisplayAssetTrackingDetails WHERE uid=" + StringUtils.QT(tid);
+
+                Cursor orderDetailCursor = db.selectSQL(sql1);
+
+                if (orderDetailCursor != null) {
+                    while (orderDetailCursor.moveToNext()) {
+                        for(AssetTrackingBO assetTrackingBO:getDisplayAssetList()) {
+                            for (CompanyBO companyBO : assetTrackingBO.getCompanyList()) {
+                                if(orderDetailCursor.getString(1).equals(assetTrackingBO.getDisplayAssetId())&&orderDetailCursor.getInt(0)==companyBO.getCompetitorid()){
+                                    companyBO.setQuantity(orderDetailCursor.getInt(2));
+                                }
+
+                            }
+                        }
+                    }
+                    orderDetailCursor.close();
+                }
+
+            }
+
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+    }
 }

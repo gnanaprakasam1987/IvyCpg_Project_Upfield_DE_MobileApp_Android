@@ -3823,6 +3823,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
+                    assetHelper.loadDisplayAssetInEditMode(this);
                     Intent i = new Intent(this,
                             DisplayAssetActivity.class);
                     i.putExtra("menuName",menu.getMenuName());
