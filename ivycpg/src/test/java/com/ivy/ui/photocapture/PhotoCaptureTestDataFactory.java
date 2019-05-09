@@ -1,8 +1,8 @@
 package com.ivy.ui.photocapture;
 
-import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
-import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
-import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
+import com.ivy.ui.photocapture.model.PhotoCaptureLocationBO;
+import com.ivy.ui.photocapture.model.PhotoCaptureProductBO;
+import com.ivy.ui.photocapture.model.PhotoTypeMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 
 import java.util.ArrayList;

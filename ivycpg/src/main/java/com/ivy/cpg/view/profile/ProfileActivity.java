@@ -898,7 +898,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     }
 
     /**
-     * Method used to validate lat long values.
+     * Method used to validateData lat long values.
      * <p>
      * param lat
      * param lng

@@ -55,7 +55,6 @@
         android:largeHeap="true"
         android:supportsRtl="true"
         android:theme="@style/MVPTheme.Blue">
-        <activity android:name="com.ivy.ui.task.view.TaskDetailActivity"></activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -853,7 +852,18 @@
             android:screenOrientation="portrait"/>
         <activity android:name="com.ivy.cpg.view.reports.syncreport.SyncReportActivity"
             android:screenOrientation="portrait"/>
-
+        <activity
+            android:name="com.ivy.ui.notes.view.NotesCreationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.ui.notes.view.NotesActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.ui.notes.view.NoteDetailActivity"
+            android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="com.ivy.ui.task.view.TaskDetailActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"

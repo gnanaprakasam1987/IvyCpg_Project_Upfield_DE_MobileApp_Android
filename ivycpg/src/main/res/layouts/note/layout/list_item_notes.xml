@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:id="@+id/row_item_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/list_item_icon_more"
+        android:layout_toLeftOf="@+id/list_item_icon_more">
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/list_item_note_created_by_tv"
+            style="@style/TextViewListItemSecondaryHighlight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:gravity="start|center"
+            android:text="@string/created_by"
+            android:textAlignment="textStart" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/list_item_retailer_name_tv"
+            style="@style/TextViewListItemSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_toEndOf="@+id/list_item_note_created_by_tv"
+            android:layout_toRightOf="@+id/list_item_note_created_by_tv"
+            android:gravity="start|center"
+            android:text="@string/retailer_name"
+            android:textAlignment="textStart"
+            android:textColor="@color/gray_text" />
+
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/list_item_note_title_tv"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/list_item_note_created_by_tv"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_5sdp"
+            android:gravity="start|center"
+            android:text="@string/title"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:textAlignment="textStart" />
+
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/list_item_note_desc_tv"
+            style="@style/TextViewListItemSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/list_item_note_title_tv"
+            android:layout_marginStart="@dimen/_10sdp"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:ellipsize="end"
+            android:gravity="start|center"
+            android:maxLines="2"
+            android:text="@string/description"
+            android:textAlignment="textStart"
+            />
+
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/list_item_note_date_tv"
+            style="@style/TextViewListItemSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/list_item_note_desc_tv"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_margin="@dimen/_10sdp"
+            android:gravity="start|center"
+            android:text="@string/date_label"
+            android:textAlignment="textStart" />
+    </RelativeLayout>
+
+    <android.support.v7.widget.AppCompatImageView
+        android:id="@+id/list_item_icon_more"
+        android:layout_width="@dimen/info_icon"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/_10sdp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/ic_more_vert_black_24dp" />
+</RelativeLayout>

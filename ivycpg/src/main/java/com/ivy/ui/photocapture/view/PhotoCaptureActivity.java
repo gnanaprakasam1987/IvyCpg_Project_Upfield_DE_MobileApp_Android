@@ -28,9 +28,9 @@ import android.widget.Toast;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
-import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
-import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
-import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
+import com.ivy.ui.photocapture.model.PhotoCaptureLocationBO;
+import com.ivy.ui.photocapture.model.PhotoCaptureProductBO;
+import com.ivy.ui.photocapture.model.PhotoTypeMasterBO;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;

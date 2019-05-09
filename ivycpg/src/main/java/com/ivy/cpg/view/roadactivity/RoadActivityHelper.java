@@ -3,7 +3,7 @@ package com.ivy.cpg.view.roadactivity;
 import android.content.Context;
 import android.database.Cursor;
 
-import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
+import com.ivy.ui.photocapture.model.PhotoCaptureProductBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
