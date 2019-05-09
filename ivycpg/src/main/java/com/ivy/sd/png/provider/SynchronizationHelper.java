@@ -1086,7 +1086,8 @@ SynchronizationHelper {
                     "union select count(uid) from DenominationHeader where upload='N'" +
                     "union select count(uid) from DenominationDetails where upload='N'" +
                     "union select count(Tid) from RetailerLocationDeviation where upload='N'" +
-                    "union select count(TransactionId) from SyncLogDetails where upload='N'";
+                    "union select count(TransactionId) from SyncLogDetails where upload='N'"+
+                    "union select count(RetailerId) from RetailerNotes where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
                 while (c.moveToNext()) {

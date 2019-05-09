@@ -175,6 +175,7 @@ android {
                     'src/main/res/layouts/dashboard',
                     'src/main/res/layouts/photocapture',
                     'src/main/res/layouts/activation',
+                    'src/main/res/layouts/note',
                     'src/main/res/layouts',
                     'src/main/res'
             ]

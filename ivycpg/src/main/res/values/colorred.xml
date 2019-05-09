@@ -12,6 +12,7 @@
 
     <color name="red_week_background">#844D50</color>
     <color name="select_week_color_red">#FFCCCD</color>
+    <color name="heading_bg_color_red">#FFCCCD</color>
 
     <!--List item Header background color-->
     <color name="list_title_bg_color_red">#212121</color>

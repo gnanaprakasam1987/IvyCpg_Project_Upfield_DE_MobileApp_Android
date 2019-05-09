@@ -1,6 +1,7 @@
 package com.ivy.core.base.view;
 
 import android.support.annotation.StringRes;
+import android.widget.Toolbar;
 
 import com.ivy.sd.png.util.CommonDialog;
 

@@ -19,6 +19,7 @@
 
     <color name="nblue_week_background">#103e6f</color>
     <color name="select_week_color_nblue">#93c1f2</color>
+    <color name="heading_bg_color_nblue">#93c1f2</color>
 
     <!--List item Header background color-->
     <color name="list_title_bg_color_nblue">#283593</color>

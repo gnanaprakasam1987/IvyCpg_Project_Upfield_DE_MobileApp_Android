@@ -53,7 +53,7 @@ public class NativeCameraActivity extends Activity {
                 cameraIntent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT,
                         FileProvider.getUriForFile(NativeCameraActivity.this, BuildConfig.APPLICATION_ID + ".provider", new File(path)));
 
-                // validate that the device can open your File!
+                // validateData that the device can open your File!
                 PackageManager pm = this.getPackageManager();
                 if (cameraIntent.resolveActivity(pm) != null) {
                     startActivityForResult(cameraIntent, CAMERA_REQUEST);

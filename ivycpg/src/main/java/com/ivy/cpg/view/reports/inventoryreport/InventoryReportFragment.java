@@ -83,7 +83,7 @@ public class InventoryReportFragment extends IvyBaseFragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if(inventoryTypeAdapter.getCount()>0) {
-                    lstData = inventoryReportHelper.downloadInventoryReport(spinnerAdapter.getItem(i).getTretailerId(),
+                    lstData = inventoryReportHelper.downloadInventoryReport(spinnerAdapter.getItem(i).getRetailerId(),
                             inventoryTypeAdapter.getItem(spnType.getSelectedItemPosition()).getConfigCode());
                 refreshLsit();
                 }
@@ -114,7 +114,7 @@ public class InventoryReportFragment extends IvyBaseFragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                 if(spnRetailers.getCount()>0) {
-                    lstData = inventoryReportHelper.downloadInventoryReport(spinnerAdapter.getItem(spnRetailers.getSelectedItemPosition()).getTretailerId(),
+                    lstData = inventoryReportHelper.downloadInventoryReport(spinnerAdapter.getItem(spnRetailers.getSelectedItemPosition()).getRetailerId(),
                             inventoryTypeAdapter.getItem(i).getConfigCode());
                 refreshLsit();  }
 
