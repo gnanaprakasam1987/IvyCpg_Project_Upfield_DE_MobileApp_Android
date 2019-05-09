@@ -444,7 +444,7 @@ public class PlanoGramHelper {
 
             if(!tid.trim().isEmpty()){
 
-                String sql1 = "SELECT PId, PLID, ImageName, Adherence, ReasonID, LocID, IFNULL(isAuditDone,'2')"
+                String sql1 = "SELECT PId, PLID, ImageName, Adherence, ReasonID, LocID, IFNULL(isAuditDone,'2'),ComplianceStatus,CompliancePercentage"
                         + " FROM PlanogramDetails WHERE tid=" + QT(tid);
 
                 Cursor orderDetailCursor = db.selectSQL(sql1);
@@ -458,7 +458,7 @@ public class PlanoGramHelper {
                         int locationID = orderDetailCursor.getInt(5);
                         int aduit = orderDetailCursor.getInt(6);
                         setPlanoGramDetails(pid, imageName, adherence, reasonID,
-                                locationID, aduit,tid,mContext);
+                                locationID, aduit,tid,mContext,orderDetailCursor.getString(7),orderDetailCursor.getString(8));
                     }
                     orderDetailCursor.close();
                 }
@@ -485,7 +485,7 @@ public class PlanoGramHelper {
      * @param isAudit      audit
      */
     private void setPlanoGramDetails(int planogramProductId, String imageName,
-                                     String adherence, String reasonID, int locationID, int isAudit,String tId,Context context) {
+                                     String adherence, String reasonID, int locationID, int isAudit,String tId,Context context,String ComplianceStatus,String CompliancePercentageId) {
         PlanoGramBO planogram;
         int siz = getPlanogramMaster().size();
         if (siz == 0)
@@ -500,6 +500,11 @@ public class PlanoGramHelper {
                 planogram.setReasonID(reasonID);
                 planogram.setAudit(isAudit);
                 planogram.setPlanoGramCameraImgList(getPlanogramImage(planogramProductId,tId,context, locationID));
+
+                if(ComplianceStatus.equals("PARTIAL"))
+                    planogram.setAdherence("-1");
+                planogram.setPercentageId(CompliancePercentageId);
+
                 getPlanogramMaster().setElementAt(planogram, i);
                 return;
             }
@@ -625,11 +630,11 @@ public class PlanoGramHelper {
                             + planogram.getLocationID() + ","
                             + planogram.getAudit() + ",0";
 
-                    if(planogram.getAdherence().equals(1))
-                        values+=values+",'YES',0";
-                    else if(planogram.getAdherence().equals(-1))
-                        values+=values+",'PARTIAL',"+planogram.getPercentageId();
-                    else values+=values+",'NO',0";
+                    if(planogram.getAdherence().equals("1"))
+                        values+=",'YES',0";
+                    else if(planogram.getAdherence().equals("-1"))
+                        values+=",'PARTIAL',"+planogram.getPercentageId();
+                    else values+=",'NO',0";
 
 
                     db.insertSQL("PlanogramDetails", detailColumns, values);

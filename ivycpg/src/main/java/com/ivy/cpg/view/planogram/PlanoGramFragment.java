@@ -1368,6 +1368,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                     rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_no_red));
                     layout_reason.setVisibility(View.VISIBLE);
+                    spinner_percentage.setVisibility(View.GONE);
                     planoObj.setAdherence("0");
                     adherence_reason.setSelection(getStatusIndex(planoObj
                             .getReasonID()));
@@ -1389,7 +1390,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     adherence_reason.setSelection(getStatusIndex(planoObj
                             .getReasonID()));
                     adherence_reason.setSelected(true);
-                    spinner_percentage.setSelection(getStatusIndex(planoObj
+                    spinner_percentage.setSelection(getPercentageIndex(planoObj
                             .getPercentageId()));
                     spinner_percentage.setSelected(true);
                 }

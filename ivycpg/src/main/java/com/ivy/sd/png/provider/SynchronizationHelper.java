@@ -812,7 +812,7 @@ SynchronizationHelper {
 
 
         // updating last visit data from transaction table before delete
-        if (true||bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN) {
+        if (bmodel.configurationMasterHelper.IS_PRICE_CHECK_RETAIN_LAST_VISIT_TRAN) {
             updateLastVisitPrice();
             exceptionTableList.add("LastVisitPrice");
         }
