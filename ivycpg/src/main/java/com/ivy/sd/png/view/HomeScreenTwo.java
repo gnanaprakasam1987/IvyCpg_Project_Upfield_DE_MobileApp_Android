@@ -42,6 +42,8 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.DisplayAsset.DisplayAssetActivity;
 import com.ivy.cpg.view.DisplayAsset.DisplayAssetHelper;
+import com.ivy.cpg.view.DisplayAsset.DisplayAssetActivity;
+import com.ivy.cpg.view.DisplayAsset.DisplayAssetHelper;
 import com.ivy.cpg.view.Planorama.PlanoramaActivity;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
@@ -111,7 +113,6 @@ import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
-import com.ivy.cpg.view.task.Task;
 import com.ivy.cpg.view.task.TaskHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
@@ -130,7 +131,8 @@ import com.ivy.sd.png.provider.DownloadProductsAndPrice;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
-import com.ivy.cpg.view.profile.ProfileActivity;
+import com.ivy.ui.notes.NoteConstant;
+import com.ivy.ui.notes.view.NotesActivity;
 import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.view.TaskActivity;
@@ -205,6 +207,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_SERIALIZED_ASSET = "MENU_SERIALIZED_ASSET";
     public static final String MENU_PLANORMA = "MENU_PLANORAMA";
     public static final String MENU_DISPLAY_ASSET = "MENU_DISPLAY_ASSET";
+    public static final String MENU_RTR_NOTES = "MENU_NOTES";
 
     private final int INVOICE_CREDIT_BALANCE = 1;// Order Not Allowed when credit balance is 0
     private final int SALES_TYPES = 2;// show preVan seller dialog
@@ -3800,66 +3803,71 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 startActivity(i);
                 finish();
             }
-            else {
+        } else if (menu.getConfigCode().equals(MENU_RTR_NOTES) && hasLink == 1) {
+            if (!isClick) {
+                isClick = true;
+                if (isPreviousDone(menu)
+                        || bmodel.configurationMasterHelper.IS_JUMP) {
+                    Intent i = new Intent(this,
+                            NotesActivity.class);
+                    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    i.putExtra(NoteConstant.MENU_CODE, menu.getConfigCode());
+                    i.putExtra(NoteConstant.SCREEN_TITLE, menu.getMenuName());
+                    startActivity(i);
+                    finish();
+                }
+            } else {
                 Toast.makeText(
                         this,
                         getResources().getString(
                                 R.string.please_complete_previous_activity),
                         Toast.LENGTH_SHORT).show();
                 isCreated = false;
+                isClick = false;
 
             }
         }
-        else if(menu.getConfigCode().equals(MENU_DISPLAY_ASSET) && hasLink == 1){
-            if (isPreviousDone(menu)
-                    || bmodel.configurationMasterHelper.IS_JUMP) {
+         else if(menu.getConfigCode().equals(MENU_DISPLAY_ASSET) && hasLink == 1){
+                if (isPreviousDone(menu)
+                        || bmodel.configurationMasterHelper.IS_JUMP) {
 
-                DisplayAssetHelper assetHelper=DisplayAssetHelper.getInstance(this);
-                assetHelper.downloadDisplayAssets(this);
+                    DisplayAssetHelper assetHelper=DisplayAssetHelper.getInstance(this);
+                    assetHelper.downloadDisplayAssets(this);
 
-                if(assetHelper.getDisplayAssetList().size()>0) {
+                    if(assetHelper.getDisplayAssetList().size()>0) {
 
-                    bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
-                            DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                            DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
+                        bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
 
-                    assetHelper.loadDisplayAssetInEditMode(this);
-                    Intent i = new Intent(this,
-                            DisplayAssetActivity.class);
-                    i.putExtra("menuName",menu.getMenuName());
-                    i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                    startActivity(i);
-                    finish();
+                        assetHelper.loadDisplayAssetInEditMode(this);
+                        Intent i = new Intent(this,
+                                DisplayAssetActivity.class);
+                        i.putExtra("menuName",menu.getMenuName());
+                        i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        startActivity(i);
+                        finish();
 
+                    }
+                    else {
+                        Toast.makeText(
+                                this,
+                                getResources().getString(
+                                        R.string.data_not_mapped),
+                                Toast.LENGTH_SHORT).show();
+                        isCreated = false;
+                    }
                 }
                 else {
                     Toast.makeText(
                             this,
                             getResources().getString(
-                                    R.string.data_not_mapped),
+                                    R.string.please_complete_previous_activity),
                             Toast.LENGTH_SHORT).show();
                     isCreated = false;
+
                 }
             }
-            else {
-                Toast.makeText(
-                        this,
-                        getResources().getString(
-                                R.string.please_complete_previous_activity),
-                        Toast.LENGTH_SHORT).show();
-                isCreated = false;
-
-            }
-        }
-        else {
-            Toast.makeText(
-                    this,
-                    getResources().getString(
-                            R.string.please_complete_previous_activity),
-                    Toast.LENGTH_SHORT).show();
-            isCreated = false;
-
-        }
 
     }
 

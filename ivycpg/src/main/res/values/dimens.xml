@@ -737,8 +737,8 @@
     <dimen name="actionbar_subtitle_text_size">18sp</dimen>
     <dimen name="trade_coverage_text_size">13sp</dimen>
     <dimen name="banner_text_size">13sp</dimen>
-    <dimen name="text_size_primary">16sp</dimen>
-    <dimen name="text_size_secondary">14sp</dimen>
+    <dimen name="text_size_primary">17sp</dimen>
+    <dimen name="text_size_secondary">15sp</dimen>
     <dimen name="text_size_caption">14sp</dimen>
     <dimen name="date_picker_text_size">13sp</dimen>
 

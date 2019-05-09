@@ -1,7 +1,6 @@
 package com.ivy.cpg.view.reports.asset;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -78,7 +77,7 @@ public class AssetTrackingReportFragment extends IvyBaseFragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                 System.out.println("Executing SpnBeat");
                 retailerID = ((RetailerMasterBO) parent
-                        .getItemAtPosition(position)).getTretailerId();
+                        .getItemAtPosition(position)).getRetailerId();
                 loadData(brandID, retailerID);
             }
 

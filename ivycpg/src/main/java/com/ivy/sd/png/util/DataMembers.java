@@ -713,6 +713,9 @@ public class DataMembers {
     public static final String tbl_picklist_invoice = "PickListInvoiceStatus";
     public static final String tbl_picklist_invoice_cols = "PickListId,InvoiceId,Status";
 
+    public static final String tbl_retailer_notes = "RetailerNotes";
+    public static final String tbl_retailer_notes_cols = "Tid,RetailerId,Date,Time,Title,Description,userId,NoteId,ModifiedDateTime,Status";
+
     private static final String tbl_AnswerScoreDetails = "AnswerScoreDetail";
     private static final String tbl_AnswerScoreDetails_cols = "Uid,SurveyId,qid,score";
 
@@ -926,6 +929,8 @@ public class DataMembers {
         uploadColumn.put(tbl_SyncLogDetails, tbl_SyncLogDetails_cols);
         uploadColumn.put(tbl_DisplayAssetHeader, tbl_DisplayAsseteader_cols);
         uploadColumn.put(tbl_DisplayAssetTDetails, tbl_DisplayAssetDetail_cols);
+
+        uploadColumn.put(tbl_retailer_notes, tbl_retailer_notes_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithRetailer = new HashMap<>();
@@ -1149,6 +1154,7 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
         uploadColumnWithOutRetailer.put(tbl_DenominationHeader, tbl_DenominationHeader_cols);
         uploadColumnWithOutRetailer.put(tbl_TripMaster, tbl_TripMaster_cols);
+        uploadColumnWithOutRetailer.put(tbl_retailer_notes, tbl_retailer_notes_cols);
     }
 
     public static final HashMap<String, String> uploadLocationTrackingColumn = new HashMap<>();

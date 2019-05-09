@@ -3,7 +3,6 @@ package com.ivy.cpg.view.reports.promotion;
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,7 +58,7 @@ public class PromotionTrackingReport extends IvyBaseFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                 retailerID = ((RetailerMasterBO) parent
-                        .getItemAtPosition(position)).getTretailerId();
+                        .getItemAtPosition(position)).getRetailerId();
                 loadData(retailerID);
             }
 

@@ -57,12 +57,12 @@ public class TaskDataManagerImpl implements TaskDataManager {
                 String userCreated = "";
 
                 if (userCreatedTask != 0)
-                    userCreated = " and A.usercreated =" + (userCreatedTask == 2 ? 1 : 0);
+                    userCreated = " and B.usercreated =" + (userCreatedTask == 2 ? 1 : 0);
 
                 ArrayList<TaskDataBO> taskDataBOS = new ArrayList<>();
                 String query = "select distinct A.taskid,B.taskcode,B.taskDesc,A.retailerId,A.upload,"
                         + "(CASE WHEN ifnull(TD.TaskId,0) >0 THEN 1 ELSE 0 END) as isDone,"
-                        + "A.usercreated , B.taskowner , B.date, A.upload,A.channelid,A.userid,"
+                        + "B.usercreated , B.taskowner , B.date, A.upload,A.channelid,A.userid,"
                         + "IFNULL(B.DueDate,''),B.CategoryId,IFNULL(PL.PName,''),B.IsServerTask,SUBSTR(TD.ImageName,18) as eveImage"
                         + " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid"
                         + " left join TaskExecutionDetails TD on TD.TaskId=A.taskid and TD.RetailerId = " + retailerId

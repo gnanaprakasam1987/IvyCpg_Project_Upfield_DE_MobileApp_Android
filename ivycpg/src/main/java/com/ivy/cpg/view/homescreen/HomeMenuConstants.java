@@ -58,6 +58,7 @@ public class HomeMenuConstants {
     public static final String MENU_OFLNE_PLAN = "MENU_OFLNE_PLAN"; //Offline Planning
     public static final String MENU_SUBD = "MENU_SUBD";
     public static final String MENU_Q_CALL = "MENU_QUICK_CALL";
+    public static final String MENU_NOTES_SW = "MENU_NOTES_SW";
 
 
 
@@ -102,6 +103,7 @@ public class HomeMenuConstants {
         put(MENU_SUPERVISOR_CALLANALYSIS, R.drawable.ic_new_retailer_icon);
         put(MENU_ROUTE_KPI, R.drawable.ic_vector_dashboard);
         put(MENU_DENOMINATION, R.drawable.ic_vector_dashboard);
+        put(MENU_NOTES_SW,R.drawable.task_add);
 
     }};
 

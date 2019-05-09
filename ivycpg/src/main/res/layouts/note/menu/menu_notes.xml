@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_new_note"
+        android:icon="@drawable/task_add"
+        android:orderInCategory="100"
+        android:title="@string/task_creation"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_sort"
+        android:icon="@drawable/ic_filter_icon"
+        android:orderInCategory="99"
+        android:title="@string/sort_by"
+        ivydist:showAsAction="always"
+        />
+
+</menu>
