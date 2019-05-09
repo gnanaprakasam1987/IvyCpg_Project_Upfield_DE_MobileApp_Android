@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.acknowledgement.AcknowledgementDetailActivity;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
@@ -311,7 +312,7 @@ public class PlanoGramHelper {
                         + " BETWEEN P.startdate AND P.enddate";
             }
 
-            query = query + " GROUP BY MP.RetailerId,MP.AccId,MP.ChId,MP.LocId,MP.ClassId,PM.Pid,PlanogramID ORDER BY MP.RetailerId,MP.AccId,MP.ChId,MP.LocId,MP.ClassId";
+            query = query + " GROUP BY MP.RetailerId,MP.AccId,MP.ChId,MP.LocId,MP.ClassId,PlanogramID ORDER BY MP.RetailerId,MP.AccId,MP.ChId,MP.LocId,MP.ClassId";
 
             Cursor c = db.selectSQL(query);
 
@@ -355,7 +356,7 @@ public class PlanoGramHelper {
 
             if(mBModel.configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
                 // LastVisit
-                String lastVisitQuery = "SELECT PId, Adherence, ReasonID, LocID"
+                String lastVisitQuery = "SELECT PId, Adherence, ReasonID, LocID,ComplianceStatus,CompliancePercentage"
                         + " FROM LastVisitPlanogram WHERE retailerId=" + mBModel.getAppDataProvider().getRetailMaster().getRetailerID();
 
                 Cursor lastVisitCursor = db.selectSQL(lastVisitQuery);
@@ -367,6 +368,10 @@ public class PlanoGramHelper {
                         String reasonID = lastVisitCursor.getString(2);
                         int locationID = lastVisitCursor.getInt(3);
 
+                        if(lastVisitCursor.getString(4).equals("PARTIAL"))
+                            adherence="-1";
+                        String percentageId = lastVisitCursor.getString(5);
+
                         PlanoGramBO planogram;
                         int siz = getPlanogramMaster().size();
 
@@ -377,6 +382,7 @@ public class PlanoGramHelper {
                                 // planogram.setPlanogramCameraImgName(imageName);
                                 planogram.setAdherence(adherence);
                                 planogram.setReasonID(reasonID);
+                                planogram.setPercentageId(percentageId);
                                 //planogram.setPlanoGramCameraImgList(getPlanogramImage(planogramProductId,tId,context, locationID));
                                 break;
                             }
@@ -564,7 +570,7 @@ public class PlanoGramHelper {
             Cursor headerCursor;
 
             String headerColumns = "TiD, RetailerId, Date, timezone, uid, RefId,Type,CounterId,DistributorID,ridSF,VisitId";
-            String detailColumns = "TiD, MappingId, Pid, ImageName,ImagePath, Adherence, RetailerId, ReasonID, LocID,isAuditDone,CounterId";
+            String detailColumns = "TiD, MappingId, Pid, ImageName,ImagePath, Adherence, RetailerId, ReasonID, LocID,isAuditDone,CounterId,ComplianceStatus,CompliancePercentage";
 
             String values;
             boolean isData;
@@ -618,6 +624,13 @@ public class PlanoGramHelper {
                             + "," + planogram.getReasonID() + ","
                             + planogram.getLocationID() + ","
                             + planogram.getAudit() + ",0";
+
+                    if(planogram.getAdherence().equals(1))
+                        values+=values+",'YES',0";
+                    else if(planogram.getAdherence().equals(-1))
+                        values+=values+",'PARTIAL',"+planogram.getPercentageId();
+                    else values+=values+",'NO',0";
+
 
                     db.insertSQL("PlanogramDetails", detailColumns, values);
 

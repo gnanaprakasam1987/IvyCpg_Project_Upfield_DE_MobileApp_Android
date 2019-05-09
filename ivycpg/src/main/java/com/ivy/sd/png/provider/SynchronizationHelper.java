@@ -4221,12 +4221,11 @@ SynchronizationHelper {
                 cur.close();
             }
 
-            // re insert  transaction data from SOS_Tracking_Detail records into LastVisitSOS
-            String sql2 = "select STD.retailerid,STD.mappingId,STD.pid,STD.Adherence,STD.ReasonId,STD.LocId from PlanogramDetails STD INNER JOIN PlanogramHeader STH ON STD.Tid=STH.Tid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            String sql2 = "select STD.retailerid,STD.mappingId,STD.pid,STD.Adherence,STD.ReasonId,STD.LocId,STD.ComplianceStatus,STD.ComplianceStatusComplianceStatus,STD.CompliancePercentage from PlanogramDetails STD INNER JOIN PlanogramHeader STH ON STD.Tid=STH.Tid where STH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor cur2 = db.selectSQL(sql2);
             if (cur2 != null) {
                 while (cur2.moveToNext()) {
-                    db.insertSQL("LastVisitPlanogram", "retailerid,mappingId,pid,Adherence,ReasonId,LocId",
+                    db.insertSQL("LastVisitPlanogram", "retailerid,mappingId,pid,Adherence,ReasonId,LocId,ComplianceStatus,",
                             cur2.getString(0)
                                     + "," + cur2.getString(1)
                                     + "," + cur2.getString(2)
@@ -4237,7 +4236,6 @@ SynchronizationHelper {
                 cur2.close();
             }
 
-            // re insert  transaction data from SOS_Tracking_Detail records into LastVisitSOS
             String sql3 = "select STD.pid,STD.imageName,STD.mappingId,STD.ImagePath,STD.ImageId,STH.LocId,STH.RetailerId from PlanogramImageDetails STD LEFT JOIN PlanogramDetails STH ON STD.Tid=STH.Tid LEFT JOIN PlanogramHeader PH ON STD.tid=PH.tid where PH.date=" + bmodel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " group by STD.tid,STD.pid,STD.imageId";
             Cursor cur3 = db.selectSQL(sql3);

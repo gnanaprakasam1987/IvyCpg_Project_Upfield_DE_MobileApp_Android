@@ -484,8 +484,8 @@ public class DigitalContentHelper {
 
 
         Intent intent = new Intent(android.content.Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        final PackageManager pm = context.getPackageManager();
+        intent.setType("vnd.android.cursor.dir/email");
+        /*final PackageManager pm = context.getPackageManager();
         final List<ResolveInfo> matches = pm.queryIntentActivities(intent, 0);
         ResolveInfo best = null;
         for (final ResolveInfo info : matches)
@@ -493,11 +493,12 @@ public class DigitalContentHelper {
                     info.activityInfo.name.toLowerCase().contains("gmail")) best = info;
         if (best != null)
             intent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
-
+*/
         intent.putExtra(Intent.EXTRA_EMAIL, new String[]{toEmailId});
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_STREAM, path);
-        context.startActivity(intent);
+        //context.startActivity(intent);
+            context.startActivity(Intent.createChooser(intent , "Send email..."));
         } else {
             Toast.makeText(context,
                     context.getResources().getString(R.string.file_not_found),

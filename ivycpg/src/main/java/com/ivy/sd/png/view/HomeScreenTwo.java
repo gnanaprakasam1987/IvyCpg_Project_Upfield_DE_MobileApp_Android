@@ -1499,6 +1499,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             menuDB.get(i).setDone(true);
                     }
                 }
+                else if (menuDB.get(i).getConfigCode().equals(MENU_DISPLAY_ASSET)) {
+                    if (menuDB.get(i).getHasLink() == 1) {
+                        if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
+                            menuDB.get(i).setDone(true);
+                    } else {
+                        if (getPreviousMenuBO(menuDB.get(i)).isDone())
+                            menuDB.get(i).setDone(true);
+                    }
+                }
 
             }
         } catch (Exception e) {

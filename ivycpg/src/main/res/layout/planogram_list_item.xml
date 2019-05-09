@@ -242,20 +242,57 @@
                     android:textSize="@dimen/text_size_primary"
                     android:layout_marginLeft="@dimen/plano_rb_gap"
                     android:layout_toRightOf="@id/yes" />
-
-                <Spinner
-                    android:id="@+id/sp_reason"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/spinner_height"
+                <RadioButton
+                    android:id="@+id/partial"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/plano_rb_gap"
                     android:layout_toEndOf="@id/no"
-                    android:background="@android:color/transparent"
-                    android:gravity="start|center"
-                    android:overlapAnchor="false"
+                    android:button="@drawable/ic_cross_disable"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:paddingStart="@dimen/plano_rb_padding"
+                    android:paddingEnd="@dimen/plano_rb_padding"
+                    android:text="@string/in_partial"
+                    android:textColor="@color/plano_yes_grey"
+                    android:textSize="@dimen/text_size_primary"
+                    android:layout_marginLeft="@dimen/plano_rb_gap"
                     android:layout_toRightOf="@id/no" />
+
+
                 <!--app:paddingEnd="@dimen/plano_save_padding"-->
                 <!--app:paddingStart="@dimen/plano_save_padding"-->
             </RelativeLayout>
 
+            <LinearLayout
+                android:id="@+id/layout_reason"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/plano_img_margin_left"
+                android:layout_marginEnd="@dimen/plano_img_margin_right"
+                android:layout_marginLeft="@dimen/plano_img_margin_left"
+                android:layout_marginRight="@dimen/plano_img_margin_right"
+                android:orientation="horizontal">
+                <Spinner
+                    android:id="@+id/sp_reason"
+                    android:layout_width="@dimen/spinner_width"
+                    android:layout_height="@dimen/spinner_height"
+                    android:background="@android:color/transparent"
+                    android:gravity="start|center"
+                    android:overlapAnchor="false"
+
+                     />
+                <Spinner
+                    android:id="@+id/sp_percentage"
+                    android:layout_width="@dimen/spinner_width"
+                    android:layout_height="@dimen/spinner_height"
+                    android:background="@android:color/transparent"
+                    android:gravity="start|center"
+                    android:overlapAnchor="false"
+
+                    />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

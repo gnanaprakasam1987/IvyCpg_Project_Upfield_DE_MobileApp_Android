@@ -306,6 +306,7 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
         textview_company_count.setText(String.valueOf(ownCompanyWeightage));
         textview_other_count.setText(String.valueOf(otherCompanyMaxWeightage));
 
+        layout_status.setVisibility(View.VISIBLE);
         if(flag==1){
             layout_status.setBackground(getResources().getDrawable(R.color.green_productivity));
             textView_status.setText(getResources().getString(R.string.advantage));

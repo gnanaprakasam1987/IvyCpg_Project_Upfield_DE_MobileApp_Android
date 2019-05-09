@@ -148,6 +148,7 @@ public class DisplayAssetHelper {
                         headerValues);
             }
 
+            mBusinessModel.saveModuleCompletion("MENU_DISPLAY_ASSET", true);
             mBusinessModel.outletTimeStampHelper
                     .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
 

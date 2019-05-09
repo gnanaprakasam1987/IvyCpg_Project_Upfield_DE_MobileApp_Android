@@ -96,6 +96,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     private Vector<PlanoGramBO> mPlanoGramList;
     private ArrayAdapter<StandardListBO> locationAdapter;
     private ArrayAdapter<ReasonMaster> reasonAdapter;
+    private ArrayAdapter<ReasonMaster> percentageAdapter;
     private HashMap<Integer, Integer> mSelectedIdByLevelId;
 
     private PlanoGramHelper mPlanoGramHelper;
@@ -248,10 +249,24 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 R.layout.spinner_bluetext_layout);
         reasonAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+        percentageAdapter = new ArrayAdapter<>(getActivity(),
+                R.layout.spinner_bluetext_layout);
+        percentageAdapter
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+
         for (ReasonMaster temp : mBModel.reasonHelper.getReasonList()) {
             if ("POG".equalsIgnoreCase(temp.getReasonCategory())
                     || "NONE".equalsIgnoreCase(temp.getReasonCategory())) {
                 reasonAdapter.add(temp);
+
+            }
+        }
+
+        for (ReasonMaster temp : mBModel.reasonHelper.getReasonList()) {
+            if ("PLANO_COMP_PERCENT".equalsIgnoreCase(temp.getReasonCategory())
+                    || "POG".equalsIgnoreCase(temp.getReasonCategory())
+                    || "NONE".equalsIgnoreCase(temp.getReasonCategory())) {
+                percentageAdapter.add(temp);
 
             }
         }
@@ -881,6 +896,28 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     }
 
     /**
+     * Get index for given reason id
+     *
+     * @param reasonId Reason Id
+     * @return Index
+     */
+    private int getPercentageIndex(String reasonId) {
+        if (percentageAdapter.getCount() == 0)
+            return 0;
+        int len = percentageAdapter.getCount();
+        if (len == 0)
+            return 0;
+        for (int i = 0; i < len; ++i) {
+            ReasonMaster mReasonBO = percentageAdapter.getItem(i);
+            if (mReasonBO != null) {
+                if (mReasonBO.getReasonID().equals(reasonId))
+                    return i;
+            }
+        }
+        return -1;
+    }
+
+    /**
      * Show file delete alert
      */
     public void showFileDeleteAlert(final String imageName, final ArrayList<String> stringArrayList) {
@@ -959,12 +996,13 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             holder.text_clickToTakePicture.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.rdYes.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.rdNo.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
+            holder.rdPartial.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.productName.setText(holder.planoObj.getProductName());
 
-            if ("0".equals(holder.planoObj.getAdherence())) {
-                holder.adherence_reason.setVisibility(View.VISIBLE);
+            if ("0".equals(holder.planoObj.getAdherence())||"-1".equals(holder.planoObj.getAdherence())) {
+                holder.layout_reason.setVisibility(View.VISIBLE);
             } else {
-                holder.adherence_reason.setVisibility(View.INVISIBLE);
+                holder.layout_reason.setVisibility(View.GONE);
             }
             holder.setImageFromServer();
             holder.setImageFromCamera();
@@ -980,9 +1018,15 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         holder.rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                         holder.rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
                         holder.planoObj.setAdherence("1");
-                        holder.adherence_reason.setVisibility(View.INVISIBLE);
+                        holder.layout_reason.setVisibility(View.GONE);
                         holder.planoObj.setReasonID("0");
                         holder.adherence_reason.setSelection(0);
+
+                        holder.rdPartial.setChecked(false);
+                        holder.rdPartial.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
+                        holder.rdPartial.setButtonDrawable(R.drawable.ic_cross_disable);
+                        holder.planoObj.setPercentageId("0");
+                        holder.spinner_percentage.setSelection(0);
                     }
                 }
             });
@@ -999,8 +1043,39 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         holder.rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                         holder.rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_no_red));
                         holder.planoObj.setAdherence("0");
-                        holder.adherence_reason.setVisibility(View.VISIBLE);
+                        holder.layout_reason.setVisibility(View.VISIBLE);
+
+                        holder.rdPartial.setChecked(false);
+                        holder.rdPartial.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
+                        holder.rdPartial.setButtonDrawable(R.drawable.ic_cross_disable);
+                        holder.planoObj.setPercentageId("0");
+                        holder.spinner_percentage.setSelection(0);
+                        holder.spinner_percentage.setVisibility(View.GONE);
                     }
+                }
+            });
+
+            holder.rdPartial.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+
+                    if(isChecked) {
+                        holder.rdYes.setChecked(false);
+                        holder.rdNo.setChecked(false);
+
+                        holder.rdYes.setButtonDrawable(R.drawable.ic_tick_disable);
+                        holder.rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
+                        holder.rdPartial.setButtonDrawable(R.drawable.ic_cross_enable);
+
+                        holder.rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
+                        holder.rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
+                        holder.rdPartial.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_no_red));
+
+                        holder.planoObj.setAdherence("-1");
+                        holder.layout_reason.setVisibility(View.VISIBLE);
+                        holder.spinner_percentage.setVisibility(View.VISIBLE);
+                    }
+
                 }
             });
 
@@ -1022,6 +1097,20 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
                         }
                     });
+            holder.spinner_percentage.setSelection(getPercentageIndex(holder.planoObj.getPercentageId()));
+            holder.spinner_percentage.setOnItemSelectedListener(new OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                    ReasonMaster reString = (ReasonMaster) adapterView
+                            .getSelectedItem();
+                    holder.planoObj.setPercentageId(reString.getReasonID());
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> adapterView) {
+
+                }
+            });
             holder.imgFromServer.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -1173,10 +1262,12 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             ImageView imgFromCamera;
             RadioButton rdYes;
             RadioButton rdNo;
+            RadioButton rdPartial;
             TextView productName;
             TextView tvAdherence;
             TextView text_clickToTakePicture;
-            Spinner adherence_reason;
+            Spinner adherence_reason,spinner_percentage;
+            LinearLayout layout_reason;
             PlanoGramBO planoObj;
             LinearLayout layout_cameraImage;
             android.support.v4.view.ViewPager imageViewPager;
@@ -1190,16 +1281,21 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 imgFromServer = v.findViewById(R.id.planogram_image_view);
                 rdYes = v.findViewById(R.id.yes);
                 rdNo =  v.findViewById(R.id.no);
+                rdPartial =  v.findViewById(R.id.partial);
                 adherence_reason = v.findViewById(R.id.sp_reason);
+                spinner_percentage=v.findViewById(R.id.sp_percentage);
                 productName =  v.findViewById(R.id.plano_product);
                 tvAdherence =  v.findViewById(R.id.adherence_text_view);
                 text_clickToTakePicture =  v.findViewById(R.id.tvClicktoTakePic);
                 adherence_reason.setAdapter(reasonAdapter);
+                spinner_percentage.setAdapter(percentageAdapter);
+
                 layout_cameraImage =  v.findViewById(R.id.ll_cameraImage);
                 imageViewPager = v.findViewById(R.id.image_view_pager);
                 indicator = v.findViewById(R.id.indicator);
                 auditLayout = v.findViewById(R.id.audit_layout);
                 audit = v.findViewById(R.id.btn_audit);
+                layout_reason=v.findViewById(R.id.layout_reason);
             }
 
             private void setImageFromCamera() {
@@ -1220,31 +1316,48 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         rdYes.setChecked(false);
                         rdNo.setEnabled(true);
                         rdNo.setChecked(false);
+                        rdPartial.setEnabled(true);
+                        rdPartial.setChecked(false);
                     } else {
                         rdYes.setEnabled(false);
                         rdNo.setEnabled(false);
+                        rdPartial.setEnabled(false);
+
                         rdYes.setButtonDrawable(R.drawable.ic_tick_disable);
                         rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
                         rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                         rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
+
+                        rdPartial.setButtonDrawable(R.drawable.ic_cross_disable);
+                        rdPartial.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                     }
                 } else {
                     rdYes.setEnabled(false);
                     rdNo.setEnabled(false);
+                    rdPartial.setEnabled(false);
+
                     rdYes.setButtonDrawable(R.drawable.ic_tick_disable);
                     rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
+                    rdPartial.setButtonDrawable(R.drawable.ic_cross_disable);
+
                     rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                     rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
+                    rdPartial.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                 }
                 if (planoObj.getAdherence() != null
                         && "1".equals(planoObj.getAdherence())) {
                     rdYes.setChecked(true);
                     rdNo.setChecked(false);
+                    rdPartial.setChecked(false);
                     rdYes.setButtonDrawable(R.drawable.ic_tick_enable);
                     rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.green_productivity));
                     rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                     rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
-                    adherence_reason.setVisibility(View.INVISIBLE);
+
+                    rdPartial.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
+                    rdPartial.setButtonDrawable(R.drawable.ic_cross_disable);
+
+                    layout_reason.setVisibility(View.GONE);
                     planoObj.setAdherence("1");
                 } else if (planoObj.getAdherence() != null
                         && "0".equals(planoObj.getAdherence())) {
@@ -1254,11 +1367,31 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     rdNo.setButtonDrawable(R.drawable.ic_cross_enable);
                     rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                     rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_no_red));
-                    adherence_reason.setVisibility(View.VISIBLE);
+                    layout_reason.setVisibility(View.VISIBLE);
                     planoObj.setAdherence("0");
                     adherence_reason.setSelection(getStatusIndex(planoObj
                             .getReasonID()));
                     adherence_reason.setSelected(true);
+                }
+                else if (planoObj.getAdherence() != null
+                        && "-1".equals(planoObj.getAdherence())) {
+                    rdNo.setChecked(false);
+                    rdPartial.setChecked(true);
+                    rdYes.setChecked(false);
+                    rdYes.setButtonDrawable(R.drawable.ic_tick_disable);
+                    rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
+                    rdPartial.setButtonDrawable(R.drawable.ic_cross_enable);
+                    rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
+                    rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
+                    rdPartial.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_no_red));
+                    layout_reason.setVisibility(View.VISIBLE);
+                    planoObj.setAdherence("-1");
+                    adherence_reason.setSelection(getStatusIndex(planoObj
+                            .getReasonID()));
+                    adherence_reason.setSelected(true);
+                    spinner_percentage.setSelection(getStatusIndex(planoObj
+                            .getPercentageId()));
+                    spinner_percentage.setSelected(true);
                 }
             }
 
