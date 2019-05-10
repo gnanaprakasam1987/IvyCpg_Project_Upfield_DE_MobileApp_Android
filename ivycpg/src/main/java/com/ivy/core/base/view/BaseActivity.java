@@ -3,6 +3,7 @@ package com.ivy.core.base.view;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -50,6 +51,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
 
 import java.util.ArrayList;
