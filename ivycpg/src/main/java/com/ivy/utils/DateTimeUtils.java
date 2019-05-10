@@ -382,6 +382,10 @@ public class DateTimeUtils {
         return endCalendar.after(startCalendar);
     }
 
+    public static boolean isPastDate(Calendar endCalendar, Calendar startCalendar) {
+        return endCalendar.before(startCalendar);
+    }
+
     public static Calendar getCalendarOfDate(Date date){
         final Calendar calendar = Calendar.getInstance(Locale.getDefault());
         calendar.setTime(date);

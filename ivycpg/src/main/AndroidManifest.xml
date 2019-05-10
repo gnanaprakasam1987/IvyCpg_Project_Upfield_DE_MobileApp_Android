@@ -171,9 +171,9 @@
         <activity
             android:name="com.ivy.cpg.view.order.StockAndOrder"
             android:exported="false"
+            android:hardwareAccelerated="true"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:hardwareAccelerated="true">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
 
@@ -839,20 +839,30 @@
         <activity
             android:name="com.ivy.cpg.view.login.TermsAndConditionsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name="com.ivy.ui.task.view.TaskActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.ui.task.view.TaskCreationActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.cpg.view.Planorama.PlanoramaActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.cpg.view.Planorama.NewVisitActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.cpg.view.Planorama.PlanoramaDetailActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.cpg.view.Planorama.PlanoramaAnalysisActivty"
-            android:screenOrientation="portrait"/>
-        <activity android:name="com.ivy.cpg.view.reports.syncreport.SyncReportActivity"
-            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.ivy.ui.task.view.TaskActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.ui.task.view.TaskCreationActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.Planorama.PlanoramaActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.Planorama.NewVisitActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.Planorama.PlanoramaDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.Planorama.PlanoramaAnalysisActivty"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.reports.syncreport.SyncReportActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.ui.retailer.view.list.RetailerListActivity"
+            android:screenOrientation="portrait" />
 
 
         <service

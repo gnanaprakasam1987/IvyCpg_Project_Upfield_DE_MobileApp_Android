@@ -27,7 +27,7 @@ public interface CalendarPlanContract {
 
         void refreshGrid();
 
-        void loadTopWeekView(ArrayList<CalenderBO> mCalenderAllList,ArrayList<String> mAllowedDates);
+        void loadTopWeekView(ArrayList<CalenderBO> mCalenderAllList, ArrayList<String> mAllowedDates);
 
         void loadBottomSheet(ArrayList<DateWisePlanBo> retailerInfoList);
     }

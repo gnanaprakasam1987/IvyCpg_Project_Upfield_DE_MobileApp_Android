@@ -43,6 +43,7 @@ import com.ivy.ui.offlineplan.calendar.adapter.WeekFilterAdapter;
 import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
 import com.ivy.ui.offlineplan.calendar.di.CalendarPlanModule;
 import com.ivy.ui.offlineplan.calendar.di.DaggerCalendarPlanComponent;
+import com.ivy.ui.retailer.view.list.RetailerListActivity;
 import com.ivy.ui.retailer.view.map.RetailerMapFragment;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
@@ -213,7 +214,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         });
 
         fabAddRetailer.setOnClickListener(v -> {
-            showMessage("test");
+            startActivity(RetailerListActivity.class);
         });
     }
 
@@ -308,7 +309,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
 
     @Override
-    public void onDateSelected(String selectedDate) {
+    public void onADayRetailerSelected(String selectedDate) {
         showMessage(selectedDate);
         presenter.setSelectedDate(selectedDate);
         rbgSelection.check(R.id.rbDay);

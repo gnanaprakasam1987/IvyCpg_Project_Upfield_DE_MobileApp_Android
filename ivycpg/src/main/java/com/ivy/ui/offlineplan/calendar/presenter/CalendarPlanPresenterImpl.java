@@ -126,12 +126,6 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     public void loadADay() {
         ArrayList<CalenderBO> mCalendarList = getWeekDays();
 
-        //adding week no at start position
-        CalenderBO cBO = new CalenderBO();
-        cBO.setDay("WK");
-        cBO.setWeekDate("1");   // need to replace week no from DB
-        mCalendarList.add(0, cBO);
-
         getIvyView().loadTopWeekView(mCalendarList, mAllowedDates);
         Calendar date = Calendar.getInstance();
         date.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
@@ -147,11 +141,11 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
 
         ArrayList<CalenderBO> mCalendarList = getWeekDays();
 
-        //adding week no at start position
+       /* //adding week no at start position
         CalenderBO cBO = new CalenderBO();
         cBO.setDay("WK");
         cBO.setWeekDate("1");   // need to replace week no from DB
-        mCalendarList.add(0, cBO);
+        mCalendarList.add(0, cBO);*/
 
         getIvyView().loadTopWeekView(mCalendarList, mAllowedDates);
 
@@ -492,6 +486,12 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
             cBO.setSelected(mSelectedDate.equalsIgnoreCase(cBO.getCal_date()));
             calLsit.add(cBO);
         }
+        //adding week no at start position
+        CalenderBO cBO = new CalenderBO();
+        cBO.setDay("WK");
+        cBO.setWeekDate(""+startWeek.get(Calendar.WEEK_OF_YEAR));   // need to replace week no from DB
+        calLsit.add(0, cBO);
+
         return calLsit;
 
     }

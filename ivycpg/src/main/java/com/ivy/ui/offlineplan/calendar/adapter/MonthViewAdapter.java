@@ -175,7 +175,7 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
             holder.lltext.setOnClickListener(v -> {
                 if (holder.calBO != null) {
                     refreshGrid(holder.calBO.getCal_date());
-                    calendarClickListner.onDateSelected(holder.calBO.getCal_date());
+                    calendarClickListner.onADayRetailerSelected(holder.calBO.getCal_date());
                 }
 
             });

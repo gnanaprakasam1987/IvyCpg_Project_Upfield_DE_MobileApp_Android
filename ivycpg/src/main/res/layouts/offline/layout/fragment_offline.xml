@@ -89,6 +89,20 @@
                     android:textSize="@dimen/text_size_caption" />
 
                 <RadioButton
+                    android:id="@+id/rbWeek"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimen_30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_bg_radio_button"
+                    android:button="@null"
+                    android:fontFamily="@font/roboto_light"
+                    android:gravity="center"
+                    android:padding="@dimen/padding_rb"
+                    android:text="@string/week"
+                    android:textColor="@color/selector_text_radio_button"
+                    android:textSize="@dimen/text_size_caption" />
+
+                <RadioButton
                     android:id="@+id/rbDay"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/dimen_30dp"
@@ -102,19 +116,6 @@
                     android:textColor="@color/selector_text_radio_button"
                     android:textSize="@dimen/text_size_caption" />
 
-                <RadioButton
-                    android:id="@+id/rbWeek"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/dimen_30dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/selector_bg_radio_button"
-                    android:button="@null"
-                    android:fontFamily="@font/roboto_light"
-                    android:gravity="center"
-                    android:padding="@dimen/padding_rb"
-                    android:text="@string/week"
-                    android:textColor="@color/selector_text_radio_button"
-                    android:textSize="@dimen/text_size_caption" />
             </RadioGroup>
 
         </RelativeLayout>
