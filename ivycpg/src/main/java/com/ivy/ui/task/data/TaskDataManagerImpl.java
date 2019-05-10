@@ -304,7 +304,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                                         + StringUtils.QT(retailerId) + ","
                                         + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                                         + uID + ",'N'" + ","
-                                        + StringUtils.QT(taskDataBO.getTaskEvidenceImg());
+                                        + taskDataBO.getTaskEvidenceImg() == null ? null : StringUtils.QT(taskDataBO.getTaskEvidenceImg());
                                 mDbUtil.insertSQL("TaskExecutionDetails", columns, values);
                                 //bmodel.saveModuleCompletion("MENU_TASK");
                             } else {
@@ -566,20 +566,19 @@ public class TaskDataManagerImpl implements TaskDataManager {
     /**
      * This method used to fetch task product level
      *
-     * @param menuCode
+     * @param prodLevelId
      * @return
      */
     @Override
-    public Observable<ArrayList<TaskDataBO>> fetchTaskCategories(String menuCode) {
+    public Observable<ArrayList<TaskDataBO>> fetchTaskCategories(int prodLevelId) {
         return Observable.fromCallable(new Callable<ArrayList<TaskDataBO>>() {
             @Override
             public ArrayList<TaskDataBO> call() throws Exception {
                 try {
                     initDb();
 
-                    String query = "SELECT Distinct PName, PId FROM ProductMaster PM" +
-                            " INNER JOIN ConfigActivityFilter CAF ON CAF.ProductFilter1 = PM.PLid" +
-                            " WHERE CAF.ActivityCode = " + StringUtils.QT(menuCode);
+                    String query = "SELECT Distinct PName, PId FROM ProductMaster" +
+                            " WHERE PLid = " + prodLevelId;
 
                     ArrayList<TaskDataBO> taskCategoryList = new ArrayList<>();
                     Cursor c = mDbUtil
@@ -607,14 +606,15 @@ public class TaskDataManagerImpl implements TaskDataManager {
     }
 
     @Override
-    public Observable<ArrayList<TaskDataBO>> fetTaskImgData(String taskId) {
+    public Observable<ArrayList<TaskDataBO>> fetTaskImgData(String taskId, int userIdLength) {
         return Observable.fromCallable(new Callable<ArrayList<TaskDataBO>>() {
             @Override
             public ArrayList<TaskDataBO> call() throws Exception {
                 try {
                     initDb();
+                    int subStrStartWith = 15 + String.valueOf(userIdLength).length();
 
-                    String query = "SELECT SUBSTR(TMD.TaskImageName,18) as ImageName FROM TaskImageDetails TMD"
+                    String query = "SELECT SUBSTR(TMD.TaskImageName," + subStrStartWith + ") as ImageName FROM TaskImageDetails TMD"
                             + " INNER JOIN TaskMaster TM ON TM.taskId = TMD.TaskId"
                             + " WHERE TMD.Status!='D' AND TMD.TaskId = " + StringUtils.QT(taskId);
 

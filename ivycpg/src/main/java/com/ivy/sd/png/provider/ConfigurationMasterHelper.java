@@ -1573,6 +1573,7 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_SHOW_TASK_PRODUCT_LEVEL = "TASK01";
     public boolean IS_SHOW_TASK_PRODUCT_LEVEL;
+    public int TASK_PRODUCT_LEVEL_NO;
 
     private static final String CODE_SHOW_RETAILER_LAST_VISIT = "RTRS33";
     public boolean IS_SHOW_RETAILER_LAST_VISIT;
@@ -2771,6 +2772,9 @@ public class ConfigurationMasterHelper {
         this.IS_COLLECTION_DELETE = hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) != null ? hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) : false;
         this.IS_VALIDATE_DUE_DAYS = hashMapHHTModuleConfig.get(CODE_VALIDATE_DUE_DATE ) != null ? hashMapHHTModuleConfig.get(CODE_VALIDATE_DUE_DATE) : false;
         this.IS_SHOW_TASK_PRODUCT_LEVEL = hashMapHHTModuleConfig.get(CODE_SHOW_TASK_PRODUCT_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TASK_PRODUCT_LEVEL) : false;
+        if (hashMapHHTModuleConfig.get(CODE_SHOW_TASK_PRODUCT_LEVEL) != null) {
+            TASK_PRODUCT_LEVEL_NO = hashMapHHTModuleOrder.get(CODE_SHOW_TASK_PRODUCT_LEVEL);
+        }
 
         this.IS_SHOW_RETAILER_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LAST_VISIT) : false;
         this.IS_SHOW_RETAILER_LAST_VISITEDBY = isShowLastVisitedBy();
