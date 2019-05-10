@@ -14,6 +14,9 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.photocapture.model.PhotoCaptureLocationBO;
+import com.ivy.ui.photocapture.model.PhotoCaptureProductBO;
+import com.ivy.ui.photocapture.model.PhotoTypeMasterBO;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 

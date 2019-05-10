@@ -28,7 +28,7 @@
         <item name="android:textColorSecondary">@color/half_Black</item>
 
         <!--screen background -->
-        <item name="android:windowBackground">@color/screen_bg_color</item>
+        <item name="android:windowBackground">@color/white</item>
 
 
         <!--Customize all Labels based on Theme -->
@@ -75,6 +75,10 @@
         <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
         <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
 
+        <!--Header background color-->
+        <item name="customHeaderBackgroundColor">@color/heading_bg_color_blue</item>
+
+
         <!--Footer background style-->
         <item name="customFooterBackgroundColor">@color/footer_bg_color</item>
         <!--Header background style-->
@@ -119,8 +123,8 @@
            windowBackground: To avoid two alert dialog frames in prelollipop devices
            buttonStyle: To apply theme button style to custon buttons in Dialog Fragment-->
     <style name="DialogStyleBlue" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="colorAccent">?attr/accentcolor</item>
+        <item name="android:windowBackground">@android:color/white</item>
         <item name="android:buttonStyle">@style/MyButtonBlue</item>
     </style>
 
@@ -130,6 +134,7 @@ negative button and neutral button -->
     <style name="DatePickerDialogStyle" parent="@style/Theme.AppCompat.Light.Dialog">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+        <item name="android:buttonStyle">@style/MyButtonBlue</item>
         <!-- Color palette -->
         <item name="colorAccent">?attr/accentcolor</item>
         <item name="buttonBarPositiveButtonStyle">?attr/accentcolor</item>
@@ -241,6 +246,8 @@ negative button and neutral button -->
         <item name="listItemPrimaryTextColor">@color/list_item_primary_text_color_nblue</item>
         <item name="listItemValueTextColor">@color/list_item_values_text_color_nblue</item>
 
+        <!--Header background color-->
+        <item name="customHeaderBackgroundColor">@color/heading_bg_color_nblue</item>
 
         <item name="customFooterBackgroundColor">@color/footer_bg_color_nblue</item>
         <item name="customListTitleBackgroundColor">@color/list_title_bg_color_nblue</item>
@@ -347,6 +354,8 @@ negative button and neutral button -->
         <item name="captionTextColor">@color/caption_text_color_red</item>
         <item name="listItemValueTextColor">@color/list_item_values_text_color_red</item>
 
+        <!--Header background color-->
+        <item name="customHeaderBackgroundColor">@color/heading_bg_color_red</item>
 
         <item name="customFooterBackgroundColor">@color/footer_bg_color_red</item>
         <item name="customListTitleBackgroundColor">@color/list_title_bg_color_red</item>
@@ -448,6 +457,8 @@ negative button and neutral button -->
         <item name="captionTextColor">@color/caption_text_color_orange</item>
         <item name="listItemValueTextColor">@color/list_item_values_text_color_orange</item>
 
+        <!--Header background color-->
+        <item name="customHeaderBackgroundColor">@color/heading_bg_color_orange</item>
 
         <item name="customFooterBackgroundColor">@color/footer_bg_color_orange</item>
         <item name="customListTitleBackgroundColor">@color/list_title_bg_color_orange</item>
@@ -551,6 +562,8 @@ negative button and neutral button -->
         <item name="captionTextColor">@color/caption_text_color_green</item>
         <item name="listItemValueTextColor">@color/list_item_values_text_color_green</item>
 
+        <!--Header background color-->
+        <item name="customHeaderBackgroundColor">@color/heading_bg_color_green</item>
 
         <item name="customFooterBackgroundColor">@color/footer_bg_color_green</item>
         <item name="customListTitleBackgroundColor">@color/list_title_bg_color_green</item>
@@ -696,6 +709,12 @@ negative button and neutral button -->
     <style name="TextViewNormal" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/text_size_primary</item>
         <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="android:textColor">@color/FullBlack</item>
+    </style>
+
+    <style name="TextViewNormalRegular" parent="@android:style/Widget.TextView">
+        <item name="android:textSize">@dimen/text_size_primary</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:textColor">@color/FullBlack</item>
     </style>
 

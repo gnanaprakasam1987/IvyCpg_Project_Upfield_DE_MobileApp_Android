@@ -357,7 +357,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 break;
             case TaskConstant.RETAILER_WISE:
                 if (!isRetailerWiseTask)
-                    taskChannelId = retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getTretailerId();
+                    taskChannelId = retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getRetailerId();
                 else
                     taskChannelId = taskPresenter.getRetailerID();
                 break;
@@ -469,7 +469,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         } else if (channelwise_rb.isChecked())
             id = channelArrayAdapter.getItem(mSelectedSpinnerPos).getChannelId();
         else if (retailerwise_rb.isChecked())
-            id = retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getTretailerId();
+            id = retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getRetailerId();
 
         imageName = "TSK_" + id
                 + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)
@@ -620,7 +620,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                         return i;
                     break;
                 case TaskConstant.RETAILER_WISE:
-                    if (retailerMasterArrayAdapter.getItem(i).getTretailerId() == taskBo.getRid())
+                    if (retailerMasterArrayAdapter.getItem(i).getRetailerId() == taskBo.getRid())
                         return i;
                     break;
                 case TaskConstant.CHANNEL_WISE:

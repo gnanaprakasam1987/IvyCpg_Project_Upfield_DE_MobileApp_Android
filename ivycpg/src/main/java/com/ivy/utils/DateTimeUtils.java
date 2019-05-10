@@ -8,8 +8,6 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
-import org.joda.time.DateTime;
-
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.text.DateFormat;
@@ -20,7 +18,7 @@ import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
-import static com.ivy.core.IvyConstants.DEFAULT_DATE_FORMAT;
+import static com.ivy.sd.png.provider.ConfigurationMasterHelper.outDateFormat;
 
 public class DateTimeUtils {
 
@@ -41,7 +39,7 @@ public class DateTimeUtils {
 
     @StringDef({DateFormats.SERVER_DATE_FORMAT})
     @Retention(RetentionPolicy.SOURCE)
-    public @interface DateFormats{
+    public @interface DateFormats {
         String SERVER_DATE_FORMAT = "yyyy/MM/dd";
     }
 
@@ -394,16 +392,16 @@ public class DateTimeUtils {
         return calendar;
     }
 
-    public static int getHour(Date date){
+    public static int getHour(Date date) {
         return getCalendarOfDate(date).get(Calendar.HOUR);
     }
 
-    public static int getHourOfDay(Date date){
+    public static int getHourOfDay(Date date) {
         return getCalendarOfDate(date).get(Calendar.HOUR);
     }
 
-    public static int getHour(Date date, boolean isAmPm){
-        if(isAmPm){
+    public static int getHour(Date date, boolean isAmPm) {
+        if (isAmPm) {
             return getHourOfDay(date);
         } else {
             return getHour(date);
@@ -422,15 +420,15 @@ public class DateTimeUtils {
         return getCalendarOfDate(date).get(Calendar.MONTH);
     }
 
-    public static int getDay(Date date){
+    public static int getDay(Date date) {
         return getCalendarOfDate(date).get(Calendar.DAY_OF_MONTH);
     }
 
-    public static String convertDayName(String day, String inputFormat, String outputFormat){
+    public static String convertDayName(String day, String inputFormat, String outputFormat) {
         try {
-            return new SimpleDateFormat(outputFormat,Locale.US)
-                    .format(new SimpleDateFormat(inputFormat,Locale.US).parse(day));
-        }catch(Exception e){
+            return new SimpleDateFormat(outputFormat, Locale.US)
+                    .format(new SimpleDateFormat(inputFormat, Locale.US).parse(day));
+        } catch (Exception e) {
             Commons.printException(e);
             return day;
         }
@@ -446,6 +444,35 @@ public class DateTimeUtils {
         }
 
         return calendar.getTime();
+
+    }
+
+    /**
+     * MDH -> M - represent Month , D - represent Date , H - represent hours and min
+     *
+     * @param date
+     * @return
+     */
+    public static String getMDHDateFormat(String date) {
+        SimpleDateFormat dateFormat;
+
+        if (date == null || date.isEmpty())
+            date = "";
+
+        SimpleDateFormat inputDateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.ENGLISH);
+        try {
+            Date inputDate = inputDateFormat.parse(date);
+
+            if (date.startsWith(now(DATE_GLOBAL)))
+                dateFormat = new SimpleDateFormat("HH:mm:ss a", Locale.ENGLISH);
+            else
+                dateFormat = new SimpleDateFormat(outDateFormat, Locale.ENGLISH);
+
+            return dateFormat.format(inputDate);
+        } catch (ParseException e) {
+            Commons.printException(e);
+            return date;
+        }
 
     }
 

@@ -397,7 +397,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
         RField4 = rField4;
     }
 
-    public int getTretailerId() {
+    public int getRetailerId() {
         return tretailerId;
     }
 
