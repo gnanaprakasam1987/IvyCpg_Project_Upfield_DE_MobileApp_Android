@@ -845,7 +845,7 @@ SynchronizationHelper {
         if (bmodel.configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
             updateLastVisitPlanogram();
             exceptionTableList.add("LastVisitPlanogram");
-            exceptionTableList.add("LastVisitPlanogramImageDetails");
+            exceptionTableList.add("LastVisitPlanogramImages");
         }
 
         if(bmodel.configurationMasterHelper.IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN){
@@ -4215,7 +4215,7 @@ SynchronizationHelper {
                     Cursor cur1 = db.selectSQL(sql);
                     if (cur1 != null && cur1.getCount() > 0) {
                         db.executeQ("delete from LastVisitPlanogram where retailerid=" + cur.getString(0));
-                        db.executeQ("delete from LastVisitPlanogramImageDetails where retailerid=" + cur.getString(0));
+                        db.executeQ("delete from LastVisitPlanogramImages where retailerid=" + cur.getString(0));
                         cur1.close();
                     }
                 }
@@ -4244,7 +4244,7 @@ SynchronizationHelper {
             Cursor cur3 = db.selectSQL(sql3);
             if (cur3 != null) {
                 while (cur3.moveToNext()) {
-                    db.insertSQL("LastVisitPlanogramImageDetails", "pid,imageName,mappingId,ImagePath,ImageId,LocId,RetailerId",
+                    db.insertSQL("LastVisitPlanogramImages", "pid,imageName,mappingId,ImagePath,ImageId,LocId,RetailerId",
                             cur3.getString(0)
                                     + "," + StringUtils.QT(cur3.getString(1))
                                     + "," + cur3.getString(2)

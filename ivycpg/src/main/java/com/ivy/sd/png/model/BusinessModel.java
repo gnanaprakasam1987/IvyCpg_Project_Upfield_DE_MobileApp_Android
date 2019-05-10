@@ -3541,11 +3541,12 @@ public class BusinessModel extends Application {
 
             if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
                 c = db
-                        .selectSQL("SELECT DISTINCT ImagePath,imageId FROM LastVisitPlanogramImageDetails");
+                        .selectSQL("SELECT DISTINCT ImagePath,imageId FROM LastVisitPlanogramImages");
+                int count=0;
                 if (c != null) {
                     while (c.moveToNext()) {
-                        if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
 
+                        count+=100;
                             DigitalContentModel digitalContentBO = new DigitalContentModel();
 
                             String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
@@ -3555,13 +3556,8 @@ public class BusinessModel extends Application {
                             digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);
                             digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
 
-                            digitalContentLargeFileURLS.put(digitalContentBO.getImageID(), digitalContentBO);
+                            digitalContentLargeFileURLS.put(digitalContentBO.getImageID()+count, digitalContentBO);
 
-                        } else {
-                            getDigitalContentURLS().put(
-                                    DataMembers.IMG_DOWN_URL + "" + c.getString(0),
-                                    DataMembers.PLANOGRAM);
-                        }
 
                     }
                     c.close();

@@ -354,77 +354,7 @@ public class PlanoGramHelper {
             db.openDataBase();
 
 
-            if(mBModel.configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
-                // LastVisit
-                String lastVisitQuery = "SELECT PId, Adherence, ReasonID, LocID,ComplianceStatus,CompliancePercentage"
-                        + " FROM LastVisitPlanogram WHERE retailerId=" + mBModel.getAppDataProvider().getRetailMaster().getRetailerID();
 
-                Cursor lastVisitCursor = db.selectSQL(lastVisitQuery);
-
-                if (lastVisitCursor != null) {
-                    while (lastVisitCursor.moveToNext()) {
-                        int pid = lastVisitCursor.getInt(0);
-                        String adherence = lastVisitCursor.getString(1);
-                        String reasonID = lastVisitCursor.getString(2);
-                        int locationID = lastVisitCursor.getInt(3);
-
-                        if(lastVisitCursor.getString(4).equals("PARTIAL"))
-                            adherence="-1";
-                        String percentageId = lastVisitCursor.getString(5);
-
-                        PlanoGramBO planogram;
-                        int siz = getPlanogramMaster().size();
-
-                        for (int i = 0; i < siz; ++i) {
-                            planogram = getPlanogramMaster().get(i);
-                            if (planogram.getPid() == pid &&
-                                    (!IS_LOCATION_WISE_PLANOGRAM || planogram.getLocationID() == locationID)) {
-                                // planogram.setPlanogramCameraImgName(imageName);
-                                planogram.setAdherence(adherence);
-                                planogram.setReasonID(reasonID);
-                                planogram.setPercentageId(percentageId);
-                                //planogram.setPlanoGramCameraImgList(getPlanogramImage(planogramProductId,tId,context, locationID));
-                                break;
-                            }
-                        }
-
-                    }
-                    lastVisitCursor.close();
-                }
-
-                String lastVisitImageQuery = "SELECT ImageName,Pid,LocID"
-                        + " FROM LastVisitPlanogramImageDetails WHERE retailerId=" + mBModel.getAppDataProvider().getRetailMaster().getRetailerID();
-
-                Cursor lastVisitImageCursor = db.selectSQL(lastVisitImageQuery);
-
-                if (lastVisitImageCursor != null) {
-                    while (lastVisitImageCursor.moveToNext()) {
-                        int pid = lastVisitImageCursor.getInt(1);
-                        int locationID = lastVisitImageCursor.getInt(2);
-
-                        PlanoGramBO planogram;
-                        int siz = getPlanogramMaster().size();
-
-                        for (int i = 0; i < siz; ++i) {
-                            planogram = getPlanogramMaster().get(i);
-                            if (planogram.getPid() == pid &&
-                                    (!IS_LOCATION_WISE_PLANOGRAM || planogram.getLocationID() == locationID)) {
-                                // planogram.setPlanogramCameraImgName(imageName);
-                                ArrayList<String> imageList = planogram.getPlanoGramCameraImgList();
-                                if (imageList == null)
-                                    imageList = new ArrayList<>();
-
-                                imageList.add(lastVisitImageCursor.getString(0));
-                                planogram.setPlanoGramCameraImgList(imageList);
-                                break;
-                            }
-                        }
-
-                    }
-                    lastVisitImageCursor.close();
-                }
-
-            }
 
             //
 
@@ -444,7 +374,7 @@ public class PlanoGramHelper {
 
             if(!tid.trim().isEmpty()){
 
-                String sql1 = "SELECT PId, PLID, ImageName, Adherence, ReasonID, LocID, IFNULL(isAuditDone,'2'),ComplianceStatus,CompliancePercentage"
+                String sql1 = "SELECT PId, PLID, ImageName, Adherence, ReasonID, LocID, IFNULL(isAuditDone,'2'),ifnull(ComplianceStatus,''),CompliancePercentage"
                         + " FROM PlanogramDetails WHERE tid=" + QT(tid);
 
                 Cursor orderDetailCursor = db.selectSQL(sql1);
@@ -461,6 +391,91 @@ public class PlanoGramHelper {
                                 locationID, aduit,tid,mContext,orderDetailCursor.getString(7),orderDetailCursor.getString(8));
                     }
                     orderDetailCursor.close();
+                }
+
+            }
+            else {
+
+                // No local transaction
+                if(mBModel.configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
+                    // LastVisit
+                    String lastVisitQuery = "SELECT PId, Adherence, ReasonID, inStoreLocId,ifnull(ComplianceStatus,''),CompliancePercentage"
+                            + " FROM LastVisitPlanogram WHERE retailerId=" + mBModel.getAppDataProvider().getRetailMaster().getRetailerID();
+
+                    Cursor lastVisitCursor = db.selectSQL(lastVisitQuery);
+
+                    if (lastVisitCursor != null) {
+                        while (lastVisitCursor.moveToNext()) {
+                            int pid = lastVisitCursor.getInt(0);
+                            String adherence = lastVisitCursor.getString(1);
+                            String reasonID = lastVisitCursor.getString(2);
+                            int locationID = lastVisitCursor.getInt(3);
+                            String complianceStatus=lastVisitCursor.getString(4);
+
+                            if(complianceStatus.equals("PARTIAL"))
+                                adherence="-1";
+                            String percentageId = lastVisitCursor.getString(5);
+
+                            PlanoGramBO planogram;
+                            int siz = getPlanogramMaster().size();
+
+                            for (int i = 0; i < siz; ++i) {
+                                planogram = getPlanogramMaster().get(i);
+                                if (planogram.getPid() == pid &&
+                                        (!IS_LOCATION_WISE_PLANOGRAM || planogram.getLocationID() == locationID)) {
+                                    // planogram.setPlanogramCameraImgName(imageName);
+                                    planogram.setAdherence(adherence);
+                                    planogram.setReasonID(reasonID);
+                                    planogram.setPercentageId(percentageId);
+                                    //planogram.setPlanoGramCameraImgList(getPlanogramImage(planogramProductId,tId,context, locationID));
+                                    break;
+                                }
+                            }
+
+                        }
+                        lastVisitCursor.close();
+                    }
+
+                    String lastVisitImageQuery = "SELECT A.ImagePath,A.Pid,B.InStoreLocID"
+                            + " FROM LastVisitPlanogramImages A left join LastVisitPlanogram B  WHERE B.retailerId=" + mBModel.getAppDataProvider().getRetailMaster().getRetailerID();
+
+                    Cursor lastVisitImageCursor = db.selectSQL(lastVisitImageQuery);
+
+                    if (lastVisitImageCursor != null) {
+                        while (lastVisitImageCursor.moveToNext()) {
+                            int pid = lastVisitImageCursor.getInt(1);
+                            int locationID = lastVisitImageCursor.getInt(2);
+
+                            PlanoGramBO planogram;
+                            int siz = getPlanogramMaster().size();
+
+                            for (int i = 0; i < siz; ++i) {
+                                planogram = getPlanogramMaster().get(i);
+                                if (planogram.getPid() == pid &&
+                                        (!IS_LOCATION_WISE_PLANOGRAM || planogram.getLocationID() == locationID)) {
+                                    // planogram.setPlanogramCameraImgName(imageName);
+                                    ArrayList<String> imageList = planogram.getPlanoGramCameraImgList();
+                                    if (imageList == null)
+                                        imageList = new ArrayList<>();
+
+                                    String imageUrl=lastVisitImageCursor.getString(0);
+                                    int index = imageUrl.lastIndexOf('/');
+                                    String imageName = "";
+                                    if (index >= 0) {
+                                        imageName = imageUrl.substring(index + 1);
+                                    }
+
+                                    imageList.add(imageName);
+                                    planogram.setPlanoGramCameraImgList(imageList);
+                                    planogram.setLoadedFromLastVisitTran(true);
+                                    break;
+                                }
+                            }
+
+                        }
+                        lastVisitImageCursor.close();
+                    }
+
                 }
 
             }

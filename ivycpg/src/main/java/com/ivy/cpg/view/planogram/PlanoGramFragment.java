@@ -1160,12 +1160,30 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                                 getResources().getString(
                                         R.string.planogram_image_count_reached), 0);
                     } else {
+
+                        if(holder.planoObj.isLoadedFromLastVisitTran()) {
+                            // Clearing last visit tran images as user is taking photo now..
+                            holder.planoObj.getPlanoGramCameraImgList().clear();
+                            holder.planoObj.setLoadedFromLastVisitTran(false);
+                        }
+
                         productId = holder.planoObj.getPid();
                         setCameraImage(holder.planoObj);
                     }
                 }
             });
 
+            if(holder.planoObj.isLoadedFromLastVisitTran()){
+                photoNamePath=getActivity().getExternalFilesDir(
+                        Environment.DIRECTORY_DOWNLOADS)
+                        + "/"
+                        + mBModel.userMasterHelper.getUserMasterBO()
+                        .getUserid()
+                        + DataMembers.DIGITAL_CONTENT
+                        + "/"
+                        + DataMembers.PLANOGRAM
+                        + "/";
+            }
             GalleryAdapter adapter =
                     new GalleryAdapter(getActivity(),holder.planoObj.getPlanoGramCameraImgList(),photoNamePath);
             // Set the custom click listener on the adapter directly
@@ -1306,6 +1324,17 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     for(int i=0;i<planoObj.getPlanoGramCameraImgList().size();i++){
                         String path = photoNamePath
                                 + planoObj.getPlanoGramCameraImgList().get(i);
+                        if(planoObj.isLoadedFromLastVisitTran()){
+                            path=getActivity().getExternalFilesDir(
+                                    Environment.DIRECTORY_DOWNLOADS)
+                                    + "/"
+                                    + mBModel.userMasterHelper.getUserMasterBO()
+                                    .getUserid()
+                                    + DataMembers.DIGITAL_CONTENT
+                                    + "/"
+                                    + DataMembers.PLANOGRAM
+                                    + "/";
+                        }
                         if (FileUtils.isFileExisting(path)) {
                             isImgPresent = true;
                         }

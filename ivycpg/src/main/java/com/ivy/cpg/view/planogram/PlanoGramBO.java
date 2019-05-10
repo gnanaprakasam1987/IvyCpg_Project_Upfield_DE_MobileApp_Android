@@ -25,6 +25,16 @@ public class PlanoGramBO {
 	private String productName;
 	private int imageId;
 
+	public boolean isLoadedFromLastVisitTran() {
+		return isLoadedFromLastVisitTran;
+	}
+
+	public void setLoadedFromLastVisitTran(boolean loadedFromLastVisitTran) {
+		isLoadedFromLastVisitTran = loadedFromLastVisitTran;
+	}
+
+	private boolean isLoadedFromLastVisitTran;
+
 	private ArrayList<String> planoGramCameraImgList = new ArrayList<>();
 	
 	public String getReasonID() {
