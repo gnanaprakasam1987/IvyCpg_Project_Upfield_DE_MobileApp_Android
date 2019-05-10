@@ -47,6 +47,7 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
     private static final int UPLOAD_LOYALTY_POINTS = 6;
     private static final int UPLOAD_ORDER_DELIVERY_STATUS = 7;
     private static final int UPLOAD_PICK_LIST = 8;
+    private static final int UPLOAD_TRIP = 9;
 
 
     public UploadPresenterImpl(Context mContext, BusinessModel mBModel, SyncContractor.SyncView view
@@ -223,7 +224,10 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
         } else if (mBModel.synchronizationHelper.checkOrderDeliveryStatusTable()
                 && !mBModel.synchronizationHelper.getUploadUrl("UPLDORDDELSTS").isEmpty()) {
             startSync(UPLOAD_ORDER_DELIVERY_STATUS);
-        } else if (mBModel.synchronizationHelper.checkDataForSync()) {
+        }else if (mBModel.synchronizationHelper.checkTripData()
+                && !mBModel.synchronizationHelper.getUploadUrl("UPLOADTRIP").isEmpty())
+            startSync(UPLOAD_TRIP);
+        else if (mBModel.synchronizationHelper.checkDataForSync()) {
             startSync(UPLOAD_ALL);
         } else {
             view.showNoDataExist();
@@ -263,6 +267,8 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
             new MyThread((Activity) mContext, DataMembers.SYNCLYTYPTUPLOAD, isFromCallAnalysis).start();
         else if (callFlag == UPLOAD_PICK_LIST)
             new MyThread((Activity) mContext, DataMembers.SYNCPICKLISTUPLOAD, isFromCallAnalysis).start();
+        else if (callFlag == UPLOAD_TRIP)
+            new MyThread((Activity) mContext, DataMembers.SYNC_TRIP, isFromCallAnalysis).start();
 
     }
 

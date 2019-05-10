@@ -841,6 +841,39 @@ public class MyThread extends Thread {
             }
 
         }
+        else if (opt == DataMembers.SYNC_TRIP) {
+            bmodel = (BusinessModel) ctx.getApplicationContext();
+            bmodel.setContext(ctx);
+
+            Handler handler;
+            if (isFromCallAnalysis) {
+                CallAnalysisActivity fragment = (CallAnalysisActivity) ctx;
+                handler = fragment.getHandler();
+            } else {
+                HomeScreenActivity fragment = (HomeScreenActivity) ctx;
+                handler = fragment.getHandler();
+            }
+            if (bmodel.isOnline()) {
+                UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
+                int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNC_TRIP, ctx.getApplicationContext());
+
+                if (bool == 2) {
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_TRIP_UPLOADED);
+                } else if (bool == -1) {
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
+
+                } else {
+                    handler.sendEmptyMessage(
+                            DataMembers.NOTIFY_TRIP_UPLOAD_ERROR);
+                }
+            } else {
+                handler.sendEmptyMessage(
+                        DataMembers.NOTIFY_CONNECTION_PROBLEM);
+            }
+
+        }
     }// RUN
 
 }

@@ -792,6 +792,35 @@ SynchronizationHelper {
 
     }
 
+    public boolean checkTripData() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        boolean hasData = false;
+        try {
+            db.openDataBase();
+            String sql;
+            Cursor c;
+
+            sql = "select count(*) from TripMaster where upload='N'";
+
+            c = db.selectSQL(sql);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    if (c.getInt(0) > 0)
+                        hasData = true;
+                }
+                c.close();
+            }
+
+            db.closeDB();
+            return hasData;
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+            return hasData;
+        }
+
+    }
+
 
     /**
      * Delete all the tables. reset the closeDay. Delete Images.

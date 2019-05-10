@@ -950,7 +950,20 @@ public class SynchronizationFragment extends IvyBaseFragment
                     presenter.upload();
                     break;
 
+
                 case DataMembers.NOTIFY_PICKLIST_UPLOAD_ERROR:
+                    alertDialog.dismiss();
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.upload_failed_please_try_again), 0);
+                    break;
+
+                case DataMembers.NOTIFY_TRIP_UPLOADED:
+                    alertDialog.dismiss();
+                    presenter.upload();
+                    break;
+
+                case DataMembers.NOTIFY_TRIP_UPLOAD_ERROR:
                     alertDialog.dismiss();
                     bmodel.showAlert(
                             getResources().getString(

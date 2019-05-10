@@ -192,6 +192,10 @@ public class DataMembers {
     public static final int NOTIFY_PICKLIST_UPLOADED = -51;
     public static final int NOTIFY_PICKLIST_UPLOAD_ERROR = -52;
 
+    public static final int SYNC_TRIP = -80;
+    public static final int NOTIFY_TRIP_UPLOADED = -81;
+    public static final int NOTIFY_TRIP_UPLOAD_ERROR = -82;
+
     // ***********
     public static final int PRINT_COUNT = 5;
     public static final int PRINT_TEXT_SIZE = 1;
@@ -1287,6 +1291,14 @@ public class DataMembers {
                 tbl_picklist_cols);
         uploadPickListStatusTable.put(tbl_picklist_invoice,
                 tbl_picklist_invoice_cols);
+    }
+
+    public static final HashMap<String, String> uploadTripTable = new HashMap<>();
+
+    static {
+
+        uploadTripTable.put(tbl_TripMaster,
+                tbl_TripMaster_cols);
     }
 
 }
