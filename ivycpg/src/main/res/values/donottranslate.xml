@@ -197,6 +197,10 @@
     <string name="visit_paused_msg">Close paused visit to start a new visit</string>
     <string name="pause">Pause</string>
     <string name="resume_visit">Resume Visit</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="title">Title</string>
+    <string name="type_here">Type Here…</string>
+    <string name="between_range_not_avail">No Data available within selected range</string>
 
     <string name="complete_all_mandatory_activities_before_you_start_the_day">Complete all Mandatory activity before start the day.</string>
     <string name="complete_all_mandatory_activities_before_you_stop_the_day">Complete all mandatory activity before end the day.</string>
@@ -280,4 +284,35 @@
     <string name="serial_no_reason_mandatory">Reason Mandatory if serial# not captured</string>
     <string name="choose_asset">Choose Asset</string>
     <string name="already_exist">Already Exist</string>
+
+    <string name="month_selection_mandatory">Both month selection is mandatory</string>
+    <string name="assign_to_retailer">Assign to retailer</string>
+    <string name="retailer_note_can_not_be_edit">Note can not be edit</string>
+    <string name="retailer_note_can_not_be_delete">Other user created Note can not be delete</string>
+    <string name="read_more">show more</string>
+    <string name="read_less">show less</string>
+    <string name="modified_by">Modified By</string>
+    <string name="modified_date">Modified Date</string>
+    <string name="note_details">Note Details</string>
+    <string name="recently_updated">Recently Updated</string>
+    <string name="created_date">Created Date</string>
+
+    <string-array name="note_sort_list">
+        <item>Recently Updated</item>
+        <item>Created Date(old—new)</item>
+        <item>Created Date(new—old)</item>
+        <item>Modified Date(old—new)</item>
+        <item>Modified Date(new—old)</item>
+    </string-array>
+    <string name="do_you_want_to_delete_the_note">Do you want to delete the Note?</string>
+    <string name="enter_title">Please enter title</string>
+    <string name="enter_desc">Please enter description</string>
+    <string name="retailer_selection_mandatory">Choose any one retailer</string>
+    <string name="plus_more">\u2022+%d More</string>
+    <string name="plan_retailer_name">\u2022+%s More</string>
+    <string name="visit_hours"> Visit Hour : %s - %s</string>
+    <string name="v_frequency">V.Frequency</string>
+    <string name="v_completed">V.Completed</string>
+    <string name="v_pending">V.Pending</string>
+
 </resources>

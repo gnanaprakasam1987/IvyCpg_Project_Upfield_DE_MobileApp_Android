@@ -7,24 +7,49 @@
     android:orientation="vertical"
     android:padding="@dimen/dimen_2dp">
 
-    <TextView
-        android:id="@+id/tv_date"
-        style="@style/TextViewListItemPrimary"
-        android:layout_centerHorizontal="true"
-        android:gravity="center"
-        android:layout_width="@dimen/dimen_40dp"
-        android:layout_height="@dimen/dimen_40dp"
-        android:padding="@dimen/dimen_2dp"/>
-
-    <TextView
-        android:id="@+id/tv_retailers"
-        style="@style/TextViewListItemSecondaryHighlight"
+    <LinearLayout
+        android:id="@+id/llDate"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_date"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/dimen_2dp"
-        android:gravity="center" />
+        android:layout_marginTop="@dimen/list_margin"
+        android:gravity="center"
+        android:padding="@dimen/dimen_2dp">
 
+        <TextView
+            android:id="@+id/tv_date"
+            style="@style/TextViewNormal"
+            android:layout_width="@dimen/dimens_40dp"
+            android:layout_height="@dimen/dimens_40dp"
+            android:gravity="center" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lltext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/llDate"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="@dimen/dimen_2dp"
+        android:layout_marginLeft="@dimen/dimen_2dp"
+        android:layout_marginTop="@dimen/dimen_2dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_retailers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:singleLine="true"
+            android:textColor="?attr/primarycolor"
+            android:textSize="@dimen/btn_small_round_corner_text_size" />
+
+        <TextView
+            android:id="@+id/tv_extras"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:textColor="?attr/primarycolor"
+            android:textSize="@dimen/btn_small_round_corner_text_size" />
+    </LinearLayout>
 </RelativeLayout>
 

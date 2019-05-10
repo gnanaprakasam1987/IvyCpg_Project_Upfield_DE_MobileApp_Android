@@ -16,6 +16,7 @@
 
     <color name="green_week_background">#1a330d</color>
     <color name="select_week_color_green">#c5f9ac</color>
+    <color name="heading_bg_color_green">#c5f9ac</color>
 
     <!--List item Header background color-->
     <color name="list_title_bg_color_green">#212121</color>

@@ -7,6 +7,8 @@ import com.ivy.ui.offlineplan.calendar.CalendarPlanContract;
 import com.ivy.ui.offlineplan.calendar.data.CalendarPlanDataManager;
 import com.ivy.ui.offlineplan.calendar.data.CalendarPlanDataManagerImpl;
 import com.ivy.ui.offlineplan.calendar.presenter.CalendarPlanPresenterImpl;
+import com.ivy.ui.retailer.data.RetailerDataManager;
+import com.ivy.ui.retailer.data.RetailerDataManagerImpl;
 import com.ivy.utils.rx.AppSchedulerProvider;
 import com.ivy.utils.rx.SchedulerProvider;
 
@@ -46,13 +48,18 @@ public class CalendarPlanModule {
 
     @Provides
     @PerActivity
-    CalendarPlanContract.CalendarPlanPresenter<CalendarPlanContract.CalendarPlanView> providesOfflinePlanPresenter(CalendarPlanPresenterImpl<CalendarPlanContract.CalendarPlanView> offlinePlanPresenter) {
-        return offlinePlanPresenter;
+    CalendarPlanContract.CalendarPlanPresenter<CalendarPlanContract.CalendarPlanView> providesCalendarPlanPresenter(CalendarPlanPresenterImpl<CalendarPlanContract.CalendarPlanView> calendarPlanPresenter) {
+        return calendarPlanPresenter;
     }
 
     @Provides
-    CalendarPlanDataManager proivdesOfflineDataManger(CalendarPlanDataManagerImpl offlinePlanDataManager) {
-        return offlinePlanDataManager;
+    CalendarPlanDataManager proivdesOfflineDataManger(CalendarPlanDataManagerImpl calendarPlanDataManager) {
+        return calendarPlanDataManager;
+    }
+
+    @Provides
+    RetailerDataManager retailerDataManager(RetailerDataManagerImpl retailerDataManagerImpl){
+        return retailerDataManagerImpl;
     }
 }
 

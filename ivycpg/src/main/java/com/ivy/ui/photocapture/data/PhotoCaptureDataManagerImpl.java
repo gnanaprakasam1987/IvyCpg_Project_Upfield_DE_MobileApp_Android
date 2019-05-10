@@ -5,9 +5,9 @@ import android.database.DatabaseUtils;
 
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.di.scope.DataBaseInfo;
-import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
-import com.ivy.cpg.view.photocapture.PhotoCaptureProductBO;
-import com.ivy.cpg.view.photocapture.PhotoTypeMasterBO;
+import com.ivy.ui.photocapture.model.PhotoCaptureLocationBO;
+import com.ivy.ui.photocapture.model.PhotoCaptureProductBO;
+import com.ivy.ui.photocapture.model.PhotoTypeMasterBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.DataMembers;

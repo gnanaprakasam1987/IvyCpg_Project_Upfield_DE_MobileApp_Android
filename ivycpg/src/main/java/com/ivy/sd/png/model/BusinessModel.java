@@ -1602,13 +1602,16 @@ public class BusinessModel extends Application {
                     updateRetailerPriceGRP(retailer, db);
 
                     if (configurationMasterHelper.IS_HANGINGORDER) {
-                        OrderHelper.getInstance(getContext()).updateHangingOrder(getContext(), retailer,db);
+                        OrderHelper.getInstance(getContext()).updateHangingOrder(getContext(), retailer, db);
                     }
                     updateIndicativeOrderedRetailer(retailer);
 
                     if (configurationMasterHelper.isRetailerBOMEnabled) {
                         setIsBOMAchieved(retailer, db);
                     }
+
+                    updatePlanAndVisitCount(retailer, db);
+
                     getRetailerMaster().add(retailer);
 
                     mRetailerBOByRetailerid.put(retailer.getRetailerID(), retailer);
@@ -1706,6 +1709,39 @@ public class BusinessModel extends Application {
             c.close();
         } catch (Exception e) {
             Commons.printException("Exception ", e);
+        }
+
+    }
+
+    /**
+     * update retailer plan and visit count
+     *
+     * @param retObj
+     */
+    private void updatePlanAndVisitCount(RetailerMasterBO retObj, DBUtil db) {
+
+        try {
+            Cursor c;
+            c = db.selectSQL("select PlanId From DatewisePlan where planStatus ='APPROVED'or 'PENDING' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()));
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext())
+                    retObj.setTotalPlanned(c.getCount());
+
+                c.close();
+            }
+
+
+            c = db.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext())
+                    retObj.setTotalVisited(c.getCount());
+
+                c.close();
+            }
+        } catch (Exception ignore) {
+
         }
 
     }
@@ -3512,12 +3548,12 @@ public class BusinessModel extends Application {
                     .selectSQL("SELECT DISTINCT ImgURL,imgId FROM PlanogramImageInfo");
             if (c != null) {
                 while (c.moveToNext()) {
-                    if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN){
+                    if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
 
                         DigitalContentModel digitalContentBO = new DigitalContentModel();
 
                         String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
-                        digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES*2));//approx 2mb
+                        digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES * 2));//approx 2mb
                         digitalContentBO.setImageID(c.getInt(1));
                         digitalContentBO.setImgUrl(downloadUrl);
                         digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);
@@ -3525,8 +3561,7 @@ public class BusinessModel extends Application {
 
                         digitalContentLargeFileURLS.put(digitalContentBO.getImageID(), digitalContentBO);
 
-                    }
-                    else {
+                    } else {
                         getDigitalContentURLS().put(
                                 DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                                 DataMembers.PLANOGRAM);
@@ -3546,7 +3581,7 @@ public class BusinessModel extends Application {
                             DigitalContentModel digitalContentBO = new DigitalContentModel();
 
                             String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
-                            digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES*2));// approx  2 mb
+                            digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES * 2));// approx  2 mb
                             digitalContentBO.setImageID(c.getInt(1));
                             digitalContentBO.setImgUrl(downloadUrl);
                             digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);

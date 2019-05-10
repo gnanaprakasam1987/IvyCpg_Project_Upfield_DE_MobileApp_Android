@@ -1586,6 +1586,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_DISABLE_CALL_ANALAYSIS_TIMER = "FUN82";
     public boolean IS_DISABLE_CALL_ANALYSIS_TIMER = true;
 
+    private static final String CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER = "NOTE01";
+    public boolean IS_ENABLE_EDIT_OPTION_FOR_OTHER_USER;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2327,7 +2330,7 @@ public class ConfigurationMasterHelper {
         this.IS_PROMOTION_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_PROMOTION_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SURVEY_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SOS_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_SOS_RETAIN_LAST_VISIT_TRAN) : false;
-        this.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN=hashMapHHTModuleConfig.get(CODE_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) : false;
+        this.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) : false;
         this.IS_SF_NORM_CHECK = hashMapHHTModuleConfig.get(CODE_CHECK_NORM) != null ? hashMapHHTModuleConfig.get(CODE_CHECK_NORM) : false;
         this.IS_CATALOG_IMG_DOWNLOAD = hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) != null ? hashMapHHTModuleConfig.get(CODE_CATALOG_PRD_IMAGES) : false;
         this.IS_MULTI_STOCKORDER = hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) != null ? hashMapHHTModuleConfig.get(CODE_MULTI_STOCKORDER) : false;
@@ -2761,7 +2764,7 @@ public class ConfigurationMasterHelper {
         else this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP =false;
         this.ret_skip_otp_flag = hashMapHHTModuleOrder.get(CODE_SHOW_LOCATION_PWD_DIALOG) != null ? hashMapHHTModuleOrder.get(CODE_SHOW_LOCATION_PWD_DIALOG) : 0;
         this.IS_DISABLE_CALL_ANALYSIS_TIMER = hashMapHHTModuleConfig.get(CODE_DISABLE_CALL_ANALAYSIS_TIMER) != null ? hashMapHHTModuleConfig.get(CODE_DISABLE_CALL_ANALAYSIS_TIMER) : false;
-
+        this.IS_ENABLE_EDIT_OPTION_FOR_OTHER_USER = hashMapHHTModuleConfig.get(CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER) : false;
     }
 
     private boolean isInOutModule() {

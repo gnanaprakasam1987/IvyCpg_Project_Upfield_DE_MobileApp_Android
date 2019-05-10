@@ -107,6 +107,8 @@ import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
 import com.ivy.ui.offlineplan.calendar.view.CalendarPlanFragment;
 import com.ivy.ui.retailer.view.map.RetailerMapFragment;
+import com.ivy.ui.notes.NoteConstant;
+import com.ivy.ui.notes.view.NotesListFragment;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.view.TaskFragment;
 import com.ivy.utils.DateTimeUtils;
@@ -141,6 +143,7 @@ import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_MVP;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_NEWRET_EDT;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_NEW_RETAILER;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_NON_FIELD;
+import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_NOTES_SW;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_OFLNE_PLAN;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_ORDER_FULLFILLMENT;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_PLANE_MAP;
@@ -514,7 +517,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         if (leftmenuDB.size() > 0) {
             if (getActivity().getIntent().getStringExtra("menuCode") != null) {
-                if (MENU_PLANE_MAP.equals(getActivity().getIntent().getStringExtra("menuCode"))){
+                if (MENU_PLANE_MAP.equals(getActivity().getIntent().getStringExtra("menuCode"))) {
                     ConfigureBO conBo = new ConfigureBO();
                     conBo.setConfigCode(MENU_PLANE_MAP);
                     gotoNextActivity(conBo);
@@ -553,9 +556,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
     }
 
-    private void moveToSpecificMenu(String menuCode){
+    private void moveToSpecificMenu(String menuCode) {
         for (ConfigureBO configureBO : leftmenuDB) {
-            if (configureBO.getConfigCode().equalsIgnoreCase(menuCode)){
+            if (configureBO.getConfigCode().equalsIgnoreCase(menuCode)) {
                 gotoNextActivity(configureBO);
                 break;
             }
@@ -648,22 +651,21 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                                     }
                                 });
-                if(bmodel.configurationMasterHelper.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP){
+                if (bmodel.configurationMasterHelper.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP) {
                     builderTrip.setPositiveButton(getResources().getString(R.string.lbl_continue),
                             new DialogInterface.OnClickListener() {
                                 public void onClick(DialogInterface dialog,
                                                     int whichButton) {
 
                                     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(bmodel.getApplicationContext());
-                                    sharedPreferences.edit().putString("tripExtendedDate",DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)).apply();
+                                    sharedPreferences.edit().putString("tripExtendedDate", DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)).apply();
 
                                     moveToSpecificMenu(MENU_VISIT);
                                 }
                             });
                     builderTrip.setTitle(
                             getResources().getString(R.string.do_you_want_to_continue_same_trip_or_end_the_trip));
-                }
-                else {
+                } else {
                     builderTrip.setTitle(
                             getResources().getString(R.string.pls_end_the_previous_trip));
                 }
@@ -748,10 +750,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
-            }else if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP&&!LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isValidTrip()){
-                    showDialog(2);
-            }
-            else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
+            } else if (bmodel.configurationMasterHelper.IS_ENABLE_TRIP && !LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isValidTrip()) {
+                showDialog(2);
+            } else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
                     && isInandOutModuleEnabled
                     && AttendanceHelper.getInstance(getContext()).isSellerWorking(getContext())) {
                 Toast.makeText(getActivity(),
@@ -1632,6 +1633,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             }
         } else if (menuItem.getConfigCode().equals(MENU_DENOMINATION)) {
             switchFragment(menuItem.getConfigCode(), menuItem.getMenuName());
+        } else if (menuItem.getConfigCode().equals(MENU_NOTES_SW)) {
+
+            switchFragment(menuItem.getConfigCode(), menuItem.getMenuName());
         }
 
 
@@ -1742,6 +1746,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         CalendarPlanFragment calendarPlanFragment = (CalendarPlanFragment) fm.findFragmentByTag(MENU_OFLNE_PLAN);
 
         RetailerMapFragment retailerMapFragment = (RetailerMapFragment) fm.findFragmentByTag(MENU_MAP_PLAN);
+
+        NotesListFragment notesListFragment = (NotesListFragment) fm.findFragmentByTag(MENU_NOTES_SW);
 
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()
@@ -1864,6 +1870,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (denominationFragment != null && (fragmentName.equals(MENU_DENOMINATION))
                 && denominationFragment.isVisible()) {
             return;
+        } else if (notesListFragment != null && (fragmentName.equals(MENU_NOTES_SW))
+                && notesListFragment.isVisible()) {
+            return;
         } else if (calendarPlanFragment != null && (fragmentName.equals(MENU_OFLNE_PLAN))
                 && calendarPlanFragment.isVisible()) {
             return;
@@ -1951,6 +1960,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(mQuickCallFragment);
         if (denominationFragment != null)
             ft.remove(denominationFragment);
+        if (notesListFragment != null)
+            ft.remove(notesListFragment);
         if (calendarPlanFragment != null)
             ft.remove(calendarPlanFragment);
         if (retailerMapFragment != null)
@@ -2336,6 +2347,17 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_DENOMINATION);
+                break;
+
+            case MENU_NOTES_SW:
+                bndl = new Bundle();
+                bndl.putString(NoteConstant.SCREEN_TITLE, menuName);
+                bndl.putBoolean(NoteConstant.FROM_HOME_SCREEN, true);
+                bndl.putString(NoteConstant.MENU_CODE, MENU_NOTES_SW);
+                fragment = new NotesListFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_NOTES_SW);
                 break;
             case MENU_OFLNE_PLAN:
                 bndl = new Bundle();

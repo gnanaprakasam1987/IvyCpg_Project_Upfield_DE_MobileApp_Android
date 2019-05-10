@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="start|center">
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/title_tv"
+        style="@style/DialogTitleTextStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:paddingStart="@dimen/_10sdp"
+        android:paddingLeft="@dimen/_10sdp"
+        android:paddingTop="@dimen/_5sdp"
+        android:paddingEnd="@dimen/_10sdp"
+        android:paddingBottom="@dimen/_5sdp"
+        android:text="@string/note_details"
+        android:textAllCaps="true" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/crated_by_label"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_tv"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="@dimen/_10sdp"
+        android:text="@string/created_by" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/created_by_value"
+        style="@style/TextViewNormalRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/title_tv"
+        android:layout_margin="@dimen/_10sdp"
+        android:layout_toEndOf="@+id/crated_by_label"
+        android:layout_toRightOf="@+id/crated_by_label"
+        android:text="@string/username" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/created_date_label"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/crated_by_label"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="@dimen/_10sdp"
+        android:text="@string/date_label" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/crated_date_value"
+        style="@style/TextViewNormalRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/created_by_value"
+        android:layout_margin="@dimen/_10sdp"
+        android:layout_toEndOf="@+id/created_date_label"
+        android:layout_toRightOf="@+id/created_date_label"
+        android:text="@string/create" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/retailer_name_label"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/created_date_label"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="@dimen/_10sdp"
+        android:text="@string/retailer_name" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/retailer_name"
+        style="@style/TextViewNormalRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/crated_date_value"
+        android:layout_margin="@dimen/_10sdp"
+        android:layout_toEndOf="@+id/retailer_name_label"
+        android:layout_toRightOf="@+id/retailer_name_label"
+        android:text="@string/retailer" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/modified_by_label"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/retailer_name_label"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="@dimen/_10sdp"
+        android:text="@string/modified_by" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/modified_by_name"
+        style="@style/TextViewNormalRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/retailer_name"
+        android:layout_margin="@dimen/_10sdp"
+        android:layout_toEndOf="@+id/modified_by_label"
+        android:layout_toRightOf="@+id/modified_by_label"
+        android:text="@string/modified_by" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/modified_date_label"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="@dimen/_150sdp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/modified_by_label"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_margin="@dimen/_10sdp"
+        android:text="@string/modified_date" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/modified_date"
+        style="@style/TextViewNormalRegular"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/modified_by_name"
+        android:layout_margin="@dimen/_10sdp"
+        android:layout_toEndOf="@+id/modified_date_label"
+        android:layout_toRightOf="@+id/modified_date_label"
+        android:text="@string/modified_date" />
+
+
+    <!-- <android.support.v7.widget.AppCompatImageView
+         android:id="@+id/btn_close"
+         android:layout_width="@dimen/info_icon"
+         android:layout_height="@dimen/info_icon"
+         android:layout_alignParentTop="true"
+         android:layout_alignParentEnd="true"
+         android:layout_alignParentRight="true"
+         android:layout_margin="@dimen/_1sdp"
+         app:srcCompat="@drawable/close_popup" />-->
+
+</RelativeLayout>
