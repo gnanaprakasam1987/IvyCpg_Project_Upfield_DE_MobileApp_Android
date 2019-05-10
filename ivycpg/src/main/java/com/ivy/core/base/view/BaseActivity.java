@@ -3,7 +3,6 @@ package com.ivy.core.base.view;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,7 +11,6 @@ import android.content.IntentSender;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
@@ -50,16 +48,15 @@ import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.CommonDialog;
-import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
-import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
 public abstract class BaseActivity extends AppCompatActivity implements BaseIvyView {
@@ -124,6 +121,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     private void initScreen() {
 
         this.setContentView(this.getLayoutId());
+        mUnBinder = ButterKnife.bind(this);
 
         checkAndRequestPermissionAtRunTime(PHONE_STATE_AND_WRITE_PERMISSON);
 
@@ -356,7 +354,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     }
 
     /**
-     * To validate if network is connected
+     * To validateData if network is connected
      *
      * @return true if Connected. False if not connected
      */
@@ -466,7 +464,6 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         this.screenTitle = title;
         TextView mScreenTitleTV = findViewById(R.id.tv_toolbar_title);
         mScreenTitleTV.setText(title);
-        mScreenTitleTV.setTypeface(FontUtils.getFontBalooHai(this, FontUtils.FontType.REGULAR));
     }
 
     @Override

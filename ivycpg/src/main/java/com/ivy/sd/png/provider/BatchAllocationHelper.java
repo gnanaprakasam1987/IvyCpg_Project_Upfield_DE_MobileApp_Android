@@ -631,7 +631,7 @@ public class BatchAllocationHelper {
     }
 
     /**
-     * Method to check and validate,while enter value in BatchAllocation
+     * Method to check and validateData,while enter value in BatchAllocation
      * Dialogue screen
      *
      * @param product            this is parent product BO

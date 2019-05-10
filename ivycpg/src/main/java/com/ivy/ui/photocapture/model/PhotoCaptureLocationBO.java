@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.photocapture;
+package com.ivy.ui.photocapture.model;
 
 import java.io.Serializable;
 

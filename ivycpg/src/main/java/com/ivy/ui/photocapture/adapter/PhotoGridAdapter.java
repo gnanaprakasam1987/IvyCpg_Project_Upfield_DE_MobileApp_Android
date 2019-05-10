@@ -19,7 +19,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.ivy.cpg.view.photocapture.PhotoCaptureLocationBO;
+import com.ivy.ui.photocapture.model.PhotoCaptureLocationBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.FontUtils;

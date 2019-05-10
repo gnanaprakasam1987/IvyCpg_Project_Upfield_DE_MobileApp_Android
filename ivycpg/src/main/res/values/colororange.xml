@@ -16,6 +16,7 @@
 
     <color name="orange_week_background">#844D50</color>
     <color name="select_week_color_orange">#FFCCCD</color>
+    <color name="heading_bg_color_orange">#fee8b3</color>
 
     <!--List item Header background color-->
     <color name="list_title_bg_color_orange">#212121</color>
