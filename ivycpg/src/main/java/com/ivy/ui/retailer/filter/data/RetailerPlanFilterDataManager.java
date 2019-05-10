@@ -13,7 +13,9 @@ import io.reactivex.Single;
 
 public interface RetailerPlanFilterDataManager extends AppDataManagerContract {
 
-    Observable<HashMap<String,AttributeBO>> prepareAttributeList();
+    Observable<ArrayList<AttributeBO>> prepareAttributeList();
+
+    Observable<HashMap<String,ArrayList<AttributeBO>>> prepareChildAttributeList();
 
     Observable<ArrayList<String>> prepareConfigurationMaster();
 

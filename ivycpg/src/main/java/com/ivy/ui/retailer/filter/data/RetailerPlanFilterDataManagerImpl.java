@@ -58,7 +58,7 @@ public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterData
             public ArrayList<String> call() throws Exception {
                 ArrayList<String> listValues = new ArrayList<>();
 
-                int size = hhtCodeList.size();
+//                int size = hhtCodeList.size();
 
 //                String hhtCodes ="("+TextUtils.join(",", Collections.nCopies(size, "?")) + "),";
 
@@ -89,44 +89,29 @@ public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterData
         });
     }
 
-    public Observable<HashMap<String,AttributeBO>> prepareAttributeList(){
-        return Observable.fromCallable(new Callable<HashMap<String,AttributeBO>>() {
+    @Override
+    public Observable<ArrayList<AttributeBO>> prepareAttributeList(){
+        return Observable.fromCallable(new Callable<ArrayList<AttributeBO>>() {
             @Override
-            public HashMap<String,AttributeBO> call() throws Exception {
-                HashMap<String,AttributeBO> mapValues = new HashMap<>();
+            public ArrayList<AttributeBO> call() throws Exception {
+                ArrayList<AttributeBO> mapValues = new ArrayList<>();
 
-                String queryStr = "Select EAM.AttributeId,EAM.AttributeName,EAM.Sequence,EAM1.AttributeId,EAM1.AttributeName from EntityAttributeMaster EAM " +
-                        "inner join EntityAttributeMaster as EAM1 on EAM.AttributeId = EAM1.ParentId where EAM.parentId = 0 " +
-                        "order by EAM.Sequence,EAM.AttributeId ASC";
+                String parentQry = "Select EAM.AttributeId,EAM.AttributeName,EAM.Sequence,EAM.ParentId,EAM.levels from EntityAttributeMaster EAM where EAM.parentId = 0 " +
+                        "and isFilterable order by EAM.Sequence,EAM.AttributeId ASC";
 
                 initDb();
 
-                Cursor c = mDbUtil.selectSQL(queryStr);
+                Cursor c = mDbUtil.selectSQL(parentQry);
                 if (c != null&& c.getCount() > 0) {
                     while (c.moveToNext()) {
 
-                        if (mapValues.get(c.getString(0)) == null) {
-                            AttributeBO attributeBO = new AttributeBO();
-                            attributeBO.setAttributeId(c.getInt(0));
-                            attributeBO.setAttributeName(c.getString(1));
+                        AttributeBO attributeBO = new AttributeBO();
+                        attributeBO.setAttributeId(c.getInt(0));
+                        attributeBO.setAttributeName(c.getString(1));
+                        attributeBO.setLevelCount(c.getInt(4));
 
-                            AttributeBO attributeBOSub = new AttributeBO();
-                            attributeBOSub.setAttributeId(c.getInt(3));
-                            attributeBOSub.setAttributeName(c.getString(4));
+                        mapValues.add(attributeBO);
 
-                            attributeBO.getAttributeBOHashMap().put(c.getString(3),attributeBOSub);
-
-                            mapValues.put(c.getString(0), attributeBO);
-                        } else {
-                            AttributeBO attributeBO = mapValues.get(c.getString(0));
-
-                            AttributeBO attributeBOSub = new AttributeBO();
-                            attributeBOSub.setAttributeId(c.getInt(3));
-                            attributeBOSub.setAttributeName(c.getString(4));
-
-                            attributeBO.getAttributeBOHashMap().put(c.getString(3),attributeBOSub);
-
-                        }
                     }
                 }
 
@@ -137,6 +122,44 @@ public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterData
         });
     }
 
+    @Override
+    public Observable<HashMap<String, ArrayList<AttributeBO>>> prepareChildAttributeList() {
+        return Observable.fromCallable(new Callable<HashMap<String,ArrayList<AttributeBO>>>() {
+            @Override
+            public HashMap<String,ArrayList<AttributeBO>> call() throws Exception {
+                HashMap<String,ArrayList<AttributeBO>> mapValues = new HashMap<>();
+
+                String queryStr = "Select EAM.AttributeId as BaseAId,EAM.AttributeName as BaseName,EAM1.AttributeId,EAM1.AttributeName,EAM.ParentId from EntityAttributeMaster EAM " +
+                        "inner join EntityAttributeMaster as EAM1 on EAM.AttributeId = EAM1.ParentId " +
+                        "order by EAM1.Sequence,EAM.AttributeId ASC";
+
+                initDb();
+
+                Cursor c = mDbUtil.selectSQL(queryStr);
+                if (c != null&& c.getCount() > 0) {
+                    while (c.moveToNext()) {
+
+                        AttributeBO attributeBO = new AttributeBO();
+                        attributeBO.setAttributeId(c.getInt(2));
+                        attributeBO.setAttributeName(c.getString(3));
+
+                        if (mapValues.get(c.getString(0)) == null) {
+                            ArrayList<AttributeBO> attributeBOS = new ArrayList<AttributeBO>(){{add(attributeBO);}};
+                            mapValues.put(c.getString(0), attributeBOS);
+                        }
+                        else {
+                            ArrayList<AttributeBO> attributeBOVal = mapValues.get(c.getString(0));
+                            attributeBOVal.add(attributeBO);
+                        }
+                    }
+                }
+
+                shutDownDb();
+
+                return mapValues;
+            }
+        });
+    }
 
     @Override
     public Single<ArrayList<String>> getFilterValues(RetailerPlanFilterBo planFilterBo) {

@@ -43,6 +43,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 import com.ivy.ui.offlineplan.addplan.view.AddPlanDialogFragment;
 import com.ivy.ui.offlineplan.calendar.view.CalendarPlanFragment;
 import com.ivy.ui.retailer.RetailerContract;
@@ -469,8 +470,28 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         }else {
             marker.showInfoWindow();
 
+            ArrayList<DateWisePlanBo> planList = presenter.getSelectedDateRetailerPlanList();
+
+            /*DateWisePlanBo dateWisePlanBo = new DateWisePlanBo();
+            dateWisePlanBo.setStartTime("11:00");
+            dateWisePlanBo.setEndTime("12:00");
+
+            DateWisePlanBo dateWisePlanBo1 = new DateWisePlanBo();
+            dateWisePlanBo1.setStartTime("14:00");
+            dateWisePlanBo1.setEndTime("16:00");
+
+            DateWisePlanBo dateWisePlanBo2 = new DateWisePlanBo();
+            dateWisePlanBo2.setStartTime("18:00");
+            dateWisePlanBo2.setEndTime("21:00");
+
+            planList.add(dateWisePlanBo);
+            planList.add(dateWisePlanBo1);
+            planList.add(dateWisePlanBo2);*/
+
             addPlanDialogFragment =
-                    new AddPlanDialogFragment(retailerMasterBO, presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID()));
+                    new AddPlanDialogFragment(retailerMasterBO,
+                            presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID())
+                    ,planList);
             addPlanDialogFragment.show(((FragmentActivity)context).getSupportFragmentManager(),
                     "add_plan_fragment");
 

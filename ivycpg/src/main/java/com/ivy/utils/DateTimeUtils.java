@@ -476,4 +476,46 @@ public class DateTimeUtils {
 
     }
 
+    /**
+     * This Method Use to check whether the Time slot is between Two Time
+     * @param fromTime
+     * @param toTime
+     * @param compareTime
+     * @param isFromTime - Whether to check with From Time or To Time
+     * @return
+     */
+    public static boolean isBetweenTime(String fromTime, String toTime, String compareTime, boolean isFromTime){
+
+        try {
+            Date time1 = new SimpleDateFormat("HH:mm", Locale.US).parse(fromTime);
+            Calendar calendar1 = Calendar.getInstance();
+            calendar1.setTime(time1);
+
+            Date time2 = new SimpleDateFormat("HH:mm", Locale.US).parse(toTime);
+            Calendar calendar2 = Calendar.getInstance();
+            calendar2.setTime(time2);
+
+            Date d = new SimpleDateFormat("HH:mm", Locale.US).parse(compareTime);
+            Calendar calendar3 = Calendar.getInstance();
+            calendar3.setTime(d);
+
+            Date x = calendar3.getTime();
+            if (isFromTime) {
+                if (x.equals(calendar1.getTime())
+                        || (x.after(calendar1.getTime()) && x.before(calendar2.getTime()))) {
+                    return true;
+                }
+            }else{
+                if ((x.after(calendar1.getTime()) && x.before(calendar2.getTime()))
+                        || x.equals(calendar2.getTime())) {
+                    return true;
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
 }

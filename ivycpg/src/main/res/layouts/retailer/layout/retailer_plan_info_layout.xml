@@ -294,6 +294,32 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_visit_end_time_txt" />
         <!--Visit End Ends-->
 
+        <TextView
+            android:id="@+id/tv_planned_layout_txt"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_15sdp"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:padding="@dimen/_3sdp"
+            android:text="Planned Time Slots"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_visit_end_time_txt" />
+
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/planned_slot_grid_layout"
+            android:columnCount="3"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="@string/select_date"
+            android:useDefaultMargins="true"
+            app:layout_constraintTop_toBottomOf="@+id/tv_planned_layout_txt">
+
+
+        </GridLayout>
+
         <!--Last Visit Begins-->
         <TextView
             android:id="@+id/tv_last_visit_txt"
@@ -306,7 +332,7 @@
             android:padding="@dimen/_3sdp"
             android:text="Last Visit Date"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_visit_end_time_txt" />
+            app:layout_constraintTop_toBottomOf="@+id/planned_slot_grid_layout" />
 
         <TextView
             android:id="@+id/tv_last_visit_date"
@@ -327,7 +353,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="visible"
-            app:constraint_referenced_ids="tv_visit_end_time_txt,tv_visit_time,tv_visit_date,tv_visit_end_time,tv_visit_time_txt,tv_visit_end_date,tv_last_visit_txt,tv_last_visit_date" />
+            app:constraint_referenced_ids="tv_visit_end_time_txt,tv_visit_time,tv_visit_date,tv_visit_end_time,tv_visit_time_txt,tv_visit_end_date,tv_last_visit_txt,tv_last_visit_date,tv_planned_layout_txt,planned_slot_grid_layout" />
 
     </android.support.constraint.ConstraintLayout>
 

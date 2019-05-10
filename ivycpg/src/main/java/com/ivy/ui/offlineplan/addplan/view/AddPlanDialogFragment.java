@@ -5,41 +5,44 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.constraint.Group;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialogFragment;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.GridLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.ivy.core.base.view.BaseBottomSheetDialogFragment;
 import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.cpg.view.retailercontact.RetailerContactAvailBo;
 import com.ivy.cpg.view.retailercontact.TimeSlotPickFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.ui.offlineplan.addplan.AddPlanContract;
 import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 import com.ivy.ui.offlineplan.addplan.di.AddPlanModule;
 import com.ivy.ui.offlineplan.addplan.di.DaggerAddPlanComponent;
 import com.ivy.ui.offlineplan.addplan.presenter.AddPlanPresenterImpl;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.DeviceUtils;
+import com.ivy.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.Unbinder;
 
@@ -47,7 +50,7 @@ import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
 import static com.ivy.utils.DateTimeUtils.TIME_HOUR_MINS;
 
 @SuppressLint("ValidFragment")
-public class AddPlanDialogFragment extends BottomSheetDialogFragment implements AddPlanContract.AddPlanView {
+public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment implements AddPlanContract.AddPlanView {
 
     @BindView(R.id.tv_add)
     TextView addPlan;
@@ -85,8 +88,14 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
     @BindView(R.id.tv_visit_end_time)
     TextView tvVisitEndTime;
 
+    @BindView(R.id.tv_planned_layout_txt)
+    TextView tvPlannedLayoutTxt;
+
     @BindView(R.id.visitElementGroup)
     Group visitElementGroup;
+
+    @BindView(R.id.planned_slot_grid_layout)
+    GridLayout timeSlotGridLayout;
 
     private BottomSheetBehavior bottomSheetBehavior;
 
@@ -98,12 +107,16 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
 
     private TimeSlotPickFragment timeSlotPickFragment;
 
+    private ArrayList<DateWisePlanBo> planList;
+
     @Inject
     AddPlanPresenterImpl<AddPlanContract.AddPlanView> addPlanPresenter;
 
-    public AddPlanDialogFragment(RetailerMasterBO retailerMaster, DateWisePlanBo dateWisePlanBo){
+    public AddPlanDialogFragment(RetailerMasterBO retailerMaster,
+                                 DateWisePlanBo dateWisePlanBo, ArrayList<DateWisePlanBo> planList){
         retailerMasterBO = retailerMaster;
         this.dateWisePlanBo = dateWisePlanBo;
+        this.planList = planList;
     }
 
     private String date="",startTime="",endtime="";
@@ -114,19 +127,13 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
         this.context = context;
     }
 
-    private Unbinder mUnBinder;
-
-    @SuppressLint("RestrictedApi")
     @Override
-    public void setupDialog(Dialog dialog, int style) {
-        super.setupDialog(dialog, style);
+    protected int setContentViewLayout() {
+        return R.layout.retailer_plan_info_layout;
+    }
 
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.retailer_plan_info_layout, null);
-        dialog.setContentView(view);
-
-        initializeDi();
-
-        mUnBinder = ButterKnife.bind(this, view);
+    @Override
+    public void initVariables(Dialog dialog,View view) {
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) ((View) view.getParent()).getLayoutParams();
         CoordinatorLayout.Behavior behavior = params.getBehavior();
@@ -137,6 +144,10 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
         if (behavior != null && behavior instanceof BottomSheetBehavior) {
 
             bottomSheetBehavior = ((BottomSheetBehavior) behavior);
+
+            bottomSheetBehavior.setHideable(false);
+
+            bottomSheetBehavior.setPeekHeight(DeviceUtils.getDisplayMetrics(context).heightPixels);
 
             ((BottomSheetBehavior) behavior).setState(BottomSheetBehavior.STATE_EXPANDED);
 
@@ -157,15 +168,27 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
             endtime = DateTimeUtils.convertDateTimeObjectToRequestedFormat(dateWisePlanBo.getEndTime(),"yyyy/MM/dd HH:mm:ss","HH:mm");
 
         setPlanWindowValues();
-
     }
 
-    private void initializeDi(){
+    @Override
+    public void initializeDi(){
         DaggerAddPlanComponent.builder()
                 .ivyAppComponent(((BusinessModel) Objects.requireNonNull((FragmentActivity)context).getApplication()).getComponent())
                 .addPlanModule(new AddPlanModule(this, context))
                 .build()
                 .inject(AddPlanDialogFragment.this);
+
+        setBasePresenter(addPlanPresenter);
+    }
+
+    @Override
+    protected void getMessageFromAliens() {
+
+    }
+
+    @Override
+    protected void setUpViews() {
+
     }
 
     private BottomSheetBehavior.BottomSheetCallback bottomSheetCallBack = new BottomSheetBehavior.BottomSheetCallback() {
@@ -251,28 +274,65 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
 
     @OnClick(R.id.tv_save)
     void savePlan(){
-        if (!"Y".equals(retailerMasterBO.getIsVisited())
-                &&( retailerMasterBO.getIsToday() == 1
-                || "Y".equals(retailerMasterBO.getIsDeviated())) && dateWisePlanBo != null) {
-            addPlanPresenter.updatePlan(dateWisePlanBo.getDate(),tvStartVisitTime.getText().toString(),tvVisitEndTime.getText().toString(),retailerMasterBO);
-        }else if(!"Y".equals(retailerMasterBO.getIsVisited())){
-            addPlanPresenter.addNewPlan(date,tvStartVisitTime.getText().toString(),tvVisitEndTime.getText().toString(),retailerMasterBO);
+
+        String startTime = tvStartVisitTime.getText().toString();
+        String endTime = tvVisitEndTime.getText().toString();
+
+        if (validate(startTime,endTime)) {
+
+            if (!"Y".equals(retailerMasterBO.getIsVisited())
+                    && (retailerMasterBO.getIsToday() == 1
+                    || "Y".equals(retailerMasterBO.getIsDeviated())) && dateWisePlanBo != null) {
+                addPlanPresenter.updatePlan(dateWisePlanBo.getDate(), startTime, endtime, retailerMasterBO);
+            } else if (!"Y".equals(retailerMasterBO.getIsVisited())) {
+                addPlanPresenter.addNewPlan(date, startTime, endTime, retailerMasterBO);
+            }
+
+            dismiss();
         }
-        dismiss();
+    }
+
+    private boolean validate(String startTime, String endtime){
+
+        for (DateWisePlanBo planBo : planList) {
+            if (DateTimeUtils.isBetweenTime(startTime, endtime, planBo.getStartTime(), true)) {
+                showMessage(getString(R.string.time_slot_already_selected));
+                return false;
+            } else if (DateTimeUtils.isBetweenTime(startTime, endtime, planBo.getEndTime(), false)) {
+                showMessage(getString(R.string.time_slot_already_selected));
+                return false;
+            }
+        }
+
+        return true;
+
     }
 
     @OnClick(R.id.tv_mail)
     void sendEmail(){
+
+        if (retailerMasterBO.getEmail() != null && StringUtils.isValidEmail(retailerMasterBO.getEmail())) {
+
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO, Uri.fromParts(
+                    "mailto", retailerMasterBO.getEmail(), null));
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Message To Retailer");
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "Hi "+retailerMasterBO.getRetailerName());
+            startActivity(Intent.createChooser(emailIntent, "Send email..."));
+        }else
+            showMessage("No Valid Email Found");
+
     }
 
     @OnClick(R.id.tv_cancel)
     void cancelPlan(){
         addPlanPresenter.cancelPlan(dateWisePlanBo);
+        dismiss();
     }
 
     @OnClick(R.id.tv_delete)
     void deletePlan(){
         addPlanPresenter.deletePlan(dateWisePlanBo);
+        dismiss();
     }
 
     private View.OnClickListener addToPlanListener = new View.OnClickListener() {
@@ -305,6 +365,23 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
 
             if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED)
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+
+            if (planList != null && !planList.isEmpty()){
+
+                for (DateWisePlanBo planBo : planList){
+
+                    String timeSlot = planBo.getStartTime()+" - "+planBo.getEndTime();
+
+                    View view = getLayoutInflater().inflate(R.layout.time_slot_textview_layout, null);
+
+                    ((TextView)view.findViewById(R.id.time_slot_textview)).setText(timeSlot);
+
+                    timeSlotGridLayout.addView(view);
+                }
+            }else{
+                tvPlannedLayoutTxt.setVisibility(View.GONE);
+                timeSlotGridLayout.setVisibility(View.GONE);
+            }
         }
     };
 
@@ -387,159 +464,8 @@ public class AddPlanDialogFragment extends BottomSheetDialogFragment implements 
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        try {
-            mUnBinder.unbind();
-            mUnBinder = null;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    @Override
-    public void showLoading() {
-
-    }
-
-    @Override
-    public void showLoading(String message) {
-
-    }
-
-    @Override
-    public void showLoading(int strinRes) {
-
-    }
-
-    @Override
-    public void hideLoading() {
-
-    }
-
-    @Override
-    public void onError(int resId) {
-
-    }
-
-    @Override
-    public void onError(String message) {
-
-    }
-
-    @Override
-    public void showMessage(String message) {
-
-    }
-
-    @Override
-    public void showMessage(int resId) {
-
-    }
-
-    @Override
-    public boolean isNetworkConnected() {
-        return false;
-    }
-
-    @Override
-    public void hideKeyboard() {
-
-    }
-
-    @Override
-    public void setLayoutDirection(int direction) {
-
-    }
-
-    @Override
-    public void handleLayoutDirection(String language) {
-
-    }
-
-    @Override
-    public void setBlueTheme() {
-
-    }
-
-    @Override
-    public void setRedTheme() {
-
-    }
-
-    @Override
-    public void setOrangeTheme() {
-
-    }
-
-    @Override
-    public void setGreenTheme() {
-
-    }
-
-    @Override
-    public void setPinkTheme() {
-
-    }
-
-    @Override
-    public void setNavyBlueTheme() {
-
-    }
-
-    @Override
-    public void setFontSize(String fontSize) {
-
-    }
-
-    @Override
-    public void showAlert(String title, String msg) {
-
-    }
-
-    @Override
-    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener) {
-
-    }
-
-    @Override
-    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, CommonDialog.negativeOnClickListener negativeOnClickListener) {
-
-    }
-
-    @Override
-    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, boolean isCancelable) {
-
-    }
-
-    @Override
-    public void createNFCManager() {
-
-    }
-
-    @Override
-    public void resumeNFCManager() {
-
-    }
-
-    @Override
-    public void pauseNFCManager() {
-
-    }
-
-    @Override
-    public void setScreenTitle(String title) {
-
-    }
-
-    @Override
-    public void setUpToolbar(String title) {
-
-    }
-
-    @Override
     public void showUpdatedSuccessfullyMessage() {
+
     }
 
     @Override
