@@ -118,22 +118,35 @@ public class WebViewReportHelper {
     public void prepareArchiveFileDownload(String filePath) {
         bModel.setDigitalContentURLS(new HashMap<String, String>());
 
-        boolean isAmazonUpload = false;
+        boolean isAmazonCloud = true;
+        boolean isSFDCCloud=false;
+        boolean isAzureCloud=false;
 
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
         );
         db.createDataBase();
         db.openDataBase();
         Cursor c = db
-                .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'ISAMAZON_IMGUPLOAD' and flag = 1 and ForSwitchSeller = 0");
+                .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'CLOUD_STORAGE' and flag = 1 and ForSwitchSeller = 0");
         if (c != null) {
             while (c.moveToNext()) {
-                isAmazonUpload = true;
+                if(c.getInt(0)==0){
+                    isAmazonCloud=true;
+                }
+                else if(c.getInt(0)==1){
+                    isSFDCCloud=true;
+                }
+                else if(c.getInt(0)==2){
+                    isAzureCloud=true;
+                }
+                else {
+                    isAmazonCloud=true;
+                }
             }
         }
         c.close();
 
-        if (!isAmazonUpload) {
+        if (!isAmazonCloud) {
             c = db
                     .selectSQL("SELECT ListName FROM StandardListMaster Where ListCode = 'AS_HOST'");
             if (c != null) {
