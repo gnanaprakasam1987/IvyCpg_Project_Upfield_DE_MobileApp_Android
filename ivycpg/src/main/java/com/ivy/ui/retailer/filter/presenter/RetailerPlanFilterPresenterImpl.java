@@ -3,7 +3,6 @@ package com.ivy.ui.retailer.filter.presenter;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.bo.AttributeBO;
-import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
 import com.ivy.ui.retailer.filter.RetailerPlanFilterContract;
@@ -17,8 +16,8 @@ import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function3;
 import io.reactivex.observers.DisposableObserver;
 
 import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_IS_NOT_VISITED;
@@ -30,7 +29,9 @@ public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContrac
 
     private ArrayList<String> configurationList ;
     private RetailerPlanFilterDataManager retailerPlanFilterDataManager;
-    private HashMap<String, AttributeBO> attributeMapValues;
+    private ArrayList<AttributeBO> attributeListValues;
+
+    private HashMap<String,ArrayList<AttributeBO>> attributeChildLst;
 
     @Inject
     RetailerPlanFilterPresenterImpl(DataManager dataManager, SchedulerProvider schedulerProvider,
@@ -47,13 +48,16 @@ public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContrac
         getCompositeDisposable().add(Observable.zip(
                 retailerPlanFilterDataManager.prepareConfigurationMaster(),
                 retailerPlanFilterDataManager.prepareAttributeList(),
-                new BiFunction<ArrayList<String>, HashMap<String, AttributeBO>, Boolean>() {
+                retailerPlanFilterDataManager.prepareChildAttributeList(),
+                new Function3<ArrayList<String>, ArrayList<AttributeBO>,HashMap<String, ArrayList<AttributeBO>>,Boolean>() {
                     @Override
                     public Boolean apply(ArrayList<String> configListValues,
-                                         HashMap<String, AttributeBO> attributeMapValues) throws Exception {
+                                         ArrayList<AttributeBO> attributeParentList,
+                                         HashMap<String,ArrayList<AttributeBO>> attributeChildList) throws Exception {
 
                         setConfigurationList(configListValues);
-                        setAttributeMapValues(attributeMapValues);
+                        setAttributeListValues(attributeParentList);
+                        setAttributeChildLst(attributeChildList);
 
                         return true;
                     }
@@ -122,12 +126,20 @@ public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContrac
         this.configurationList = configurationList;
     }
 
-    public HashMap<String, AttributeBO> getAttributeMapValues() {
-        return attributeMapValues;
+    public ArrayList<AttributeBO> getAttributeListValues() {
+        return attributeListValues;
     }
 
-    public void setAttributeMapValues(HashMap<String, AttributeBO> attributeMapValues) {
-        this.attributeMapValues = attributeMapValues;
+    public void setAttributeListValues(ArrayList<AttributeBO> attributeListValues) {
+        this.attributeListValues = attributeListValues;
+    }
+
+    public ArrayList<AttributeBO> getAttributeChildLst(String parentId) {
+        return attributeChildLst.get(parentId);
+    }
+
+    public void setAttributeChildLst(HashMap<String, ArrayList<AttributeBO>> attributeChildLst) {
+        this.attributeChildLst = attributeChildLst;
     }
 
     private void prepareScreenData(){

@@ -1255,10 +1255,10 @@ public class ContactCreationFragment extends IvyBaseFragment implements Contacts
 
         for (RetailerContactAvailBo timeSlot : retailerContactBo.getContactAvailList()){
             if (timeSlot.getDay().contains(contactAvailBo.getDay())){
-                if (bmodel.newOutletHelper.isBetweenTime(timeSlot.getFrom(),timeSlot.getTo(),contactAvailBo.getFrom(),true)){
+                if (DateTimeUtils.isBetweenTime(timeSlot.getFrom(),timeSlot.getTo(),contactAvailBo.getFrom(),true)){
                     Toast.makeText(context, context.getString(R.string.time_slot_already_selected), Toast.LENGTH_SHORT).show();
                     return;
-                }else if (bmodel.newOutletHelper.isBetweenTime(timeSlot.getFrom(),timeSlot.getTo(),contactAvailBo.getTo(),false)){
+                }else if (DateTimeUtils.isBetweenTime(timeSlot.getFrom(),timeSlot.getTo(),contactAvailBo.getTo(),false)){
                     Toast.makeText(context, context.getString(R.string.time_slot_already_selected), Toast.LENGTH_SHORT).show();
                     return;
                 }

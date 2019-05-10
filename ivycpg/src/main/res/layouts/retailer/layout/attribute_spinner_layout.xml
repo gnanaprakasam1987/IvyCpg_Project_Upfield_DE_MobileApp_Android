@@ -3,9 +3,9 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/_15sdp"
-    android:paddingBottom="@dimen/_15sdp"
-    >
+    android:paddingTop="@dimen/_10sdp"
+    android:paddingBottom="@dimen/_10sdp"
+    android:layout_marginTop="@dimen/_2sdp">
 
     <TextView
         android:id="@+id/spinner_txt"

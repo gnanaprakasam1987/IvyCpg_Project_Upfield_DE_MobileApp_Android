@@ -9,6 +9,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.DatePicker;
 import android.widget.LinearLayout;
@@ -27,11 +28,13 @@ import com.ivy.ui.retailer.filter.di.DaggerRetailerPlanFilterComponent;
 import com.ivy.ui.retailer.filter.di.RetailerPlanFilterModule;
 import com.ivy.ui.retailer.filter.presenter.RetailerPlanFilterPresenterImpl;
 import com.ivy.utils.DeviceUtils;
+import com.ivy.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -97,7 +100,7 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
 
             bottomSheetBehavior = ((BottomSheetBehavior) behavior);
 
-            bottomSheetBehavior.setHideable(true);
+            bottomSheetBehavior.setHideable(false);
 
             bottomSheetBehavior.setPeekHeight(DeviceUtils.getDisplayMetrics(context).heightPixels);
 
@@ -119,6 +122,7 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
 
     @OnClick(R.id.close)
     void closeIconClick(){
+        bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
@@ -207,6 +211,7 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
                 case BottomSheetBehavior.STATE_SETTLING:
                     break;
                 case BottomSheetBehavior.STATE_EXPANDED:
+                    bottomSheetBehavior.setHideable(false);
                     break;
                 case BottomSheetBehavior.STATE_COLLAPSED:
                     break;
@@ -237,6 +242,7 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
+            bottomSheetBehavior.setHideable(true);
             bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
             return true;
         }
@@ -347,24 +353,174 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
     @Override
     public void showAttributeSpinner() {
 
-        ArrayList<AttributeBO> attributeBOList = new ArrayList<>(presenter.getAttributeMapValues().values());
+        ArrayList<AttributeBO> attributeBOList = presenter.getAttributeListValues();
 
         for (AttributeBO attributeBO : attributeBOList){
+
+            ArrayList<AttributeBO> attributeChildList = new ArrayList<>(presenter.getAttributeChildLst(attributeBO.getAttributeId()+""));
+
             View view = getLayoutInflater().inflate(R.layout.attribute_spinner_layout, null);
 
             ((TextView)view.findViewById(R.id.spinner_txt)).setText(attributeBO.getAttributeName());
 
             Spinner attributeSpinner = view.findViewById(R.id.spinner_attribute);
 
+            attributeSpinner.setTag(attributeBO.getAttributeName()+"__"+1);
+
+            AttributeBO attributeBOSelect = new AttributeBO(-1,"Select");
+
+            ArrayList<AttributeBO> spinnerList = new ArrayList<>();
+            spinnerList.add(attributeBOSelect);
+            spinnerList.addAll(attributeChildList);
+
             ArrayAdapter<AttributeBO> attributeAdapter  = new ArrayAdapter<AttributeBO>(context,
                     android.R.layout.simple_spinner_item,
-                    new ArrayList<>(attributeBO.getAttributeBOHashMap().values()));
+                    spinnerList);
             attributeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
             attributeSpinner.setAdapter(attributeAdapter);
 
+            attributeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (position != 0){
+
+                        AttributeBO attributeBO1 = (AttributeBO)parent.getSelectedItem();
+
+                        String[] splitTagName = parent.getTag().toString().split("__");
+                        filterAttributeId(splitTagName[0], attributeBO1.getAttributeId());
+
+                        ArrayList<AttributeBO> attributeChildList = presenter.getAttributeChildLst(attributeBO1.getAttributeId()+"");
+
+                        AttributeBO attributeBO = new AttributeBO(-1,"Select");
+
+                        ArrayList<AttributeBO> spinnerList = new ArrayList<>();
+                        spinnerList.add(attributeBO);
+
+                        if (attributeChildList != null && !attributeChildList.isEmpty()){
+                            spinnerList.addAll(attributeChildList);
+                        }
+
+                        Spinner childSpinner = spinnerDetailMap.get(splitTagName[0]+"__"+2);
+
+                        if (childSpinner == null)
+                            return;
+
+                        ArrayAdapter<AttributeBO> attributeAdapter  = new ArrayAdapter<AttributeBO>(context,
+                                android.R.layout.simple_spinner_item,
+                                spinnerList);
+                        attributeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                        childSpinner.setAdapter(attributeAdapter);
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            if (attributeBO.getLevelCount() > 2){
+                for (int i = 2 ; i < attributeBO.getLevelCount(); i++){
+                    createSpinner(view,attributeBO.getAttributeName()+"__"+i);
+                }
+            }
+
             dynamicViewLayout.addView(view);
 
+//            createSpinner(dynamicViewLayout,attributeChildList,attributeBO.getAttributeName());
+
         }
+    }
+
+    private HashMap<String,Spinner> spinnerDetailMap = new HashMap<>();
+
+    private void createSpinner(final View baseView,String tagName){
+
+        View view = getLayoutInflater().inflate(R.layout.attribute_spinner_layout, null);
+
+        ((TextView)view.findViewById(R.id.spinner_txt)).setVisibility(View.GONE);
+
+        Spinner attributeSpinner = view.findViewById(R.id.spinner_attribute);
+
+        attributeSpinner.setTag(tagName);
+
+        AttributeBO attributeBO = new AttributeBO(-1,"Select");
+
+        ArrayList<AttributeBO> spinnerList = new ArrayList<>();
+        spinnerList.add(attributeBO);
+
+        ArrayAdapter<AttributeBO> attributeAdapter  = new ArrayAdapter<AttributeBO>(context,
+                android.R.layout.simple_spinner_item,
+                spinnerList);
+        attributeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+        attributeSpinner.setAdapter(attributeAdapter);
+
+        spinnerDetailMap.put(tagName,attributeSpinner);
+
+        attributeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position != 0){
+
+                    AttributeBO attributeBO1 = (AttributeBO)parent.getSelectedItem();
+
+                    String[] splitTagName = parent.getTag().toString().split("__");
+                    filterAttributeId(splitTagName[0], attributeBO1.getAttributeId());
+
+                    ArrayList<AttributeBO> attributeChildList = presenter.getAttributeChildLst(attributeBO1.getAttributeId()+"");
+
+                    AttributeBO attributeBO = new AttributeBO(-1,"Select");
+
+                    ArrayList<AttributeBO> spinnerList = new ArrayList<>();
+                    spinnerList.add(attributeBO);
+
+                    if (attributeChildList != null && !attributeChildList.isEmpty()){
+                        spinnerList.addAll(attributeChildList);
+                    }
+
+                    String tagName = splitTagName[0]+"__"+(Integer.parseInt(splitTagName[1]+1));
+
+                    Spinner childSpinner = spinnerDetailMap.get(tagName);
+
+                    if (childSpinner == null)
+                        return;
+
+                    ArrayAdapter<AttributeBO> attributeAdapter  = new ArrayAdapter<AttributeBO>(context,
+                            android.R.layout.simple_spinner_item,
+                            spinnerList);
+                    attributeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+                    childSpinner.setAdapter(attributeAdapter);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        ((LinearLayout)baseView).addView(view);
+    }
+
+    private ArrayList<String> filterAttributeIds = new ArrayList<>();
+
+    private void filterAttributeId (String attribute, int id){
+
+        int size = filterAttributeIds.size();
+        for (int i = 0; i<size; i++){
+            if (filterAttributeIds.get(i).startsWith(attribute)){
+                filterAttributeIds.set(i,(attribute+id));
+                break;
+            }else{
+                if (i == size-1)
+                    filterAttributeIds.add((attribute+id));
+            }
+        }
+
+    }
+
+    private void updateAdapter(){
+
     }
 
     @Override
@@ -375,12 +531,14 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
     @Override
     public void clearFilter() {
         EventBus.getDefault().post("CLEAR");
+        bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     @Override
     public void noFilterRecord() {
         EventBus.getDefault().post("NODATA");
+        bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
@@ -395,6 +553,7 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
         planFilterBo.setRetailerIds(retailerIds);
 
         EventBus.getDefault().post(planFilterBo);
+        bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 

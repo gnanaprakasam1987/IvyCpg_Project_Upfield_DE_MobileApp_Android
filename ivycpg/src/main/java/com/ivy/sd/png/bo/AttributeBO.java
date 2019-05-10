@@ -92,7 +92,19 @@ public class AttributeBO {
         return attributeName;
     }
 
+    private int levelCount;
+
+    public int getLevelCount() {
+        return levelCount;
+    }
+
+    public void setLevelCount(int levelCount) {
+        this.levelCount = levelCount;
+    }
+
     private HashMap<String,AttributeBO> attributeBOHashMap =new HashMap<>();
+
+    private AttributeBO childAttributeBO;
 
     public HashMap<String, AttributeBO> getAttributeBOHashMap() {
         return attributeBOHashMap;
@@ -100,5 +112,14 @@ public class AttributeBO {
 
     public void setAttributeBOHashMap(HashMap<String, AttributeBO> attributeBOHashMap) {
         this.attributeBOHashMap = attributeBOHashMap;
+    }
+
+
+    public AttributeBO getChildAttributeBO() {
+        return childAttributeBO;
+    }
+
+    public void setChildAttributeBO(AttributeBO childAttributeBO) {
+        this.childAttributeBO = childAttributeBO;
     }
 }

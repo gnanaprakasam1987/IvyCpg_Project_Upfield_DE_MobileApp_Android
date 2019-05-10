@@ -695,7 +695,7 @@ negative button and neutral button -->
 
     <style name="TextViewNormal" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/text_size_primary</item>
-        <item name="android:fontFamily">@font/roboto_medium</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:textColor">@color/FullBlack</item>
     </style>
 

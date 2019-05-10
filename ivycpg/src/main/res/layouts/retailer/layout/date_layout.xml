@@ -4,8 +4,8 @@
     android:id="@+id/task_due_date_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/_15sdp"
-    android:paddingBottom="@dimen/_15sdp"
+    android:paddingTop="@dimen/_10sdp"
+    android:paddingBottom="@dimen/_10sdp"
     android:visibility="visible">
 
     <android.support.v7.widget.AppCompatTextView
@@ -17,7 +17,7 @@
         android:layout_marginRight="@dimen/_10sdp"
         android:paddingBottom="@dimen/_3sdp"
         android:paddingTop="@dimen/_3sdp"
-        android:text="Task Due Date"
+        android:text="Header"
         app:layout_constraintTop_toTopOf="parent" />
 
     <android.support.v7.widget.AppCompatTextView
@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/_10sdp"
         android:layout_marginRight="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_5sdp"
         android:background="@drawable/border_only"
         android:gravity="start|center_vertical"
         android:paddingBottom="@dimen/_10sdp"
@@ -36,21 +36,22 @@
         android:text="@string/select_date"
         app:layout_constraintEnd_toStartOf="@+id/task_due_to_date"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/task_due_date_txt" />
+        app:layout_constraintTop_toBottomOf="@+id/from_txt" />
 
     <android.support.v7.widget.AppCompatTextView
         android:layout_width="0dp"
         style="@style/TextViewStyleSmall"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_15sdp"
         android:gravity="start|center_vertical"
         android:text="@string/from"
         android:paddingLeft="@dimen/_10sdp"
         android:paddingRight="@dimen/_10sdp"
         android:paddingTop="@dimen/_3sdp"
         android:paddingBottom="@dimen/_3sdp"
-        app:layout_constraintTop_toBottomOf="@+id/task_due_from_date"
+        android:id="@+id/from_txt"
+        app:layout_constraintTop_toBottomOf="@+id/task_due_date_txt"
         app:layout_constraintStart_toStartOf="@+id/task_due_from_date"/>
 
     <android.support.v7.widget.AppCompatTextView
@@ -60,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/_10sdp"
         android:layout_marginRight="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_15sdp"
+        android:layout_marginTop="@dimen/_5sdp"
         android:background="@drawable/border_only"
         android:gravity="start|center_vertical"
         android:paddingBottom="@dimen/_10sdp"
@@ -68,23 +69,24 @@
         android:paddingTop="@dimen/_10sdp"
         android:text="@string/select_date"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/task_due_from_date"
-        app:layout_constraintTop_toBottomOf="@+id/task_due_date_txt" />
+        app:layout_constraintTop_toBottomOf="@+id/to_txt"
+        app:layout_constraintStart_toEndOf="@+id/task_due_from_date" />
 
     <android.support.v7.widget.AppCompatTextView
         android:layout_width="0dp"
         style="@style/TextViewStyleSmall"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/_10sdp"
-        android:layout_marginTop="@dimen/_5sdp"
+        android:layout_marginTop="@dimen/_15sdp"
         android:gravity="start|center_vertical"
+        android:id="@+id/to_txt"
         android:text="Till"
         android:paddingLeft="@dimen/_10sdp"
         android:paddingRight="@dimen/_10sdp"
         android:paddingTop="@dimen/_3sdp"
         android:paddingBottom="@dimen/_3sdp"
-        app:layout_constraintTop_toBottomOf="@+id/task_due_to_date"
-        app:layout_constraintStart_toStartOf="@+id/task_due_to_date"/>
+        app:layout_constraintStart_toStartOf="@+id/task_due_to_date"
+        app:layout_constraintTop_toBottomOf="@+id/task_due_date_txt"/>
 
 </android.support.constraint.ConstraintLayout>
 
