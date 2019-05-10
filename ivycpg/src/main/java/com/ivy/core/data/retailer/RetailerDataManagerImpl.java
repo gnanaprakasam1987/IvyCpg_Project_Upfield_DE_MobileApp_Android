@@ -337,6 +337,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                                 updateWalkingSequenceDayWise(retailer, weekText[0]);
 
                                             }
+                                            //update plan count and visit count from datewiseplan table
+                                            updatePlanAndVisitCount(retailer);
 
                                             if (configurationMasterHelper.SUBD_RETAILER_SELECTION | configurationMasterHelper.IS_LOAD_ONLY_SUBD)
                                                 if (retailer.getSubdId() != 0) {
@@ -734,6 +736,42 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                     && c.getCount() > 0) {
                 if (c.moveToNext())
                     retObj.setGroupId(c.getInt(0));
+
+                c.close();
+            }
+        } catch (Exception ignore) {
+
+        }
+
+    }
+
+    /**
+     * update retailer plan and visit count
+     *
+     * @param retObj
+     */
+    private void updatePlanAndVisitCount(RetailerMasterBO retObj) {
+
+        try {
+            if (mDbUtil.isDbNullOrClosed())
+                initDb();
+
+            Cursor c;
+            c = mDbUtil.selectSQL("select PlanId From DatewisePlan where planStatus ='APPROVED'or 'PENDING' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()));
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext())
+                    retObj.setTotalPlanned(c.getCount());
+
+                c.close();
+            }
+
+
+            c = mDbUtil.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext())
+                    retObj.setTotalVisited(c.getCount());
 
                 c.close();
             }

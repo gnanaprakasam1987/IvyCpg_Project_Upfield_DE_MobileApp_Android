@@ -308,4 +308,11 @@
     <string name="enter_title">Please enter title</string>
     <string name="enter_desc">Please enter description</string>
     <string name="retailer_selection_mandatory">Choose any one retailer</string>
+    <string name="plus_more">\u2022+%d More</string>
+    <string name="plan_retailer_name">\u2022+%s More</string>
+    <string name="visit_hours"> Visit Hour : %s - %s</string>
+    <string name="v_frequency">V.Frequency</string>
+    <string name="v_completed">V.Completed</string>
+    <string name="v_pending">V.Pending</string>
+
 </resources>

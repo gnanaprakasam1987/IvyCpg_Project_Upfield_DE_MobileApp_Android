@@ -1,6 +1,17 @@
-<shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <stroke
-        android:width="0.01dp"
-        android:color="#1A000000" />
-    <solid android:color="@color/zxing_transparent" />
-</shape>
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:bottom="1dp"
+        android:left="-1dp"
+        android:right="1dp"
+        android:top="-1dp">
+        <shape android:shape="rectangle">
+            <stroke
+                android:width="0.01dp"
+                android:color="#1A000000" />
+
+            <solid android:color="@color/transparent" />
+
+        </shape>
+    </item>
+</layer-list>

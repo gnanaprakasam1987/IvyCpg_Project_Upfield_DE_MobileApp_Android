@@ -1,53 +1,56 @@
 package com.ivy.ui.offlineplan.calendar.view;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.RectF;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.alamkanak.weekview.DateTimeInterpreter;
-import com.alamkanak.weekview.MonthLoader;
-import com.alamkanak.weekview.WeekView;
-import com.alamkanak.weekview.WeekViewEvent;
 import com.ivy.calendarlibrary.monthview.MonthView;
+import com.ivy.calendarlibrary.weekview.DateTimeInterpreter;
+import com.ivy.calendarlibrary.weekview.MonthLoader;
+import com.ivy.calendarlibrary.weekview.WeekView;
+import com.ivy.calendarlibrary.weekview.WeekViewEvent;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
 import com.ivy.ui.offlineplan.calendar.CalendarPlanContract;
+import com.ivy.ui.offlineplan.calendar.adapter.BottmSheetRetailerInfoAdapter;
 import com.ivy.ui.offlineplan.calendar.adapter.CalendarClickListner;
 import com.ivy.ui.offlineplan.calendar.adapter.MonthViewAdapter;
+import com.ivy.ui.offlineplan.calendar.adapter.WeekFilterAdapter;
 import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
 import com.ivy.ui.offlineplan.calendar.di.CalendarPlanModule;
 import com.ivy.ui.offlineplan.calendar.di.DaggerCalendarPlanComponent;
+import com.ivy.ui.retailer.view.list.RetailerListActivity;
 import com.ivy.ui.retailer.view.map.RetailerMapFragment;
+import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.DeviceUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -60,7 +63,6 @@ import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_MAP_PLAN;
 public class CalendarPlanFragment extends BaseFragment implements CalendarPlanContract.CalendarPlanView, CalendarClickListner, WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener, WeekView.EmptyViewLongPressListener {
 
     private String screenTitle;
-    private ArrayAdapter<SpinnerBO> selectionAdapter;
 
     @BindView(R.id.rv_calendar)
     MonthView rvCalendar;
@@ -74,9 +76,6 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     @BindView(R.id.tv_month)
     TextView tvMonth;
 
-    @BindView(R.id.btn_switch)
-    Button btnSwitch;
-
     @BindView(R.id.ll_titleList)
     LinearLayout llWeekTitle;
 
@@ -86,6 +85,16 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     @BindView(R.id.week_view)
     WeekView mWeekView;
 
+    @BindView(R.id.rv_week)
+    RecyclerView rvWeek;
+
+    @BindView(R.id.radioGrp)
+    RadioGroup rbgSelection;
+
+    @BindView(R.id.coordinator)
+    CoordinatorLayout coordinatorLayout;
+
+    RecyclerView rvRetailerInfo;
 
     @Inject
     CalendarPlanContract.CalendarPlanPresenter<CalendarPlanContract.CalendarPlanView> presenter;
@@ -93,6 +102,8 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     private int mSelectedType = 0;
     private final int MONTH = 0, DAY = 1, WEEK = 2;
     private Context mContext;
+    private MonthViewAdapter monthViewAdapter;
+    private BottomSheetBehavior behavior;
 
     @Override
     public void initializeDi() {
@@ -126,9 +137,16 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
         setUpToolbar(screenTitle);
         setHasOptionsMenu(true);
+        initRetailerInfoBottmSheet();
         presenter.setPlanDates();
         presenter.loadCalendar();
-        setSelectionAdapter();
+
+        rvWeek.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+
+        if (DeviceUtils.isTabletDevice(Objects.requireNonNull(getActivity())))
+            mWeekView.setHeaderColumnPadding((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, getResources().getDimension(R.dimen.time_column_width), getResources().getDisplayMetrics()));
+        else
+            mWeekView.setHeaderColumnPadding((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
 
         // Show a toast message about the touched event.
         mWeekView.setOnEventClickListener(this);
@@ -142,26 +160,101 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
         // Set long press listener for empty view
         mWeekView.setEmptyViewLongPressListener(this);
+        mWeekView.setXScrollingSpeed(0);
+        mWeekView.setTimeTextPaint(getResources().getColor(R.color.black_bg1));
 
         ivNext.setOnClickListener(v -> {
-            presenter.onNextMonthClicked();
-
+            if (mSelectedType == WEEK || mSelectedType == DAY)
+                presenter.onNextWeekClicked(mSelectedType == DAY);
+            else
+                presenter.onNextMonthClicked();
 
         });
 
         ivPrev.setOnClickListener(v -> {
-            presenter.onPreviousMonthClicked();
+            if (mSelectedType == WEEK || mSelectedType == DAY)
+                presenter.onPreviousWeekClicked(mSelectedType == DAY);
+            else
+                presenter.onPreviousMonthClicked();
 
         });
 
-        btnSwitch.setOnClickListener(v -> showSelectionDialog());
 
+        rbgSelection.setOnCheckedChangeListener((group, checkedId) -> {
+            RadioButton checkedRadioButton = group.findViewById(checkedId);
+            if (checkedRadioButton.isChecked()) {
+                if (checkedRadioButton.getText().equals(getString(R.string.month))) {
+                    mSelectedType = MONTH;
+                    rvCalendar.setVisibility(View.VISIBLE);
+                    llWeekTitle.setVisibility(View.VISIBLE);
+                    fabAddRetailer.setVisibility(View.VISIBLE);
+                    mWeekView.setVisibility(View.GONE);
+                    rvWeek.setVisibility(View.GONE);
+                    presenter.loadCalendar();
+                } else if (checkedRadioButton.getText().equals(getString(R.string.day))) {
+                    mSelectedType = DAY;
+                    rvCalendar.setVisibility(View.GONE);
+                    llWeekTitle.setVisibility(View.GONE);
+                    fabAddRetailer.setVisibility(View.GONE);
+                    rvWeek.setVisibility(View.VISIBLE);
+                    mWeekView.setVisibility(View.VISIBLE);
+                    hideBottomSheet();
+                    presenter.loadADay();
+                } else {
+                    mSelectedType = WEEK;
+                    rvCalendar.setVisibility(View.GONE);
+                    llWeekTitle.setVisibility(View.GONE);
+                    fabAddRetailer.setVisibility(View.GONE);
+                    rvWeek.setVisibility(View.VISIBLE);
+                    mWeekView.setVisibility(View.VISIBLE);
+                    hideBottomSheet();
+                    presenter.loadAWeek();
+                }
+            }
+        });
+
+        fabAddRetailer.setOnClickListener(v -> {
+            startActivity(RetailerListActivity.class);
+        });
+    }
+
+    private void initRetailerInfoBottmSheet() {
+        View persistentbottomSheet = coordinatorLayout.findViewById(R.id.bottomsheet);
+        rvRetailerInfo = persistentbottomSheet.findViewById(R.id.rvRetailerInfo);
+        rvRetailerInfo.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+
+        behavior = BottomSheetBehavior.from(persistentbottomSheet);
+
+        if (behavior != null)
+            behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                    switch (newState) {
+                        case BottomSheetBehavior.STATE_HIDDEN:
+                            break;
+                        case BottomSheetBehavior.STATE_EXPANDED:
+                            break;
+                        case BottomSheetBehavior.STATE_COLLAPSED:
+                            break;
+                        case BottomSheetBehavior.STATE_DRAGGING:
+                            break;
+                        case BottomSheetBehavior.STATE_SETTLING:
+                            break;
+                    }
+                }
+
+                @Override
+                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+                }
+            });
     }
 
     @Override
     public void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList) {
-        MonthViewAdapter monthViewAdapter = new MonthViewAdapter(getActivity(), dayInWeekCount, mCalenderAllList, mAllowedDates, this);
+        monthViewAdapter = new MonthViewAdapter(getActivity(), dayInWeekCount, mCalenderAllList, mAllowedDates, this);
         rvCalendar.setAdapter(monthViewAdapter);
+        hideBottomSheet();
     }
 
     @Override
@@ -171,120 +264,117 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     @Override
     public void loadDayView(Calendar date) {
-        setupDateTimeInterpreter(false);
+        setupDateTimeInterpreter();
         mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 8, getResources().getDisplayMetrics()));
         mWeekView.setNumberOfVisibleDays(1);
         mWeekView.goToDate(date);
-
     }
 
     @Override
     public void loadWeekView(Calendar date) {
-        setupDateTimeInterpreter(true);
+        setupDateTimeInterpreter();
         mWeekView.setColumnGap((int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 2, getResources().getDisplayMetrics()));
         mWeekView.setNumberOfVisibleDays(7);
         mWeekView.goToDate(date);
-        mWeekView.setFirstDayOfWeek(Calendar.MONDAY);
-    }
-
-    private void setSelectionAdapter() {
-        selectionAdapter = new ArrayAdapter<SpinnerBO>(Objects.requireNonNull(getActivity()), android.R.layout.select_dialog_singlechoice) {
-            @NonNull
-            @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                CheckedTextView view = (CheckedTextView) super.getView(position, convertView, parent);
-                // Replace text with my own
-                view.setText(Objects.requireNonNull(getItem(position)).getSpinnerTxt());
-                return view;
-            }
-        };
-
-        selectionAdapter.add(new SpinnerBO(MONTH, getResources().getString(R.string.month)));
-        selectionAdapter.add(new SpinnerBO(DAY, getResources().getString(R.string.day)));
-        selectionAdapter.add(new SpinnerBO(WEEK, getResources().getString(R.string.week)));
-    }
-
-    private void showSelectionDialog() {
-        AlertDialog.Builder builder;
-
-        builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(null);
-        builder.setSingleChoiceItems(selectionAdapter, mSelectedType,
-                (dialog, item) -> {
-                    mSelectedType = item;
-                    switchViews();
-                    dialog.dismiss();
-                });
-
-        applyAlertDialogTheme(getActivity(), builder);
-    }
-
-    private void switchViews() {
-        switch (mSelectedType) {
-            case MONTH:
-                rvCalendar.setVisibility(View.VISIBLE);
-                llWeekTitle.setVisibility(View.VISIBLE);
-                fabAddRetailer.setVisibility(View.VISIBLE);
-                mWeekView.setVisibility(View.GONE);
-                btnSwitch.setText(getResources().getString(R.string.month));
-                presenter.loadCalendar();
-                break;
-            case DAY:
-                rvCalendar.setVisibility(View.GONE);
-                llWeekTitle.setVisibility(View.GONE);
-                fabAddRetailer.setVisibility(View.GONE);
-                mWeekView.setVisibility(View.VISIBLE);
-                btnSwitch.setText(getResources().getString(R.string.day));
-                presenter.loadADay();
-                break;
-            case WEEK:
-                rvCalendar.setVisibility(View.GONE);
-                llWeekTitle.setVisibility(View.GONE);
-                fabAddRetailer.setVisibility(View.GONE);
-                mWeekView.setVisibility(View.VISIBLE);
-                presenter.loadAWeek();
-                btnSwitch.setText(getResources().getString(R.string.week));
-                break;
-        }
-
     }
 
     @Override
-    public void onDateSelected(String selectedDate) {
+    public void refreshGrid() {
+        monthViewAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void loadTopWeekView(ArrayList<CalenderBO> mCalenderAllList, ArrayList<String> mAllowedDates) {
+        int itemWidth = DeviceUtils.getDeviceWidth(Objects.requireNonNull(getActivity())) / 8;
+        rvWeek.setAdapter(new WeekFilterAdapter(getActivity(), mCalenderAllList, mAllowedDates, this, itemWidth, mSelectedType == DAY));
+    }
+
+    @Override
+    public void loadBottomSheet(ArrayList<DateWisePlanBo> retailerInfoList) {
+        if (retailerInfoList.size() > 0) {
+            if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
+            rvRetailerInfo.setAdapter(new BottmSheetRetailerInfoAdapter(getActivity(), retailerInfoList));
+        } else {
+            hideBottomSheet();
+        }
+    }
+
+    private void hideBottomSheet() {
+        if (behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
+    }
+
+
+    @Override
+    public void onADayRetailerSelected(String selectedDate) {
         showMessage(selectedDate);
         presenter.setSelectedDate(selectedDate);
-        mSelectedType = DAY;
-        switchViews();
+        rbgSelection.check(R.id.rbDay);
     }
+
+    @Override
+    public void onWeekDateSelected(String selectedDate) {
+        showMessage(selectedDate);
+        presenter.setSelectedDate(selectedDate);
+        if (mSelectedType == DAY)
+            presenter.loadADay();
+    }
+
+    @Override
+    public ArrayList<DateWisePlanBo> getDaysPlan(String date) {
+        return presenter.getADayPlan(date);
+    }
+
+    @Override
+    public void onDateNoSelected(String selectedDate) {
+        showMessage(selectedDate);
+        presenter.setSelectedDate(selectedDate);
+        presenter.loadInfoBottomSheet();
+    }
+
 
     @Override
     public List<? extends WeekViewEvent> onMonthChange(int newYear, int newMonth) {
         List<WeekViewEvent> events = new ArrayList<>();
         Calendar startTime = Calendar.getInstance();
-        startTime.set(Calendar.HOUR_OF_DAY, 3);
-        startTime.set(Calendar.MINUTE, 0);
-        startTime.set(Calendar.MONTH, newMonth - 1);
-        startTime.set(Calendar.YEAR, newYear);
-        Calendar endTime = (Calendar) startTime.clone();
-        endTime.add(Calendar.HOUR, 1);
-        endTime.set(Calendar.MONTH, newMonth - 1);
-        WeekViewEvent event = new WeekViewEvent(1, "Retailer 123", startTime, endTime);
-        event.setColor(getResources().getColor(R.color.Orange));
-        events.add(event);
+        startTime.setTime(DateTimeUtils.convertStringToDateObject("2019/05/01", "yyyy/MM/dd"));
+        if (newMonth == startTime.get(Calendar.MONTH) + 1) {
+            startTime.set(Calendar.HOUR_OF_DAY, 3);
+            startTime.set(Calendar.MINUTE, 0);
+            Calendar endTime = (Calendar) startTime.clone();
+            endTime.add(Calendar.HOUR, 1);
+            WeekViewEvent event = new WeekViewEvent(1, "Retailer 123", "Retailer Address", startTime, endTime);
+            event.setColor(R.attr.colorPrimary);
+            events.add(event);
+        }
 
 
         startTime = Calendar.getInstance();
-        startTime.set(Calendar.HOUR_OF_DAY, 5);
-        startTime.set(Calendar.MINUTE, 0);
-        startTime.set(Calendar.MONTH, newMonth - 1);
-        startTime.set(Calendar.YEAR, newYear);
-        endTime = (Calendar) startTime.clone();
-        endTime.set(Calendar.HOUR_OF_DAY, 7);
-        endTime.set(Calendar.MINUTE, 0);
-        endTime.set(Calendar.MONTH, newMonth - 1);
-        event = new WeekViewEvent(10, "Retailer 007", startTime, endTime);
-        event.setColor(getResources().getColor(R.color.colorPrimaryDarkGreen));
-        events.add(event);
+        startTime.setTime(DateTimeUtils.convertStringToDateObject("2019/05/01", "yyyy/MM/dd"));
+        if (newMonth == startTime.get(Calendar.MONTH) + 1) {
+            startTime.set(Calendar.HOUR_OF_DAY, 4);
+            startTime.set(Calendar.MINUTE, 0);
+            Calendar endTime = (Calendar) startTime.clone();
+            endTime.add(Calendar.HOUR, 1);
+            WeekViewEvent event = new WeekViewEvent(1, "Retailer 123", "Retailer Address", startTime, endTime);
+            event.setColor(R.attr.colorPrimary);
+            events.add(event);
+        }
+
+        startTime = Calendar.getInstance();
+        startTime.setTime(DateTimeUtils.convertStringToDateObject("2019/05/02", "yyyy/MM/dd"));
+        if (newMonth == startTime.get(Calendar.MONTH) + 1) {
+            startTime.set(Calendar.HOUR_OF_DAY, 4);
+            startTime.set(Calendar.MINUTE, 0);
+            Calendar endTime = (Calendar) startTime.clone();
+            endTime.add(Calendar.HOUR, 1);
+            WeekViewEvent event = new WeekViewEvent(1, "Retailer 123", "Retailer Address", startTime, endTime);
+            event.setColor(R.attr.colorPrimary);
+            events.add(event);
+        }
 
         return events;
     }
@@ -304,25 +394,24 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     }
 
-    private void setupDateTimeInterpreter(final boolean shortDate) {
+    private void setupDateTimeInterpreter() {
         mWeekView.setDateTimeInterpreter(new DateTimeInterpreter() {
             @Override
             public String interpretDate(Calendar date) {
-                SimpleDateFormat weekdayNameFormat = new SimpleDateFormat("EEE", Locale.getDefault());
-                String weekday = weekdayNameFormat.format(date.getTime());
-                SimpleDateFormat format = new SimpleDateFormat(" M/d", Locale.getDefault());
-
-                // All android api level do not have a standard way of getting the first letter of
-                // the week day name. Hence we get the first char programmatically.
-                // Details: http://stackoverflow.com/questions/16959502/get-one-letter-abbreviation-of-week-day-of-a-date-in-java#answer-16959657
-                if (shortDate)
-                    weekday = String.valueOf(weekday.charAt(0));
-                return weekday.toUpperCase() + format.format(date.getTime());
+                return "";
             }
 
             @Override
             public String interpretTime(int hour) {
-                return hour > 11 ? (hour - 12) + " PM" : (hour == 0 ? "12 AM" : hour + " AM");
+                Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR_OF_DAY, hour);
+                calendar.set(Calendar.MINUTE, 0);
+                try {
+                    return DateTimeUtils.convertDateObjectToRequestedFormat(calendar.getTime(), "HH:mm");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return "";
+                }
             }
         });
     }
@@ -346,15 +435,15 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         if (item.getItemId() == android.R.id.home) {
             startActivity(new Intent(getActivity(),
                     HomeScreenActivity.class));
-            ((Activity)mContext).finish();
+            ((Activity) mContext).finish();
             return true;
         } else if (item.getItemId() == R.id.map_retailer) {
 
-            FragmentManager fm = ((FragmentActivity)mContext).getSupportFragmentManager();
+            FragmentManager fm = ((FragmentActivity) mContext).getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
 
             RetailerMapFragment fragment = new RetailerMapFragment();
-            ft.replace(R.id.fragment_content, fragment,MENU_MAP_PLAN);
+            ft.replace(R.id.fragment_content, fragment, MENU_MAP_PLAN);
             ft.commit();
             return true;
         }

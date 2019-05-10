@@ -5,13 +5,14 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.calendarlibrary.monthview.MonthView;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
+import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
@@ -93,8 +94,6 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
             view = LayoutInflater.from(parent.getContext()).inflate(R.layout.month_item_calender, parent, false);
             viewHolder = new MonthViewHolder(view);
         }
-        // int height = parent.getMeasuredHeight() / 6;
-        //view.setMinimumHeight(height);
         return viewHolder;
     }
 
@@ -154,15 +153,29 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
                     holder.TVDate.setBackground(mContext.getResources().getDrawable(R.drawable.circle_calendar_select));
                 } else {
                     holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.FullBlack));
-                    holder.TVDate.setBackgroundColor(mContext.getResources().getColor(R.color.zxing_transparent));
+                    holder.TVDate.setBackgroundColor(mContext.getResources().getColor(R.color.transparent));
                 }
 
+                ArrayList<DateWisePlanBo> planList = calendarClickListner.getDaysPlan(holder.calBO.getCal_date());
+                if (planList.size() > 0) {
+                    holder.TvRetailer.setText(mContext.getResources().getString(R.string.plan_retailer_name, planList.get(0).getName()));
+                    if (planList.size() > 1)
+                        holder.TvExtras.setText(mContext.getResources().getString(R.string.plus_more, planList.size() - 1));
+
+                }
             }
 
-            holder.rlItem.setOnClickListener(v -> {
+            holder.llDate.setOnClickListener(v -> {
                 if (holder.calBO != null) {
                     refreshGrid(holder.calBO.getCal_date());
-                    calendarClickListner.onDateSelected(holder.calBO.getCal_date());
+                    calendarClickListner.onDateNoSelected(holder.calBO.getCal_date());
+                }
+            });
+
+            holder.lltext.setOnClickListener(v -> {
+                if (holder.calBO != null) {
+                    refreshGrid(holder.calBO.getCal_date());
+                    calendarClickListner.onADayRetailerSelected(holder.calBO.getCal_date());
                 }
 
             });
@@ -172,17 +185,19 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
 
     class MonthViewHolder extends RecyclerView.ViewHolder {
         CalenderBO calBO;
-        TextView TVDate, TvRetailer;
+        TextView TVDate, TvRetailer, TvExtras;
         Boolean isValid = false;
         Boolean isDataPresent = false;
-        RelativeLayout rlItem;
+        LinearLayout llDate,lltext;
 
         MonthViewHolder(View itemView) {
             super(itemView);
 
             TVDate = itemView.findViewById(R.id.tv_date);
             TvRetailer = itemView.findViewById(R.id.tv_retailers);
-            rlItem = itemView.findViewById(R.id.rl_date);
+            TvExtras = itemView.findViewById(R.id.tv_extras);
+            llDate = itemView.findViewById(R.id.llDate);
+            lltext = itemView.findViewById(R.id.lltext);
 
         }
     }

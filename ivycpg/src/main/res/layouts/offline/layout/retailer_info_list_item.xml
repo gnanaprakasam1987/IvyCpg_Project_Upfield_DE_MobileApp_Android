@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rl_week_date"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="@dimen/dimen_2dp">
+
+    <TextView
+        android:id="@+id/tv_retialer_name"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="?attr/primarycolor"
+        android:layout_margin="@dimen/dimen_2dp"
+        android:text="Shop Name" />
+
+    <TextView
+        android:id="@+id/tv_visit_hours"
+        style="@style/TextViewListItemCaption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/dimen_2dp"
+        android:text="Visit Hours : 2:00 - 4:00" />
+
+
+</LinearLayout>

@@ -170,9 +170,9 @@
         <activity
             android:name="com.ivy.cpg.view.order.StockAndOrder"
             android:exported="false"
+            android:hardwareAccelerated="true"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:hardwareAccelerated="true">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
 
@@ -869,6 +869,10 @@
             android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"
             android:enabled="true"
             android:exported="false" />
+
+        <activity
+            android:name="com.ivy.ui.retailer.view.list.RetailerListActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 

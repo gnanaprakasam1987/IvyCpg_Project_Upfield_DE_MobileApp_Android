@@ -67,11 +67,11 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
         return Single.fromCallable(new Callable<HashMap<String, ArrayList<DateWisePlanBo>>>() {
             @Override
             public HashMap<String, ArrayList<DateWisePlanBo>> call() throws Exception {
-                HashMap<String, ArrayList<DateWisePlanBo>> datePlanHashMap= new HashMap<>();
+                HashMap<String, ArrayList<DateWisePlanBo>> datePlanHashMap = new HashMap<>();
 
                 String sql = "SELECT dwp.PlanId,dwp.DistributorId,dwp.UserId,dwp.Date,dwp.EntityId,dwp.EntityType,IFNULL(dwp.Status,'')" +
-                        ",dwp.Sequence,rm.RetailerName,StartTime,EndTime " +
-                        " FROM " +DataMembers.tbl_date_wise_plan +" as dwp "+
+                        ",dwp.Sequence,rm.RetailerName,IFNULL(dwp.StartTime,''),IFNULL(dwp.EndTime,'') " +
+                        " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
                         " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER'";
 
@@ -79,66 +79,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
                 Cursor c = mDbUtil.selectSQL(sql);
 
-                if (c != null && c.getCount() >0) {
-                    DateWisePlanBo dateWisePlanBO;
-                    while (c.moveToNext()) {
-                        dateWisePlanBO = new DateWisePlanBo();
-
-                        dateWisePlanBO.setPlanId(c.getInt(0));
-                        dateWisePlanBO.setDistributorId(c.getInt(1));
-                        dateWisePlanBO.setUserId(c.getInt(2));
-                        dateWisePlanBO.setDate(c.getString(3));
-                        dateWisePlanBO.setEntityId(c.getInt(4));
-                        dateWisePlanBO.setEntityType(c.getString(5));
-                        dateWisePlanBO.setStatus(c.getString(6));
-                        dateWisePlanBO.setSequence(c.getInt(7));
-                        dateWisePlanBO.setName(c.getString(8));
-                        dateWisePlanBO.setEndTime(c.getString(9));
-                        dateWisePlanBO.setName(c.getString(10));
-
-                        if (dateWisePlanBO.getStatus() != null && dateWisePlanBO.getStatus().isEmpty())
-                            dateWisePlanBO.setServerData(true);
-
-                        if (datePlanHashMap.get(dateWisePlanBO.getDate()) == null) {
-                            if (!c.getString(c.getColumnIndex("Status")).equals("D")) {
-                                ArrayList<DateWisePlanBo> plannedList = new ArrayList<>();
-                                plannedList.add(dateWisePlanBO);
-                                datePlanHashMap.put(dateWisePlanBO.getDate(), plannedList);
-                            }
-                        } else {
-                            if (!c.getString(c.getColumnIndex("Status")).equals("D")) {
-                                ArrayList<DateWisePlanBo> plannedList = datePlanHashMap.get(dateWisePlanBO.getDate());
-                                plannedList.add(dateWisePlanBO);
-                                datePlanHashMap.put(dateWisePlanBO.getDate(), plannedList);
-                            }
-                        }
-                    }
-                }
-
-                shutDownDb();
-
-                return datePlanHashMap;
-            }
-        });
-    }
-
-    @Override
-    public Single<HashMap<String,DateWisePlanBo>> getRetailerPlanList(String date) {
-        return Single.fromCallable(new Callable<HashMap<String,DateWisePlanBo>>() {
-            @Override
-            public HashMap<String,DateWisePlanBo> call() throws Exception {
-                HashMap<String,DateWisePlanBo> datePlanHashMap= new HashMap<>();
-
-                String sql = "SELECT dwp.PlanId,dwp.DistributorId,dwp.UserId,dwp.Date,dwp.EntityId,dwp.EntityType,IFNULL(dwp.Status,''),dwp.Sequence,rm.RetailerName,StartTime,EndTime " +
-                        " FROM " +DataMembers.tbl_date_wise_plan +" as dwp "+
-                        " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
-                        " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER' and dwp.Date="+ StringUtils.QT(date);
-
-                initDb();
-
-                Cursor c = mDbUtil.selectSQL(sql);
-
-                if (c != null && c.getCount() >0) {
+                if (c != null && c.getCount() > 0) {
                     DateWisePlanBo dateWisePlanBO;
                     while (c.moveToNext()) {
                         dateWisePlanBO = new DateWisePlanBo();
@@ -158,7 +99,62 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         if (dateWisePlanBO.getStatus() != null && dateWisePlanBO.getStatus().isEmpty())
                             dateWisePlanBO.setServerData(true);
 
-                        datePlanHashMap.put(String.valueOf(dateWisePlanBO.getEntityId()),dateWisePlanBO);
+                        if (datePlanHashMap.get(dateWisePlanBO.getDate()) == null) {
+                            ArrayList<DateWisePlanBo> plannedList = new ArrayList<>();
+                            plannedList.add(dateWisePlanBO);
+                            datePlanHashMap.put(dateWisePlanBO.getDate(), plannedList);
+                        } else {
+                            ArrayList<DateWisePlanBo> plannedList = datePlanHashMap.get(dateWisePlanBO.getDate());
+                            plannedList.add(dateWisePlanBO);
+                            datePlanHashMap.put(dateWisePlanBO.getDate(), plannedList);
+                        }
+                    }
+                }
+
+                shutDownDb();
+
+                return datePlanHashMap;
+            }
+        });
+    }
+
+    @Override
+    public Single<HashMap<String, DateWisePlanBo>> getRetailerPlanList(String date) {
+        return Single.fromCallable(new Callable<HashMap<String, DateWisePlanBo>>() {
+            @Override
+            public HashMap<String, DateWisePlanBo> call() throws Exception {
+                HashMap<String, DateWisePlanBo> datePlanHashMap = new HashMap<>();
+
+                String sql = "SELECT dwp.PlanId,dwp.DistributorId,dwp.UserId,dwp.Date,dwp.EntityId,dwp.EntityType,IFNULL(dwp.Status,''),dwp.Sequence,rm.RetailerName,StartTime,EndTime " +
+                        " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
+                        " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
+                        " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER' and dwp.Date=" + StringUtils.QT(date);
+
+                initDb();
+
+                Cursor c = mDbUtil.selectSQL(sql);
+
+                if (c != null && c.getCount() > 0) {
+                    DateWisePlanBo dateWisePlanBO;
+                    while (c.moveToNext()) {
+                        dateWisePlanBO = new DateWisePlanBo();
+
+                        dateWisePlanBO.setPlanId(c.getInt(0));
+                        dateWisePlanBO.setDistributorId(c.getInt(1));
+                        dateWisePlanBO.setUserId(c.getInt(2));
+                        dateWisePlanBO.setDate(c.getString(3));
+                        dateWisePlanBO.setEntityId(c.getInt(4));
+                        dateWisePlanBO.setEntityType(c.getString(5));
+                        dateWisePlanBO.setStatus(c.getString(6));
+                        dateWisePlanBO.setSequence(c.getInt(7));
+                        dateWisePlanBO.setName(c.getString(8));
+                        dateWisePlanBO.setStartTime(c.getString(9));
+                        dateWisePlanBO.setEndTime(c.getString(10));
+
+                        if (dateWisePlanBO.getStatus() != null && dateWisePlanBO.getStatus().isEmpty())
+                            dateWisePlanBO.setServerData(true);
+
+                        datePlanHashMap.put(String.valueOf(dateWisePlanBO.getEntityId()), dateWisePlanBO);
                     }
                 }
 

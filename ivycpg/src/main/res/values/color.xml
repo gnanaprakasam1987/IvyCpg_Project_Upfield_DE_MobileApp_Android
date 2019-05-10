@@ -33,7 +33,7 @@
 
     <!--List item Primary Text color-->
     <color name="list_item_primary_text_color">#252525</color>
-    
+
     <!--Caption Text color-->
     <color name="caption_text_color">#cc262626</color>
 
@@ -101,7 +101,6 @@
     <!--**************************************************************************************-->
 
 
-
     <color name="FullBlack">#000000</color>
     <color name="drop_down_black">#ec252323</color>
 
@@ -114,10 +113,6 @@
     <color name="white">#FFFFFF</color>
 
     <color name="toolbar_title">#fffefe</color>
-
-
-
-
 
 
     <!-- ************************** Common Modules ************************************-->
@@ -152,6 +147,8 @@
     <!-- ********************************Planning sub/ LoadManagement Module **************************-->
 
     <color name="startAndEndOfTheDayHeaderLayoutBg_blue">#DCEDFF</color>
+
+    <color name="transparent">#00000000</color>
 
 
 </resources>

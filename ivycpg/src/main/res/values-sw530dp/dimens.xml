@@ -722,4 +722,7 @@
 
     <dimen name="catalog_details_image">300dp</dimen>
 
+    <!--Calendar Planning-->
+    <dimen name="time_column_width">14dp</dimen>
+
 </resources>
