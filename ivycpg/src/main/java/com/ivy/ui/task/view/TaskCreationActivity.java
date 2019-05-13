@@ -187,7 +187,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         }
 
         setUpCategoryAdapter();
-        taskPresenter.fetchTaskCategory("MENU_TASK");
+        taskPresenter.fetchTaskCategory();
 
 
         if (screenMode == 1)

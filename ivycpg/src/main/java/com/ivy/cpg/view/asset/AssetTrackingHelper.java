@@ -64,7 +64,6 @@ public class AssetTrackingHelper {
     private static final String ASSET_REMARK = "ARR";
     private static final String ASSET_CONDITION = "CD";
     private static final String CODE_ASSET_SERVICE = "AT11";
-    public boolean SHOW_ASSET_TARGET;
     public boolean SHOW_ASSET_QTY;
     public boolean SHOW_ASSET_REASON;
     public boolean SHOW_ASSET_PHOTO;
@@ -194,7 +193,6 @@ public class AssetTrackingHelper {
      */
     private void loadAssetConfigs(Context mContext) {
         try {
-            SHOW_ASSET_TARGET = false;
             SHOW_ASSET_QTY = false;
             SHOW_ASSET_REASON = false;
             SHOW_ASSET_PHOTO = false;
@@ -272,9 +270,7 @@ public class AssetTrackingHelper {
      */
     private void updateAssetColumnConfig(String temp) {
         switch (temp) {
-            case "TGT":
-                SHOW_ASSET_TARGET = true;
-                break;
+
             case "QTY":
                 SHOW_ASSET_QTY = true;
                 break;

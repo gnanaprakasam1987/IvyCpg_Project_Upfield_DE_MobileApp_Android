@@ -19,6 +19,17 @@ public class DigitalContentBO {
 	private String parentHierarchy;
 	private int sequenceNo;
 
+	public boolean isAllowSharing() {
+		return isAllowSharing;
+	}
+
+
+	public void setAllowSharing(boolean allowSharing) {
+		isAllowSharing = allowSharing;
+	}
+
+	private boolean isAllowSharing;
+
 	public DigitalContentBO() {
 	}
 

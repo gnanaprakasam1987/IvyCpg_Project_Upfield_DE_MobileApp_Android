@@ -119,28 +119,33 @@ public class DownloaderThreadNew extends Thread {
         } else {
             try {
 
-                boolean isAmazonUpload = false;
-                boolean isAzureUpload = false;
+                boolean isAmazonCloud = true;
+                boolean isAzureCloud = false;
+                boolean isSFDCCloud = false;
                 DBUtil db = new DBUtil(parentActivity, DataMembers.DB_NAME
                 );
                 db.createDataBase();
                 db.openDataBase();
                 Cursor c = db
-                        .selectSQL("SELECT flag FROM HHTModuleMaster where hhtCode = 'ISAMAZON_IMGUPLOAD' and flag = 1 and ForSwitchSeller = 0");
+                        .selectSQL("SELECT Rfield FROM HHTModuleMaster where hhtCode = 'CLOUD_STORAGE' and flag = 1 and ForSwitchSeller = 0");
                 if (c != null) {
                     while (c.moveToNext()) {
-                        isAmazonUpload = true;
+                        if(c.getInt(0)==0){
+                            isAmazonCloud=true;
+                        }
+                        else if(c.getInt(0)==1){
+                            isSFDCCloud=true;
+                        }
+                        else if(c.getInt(0)==2){
+                            isAzureCloud=true;
+                        }
+                        else {
+                            isAmazonCloud=true;
+                        }
                     }
                 }
                 c.close();
 
-                c = db.selectSQL("Select flag FROM HHTModuleMaster where hhtCode = 'IS_AZURE_UPLOAD' and flag = 1");
-                if (c != null) {
-                    while (c.moveToNext()) {
-                        isAzureUpload = true;
-                    }
-                }
-                c.close();
 
                 db.closeDB();
                 msg = Message.obtain(activityHandler,
@@ -210,7 +215,7 @@ public class DownloaderThreadNew extends Thread {
                 File mfile, appfile, mPrintFile,mPrintFormatFile;
                 // AmazonS3Client s3 = null;
 
-                if (isAzureUpload) {
+                if (isAzureCloud) {
                     for (Entry<String, String> imageurl : downloadUrls.entrySet()) {
                         String imagurl = imageurl.getKey();
                         String folderName = imageurl.getValue();
@@ -337,7 +342,7 @@ public class DownloaderThreadNew extends Thread {
                         }
                     }
                 }else {
-                    if (isAmazonUpload) {
+                    if (isAmazonCloud) {
                         System.setProperty("org.xml.sax.driver", "org.xmlpull.v1.sax2.Driver");
                         try {
                             org.xml.sax.XMLReader reader = org.xml.sax.helpers.XMLReaderFactory.createXMLReader();
@@ -360,7 +365,7 @@ public class DownloaderThreadNew extends Thread {
                             String imagurl = imageurl.getKey();
                             String folderName = imageurl.getValue();
 
-                            if (isAmazonUpload) {
+                            if (isAmazonCloud) {
                                 // get the filename
                                 mFileName = "file.bin";
 
@@ -577,7 +582,7 @@ public class DownloaderThreadNew extends Thread {
 
                     }
                 }
-                if (!isInterrupted() && !isAmazonUpload) {
+                if (!isInterrupted() && !isAmazonCloud) {
                     msg = Message.obtain(activityHandler,
                             DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC, 0, 0);
                     activityHandler.sendMessage(msg);

@@ -42,8 +42,8 @@ public class SpeechToVoiceDialog extends DialogFragment implements RecognitionLi
 
     private SpeechResultListener speechResultListener;
 
-    public SpeechToVoiceDialog(){
-
+    public SpeechToVoiceDialog(SpeechResultListener listener){
+        speechResultListener=listener;
     }
 
     @Override
@@ -68,7 +68,6 @@ public class SpeechToVoiceDialog extends DialogFragment implements RecognitionLi
 
         context = getActivity();
 
-        speechResultListener = (SpeechResultListener)context;
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context);
         speechRecognizer.setRecognitionListener(this);

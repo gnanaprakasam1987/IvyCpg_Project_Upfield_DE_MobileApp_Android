@@ -149,7 +149,7 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
                 if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
 
 
-                    speechToVoiceDialog = new SpeechToVoiceDialog();
+                    speechToVoiceDialog = new SpeechToVoiceDialog(ProductSearch.this);
                     speechToVoiceDialog.setCancelable(true);
                     speechToVoiceDialog.show(((FragmentActivity)context).getSupportFragmentManager(), "SPEECH_TO_TEXT");
 
