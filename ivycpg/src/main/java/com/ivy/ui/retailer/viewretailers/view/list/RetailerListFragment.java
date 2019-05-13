@@ -20,17 +20,12 @@ import com.ivy.core.base.view.BaseFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
 import com.ivy.ui.retailer.viewretailers.RetailerContract;
 import com.ivy.ui.retailer.viewretailers.adapter.RetailerListAdapter;
 import com.ivy.ui.retailer.viewretailers.di.DaggerRetailerComponent;
 import com.ivy.ui.retailer.viewretailers.di.RetailerModule;
 import com.ivy.ui.retailer.viewretailers.presenter.RetailerPresenterImpl;
-import com.ivy.ui.retailer.RetailerContract;
-import com.ivy.ui.retailer.adapter.RetailerListAdapter;
-import com.ivy.ui.retailer.di.DaggerRetailerComponent;
-import com.ivy.ui.retailer.di.RetailerModule;
-import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
-import com.ivy.ui.retailer.presenter.RetailerPresenterImpl;
 
 import java.util.List;
 import java.util.Objects;
@@ -58,7 +53,7 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
 
     @Override
     public void initializeDi() {
-        DaggerRetailerComponent.builder()
+       DaggerRetailerComponent.builder()
                 .ivyAppComponent(((BusinessModel) Objects.requireNonNull((FragmentActivity) mContext).getApplication()).getComponent())
                 .retailerModule(new RetailerModule(this))
                 .build()

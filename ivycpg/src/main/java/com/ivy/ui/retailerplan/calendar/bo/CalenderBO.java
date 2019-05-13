@@ -6,7 +6,7 @@ package com.ivy.ui.retailerplan.calendar.bo;
 
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
+import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 
 import java.util.ArrayList;
 import java.util.List;

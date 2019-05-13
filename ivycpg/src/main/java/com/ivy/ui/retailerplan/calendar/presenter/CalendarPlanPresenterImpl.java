@@ -1,9 +1,5 @@
 package com.ivy.ui.retailerplan.calendar.presenter;
 
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.LifecycleObserver;
-import android.arch.lifecycle.LifecycleOwner;
-import android.arch.lifecycle.OnLifecycleEvent;
 import android.text.format.DateUtils;
 
 import com.ivy.calendarlibrary.weekview.WeekViewEvent;
@@ -13,19 +9,11 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
-import com.ivy.ui.offlineplan.calendar.CalendarPlanContract;
-import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
-import com.ivy.ui.offlineplan.calendar.data.CalendarPlanDataManager;
-import com.ivy.ui.retailer.data.RetailerDataManager;
+import com.ivy.ui.retailer.viewretailers.data.RetailerDataManager;
 import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 import com.ivy.ui.retailerplan.calendar.CalendarPlanContract;
 import com.ivy.ui.retailerplan.calendar.bo.CalenderBO;
-import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.retailerplan.calendar.data.CalendarPlanDataManager;
-import com.ivy.ui.retailer.viewretailers.data.RetailerDataManager;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.rx.SchedulerProvider;
 
