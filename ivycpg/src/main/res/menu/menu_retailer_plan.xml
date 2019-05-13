@@ -15,6 +15,7 @@
         android:icon="@drawable/ic_action_filter"
         app:showAsAction="always"
         android:orderInCategory="3"
+        android:visible="false"
         android:title="Filter">
     </item>
 
