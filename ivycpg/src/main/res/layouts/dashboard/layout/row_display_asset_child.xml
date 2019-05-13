@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:weightSum="10"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/dimen_20dp"
+    android:paddingRight="@dimen/dimen_20dp"
+    android:paddingTop="@dimen/dimen_5dp"
+    android:paddingBottom="@dimen/dimen_5dp"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/layout_qty"
+        android:layout_centerVertical="true">
+    <TextView
+        android:id="@+id/textview_company_name"
+        style="@style/TextViewListItemCaption"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="company"
+        android:fontFamily="@font/roboto_medium"
+        android:layout_weight="6"
+        />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_qty"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:gravity="center"
+        android:background="@drawable/rectangle_grey"
+        android:layout_alignParentRight="true"
+
+        >
+
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/imiage_minus"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:text="-"
+            android:background="@android:color/transparent"
+            />
+
+
+        <EditText
+            android:id="@+id/image_quantity"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:inputType="number"
+            android:text="@string/zero"
+            android:gravity="center"
+            android:clickable="false"
+            android:background="@android:color/transparent"/>
+
+
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/image_plus"
+            android:layout_width="40dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="+"
+            android:background="@android:color/transparent"
+
+
+            />
+
+    </LinearLayout>
+</RelativeLayout>

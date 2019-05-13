@@ -1,9 +1,19 @@
 package com.ivy.cpg.view.digitalcontent;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.support.v4.content.FileProvider;
+import android.widget.Toast;
 
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.asean.view.BuildConfig;
+import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.DigitalContentBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -12,7 +22,9 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
+import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -28,6 +40,12 @@ public class DigitalContentHelper {
     private ArrayList<DigitalContentBO> filteredDigitalMaster;
     public String mSelectedActivityName;
     boolean isProductMapped = false;
+
+    public boolean isRetailerWiseDigitalContent() {
+        return isRetailerWiseDigitalContent;
+    }
+
+    private boolean isRetailerWiseDigitalContent;// flag used to get the type of digital content
 
 
     private static final String CODE_FLOAT_DGT_CONTENT = "FUN77";
@@ -177,15 +195,19 @@ public class DigitalContentHelper {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
             StringBuilder sBuffer = new StringBuilder();
-            if ("SELLER".equals(value))
+            if ("SELLER".equals(value)) {
                 mMappedImageIds = "0";
-            else
+                isRetailerWiseDigitalContent=false;
+            }
+            else {
                 mMappedImageIds = getDigitalContentTaggingDetails(mContext);
+                isRetailerWiseDigitalContent=true;
+            }
 
             if ("SELLER".equals(value)) {
                 sBuffer.append("SELECT DISTINCT DC.Imageid  ,DC.ImageName ,DC.ImageDesc,DC.ImageDate,");
                 sBuffer.append(" IFNULL(DCPM.Pid,0),IFNULL(PM.psname,''),IFNULL(SLM.ListName,'NA'),");
-                sBuffer.append(" IFNULL(DC.GroupSequence,0),IFNULL(PM.ParentHierarchy,'')");
+                sBuffer.append(" IFNULL(DC.GroupSequence,0),IFNULL(PM.ParentHierarchy,''),DC.allowSharing");
                 sBuffer.append(" FROM  DigitalContentMaster DC");
                 sBuffer.append(" INNER JOIN DigitalContentMapping DCM ON DC.Imageid = DCM.Imgid");
                 sBuffer.append(" LEFT JOIN DigitalContentProductMapping DCPM ON DC.Imageid = DCPM .Imgid");
@@ -207,6 +229,11 @@ public class DigitalContentHelper {
                         product.setGroupName(c.getString(6));
                         product.setSequenceNo(c.getInt(7));
                         product.setParentHierarchy(c.getString(8));
+                        if(c.getInt(9)==1){
+                            product.setAllowSharing(true);
+                        }
+                        else product.setAllowSharing(false);
+
                         digitalMaster.add(product);
                         if(c.getInt(4) != 0)
                             setProductMapped(true);
@@ -218,7 +245,7 @@ public class DigitalContentHelper {
 
                 sBuffer.append("SELECT DISTINCT DC.Imageid  ,DC.ImageName ,DC.ImageDesc,DC.ImageDate,");
                 sBuffer.append(" IFNULL(DCPM.Pid,0),PM.psname,IFNULL(SLM.ListName,'NA'),");
-                sBuffer.append(" IFNULL(DC.GroupSequence,0),IFNULL(PM.ParentHierarchy,'')");
+                sBuffer.append(" IFNULL(DC.GroupSequence,0),IFNULL(PM.ParentHierarchy,''),DC.allowSharing");
                 sBuffer.append(" FROM  DigitalContentMaster DC");
                 sBuffer.append(" INNER JOIN DigitalContentMapping DCM ON (DC.Imageid = DCM.Imgid )");
                 sBuffer.append(" LEFT JOIN DigitalContentProductMapping DCPM ON DC.Imageid = DCPM .Imgid");
@@ -242,6 +269,12 @@ public class DigitalContentHelper {
                         product.setGroupName(c.getString(6));
                         product.setSequenceNo(c.getInt(7));
                         product.setParentHierarchy(c.getString(8));
+
+                        if(c.getInt(9)==1){
+                            product.setAllowSharing(true);
+                        }
+                        else product.setAllowSharing(false);
+
                         digitalMaster.add(product);
                         if(c.getInt(4) != 0)
                             setProductMapped(true);
@@ -422,4 +455,55 @@ public class DigitalContentHelper {
         }
     }
 
+    public void shareDigitalContent(Context context,String attachmentName,String fileName){
+
+        String toEmailId="";
+        String subject;
+        if(isRetailerWiseDigitalContent()){
+            subject="Retailer Digital content: "+attachmentName;
+            toEmailId=mBModel.getAppDataProvider().getRetailMaster().getEmail();
+        }
+        else {
+            subject="Seller Digital Content: "+attachmentName;
+        }
+
+
+        Uri path;
+        File file = new File(
+                context.getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
+                        + mBModel.userMasterHelper.getUserMasterBO().getUserid()
+                        + DataMembers.DIGITAL_CONTENT + "/"
+                        + DataMembers.DIGITALCONTENT + "/" + fileName);
+
+        if(file.exists()){
+        if (Build.VERSION.SDK_INT >= 24) {
+            path = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file);
+        } else {
+            path = Uri.fromFile(file);
+        }
+
+
+        Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+        intent.setType("vnd.android.cursor.dir/email");
+        /*final PackageManager pm = context.getPackageManager();
+        final List<ResolveInfo> matches = pm.queryIntentActivities(intent, 0);
+        ResolveInfo best = null;
+        for (final ResolveInfo info : matches)
+            if (info.activityInfo.packageName.endsWith(".gm") ||
+                    info.activityInfo.name.toLowerCase().contains("gmail")) best = info;
+        if (best != null)
+            intent.setClassName(best.activityInfo.packageName, best.activityInfo.name);
+*/
+        intent.putExtra(Intent.EXTRA_EMAIL, new String[]{toEmailId});
+        intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+        intent.putExtra(Intent.EXTRA_STREAM, path);
+        //context.startActivity(intent);
+            context.startActivity(Intent.createChooser(intent , "Send email..."));
+        } else {
+            Toast.makeText(context,
+                    context.getResources().getString(R.string.file_not_found),
+                    Toast.LENGTH_SHORT).show();
+        }
+
+    }
 }

@@ -57,8 +57,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv"
                     android:adjustViewBounds="true"
-                    android:paddingTop="@dimen/_8sdp"
-                    android:paddingBottom="@dimen/_8sdp"
+                    android:padding="@dimen/_8sdp"
                     android:text="@string/due_date" />
 
                 <Button
@@ -67,6 +66,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_38sdp"
                     android:layout_below="@+id/task_due_date_tv"
+                    android:layout_marginStart="@dimen/_8sdp"
+                    android:layout_marginLeft="@dimen/_8sdp"
                     android:gravity="center|start"
                     android:maxLines="1"
                     android:text="@string/due_date" />
@@ -109,8 +110,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/first_layout"
                 android:gravity="center_vertical|start"
-                android:orientation="vertical"
-                android:padding="@dimen/_8sdp">
+                android:layout_marginTop="@dimen/_8sdp"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/applicable_tv"
@@ -189,7 +190,8 @@
                 android:layout_below="@+id/task_img_recycler_view"
                 android:gravity="center"
                 android:orientation="vertical"
-                android:padding="@dimen/_8sdp">
+                android:layout_marginTop="@dimen/_8sdp"
+               >
 
                 <TextView
                     android:id="@+id/task_desc_tv"
