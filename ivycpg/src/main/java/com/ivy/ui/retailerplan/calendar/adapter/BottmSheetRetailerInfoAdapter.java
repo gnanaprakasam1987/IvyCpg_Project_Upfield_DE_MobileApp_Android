@@ -14,13 +14,14 @@ import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 import com.ivy.ui.retailerplan.calendar.bo.CalenderBO;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BottmSheetRetailerInfoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final Context mContext;
-    private ArrayList<DateWisePlanBo> mRetailerInfoList;
+    private List<DateWisePlanBo> mRetailerInfoList;
 
-    public BottmSheetRetailerInfoAdapter(Context context, ArrayList<DateWisePlanBo> mRetailerInfoList) {
+    public BottmSheetRetailerInfoAdapter(Context context, List<DateWisePlanBo> mRetailerInfoList) {
         mContext = context;
         this.mRetailerInfoList = mRetailerInfoList;
     }

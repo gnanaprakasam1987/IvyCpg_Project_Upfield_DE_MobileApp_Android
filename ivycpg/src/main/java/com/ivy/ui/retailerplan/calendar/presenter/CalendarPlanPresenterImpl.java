@@ -6,14 +6,14 @@ import com.ivy.calendarlibrary.weekview.WeekViewEvent;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
-import com.ivy.ui.retailerplan.calendar.CalendarPlanContract;
-import com.ivy.ui.retailerplan.calendar.bo.CalenderBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.ui.retailerplan.calendar.data.CalendarPlanDataManager;
 import com.ivy.ui.retailer.viewretailers.data.RetailerDataManager;
+import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
+import com.ivy.ui.retailerplan.calendar.CalendarPlanContract;
+import com.ivy.ui.retailerplan.calendar.bo.CalenderBO;
+import com.ivy.ui.retailerplan.calendar.data.CalendarPlanDataManager;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.rx.SchedulerProvider;
 
@@ -24,9 +24,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
 
@@ -42,7 +45,8 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     private String generalPattern = "yyyy/MM/dd";
     private Calendar currentMonth;
     private String mSelectedDate;
-    private HashMap<String, ArrayList<DateWisePlanBo>> plannedListMap;
+    private HashMap<String, List<DateWisePlanBo>> plannedListMap = new HashMap<>();
+    private List<WeekViewEvent> allEvents = new ArrayList<>();
 
     @Inject
     CalendarPlanPresenterImpl(DataManager dataManager,
@@ -55,11 +59,69 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
         this.calendarPlanDataManager = calendarPlanDataManager;
         this.retailerDataManager = retailerDataManager;
+
+    }
+
+
+    @Override
+    public void fetchEventsFromDb() {
+        getIvyView().showLoading();
+        getCompositeDisposable().add(retailerDataManager.getAllDateRetailerPlanList()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<HashMap<String, List<DateWisePlanBo>>>() {
+                    @Override
+                    public void accept(HashMap<String, List<DateWisePlanBo>> listHashMap) throws Exception {
+                        plannedListMap = listHashMap;
+                        updateEvents();
+                    }
+                }));
+    }
+
+    private void updateEvents() {
+        getCompositeDisposable().add(getEvents()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<List<WeekViewEvent>>() {
+                    @Override
+                    public void accept(List<WeekViewEvent> events) throws Exception {
+                        getIvyView().hideLoading();
+                        allEvents.addAll(events);
+                        setPlanDates();
+                        loadCalendar();
+                    }
+                }));
+    }
+
+
+    private Single<List<WeekViewEvent>> getEvents() {
+        return Single.fromCallable(new Callable<List<WeekViewEvent>>() {
+            @Override
+            public List<WeekViewEvent> call() throws Exception {
+                List<WeekViewEvent> events = new ArrayList<>();
+                for (Object o : plannedListMap.entrySet()) {
+                    Map.Entry pair = (Map.Entry) o;
+                    System.out.println(pair.getKey() + " = " + pair.getValue());
+                    for (DateWisePlanBo dateWisePlanBo : (ArrayList<DateWisePlanBo>) pair.getValue()) {
+                        Calendar startTime = Calendar.getInstance();
+                        startTime.setTime(DateTimeUtils.convertStringToDateObject(dateWisePlanBo.getDate() + " " +
+                                dateWisePlanBo.getStartTime(), "yyyy/MM/dd HH:mm"));
+                        Calendar endTime = (Calendar) startTime.clone();
+                        endTime.setTime(DateTimeUtils.convertStringToDateObject(dateWisePlanBo.getDate() + " " +
+                                dateWisePlanBo.getEndTime(), "yyyy/MM/dd HH:mm"));
+                        WeekViewEvent event = new WeekViewEvent(dateWisePlanBo.getPlanId(), dateWisePlanBo.getName(), "Retailer Address", startTime, endTime);
+                        event.setColor(R.attr.colorPrimary);
+                        events.add(event);
+                    }
+                }
+                return events;
+            }
+        });
     }
 
     /*
-    To Set initial Plan dates
-     */
+        To Set initial Plan dates
+         */
     @Override
     public void setPlanDates() {
         currentMonth = Calendar.getInstance();
@@ -78,9 +140,6 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         Commons.print("planFromDate" + planToDate);
 
         setAllowedDates();
-
-        plannedListMap = new HashMap<>();
-
 
     }
 
@@ -107,19 +166,6 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         getIvyView().loadCalendarView(mAllowedDates, dayInWeekCount, mCalenderAllList);
         getIvyView().setMonthName(DateTimeUtils.convertDateObjectToRequestedFormat(
                 currentMonth.getTime(), "MMM yyyy"));
-        getCompositeDisposable().add(retailerDataManager.getAllDateRetailerPlanList()
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<HashMap<String, ArrayList<DateWisePlanBo>>>() {
-                    @Override
-                    public void accept(HashMap<String, ArrayList<DateWisePlanBo>> listHashMap) throws Exception {
-                        plannedListMap = listHashMap;
-                        getIvyView().refreshGrid();
-
-                    }
-                }));
-
-
     }
 
     @Override
@@ -140,12 +186,6 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         //data for top view horizonatal list
 
         ArrayList<CalenderBO> mCalendarList = getWeekDays();
-
-       /* //adding week no at start position
-        CalenderBO cBO = new CalenderBO();
-        cBO.setDay("WK");
-        cBO.setWeekDate("1");   // need to replace week no from DB
-        mCalendarList.add(0, cBO);*/
 
         getIvyView().loadTopWeekView(mCalendarList, mAllowedDates);
 
@@ -203,55 +243,6 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
 
     }
 
-    @Override
-    public void onNextDayClicked() {
-        currentMonth.add(Calendar.DATE, 1);
-        Calendar toCalendar = Calendar.getInstance();
-        Date dateTo = DateTimeUtils.convertStringToDateObject(planToDate, generalPattern);
-        toCalendar.setTime(dateTo);
-        if (currentMonth.get(Calendar.MONTH) <= toCalendar.get(Calendar.MONTH)) {
-            if (toCalendar.get(Calendar.YEAR) != currentMonth.get(Calendar.YEAR)) {
-                if (toCalendar.get(Calendar.MONTH) - currentMonth.get(Calendar.MONTH) <= 0) {
-                    setSelectedDate(DateTimeUtils.convertDateObjectToRequestedFormat(currentMonth.getTime(), generalPattern));
-                    loadADay();
-                } else {
-                    currentMonth.add(Calendar.DATE, -1);
-                    getIvyView().showMessage(R.string.endOfPeriod);
-                }
-            } else {
-                setSelectedDate(DateTimeUtils.convertDateObjectToRequestedFormat(currentMonth.getTime(), generalPattern));
-                loadADay();
-            }
-        } else {
-            currentMonth.add(Calendar.DATE, -1);
-            getIvyView().showMessage(R.string.endOfPeriod);
-        }
-    }
-
-    @Override
-    public void onPreviousDayClicked() {
-        currentMonth.add(Calendar.DATE, -1);
-        Calendar fromCalendar = Calendar.getInstance();
-        Date dateTo = DateTimeUtils.convertStringToDateObject(planFromDate, generalPattern);
-        fromCalendar.setTime(dateTo);
-        if (currentMonth.get(Calendar.MONTH) >= fromCalendar.get(Calendar.MONTH)) {
-            if (fromCalendar.get(Calendar.YEAR) != currentMonth.get(Calendar.YEAR)) {
-                if (fromCalendar.get(Calendar.MONTH) - currentMonth.get(Calendar.MONTH) >= 0) {
-                    setSelectedDate(DateTimeUtils.convertDateObjectToRequestedFormat(currentMonth.getTime(), generalPattern));
-                    loadADay();
-                } else {
-                    currentMonth.add(Calendar.DATE, +1);
-                    getIvyView().showMessage(R.string.endOfPeriod);
-                }
-            } else {
-                setSelectedDate(DateTimeUtils.convertDateObjectToRequestedFormat(currentMonth.getTime(), generalPattern));
-                loadADay();
-            }
-        } else {
-            currentMonth.add(Calendar.DATE, +1);
-            getIvyView().showMessage(R.string.endOfPeriod);
-        }
-    }
 
     @Override
     public void onNextWeekClicked(boolean isDaySelected) {
@@ -315,42 +306,28 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         }
     }
 
-    @Override
-    public List<WeekViewEvent> getEvents(int newYear, int newMonth) {
-        List<WeekViewEvent> events = new ArrayList<>();
-        Calendar startTime = Calendar.getInstance();
-        startTime.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
-        startTime.set(Calendar.HOUR_OF_DAY, 3);
-        startTime.set(Calendar.MINUTE, 0);
-        Calendar endTime = (Calendar) startTime.clone();
-        endTime.add(Calendar.HOUR, 1);
-        WeekViewEvent event = new WeekViewEvent(1, "Retailer 123", startTime, endTime);
-        events.add(event);
-
-
-        startTime = Calendar.getInstance();
-        startTime.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
-        startTime.set(Calendar.HOUR_OF_DAY, 5);
-        startTime.set(Calendar.MINUTE, 0);
-        endTime = (Calendar) startTime.clone();
-        endTime.set(Calendar.HOUR_OF_DAY, 7);
-        endTime.set(Calendar.MINUTE, 0);
-        event = new WeekViewEvent(10, "Retailer 007", startTime, endTime);
-        events.add(event);
-
-        return events;
-    }
 
     @Override
-    public ArrayList<DateWisePlanBo> getADayPlan(String date) {
+    public List<DateWisePlanBo> getADayPlan(String date) {
         return plannedListMap.get(date) != null
                 ? plannedListMap.get(date) : new ArrayList<>();
     }
 
     @Override
-    public void loadInfoBottomSheet() {
-        getIvyView().loadBottomSheet(getADayPlan(mSelectedDate));
+    public List<WeekViewEvent> getPlannedEvents(int newYear, int newMonth) {
+        List<WeekViewEvent> matchedEvents = new ArrayList<WeekViewEvent>();
+        for (WeekViewEvent event : allEvents) {
+            if (eventMatches(event, newYear, newMonth)) {
+                matchedEvents.add(event);
+            }
+        }
+        return matchedEvents;
     }
+
+    private boolean eventMatches(WeekViewEvent event, int year, int month) {
+        return (event.getStartTime().get(Calendar.YEAR) == year && event.getStartTime().get(Calendar.MONTH) == month - 1) || (event.getEndTime().get(Calendar.YEAR) == year && event.getEndTime().get(Calendar.MONTH) == month - 1);
+    }
+
 
     @Override
     public void setSelectedDate(String selectedDate) {
@@ -439,6 +416,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
             cBO.setDate(d);
             cBO.setToday(DateUtils.isToday(result.getTime()));
             cBO.setSelected(mSelectedDate.equalsIgnoreCase(cBO.getCal_date()));
+            cBO.setPlanList(getADayPlan(cBO.getCal_date()));
             calLsit.add(cBO);
 
         }
@@ -489,7 +467,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         //adding week no at start position
         CalenderBO cBO = new CalenderBO();
         cBO.setDay("WK");
-        cBO.setWeekDate(""+startWeek.get(Calendar.WEEK_OF_YEAR));   // need to replace week no from DB
+        cBO.setWeekDate("" + startWeek.get(Calendar.WEEK_OF_YEAR));   // need to replace week no from DB
         calLsit.add(0, cBO);
 
         return calLsit;

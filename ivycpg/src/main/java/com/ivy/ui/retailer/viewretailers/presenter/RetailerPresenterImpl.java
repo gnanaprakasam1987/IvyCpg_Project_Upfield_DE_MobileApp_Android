@@ -28,11 +28,11 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
     private ProfileDataManagerImpl profileDataManager;
     private RetailerDataManager retailerDataManager;
 
-    private HashMap<String, ArrayList<DateWisePlanBo>> allDateRetailerPlanList;
+    private HashMap<String, List<DateWisePlanBo>> allDateRetailerPlanList;
 
     private ArrayList<DateWisePlanBo> selectedDateRetailerPlanList;
 
-    private HashMap<String,DateWisePlanBo> selectedDateRetailerPlanMap;
+    private HashMap<String, DateWisePlanBo> selectedDateRetailerPlanMap;
 
     private ArrayList<RetailerMasterBO> visibleRetailerList = new ArrayList<>();
 
@@ -111,9 +111,9 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
         getCompositeDisposable().add(retailerDataManager.getAllDateRetailerPlanList()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<HashMap<String, ArrayList<DateWisePlanBo>>>() {
+                .subscribe(new Consumer<HashMap<String, List<DateWisePlanBo>>>() {
                     @Override
-                    public void accept(HashMap<String, ArrayList<DateWisePlanBo>> listHashMap) throws Exception {
+                    public void accept(HashMap<String, List<DateWisePlanBo>> listHashMap) throws Exception {
                         allDateRetailerPlanList = listHashMap;
                     }
                 }));
@@ -124,9 +124,9 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
         getCompositeDisposable().add(retailerDataManager.getRetailerPlanList(date)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<HashMap<String,DateWisePlanBo>>() {
+                .subscribe(new Consumer<HashMap<String, DateWisePlanBo>>() {
                     @Override
-                    public void accept(HashMap<String,DateWisePlanBo> listHashMap) throws Exception {
+                    public void accept(HashMap<String, DateWisePlanBo> listHashMap) throws Exception {
 
                         selectedDateRetailerPlanMap = listHashMap;
 
@@ -136,13 +136,13 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
     }
 
     @Override
-    public HashMap<String, ArrayList<DateWisePlanBo>> getAllDateRetailerPlanList() {
-        return allDateRetailerPlanList.isEmpty()?new HashMap<>(): allDateRetailerPlanList;
+    public HashMap<String, List<DateWisePlanBo>> getAllDateRetailerPlanList() {
+        return allDateRetailerPlanList.isEmpty() ? new HashMap<>() : allDateRetailerPlanList;
     }
 
     @Override
     public ArrayList<DateWisePlanBo> getSelectedDateRetailerPlanList() {
-        return selectedDateRetailerPlanList.isEmpty()?new ArrayList<>(): selectedDateRetailerPlanList;
+        return selectedDateRetailerPlanList.isEmpty() ? new ArrayList<>() : selectedDateRetailerPlanList;
     }
 
     @Override
@@ -151,7 +151,7 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
     }
 
     @Override
-    public void prepareFilteredRetailerList(RetailerPlanFilterBo planFilterBo, String filter) {
+    public void prepareFilteredRetailerList(RetailerPlanFilterBo planFilterBo, String filter, boolean isFromRetailerlist) {
 
         ArrayList<String> retailerIds = new ArrayList<>();
         if (planFilterBo != null) {
@@ -163,16 +163,14 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
         for (RetailerMasterBO retailerMasterBO : this.visibleRetailerList) {
 
             if (planFilterBo != null && !filter.isEmpty() && planFilterBo.getRetailerIds().contains(retailerMasterBO.getRetailerID())
-                        && retailerMasterBO.getRetailerName().contains(filter)){
-
+                    && retailerMasterBO.getRetailerName().contains(filter)) {
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
                 visibleRetailerList.add(retailerMasterBO);
 
-            }else if (planFilterBo != null && filter.isEmpty() && retailerIds.contains(retailerMasterBO.getRetailerID())) {
+            } else if (planFilterBo != null && filter.isEmpty() && retailerIds.contains(retailerMasterBO.getRetailerID())) {
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
                 visibleRetailerList.add(retailerMasterBO);
-            }
-            else if (planFilterBo == null && !filter.isEmpty() && retailerMasterBO.getRetailerName().contains(filter)) {
+            } else if (planFilterBo == null && !filter.isEmpty() && retailerMasterBO.getRetailerName().contains(filter)) {
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
                 visibleRetailerList.add(retailerMasterBO);
             }
@@ -181,11 +179,14 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
         this.visibleRetailerList.clear();
         this.visibleRetailerList.addAll(visibleRetailerList);
 
+        if (isFromRetailerlist)
+            getIvyView().populateRetailers(visibleRetailerList);
+
         getIvyView().focusMarker();
     }
 
     public String makeURL(double sourcelat, double sourcelog, double destlat,
-                          double destlog,String key,boolean isBywalk) {
+                          double destlog, String key, boolean isBywalk) {
         String mode;
         if (isBywalk)
             mode = "mode=walking";

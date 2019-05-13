@@ -42,6 +42,7 @@ public class RetailerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         holder.tvLocation.setText(holder.retailerMasterBO.getAddress1());
 
         holder.tvPlanned.setText(String.valueOf(holder.retailerMasterBO.getTotalPlanned()));
+
         if (holder.retailerMasterBO.getTotalPlanned() > holder.retailerMasterBO.getVisit_frequencey())
             DrawableCompat.setTint(holder.tvPlanned.getBackground(), ContextCompat.getColor(mContext, R.color.rippelColor));
         else if (holder.retailerMasterBO.getTotalPlanned() < holder.retailerMasterBO.getVisit_frequencey())
