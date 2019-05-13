@@ -6,7 +6,7 @@ import android.text.TextUtils;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.AttributeBO;
-import com.ivy.ui.offlineplan.addplan.DateWisePlanBo;
+import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
 import com.ivy.ui.retailer.filter.RetailerPlanFilterConstants;
 import com.ivy.utils.DateTimeUtils;

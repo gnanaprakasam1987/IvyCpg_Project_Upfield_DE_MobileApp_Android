@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/retailer_list_fragment"
-        android:name="com.ivy.ui.retailer.view.list.RetailerListFragment"
+        android:name="com.ivy.ui.retailer.viewretailers.view.list.RetailerListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
