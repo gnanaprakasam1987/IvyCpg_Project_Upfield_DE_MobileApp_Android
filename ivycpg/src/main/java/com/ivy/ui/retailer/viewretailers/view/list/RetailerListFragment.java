@@ -23,10 +23,14 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
 import com.ivy.ui.retailer.viewretailers.RetailerContract;
 import com.ivy.ui.retailer.viewretailers.adapter.RetailerListAdapter;
+import com.ivy.ui.retailer.viewretailers.adapter.RetailerListClickListner;
 import com.ivy.ui.retailer.viewretailers.di.DaggerRetailerComponent;
 import com.ivy.ui.retailer.viewretailers.di.RetailerModule;
 import com.ivy.ui.retailer.viewretailers.presenter.RetailerPresenterImpl;
+import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
+import com.ivy.ui.retailerplan.addplan.view.AddPlanDialogFragment;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -34,7 +38,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 
-public class RetailerListFragment extends BaseFragment implements RetailerContract.RetailerView {
+public class RetailerListFragment extends BaseFragment implements RetailerContract.RetailerView, RetailerListClickListner {
 
     @BindView(R.id.rv_retailer)
     RecyclerView rvRetailer;
@@ -44,6 +48,8 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
     RetailerPresenterImpl<RetailerContract.RetailerView> presenter;
 
     private RetailerPlanFilterBo planFilterBo;
+    private String mSelectedDate;
+    private AddPlanDialogFragment addPlanDialogFragment;
 
     @Override
     public void onAttach(Context context) {
@@ -88,19 +94,20 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
 
     @Override
     protected void getMessageFromAliens() {
-
+        if (Objects.requireNonNull(getActivity()).getIntent().getExtras() != null) {
+            mSelectedDate = Objects.requireNonNull(getActivity().getIntent().getExtras()).getString("selectedDate", null);
+        }
     }
 
     @Override
     protected void setUpViews() {
-
         presenter.fetchRetailerList();
-
+        presenter.fetchSelectedDateRetailerPlan(mSelectedDate);
     }
 
     @Override
     public void populateRetailers(List<RetailerMasterBO> retailerList) {
-        rvRetailer.setAdapter(new RetailerListAdapter(mContext, retailerList));
+        rvRetailer.setAdapter(new RetailerListAdapter(mContext, retailerList,this));
     }
 
     @Override
@@ -180,5 +187,16 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
         }
 
         return false;
+    }
+
+    @Override
+    public void onRetailerSelected(RetailerMasterBO retailerMasterBO) {
+        ArrayList<DateWisePlanBo> planList = presenter.getSelectedDateRetailerPlanList();
+        addPlanDialogFragment =
+                new AddPlanDialogFragment(retailerMasterBO,
+                        presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID())
+                        ,planList);
+        addPlanDialogFragment.show(((FragmentActivity)mContext).getSupportFragmentManager(),
+                "add_plan_fragment");
     }
 }

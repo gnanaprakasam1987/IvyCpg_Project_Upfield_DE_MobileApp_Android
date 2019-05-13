@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.RectF;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.CoordinatorLayout;
@@ -215,7 +216,9 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         });
 
         fabAddRetailer.setOnClickListener(v -> {
-            startActivity(RetailerListActivity.class);
+            Intent i = new Intent(getActivity(), RetailerListActivity.class);
+            i.putExtra("selectedDate", presenter.getSelectedDate());
+            startActivity(i);
         });
     }
 
@@ -322,7 +325,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     }
 
     @Override
-    public void onDateNoSelected(String selectedDate,List<DateWisePlanBo> planList) {
+    public void onDateNoSelected(String selectedDate, List<DateWisePlanBo> planList) {
         showMessage(selectedDate);
         presenter.setSelectedDate(selectedDate);
         loadBottomSheet(planList);
@@ -331,7 +334,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     @Override
     public List<? extends WeekViewEvent> onMonthChange(int newYear, int newMonth) {
-      return presenter.getPlannedEvents(newYear,newMonth);
+        return presenter.getPlannedEvents(newYear, newMonth);
     }
 
     @Override
@@ -398,6 +401,10 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
             FragmentTransaction ft = fm.beginTransaction();
 
             RetailerMapFragment fragment = new RetailerMapFragment();
+            Bundle bndl = new Bundle();
+            bndl.putString("screentitle", screenTitle);
+            bndl.putString("selectedDate", presenter.getSelectedDate());
+            fragment.setArguments(bndl);
             ft.replace(R.id.fragment_content, fragment, MENU_MAP_PLAN);
             ft.commit();
             return true;

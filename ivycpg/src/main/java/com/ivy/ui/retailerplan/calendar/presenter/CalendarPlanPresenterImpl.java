@@ -103,15 +103,17 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                     Map.Entry pair = (Map.Entry) o;
                     System.out.println(pair.getKey() + " = " + pair.getValue());
                     for (DateWisePlanBo dateWisePlanBo : (ArrayList<DateWisePlanBo>) pair.getValue()) {
-                        Calendar startTime = Calendar.getInstance();
-                        startTime.setTime(DateTimeUtils.convertStringToDateObject(dateWisePlanBo.getDate() + " " +
-                                dateWisePlanBo.getStartTime(), "yyyy/MM/dd HH:mm"));
-                        Calendar endTime = (Calendar) startTime.clone();
-                        endTime.setTime(DateTimeUtils.convertStringToDateObject(dateWisePlanBo.getDate() + " " +
-                                dateWisePlanBo.getEndTime(), "yyyy/MM/dd HH:mm"));
-                        WeekViewEvent event = new WeekViewEvent(dateWisePlanBo.getPlanId(), dateWisePlanBo.getName(), "Retailer Address", startTime, endTime);
-                        event.setColor(R.attr.colorPrimary);
-                        events.add(event);
+                        if (dateWisePlanBo.getStartTime().length() > 0 && dateWisePlanBo.getEndTime().length() > 0) {
+                            Calendar startTime = Calendar.getInstance();
+                            startTime.setTime(DateTimeUtils.convertStringToDateObject(dateWisePlanBo.getDate() + " " +
+                                    dateWisePlanBo.getStartTime(), "yyyy/MM/dd HH:mm"));
+                            Calendar endTime = (Calendar) startTime.clone();
+                            endTime.setTime(DateTimeUtils.convertStringToDateObject(dateWisePlanBo.getDate() + " " +
+                                    dateWisePlanBo.getEndTime(), "yyyy/MM/dd HH:mm"));
+                            WeekViewEvent event = new WeekViewEvent(dateWisePlanBo.getPlanId(), dateWisePlanBo.getName(), "Retailer Address", startTime, endTime);
+                            event.setColor(R.attr.colorPrimary);
+                            events.add(event);
+                        }
                     }
                 }
                 return events;
@@ -322,6 +324,11 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
             }
         }
         return matchedEvents;
+    }
+
+    @Override
+    public String getSelectedDate() {
+        return mSelectedDate;
     }
 
     private boolean eventMatches(WeekViewEvent event, int year, int month) {

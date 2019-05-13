@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
@@ -19,10 +20,12 @@ public class RetailerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private final Context mContext;
     private List<RetailerMasterBO> mRetailerList;
+    private RetailerListClickListner retailerListClickListner;
 
-    public RetailerListAdapter(Context context, List<RetailerMasterBO> mRetailerList) {
+    public RetailerListAdapter(Context context, List<RetailerMasterBO> mRetailerList,RetailerListClickListner retailerListClickListner) {
         mContext = context;
         this.mRetailerList = mRetailerList;
+        this.retailerListClickListner = retailerListClickListner;
     }
 
 
@@ -52,11 +55,16 @@ public class RetailerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         holder.tvVisitPlanned.setText(String.valueOf(holder.retailerMasterBO.getTotalVisited()));
         holder.tvVisitPending.setText(String.valueOf
                 (holder.retailerMasterBO.getTotalPlanned() - holder.retailerMasterBO.getTotalVisited()));
+
+        holder.rlRetailer.setOnClickListener(v -> {
+            retailerListClickListner.onRetailerSelected(holder.retailerMasterBO);
+        });
     }
 
     class RetailerListViewHolder extends RecyclerView.ViewHolder {
         TextView tvRetailer, tvPlanned, tvLocation, tvVisitFreq, tvVisitPlanned, tvVisitPending;
         RetailerMasterBO retailerMasterBO;
+        RelativeLayout rlRetailer;
 
         RetailerListViewHolder(View itemView) {
             super(itemView);
@@ -67,6 +75,7 @@ public class RetailerListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             tvVisitFreq = itemView.findViewById(R.id.tv_visit_freq);
             tvVisitPlanned = itemView.findViewById(R.id.tv_visit_planned);
             tvVisitPending = itemView.findViewById(R.id.tv_visit_pending);
+            rlRetailer = itemView.findViewById(R.id.rl_retailer);
         }
     }
 
