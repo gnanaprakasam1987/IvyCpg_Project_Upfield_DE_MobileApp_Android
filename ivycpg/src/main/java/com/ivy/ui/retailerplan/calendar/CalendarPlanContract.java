@@ -58,5 +58,7 @@ public interface CalendarPlanContract {
 
         List<WeekViewEvent> getPlannedEvents(int newYear, int newMonth);
 
+        String getSelectedDate();
+
     }
 }

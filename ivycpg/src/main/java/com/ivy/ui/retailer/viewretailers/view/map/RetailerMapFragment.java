@@ -78,7 +78,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener {
 
-    private String screenTitle,date;
+    private String screenTitle,mSelectedDate;
     private ViewGroup infoWindow;
     private Context context;
 
@@ -294,15 +294,15 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     protected void getMessageFromAliens() {
         if (getArguments() != null) {
             screenTitle = getArguments().getString("screentitle");
-            date = getArguments().getString("DATE");
+            mSelectedDate = getArguments().getString("selectedDate");
         }
     }
 
     @Override
     protected void setUpViews() {
         setUpToolbar(screenTitle);
-//        presenter.fetchSelectedDateRetailerPlan(date);
-        presenter.fetchSelectedDateRetailerPlan("2019/03/22");
+         presenter.fetchSelectedDateRetailerPlan(mSelectedDate);
+        //presenter.fetchSelectedDateRetailerPlan("2019/03/22");
         loadMap();
     }
 

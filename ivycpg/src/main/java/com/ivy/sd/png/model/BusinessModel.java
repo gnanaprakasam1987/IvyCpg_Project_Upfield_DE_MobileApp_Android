@@ -1732,7 +1732,7 @@ public class BusinessModel extends Application {
             }
 
 
-            c = db.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
+            c = db.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
             if (c != null
                     && c.getCount() > 0) {
                 if (c.moveToNext())
