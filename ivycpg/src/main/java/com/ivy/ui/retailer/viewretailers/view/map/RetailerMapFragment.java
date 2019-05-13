@@ -78,7 +78,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener {
 
-    private String screenTitle,date;
+    private String screenTitle,selectedDate;
     private ViewGroup infoWindow;
     private Context context;
 
@@ -229,6 +229,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
+            ((Activity)context).invalidateOptionsMenu();
+
             if (getMap() != null)
                 getMap().clear();
 
@@ -294,15 +296,14 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     protected void getMessageFromAliens() {
         if (getArguments() != null) {
             screenTitle = getArguments().getString("screentitle");
-            date = getArguments().getString("DATE");
+            selectedDate = getArguments().getString("selectedDate");
         }
     }
 
     @Override
     protected void setUpViews() {
         setUpToolbar(screenTitle);
-//        presenter.fetchSelectedDateRetailerPlan(date);
-        presenter.fetchSelectedDateRetailerPlan("2019/03/22");
+        presenter.fetchSelectedDateRetailerPlan(selectedDate);
         loadMap();
     }
 
@@ -468,28 +469,12 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             isClickable = false;
             onInfoWindowClick(marker);
         }else {
-//            marker.showInfoWindow();
+            marker.showInfoWindow();
 
             ArrayList<DateWisePlanBo> planList = presenter.getSelectedDateRetailerPlanList();
 
-            /*DateWisePlanBo dateWisePlanBo = new DateWisePlanBo();
-            dateWisePlanBo.setStartTime("11:00");
-            dateWisePlanBo.setEndTime("12:00");
-
-            DateWisePlanBo dateWisePlanBo1 = new DateWisePlanBo();
-            dateWisePlanBo1.setStartTime("14:00");
-            dateWisePlanBo1.setEndTime("16:00");
-
-            DateWisePlanBo dateWisePlanBo2 = new DateWisePlanBo();
-            dateWisePlanBo2.setStartTime("18:00");
-            dateWisePlanBo2.setEndTime("21:00");
-
-            planList.add(dateWisePlanBo);
-            planList.add(dateWisePlanBo1);
-            planList.add(dateWisePlanBo2);*/
-
             addPlanDialogFragment =
-                    new AddPlanDialogFragment(retailerMasterBO,
+                    new AddPlanDialogFragment(selectedDate,retailerMasterBO,
                             presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID())
                     ,planList);
             addPlanDialogFragment.show(((FragmentActivity)context).getSupportFragmentManager(),
@@ -715,6 +700,11 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         super.onPrepareOptionsMenu(menu);
 
         menu.findItem(R.id.map_retailer).setVisible(false);
+
+        if (storeFilterSwitch.isChecked())
+            menu.findItem(R.id.filter).setVisible(false);
+        else
+            menu.findItem(R.id.filter).setVisible(true);
 
     }
 

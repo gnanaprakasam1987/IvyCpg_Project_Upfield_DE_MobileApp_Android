@@ -64,6 +64,12 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
     @BindView(R.id.dynamic_layout)
     LinearLayout dynamicViewLayout;
 
+    private HashMap<String,Spinner> attributeSpinner = new HashMap<>();
+
+    private HashMap<String,AttributeBO> selectedSpinnerIds = new HashMap<>();
+
+    private ArrayList<String> filteredAttributeIds = new ArrayList<>();
+
     @Inject
     RetailerPlanFilterPresenterImpl<RetailerPlanFilterContract.RetailerPlanFilterView> presenter;
 
@@ -143,6 +149,10 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
             taskToDate.setText(getString(R.string.select_date));
         }
 
+        dynamicViewLayout.removeAllViews();
+
+        showAttributeSpinner();
+
     }
 
     @OnClick(R.id.filter_btn)
@@ -161,21 +171,22 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
             planFilterBo.setTaskDate(new FilterObjectBo(taskFromDate.getText().toString(),
                 taskToDate.getText().toString()));
 
-        if (!filterIdMap.isEmpty()) {
+        if (!selectedSpinnerIds.isEmpty()) {
 
-            ArrayList<AttributeBO> ids = new ArrayList<>(filterIdMap.values());
+            ArrayList<AttributeBO> ids = new ArrayList<>(selectedSpinnerIds.values());
 
-            filterAttributeIds.clear();
+            filteredAttributeIds.clear();
             for (AttributeBO bo : ids){
                 if (bo.isAttributeSelected()) {
-                    String[] spliArr = bo.getAttributeName().split("__");
-                    filterAttributeIds.add(spliArr[1]);
+                    String[] spliArr = bo.getAttributeName().split("##");
+                    String[] spliArr1 = spliArr[1].split("__");
+                    filteredAttributeIds.add(spliArr1[0]);
                 }
             }
 
-            planFilterBo.setFilterAttributeIds(filterAttributeIds);
+            planFilterBo.setFilterAttributeIds(filteredAttributeIds);
 
-            planFilterBo.setFilterAttributeIdMap(filterIdMap);
+            planFilterBo.setFilterAttributeIdMap(selectedSpinnerIds);
         }
 
         presenter.validateFilterObject(planFilterBo);
@@ -367,8 +378,6 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
         dynamicViewLayout.addView(view);
     }
 
-    private HashMap<String,Spinner> spinnerDetailMap = new HashMap<>();
-
     @Override
     public void showAttributeSpinner() {
 
@@ -405,7 +414,7 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
                             attributeChildList = new ArrayList<>();
                         }
 
-                        Spinner childSpinner = spinnerDetailMap.get(splitTagName[0]+"__"+2);
+                        Spinner childSpinner = RetailerPlanFilterFragment.this.attributeSpinner.get(splitTagName[0]+"__"+2);
 
                         if (childSpinner == null)
                             return;
@@ -425,7 +434,7 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
 
             if (attributeBO.getLevelCount() > 2){
                 for (int i = 2 ; i < attributeBO.getLevelCount(); i++){
-                    createSpinner(view,attributeBO.getAttributeName()+"##"+attributeBO.getAttributeId()+"__"+i);
+                    createChildSpinner(view,attributeBO.getAttributeName()+"##"+attributeBO.getAttributeId()+"__"+i);
                 }
             }
 
@@ -434,12 +443,66 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
         }
     }
 
+    private void createChildSpinner(final View baseView, String tagName){
+
+        View view = getLayoutInflater().inflate(R.layout.attribute_spinner_layout, null);
+
+        ((TextView)view.findViewById(R.id.spinner_txt)).setVisibility(View.GONE);
+
+        Spinner attributeSpinner = view.findViewById(R.id.spinner_attribute);
+
+        attributeSpinner.setTag(tagName);
+
+        setSpinnerAdapter(attributeSpinner,new ArrayList<>(),false);
+
+        this.attributeSpinner.put(tagName,attributeSpinner);
+
+        attributeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position != 0){
+
+                    AttributeBO attributeBO1 = (AttributeBO)parent.getSelectedItem();
+
+                    String[] splitTagName = parent.getTag().toString().split("__");
+                    updateAttributeArray(parent.getTag().toString(), attributeBO1.getAttributeId());
+                    resetParentValues((Spinner) parent);
+
+                    ArrayList<AttributeBO> attributeChildList = presenter.getAttributeChildLst(attributeBO1.getAttributeId()+"");
+
+                    if (attributeChildList == null || attributeChildList.isEmpty()){
+                        attributeChildList = new ArrayList<>();
+                    }
+
+                    String tagName = splitTagName[0]+"__"+(Integer.parseInt(splitTagName[1])+1);
+
+                    Spinner childSpinner = RetailerPlanFilterFragment.this.attributeSpinner.get(tagName);
+
+                    if (childSpinner == null)
+                        return;
+
+                    setSpinnerAdapter(childSpinner,attributeChildList,true);
+                }else{
+                    updateAttributeArray(parent.getTag().toString(), -1);
+                    resetSpinnerAdapter((Spinner) parent);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        ((LinearLayout)baseView).addView(view);
+    }
+
     private void resetSpinnerAdapter(Spinner spinner){
         String[] splitTagName = spinner.getTag().toString().split("__");
 
         String tagName = splitTagName[0]+"__"+(Integer.parseInt(splitTagName[1])+1);
 
-        Spinner childSpinner = spinnerDetailMap.get(tagName);
+        Spinner childSpinner = attributeSpinner.get(tagName);
 
         if (childSpinner != null) {
             updateAttributeArray(tagName, -1);
@@ -487,148 +550,44 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
 
         String tagName = splitTagName[0]+"__"+(Integer.parseInt(splitTagName[1])-1);
 
-        Spinner parentSpinner = spinnerDetailMap.get(tagName);
+        Spinner parentSpinner = attributeSpinner.get(tagName);
 
         if (parentSpinner != null
-                && filterIdMap != null
-                && filterIdMap.get(tagName) != null) {
-           AttributeBO attributeBO = filterIdMap.get(tagName);
-           attributeBO.setAttributeSelected(false);
+                && selectedSpinnerIds != null
+                && selectedSpinnerIds.get(tagName) != null) {
+            AttributeBO attributeBO = selectedSpinnerIds.get(tagName);
+            attributeBO.setAttributeSelected(false);
 
-           resetParentValues(parentSpinner);
+            resetParentValues(parentSpinner);
         }
     }
 
-    private HashMap<String,AttributeBO> filterIdMap = new HashMap<>();
-
     private void updateAttributeArray(String attribute, int id){
 
-        if (filterIdMap.get(attribute) != null && id  == -1){
-            filterIdMap.remove(attribute);
+        if (selectedSpinnerIds.get(attribute) != null && id  == -1){
+            selectedSpinnerIds.remove(attribute);
         }else if (id  != -1) {
             AttributeBO attributeBO = new AttributeBO();
             attributeBO.setAttributeId(id);
             attributeBO.setAttributeName(attribute);
             attributeBO.setAttributeSelected(true);
 
-            filterIdMap.put(attribute,attributeBO);
-        }
-    }
-
-    private void createSpinner(final View baseView,String tagName){
-
-        View view = getLayoutInflater().inflate(R.layout.attribute_spinner_layout, null);
-
-        ((TextView)view.findViewById(R.id.spinner_txt)).setVisibility(View.GONE);
-
-        Spinner attributeSpinner = view.findViewById(R.id.spinner_attribute);
-
-        attributeSpinner.setTag(tagName);
-
-        setSpinnerAdapter(attributeSpinner,new ArrayList<>(),false);
-
-        spinnerDetailMap.put(tagName,attributeSpinner);
-
-        attributeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (position != 0){
-
-                    AttributeBO attributeBO1 = (AttributeBO)parent.getSelectedItem();
-
-                    String[] splitTagName = parent.getTag().toString().split("__");
-                    updateAttributeArray(parent.getTag().toString(), attributeBO1.getAttributeId());
-                    resetParentValues((Spinner) parent);
-
-                    ArrayList<AttributeBO> attributeChildList = presenter.getAttributeChildLst(attributeBO1.getAttributeId()+"");
-
-                    if (attributeChildList == null || attributeChildList.isEmpty()){
-                        attributeChildList = new ArrayList<>();
-                    }
-
-                    String tagName = splitTagName[0]+"__"+(Integer.parseInt(splitTagName[1])+1);
-
-                    Spinner childSpinner = spinnerDetailMap.get(tagName);
-
-                    if (childSpinner == null)
-                        return;
-
-                    setSpinnerAdapter(childSpinner,attributeChildList,true);
-                }else{
-                    updateAttributeArray(parent.getTag().toString(), -1);
-                    resetSpinnerAdapter((Spinner) parent);
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        ((LinearLayout)baseView).addView(view);
-    }
-
-    private ArrayList<String> filterAttributeIds = new ArrayList<>();
-
-    private void filterAttributeId (String attribute, int id){
-
-        int size = filterAttributeIds.size();
-
-        if (size == 0 && id != -1)
-            filterAttributeIds.add((attribute+id));
-
-        for (int i = 0; i<size; i++){
-            if (filterAttributeIds.get(i).startsWith(attribute) && id != -1){
-                filterAttributeIds.set(i,(attribute+"__"+id));
-                break;
-            }else if (filterAttributeIds.get(i).startsWith(attribute) && id == -1){
-                filterAttributeIds.remove(i);
-                break;
-            }else{
-                if (i == size-1 && id != -1)
-                    filterAttributeIds.add(attribute+"__"+id);
-            }
-        }
-
-        AttributeBO attributeBO = new AttributeBO();
-        attributeBO.setAttributeId(id);
-        if (id  == -1)
-            attributeBO.setAttributeSelected(false);
-
-        filterIdMap.put(attribute,attributeBO);
-    }
-
-    private void updateFilterIdArray(){
-
-        ArrayList<String> attributeFilterId = new ArrayList<>();
-
-        int siz = filterAttributeIds.size();
-        for (int i = 0; i < siz; i++){
-
-            String[] compareName = filterAttributeIds.get(i).split("##");
-            String[] compareId = filterAttributeIds.get(i).split("__");
-            int compareIdCnt = Integer.parseInt(compareId[1]);
-
-            int tempId = 0;
-            for (int j = 0; j < siz; j++){
-                if (i != j){
-
-                    String[] compareName1 = filterAttributeIds.get(j).split("##");
-                    String[] compareId1 = filterAttributeIds.get(j).split("__");
-
-                    if (compareName[0].equals(compareName1[0])){
-                        int compareIdCnt1 = Integer.parseInt(compareId1[1]);
-                        if (compareIdCnt > compareIdCnt1 && compareIdCnt > tempId){
-                        }
-                    }
-                }
-            }
+            selectedSpinnerIds.put(attribute,attributeBO);
         }
     }
 
     @Override
     public void filterValidationSuccess() {
+
+        if (planFilterBo.getLastVisitDate() != null
+                && (planFilterBo.getLastVisitDate().getStringOne().equalsIgnoreCase(getString(R.string.select_date)))){
+            planFilterBo.setLastVisitDate(null);
+        }
+        if(planFilterBo.getTaskDate() != null
+                && (planFilterBo.getTaskDate().getStringOne().equalsIgnoreCase(getString(R.string.select_date)))){
+            planFilterBo.setTaskDate(null);
+        }
+
         presenter.getRetailerFilterArray(planFilterBo);
     }
 

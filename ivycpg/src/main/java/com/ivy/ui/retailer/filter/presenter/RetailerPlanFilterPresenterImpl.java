@@ -94,10 +94,12 @@ public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContrac
 
             if (planFilterBo.getIsNotVisited() == 0
                     && planFilterBo.getLastVisitDate() == null
-                    && planFilterBo.getTaskDate() == null){
+                    && planFilterBo.getTaskDate() == null &&
+                    (planFilterBo.getFilterAttributeIds() != null || planFilterBo.getFilterAttributeIds().isEmpty())){
                 getIvyView().clearFilter();
-            }else
+            }else {
                 getIvyView().filterValidationSuccess();
+            }
         }
     }
 

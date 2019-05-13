@@ -69,7 +69,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 HashMap<String, ArrayList<DateWisePlanBo>> datePlanHashMap = new HashMap<>();
 
                 String sql = "SELECT dwp.PlanId,dwp.DistributorId,dwp.UserId,dwp.Date,dwp.EntityId,dwp.EntityType,IFNULL(dwp.Status,'')" +
-                        ",dwp.Sequence,rm.RetailerName,IFNULL(dwp.StartTime,''),IFNULL(dwp.EndTime,'') " +
+                        ",dwp.Sequence,rm.RetailerName,IFNULL(dwp.StartTime,''),IFNULL(dwp.EndTime,''),PlanSource " +
                         " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
                         " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER'";
@@ -95,9 +95,10 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         dateWisePlanBO.setStartTime(c.getString(9));
                         dateWisePlanBO.setEndTime(c.getString(10));
 
-                        if (dateWisePlanBO.getStatus() != null && dateWisePlanBO.getStatus().isEmpty())
+                        if (c.getString(11) != null && c.getString(11).equalsIgnoreCase("MOBILE"))
+                            dateWisePlanBO.setServerData(false);
+                        else
                             dateWisePlanBO.setServerData(true);
-
                         if (datePlanHashMap.get(dateWisePlanBO.getDate()) == null) {
                             ArrayList<DateWisePlanBo> plannedList = new ArrayList<>();
                             plannedList.add(dateWisePlanBO);
@@ -124,7 +125,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
             public HashMap<String, DateWisePlanBo> call() throws Exception {
                 HashMap<String, DateWisePlanBo> datePlanHashMap = new HashMap<>();
 
-                String sql = "SELECT dwp.PlanId,dwp.DistributorId,dwp.UserId,dwp.Date,dwp.EntityId,dwp.EntityType,IFNULL(dwp.Status,''),dwp.Sequence,rm.RetailerName,StartTime,EndTime " +
+                String sql = "SELECT dwp.PlanId,dwp.DistributorId,dwp.UserId,dwp.Date,dwp.EntityId,dwp.EntityType,IFNULL(dwp.Status,''),dwp.Sequence,rm.RetailerName,StartTime,EndTime,PlanSource " +
                         " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
                         " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER' and dwp.Date=" + StringUtils.QT(date);
@@ -150,7 +151,9 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         dateWisePlanBO.setStartTime(c.getString(9));
                         dateWisePlanBO.setEndTime(c.getString(10));
 
-                        if (dateWisePlanBO.getStatus() != null && dateWisePlanBO.getStatus().isEmpty())
+                        if (c.getString(11) != null && c.getString(11).equalsIgnoreCase("MOBILE"))
+                            dateWisePlanBO.setServerData(false);
+                        else
                             dateWisePlanBO.setServerData(true);
 
                         datePlanHashMap.put(String.valueOf(dateWisePlanBO.getEntityId()), dateWisePlanBO);

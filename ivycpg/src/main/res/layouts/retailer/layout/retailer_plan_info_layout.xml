@@ -304,6 +304,7 @@
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
             android:text="Planned Time Slots"
+            android:visibility="gone"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_visit_end_time_txt" />
 
@@ -353,7 +354,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="visible"
-            app:constraint_referenced_ids="tv_visit_end_time_txt,tv_visit_time,tv_visit_date,tv_visit_end_time,tv_visit_time_txt,tv_visit_end_date,tv_last_visit_txt,tv_last_visit_date,tv_planned_layout_txt,planned_slot_grid_layout" />
+            app:constraint_referenced_ids="tv_visit_end_time_txt,tv_visit_time,tv_visit_date,tv_visit_end_time,tv_visit_time_txt,tv_visit_end_date,tv_last_visit_txt,tv_last_visit_date,planned_slot_grid_layout" />
 
     </android.support.constraint.ConstraintLayout>
 

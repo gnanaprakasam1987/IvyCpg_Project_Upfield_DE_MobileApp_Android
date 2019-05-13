@@ -198,7 +198,7 @@ public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterData
 
                 if (planFilterBo.getFilterAttributeIds() != null && !planFilterBo.getFilterAttributeIds().isEmpty()){
 
-                    queryStrng.append(" inner join RetailerAttribute as ar on ar.hierarchy LIKE ");
+                    queryStrng.append(" inner join RetailerAttribute as ar on ar.retailerId = rm.retailerid  and ar.hierarchy LIKE ");
 
                     int i =0;
                     for (String id :planFilterBo.getFilterAttributeIds()){

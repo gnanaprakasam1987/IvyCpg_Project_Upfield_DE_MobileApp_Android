@@ -58,7 +58,8 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                             + StringUtils.QT(dateWisePlanBo.getStatus()) + ","
                             + dateWisePlanBo.getSequence()+ ","
                             + StringUtils.QT(dateWisePlanBo.getStartTime()) + ","
-                            + StringUtils.QT(dateWisePlanBo.getEndTime());
+                            + StringUtils.QT(dateWisePlanBo.getEndTime())+ ","
+                            + StringUtils.QT("MOBILE");
 
                     mDbUtil.insertSQL(DataMembers.tbl_date_wise_plan, DataMembers.tbl_date_wise_plan_cols, values);
 

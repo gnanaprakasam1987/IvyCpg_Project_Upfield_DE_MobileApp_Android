@@ -55,10 +55,6 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
         return appDataProvider.getRetailerMasters();
     }
 
-    public ArrayList<RetailerMasterBO> getVisibleRetailerList() {
-        return visibleRetailerList;
-    }
-
     @Override
     public void fetchRetailerList() {
         getIvyView().populateRetailers(loadRetailerList());
@@ -158,28 +154,23 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
             retailerIds = planFilterBo.getRetailerIds();
         }
 
-        ArrayList<RetailerMasterBO> visibleRetailerList = new ArrayList<>();
-
         for (RetailerMasterBO retailerMasterBO : this.visibleRetailerList) {
 
             if (planFilterBo != null && !filter.isEmpty() && planFilterBo.getRetailerIds().contains(retailerMasterBO.getRetailerID())
                         && retailerMasterBO.getRetailerName().contains(filter)){
 
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
-                visibleRetailerList.add(retailerMasterBO);
 
             }else if (planFilterBo != null && filter.isEmpty() && retailerIds.contains(retailerMasterBO.getRetailerID())) {
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
-                visibleRetailerList.add(retailerMasterBO);
             }
             else if (planFilterBo == null && !filter.isEmpty() && retailerMasterBO.getRetailerName().contains(filter)) {
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
-                visibleRetailerList.add(retailerMasterBO);
+            }else if(planFilterBo == null && filter.isEmpty()){
+                getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
             }
         }
 
-        this.visibleRetailerList.clear();
-        this.visibleRetailerList.addAll(visibleRetailerList);
 
         getIvyView().focusMarker();
     }

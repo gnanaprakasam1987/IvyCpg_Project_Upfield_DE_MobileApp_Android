@@ -112,14 +112,15 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     @Inject
     AddPlanPresenterImpl<AddPlanContract.AddPlanView> addPlanPresenter;
 
-    public AddPlanDialogFragment(RetailerMasterBO retailerMaster,
+    public AddPlanDialogFragment(String selectedDate,RetailerMasterBO retailerMaster,
                                  DateWisePlanBo dateWisePlanBo, ArrayList<DateWisePlanBo> planList){
         retailerMasterBO = retailerMaster;
         this.dateWisePlanBo = dateWisePlanBo;
         this.planList = planList;
+        this.selectedDate = selectedDate;
     }
 
-    private String date="",startTime="",endtime="";
+    private String selectedDate="",startTime="",endtime="";
 
     @Override
     public void onAttach(Context context) {
@@ -154,18 +155,17 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(bottomSheetCallBack);
         }
 
-        date = DateTimeUtils.now(DATE_GLOBAL);
         startTime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
         endtime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
 
-        if (dateWisePlanBo != null && !dateWisePlanBo.getDate().isEmpty())
-            date = dateWisePlanBo.getDate();
+        if (selectedDate == null || selectedDate.isEmpty())
+            selectedDate = DateTimeUtils.now(DATE_GLOBAL);
 
         if (dateWisePlanBo != null && !dateWisePlanBo.getStartTime().isEmpty())
-            startTime = DateTimeUtils.convertDateTimeObjectToRequestedFormat(dateWisePlanBo.getStartTime(),"yyyy/MM/dd HH:mm:ss","HH:mm");
+            startTime = dateWisePlanBo.getStartTime();
 
         if (dateWisePlanBo != null && !dateWisePlanBo.getEndTime().isEmpty())
-            endtime = DateTimeUtils.convertDateTimeObjectToRequestedFormat(dateWisePlanBo.getEndTime(),"yyyy/MM/dd HH:mm:ss","HH:mm");
+            endtime = dateWisePlanBo.getEndTime();
 
         setPlanWindowValues();
     }
@@ -285,7 +285,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                     || "Y".equals(retailerMasterBO.getIsDeviated())) && dateWisePlanBo != null) {
                 addPlanPresenter.updatePlan(dateWisePlanBo.getDate(), startTime, endtime, retailerMasterBO);
             } else if (!"Y".equals(retailerMasterBO.getIsVisited())) {
-                addPlanPresenter.addNewPlan(date, startTime, endTime, retailerMasterBO);
+                addPlanPresenter.addNewPlan(selectedDate, startTime, endTime, retailerMasterBO);
             }
 
             dismiss();
@@ -357,8 +357,8 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
             savePlan.setVisibility(View.VISIBLE);
 
-            tvStartVisitDate.setText(date);
-            tvVisitEndDate.setText(date);
+            tvStartVisitDate.setText(selectedDate);
+            tvVisitEndDate.setText(selectedDate);
 
             tvStartVisitTime.setText(startTime);
             tvVisitEndTime.setText(endtime);
@@ -367,6 +367,8 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
 
             if (planList != null && !planList.isEmpty()){
+
+                tvPlannedLayoutTxt.setVisibility(View.VISIBLE);
 
                 for (DateWisePlanBo planBo : planList){
 
@@ -424,8 +426,8 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                 editPlan.setVisibility(View.GONE);
             }
 
-            tvStartVisitDate.setText(date);
-            tvVisitEndDate.setText(date);
+            tvStartVisitDate.setText(selectedDate);
+            tvVisitEndDate.setText(selectedDate);
 
             tvStartVisitTime.setText(startTime);
             tvVisitEndTime.setText(endtime);
