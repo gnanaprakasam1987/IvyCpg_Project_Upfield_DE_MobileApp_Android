@@ -4,7 +4,7 @@
     android:id="@+id/coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.ivy.ui.offlineplan.calendar.view.CalendarPlanFragment">
+    tools:context="com.ivy.ui.retailerplan.calendar.view.CalendarPlanFragment">
 
     <RelativeLayout
         android:layout_width="match_parent"
