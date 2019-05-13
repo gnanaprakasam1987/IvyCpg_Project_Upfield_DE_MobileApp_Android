@@ -43,7 +43,7 @@ import android.widget.ViewFlipper;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.nonfield.NonFieldBO;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.ui.offlineplan.calendar.bo.CalenderBO;
+import com.ivy.ui.retailerplan.calendar.bo.CalenderBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;

@@ -871,7 +871,7 @@
             android:exported="false" />
 
         <activity
-            android:name="com.ivy.ui.retailer.view.list.RetailerListActivity"
+            android:name="com.ivy.ui.retailer.viewretailers.view.list.RetailerListActivity"
             android:screenOrientation="portrait" />
 
     </application>
