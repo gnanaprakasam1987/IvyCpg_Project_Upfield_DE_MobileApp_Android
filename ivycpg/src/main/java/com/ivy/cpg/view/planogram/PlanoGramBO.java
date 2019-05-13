@@ -12,8 +12,28 @@ public class PlanoGramBO {
     private int locationID;
 	private int audit=2;
 	private String reasonID ="0";
+
+	public String getPercentageId() {
+		return percentageId;
+	}
+
+	public void setPercentageId(String percentageId) {
+		this.percentageId = percentageId;
+	}
+
+	private String percentageId ="0";
 	private String productName;
 	private int imageId;
+
+	public boolean isLoadedFromLastVisitTran() {
+		return isLoadedFromLastVisitTran;
+	}
+
+	public void setLoadedFromLastVisitTran(boolean loadedFromLastVisitTran) {
+		isLoadedFromLastVisitTran = loadedFromLastVisitTran;
+	}
+
+	private boolean isLoadedFromLastVisitTran;
 
 	private ArrayList<String> planoGramCameraImgList = new ArrayList<>();
 	

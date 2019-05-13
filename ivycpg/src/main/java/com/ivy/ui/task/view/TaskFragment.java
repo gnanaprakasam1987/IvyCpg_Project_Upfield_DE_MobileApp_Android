@@ -187,10 +187,6 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
             tabOne.setText(tab_name);
             tabLayout.addTab(tabLayout.newTab().setCustomView(tabOne));
         }
-
-        if (source != TaskConstant.SOURCE.RETAILER)
-            tabLayout.removeTabAt(3);
-
     }
 
 

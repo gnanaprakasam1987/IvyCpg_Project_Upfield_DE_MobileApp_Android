@@ -78,7 +78,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener {
 
-    private String screenTitle,selectedDate;
+    private String screenTitle,mSelectedDate;
     private ViewGroup infoWindow;
     private Context context;
 
@@ -296,14 +296,15 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     protected void getMessageFromAliens() {
         if (getArguments() != null) {
             screenTitle = getArguments().getString("screentitle");
-            selectedDate = getArguments().getString("selectedDate");
+            mSelectedDate = getArguments().getString("selectedDate");
         }
     }
 
     @Override
     protected void setUpViews() {
         setUpToolbar(screenTitle);
-        presenter.fetchSelectedDateRetailerPlan(selectedDate);
+         presenter.fetchSelectedDateRetailerPlan(mSelectedDate);
+        //presenter.fetchSelectedDateRetailerPlan("2019/03/22");
         loadMap();
     }
 
@@ -474,7 +475,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             ArrayList<DateWisePlanBo> planList = presenter.getSelectedDateRetailerPlanList();
 
             addPlanDialogFragment =
-                    new AddPlanDialogFragment(selectedDate,retailerMasterBO,
+                    new AddPlanDialogFragment(mSelectedDate,retailerMasterBO,
                             presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID())
                     ,planList);
             addPlanDialogFragment.show(((FragmentActivity)context).getSupportFragmentManager(),
@@ -726,7 +727,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
                 getMap().clear();
 
-                presenter.prepareFilteredRetailerList(planFilterBo,newText.toLowerCase());
+                presenter.prepareFilteredRetailerList(planFilterBo,newText.toLowerCase(),false);
                 searchText = newText;
 
                 return true;
@@ -784,7 +785,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
             getMap().clear();
 
-            presenter.prepareFilteredRetailerList(((RetailerPlanFilterBo)obj),searchText.toLowerCase());
+            presenter.prepareFilteredRetailerList(((RetailerPlanFilterBo)obj),searchText.toLowerCase(),false);
         }else if(obj instanceof String){
             if (((String)obj).equalsIgnoreCase("CLEAR")){
 

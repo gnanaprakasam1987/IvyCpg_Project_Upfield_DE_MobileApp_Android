@@ -48,13 +48,13 @@ public interface RetailerContract {
 
          void fetchSelectedDateRetailerPlan(String date);
 
-         HashMap<String, ArrayList<DateWisePlanBo>> getAllDateRetailerPlanList();
+         HashMap<String, List<DateWisePlanBo>> getAllDateRetailerPlanList();
 
          ArrayList<DateWisePlanBo> getSelectedDateRetailerPlanList();
 
          DateWisePlanBo getSelectedRetailerPlan(String retailerId);
 
-         void prepareFilteredRetailerList(RetailerPlanFilterBo planFilterBo, String filter);
+         void prepareFilteredRetailerList(RetailerPlanFilterBo planFilterBo, String filter, boolean isFromRetailerlist);
 
     }
 }

@@ -1,9 +1,21 @@
 package com.ivy.cpg.view.asset.bo;
 
+import com.ivy.sd.png.bo.CompanyBO;
+
 import java.util.ArrayList;
 
 public class AssetTrackingBO {
     private int assetID;
+
+    public String getDisplayAssetId() {
+        return displayAssetId;
+    }
+
+    public void setDisplayAssetId(String displayAssetId) {
+        this.displayAssetId = displayAssetId;
+    }
+
+    private String displayAssetId;
     private int Target;
     private int audit = 2;
     private int competitorQty;
@@ -32,6 +44,9 @@ public class AssetTrackingBO {
     private int targetLocId;
     private String locationName;
     private ArrayList<String> imageList;
+
+
+    private double weightage;
 
 
     public AssetTrackingBO() {
@@ -412,5 +427,26 @@ public class AssetTrackingBO {
     }
 
     private boolean isSelectedReason = false;
+
+
+    public double getWeightage() {
+        return weightage;
+    }
+
+    public void setWeightage(double weightage) {
+        this.weightage = weightage;
+    }
+
+    public ArrayList<CompanyBO> getCompanyList() {
+        if(companyList==null)
+            companyList=new ArrayList<>();
+        return companyList;
+    }
+
+    public void setCompanyList(ArrayList<CompanyBO> companyList) {
+        this.companyList = companyList;
+    }
+
+    private ArrayList<CompanyBO> companyList;
 
 }

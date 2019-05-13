@@ -2,6 +2,7 @@ package com.ivy.ui.retailer.viewretailers.data;
 
 import android.database.Cursor;
 
+import com.ivy.calendarlibrary.weekview.WeekViewEvent;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.lib.existing.DBUtil;
@@ -17,11 +18,17 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
+import io.reactivex.ObservableSource;
 import io.reactivex.Single;
+import io.reactivex.functions.Function;
 
 public class RetailerDataManagerImpl implements RetailerDataManager {
     private DBUtil mDbUtil;
@@ -62,11 +69,11 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
     }
 
     @Override
-    public Single<HashMap<String, ArrayList<DateWisePlanBo>>> getAllDateRetailerPlanList() {
-        return Single.fromCallable(new Callable<HashMap<String, ArrayList<DateWisePlanBo>>>() {
+    public Observable<HashMap<String, List<DateWisePlanBo>>> getAllDateRetailerPlanList() {
+        return Observable.fromCallable(new Callable<HashMap<String, List<DateWisePlanBo>>>() {
             @Override
-            public HashMap<String, ArrayList<DateWisePlanBo>> call() throws Exception {
-                HashMap<String, ArrayList<DateWisePlanBo>> datePlanHashMap = new HashMap<>();
+            public HashMap<String, List<DateWisePlanBo>> call() throws Exception {
+                HashMap<String, List<DateWisePlanBo>> datePlanHashMap = new HashMap<>();
 
                 String sql = "SELECT dwp.PlanId,dwp.DistributorId,dwp.UserId,dwp.Date,dwp.EntityId,dwp.EntityType,IFNULL(dwp.Status,'')" +
                         ",dwp.Sequence,rm.RetailerName,IFNULL(dwp.StartTime,''),IFNULL(dwp.EndTime,''),PlanSource " +
@@ -104,13 +111,12 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                             plannedList.add(dateWisePlanBO);
                             datePlanHashMap.put(dateWisePlanBO.getDate(), plannedList);
                         } else {
-                            ArrayList<DateWisePlanBo> plannedList = datePlanHashMap.get(dateWisePlanBO.getDate());
+                            List<DateWisePlanBo> plannedList = datePlanHashMap.get(dateWisePlanBO.getDate());
                             plannedList.add(dateWisePlanBO);
                             datePlanHashMap.put(dateWisePlanBO.getDate(), plannedList);
                         }
                     }
                 }
-
                 shutDownDb();
 
                 return datePlanHashMap;

@@ -6,6 +6,7 @@ package com.ivy.ui.retailerplan.calendar.bo;
 
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +22,7 @@ public class CalenderBO {
     private boolean isToday;
     private boolean isSelected;
     private String weekDate;
+    private List<DateWisePlanBo> planList = new ArrayList<>();
 
     public CalenderBO() {
 
@@ -102,6 +104,14 @@ public class CalenderBO {
 
     public void setWeekDate(String weekDate) {
         this.weekDate = weekDate;
+    }
+
+    public List<DateWisePlanBo> getPlanList() {
+        return planList;
+    }
+
+    public void setPlanList(List<DateWisePlanBo> planList) {
+        this.planList = planList;
     }
 }
 

@@ -40,6 +40,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.DisplayAsset.DisplayAssetActivity;
+import com.ivy.cpg.view.DisplayAsset.DisplayAssetHelper;
+import com.ivy.cpg.view.DisplayAsset.DisplayAssetActivity;
+import com.ivy.cpg.view.DisplayAsset.DisplayAssetHelper;
 import com.ivy.cpg.view.Planorama.PlanoramaActivity;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
@@ -202,6 +206,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_SALES_RET_DELIVERY = "MENU_SALES_RET_DELIVERY";
     public static final String MENU_SERIALIZED_ASSET = "MENU_SERIALIZED_ASSET";
     public static final String MENU_PLANORMA = "MENU_PLANORAMA";
+    public static final String MENU_DISPLAY_ASSET = "MENU_DISPLAY_ASSET";
     public static final String MENU_RTR_NOTES = "MENU_NOTES";
 
     private final int INVOICE_CREDIT_BALANCE = 1;// Order Not Allowed when credit balance is 0
@@ -1489,6 +1494,15 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                             menuDB.get(i).setDone(true);
                     }
                 } else if (menuDB.get(i).getConfigCode().equals(MENU_SALES_RET_DELIVERY)) {
+                    if (menuDB.get(i).getHasLink() == 1) {
+                        if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
+                            menuDB.get(i).setDone(true);
+                    } else {
+                        if (getPreviousMenuBO(menuDB.get(i)).isDone())
+                            menuDB.get(i).setDone(true);
+                    }
+                }
+                else if (menuDB.get(i).getConfigCode().equals(MENU_DISPLAY_ASSET)) {
                     if (menuDB.get(i).getHasLink() == 1) {
                         if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode()))
                             menuDB.get(i).setDone(true);
@@ -3813,6 +3827,47 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
             }
         }
+         else if(menu.getConfigCode().equals(MENU_DISPLAY_ASSET) && hasLink == 1){
+                if (isPreviousDone(menu)
+                        || bmodel.configurationMasterHelper.IS_JUMP) {
+
+                    DisplayAssetHelper assetHelper=DisplayAssetHelper.getInstance(this);
+                    assetHelper.downloadDisplayAssets(this);
+
+                    if(assetHelper.getDisplayAssetList().size()>0) {
+
+                        bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
+
+                        assetHelper.loadDisplayAssetInEditMode(this);
+                        Intent i = new Intent(this,
+                                DisplayAssetActivity.class);
+                        i.putExtra("menuName",menu.getMenuName());
+                        i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                        startActivity(i);
+                        finish();
+
+                    }
+                    else {
+                        Toast.makeText(
+                                this,
+                                getResources().getString(
+                                        R.string.data_not_mapped),
+                                Toast.LENGTH_SHORT).show();
+                        isCreated = false;
+                    }
+                }
+                else {
+                    Toast.makeText(
+                            this,
+                            getResources().getString(
+                                    R.string.please_complete_previous_activity),
+                            Toast.LENGTH_SHORT).show();
+                    isCreated = false;
+
+                }
+            }
 
     }
 

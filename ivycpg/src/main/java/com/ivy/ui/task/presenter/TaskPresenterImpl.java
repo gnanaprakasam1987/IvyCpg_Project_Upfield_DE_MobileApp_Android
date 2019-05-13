@@ -26,6 +26,7 @@ import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.data.TaskDataManager;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
+import com.ivy.utils.StringUtils;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.io.File;
@@ -144,9 +145,9 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
     @Override
-    public void fetchTaskCategory(String menuCode) {
+    public void fetchTaskCategory() {
         getIvyView().showLoading();
-        getCompositeDisposable().add(mTaskDataManager.fetchTaskCategories(menuCode)
+        getCompositeDisposable().add(mTaskDataManager.fetchTaskCategories(mConfigurationMasterHelper.TASK_PRODUCT_LEVEL_NO)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui()).subscribeWith(new DisposableObserver<ArrayList<TaskDataBO>>() {
 
@@ -175,7 +176,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     public void fetchTaskImageList(String taskId) {
         getIvyView().showLoading();
         ArrayList<TaskDataBO> mTaskImgList = new ArrayList<>();
-        getCompositeDisposable().add(mTaskDataManager.fetTaskImgData(taskId)
+        getCompositeDisposable().add(mTaskDataManager.fetTaskImgData(taskId, getUserID())
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui()).subscribeWith(new DisposableObserver<ArrayList<TaskDataBO>>() {
                     @Override

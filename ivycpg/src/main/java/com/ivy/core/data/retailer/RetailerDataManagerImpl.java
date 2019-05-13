@@ -767,7 +767,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
             }
 
 
-            c = mDbUtil.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
+            c = mDbUtil.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
             if (c != null
                     && c.getCount() > 0) {
                 if (c.moveToNext())

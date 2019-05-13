@@ -27,9 +27,9 @@ public interface TaskDataManager extends AppDataManagerContract {
 
     Observable<ArrayList<RetailerMasterBO>> fetchRetailers();
 
-    Observable<ArrayList<TaskDataBO>> fetchTaskCategories(String menuCode);
+    Observable<ArrayList<TaskDataBO>> fetchTaskCategories(int prodLevelId);
 
-    Observable<ArrayList<TaskDataBO>> fetTaskImgData(String taskId);
+    Observable<ArrayList<TaskDataBO>> fetTaskImgData(String taskId, int userIdLength);
 
     Single<Boolean> deleteTaskData(String taskId, String taskOwner, int serverTask);
 

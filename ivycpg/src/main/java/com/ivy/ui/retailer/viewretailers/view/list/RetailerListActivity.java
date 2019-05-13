@@ -11,6 +11,7 @@ import com.ivy.sd.png.asean.view.R;
  * Created by mansoor on 09/05/2019
  */
 public class RetailerListActivity extends BaseActivity {
+
     @Override
     public int getLayoutId() {
         return R.layout.activity_retailer_list;
@@ -33,7 +34,7 @@ public class RetailerListActivity extends BaseActivity {
 
     @Override
     protected void setUpViews() {
-        Toolbar toolbar =  findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
