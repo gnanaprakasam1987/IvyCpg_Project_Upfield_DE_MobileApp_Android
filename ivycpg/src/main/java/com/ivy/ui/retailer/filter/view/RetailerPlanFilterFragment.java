@@ -28,7 +28,6 @@ import com.ivy.ui.retailer.filter.di.DaggerRetailerPlanFilterComponent;
 import com.ivy.ui.retailer.filter.di.RetailerPlanFilterModule;
 import com.ivy.ui.retailer.filter.presenter.RetailerPlanFilterPresenterImpl;
 import com.ivy.utils.DeviceUtils;
-import com.ivy.utils.StringUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -157,9 +156,27 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
         if (presenter.isConfigureAvail(CODE_LAST_VISIT_DATE))
             planFilterBo.setLastVisitDate(new FilterObjectBo(lastVisitFromDate.getText().toString(),
                 lastVisitToDate.getText().toString()));
+
         if (presenter.isConfigureAvail(CODE_TASK_DUE_DATE))
             planFilterBo.setTaskDate(new FilterObjectBo(taskFromDate.getText().toString(),
                 taskToDate.getText().toString()));
+
+        if (!filterIdMap.isEmpty()) {
+
+            ArrayList<AttributeBO> ids = new ArrayList<>(filterIdMap.values());
+
+            filterAttributeIds.clear();
+            for (AttributeBO bo : ids){
+                if (bo.isAttributeSelected()) {
+                    String[] spliArr = bo.getAttributeName().split("__");
+                    filterAttributeIds.add(spliArr[1]);
+                }
+            }
+
+            planFilterBo.setFilterAttributeIds(filterAttributeIds);
+
+            planFilterBo.setFilterAttributeIdMap(filterIdMap);
+        }
 
         presenter.validateFilterObject(planFilterBo);
     }
@@ -350,6 +367,8 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
         dynamicViewLayout.addView(view);
     }
 
+    private HashMap<String,Spinner> spinnerDetailMap = new HashMap<>();
+
     @Override
     public void showAttributeSpinner() {
 
@@ -365,19 +384,9 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
 
             Spinner attributeSpinner = view.findViewById(R.id.spinner_attribute);
 
-            attributeSpinner.setTag(attributeBO.getAttributeName()+"__"+1);
+            attributeSpinner.setTag(attributeBO.getAttributeName()+"##"+attributeBO.getAttributeId()+"__"+1);
 
-            AttributeBO attributeBOSelect = new AttributeBO(-1,"Select");
-
-            ArrayList<AttributeBO> spinnerList = new ArrayList<>();
-            spinnerList.add(attributeBOSelect);
-            spinnerList.addAll(attributeChildList);
-
-            ArrayAdapter<AttributeBO> attributeAdapter  = new ArrayAdapter<AttributeBO>(context,
-                    android.R.layout.simple_spinner_item,
-                    spinnerList);
-            attributeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-            attributeSpinner.setAdapter(attributeAdapter);
+            setSpinnerAdapter(attributeSpinner,attributeChildList,false);
 
             attributeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -387,17 +396,13 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
                         AttributeBO attributeBO1 = (AttributeBO)parent.getSelectedItem();
 
                         String[] splitTagName = parent.getTag().toString().split("__");
-                        filterAttributeId(splitTagName[0], attributeBO1.getAttributeId());
+                        updateAttributeArray(parent.getTag().toString(), attributeBO1.getAttributeId());
+                        resetParentValues((Spinner) parent);
 
                         ArrayList<AttributeBO> attributeChildList = presenter.getAttributeChildLst(attributeBO1.getAttributeId()+"");
 
-                        AttributeBO attributeBO = new AttributeBO(-1,"Select");
-
-                        ArrayList<AttributeBO> spinnerList = new ArrayList<>();
-                        spinnerList.add(attributeBO);
-
-                        if (attributeChildList != null && !attributeChildList.isEmpty()){
-                            spinnerList.addAll(attributeChildList);
+                        if (attributeChildList == null || attributeChildList.isEmpty()){
+                            attributeChildList = new ArrayList<>();
                         }
 
                         Spinner childSpinner = spinnerDetailMap.get(splitTagName[0]+"__"+2);
@@ -405,11 +410,10 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
                         if (childSpinner == null)
                             return;
 
-                        ArrayAdapter<AttributeBO> attributeAdapter  = new ArrayAdapter<AttributeBO>(context,
-                                android.R.layout.simple_spinner_item,
-                                spinnerList);
-                        attributeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-                        childSpinner.setAdapter(attributeAdapter);
+                        setSpinnerAdapter(childSpinner,attributeChildList,true);
+                    }else {
+                        updateAttributeArray(parent.getTag().toString(), -1);
+                        resetSpinnerAdapter((Spinner) parent);
                     }
                 }
 
@@ -421,18 +425,95 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
 
             if (attributeBO.getLevelCount() > 2){
                 for (int i = 2 ; i < attributeBO.getLevelCount(); i++){
-                    createSpinner(view,attributeBO.getAttributeName()+"__"+i);
+                    createSpinner(view,attributeBO.getAttributeName()+"##"+attributeBO.getAttributeId()+"__"+i);
                 }
             }
 
             dynamicViewLayout.addView(view);
 
-//            createSpinner(dynamicViewLayout,attributeChildList,attributeBO.getAttributeName());
-
         }
     }
 
-    private HashMap<String,Spinner> spinnerDetailMap = new HashMap<>();
+    private void resetSpinnerAdapter(Spinner spinner){
+        String[] splitTagName = spinner.getTag().toString().split("__");
+
+        String tagName = splitTagName[0]+"__"+(Integer.parseInt(splitTagName[1])+1);
+
+        Spinner childSpinner = spinnerDetailMap.get(tagName);
+
+        if (childSpinner != null) {
+            updateAttributeArray(tagName, -1);
+            setSpinnerAdapter(childSpinner, new ArrayList<>(), true);
+        }
+    }
+
+    private void setSpinnerAdapter(Spinner attributeSpinner, ArrayList<AttributeBO> list,boolean isUpdate){
+        AttributeBO attributeBO = new AttributeBO(-1,"Select");
+
+        ArrayList<AttributeBO> spinnerList = new ArrayList<>();
+        spinnerList.add(attributeBO);
+        spinnerList.addAll(list);
+
+        ArrayAdapter<AttributeBO> attributeAdapter  = new ArrayAdapter<AttributeBO>(context,
+                android.R.layout.simple_spinner_item,
+                spinnerList);
+        attributeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+        attributeSpinner.setAdapter(attributeAdapter);
+
+        if (planFilterBo != null
+                && planFilterBo.getFilterAttributeIdMap() != null
+                && planFilterBo.getFilterAttributeIdMap().get(attributeSpinner.getTag().toString())!= null
+                && list != null && !list.isEmpty()) {
+
+            int pos =0;
+            AttributeBO attributeBO1 = planFilterBo.getFilterAttributeIdMap().get(attributeSpinner.getTag().toString());
+            for (AttributeBO aId : list) {
+
+                if (aId.getAttributeId() == attributeBO1.getAttributeId()) {
+                    attributeSpinner.setSelected(true);
+                    attributeSpinner.setSelection(pos+1);
+                    break;
+                }
+                pos++;
+            }
+        }
+
+        if (isUpdate)
+            resetSpinnerAdapter(attributeSpinner);
+    }
+
+    private void resetParentValues(Spinner spinner){
+        String[] splitTagName = spinner.getTag().toString().split("__");
+
+        String tagName = splitTagName[0]+"__"+(Integer.parseInt(splitTagName[1])-1);
+
+        Spinner parentSpinner = spinnerDetailMap.get(tagName);
+
+        if (parentSpinner != null
+                && filterIdMap != null
+                && filterIdMap.get(tagName) != null) {
+           AttributeBO attributeBO = filterIdMap.get(tagName);
+           attributeBO.setAttributeSelected(false);
+
+           resetParentValues(parentSpinner);
+        }
+    }
+
+    private HashMap<String,AttributeBO> filterIdMap = new HashMap<>();
+
+    private void updateAttributeArray(String attribute, int id){
+
+        if (filterIdMap.get(attribute) != null && id  == -1){
+            filterIdMap.remove(attribute);
+        }else if (id  != -1) {
+            AttributeBO attributeBO = new AttributeBO();
+            attributeBO.setAttributeId(id);
+            attributeBO.setAttributeName(attribute);
+            attributeBO.setAttributeSelected(true);
+
+            filterIdMap.put(attribute,attributeBO);
+        }
+    }
 
     private void createSpinner(final View baseView,String tagName){
 
@@ -444,16 +525,7 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
 
         attributeSpinner.setTag(tagName);
 
-        AttributeBO attributeBO = new AttributeBO(-1,"Select");
-
-        ArrayList<AttributeBO> spinnerList = new ArrayList<>();
-        spinnerList.add(attributeBO);
-
-        ArrayAdapter<AttributeBO> attributeAdapter  = new ArrayAdapter<AttributeBO>(context,
-                android.R.layout.simple_spinner_item,
-                spinnerList);
-        attributeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-        attributeSpinner.setAdapter(attributeAdapter);
+        setSpinnerAdapter(attributeSpinner,new ArrayList<>(),false);
 
         spinnerDetailMap.put(tagName,attributeSpinner);
 
@@ -465,31 +537,26 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
                     AttributeBO attributeBO1 = (AttributeBO)parent.getSelectedItem();
 
                     String[] splitTagName = parent.getTag().toString().split("__");
-                    filterAttributeId(splitTagName[0], attributeBO1.getAttributeId());
+                    updateAttributeArray(parent.getTag().toString(), attributeBO1.getAttributeId());
+                    resetParentValues((Spinner) parent);
 
                     ArrayList<AttributeBO> attributeChildList = presenter.getAttributeChildLst(attributeBO1.getAttributeId()+"");
 
-                    AttributeBO attributeBO = new AttributeBO(-1,"Select");
-
-                    ArrayList<AttributeBO> spinnerList = new ArrayList<>();
-                    spinnerList.add(attributeBO);
-
-                    if (attributeChildList != null && !attributeChildList.isEmpty()){
-                        spinnerList.addAll(attributeChildList);
+                    if (attributeChildList == null || attributeChildList.isEmpty()){
+                        attributeChildList = new ArrayList<>();
                     }
 
-                    String tagName = splitTagName[0]+"__"+(Integer.parseInt(splitTagName[1]+1));
+                    String tagName = splitTagName[0]+"__"+(Integer.parseInt(splitTagName[1])+1);
 
                     Spinner childSpinner = spinnerDetailMap.get(tagName);
 
                     if (childSpinner == null)
                         return;
 
-                    ArrayAdapter<AttributeBO> attributeAdapter  = new ArrayAdapter<AttributeBO>(context,
-                            android.R.layout.simple_spinner_item,
-                            spinnerList);
-                    attributeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
-                    childSpinner.setAdapter(attributeAdapter);
+                    setSpinnerAdapter(childSpinner,attributeChildList,true);
+                }else{
+                    updateAttributeArray(parent.getTag().toString(), -1);
+                    resetSpinnerAdapter((Spinner) parent);
                 }
             }
 
@@ -507,20 +574,57 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
     private void filterAttributeId (String attribute, int id){
 
         int size = filterAttributeIds.size();
+
+        if (size == 0 && id != -1)
+            filterAttributeIds.add((attribute+id));
+
         for (int i = 0; i<size; i++){
-            if (filterAttributeIds.get(i).startsWith(attribute)){
-                filterAttributeIds.set(i,(attribute+id));
+            if (filterAttributeIds.get(i).startsWith(attribute) && id != -1){
+                filterAttributeIds.set(i,(attribute+"__"+id));
+                break;
+            }else if (filterAttributeIds.get(i).startsWith(attribute) && id == -1){
+                filterAttributeIds.remove(i);
                 break;
             }else{
-                if (i == size-1)
-                    filterAttributeIds.add((attribute+id));
+                if (i == size-1 && id != -1)
+                    filterAttributeIds.add(attribute+"__"+id);
             }
         }
 
+        AttributeBO attributeBO = new AttributeBO();
+        attributeBO.setAttributeId(id);
+        if (id  == -1)
+            attributeBO.setAttributeSelected(false);
+
+        filterIdMap.put(attribute,attributeBO);
     }
 
-    private void updateAdapter(){
+    private void updateFilterIdArray(){
 
+        ArrayList<String> attributeFilterId = new ArrayList<>();
+
+        int siz = filterAttributeIds.size();
+        for (int i = 0; i < siz; i++){
+
+            String[] compareName = filterAttributeIds.get(i).split("##");
+            String[] compareId = filterAttributeIds.get(i).split("__");
+            int compareIdCnt = Integer.parseInt(compareId[1]);
+
+            int tempId = 0;
+            for (int j = 0; j < siz; j++){
+                if (i != j){
+
+                    String[] compareName1 = filterAttributeIds.get(j).split("##");
+                    String[] compareId1 = filterAttributeIds.get(j).split("__");
+
+                    if (compareName[0].equals(compareName1[0])){
+                        int compareIdCnt1 = Integer.parseInt(compareId1[1]);
+                        if (compareIdCnt > compareIdCnt1 && compareIdCnt > tempId){
+                        }
+                    }
+                }
+            }
+        }
     }
 
     @Override

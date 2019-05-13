@@ -175,7 +175,8 @@ public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterData
                     queryStrng.append(" inner join OutletTimestamp as ots on ots.RetailerID = rm.retailerId ");
 
 
-                if (planFilterBo.getLastVisitDate() != null) {
+                if (planFilterBo.getLastVisitDate() != null
+                        && (planFilterBo.getLastVisitDate().getStringOne()!=null && planFilterBo.getLastVisitDate().getStringTwo() != null)) {
                     queryStrng.append(" inner join RetailerVisit as rv on rv.RetailerID = rm.retailerId ");
                     queryStrng.append(" And (rv.lastVisitDate BETWEEN '")
                             .append(DateTimeUtils.convertDateTimeObjectToRequestedFormat(planFilterBo.getLastVisitDate().getStringOne(), "dd/MM/yyyy", "yyyy/MM/dd"))
@@ -184,7 +185,8 @@ public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterData
                             .append("')");
                 }
 
-                if (planFilterBo.getTaskDate() != null) {
+                if (planFilterBo.getTaskDate() != null
+                        && (planFilterBo.getTaskDate().getStringOne()!=null && planFilterBo.getTaskDate().getStringTwo() != null)) {
                     queryStrng.append(" inner join TaskConfigurationMaster as tcm on tcm.retailerId = rm.retailerId ");
                     queryStrng.append(" inner join TaskMaster as tm on tm.taskid = tcm.taskid ");
                     queryStrng.append(" And (tm.DueDate BETWEEN '")
@@ -192,6 +194,22 @@ public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterData
                             .append("' AND '")
                             .append(DateTimeUtils.convertDateTimeObjectToRequestedFormat(planFilterBo.getTaskDate().getStringTwo(), "dd/MM/yyyy", "yyyy/MM/dd"))
                             .append("')");
+                }
+
+                if (planFilterBo.getFilterAttributeIds() != null && !planFilterBo.getFilterAttributeIds().isEmpty()){
+
+                    queryStrng.append(" inner join RetailerAttribute as ar on ar.hierarchy LIKE ");
+
+                    int i =0;
+                    for (String id :planFilterBo.getFilterAttributeIds()){
+
+                        if (i != 0)
+                            queryStrng.append(" Or ");
+
+                        queryStrng.append("'%/' || ").append(id).append("|| '/%' ");
+
+                        i++;
+                    }
                 }
 
                 initDb();

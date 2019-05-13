@@ -1,6 +1,9 @@
 package com.ivy.ui.retailer.filter;
 
+import com.ivy.sd.png.bo.AttributeBO;
+
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class RetailerPlanFilterBo {
 
@@ -10,6 +13,9 @@ public class RetailerPlanFilterBo {
 
     private ArrayList<String> retailerIds;
 
+    private ArrayList<String> filterAttributeIds;
+
+    private HashMap<String,AttributeBO> filterAttributeIdMap = new HashMap<>();
 
     public int getIsNotVisited() {
         return isNotVisited;
@@ -41,5 +47,21 @@ public class RetailerPlanFilterBo {
 
     public void setRetailerIds(ArrayList<String> retailerIds) {
         this.retailerIds = retailerIds;
+    }
+
+    public ArrayList<String> getFilterAttributeIds() {
+        return filterAttributeIds;
+    }
+
+    public void setFilterAttributeIds(ArrayList<String> filterAttributeIds) {
+        this.filterAttributeIds = filterAttributeIds;
+    }
+
+    public HashMap<String, AttributeBO> getFilterAttributeIdMap() {
+        return filterAttributeIdMap;
+    }
+
+    public void setFilterAttributeIdMap(HashMap<String, AttributeBO> filterAttributeIdMap) {
+        this.filterAttributeIdMap = filterAttributeIdMap;
     }
 }

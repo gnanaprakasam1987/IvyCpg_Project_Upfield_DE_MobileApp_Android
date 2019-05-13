@@ -468,7 +468,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             isClickable = false;
             onInfoWindowClick(marker);
         }else {
-            marker.showInfoWindow();
+//            marker.showInfoWindow();
 
             ArrayList<DateWisePlanBo> planList = presenter.getSelectedDateRetailerPlanList();
 
