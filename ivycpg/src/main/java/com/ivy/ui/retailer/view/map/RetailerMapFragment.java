@@ -736,7 +736,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
                 getMap().clear();
 
-                presenter.prepareFilteredRetailerList(planFilterBo,newText.toLowerCase());
+                presenter.prepareFilteredRetailerList(planFilterBo,newText.toLowerCase(),false);
                 searchText = newText;
 
                 return true;
@@ -794,7 +794,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
             getMap().clear();
 
-            presenter.prepareFilteredRetailerList(((RetailerPlanFilterBo)obj),searchText.toLowerCase());
+            presenter.prepareFilteredRetailerList(((RetailerPlanFilterBo)obj),searchText.toLowerCase(),false);
         }else if(obj instanceof String){
             if (((String)obj).equalsIgnoreCase("CLEAR")){
 

@@ -138,8 +138,9 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         setUpToolbar(screenTitle);
         setHasOptionsMenu(true);
         initRetailerInfoBottmSheet();
-        presenter.setPlanDates();
-        presenter.loadCalendar();
+        presenter.fetchEventsFromDb();
+        //presenter.setPlanDates();
+        //presenter.loadCalendar();
 
         rvWeek.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
@@ -278,10 +279,6 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         mWeekView.goToDate(date);
     }
 
-    @Override
-    public void refreshGrid() {
-        monthViewAdapter.notifyDataSetChanged();
-    }
 
     @Override
     public void loadTopWeekView(ArrayList<CalenderBO> mCalenderAllList, ArrayList<String> mAllowedDates) {
@@ -290,7 +287,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     }
 
     @Override
-    public void loadBottomSheet(ArrayList<DateWisePlanBo> retailerInfoList) {
+    public void loadBottomSheet(List<DateWisePlanBo> retailerInfoList) {
         if (retailerInfoList.size() > 0) {
             if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                 behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -300,6 +297,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
             hideBottomSheet();
         }
     }
+
 
     private void hideBottomSheet() {
         if (behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
@@ -324,59 +322,16 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     }
 
     @Override
-    public ArrayList<DateWisePlanBo> getDaysPlan(String date) {
-        return presenter.getADayPlan(date);
-    }
-
-    @Override
-    public void onDateNoSelected(String selectedDate) {
+    public void onDateNoSelected(String selectedDate,List<DateWisePlanBo> planList) {
         showMessage(selectedDate);
         presenter.setSelectedDate(selectedDate);
-        presenter.loadInfoBottomSheet();
+        loadBottomSheet(planList);
     }
 
 
     @Override
     public List<? extends WeekViewEvent> onMonthChange(int newYear, int newMonth) {
-        List<WeekViewEvent> events = new ArrayList<>();
-        Calendar startTime = Calendar.getInstance();
-        startTime.setTime(DateTimeUtils.convertStringToDateObject("2019/05/01", "yyyy/MM/dd"));
-        if (newMonth == startTime.get(Calendar.MONTH) + 1) {
-            startTime.set(Calendar.HOUR_OF_DAY, 3);
-            startTime.set(Calendar.MINUTE, 0);
-            Calendar endTime = (Calendar) startTime.clone();
-            endTime.add(Calendar.HOUR, 1);
-            WeekViewEvent event = new WeekViewEvent(1, "Retailer 123", "Retailer Address", startTime, endTime);
-            event.setColor(R.attr.colorPrimary);
-            events.add(event);
-        }
-
-
-        startTime = Calendar.getInstance();
-        startTime.setTime(DateTimeUtils.convertStringToDateObject("2019/05/01", "yyyy/MM/dd"));
-        if (newMonth == startTime.get(Calendar.MONTH) + 1) {
-            startTime.set(Calendar.HOUR_OF_DAY, 4);
-            startTime.set(Calendar.MINUTE, 0);
-            Calendar endTime = (Calendar) startTime.clone();
-            endTime.add(Calendar.HOUR, 1);
-            WeekViewEvent event = new WeekViewEvent(1, "Retailer 123", "Retailer Address", startTime, endTime);
-            event.setColor(R.attr.colorPrimary);
-            events.add(event);
-        }
-
-        startTime = Calendar.getInstance();
-        startTime.setTime(DateTimeUtils.convertStringToDateObject("2019/05/02", "yyyy/MM/dd"));
-        if (newMonth == startTime.get(Calendar.MONTH) + 1) {
-            startTime.set(Calendar.HOUR_OF_DAY, 4);
-            startTime.set(Calendar.MINUTE, 0);
-            Calendar endTime = (Calendar) startTime.clone();
-            endTime.add(Calendar.HOUR, 1);
-            WeekViewEvent event = new WeekViewEvent(1, "Retailer 123", "Retailer Address", startTime, endTime);
-            event.setColor(R.attr.colorPrimary);
-            events.add(event);
-        }
-
-        return events;
+      return presenter.getPlannedEvents(newYear,newMonth);
     }
 
     @Override

@@ -156,11 +156,10 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
                     holder.TVDate.setBackgroundColor(mContext.getResources().getColor(R.color.transparent));
                 }
 
-                ArrayList<DateWisePlanBo> planList = calendarClickListner.getDaysPlan(holder.calBO.getCal_date());
-                if (planList.size() > 0) {
-                    holder.TvRetailer.setText(mContext.getResources().getString(R.string.plan_retailer_name, planList.get(0).getName()));
-                    if (planList.size() > 1)
-                        holder.TvExtras.setText(mContext.getResources().getString(R.string.plus_more, planList.size() - 1));
+                if (holder.calBO.getPlanList().size() > 0) {
+                    holder.TvRetailer.setText(mContext.getResources().getString(R.string.plan_retailer_name, holder.calBO.getPlanList().get(0).getName()));
+                    if (holder.calBO.getPlanList().size() > 1)
+                        holder.TvExtras.setText(mContext.getResources().getString(R.string.plus_more, holder.calBO.getPlanList().size() - 1));
 
                 }
             }
@@ -168,7 +167,7 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
             holder.llDate.setOnClickListener(v -> {
                 if (holder.calBO != null) {
                     refreshGrid(holder.calBO.getCal_date());
-                    calendarClickListner.onDateNoSelected(holder.calBO.getCal_date());
+                    calendarClickListner.onDateNoSelected(holder.calBO.getCal_date(),holder.calBO.getPlanList());
                 }
             });
 
@@ -188,7 +187,7 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
         TextView TVDate, TvRetailer, TvExtras;
         Boolean isValid = false;
         Boolean isDataPresent = false;
-        LinearLayout llDate,lltext;
+        LinearLayout llDate, lltext;
 
         MonthViewHolder(View itemView) {
             super(itemView);

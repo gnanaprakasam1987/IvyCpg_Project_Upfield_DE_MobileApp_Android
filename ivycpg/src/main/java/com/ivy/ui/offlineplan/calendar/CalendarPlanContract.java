@@ -25,15 +25,17 @@ public interface CalendarPlanContract {
 
         void loadWeekView(Calendar date);
 
-        void refreshGrid();
-
         void loadTopWeekView(ArrayList<CalenderBO> mCalenderAllList, ArrayList<String> mAllowedDates);
 
-        void loadBottomSheet(ArrayList<DateWisePlanBo> retailerInfoList);
+        void loadBottomSheet(List<DateWisePlanBo> retailerInfoList);
+
     }
 
     @PerActivity
     interface CalendarPlanPresenter<V extends CalendarPlanView> extends BaseIvyPresenter<V> {
+
+        void fetchEventsFromDb();
+
         void setPlanDates();
 
         void loadCalendar();
@@ -48,18 +50,13 @@ public interface CalendarPlanContract {
 
         void loadAWeek();
 
-        void onNextDayClicked();
-
-        void onPreviousDayClicked();
-
         void onNextWeekClicked(boolean isDaySelected);
 
         void onPreviousWeekClicked(boolean isDaySelected);
 
-        List<WeekViewEvent> getEvents(int newYear, int newMonth);
+        List<DateWisePlanBo> getADayPlan(String date);
 
-        ArrayList<DateWisePlanBo> getADayPlan(String date);
+        List<WeekViewEvent> getPlannedEvents(int newYear, int newMonth);
 
-        void loadInfoBottomSheet();
     }
 }
