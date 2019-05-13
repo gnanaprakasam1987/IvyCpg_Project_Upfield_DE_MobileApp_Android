@@ -122,4 +122,14 @@ public class AttributeBO {
     public void setChildAttributeBO(AttributeBO childAttributeBO) {
         this.childAttributeBO = childAttributeBO;
     }
+
+    private boolean isAttributeSelected;
+
+    public boolean isAttributeSelected() {
+        return isAttributeSelected;
+    }
+
+    public void setAttributeSelected(boolean attributeSelected) {
+        isAttributeSelected = attributeSelected;
+    }
 }

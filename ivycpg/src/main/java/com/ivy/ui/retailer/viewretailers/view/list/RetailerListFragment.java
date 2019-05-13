@@ -193,7 +193,7 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
     public void onRetailerSelected(RetailerMasterBO retailerMasterBO) {
         ArrayList<DateWisePlanBo> planList = presenter.getSelectedDateRetailerPlanList();
         addPlanDialogFragment =
-                new AddPlanDialogFragment(retailerMasterBO,
+                new AddPlanDialogFragment(mSelectedDate,retailerMasterBO,
                         presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID())
                         ,planList);
         addPlanDialogFragment.show(((FragmentActivity)mContext).getSupportFragmentManager(),

@@ -90,10 +90,6 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
 
         date = DateTimeUtils.convertToServerDateFormat(date, "yyyy/MM/dd");
 
-        startTime = DateTimeUtils.convertDateTimeObjectToRequestedFormat(date + startTime, "yyyy/MM/ddHH:mm","yyyy/MM/dd HH:mm:ss");
-
-        endTime = DateTimeUtils.convertDateTimeObjectToRequestedFormat(date + endTime, "yyyy/MM/ddHH:mm","yyyy/MM/dd HH:mm:ss");
-
         DateWisePlanBo dateWisePlanBo = new DateWisePlanBo();
 
         dateWisePlanBo.setPlanId(0);
