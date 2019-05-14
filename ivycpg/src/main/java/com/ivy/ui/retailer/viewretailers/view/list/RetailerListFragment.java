@@ -55,6 +55,7 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
 
     private RetailerPlanFilterBo planFilterBo;
     private String mSelectedDate;
+    private String mStartTime;
 
     @Override
     public void onAttach(Context context) {
@@ -101,6 +102,7 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
     protected void getMessageFromAliens() {
         if (Objects.requireNonNull(getActivity()).getIntent().getExtras() != null) {
             mSelectedDate = Objects.requireNonNull(getActivity().getIntent().getExtras()).getString("selectedDate", null);
+            mStartTime = Objects.requireNonNull(getActivity().getIntent().getExtras()).getString("startTime", "");
         }
     }
 
@@ -197,10 +199,16 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
 
     @Override
     public void onRetailerSelected(RetailerMasterBO retailerMasterBO) {
+        AddPlanDialogFragment addPlanDialogFragment;
         ArrayList<DateWisePlanBo> planList = presenter.getSelectedDateRetailerPlanList();
-        AddPlanDialogFragment addPlanDialogFragment = new AddPlanDialogFragment(mSelectedDate, retailerMasterBO,
+        if(mStartTime.length()==0)
+        addPlanDialogFragment = new AddPlanDialogFragment(mSelectedDate, retailerMasterBO,
                 presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID())
                 , planList);
+        else
+            addPlanDialogFragment = new AddPlanDialogFragment(mSelectedDate, retailerMasterBO,
+                    presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID())
+                    , planList,mStartTime);
         addPlanDialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(),
                 "add_plan_fragment");
     }

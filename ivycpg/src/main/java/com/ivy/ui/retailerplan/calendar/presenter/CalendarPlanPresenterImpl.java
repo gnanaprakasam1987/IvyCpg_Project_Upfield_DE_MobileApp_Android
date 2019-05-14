@@ -88,6 +88,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                     @Override
                     public void accept(List<WeekViewEvent> events) throws Exception {
                         getIvyView().hideLoading();
+                        allEvents.clear();
                         allEvents.addAll(events);
                         if (onCreate) {
                             setPlanDates();
@@ -116,7 +117,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                             Calendar endTime = (Calendar) startTime.clone();
                             endTime.setTime(DateTimeUtils.convertStringToDateObject(dateWisePlanBo.getDate() + " " +
                                     dateWisePlanBo.getEndTime(), "yyyy/MM/dd HH:mm"));
-                            WeekViewEvent event = new WeekViewEvent(dateWisePlanBo.getPlanId(), dateWisePlanBo.getName(), "Retailer Address", startTime, endTime);
+                            WeekViewEvent event = new WeekViewEvent(dateWisePlanBo.getPlanId(), dateWisePlanBo.getName(), dateWisePlanBo.getRetailerAddress(), startTime, endTime);
                             event.setColor(R.attr.colorPrimary);
                             events.add(event);
                         }

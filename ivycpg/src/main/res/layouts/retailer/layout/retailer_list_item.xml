@@ -50,9 +50,9 @@
 
         <TextView
             android:id="@+id/tv_visit_freq"
-            style="@style/TextViewListItemPrimary"
-            android:layout_width="@dimen/values_editextWidth"
-            android:layout_height="wrap_content"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="@dimen/dimens_60dp"
+            android:layout_height="@dimen/dimens_40dp"
             android:layout_margin="@dimen/dimen_2dp"
             android:background="@drawable/rectangle_grey"
             android:padding="@dimen/card_margin"
@@ -71,8 +71,8 @@
         <TextView
             android:id="@+id/tv_visit_planned"
             style="@style/TextViewListItemPrimary"
-            android:layout_width="@dimen/values_editextWidth"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dimens_60dp"
+            android:layout_height="@dimen/dimens_40dp"
             android:layout_margin="@dimen/dimen_2dp"
             android:background="@drawable/rectangle_green2"
             android:padding="@dimen/card_margin"
@@ -91,8 +91,8 @@
         <TextView
             android:id="@+id/tv_visit_pending"
             style="@style/TextViewListItemPrimary"
-            android:layout_width="@dimen/values_editextWidth"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dimens_60dp"
+            android:layout_height="@dimen/dimens_40dp"
             android:layout_margin="@dimen/dimen_2dp"
             android:background="@drawable/rectangle_blue2"
             android:padding="@dimen/card_margin"
