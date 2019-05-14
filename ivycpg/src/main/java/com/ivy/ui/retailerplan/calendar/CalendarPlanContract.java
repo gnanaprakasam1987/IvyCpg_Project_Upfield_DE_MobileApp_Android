@@ -29,12 +29,14 @@ public interface CalendarPlanContract {
 
         void loadBottomSheet(List<DateWisePlanBo> retailerInfoList);
 
+        void reloadView();
+
     }
 
     @PerActivity
     interface CalendarPlanPresenter<V extends CalendarPlanView> extends BaseIvyPresenter<V> {
 
-        void fetchEventsFromDb();
+        void fetchEventsFromDb(boolean onCreate);
 
         void setPlanDates();
 
@@ -59,6 +61,12 @@ public interface CalendarPlanContract {
         List<WeekViewEvent> getPlannedEvents(int newYear, int newMonth);
 
         String getSelectedDate();
+
+        void fetchSelectedDateRetailerPlan(String date);
+
+        ArrayList<DateWisePlanBo> getSelectedDateRetailerPlanList();
+
+        DateWisePlanBo getSelectedRetailerPlan(String retailerId);
 
     }
 }

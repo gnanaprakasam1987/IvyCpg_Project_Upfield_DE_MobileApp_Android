@@ -79,7 +79,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         ",dwp.Sequence,rm.RetailerName,IFNULL(dwp.StartTime,''),IFNULL(dwp.EndTime,''),IFNULL(dwp.PlanSource,''),IFNULL(dwp.VisitStatus,''),cancelReasonId  " +
                         " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
-                        " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER'";
+                        " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER'" +
+                        " ORDER BY dwp.Date asc,dwp.StartTime asc";
 
                 initDb();
 
@@ -106,6 +107,10 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                             dateWisePlanBO.setServerData(false);
                         else
                             dateWisePlanBO.setServerData(true);
+
+                        dateWisePlanBO.setVisitStatus(c.getString(12));
+                        dateWisePlanBO.setCancelReasonId(c.getInt(13));
+
                         if (datePlanHashMap.get(dateWisePlanBO.getDate()) == null) {
                             ArrayList<DateWisePlanBo> plannedList = new ArrayList<>();
                             plannedList.add(dateWisePlanBO);
