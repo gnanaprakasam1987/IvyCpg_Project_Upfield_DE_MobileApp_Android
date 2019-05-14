@@ -244,6 +244,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             if (planFilterBo != null && planFilterBo.getRetailerIds().isEmpty())
                 return;
 
+            isFocusRetailer = false;
+
             if (isChecked) {
                 presenter.fetchTodayPlannedRetailers();
                 storeFilterSwitch.setText(getResources().getString(R.string.day_plan));
@@ -374,6 +376,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
     @Override
     public void updateView() {
+        isFocusRetailer = false;
         presenter.prepareFilteredRetailerList(planFilterBo, searchText.toLowerCase(), false);
     }
 
@@ -735,6 +738,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
                 getMap().clear();
 
+                isFocusRetailer = false;
+
                 presenter.prepareFilteredRetailerList(planFilterBo, newText.toLowerCase(), false);
                 searchText = newText;
 
@@ -759,7 +764,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             return true;
         } else if (item.getItemId() == R.id.filter) {
 
-            RetailerPlanFilterFragment planFilterFragment = new RetailerPlanFilterFragment(planFilterBo);
+            RetailerPlanFilterFragment planFilterFragment = new RetailerPlanFilterFragment(mSelectedDate,planFilterBo);
             planFilterFragment.show(((FragmentActivity) context).getSupportFragmentManager(),
                     "filter_plan_fragment");
 
@@ -791,6 +796,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             }
 
             getMap().clear();
+
+            isFocusRetailer = false;
 
             presenter.prepareFilteredRetailerList(((RetailerPlanFilterBo) obj), searchText.toLowerCase(), false);
         } else if (obj instanceof String) {

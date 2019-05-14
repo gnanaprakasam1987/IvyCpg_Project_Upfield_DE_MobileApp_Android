@@ -7,6 +7,7 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -166,7 +167,7 @@ public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterData
                 queryStrng.append("Select rm.RetailerId from RetailerMaster as rm ");
 
                 if (planFilterBo.getIsNotVisited() > 0)
-                    queryStrng.append(" inner join OutletTimestamp as ots on ots.RetailerID = rm.retailerId ");
+                    queryStrng.append(" inner join OutletTimestamp as ots on ots.RetailerID = rm.retailerId and VisitDate =").append(StringUtils.QT(planFilterBo.getSelectedDate()));
 
 
                 if (planFilterBo.getLastVisitDate() != null

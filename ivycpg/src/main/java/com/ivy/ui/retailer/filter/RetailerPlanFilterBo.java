@@ -17,6 +17,16 @@ public class RetailerPlanFilterBo {
 
     private HashMap<String,AttributeBO> filterAttributeIdMap = new HashMap<>();
 
+    private String selectedDate;
+
+    public String getSelectedDate() {
+        return selectedDate;
+    }
+
+    public void setSelectedDate(String selectedDate) {
+        this.selectedDate = selectedDate;
+    }
+
     public int getIsNotVisited() {
         return isNotVisited;
     }

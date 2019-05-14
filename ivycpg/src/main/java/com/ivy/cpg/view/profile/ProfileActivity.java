@@ -419,7 +419,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             calledBy = MENU_VISIT;
         }
 
-        if (calledBy.equalsIgnoreCase("RetailerMap"))
+        if (calledBy.equalsIgnoreCase("RetailerView"))
             isFromRetailerMapScreen = true;
     }
 
@@ -1277,9 +1277,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 findViewById(R.id.start_visit_retailer).setVisibility(View.GONE);
 
             if (!isShowCancelVisit)
-                findViewById(R.id.start_visit_retailer).setVisibility(View.VISIBLE);
+                findViewById(R.id.cancel_visit_retailer).setVisibility(View.VISIBLE);
             else
-                findViewById(R.id.start_visit_retailer).setVisibility(View.GONE);
+                findViewById(R.id.cancel_visit_retailer).setVisibility(View.GONE);
 
             isClicked = false;
 
@@ -2298,7 +2298,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             if (fromHomeClick || non_visit) {
                 finish();
             } else {
-                if (!visitClick && !isFromPlanning && !isFromPlanningSub) {
+                if (!visitClick && !isFromPlanning && !isFromPlanningSub && !isFromRetailerMapScreen) {
                     startActivity(new Intent(ProfileActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_VISIT"));
                 } else if (isFromPlanning) {
