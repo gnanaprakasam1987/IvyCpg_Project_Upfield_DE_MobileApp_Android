@@ -81,7 +81,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         GoogleMap.OnMarkerClickListener,
         GoogleMap.OnInfoWindowClickListener {
 
-    private String screenTitle,mSelectedDate;
+    private String screenTitle, mSelectedDate;
     private ViewGroup infoWindow;
     private Context context;
 
@@ -141,7 +141,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     @Override
     public void initializeDi() {
         DaggerRetailerComponent.builder()
-                .ivyAppComponent(((BusinessModel) Objects.requireNonNull((FragmentActivity)context).getApplication()).getComponent())
+                .ivyAppComponent(((BusinessModel) Objects.requireNonNull((FragmentActivity) context).getApplication()).getComponent())
                 .retailerModule(new RetailerModule(this))
                 .build()
                 .inject(RetailerMapFragment.this);
@@ -209,7 +209,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         }
     };
 
-    private View.OnClickListener directionCarListener =new View.OnClickListener() {
+    private View.OnClickListener directionCarListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             isByWalk = false;
@@ -232,7 +232,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-            ((Activity)context).invalidateOptionsMenu();
+            ((Activity) context).invalidateOptionsMenu();
 
             if (getMap() != null)
                 getMap().clear();
@@ -249,7 +249,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             if (isChecked) {
                 presenter.fetchTodayPlannedRetailers();
                 storeFilterSwitch.setText(getResources().getString(R.string.day_plan));
-            }else {
+            } else {
                 presenter.fetchRetailerList();
                 storeFilterSwitch.setText(getResources().getString(R.string.all_retailer));
             }
@@ -257,7 +257,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     };
 
     @OnClick(R.id.clear_route_id)
-    void clearRouteButton(){
+    void clearRouteButton() {
         isClickable = false;
         isByWalk = false;
         clearRoute();
@@ -275,7 +275,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     }
 
     @OnClick(R.id.fab)
-    void routeIconClicked(){
+    void routeIconClicked() {
         if (bottomLayout.getVisibility() == View.GONE) {
             bottomLayout.setVisibility(View.VISIBLE);
         } else {
@@ -306,7 +306,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     @Override
     protected void setUpViews() {
         setUpToolbar(screenTitle);
-         presenter.fetchSelectedDateRetailerPlan(mSelectedDate);
+        presenter.fetchSelectedDateRetailerPlan(mSelectedDate,false);
         loadMap();
     }
 
@@ -317,11 +317,11 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
             if (retailerMasterBO.getLatitude() != 0 && retailerMasterBO.getLongitude() != 0) {
 
-                if (planFilterBo != null){
+                if (planFilterBo != null) {
                     if (!planFilterBo.getRetailerIds().contains(retailerMasterBO.getRetailerID()))
                         continue;
                 }
-                addMarkerToMap(prepareMarkerOption(retailerMasterBO,builder));
+                addMarkerToMap(prepareMarkerOption(retailerMasterBO, builder));
 
                 isFocusRetailer = true;
             }
@@ -330,7 +330,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         focusMarker();
     }
 
-    private MarkerOptions prepareMarkerOption(RetailerMasterBO retailerMasterBO, LatLngBounds.Builder builder){
+    private MarkerOptions prepareMarkerOption(RetailerMasterBO retailerMasterBO, LatLngBounds.Builder builder) {
 
         LatLng latLng = new LatLng(retailerMasterBO.getLatitude(), retailerMasterBO.getLongitude());
         MarkerOptions mMarkerOptions = new MarkerOptions()
@@ -347,10 +347,10 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     private boolean isFocusRetailer = false;
 
     @Override
-    public void populateTodayPlannedRetailers(RetailerMasterBO todayPlannedRetailer){
+    public void populateTodayPlannedRetailers(RetailerMasterBO todayPlannedRetailer) {
 
         if (todayPlannedRetailer.getLatitude() != 0 && todayPlannedRetailer.getLongitude() != 0) {
-            if (planFilterBo != null ){
+            if (planFilterBo != null) {
                 if (!planFilterBo.getRetailerIds().contains(todayPlannedRetailer.getRetailerID()))
                     return;
             }
@@ -372,6 +372,11 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     @Override
     public void populateCompletedRetailers(List<RetailerMasterBO> unPlannedRetailers) {
 
+    }
+
+    @Override
+    public void updateView() {
+        presenter.prepareFilteredRetailerList(planFilterBo, searchText.toLowerCase(), false);
     }
 
     @Override
@@ -458,8 +463,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     @Override
     public boolean onMarkerClick(Marker marker) {
 
-       if (getResources().getString(R.string.my_location).equals(marker.getTitle()))
-        return true;
+        if (getResources().getString(R.string.my_location).equals(marker.getTitle()))
+            return true;
 
         for (RetailerMasterBO retailerMasterBO : presenter.loadRetailerList()) {
             if (retailerMasterBO.getRetailerID().equals(marker.getTitle().split(",")[1])) {
@@ -471,16 +476,16 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         if (bottomLayout.getVisibility() == View.VISIBLE) {
             isClickable = false;
             onInfoWindowClick(marker);
-        }else {
+        } else {
             marker.showInfoWindow();
 
             ArrayList<DateWisePlanBo> planList = presenter.getSelectedDateRetailerPlanList();
 
             addPlanDialogFragment =
-                    new AddPlanDialogFragment(mSelectedDate,retailerMasterBO,
+                    new AddPlanDialogFragment(mSelectedDate, retailerMasterBO,
                             presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID())
-                    ,planList);
-            addPlanDialogFragment.show(((FragmentActivity)context).getSupportFragmentManager(),
+                            , planList);
+            addPlanDialogFragment.show(((FragmentActivity) context).getSupportFragmentManager(),
                     "add_plan_fragment");
 
             presenter.setRetailerMasterBo(retailerMasterBO);
@@ -496,7 +501,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     @Override
     public void onLocationResult(Location location) {
 
-        LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
+        LatLng latLng = new LatLng(location.getLatitude(), location.getLongitude());
 
         if (userMarker == null) {
             MarkerOptions mMarkerOptions = new MarkerOptions()
@@ -506,7 +511,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
                             .fromResource(R.drawable.marker));
 
             userMarker = addMarkerToMap(mMarkerOptions);
-        }else
+        } else
             userMarker.setPosition(latLng);
     }
 
@@ -604,7 +609,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 //                if (("N").equals(retailerMasterBO.isOrdered()))
 //                    drawable = R.drawable.marker_visit_non_productive;
 //                else
-                    drawable = R.drawable.marker_visit_completed;
+                drawable = R.drawable.marker_visit_completed;
             } else if (dateWisePlanBO.getVisitStatus().equalsIgnoreCase(PLANNED))
                 drawable = R.drawable.marker_visit_planned;
 
@@ -632,8 +637,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
                 toText = "";
                 if (bottomLayout.getVisibility() == View.GONE)
                     Toast.makeText(getActivity(),
-                        getResources().getString(R.string.route_cleared),
-                        Toast.LENGTH_SHORT).show();
+                            getResources().getString(R.string.route_cleared),
+                            Toast.LENGTH_SHORT).show();
                 mClick = 0;
             }
             for (Polyline polyLine : line) {
@@ -662,7 +667,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
         showLoading(getResources().getString(R.string.fetching_route));
         presenter.fetchRoutePath(presenter.makeURL(markerLatLng[0].latitude, markerLatLng[0].longitude,
-                markerLatLng[1].latitude, markerLatLng[1].longitude,mapKey, isByWalk));
+                markerLatLng[1].latitude, markerLatLng[1].longitude, mapKey, isByWalk));
 
         mClick = 2;
     }
@@ -714,7 +719,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
     }
 
-    private String searchText ="";
+    private String searchText = "";
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -725,14 +730,14 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         ImageView searchClose = searchView.findViewById(android.support.v7.appcompat.R.id.search_close_btn);
         searchClose.setImageResource(android.R.drawable.ic_menu_close_clear_cancel);
 
-        searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(((Activity)context).getComponentName()) : null);
+        searchView.setSearchableInfo(searchManager != null ? searchManager.getSearchableInfo(((Activity) context).getComponentName()) : null);
         SearchView.OnQueryTextListener textChangeListener = new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextChange(String newText) {
 
                 getMap().clear();
 
-                presenter.prepareFilteredRetailerList(planFilterBo,newText.toLowerCase(),false);
+                presenter.prepareFilteredRetailerList(planFilterBo, newText.toLowerCase(), false);
                 searchText = newText;
 
                 return true;
@@ -752,22 +757,22 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         if (item.getItemId() == android.R.id.home) {
             startActivity(new Intent(getActivity(),
                     HomeScreenActivity.class));
-            ((Activity)context).finish();
+            ((Activity) context).finish();
             return true;
         } else if (item.getItemId() == R.id.filter) {
 
             planFilterFragment =
                     new RetailerPlanFilterFragment(planFilterBo);
-            planFilterFragment.show(((FragmentActivity)context).getSupportFragmentManager(),
+            planFilterFragment.show(((FragmentActivity) context).getSupportFragmentManager(),
                     "filter_plan_fragment");
 
             return true;
-        }else if (item.getItemId() == R.id.calendar) {
-            FragmentManager fm = ((FragmentActivity)context).getSupportFragmentManager();
+        } else if (item.getItemId() == R.id.calendar) {
+            FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();
             FragmentTransaction ft = fm.beginTransaction();
 
             CalendarPlanFragment fragment = new CalendarPlanFragment();
-            ft.replace(R.id.fragment_content, fragment,MENU_MAP_PLAN);
+            ft.replace(R.id.fragment_content, fragment, MENU_MAP_PLAN);
             ft.commit();
 
             return true;
@@ -779,9 +784,9 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     @Subscribe
     public void onMessageEvent(Object obj) {
 
-        if (obj instanceof RetailerPlanFilterBo){
+        if (obj instanceof RetailerPlanFilterBo) {
 
-            planFilterBo = ((RetailerPlanFilterBo)obj);
+            planFilterBo = ((RetailerPlanFilterBo) obj);
 
             if (planFilterBo.getRetailerIds().isEmpty()) {
                 onMessageEvent("NODATA");
@@ -790,9 +795,9 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
             getMap().clear();
 
-            presenter.prepareFilteredRetailerList(((RetailerPlanFilterBo)obj),searchText.toLowerCase(),false);
-        }else if(obj instanceof String){
-            if (((String)obj).equalsIgnoreCase("CLEAR")){
+            presenter.prepareFilteredRetailerList(((RetailerPlanFilterBo) obj), searchText.toLowerCase(), false);
+        } else if (obj instanceof String) {
+            if (((String) obj).equalsIgnoreCase("CLEAR")) {
 
                 if (planFilterBo != null) {
                     planFilterBo = null;
@@ -802,29 +807,19 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
                 if (storeFilterSwitch.isChecked()) {
                     presenter.fetchTodayPlannedRetailers();
                     storeFilterSwitch.setText(getResources().getString(R.string.day_plan));
-                }else {
+                } else {
                     presenter.fetchRetailerList();
                     storeFilterSwitch.setText(getResources().getString(R.string.all_retailer));
                 }
 
-            }else if ("NODATA".equalsIgnoreCase((String)obj)){
+            } else if ("NODATA".equalsIgnoreCase((String) obj)) {
                 getMap().clear();
             }
-        }else if(obj instanceof DateWisePlanBo){
+        } else if (obj instanceof DateWisePlanBo) {
 
-            DateWisePlanBo dateWisePlanBo = (DateWisePlanBo)obj;
-
-            if (dateWisePlanBo.getOperationType().equalsIgnoreCase("Delete")) {
-                presenter.removeDatePlan(dateWisePlanBo);
-            }else if (dateWisePlanBo.getOperationType().equalsIgnoreCase("Add")) {
-                presenter.addDatePlan(dateWisePlanBo);
-            }else if (dateWisePlanBo.getOperationType().equalsIgnoreCase("Update")) {
-                presenter.updateDatePlan(dateWisePlanBo);
-            }
+            presenter.fetchSelectedDateRetailerPlan(mSelectedDate,true);
 
             getMap().clear();
-
-            presenter.prepareFilteredRetailerList(planFilterBo,searchText.toLowerCase(),false);
         }
     }
 

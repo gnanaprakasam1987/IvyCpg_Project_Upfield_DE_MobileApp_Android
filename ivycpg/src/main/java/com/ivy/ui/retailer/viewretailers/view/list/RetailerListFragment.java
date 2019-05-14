@@ -102,7 +102,7 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
     @Override
     protected void setUpViews() {
         presenter.fetchRetailerList();
-        presenter.fetchSelectedDateRetailerPlan(mSelectedDate);
+        presenter.fetchSelectedDateRetailerPlan(mSelectedDate,false);
     }
 
     @Override
@@ -127,6 +127,11 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
 
     @Override
     public void populateCompletedRetailers(List<RetailerMasterBO> unPlannedRetailers) {
+
+    }
+
+    @Override
+    public void updateView() {
 
     }
 

@@ -24,6 +24,8 @@ public interface RetailerContract {
 
          void populateCompletedRetailers(List<RetailerMasterBO> unPlannedRetailers);
 
+         void updateView();
+
          void drawRoutePath(String path);
 
          void focusMarker();
@@ -46,7 +48,7 @@ public interface RetailerContract {
 
          void fetchAllDateRetailerPlan();
 
-         void fetchSelectedDateRetailerPlan(String date);
+         void fetchSelectedDateRetailerPlan(String date, boolean isRetailerUpdate);
 
          HashMap<String, List<DateWisePlanBo>> getAllDateRetailerPlanList();
 

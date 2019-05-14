@@ -17,5 +17,5 @@ public interface RetailerDataManager extends AppDataManagerContract {
 
     Observable<HashMap<String, List<DateWisePlanBo>>> getAllDateRetailerPlanList();
 
-    Single<HashMap<String,DateWisePlanBo>> getRetailerPlanList(String date);
+    Observable<HashMap<String,DateWisePlanBo>> getRetailerPlanList(String date);
 }

@@ -125,8 +125,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
     }
 
     @Override
-    public Single<HashMap<String, DateWisePlanBo>> getRetailerPlanList(String date) {
-        return Single.fromCallable(new Callable<HashMap<String, DateWisePlanBo>>() {
+    public Observable<HashMap<String, DateWisePlanBo>> getRetailerPlanList(String date) {
+        return Observable.fromCallable(new Callable<HashMap<String, DateWisePlanBo>>() {
             @Override
             public HashMap<String, DateWisePlanBo> call() throws Exception {
                 HashMap<String, DateWisePlanBo> datePlanHashMap = new HashMap<>();
