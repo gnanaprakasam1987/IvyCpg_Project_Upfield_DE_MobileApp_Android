@@ -1,10 +1,10 @@
-package com.ivy.cpg.view.DisplayAsset;
+package com.ivy.ui.DisplayAsset;
 
 import android.content.Context;
 
 import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.png.bo.CompanyBO;
-import com.ivy.sd.png.model.BusinessModel;
+
 import java.util.HashMap;
 
 public class DisplayAssetPresenterImpl implements DisplayAssetContractor.presenter{
