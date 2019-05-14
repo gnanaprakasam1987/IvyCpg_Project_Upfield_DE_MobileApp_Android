@@ -249,7 +249,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginStart="@dimen/plano_rb_gap"
                     android:layout_toEndOf="@id/no"
-                    android:button="@drawable/ic_cross_disable"
+                    android:button="@drawable/ic_partial_disabled"
                     android:focusable="false"
                     android:focusableInTouchMode="false"
                     android:paddingStart="@dimen/plano_rb_padding"

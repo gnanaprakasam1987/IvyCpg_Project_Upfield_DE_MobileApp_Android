@@ -10,8 +10,8 @@ import java.util.HashMap;
 public class DisplayAssetPresenterImpl implements DisplayAssetContractor.presenter{
 
     private DisplayAssetHelper displayAssetHelper;
-    private DisplayAssetContractor.View assetView;
-    private String displayAssetStatus;
+    public DisplayAssetContractor.View assetView;
+    private String displayAssetStatus="";
 
     private double ownCompanyScore,otherCompanyMaxScore;
 
@@ -89,7 +89,7 @@ public class DisplayAssetPresenterImpl implements DisplayAssetContractor.present
 
     }
 
-    private String getDisplayAssetStatus() {
+    public String getDisplayAssetStatus() {
         return displayAssetStatus;
     }
 

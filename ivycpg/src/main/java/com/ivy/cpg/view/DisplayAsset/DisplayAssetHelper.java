@@ -184,7 +184,7 @@ public class DisplayAssetHelper {
         try {
             db.openDataBase();
 
-            if(true||mBusinessModel.configurationMasterHelper.IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) {
+            if(mBusinessModel.configurationMasterHelper.IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) {
                 // LastVisit
                 String lastVisitQuery = "SELECT CompetitorId,DisplayAssetId,count"
                         + " FROM LastVisitDisplayAsset WHERE retailerId=" + mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID();
