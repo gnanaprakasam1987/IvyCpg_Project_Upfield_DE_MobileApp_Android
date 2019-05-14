@@ -571,7 +571,7 @@ public class LoadManagementHelper {
 
 
             if(isTripStart) {
-                String columns="uid,userId,startDate,upload,status";
+                String columns="uid,userId,startDate,upload,status,startlatitude,startlongitude";
                 String id = bmodel.getAppDataProvider().getUser().getUserid()
                         + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
@@ -581,6 +581,8 @@ public class LoadManagementHelper {
                 stringBuilder.append(","+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW)));
                 stringBuilder.append(","+StringUtils.QT("N"));
                 stringBuilder.append(","+StringUtils.QT("STARTED"));
+                stringBuilder.append(","+LocationUtil.latitude);
+                stringBuilder.append(","+LocationUtil.latitude);
 
                 db.insertSQL(DataMembers.tbl_TripMaster, columns, stringBuilder.toString());
 
@@ -591,7 +593,9 @@ public class LoadManagementHelper {
             }
             else
                 db.updateSQL("update "+DataMembers.tbl_TripMaster
-                        +" set endDate="+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))+","+"upload='N',status='COMPLETED'"
+                        +" set endDate="+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
+                        +","+"upload='N',status='COMPLETED'"
+                        +",endlatitude="+LocationUtil.latitude+",endlongitude="+LocationUtil.longitude
                         +" where userId="+bmodel.userMasterHelper.getUserMasterBO().getUserid());
 
         }
