@@ -1,19 +1,14 @@
 package com.ivy.ui.retailer.filter.data;
 
 import android.database.Cursor;
-import android.text.TextUtils;
 
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.AttributeBO;
-import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
-import com.ivy.ui.retailer.filter.RetailerPlanFilterConstants;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.concurrent.Callable;
 
@@ -22,10 +17,9 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
-import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_IS_NOT_VISITED;
-import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_LAST_VISIT_DATE;
-import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_TASK_DUE_DATE;
-import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.hhtCodeList;
+import static com.ivy.ui.retailer.RetailerConstants.CODE_IS_NOT_VISITED;
+import static com.ivy.ui.retailer.RetailerConstants.CODE_LAST_VISIT_DATE;
+import static com.ivy.ui.retailer.RetailerConstants.CODE_TASK_DUE_DATE;
 
 public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterDataManager {
 
@@ -62,7 +56,7 @@ public class RetailerPlanFilterDataManagerImpl implements RetailerPlanFilterData
 
 //                String hhtCodes ="("+TextUtils.join(",", Collections.nCopies(size, "?")) + "),";
 
-//                String hhtCodes = TextUtils.join(",", RetailerPlanFilterConstants.hhtCodeList.toArray(new String[RetailerPlanFilterConstants.hhtCodeList.size()])) ;
+//                String hhtCodes = TextUtils.join(",", RetailerConstants.hhtCodeList.toArray(new String[RetailerConstants.hhtCodeList.size()])) ;
 
 //                String queryStr = "Select hhtcode from HhtModuleMaster where hhtCode in"+hhtCodes;
 

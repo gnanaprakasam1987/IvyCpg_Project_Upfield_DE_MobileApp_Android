@@ -41,10 +41,10 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
     }
 
     @Override
-    public Single<Boolean> savePlan(DateWisePlanBo dateWisePlanBo) {
-        return Single.fromCallable(new Callable<Boolean>() {
+    public Single<DateWisePlanBo> savePlan(DateWisePlanBo dateWisePlanBo) {
+        return Single.fromCallable(new Callable<DateWisePlanBo>() {
             @Override
-            public Boolean call() throws Exception {
+            public DateWisePlanBo call() throws Exception {
 
                 initDb();
 
@@ -59,53 +59,54 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                             + dateWisePlanBo.getSequence()+ ","
                             + StringUtils.QT(dateWisePlanBo.getStartTime()) + ","
                             + StringUtils.QT(dateWisePlanBo.getEndTime())+ ","
+                            + StringUtils.QT("PLANNED")+ ","
                             + StringUtils.QT("MOBILE");
 
                     mDbUtil.insertSQL(DataMembers.tbl_date_wise_plan, DataMembers.tbl_date_wise_plan_cols, values);
 
                     shutDownDb();
-                    return true;
+                    return dateWisePlanBo;
                 } catch (Exception e) {
                     Commons.printException("" + e);
                     shutDownDb();
 
-                    return false;
+                    return dateWisePlanBo;
                 }
             }
         });
     }
 
     @Override
-    public Single<Boolean> updatePlan(DateWisePlanBo dateWisePlanBo) {
-        return Single.fromCallable(new Callable<Boolean>() {
+    public Single<DateWisePlanBo> updatePlan(DateWisePlanBo dateWisePlanBo) {
+        return Single.fromCallable(new Callable<DateWisePlanBo>() {
             @Override
-            public Boolean call() throws Exception {
+            public DateWisePlanBo call() throws Exception {
 
                 initDb();
 
                 try {
 
                     mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
-                            + " SET StartTime = "+dateWisePlanBo.getStartTime()+" , EndTime ="+dateWisePlanBo.getEndTime()
+                            + " SET StartTime = "+StringUtils.QT(dateWisePlanBo.getStartTime())+" , EndTime ="+StringUtils.QT(dateWisePlanBo.getEndTime())
                             +" where EntityId=" + dateWisePlanBo.getEntityId() +" and Date = " + StringUtils.QT(dateWisePlanBo.getDate())
                             + " and EntityType = " + StringUtils.QT(dateWisePlanBo.getEntityType()));
                     shutDownDb();
-                    return true;
+                    return dateWisePlanBo;
                 } catch (Exception e) {
                     Commons.printException("" + e);
                     shutDownDb();
 
-                    return false;
+                    return dateWisePlanBo;
                 }
             }
         });
     }
 
     @Override
-    public Single<Boolean> cancelPlan(DateWisePlanBo dateWisePlanBo) {
-        return Single.fromCallable(new Callable<Boolean>() {
+    public Single<DateWisePlanBo> cancelPlan(DateWisePlanBo dateWisePlanBo) {
+        return Single.fromCallable(new Callable<DateWisePlanBo>() {
             @Override
-            public Boolean call() throws Exception {
+            public DateWisePlanBo call() throws Exception {
 
                 initDb();
 
@@ -114,22 +115,22 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                             + " SET Status = 'D'"
                             +" where PlanId = "+dateWisePlanBo.getPlanId());
                     shutDownDb();
-                    return true;
+                    return dateWisePlanBo;
                 } catch (Exception e) {
                     Commons.printException("" + e);
                     shutDownDb();
 
-                    return false;
+                    return dateWisePlanBo;
                 }
             }
         });
     }
 
     @Override
-    public Single<Boolean> DeletePlan(DateWisePlanBo dateWisePlanBo) {
-        return Single.fromCallable(new Callable<Boolean>() {
+    public Single<DateWisePlanBo> DeletePlan(DateWisePlanBo dateWisePlanBo) {
+        return Single.fromCallable(new Callable<DateWisePlanBo>() {
             @Override
-            public Boolean call() throws Exception {
+            public DateWisePlanBo call() throws Exception {
 
                 initDb();
 
@@ -138,12 +139,12 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                     mDbUtil.deleteSQL(DataMembers.tbl_date_wise_plan,
                             " where PlanId = "+dateWisePlanBo.getPlanId(),false);
                     shutDownDb();
-                    return true;
+                    return dateWisePlanBo;
                 } catch (Exception e) {
                     Commons.printException("" + e);
                     shutDownDb();
 
-                    return false;
+                    return dateWisePlanBo;
                 }
             }
         });

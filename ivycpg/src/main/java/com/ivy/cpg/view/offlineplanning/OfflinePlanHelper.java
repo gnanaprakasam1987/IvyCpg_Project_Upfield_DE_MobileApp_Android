@@ -126,6 +126,8 @@ public class OfflinePlanHelper {
                     + StringUtils.QT(offlineDateWisePlanBO.getStatus()) + ","
                     + offlineDateWisePlanBO.getSequence()
                     + StringUtils.QT("") + ","
+                    + StringUtils.QT("")
+                    + StringUtils.QT("") + ","
                     + StringUtils.QT("");
 
             db.insertSQL(DataMembers.tbl_date_wise_plan, DataMembers.tbl_date_wise_plan_cols, values);

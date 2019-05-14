@@ -76,7 +76,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 HashMap<String, List<DateWisePlanBo>> datePlanHashMap = new HashMap<>();
 
                 String sql = "SELECT dwp.PlanId,dwp.DistributorId,dwp.UserId,dwp.Date,dwp.EntityId,dwp.EntityType,IFNULL(dwp.Status,'')" +
-                        ",dwp.Sequence,rm.RetailerName,IFNULL(dwp.StartTime,''),IFNULL(dwp.EndTime,''),PlanSource " +
+                        ",dwp.Sequence,rm.RetailerName,IFNULL(dwp.StartTime,''),IFNULL(dwp.EndTime,''),IFNULL(dwp.PlanSource,''),IFNULL(dwp.VisitStatus,''),cancelReasonId  " +
                         " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
                         " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER'";
@@ -131,7 +131,9 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
             public HashMap<String, DateWisePlanBo> call() throws Exception {
                 HashMap<String, DateWisePlanBo> datePlanHashMap = new HashMap<>();
 
-                String sql = "SELECT dwp.PlanId,dwp.DistributorId,dwp.UserId,dwp.Date,dwp.EntityId,dwp.EntityType,IFNULL(dwp.Status,''),dwp.Sequence,rm.RetailerName,StartTime,EndTime,PlanSource " +
+                String sql = "SELECT dwp.PlanId,dwp.DistributorId,dwp.UserId,dwp.Date,dwp.EntityId,dwp.EntityType," +
+                        "IFNULL(dwp.Status,''),dwp.Sequence,rm.RetailerName,StartTime,EndTime,IFNULL(dwp.PlanSource,'')" +
+                        ",IFNULL(dwp.VisitStatus,''),cancelReasonId " +
                         " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
                         " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER' and dwp.Date=" + StringUtils.QT(date);
@@ -157,10 +159,14 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         dateWisePlanBO.setStartTime(c.getString(9));
                         dateWisePlanBO.setEndTime(c.getString(10));
 
-                        if (c.getString(11) != null && c.getString(11).equalsIgnoreCase("MOBILE"))
-                            dateWisePlanBO.setServerData(false);
-                        else
+                        if (c.getString(11) != null && !c.getString(11).equalsIgnoreCase("MOBILE"))
                             dateWisePlanBO.setServerData(true);
+                        else
+                            dateWisePlanBO.setServerData(false);
+
+                        dateWisePlanBO.setVisitStatus(c.getString(12));
+
+                        dateWisePlanBO.setCancelReasonId(c.getInt(13));
 
                         datePlanHashMap.put(String.valueOf(dateWisePlanBO.getEntityId()), dateWisePlanBO);
                     }

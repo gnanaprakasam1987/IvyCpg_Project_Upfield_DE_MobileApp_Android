@@ -40,6 +40,7 @@ import com.ivy.core.base.view.BaseMapFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.DateWisePlanBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -73,6 +74,8 @@ import butterknife.OnClick;
 
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_MAP_PLAN;
+import static com.ivy.ui.retailer.RetailerConstants.COMPLETED;
+import static com.ivy.ui.retailer.RetailerConstants.PLANNED;
 
 public class RetailerMapFragment extends BaseMapFragment implements RetailerContract.RetailerView,
         GoogleMap.OnMarkerClickListener,
@@ -304,7 +307,6 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     protected void setUpViews() {
         setUpToolbar(screenTitle);
          presenter.fetchSelectedDateRetailerPlan(mSelectedDate);
-        //presenter.fetchSelectedDateRetailerPlan("2019/03/22");
         loadMap();
     }
 
@@ -595,17 +597,20 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     private int getMarkerIcon(RetailerMasterBO retailerMasterBO) {
         int drawable = R.drawable.marker_visit_unscheduled;
 
-        if ("Y".equals(retailerMasterBO.getIsVisited())) {
-            if (("N").equals(retailerMasterBO.isOrdered()))
-                drawable = R.drawable.marker_visit_non_productive;
-            else
-                drawable = R.drawable.marker_visit_completed;
-        } else if (retailerMasterBO.getIsToday() == 1 || "Y".equals(retailerMasterBO.getIsDeviated()))
-            drawable = R.drawable.marker_visit_planned;
+        DateWisePlanBo dateWisePlanBO = presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID());
 
+        if (dateWisePlanBO != null) {
+            if (dateWisePlanBO.getVisitStatus().equalsIgnoreCase(COMPLETED)) {
+//                if (("N").equals(retailerMasterBO.isOrdered()))
+//                    drawable = R.drawable.marker_visit_non_productive;
+//                else
+                    drawable = R.drawable.marker_visit_completed;
+            } else if (dateWisePlanBO.getVisitStatus().equalsIgnoreCase(PLANNED))
+                drawable = R.drawable.marker_visit_planned;
 
-        if (retailerMasterBO.isHasNoVisitReason())
-            drawable = R.drawable.marker_visit_cancelled;
+            if (dateWisePlanBO.getCancelReasonId() > 0)
+                drawable = R.drawable.marker_visit_cancelled;
+        }
 
 
         return drawable;
@@ -805,6 +810,21 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             }else if ("NODATA".equalsIgnoreCase((String)obj)){
                 getMap().clear();
             }
+        }else if(obj instanceof DateWisePlanBo){
+
+            DateWisePlanBo dateWisePlanBo = (DateWisePlanBo)obj;
+
+            if (dateWisePlanBo.getOperationType().equalsIgnoreCase("Delete")) {
+                presenter.removeDatePlan(dateWisePlanBo);
+            }else if (dateWisePlanBo.getOperationType().equalsIgnoreCase("Add")) {
+                presenter.addDatePlan(dateWisePlanBo);
+            }else if (dateWisePlanBo.getOperationType().equalsIgnoreCase("Update")) {
+                presenter.updateDatePlan(dateWisePlanBo);
+            }
+
+            getMap().clear();
+
+            presenter.prepareFilteredRetailerList(planFilterBo,searchText.toLowerCase(),false);
         }
     }
 
