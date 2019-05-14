@@ -57,7 +57,7 @@ public interface TaskContract {
 
         void fetchData();
 
-        void fetchTaskCategory(String menuCode);
+        void fetchTaskCategory();
 
         void fetchTaskImageList(String taskId);
 

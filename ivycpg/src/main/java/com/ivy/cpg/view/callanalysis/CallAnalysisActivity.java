@@ -1899,6 +1899,18 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                                     R.string.upload_failed_please_try_again), 0);
                     return true;
 
+                case DataMembers.NOTIFY_TRIP_UPLOADED:
+                    alertDialog.dismiss();
+                    presenter.upload();
+                    return true;
+
+                case DataMembers.NOTIFY_TRIP_UPLOAD_ERROR:
+                    alertDialog.dismiss();
+                    bmodel.showAlert(
+                            getResources().getString(
+                                    R.string.upload_failed_please_try_again), 0);
+                    return true;
+
                 case DataMembers.NOTIFY_UPLOADED:
                     if (!bmodel.configurationMasterHelper.IS_SYNC_WITH_IMAGES
                             && (presenter.getImageFilesCount() > 0 || presenter.getTextFilesCount() > 0)) {

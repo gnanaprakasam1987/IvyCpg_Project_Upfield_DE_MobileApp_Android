@@ -24,7 +24,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="com.google.android.gms.permission.ACTIVITY_RECOGNITION" />
-
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
 
     <uses-feature
@@ -170,9 +169,9 @@
         <activity
             android:name="com.ivy.cpg.view.order.StockAndOrder"
             android:exported="false"
+            android:hardwareAccelerated="true"
             android:launchMode="singleTop"
-            android:screenOrientation="portrait"
-            android:hardwareAccelerated="true">
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="com.ivy.sd.png.asean.view.RECVR" />
 
@@ -870,6 +869,7 @@
             android:enabled="true"
             android:exported="false" />
 
+        <activity android:name="com.ivy.cpg.view.DisplayAsset.DisplayAssetActivity"></activity>
     </application>
 
 </manifest>

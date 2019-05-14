@@ -227,7 +227,7 @@ public class CatalogImagesDownlaod extends IvyBaseActivityNoActionBar {
 
 //            bmodel.getimageDownloadURL();
 
-            if (bmodel.configurationMasterHelper.IS_AZURE_UPLOAD){
+            if (bmodel.configurationMasterHelper.IS_AZURE_CLOUD_STORAGE){
                 checkLastModifiedFileAzure();
             }else{
                 checkLastModifiedFileAmazon();

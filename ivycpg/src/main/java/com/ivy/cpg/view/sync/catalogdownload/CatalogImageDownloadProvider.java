@@ -330,10 +330,10 @@ public class CatalogImageDownloadProvider {
     }
 
     private String getDownloadUrl(){
-        if (businessModel.configurationMasterHelper.IS_AZURE_UPLOAD) {
+        if (businessModel.configurationMasterHelper.IS_AZURE_CLOUD_STORAGE) {
             AzureConnectionHelper.getInstance().setAzureCredentials(businessModel.getApplicationContext());
             return AzureConnectionHelper.getInstance().getAzureFile("Product/" + CatalogDownloadConstants.FILE_NAME);
-        }else if (businessModel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
+        }else if (businessModel.configurationMasterHelper.IS_S3_CLOUD_STORAGE) {
             AWSConnectionHelper.getInstance().setAWSDBValues(businessModel.getApplicationContext());
             return AWSConnectionHelper.getInstance().getSignedAwsUrl(DataMembers.IMG_DOWN_URL+ "Product/" + CatalogDownloadConstants.FILE_NAME);
         }

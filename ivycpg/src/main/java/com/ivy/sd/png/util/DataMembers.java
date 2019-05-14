@@ -192,6 +192,10 @@ public class DataMembers {
     public static final int NOTIFY_PICKLIST_UPLOADED = -51;
     public static final int NOTIFY_PICKLIST_UPLOAD_ERROR = -52;
 
+    public static final int SYNC_TRIP = -80;
+    public static final int NOTIFY_TRIP_UPLOADED = -81;
+    public static final int NOTIFY_TRIP_UPLOAD_ERROR = -82;
+
     // ***********
     public static final int PRINT_COUNT = 5;
     public static final int PRINT_TEXT_SIZE = 1;
@@ -722,6 +726,12 @@ public class DataMembers {
     private static final String tbl_RetailerLocationDeviation = "RetailerLocationDeviation";
     private static final String tbl_RetailerLocationDeviation_cols = "Tid,ReasonID,RetailerID,Date,Type,ExpectedRadius,ActualRadius,OutletTimeStampID";
 
+    public static final String tbl_DisplayAssetHeader = "DisplayAssetTrackingHeader";
+    private static final String tbl_DisplayAsseteader_cols = "Uid,RetailerId,ridSF,visitId,Date,status,ownShare,competitorShare";
+
+    public static final String tbl_DisplayAssetTDetails = "DisplayAssetTrackingDetails";
+    private static final String tbl_DisplayAssetDetail_cols = "Uid,CompetitorId,DisplayAssetId,count,weightage,score";
+
     public static final String tbl_SyncLogDetails = "SyncLogDetails";
     public static final String tbl_SyncLogDetails_cols = "TransactionId,UserId,AppVersionNumber,OSName,OSVersion,DeviceName,SyncType,StartTime,EndTime,PhotosCount,SyncStatus,DownloadedDate,TotalCount";
 
@@ -921,6 +931,8 @@ public class DataMembers {
         uploadColumn.put(tbl_RetailerLocationDeviation, tbl_RetailerLocationDeviation_cols);
         uploadColumn.put(tbl_TripMaster, tbl_TripMaster_cols);
         uploadColumn.put(tbl_SyncLogDetails, tbl_SyncLogDetails_cols);
+        uploadColumn.put(tbl_DisplayAssetHeader, tbl_DisplayAsseteader_cols);
+        uploadColumn.put(tbl_DisplayAssetTDetails, tbl_DisplayAssetDetail_cols);
 
         uploadColumn.put(tbl_retailer_notes, tbl_retailer_notes_cols);
     }
@@ -1076,7 +1088,10 @@ public class DataMembers {
 
         uploadColumnWithRetailer.put(tbl_OrderFreeIssues, tbl_OrderFreeIssues_cols);
         uploadColumnWithRetailer.put(tbl_InvoiceFreeIssues, tbl_InvoiceFreeIssues_cols);
-        uploadColumn.put(tbl_RetailerLocationDeviation, tbl_RetailerLocationDeviation_cols);
+        uploadColumnWithRetailer.put(tbl_RetailerLocationDeviation, tbl_RetailerLocationDeviation_cols);
+
+        uploadColumnWithRetailer.put(tbl_DisplayAssetHeader, tbl_DisplayAsseteader_cols);
+        uploadColumnWithRetailer.put(tbl_DisplayAssetTDetails, tbl_DisplayAssetDetail_cols);
     }
 
     public static final HashMap<String, String> uploadColumnWithOutRetailer = new HashMap<>();
@@ -1276,6 +1291,14 @@ public class DataMembers {
                 tbl_picklist_cols);
         uploadPickListStatusTable.put(tbl_picklist_invoice,
                 tbl_picklist_invoice_cols);
+    }
+
+    public static final HashMap<String, String> uploadTripTable = new HashMap<>();
+
+    static {
+
+        uploadTripTable.put(tbl_TripMaster,
+                tbl_TripMaster_cols);
     }
 
 }

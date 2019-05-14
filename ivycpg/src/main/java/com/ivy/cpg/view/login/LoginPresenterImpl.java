@@ -1018,7 +1018,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
             loginView.dismissAlertDialog();
             if (response == SynchronizationHelper.NEXT_METHOD.DIGITAL_CONTENT_AVALILABLE) {
 
-                if (businessModel.configurationMasterHelper.IS_AZURE_UPLOAD) {
+                if (businessModel.configurationMasterHelper.IS_AZURE_CLOUD_STORAGE) {
                     AzureConnectionHelper.getInstance().setAzureCredentials(context);
                     try {
                         loginView.downloadImagesThreadStartFromAzure(businessModel.getDigitalContentURLS(), AzureConnectionHelper.getInstance().initializeAzureStorageConnection());
@@ -1027,7 +1027,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
                         Commons.printException(e);
                         loginView.showAlert(context.getString(R.string.error_message_general), false);
                     }
-                } else if (businessModel.configurationMasterHelper.ISAMAZON_IMGUPLOAD) {
+                } else if (businessModel.configurationMasterHelper.IS_S3_CLOUD_STORAGE) {
                     AWSConnectionHelper.getInstance().setAmazonS3Credentials(context);
                     transferUtility = new TransferUtility(AWSConnectionHelper.getInstance().getS3Connection(), context);
                     loginView.downloadImagesThreadStart(businessModel.getDigitalContentURLS(), transferUtility);

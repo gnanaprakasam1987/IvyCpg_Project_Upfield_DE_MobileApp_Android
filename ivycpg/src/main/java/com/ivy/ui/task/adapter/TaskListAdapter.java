@@ -75,7 +75,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         // put an unique string id as value, can be any string which uniquely define the data
         binderHelper.bind(holder.swipeLayout, taskBo.getTaskId());
 
-        if (mTabPosition == 3)
+        if (mTabPosition == 3
+                || (taskBo.isUpload() && taskBo.getIsdone().equals("1")))
             binderHelper.lockSwipe(taskBo.getTaskId());
 
 
@@ -122,9 +123,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         holder.btnEditTask.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 taskClickListener.onTaskButtonClick(taskBo, TaskConstant.TASK_EDIT);
-
             }
         });
 

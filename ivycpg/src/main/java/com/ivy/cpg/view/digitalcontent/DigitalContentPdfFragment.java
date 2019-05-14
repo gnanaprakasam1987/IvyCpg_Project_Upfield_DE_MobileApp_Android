@@ -27,6 +27,7 @@ import com.ivy.sd.png.bo.DigitalContentBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
 
@@ -273,6 +274,26 @@ public class DigitalContentPdfFragment extends IvyBaseFragment {
 
                     }
                 });
+
+                  if(product.isAllowSharing()){
+                    ((RecyclerViewAdapter.VHItem) holder).imageView_share.setVisibility(View.VISIBLE);
+                }
+                else {
+                    ((RecyclerViewAdapter.VHItem) holder).imageView_share.setVisibility(View.GONE);
+                }
+                ((RecyclerViewAdapter.VHItem) holder).imageView_share.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            mDigitalContentHelper.shareDigitalContent(getActivity(), product.getDescription(), ((RecyclerViewAdapter.VHItem) holder).filename);
+                        }
+                        catch (Exception ex){
+                            Toast.makeText(getActivity(),getResources().getString(R.string.error_in_sending_email),Toast.LENGTH_LONG).show();
+                            Commons.printException(ex);
+                        }
+                    }
+                });
+
             } else if (holder instanceof VHHeader) {
                 ((VHHeader) holder).month_label.setText(items.get(position).getHeaderTitle());
             }
@@ -288,7 +309,7 @@ public class DigitalContentPdfFragment extends IvyBaseFragment {
 
         public class VHItem extends RecyclerView.ViewHolder {
             TextView mPDescription, date, mPName, month_label;
-            ImageView image;
+            ImageView image,imageView_share;
             String filename;
 
             public VHItem(View v) {
@@ -296,6 +317,7 @@ public class DigitalContentPdfFragment extends IvyBaseFragment {
                 mPDescription = (TextView) v
                         .findViewById(R.id.closePRODNAME);
                 image = (ImageView) v.findViewById(R.id.icon);
+                imageView_share = (ImageView) v.findViewById(R.id.imageview_share);
                 date = (TextView) v.findViewById(R.id.date);
                 mPName = (TextView) v.findViewById(R.id.prodName);
                 month_label = (TextView) v.findViewById(R.id.month_label);
