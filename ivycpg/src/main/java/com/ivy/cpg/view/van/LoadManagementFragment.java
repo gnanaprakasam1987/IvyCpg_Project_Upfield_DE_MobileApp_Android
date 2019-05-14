@@ -129,7 +129,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
             }
 
             if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
-                    && bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
+                    && (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION||bmodel.configurationMasterHelper.IS_ENABLE_TRIP)) {
                 ((HomeScreenActivity) getActivity()).checkAndRequestPermissionAtRunTime(3);
             }
 
@@ -235,6 +235,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
             adapter=new MenuBaseAdapter(menuDB);
             listView.setAdapter(adapter);
 
+
+
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -261,7 +263,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
         }
 
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
-                && bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
+                && (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION||bmodel.configurationMasterHelper.IS_ENABLE_TRIP)) {
             int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
@@ -279,9 +281,8 @@ public class LoadManagementFragment extends IvyBaseFragment {
     public void onPause() {
         super.onPause();
 
-
         if (bmodel.configurationMasterHelper.SHOW_CAPTURED_LOCATION
-                && bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION) {
+                && (bmodel.configurationMasterHelper.SHOW_VANGPS_VALIDATION||bmodel.configurationMasterHelper.IS_ENABLE_TRIP)) {
             int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION);
             if (permissionStatus == PackageManager.PERMISSION_GRANTED)

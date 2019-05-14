@@ -1,10 +1,6 @@
-package com.ivy.cpg.view.DisplayAsset;
+package com.ivy.ui.DisplayAsset;
 
 import android.content.Context;
-
-import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
-
-import java.util.ArrayList;
 
 public interface DisplayAssetContractor {
 

@@ -1024,7 +1024,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
                         holder.rdPartial.setChecked(false);
                         holder.rdPartial.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
-                        holder.rdPartial.setButtonDrawable(R.drawable.ic_cross_disable);
+                        holder.rdPartial.setButtonDrawable(R.drawable.ic_partial_disabled);
                         holder.planoObj.setPercentageId("0");
                         holder.spinner_percentage.setSelection(0);
                     }
@@ -1047,7 +1047,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
                         holder.rdPartial.setChecked(false);
                         holder.rdPartial.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
-                        holder.rdPartial.setButtonDrawable(R.drawable.ic_cross_disable);
+                        holder.rdPartial.setButtonDrawable(R.drawable.ic_partial_disabled);
                         holder.planoObj.setPercentageId("0");
                         holder.spinner_percentage.setSelection(0);
                         holder.spinner_percentage.setVisibility(View.GONE);
@@ -1065,7 +1065,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
                         holder.rdYes.setButtonDrawable(R.drawable.ic_tick_disable);
                         holder.rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
-                        holder.rdPartial.setButtonDrawable(R.drawable.ic_cross_enable);
+                        holder.rdPartial.setButtonDrawable(R.drawable.ic_partial_enabled);
 
                         holder.rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                         holder.rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
@@ -1357,7 +1357,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                         rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
 
-                        rdPartial.setButtonDrawable(R.drawable.ic_cross_disable);
+                        rdPartial.setButtonDrawable(R.drawable.ic_partial_disabled);
                         rdPartial.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                     }
                 } else {
@@ -1367,7 +1367,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
                     rdYes.setButtonDrawable(R.drawable.ic_tick_disable);
                     rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
-                    rdPartial.setButtonDrawable(R.drawable.ic_cross_disable);
+                    rdPartial.setButtonDrawable(R.drawable.ic_partial_disabled);
 
                     rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                     rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
@@ -1384,7 +1384,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
 
                     rdPartial.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
-                    rdPartial.setButtonDrawable(R.drawable.ic_cross_disable);
+                    rdPartial.setButtonDrawable(R.drawable.ic_partial_disabled);
 
                     layout_reason.setVisibility(View.GONE);
                     planoObj.setAdherence("1");
@@ -1410,7 +1410,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     rdYes.setChecked(false);
                     rdYes.setButtonDrawable(R.drawable.ic_tick_disable);
                     rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
-                    rdPartial.setButtonDrawable(R.drawable.ic_cross_enable);
+                    rdPartial.setButtonDrawable(R.drawable.ic_partial_enabled);
                     rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                     rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
                     rdPartial.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_no_red));

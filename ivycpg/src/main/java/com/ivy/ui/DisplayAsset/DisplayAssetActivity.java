@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.DisplayAsset;
+package com.ivy.ui.DisplayAsset;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -13,13 +13,13 @@ import android.widget.BaseExpandableListAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ExpandableListView;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.CompanyBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -78,6 +78,7 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
 
         expandableListView=findViewById(R.id.listview_assets);
         expandableListView.setAdapter(new MyAdapter(displayAssetHelper.getDisplayAssetList()));
+        presenter.refreshStatus();
         int size=displayAssetHelper.getDisplayAssetList().size();
         if(size>0){
             expandableListView.expandGroup(0);
@@ -134,7 +135,10 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
         }
         @Override
         public Object getChild(int arg0, int arg1) {
-            return null;
+
+            ArrayList<CompanyBO> companyList=assetList.get(arg0).getCompanyList();
+
+            return companyList.get(arg1);
         }
 
         @Override
@@ -146,6 +150,7 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
         public View getChildView(int groupPosition, int childPosition,
                                  boolean isLastChild, View convertView, ViewGroup parent) {
             final ViewHolder holder;
+
 
             View row = convertView;
             if (row == null) {
@@ -170,7 +175,12 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
                         else
                             value=0;
 
+                        CompanyBO companyBO=(CompanyBO)getChild(groupPosition,childPosition);
+                        companyBO.setQuantity(value);
+
                         holder.editText_quantity.setText(String.valueOf(value));
+
+                        presenter.refreshStatus();
                     }
                 });
                 holder.imageView_plus.setOnClickListener(new View.OnClickListener() {
@@ -182,12 +192,16 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
                             value=0;
                         }
 
+                        CompanyBO companyBO=(CompanyBO)getChild(groupPosition,childPosition);
+                        companyBO.setQuantity(value);
 
                         holder.editText_quantity.setText(String.valueOf(value));
+
+                        presenter.refreshStatus();
                     }
                 });
 
-                holder.editText_quantity.addTextChangedListener(new TextWatcher() {
+               /* holder.editText_quantity.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -203,7 +217,8 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
 
                         try {
                             int qty = Integer.valueOf(editable.toString());
-                            assetList.get(groupPosition).getCompanyList().get(childPosition).setQuantity(qty);
+                            CompanyBO companyBO=(CompanyBO)getChild(groupPosition,childPosition);
+                            companyBO.setQuantity(qty);
                         }
                         catch (Exception ex){
                             Commons.printException(ex);
@@ -211,7 +226,7 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
 
                         presenter.refreshStatus();
                     }
-                });
+                });*/
 
 
                 row.setTag(holder);
@@ -219,8 +234,9 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
                 holder = (ViewHolder) row.getTag();
             }
 
-            holder.textView_companyName.setText(assetList.get(groupPosition).getCompanyList().get(childPosition).getCompetitorName());
-            holder.editText_quantity.setText(String.valueOf(assetList.get(groupPosition).getCompanyList().get(childPosition).getQuantity()));
+            CompanyBO companyBO=(CompanyBO)getChild(groupPosition,childPosition);
+            holder.textView_companyName.setText(companyBO.getCompetitorName());
+            holder.editText_quantity.setText(String.valueOf(companyBO.getQuantity()));
 
             return row;
         }
