@@ -140,8 +140,6 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         setHasOptionsMenu(true);
         initRetailerInfoBottmSheet();
         presenter.fetchEventsFromDb();
-        //presenter.setPlanDates();
-        //presenter.loadCalendar();
 
         rvWeek.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
