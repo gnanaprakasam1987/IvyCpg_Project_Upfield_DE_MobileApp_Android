@@ -144,7 +144,7 @@ public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContrac
         this.attributeChildLst = attributeChildLst;
     }
 
-    private void prepareScreenData(){
+    public void prepareScreenData(){
 
         for (String configName : configurationList) {
             if (configName.equalsIgnoreCase(CODE_IS_NOT_VISITED)){

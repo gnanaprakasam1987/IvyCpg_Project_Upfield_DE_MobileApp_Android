@@ -2679,6 +2679,25 @@ public class BusinessModel extends Application {
     }
 
 
+    public void saveCancelVistreason(String reasonId,String date) {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
+            db.createDataBase();
+            db.openDataBase();
+
+            String query = "Update DatewisePlan set cancelReasonId="+StringUtils.QT(reasonId)+",VisitStatus = 'CANCELLED' , Status = 'D' "
+                    +" where EntityId="+StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())+" and Date="+StringUtils.QT(date);
+
+            db.updateSQL(query);
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+
     /**
      * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
      * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#getRetailerAttribute}

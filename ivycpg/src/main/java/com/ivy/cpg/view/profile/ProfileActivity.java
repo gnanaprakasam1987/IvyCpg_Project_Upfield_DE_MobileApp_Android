@@ -170,6 +170,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             isFromPlanningSub = false ,
             isShowVisitButton = false,isShowCancelVisit = false;
 
+    private String retailerViewDate="";
+
     private boolean isFromRetailerMapScreen = false;
 
     private List<LatLng> markerList = new ArrayList<>();
@@ -403,6 +405,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         isShowVisitButton = getIntent().getBooleanExtra("HideStartVisit", false);
         isShowCancelVisit = getIntent().getBooleanExtra("HideCancelVisit", false);
+        retailerViewDate = getIntent().getStringExtra("RetailerViewDate");
 
 
         try {
@@ -711,8 +714,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
                 CommonReasonDialog comReasonDialog = new CommonReasonDialog(ProfileActivity.this, "nonVisit");
                 comReasonDialog.setNonvisitListener(ProfileActivity.this);
-                if (isFromRetailerMapScreen)
-                    comReasonDialog.getFromScreenParam("RetailerView");
                 comReasonDialog.show();
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                 Window window = comReasonDialog.getWindow();
@@ -760,6 +761,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
                 CommonReasonDialog comReasonDialog = new CommonReasonDialog(ProfileActivity.this, "nonVisit");
                 comReasonDialog.setNonvisitListener(ProfileActivity.this);
+                if (isFromRetailerMapScreen)
+                    comReasonDialog.getFromScreenParam("RetailerView",retailerViewDate);
                 comReasonDialog.show();
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                 Window window = comReasonDialog.getWindow();
@@ -1269,6 +1272,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             }
 
             if (!isShowVisitButton)
+                findViewById(R.id.start_visit_retailer).setVisibility(View.VISIBLE);
+            else
+                findViewById(R.id.start_visit_retailer).setVisibility(View.GONE);
+
+            if (!isShowCancelVisit)
                 findViewById(R.id.start_visit_retailer).setVisibility(View.VISIBLE);
             else
                 findViewById(R.id.start_visit_retailer).setVisibility(View.GONE);

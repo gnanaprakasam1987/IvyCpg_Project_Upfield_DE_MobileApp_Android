@@ -48,6 +48,9 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
                 .subscribe(new Consumer<DateWisePlanBo>() {
                     @Override
                     public void accept(DateWisePlanBo planBo) throws Exception {
+
+                        System.out.println("planBo = " + planBo.getVisitStatus());
+
                         planBo.setOperationType("Add");
                         getIvyView().updateDatePlan(planBo);
 
