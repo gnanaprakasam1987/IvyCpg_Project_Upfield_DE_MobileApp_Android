@@ -47,6 +47,8 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     private String mSelectedDate;
     private HashMap<String, List<DateWisePlanBo>> plannedListMap = new HashMap<>();
     private List<WeekViewEvent> allEvents = new ArrayList<>();
+    private ArrayList<DateWisePlanBo> selectedDateRetailerPlanList;
+    private HashMap<String, DateWisePlanBo> selectedDateRetailerPlanMap;
 
     @Inject
     CalendarPlanPresenterImpl(DataManager dataManager,
@@ -64,7 +66,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
 
 
     @Override
-    public void fetchEventsFromDb() {
+    public void fetchEventsFromDb(boolean onCreate) {
         getIvyView().showLoading();
         getCompositeDisposable().add(retailerDataManager.getAllDateRetailerPlanList()
                 .subscribeOn(getSchedulerProvider().io())
@@ -73,12 +75,12 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                     @Override
                     public void accept(HashMap<String, List<DateWisePlanBo>> listHashMap) throws Exception {
                         plannedListMap = listHashMap;
-                        updateEvents();
+                        updateEvents(onCreate);
                     }
                 }));
     }
 
-    private void updateEvents() {
+    private void updateEvents(boolean onCreate) {
         getCompositeDisposable().add(getEvents()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -87,8 +89,12 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                     public void accept(List<WeekViewEvent> events) throws Exception {
                         getIvyView().hideLoading();
                         allEvents.addAll(events);
-                        setPlanDates();
-                        loadCalendar();
+                        if (onCreate) {
+                            setPlanDates();
+                            loadCalendar();
+                        } else {
+                            getIvyView().reloadView();
+                        }
                     }
                 }));
     }
@@ -180,7 +186,6 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         getIvyView().loadDayView(date);
         getIvyView().setMonthName(DateTimeUtils.convertDateObjectToRequestedFormat(
                 currentMonth.getTime(), "MMM yyyy"));
-
     }
 
     @Override
@@ -242,7 +247,6 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
             currentMonth.add(Calendar.MONTH, +1);
             getIvyView().showMessage(R.string.endOfPeriod);
         }
-
     }
 
 
@@ -317,7 +321,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
 
     @Override
     public List<WeekViewEvent> getPlannedEvents(int newYear, int newMonth) {
-        List<WeekViewEvent> matchedEvents = new ArrayList<WeekViewEvent>();
+        List<WeekViewEvent> matchedEvents = new ArrayList<>();
         for (WeekViewEvent event : allEvents) {
             if (eventMatches(event, newYear, newMonth)) {
                 matchedEvents.add(event);
@@ -335,13 +339,11 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         return (event.getStartTime().get(Calendar.YEAR) == year && event.getStartTime().get(Calendar.MONTH) == month - 1) || (event.getEndTime().get(Calendar.YEAR) == year && event.getEndTime().get(Calendar.MONTH) == month - 1);
     }
 
-
     @Override
     public void setSelectedDate(String selectedDate) {
         mSelectedDate = selectedDate;
         currentMonth.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
     }
-
 
     private String[] getMonthRange() {
         Date beginning, end;
@@ -353,18 +355,15 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
             setTimeToBeginningOfDay(calendar);
             beginning = calendar.getTime();
             dates[0] = DateTimeUtils.convertDateObjectToRequestedFormat(beginning, generalPattern);
-
         }
 
         {
-
             Calendar calendar = getCalendarForNow();
             calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
             setTimeToEndOfDay(calendar);
             end = calendar.getTime();
             dates[1] = DateTimeUtils.convertDateObjectToRequestedFormat(end, generalPattern);
         }
-
         return dates;
     }
 
@@ -479,6 +478,32 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
 
         return calLsit;
 
+    }
+
+    @Override
+    public void fetchSelectedDateRetailerPlan(String date) {
+        getCompositeDisposable().add(retailerDataManager.getRetailerPlanList(date)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<HashMap<String, DateWisePlanBo>>() {
+                    @Override
+                    public void accept(HashMap<String, DateWisePlanBo> listHashMap) throws Exception {
+
+                        selectedDateRetailerPlanMap = listHashMap;
+
+                        selectedDateRetailerPlanList = new ArrayList<>(listHashMap.values());
+                    }
+                }));
+    }
+
+    @Override
+    public ArrayList<DateWisePlanBo> getSelectedDateRetailerPlanList() {
+        return selectedDateRetailerPlanList.isEmpty() ? new ArrayList<>() : selectedDateRetailerPlanList;
+    }
+
+    @Override
+    public DateWisePlanBo getSelectedRetailerPlan(String retailerId) {
+        return selectedDateRetailerPlanMap.get(retailerId);
     }
 
 }

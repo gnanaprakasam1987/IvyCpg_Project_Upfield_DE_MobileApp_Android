@@ -38,6 +38,7 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -119,6 +120,20 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
         this.dateWisePlanBo = dateWisePlanBo;
         this.planList = planList;
         this.selectedDate = selectedDate;
+
+        startTime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
+        endtime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
+    }
+
+    public AddPlanDialogFragment(String selectedDate, RetailerMasterBO retailerMaster,
+                                 DateWisePlanBo dateWisePlanBo, ArrayList<DateWisePlanBo> planList, Calendar time){
+        retailerMasterBO = retailerMaster;
+        this.dateWisePlanBo = dateWisePlanBo;
+        this.planList = planList;
+        this.selectedDate = selectedDate;
+
+        startTime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
+        endtime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
     }
 
     private String selectedDate="",startTime="",endtime="";
@@ -156,8 +171,6 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(bottomSheetCallBack);
         }
 
-        startTime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
-        endtime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
 
         if (selectedDate == null || selectedDate.isEmpty())
             selectedDate = DateTimeUtils.now(DATE_GLOBAL);
@@ -289,8 +302,6 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
             } else {
                 addPlanPresenter.addNewPlan(selectedDate, startTime, endTime, retailerMasterBO);
             }
-
-            dismiss();
         }
     }
 
@@ -330,13 +341,11 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     @OnClick(R.id.tv_cancel)
     void cancelPlan(){
         addPlanPresenter.cancelPlan(dateWisePlanBo);
-        dismiss();
     }
 
     @OnClick(R.id.tv_delete)
     void deletePlan(){
         addPlanPresenter.deletePlan(dateWisePlanBo);
-        dismiss();
     }
 
     private View.OnClickListener addToPlanListener = new View.OnClickListener() {
@@ -481,6 +490,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     @Override
     public void updateDatePlan(DateWisePlanBo planBo) {
         EventBus.getDefault().post(planBo);
+        dismiss();
     }
 
 
