@@ -60,11 +60,11 @@ public class CommonReasonDialog extends Dialog {
 
     }
 
-    private String fromScreen="";
+    private String fromScreen="",date="";
 
-    public void getFromScreenParam(String fromScreen) {
+    public void getFromScreenParam(String fromScreen,String date) {
         this.fromScreen = fromScreen;
-
+        this.date = date;
     }
 
     public CommonReasonDialog(final Context context, final String listLoad) {
@@ -116,10 +116,13 @@ public class CommonReasonDialog extends Dialog {
                         NonproductivereasonBO nonproductive = new NonproductivereasonBO();
                         nonproductive.setReasonid(temp.getReasonID());
                         nonproductive.setReasontype("NV");
-                        nonproductive.setDate(bmodel.userMasterHelper.getUserMasterBO()
-                                .getDownloadDate());
                         bmodel.saveNonproductivereason(nonproductive, "");
                         bmodel.getRetailerMasterBO().setHasNoVisitReason(true);
+
+                        if (fromScreen.equalsIgnoreCase("RetailerView")){
+                            bmodel.saveCancelVistreason(temp.getReasonID(), date);
+                        }
+
                         addNonVisitListener.addReatailerReason();
                         dismiss();
                     } else if (listLoad.equals(DEVIATE)) {

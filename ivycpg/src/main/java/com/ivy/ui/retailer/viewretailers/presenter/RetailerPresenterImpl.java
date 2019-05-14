@@ -114,7 +114,11 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
     }
 
     @Override
-    public void fetchSelectedDateRetailerPlan(String date) {
+    public void fetchSelectedDateRetailerPlan(String date, boolean isRetailerUpdate) {
+
+        selectedDateRetailerPlanMap = null;
+        selectedDateRetailerPlanList = null;
+
         getCompositeDisposable().add(retailerDataManager.getRetailerPlanList(date)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
@@ -125,6 +129,9 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
                         selectedDateRetailerPlanMap = listHashMap;
 
                         selectedDateRetailerPlanList = new ArrayList<>(listHashMap.values());
+
+                        if (isRetailerUpdate)
+                            getIvyView().updateView();
                     }
                 }));
     }
@@ -152,25 +159,29 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
             retailerIds = planFilterBo.getRetailerIds();
         }
 
+        ArrayList<RetailerMasterBO> filteredRetailerList = new ArrayList<>();
+
         for (RetailerMasterBO retailerMasterBO : this.visibleRetailerList) {
 
             if (planFilterBo != null && !filter.isEmpty() && planFilterBo.getRetailerIds().contains(retailerMasterBO.getRetailerID())
                     && retailerMasterBO.getRetailerName().contains(filter)) {
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
-
+                filteredRetailerList.add(retailerMasterBO);
             } else if (planFilterBo != null && filter.isEmpty() && retailerIds.contains(retailerMasterBO.getRetailerID())) {
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
+                filteredRetailerList.add(retailerMasterBO);
             }
             else if (planFilterBo == null && !filter.isEmpty() && retailerMasterBO.getRetailerName().contains(filter)) {
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
+                filteredRetailerList.add(retailerMasterBO);
             }else if(planFilterBo == null && filter.isEmpty()){
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
+                filteredRetailerList.add(retailerMasterBO);
             }
         }
 
-
         if (isFromRetailerlist)
-            getIvyView().populateRetailers(visibleRetailerList);
+            getIvyView().populateRetailers(filteredRetailerList);
 
         getIvyView().focusMarker();
     }

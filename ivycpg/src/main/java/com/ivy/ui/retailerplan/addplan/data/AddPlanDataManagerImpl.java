@@ -12,6 +12,7 @@ import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
+import io.reactivex.Observable;
 import io.reactivex.Single;
 
 public class AddPlanDataManagerImpl implements AddPlanDataManager {
@@ -41,8 +42,8 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
     }
 
     @Override
-    public Single<DateWisePlanBo> savePlan(DateWisePlanBo dateWisePlanBo) {
-        return Single.fromCallable(new Callable<DateWisePlanBo>() {
+    public Observable<DateWisePlanBo> savePlan(DateWisePlanBo dateWisePlanBo) {
+        return Observable.fromCallable(new Callable<DateWisePlanBo>() {
             @Override
             public DateWisePlanBo call() throws Exception {
 
@@ -65,20 +66,19 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                     mDbUtil.insertSQL(DataMembers.tbl_date_wise_plan, DataMembers.tbl_date_wise_plan_cols, values);
 
                     shutDownDb();
-                    return dateWisePlanBo;
                 } catch (Exception e) {
                     Commons.printException("" + e);
                     shutDownDb();
-
-                    return dateWisePlanBo;
                 }
+
+                return dateWisePlanBo;
             }
         });
     }
 
     @Override
-    public Single<DateWisePlanBo> updatePlan(DateWisePlanBo dateWisePlanBo) {
-        return Single.fromCallable(new Callable<DateWisePlanBo>() {
+    public Observable<DateWisePlanBo> updatePlan(DateWisePlanBo dateWisePlanBo) {
+        return Observable.fromCallable(new Callable<DateWisePlanBo>() {
             @Override
             public DateWisePlanBo call() throws Exception {
 
@@ -91,20 +91,19 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                             +" where EntityId=" + dateWisePlanBo.getEntityId() +" and Date = " + StringUtils.QT(dateWisePlanBo.getDate())
                             + " and EntityType = " + StringUtils.QT(dateWisePlanBo.getEntityType()));
                     shutDownDb();
-                    return dateWisePlanBo;
                 } catch (Exception e) {
                     Commons.printException("" + e);
                     shutDownDb();
-
-                    return dateWisePlanBo;
                 }
+
+                return dateWisePlanBo;
             }
         });
     }
 
     @Override
-    public Single<DateWisePlanBo> cancelPlan(DateWisePlanBo dateWisePlanBo) {
-        return Single.fromCallable(new Callable<DateWisePlanBo>() {
+    public Observable<DateWisePlanBo> cancelPlan(DateWisePlanBo dateWisePlanBo) {
+        return Observable.fromCallable(new Callable<DateWisePlanBo>() {
             @Override
             public DateWisePlanBo call() throws Exception {
 
@@ -115,20 +114,19 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                             + " SET Status = 'D'"
                             +" where PlanId = "+dateWisePlanBo.getPlanId());
                     shutDownDb();
-                    return dateWisePlanBo;
                 } catch (Exception e) {
                     Commons.printException("" + e);
                     shutDownDb();
-
-                    return dateWisePlanBo;
                 }
+
+                return dateWisePlanBo;
             }
         });
     }
 
     @Override
-    public Single<DateWisePlanBo> DeletePlan(DateWisePlanBo dateWisePlanBo) {
-        return Single.fromCallable(new Callable<DateWisePlanBo>() {
+    public Observable<DateWisePlanBo> DeletePlan(DateWisePlanBo dateWisePlanBo) {
+        return Observable.fromCallable(new Callable<DateWisePlanBo>() {
             @Override
             public DateWisePlanBo call() throws Exception {
 
@@ -137,15 +135,15 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                 try {
 
                     mDbUtil.deleteSQL(DataMembers.tbl_date_wise_plan,
-                            " where PlanId = "+dateWisePlanBo.getPlanId(),false);
+                            " EntityId=" + dateWisePlanBo.getEntityId() +" and Date = " + StringUtils.QT(dateWisePlanBo.getDate())
+                                    + " and EntityType = " + StringUtils.QT(dateWisePlanBo.getEntityType()),false);
                     shutDownDb();
-                    return dateWisePlanBo;
                 } catch (Exception e) {
                     Commons.printException("" + e);
                     shutDownDb();
-
-                    return dateWisePlanBo;
                 }
+
+                return dateWisePlanBo;
             }
         });
     }

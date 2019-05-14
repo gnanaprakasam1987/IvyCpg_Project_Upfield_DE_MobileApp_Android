@@ -14,9 +14,10 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.GridLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ivy.core.base.view.BaseBottomSheetDialogFragment;
 import com.ivy.cpg.view.profile.ProfileActivity;
@@ -48,14 +49,17 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
+import com.ivy.cpg.view.profile.CommonReasonDialog;
+
+import static com.ivy.ui.retailer.RetailerConstants.COMPLETED;
 import static com.ivy.ui.retailer.RetailerConstants.PLANNED;
 import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
 import static com.ivy.utils.DateTimeUtils.TIME_HOUR_MINS;
 
 @SuppressLint("ValidFragment")
-public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment implements AddPlanContract.AddPlanView {
+public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment implements AddPlanContract.AddPlanView,
+        CommonReasonDialog.AddNonVisitListener {
 
     @BindView(R.id.tv_add)
     TextView addPlan;
@@ -283,16 +287,33 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 //        presenter.setRetailerMasterBo(retailerMasterBO);
         Intent i = new Intent(context, ProfileActivity.class);
         i.putExtra("From", "RetailerMap");
+        i.putExtra("RetailerViewDate",selectedDate);
 
-        if (DateTimeUtils.getDateCount(selectedDate,DateTimeUtils.now(DATE_GLOBAL),"yyyy/MM/dd") < 0) {
+        int dateCount = DateTimeUtils.getDateCount(selectedDate,DateTimeUtils.now(DATE_GLOBAL),"yyyy/MM/dd");
+        if (dateCount < 0) {
             i.putExtra("HideStartVisit", true);
             i.putExtra("HideCancelVisit", true);
-        }else if (DateTimeUtils.getDateCount(selectedDate,DateTimeUtils.now(DATE_GLOBAL),"yyyy/MM/dd") > 0){
+        }else if (dateCount > 0){
             i.putExtra("HideStartVisit", true);
-            i.putExtra("HideCancelVisit", false);
+            if (dateWisePlanBo != null && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED))
+                i.putExtra("HideCancelVisit", false);
+            else
+                i.putExtra("HideCancelVisit", true);
         }else{
-            i.putExtra("HideStartVisit", false);
-            i.putExtra("HideCancelVisit", false);
+            if (dateWisePlanBo != null) {
+                if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED) || dateWisePlanBo.getVisitStatus().equalsIgnoreCase(COMPLETED) )
+                    i.putExtra("HideStartVisit", false);
+                else
+                    i.putExtra("HideStartVisit", true);
+
+                if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED))
+                    i.putExtra("HideCancelVisit", false);
+                else
+                    i.putExtra("HideCancelVisit", true);
+            }else {
+                i.putExtra("HideStartVisit", true);
+                i.putExtra("HideCancelVisit", true);
+            }
         }
 
         startActivity(i);
@@ -349,7 +370,18 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
     @OnClick(R.id.tv_cancel)
     void cancelPlan(){
-        addPlanPresenter.cancelPlan(dateWisePlanBo);
+
+        CommonReasonDialog comReasonDialog = new CommonReasonDialog(context, "nonVisit");
+        comReasonDialog.setNonvisitListener(this);
+        comReasonDialog.show();
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = comReasonDialog.getWindow();
+        lp.copyFrom(window != null ? window.getAttributes() : null);
+        lp.width = DeviceUtils.getDisplayMetrics(context).widthPixels - 100;
+        lp.height = (DeviceUtils.getDisplayMetrics(context).heightPixels / 2);//WindowManager.LayoutParams.WRAP_CONTENT;
+        if (window != null) {
+            window.setAttributes(lp);
+        }
     }
 
     @OnClick(R.id.tv_delete)
@@ -429,21 +461,24 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
             addPlan.setVisibility(View.GONE);
 
-            if (dateWisePlanBo.getVisitStatus() == null){
-                cancelPlan.setVisibility(View.GONE);
-                deletePlan.setVisibility(View.GONE);
-            }else if (dateWisePlanBo.isServerData() && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)){
-                cancelPlan.setVisibility(View.VISIBLE);
-                deletePlan.setVisibility(View.GONE);
-            }else if (!dateWisePlanBo.isServerData() && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)){
-                cancelPlan.setVisibility(View.GONE);
-                deletePlan.setVisibility(View.VISIBLE);
-            }
+            if (DateTimeUtils.getDateCount(selectedDate,DateTimeUtils.now(DATE_GLOBAL),"yyyy/MM/dd") >= 0) {
 
-            if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)) {
-                editPlan.setVisibility(View.VISIBLE);
-            }else {
-                editPlan.setVisibility(View.GONE);
+                if (dateWisePlanBo.getVisitStatus() == null) {
+                    cancelPlan.setVisibility(View.GONE);
+                    deletePlan.setVisibility(View.GONE);
+                } else if (dateWisePlanBo.isServerData() && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)) {
+                    cancelPlan.setVisibility(View.VISIBLE);
+                    deletePlan.setVisibility(View.GONE);
+                } else if (!dateWisePlanBo.isServerData() && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)) {
+                    cancelPlan.setVisibility(View.GONE);
+                    deletePlan.setVisibility(View.VISIBLE);
+                }
+
+                if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)) {
+                    editPlan.setVisibility(View.VISIBLE);
+                } else {
+                    editPlan.setVisibility(View.GONE);
+                }
             }
 
             tvStartVisitDate.setText(selectedDate);
@@ -454,7 +489,8 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
         }else {
             visitElementGroup.setVisibility(View.GONE);
-            addPlan.setVisibility(View.VISIBLE);
+            if (DateTimeUtils.getDateCount(selectedDate,DateTimeUtils.now(DATE_GLOBAL),"yyyy/MM/dd") >= 0)
+                addPlan.setVisibility(View.VISIBLE);
             editPlan.setVisibility(View.GONE);
         }
 
@@ -503,4 +539,15 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     }
 
 
+    @Override
+    public void addReatailerReason() {
+
+        showMessage(getString(R.string.saved_successfully));
+        dismiss();
+    }
+
+    @Override
+    public void onDismiss() {
+        dismiss();
+    }
 }
