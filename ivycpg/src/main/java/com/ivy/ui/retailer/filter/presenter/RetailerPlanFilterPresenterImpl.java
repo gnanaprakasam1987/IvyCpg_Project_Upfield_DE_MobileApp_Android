@@ -20,9 +20,9 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function3;
 import io.reactivex.observers.DisposableObserver;
 
-import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_IS_NOT_VISITED;
-import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_LAST_VISIT_DATE;
-import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_TASK_DUE_DATE;
+import static com.ivy.ui.retailer.RetailerConstants.CODE_IS_NOT_VISITED;
+import static com.ivy.ui.retailer.RetailerConstants.CODE_LAST_VISIT_DATE;
+import static com.ivy.ui.retailer.RetailerConstants.CODE_TASK_DUE_DATE;
 
 public class RetailerPlanFilterPresenterImpl<V extends RetailerPlanFilterContract.RetailerPlanFilterView>
         extends BasePresenter<V> implements RetailerPlanFilterContract.RetailerPlanFilterPresenter<V> {

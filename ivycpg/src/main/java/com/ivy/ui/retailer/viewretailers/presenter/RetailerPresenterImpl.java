@@ -68,9 +68,7 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
         visibleRetailerList.clear();
 
         for (RetailerMasterBO retailerMasterBO : loadRetailerList()) {
-            if ("Y".equals(retailerMasterBO.getIsVisited())
-                    || retailerMasterBO.getIsToday() == 1
-                    || "Y".equals(retailerMasterBO.getIsDeviated())) {
+            if (getSelectedRetailerPlan(retailerMasterBO.getRetailerID()) != null) {
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
                 visibleRetailerList.add(retailerMasterBO);
             }
@@ -175,6 +173,41 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
             getIvyView().populateRetailers(visibleRetailerList);
 
         getIvyView().focusMarker();
+    }
+
+    public void removeDatePlan(DateWisePlanBo planBo){
+
+        for (DateWisePlanBo dateWisePlanBo : selectedDateRetailerPlanList){
+            if (dateWisePlanBo.getEntityId() == planBo.getEntityId()){
+                selectedDateRetailerPlanList.remove(dateWisePlanBo);
+                break;
+            }
+        }
+
+        if (selectedDateRetailerPlanMap.get(planBo.getEntityId()+"") != null){
+            selectedDateRetailerPlanMap.remove(planBo.getEntityId()+"");
+        }
+    }
+
+    public void addDatePlan(DateWisePlanBo planBo){
+
+        selectedDateRetailerPlanList.add(planBo);
+        selectedDateRetailerPlanMap.put(planBo.getEntityId()+"",planBo);
+
+    }
+
+    public void updateDatePlan(DateWisePlanBo planBo){
+
+        int i = 0;
+        for (DateWisePlanBo dateWisePlanBo : selectedDateRetailerPlanList){
+            if (dateWisePlanBo.getEntityId() == planBo.getEntityId()){
+                selectedDateRetailerPlanList.set(i,dateWisePlanBo);
+                break;
+            }
+            i++;
+        }
+        selectedDateRetailerPlanMap.put(planBo.getEntityId()+"",planBo);
+
     }
 
     public String makeURL(double sourcelat, double sourcelog, double destlat,

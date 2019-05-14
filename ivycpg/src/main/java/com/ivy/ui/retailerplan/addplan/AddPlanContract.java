@@ -11,11 +11,14 @@ public interface AddPlanContract {
         void showUpdatedSuccessfullyMessage();
 
         void showUpdateFailureMessage();
+
+        void updateDatePlan(DateWisePlanBo planBo);
+
     }
 
     interface AddPlanPresenter<V extends AddPlanView> extends BaseIvyPresenter<V>{
         void addNewPlan(String date, String startTime, String endTime,RetailerMasterBO retailerMasterBO);
-        void updatePlan(String date, String startTime, String endTime,RetailerMasterBO retailerMasterBO);
+        void updatePlan(String startTime, String endTime,DateWisePlanBo planBo);
         void cancelPlan(DateWisePlanBo dateWisePlanBo);
         void deletePlan(DateWisePlanBo dateWisePlanBo);
     }

@@ -60,6 +60,13 @@ public class CommonReasonDialog extends Dialog {
 
     }
 
+    private String fromScreen="";
+
+    public void getFromScreenParam(String fromScreen) {
+        this.fromScreen = fromScreen;
+
+    }
+
     public CommonReasonDialog(final Context context, final String listLoad) {
         super(context);
 
