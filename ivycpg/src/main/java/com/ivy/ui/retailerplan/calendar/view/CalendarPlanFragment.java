@@ -35,6 +35,9 @@ import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.ui.retailer.viewretailers.view.list.RetailerListActivity;
+import com.ivy.ui.retailer.viewretailers.view.list.RetailerListFragment;
+import com.ivy.ui.retailer.viewretailers.view.map.RetailerMapFragment;
 import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 import com.ivy.ui.retailerplan.calendar.CalendarPlanContract;
 import com.ivy.ui.retailerplan.calendar.adapter.BottmSheetRetailerInfoAdapter;
@@ -44,10 +47,11 @@ import com.ivy.ui.retailerplan.calendar.adapter.WeekFilterAdapter;
 import com.ivy.ui.retailerplan.calendar.bo.CalenderBO;
 import com.ivy.ui.retailerplan.calendar.di.CalendarPlanModule;
 import com.ivy.ui.retailerplan.calendar.di.DaggerCalendarPlanComponent;
-import com.ivy.ui.retailer.viewretailers.view.list.RetailerListActivity;
-import com.ivy.ui.retailer.viewretailers.view.map.RetailerMapFragment;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,10 +62,13 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 
+import static android.app.Activity.RESULT_OK;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_MAP_PLAN;
 
 
-public class CalendarPlanFragment extends BaseFragment implements CalendarPlanContract.CalendarPlanView, CalendarClickListner, WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener, WeekView.EmptyViewLongPressListener {
+public class CalendarPlanFragment extends BaseFragment implements CalendarPlanContract.CalendarPlanView, CalendarClickListner,
+        WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener,
+        WeekView.EmptyViewLongPressListener {
 
     private String screenTitle;
 
@@ -103,8 +110,8 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     private int mSelectedType = 0;
     private final int MONTH = 0, DAY = 1, WEEK = 2;
     private Context mContext;
-    private MonthViewAdapter monthViewAdapter;
     private BottomSheetBehavior behavior;
+    public static final int REQUEST_CODE = 1;
 
     @Override
     public void initializeDi() {
@@ -139,9 +146,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         setUpToolbar(screenTitle);
         setHasOptionsMenu(true);
         initRetailerInfoBottmSheet();
-        presenter.fetchEventsFromDb();
-        //presenter.setPlanDates();
-        //presenter.loadCalendar();
+        presenter.fetchEventsFromDb(true);
 
         rvWeek.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
 
@@ -218,8 +223,16 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         fabAddRetailer.setOnClickListener(v -> {
             Intent i = new Intent(getActivity(), RetailerListActivity.class);
             i.putExtra("selectedDate", presenter.getSelectedDate());
-            startActivity(i);
+            startActivityForResult(i, REQUEST_CODE);
         });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQUEST_CODE && resultCode == RESULT_OK) {
+            presenter.fetchEventsFromDb(false);
+        }
     }
 
     private void initRetailerInfoBottmSheet() {
@@ -256,7 +269,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     @Override
     public void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList) {
-        monthViewAdapter = new MonthViewAdapter(getActivity(), dayInWeekCount, mCalenderAllList, mAllowedDates, this);
+        MonthViewAdapter monthViewAdapter = new MonthViewAdapter(getActivity(), dayInWeekCount, mCalenderAllList, mAllowedDates, this);
         rvCalendar.setAdapter(monthViewAdapter);
         hideBottomSheet();
     }
@@ -301,6 +314,22 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         }
     }
 
+    @Override
+    public void reloadView() {
+        hideBottomSheet();
+        switch (mSelectedType) {
+            case MONTH:
+                presenter.loadCalendar();
+                break;
+            case DAY:
+                presenter.loadADay();
+                break;
+            case WEEK:
+                presenter.loadAWeek();
+                break;
+        }
+    }
+
 
     private void hideBottomSheet() {
         if (behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
@@ -339,6 +368,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     @Override
     public void onEmptyViewLongPress(Calendar time) {
+
 
     }
 
@@ -418,4 +448,25 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         super.onAttach(context);
         mContext = context;
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().register(this);
+
+    }
+
+    @Override
+    public void onStop() {
+        if (EventBus.getDefault().isRegistered(this))
+            EventBus.getDefault().unregister(this);
+        super.onStop();
+    }
+
+    @Subscribe
+    public void onMessageEvent(Object obj) {
+        presenter.fetchEventsFromDb(false);
+    }
+
 }

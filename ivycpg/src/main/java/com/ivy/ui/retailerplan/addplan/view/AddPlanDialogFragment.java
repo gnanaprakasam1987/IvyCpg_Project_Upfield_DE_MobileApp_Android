@@ -18,10 +18,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.GridLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ivy.core.base.view.BaseBottomSheetDialogFragment;
-import com.ivy.cpg.view.profile.CommonReasonDialog;
 import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.cpg.view.retailercontact.RetailerContactAvailBo;
 import com.ivy.cpg.view.retailercontact.TimeSlotPickFragment;
@@ -41,15 +39,15 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Objects;
 
 import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-import butterknife.Unbinder;
 
-import static com.ivy.ui.retailer.RetailerConstants.COMPLETED;
+import com.ivy.cpg.view.profile.CommonReasonDialog;
 import static com.ivy.ui.retailer.RetailerConstants.PLANNED;
 import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
 import static com.ivy.utils.DateTimeUtils.TIME_HOUR_MINS;
@@ -124,6 +122,20 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
         this.dateWisePlanBo = dateWisePlanBo;
         this.planList = planList;
         this.selectedDate = selectedDate;
+
+        startTime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
+        endtime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
+    }
+
+    public AddPlanDialogFragment(String selectedDate, RetailerMasterBO retailerMaster,
+                                 DateWisePlanBo dateWisePlanBo, ArrayList<DateWisePlanBo> planList, Calendar time){
+        retailerMasterBO = retailerMaster;
+        this.dateWisePlanBo = dateWisePlanBo;
+        this.planList = planList;
+        this.selectedDate = selectedDate;
+
+        startTime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
+        endtime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
     }
 
     private String selectedDate="",startTime="",endtime="";
@@ -161,8 +173,6 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
             ((BottomSheetBehavior) behavior).setBottomSheetCallback(bottomSheetCallBack);
         }
 
-        startTime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
-        endtime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
 
         if (selectedDate == null || selectedDate.isEmpty())
             selectedDate = DateTimeUtils.now(DATE_GLOBAL);
