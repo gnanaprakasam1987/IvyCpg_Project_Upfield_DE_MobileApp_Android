@@ -181,6 +181,8 @@ public class AssetAdapter extends BaseAdapter {
             //holder.grpTV.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
             holder.execQtyLL =  row.findViewById(R.id.ll_exec_qty);
             holder.execQtyRB =  row.findViewById(R.id.radio_exec_qty);
+            holder.execQtyRB.setChecked(false);
+            holder.execQtyRB.setEnabled(false);
 
             holder.reason1Spin.setAdapter(mAssetReasonSpinAdapter);
             holder.mConditionSpin.setAdapter(mAssetConditionAdapter);
@@ -377,6 +379,8 @@ public class AssetAdapter extends BaseAdapter {
                         holder.mConditionSpin.setSelection(0);
                         holder.mInstallDate.setEnabled(true);
                         holder.mServiceDate.setEnabled(true);
+
+                        holder.execQtyRB.setEnabled(true);
                     } else {
 
                         holder.availQtyRB.setChecked(false);
@@ -393,6 +397,8 @@ public class AssetAdapter extends BaseAdapter {
                         holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
                         holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
 
+                        holder.execQtyRB.setChecked(false);
+                        holder.execQtyRB.setEnabled(false);
                     }
 
                 }
