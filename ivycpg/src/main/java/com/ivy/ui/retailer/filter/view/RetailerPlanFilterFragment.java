@@ -41,9 +41,9 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_IS_NOT_VISITED;
-import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_LAST_VISIT_DATE;
-import static com.ivy.ui.retailer.filter.RetailerPlanFilterConstants.CODE_TASK_DUE_DATE;
+import static com.ivy.ui.retailer.RetailerConstants.CODE_IS_NOT_VISITED;
+import static com.ivy.ui.retailer.RetailerConstants.CODE_LAST_VISIT_DATE;
+import static com.ivy.ui.retailer.RetailerConstants.CODE_TASK_DUE_DATE;
 
 @SuppressLint("ValidFragment")
 public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment

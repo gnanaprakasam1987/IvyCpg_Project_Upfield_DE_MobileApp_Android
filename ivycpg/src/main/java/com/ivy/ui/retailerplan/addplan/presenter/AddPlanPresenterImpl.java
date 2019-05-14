@@ -45,32 +45,29 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
         getCompositeDisposable().add(addPlanDataManager.savePlan(dateWisePlanBo)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<Boolean>() {
+                .subscribe(new Consumer<DateWisePlanBo>() {
                     @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        if (aBoolean)
-                            getIvyView().showUpdatedSuccessfullyMessage();
-                        else
-                            getIvyView().showUpdateFailureMessage();
+                    public void accept(DateWisePlanBo planBo) throws Exception {
+                        planBo.setOperationType("Add");
+                        getIvyView().updateDatePlan(planBo);
+
                     }
                 })
         );
     }
 
     @Override
-    public void updatePlan(String date, String startTime, String endTime, RetailerMasterBO retailerMasterBO) {
-        DateWisePlanBo dateWisePlanBo = preparePlanObjects(date,startTime,endTime,retailerMasterBO);
+    public void updatePlan(String startTime, String endTime, DateWisePlanBo planBo) {
+        DateWisePlanBo dateWisePlanBo = updatePlanObjects(startTime,endTime,planBo);
 
         getCompositeDisposable().add(addPlanDataManager.updatePlan(dateWisePlanBo)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<Boolean>() {
+                .subscribe(new Consumer<DateWisePlanBo>() {
                     @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        if (aBoolean)
-                            getIvyView().showUpdatedSuccessfullyMessage();
-                        else
-                            getIvyView().showUpdateFailureMessage();
+                    public void accept(DateWisePlanBo planBo) throws Exception {
+                        planBo.setOperationType("Update");
+                        getIvyView().updateDatePlan(planBo);
                     }
                 })
         );
@@ -78,12 +75,36 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
 
     @Override
     public void cancelPlan(DateWisePlanBo dateWisePlanBo) {
-        addPlanDataManager.cancelPlan(dateWisePlanBo);
+
+        getCompositeDisposable().add(addPlanDataManager.cancelPlan(dateWisePlanBo)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<DateWisePlanBo>() {
+                    @Override
+                    public void accept(DateWisePlanBo planBo) throws Exception {
+                        planBo.setOperationType("Delete");
+                        getIvyView().updateDatePlan(planBo);
+                    }
+                })
+        );
+
     }
 
     @Override
     public void deletePlan(DateWisePlanBo dateWisePlanBo) {
-        addPlanDataManager.DeletePlan(dateWisePlanBo);
+
+        getCompositeDisposable().add(addPlanDataManager.DeletePlan(dateWisePlanBo)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<DateWisePlanBo>() {
+                    @Override
+                    public void accept(DateWisePlanBo planBo) throws Exception {
+                        planBo.setOperationType("Delete");
+                        getIvyView().updateDatePlan(planBo);
+                    }
+                })
+        );
+
     }
 
     private DateWisePlanBo preparePlanObjects(String date, String startTime, String endTime,RetailerMasterBO retailerMasterBO){
@@ -111,5 +132,13 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
         dateWisePlanBo.setName(retailerMasterBO.getRetailerName());
 
         return dateWisePlanBo;
+    }
+
+    private DateWisePlanBo updatePlanObjects(String startTime, String endTime,DateWisePlanBo planBo){
+
+        planBo.setStartTime(startTime);
+        planBo.setEndTime(endTime);
+
+        return planBo;
     }
 }

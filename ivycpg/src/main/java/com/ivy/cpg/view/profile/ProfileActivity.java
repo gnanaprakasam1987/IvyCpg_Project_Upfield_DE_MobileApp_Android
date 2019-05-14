@@ -168,7 +168,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private boolean fromHomeClick = false,
             visitClick = false, isFromPlanning = false,
             isFromPlanningSub = false ,
-            isShowVisitButton = false;
+            isShowVisitButton = false,isShowCancelVisit = false;
+
+    private boolean isFromRetailerMapScreen = false;
 
     private List<LatLng> markerList = new ArrayList<>();
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID;
@@ -399,7 +401,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         isFromPlanningSub = getIntent().getBooleanExtra("isPlanningSub", false);
         fromMap = getIntent().getBooleanExtra("map", false);
 
-        isShowVisitButton = getIntent().getBooleanExtra("HideVisit", false);
+        isShowVisitButton = getIntent().getBooleanExtra("HideStartVisit", false);
+        isShowCancelVisit = getIntent().getBooleanExtra("HideCancelVisit", false);
+
 
         try {
             Intent arg = getIntent();
@@ -411,6 +415,9 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         } catch (Exception e) {
             calledBy = MENU_VISIT;
         }
+
+        if (calledBy.equalsIgnoreCase("RetailerMap"))
+            isFromRetailerMapScreen = true;
     }
 
     /**
@@ -704,6 +711,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
                 CommonReasonDialog comReasonDialog = new CommonReasonDialog(ProfileActivity.this, "nonVisit");
                 comReasonDialog.setNonvisitListener(ProfileActivity.this);
+                if (isFromRetailerMapScreen)
+                    comReasonDialog.getFromScreenParam("RetailerView");
                 comReasonDialog.show();
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                 Window window = comReasonDialog.getWindow();
@@ -743,6 +752,25 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 mMap.setMapType((mMap.getMapType() == GoogleMap.MAP_TYPE_NORMAL) ? GoogleMap.MAP_TYPE_SATELLITE :
                         GoogleMap.MAP_TYPE_NORMAL);
                 break;
+            case R.id.start_visit_retailer: {
+                retailerClick();
+                break;
+            }
+            case R.id.cancel_visit_retailer: {
+
+                CommonReasonDialog comReasonDialog = new CommonReasonDialog(ProfileActivity.this, "nonVisit");
+                comReasonDialog.setNonvisitListener(ProfileActivity.this);
+                comReasonDialog.show();
+                WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+                Window window = comReasonDialog.getWindow();
+                lp.copyFrom(window != null ? window.getAttributes() : null);
+                lp.width = displaymetrics.widthPixels - 100;
+                lp.height = (int) (displaymetrics.heightPixels / 2);//WindowManager.LayoutParams.WRAP_CONTENT;
+                if (window != null) {
+                    window.setAttributes(lp);
+                }
+                break;
+            }
             default:
                 break;
         }
@@ -793,6 +821,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             retailerCodeTxt.setText(retailerObj.getAddress3());
         } else {
             retailerCodeTxt.setVisibility(View.GONE);
+        }
+
+        if (isFromRetailerMapScreen){
+            linearLayout.setVisibility(View.GONE);
+            findViewById(R.id.retailer_plan_layout).setVisibility(View.VISIBLE);
         }
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
@@ -1223,11 +1256,6 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 if (isNonVisitReason)
                     cancelVisitBtn.setVisibility(View.VISIBLE);
 
-                if (!isShowVisitButton)
-                    startVisitBtn.setVisibility(View.VISIBLE);
-                else
-                    startVisitBtn.setVisibility(View.GONE);
-
             } else if (non_visit) {
                 deviateBtn.setVisibility(View.VISIBLE);
                 cancelVisitBtn.setVisibility(View.GONE);
@@ -1239,6 +1267,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 startVisitBtn.setVisibility(View.GONE);
                 bottomView.setVisibility(View.GONE);
             }
+
+            if (!isShowVisitButton)
+                findViewById(R.id.start_visit_retailer).setVisibility(View.VISIBLE);
+            else
+                findViewById(R.id.start_visit_retailer).setVisibility(View.GONE);
 
             isClicked = false;
 
