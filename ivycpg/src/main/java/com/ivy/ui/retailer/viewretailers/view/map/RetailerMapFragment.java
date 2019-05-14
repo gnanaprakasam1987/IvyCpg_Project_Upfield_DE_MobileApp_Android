@@ -125,8 +125,6 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
     private AddPlanDialogFragment addPlanDialogFragment;
 
-    private RetailerPlanFilterFragment planFilterFragment;
-
     @Inject
     RetailerPresenterImpl<RetailerContract.RetailerView> presenter;
 
@@ -761,8 +759,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             return true;
         } else if (item.getItemId() == R.id.filter) {
 
-            planFilterFragment =
-                    new RetailerPlanFilterFragment(planFilterBo);
+            RetailerPlanFilterFragment planFilterFragment = new RetailerPlanFilterFragment(planFilterBo);
             planFilterFragment.show(((FragmentActivity) context).getSupportFragmentManager(),
                     "filter_plan_fragment");
 

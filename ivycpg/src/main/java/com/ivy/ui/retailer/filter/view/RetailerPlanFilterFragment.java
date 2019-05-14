@@ -137,22 +137,9 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
         if (planFilterBo != null)
             planFilterBo = new RetailerPlanFilterBo();
 
-        if (presenter.isConfigureAvail(CODE_IS_NOT_VISITED))
-            notVisitedCheckBox.setChecked(false);
-
-        if (presenter.isConfigureAvail(CODE_LAST_VISIT_DATE)) {
-            lastVisitFromDate.setText(getString(R.string.select_date));
-            lastVisitToDate.setText(getString(R.string.select_date));
-        }
-        if (presenter.isConfigureAvail(CODE_TASK_DUE_DATE)) {
-            taskFromDate.setText(getString(R.string.select_date));
-            taskToDate.setText(getString(R.string.select_date));
-        }
-
         dynamicViewLayout.removeAllViews();
 
-        showAttributeSpinner();
-
+        presenter.prepareScreenData();
     }
 
     @OnClick(R.id.filter_btn)

@@ -48,6 +48,8 @@ import butterknife.BindView;
 import butterknife.OnClick;
 
 import com.ivy.cpg.view.profile.CommonReasonDialog;
+
+import static com.ivy.ui.retailer.RetailerConstants.COMPLETED;
 import static com.ivy.ui.retailer.RetailerConstants.PLANNED;
 import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
 import static com.ivy.utils.DateTimeUtils.TIME_HOUR_MINS;

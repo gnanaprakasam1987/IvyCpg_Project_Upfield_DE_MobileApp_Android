@@ -22,6 +22,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.ui.retailer.filter.RetailerPlanFilterBo;
+import com.ivy.ui.retailer.filter.view.RetailerPlanFilterFragment;
 import com.ivy.ui.retailer.viewretailers.RetailerContract;
 import com.ivy.ui.retailer.viewretailers.adapter.RetailerListAdapter;
 import com.ivy.ui.retailer.viewretailers.adapter.RetailerListClickListner;
@@ -187,6 +188,7 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
         super.onPrepareOptionsMenu(menu);
         menu.findItem(R.id.map_retailer).setVisible(false);
         menu.findItem(R.id.calendar).setVisible(false);
+        menu.findItem(R.id.filter).setVisible(true);
     }
 
     @Override
@@ -194,6 +196,13 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
         if (item.getItemId() == android.R.id.home) {
             ((Activity) mContext).finish();
             Objects.requireNonNull(getActivity()).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            return true;
+        }else if (item.getItemId() == R.id.filter) {
+
+            RetailerPlanFilterFragment planFilterFragment = new RetailerPlanFilterFragment(planFilterBo);
+            planFilterFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(),
+                    "filter_plan_fragment");
+
             return true;
         }
 
@@ -227,7 +236,30 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
 
     @Subscribe
     public void onMessageEvent(Object obj) {
-        if (obj instanceof DateWisePlanBo) {
+
+        if (obj instanceof RetailerPlanFilterBo) {
+
+            planFilterBo = ((RetailerPlanFilterBo) obj);
+
+            if (planFilterBo.getRetailerIds().isEmpty()) {
+                onMessageEvent("NODATA");
+                return;
+            }
+
+            presenter.prepareFilteredRetailerList(((RetailerPlanFilterBo) obj), searchText.toLowerCase(), true);
+        } else if (obj instanceof String) {
+            if (((String) obj).equalsIgnoreCase("CLEAR")) {
+
+                if (planFilterBo != null) {
+                    planFilterBo = null;
+                }
+
+                presenter.fetchRetailerList();
+
+            } else if ("NODATA".equalsIgnoreCase((String) obj)) {
+                populateRetailers(new ArrayList<>());
+            }
+        }else if (obj instanceof DateWisePlanBo) {
             Intent intent = new Intent();
             Objects.requireNonNull(getActivity()).setResult(RESULT_OK, intent);
             getActivity().finish();
