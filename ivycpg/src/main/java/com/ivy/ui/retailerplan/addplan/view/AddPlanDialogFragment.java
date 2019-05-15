@@ -127,7 +127,9 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
         this.selectedDate = selectedDate;
 
         startTime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
-        endtime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
+
+        int endTimeDifference = Integer.parseInt(DateTimeUtils.now(TIME_HOUR_MINS))+1;
+        endtime = endTimeDifference+":00";
     }
 
     public AddPlanDialogFragment(String selectedDate, RetailerMasterBO retailerMaster,
@@ -138,7 +140,9 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
         this.selectedDate = selectedDate;
 
         startTime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
-        endtime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
+
+        int endTimeDifference = Integer.parseInt(DateTimeUtils.now(TIME_HOUR_MINS))+1;
+        endtime = endTimeDifference+":00";
     }
 
     private String selectedDate="",startTime="",endtime="";
