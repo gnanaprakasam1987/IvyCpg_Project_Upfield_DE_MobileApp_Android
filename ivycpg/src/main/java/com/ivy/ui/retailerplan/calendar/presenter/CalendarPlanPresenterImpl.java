@@ -4,8 +4,10 @@ import android.text.format.DateUtils;
 
 import com.ivy.calendarlibrary.weekview.WeekViewEvent;
 import com.ivy.core.base.presenter.BasePresenter;
+import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -49,6 +51,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     private List<WeekViewEvent> allEvents = new ArrayList<>();
     private ArrayList<DateWisePlanBo> selectedDateRetailerPlanList;
     private HashMap<String, DateWisePlanBo> selectedDateRetailerPlanMap;
+    private AppDataProvider appDataProvider;
 
     @Inject
     CalendarPlanPresenterImpl(DataManager dataManager,
@@ -56,11 +59,13 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                               CompositeDisposable compositeDisposable,
                               ConfigurationMasterHelper configurationMasterHelper,
                               V view,
+                              AppDataProvider appDataProvider,
                               CalendarPlanDataManager calendarPlanDataManager,
                               RetailerDataManager retailerDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
         this.calendarPlanDataManager = calendarPlanDataManager;
         this.retailerDataManager = retailerDataManager;
+        this.appDataProvider = appDataProvider;
 
     }
 
@@ -88,6 +93,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                     @Override
                     public void accept(List<WeekViewEvent> events) throws Exception {
                         getIvyView().hideLoading();
+                        allEvents.clear();
                         allEvents.addAll(events);
                         if (onCreate) {
                             setPlanDates();
@@ -116,8 +122,9 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                             Calendar endTime = (Calendar) startTime.clone();
                             endTime.setTime(DateTimeUtils.convertStringToDateObject(dateWisePlanBo.getDate() + " " +
                                     dateWisePlanBo.getEndTime(), "yyyy/MM/dd HH:mm"));
-                            WeekViewEvent event = new WeekViewEvent(dateWisePlanBo.getPlanId(), dateWisePlanBo.getName(), "Retailer Address", startTime, endTime);
+                            WeekViewEvent event = new WeekViewEvent(dateWisePlanBo.getPlanId(), dateWisePlanBo.getName(), dateWisePlanBo.getRetailerAddress(), startTime, endTime);
                             event.setColor(R.attr.colorPrimary);
+                            event.setRetailerId("" + dateWisePlanBo.getEntityId());
                             events.add(event);
                         }
                     }
@@ -481,17 +488,18 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     }
 
     @Override
-    public void fetchSelectedDateRetailerPlan(String date) {
+    public void fetchSelectedDateRetailerPlan(String date, RetailerMasterBO retailerMasterBO) {
+        getIvyView().showLoading();
         getCompositeDisposable().add(retailerDataManager.getRetailerPlanList(date)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<HashMap<String, DateWisePlanBo>>() {
                     @Override
                     public void accept(HashMap<String, DateWisePlanBo> listHashMap) throws Exception {
-
                         selectedDateRetailerPlanMap = listHashMap;
-
                         selectedDateRetailerPlanList = new ArrayList<>(listHashMap.values());
+                        getIvyView().hideLoading();
+                        getIvyView().loadAddPlanDialog(date,retailerMasterBO);
                     }
                 }));
     }
@@ -504,6 +512,19 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     @Override
     public DateWisePlanBo getSelectedRetailerPlan(String retailerId) {
         return selectedDateRetailerPlanMap.get(retailerId);
+    }
+
+    @Override
+    public RetailerMasterBO getPlanedRetailerBo(String retailerId) {
+        RetailerMasterBO retailerMasterBO = null;
+        for (RetailerMasterBO rBo : appDataProvider.getRetailerMasters()) {
+            if (rBo.getRetailerID().equalsIgnoreCase(retailerId)) {
+                retailerMasterBO = rBo;
+                break;
+            }
+
+        }
+        return retailerMasterBO;
     }
 
 }

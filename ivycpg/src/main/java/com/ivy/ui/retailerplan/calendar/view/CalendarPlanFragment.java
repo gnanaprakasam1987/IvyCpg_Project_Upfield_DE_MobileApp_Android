@@ -34,11 +34,13 @@ import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.retailer.viewretailers.view.list.RetailerListActivity;
-import com.ivy.ui.retailer.viewretailers.view.list.RetailerListFragment;
 import com.ivy.ui.retailer.viewretailers.view.map.RetailerMapFragment;
 import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
+import com.ivy.ui.retailerplan.addplan.view.AddPlanDialogFragment;
 import com.ivy.ui.retailerplan.calendar.CalendarPlanContract;
 import com.ivy.ui.retailerplan.calendar.adapter.BottmSheetRetailerInfoAdapter;
 import com.ivy.ui.retailerplan.calendar.adapter.CalendarClickListner;
@@ -56,6 +58,7 @@ import org.greenrobot.eventbus.Subscribe;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -68,7 +71,7 @@ import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_MAP_PLAN;
 
 public class CalendarPlanFragment extends BaseFragment implements CalendarPlanContract.CalendarPlanView, CalendarClickListner,
         WeekView.EventClickListener, MonthLoader.MonthChangeListener, WeekView.EventLongPressListener,
-        WeekView.EmptyViewLongPressListener {
+        WeekView.EmptyViewClickListener {
 
     private String screenTitle;
 
@@ -106,6 +109,8 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     @Inject
     CalendarPlanContract.CalendarPlanPresenter<CalendarPlanContract.CalendarPlanView> presenter;
+
+    private String generalPattern = "yyyy/MM/dd";
 
     private int mSelectedType = 0;
     private final int MONTH = 0, DAY = 1, WEEK = 2;
@@ -166,7 +171,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         mWeekView.setEventLongPressListener(this);
 
         // Set long press listener for empty view
-        mWeekView.setEmptyViewLongPressListener(this);
+        mWeekView.setEmptyViewClickListener(this);
         mWeekView.setXScrollingSpeed(0);
         mWeekView.setTimeTextPaint(getResources().getColor(R.color.black_bg1));
 
@@ -322,12 +327,22 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                 presenter.loadCalendar();
                 break;
             case DAY:
-                presenter.loadADay();
+                mWeekView.notifyDatasetChanged();
                 break;
             case WEEK:
-                presenter.loadAWeek();
+                mWeekView.notifyDatasetChanged();
                 break;
         }
+    }
+
+    @Override
+    public void loadAddPlanDialog(String date, RetailerMasterBO retailerMasterBO) {
+        AddPlanDialogFragment addPlanDialogFragment;
+        ArrayList<DateWisePlanBo> planList = presenter.getSelectedDateRetailerPlanList();
+        addPlanDialogFragment = new AddPlanDialogFragment(date, retailerMasterBO,
+                presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID()),planList);
+        addPlanDialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(),
+                "add_plan_fragment");
     }
 
 
@@ -367,14 +382,24 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     }
 
     @Override
-    public void onEmptyViewLongPress(Calendar time) {
+    public void onEmptyViewClicked(Calendar time) {
+        Commons.print(String.format(Locale.ENGLISH, "Event of %02d:%02d %s/%d",
+                time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE),
+                time.get(Calendar.MONTH) + 1, time.get(Calendar.DAY_OF_MONTH)));
 
-
+        Intent i = new Intent(getActivity(), RetailerListActivity.class);
+        i.putExtra("selectedDate", DateTimeUtils.convertDateObjectToRequestedFormat(time.getTime(), generalPattern));
+        i.putExtra("startTime", String.format(Locale.ENGLISH, "%02d", time.get(Calendar.HOUR_OF_DAY)));
+        startActivityForResult(i, REQUEST_CODE);
     }
 
     @Override
     public void onEventClick(WeekViewEvent event, RectF eventRect) {
-
+        RetailerMasterBO retailerMasterBO = presenter.getPlanedRetailerBo(event.getRetailerId());
+        if (retailerMasterBO != null) {
+            presenter.fetchSelectedDateRetailerPlan(DateTimeUtils.convertDateObjectToRequestedFormat
+                    (event.getStartTime().getTime(), generalPattern), retailerMasterBO);
+        }
     }
 
     @Override
@@ -468,5 +493,4 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     public void onMessageEvent(Object obj) {
         presenter.fetchEventsFromDb(false);
     }
-
 }

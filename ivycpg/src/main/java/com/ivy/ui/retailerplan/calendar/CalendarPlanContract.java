@@ -4,6 +4,7 @@ import com.ivy.calendarlibrary.weekview.WeekViewEvent;
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 import com.ivy.ui.retailerplan.calendar.bo.CalenderBO;
 
@@ -30,6 +31,8 @@ public interface CalendarPlanContract {
         void loadBottomSheet(List<DateWisePlanBo> retailerInfoList);
 
         void reloadView();
+
+        void loadAddPlanDialog(String date, RetailerMasterBO retailerMasterBO);
 
     }
 
@@ -62,11 +65,13 @@ public interface CalendarPlanContract {
 
         String getSelectedDate();
 
-        void fetchSelectedDateRetailerPlan(String date);
+        void fetchSelectedDateRetailerPlan(String date, RetailerMasterBO retailerMasterBO);
 
         ArrayList<DateWisePlanBo> getSelectedDateRetailerPlanList();
 
         DateWisePlanBo getSelectedRetailerPlan(String retailerId);
+
+        RetailerMasterBO getPlanedRetailerBo (String retailerId);
 
     }
 }
