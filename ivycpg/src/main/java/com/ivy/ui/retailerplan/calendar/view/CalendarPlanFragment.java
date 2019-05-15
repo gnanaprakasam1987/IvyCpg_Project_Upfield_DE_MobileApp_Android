@@ -34,12 +34,13 @@ import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.retailer.viewretailers.view.list.RetailerListActivity;
-import com.ivy.ui.retailer.viewretailers.view.list.RetailerListFragment;
 import com.ivy.ui.retailer.viewretailers.view.map.RetailerMapFragment;
 import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
+import com.ivy.ui.retailerplan.addplan.view.AddPlanDialogFragment;
 import com.ivy.ui.retailerplan.calendar.CalendarPlanContract;
 import com.ivy.ui.retailerplan.calendar.adapter.BottmSheetRetailerInfoAdapter;
 import com.ivy.ui.retailerplan.calendar.adapter.CalendarClickListner;
@@ -334,6 +335,16 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         }
     }
 
+    @Override
+    public void loadAddPlanDialog(String date, RetailerMasterBO retailerMasterBO) {
+        AddPlanDialogFragment addPlanDialogFragment;
+        ArrayList<DateWisePlanBo> planList = presenter.getSelectedDateRetailerPlanList();
+        addPlanDialogFragment = new AddPlanDialogFragment(date, retailerMasterBO,
+                presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID()),planList);
+        addPlanDialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(),
+                "add_plan_fragment");
+    }
+
 
     private void hideBottomSheet() {
         if (behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
@@ -372,19 +383,23 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     @Override
     public void onEmptyViewClicked(Calendar time) {
-        Commons.print(String.format(Locale.ENGLISH,"Event of %02d:%02d %s/%d",
+        Commons.print(String.format(Locale.ENGLISH, "Event of %02d:%02d %s/%d",
                 time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE),
-                time.get(Calendar.MONTH)+1, time.get(Calendar.DAY_OF_MONTH)));
+                time.get(Calendar.MONTH) + 1, time.get(Calendar.DAY_OF_MONTH)));
 
         Intent i = new Intent(getActivity(), RetailerListActivity.class);
-        i.putExtra("selectedDate", DateTimeUtils.convertDateObjectToRequestedFormat(time.getTime(),generalPattern));
-        i.putExtra("startTime", String.format(Locale.ENGLISH,"%02d",time.get(Calendar.HOUR_OF_DAY)));
+        i.putExtra("selectedDate", DateTimeUtils.convertDateObjectToRequestedFormat(time.getTime(), generalPattern));
+        i.putExtra("startTime", String.format(Locale.ENGLISH, "%02d", time.get(Calendar.HOUR_OF_DAY)));
         startActivityForResult(i, REQUEST_CODE);
     }
 
     @Override
     public void onEventClick(WeekViewEvent event, RectF eventRect) {
-
+        RetailerMasterBO retailerMasterBO = presenter.getPlanedRetailerBo(event.getRetailerId());
+        if (retailerMasterBO != null) {
+            presenter.fetchSelectedDateRetailerPlan(DateTimeUtils.convertDateObjectToRequestedFormat
+                    (event.getStartTime().getTime(), generalPattern), retailerMasterBO);
+        }
     }
 
     @Override
