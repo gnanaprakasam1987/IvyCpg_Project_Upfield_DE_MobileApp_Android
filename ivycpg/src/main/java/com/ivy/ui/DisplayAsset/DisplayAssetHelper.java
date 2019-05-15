@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.DisplayAsset;
+package com.ivy.ui.DisplayAsset;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -6,7 +6,6 @@ import android.database.Cursor;
 import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.CompanyBO;
-import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -184,7 +183,7 @@ public class DisplayAssetHelper {
         try {
             db.openDataBase();
 
-            if(true||mBusinessModel.configurationMasterHelper.IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) {
+            if(mBusinessModel.configurationMasterHelper.IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) {
                 // LastVisit
                 String lastVisitQuery = "SELECT CompetitorId,DisplayAssetId,count"
                         + " FROM LastVisitDisplayAsset WHERE retailerId=" + mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID();

@@ -1,17 +1,17 @@
-package com.ivy.cpg.view.DisplayAsset;
+package com.ivy.ui.DisplayAsset;
 
 import android.content.Context;
 
 import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.png.bo.CompanyBO;
-import com.ivy.sd.png.model.BusinessModel;
+
 import java.util.HashMap;
 
 public class DisplayAssetPresenterImpl implements DisplayAssetContractor.presenter{
 
     private DisplayAssetHelper displayAssetHelper;
-    private DisplayAssetContractor.View assetView;
-    private String displayAssetStatus;
+    public DisplayAssetContractor.View assetView;
+    private String displayAssetStatus="";
 
     private double ownCompanyScore,otherCompanyMaxScore;
 
@@ -89,7 +89,7 @@ public class DisplayAssetPresenterImpl implements DisplayAssetContractor.present
 
     }
 
-    private String getDisplayAssetStatus() {
+    public String getDisplayAssetStatus() {
         return displayAssetStatus;
     }
 

@@ -49,7 +49,8 @@
             android:src="@drawable/blue_trick"
             tools:ignore="UnusedAttribute"
             android:layout_toStartOf="@+id/img_arrow"
-            android:layout_toLeftOf="@+id/img_arrow"/>
+            android:layout_toLeftOf="@+id/img_arrow"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/img_arrow"
