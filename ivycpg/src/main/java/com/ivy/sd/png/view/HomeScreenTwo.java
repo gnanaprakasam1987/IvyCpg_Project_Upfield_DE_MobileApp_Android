@@ -40,10 +40,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.DisplayAsset.DisplayAssetActivity;
-import com.ivy.cpg.view.DisplayAsset.DisplayAssetHelper;
-import com.ivy.cpg.view.DisplayAsset.DisplayAssetActivity;
-import com.ivy.cpg.view.DisplayAsset.DisplayAssetHelper;
+import com.ivy.ui.DisplayAsset.DisplayAssetActivity;
+import com.ivy.ui.DisplayAsset.DisplayAssetHelper;
 import com.ivy.cpg.view.Planorama.PlanoramaActivity;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;

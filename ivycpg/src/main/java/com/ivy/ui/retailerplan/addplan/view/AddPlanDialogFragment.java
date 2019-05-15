@@ -25,8 +25,10 @@ import com.ivy.cpg.view.retailercontact.RetailerContactAvailBo;
 import com.ivy.cpg.view.retailercontact.TimeSlotPickFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.retailerplan.addplan.AddPlanContract;
 import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 import com.ivy.ui.retailerplan.addplan.di.AddPlanModule;
@@ -41,6 +43,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Locale;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -133,16 +136,20 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     }
 
     public AddPlanDialogFragment(String selectedDate, RetailerMasterBO retailerMaster,
-                                 DateWisePlanBo dateWisePlanBo, ArrayList<DateWisePlanBo> planList, Calendar time){
+                                 DateWisePlanBo dateWisePlanBo, ArrayList<DateWisePlanBo> planList, String startTime){
         retailerMasterBO = retailerMaster;
         this.dateWisePlanBo = dateWisePlanBo;
         this.planList = planList;
         this.selectedDate = selectedDate;
 
-        startTime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
+        this.startTime = startTime+":00";
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, SDUtil.convertToInt(startTime));
+        calendar.add(Calendar.HOUR, 1);
+        this.endtime = String.format(Locale.ENGLISH,"%02d",calendar.get(Calendar.HOUR_OF_DAY))+":00";
 
-        int endTimeDifference = Integer.parseInt(DateTimeUtils.now(TIME_HOUR_MINS))+1;
-        endtime = endTimeDifference+":00";
+        Commons.print("StartTime:"+this.startTime);
+        Commons.print("EndTime:"+this.endtime);
     }
 
     private String selectedDate="",startTime="",endtime="";
