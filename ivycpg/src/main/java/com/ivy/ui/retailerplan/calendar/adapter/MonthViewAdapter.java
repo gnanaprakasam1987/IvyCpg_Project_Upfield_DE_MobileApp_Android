@@ -156,6 +156,7 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
                     holder.TVDate.setBackgroundColor(mContext.getResources().getColor(R.color.transparent));
                 }
 
+
                 if (holder.calBO.getPlanList().size() > 0) {
                     holder.TvRetailer.setText(mContext.getResources().getString(R.string.plan_retailer_name, holder.calBO.getPlanList().get(0).getName()));
                     if (holder.calBO.getPlanList().size() > 1)
@@ -167,8 +168,9 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
             holder.llDate.setOnClickListener(v -> {
                 if (holder.calBO != null) {
                     refreshGrid(holder.calBO.getCal_date());
-                    calendarClickListner.onDateNoSelected(holder.calBO.getCal_date(),holder.calBO.getPlanList());
+                    calendarClickListner.onDateNoSelected(holder.calBO.getCal_date(), holder.calBO.getPlanList());
                 }
+
             });
 
             holder.lltext.setOnClickListener(v -> {

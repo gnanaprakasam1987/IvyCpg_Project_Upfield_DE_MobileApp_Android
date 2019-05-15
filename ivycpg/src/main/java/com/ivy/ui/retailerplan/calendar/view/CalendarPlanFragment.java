@@ -12,6 +12,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -106,6 +107,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     CoordinatorLayout coordinatorLayout;
 
     RecyclerView rvRetailerInfo;
+    TextView tvNoPlan;
 
     @Inject
     CalendarPlanContract.CalendarPlanPresenter<CalendarPlanContract.CalendarPlanView> presenter;
@@ -242,8 +244,10 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     private void initRetailerInfoBottmSheet() {
         View persistentbottomSheet = coordinatorLayout.findViewById(R.id.bottomsheet);
+        tvNoPlan = persistentbottomSheet.findViewById(R.id.tv_no_plan);
         rvRetailerInfo = persistentbottomSheet.findViewById(R.id.rvRetailerInfo);
-        rvRetailerInfo.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
+        rvRetailerInfo.setLayoutManager(linearLayoutManager);
 
         behavior = BottomSheetBehavior.from(persistentbottomSheet);
 
@@ -273,10 +277,13 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     }
 
     @Override
-    public void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList) {
+    public void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList, boolean isPastDate) {
         MonthViewAdapter monthViewAdapter = new MonthViewAdapter(getActivity(), dayInWeekCount, mCalenderAllList, mAllowedDates, this);
         rvCalendar.setAdapter(monthViewAdapter);
-        hideBottomSheet();
+        if (isPastDate)
+            fabAddRetailer.setVisibility(View.GONE);
+        else
+            fabAddRetailer.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -309,28 +316,32 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     @Override
     public void loadBottomSheet(List<DateWisePlanBo> retailerInfoList) {
+        if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+        }
         if (retailerInfoList.size() > 0) {
-            if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
-                behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-            }
+            tvNoPlan.setVisibility(View.GONE);
+            rvRetailerInfo.setVisibility(View.VISIBLE);
             rvRetailerInfo.setAdapter(new BottmSheetRetailerInfoAdapter(getActivity(), retailerInfoList));
         } else {
-            hideBottomSheet();
+            tvNoPlan.setVisibility(View.VISIBLE);
+            rvRetailerInfo.setVisibility(View.GONE);
         }
     }
 
     @Override
     public void reloadView() {
-        hideBottomSheet();
         switch (mSelectedType) {
             case MONTH:
                 presenter.loadCalendar();
                 break;
             case DAY:
                 mWeekView.notifyDatasetChanged();
+                hideBottomSheet();
                 break;
             case WEEK:
                 mWeekView.notifyDatasetChanged();
+                hideBottomSheet();
                 break;
         }
     }
@@ -340,7 +351,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         AddPlanDialogFragment addPlanDialogFragment;
         ArrayList<DateWisePlanBo> planList = presenter.getSelectedDateRetailerPlanList();
         addPlanDialogFragment = new AddPlanDialogFragment(date, retailerMasterBO,
-                presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID()),planList);
+                presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID()), planList);
         addPlanDialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(),
                 "add_plan_fragment");
     }
@@ -372,7 +383,12 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     public void onDateNoSelected(String selectedDate, List<DateWisePlanBo> planList) {
         showMessage(selectedDate);
         presenter.setSelectedDate(selectedDate);
+        if (presenter.isPastDate())
+            fabAddRetailer.setVisibility(View.GONE);
+        else
+            fabAddRetailer.setVisibility(View.VISIBLE);
         loadBottomSheet(planList);
+
     }
 
 
@@ -386,11 +402,14 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         Commons.print(String.format(Locale.ENGLISH, "Event of %02d:%02d %s/%d",
                 time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE),
                 time.get(Calendar.MONTH) + 1, time.get(Calendar.DAY_OF_MONTH)));
-
-        Intent i = new Intent(getActivity(), RetailerListActivity.class);
-        i.putExtra("selectedDate", DateTimeUtils.convertDateObjectToRequestedFormat(time.getTime(), generalPattern));
-        i.putExtra("startTime", String.format(Locale.ENGLISH, "%02d", time.get(Calendar.HOUR_OF_DAY)));
-        startActivityForResult(i, REQUEST_CODE);
+        if (presenter.isPastDate()) {
+            showMessage(Objects.requireNonNull(getActivity()).getResources().getString(R.string.not_allowed_to_add_plan));
+        } else {
+            Intent i = new Intent(getActivity(), RetailerListActivity.class);
+            i.putExtra("selectedDate", DateTimeUtils.convertDateObjectToRequestedFormat(time.getTime(), generalPattern));
+            i.putExtra("startTime", String.format(Locale.ENGLISH, "%02d", time.get(Calendar.HOUR_OF_DAY)));
+            startActivityForResult(i, REQUEST_CODE);
+        }
     }
 
     @Override
@@ -435,6 +454,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
         menu.findItem(R.id.filter).setVisible(false);
         menu.findItem(R.id.calendar).setVisible(false);
+        menu.findItem(R.id.search).setVisible(false);
     }
 
     @Override

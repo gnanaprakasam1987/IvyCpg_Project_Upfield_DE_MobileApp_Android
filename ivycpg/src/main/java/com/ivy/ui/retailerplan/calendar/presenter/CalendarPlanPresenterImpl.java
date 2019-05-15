@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -34,6 +35,8 @@ import javax.inject.Inject;
 import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
+
+import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
 
 /**
  * Created by mansoor on 27/03/2019
@@ -178,9 +181,10 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         String[] calendarDate = getMonthRange();
         int dayInWeekCount = getWeekDayCount(calendarDate[0]);
         mCalenderAllList = getDaysBetweenDates(calendarDate[0], calendarDate[1]);
-        getIvyView().loadCalendarView(mAllowedDates, dayInWeekCount, mCalenderAllList);
+        getIvyView().loadCalendarView(mAllowedDates, dayInWeekCount, mCalenderAllList, isPastDate());
         getIvyView().setMonthName(DateTimeUtils.convertDateObjectToRequestedFormat(
                 currentMonth.getTime(), "MMM yyyy"));
+        getIvyView().loadBottomSheet(getADayPlan(mSelectedDate));
     }
 
     @Override
@@ -221,13 +225,16 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         if (currentMonth.get(Calendar.MONTH) <= toCalendar.get(Calendar.MONTH)) {
             if (toCalendar.get(Calendar.YEAR) != currentMonth.get(Calendar.YEAR)) {
                 if (toCalendar.get(Calendar.MONTH) - currentMonth.get(Calendar.MONTH) <= 0) {
+                    setSelectedDate(DateTimeUtils.convertDateObjectToRequestedFormat(currentMonth.getTime(), generalPattern));
                     loadCalendar();
                 } else {
                     currentMonth.add(Calendar.MONTH, -1);
                     getIvyView().showMessage(R.string.endOfPeriod);
                 }
-            } else
+            } else {
+                setSelectedDate(DateTimeUtils.convertDateObjectToRequestedFormat(currentMonth.getTime(), generalPattern));
                 loadCalendar();
+            }
         } else {
             currentMonth.add(Calendar.MONTH, -1);
             getIvyView().showMessage(R.string.endOfPeriod);
@@ -242,14 +249,17 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         fromCalendar.setTime(dateTo);
         if (currentMonth.get(Calendar.MONTH) >= fromCalendar.get(Calendar.MONTH)) {
             if (fromCalendar.get(Calendar.YEAR) != currentMonth.get(Calendar.YEAR)) {
-                if (fromCalendar.get(Calendar.MONTH) - currentMonth.get(Calendar.MONTH) >= 0)
+                if (fromCalendar.get(Calendar.MONTH) - currentMonth.get(Calendar.MONTH) >= 0) {
+                    setSelectedDate(DateTimeUtils.convertDateObjectToRequestedFormat(currentMonth.getTime(), generalPattern));
                     loadCalendar();
-                else {
+                } else {
                     currentMonth.add(Calendar.MONTH, +1);
                     getIvyView().showMessage(R.string.endOfPeriod);
                 }
-            } else
+            } else {
+                setSelectedDate(DateTimeUtils.convertDateObjectToRequestedFormat(currentMonth.getTime(), generalPattern));
                 loadCalendar();
+            }
         } else {
             currentMonth.add(Calendar.MONTH, +1);
             getIvyView().showMessage(R.string.endOfPeriod);
@@ -499,7 +509,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                         selectedDateRetailerPlanMap = listHashMap;
                         selectedDateRetailerPlanList = new ArrayList<>(listHashMap.values());
                         getIvyView().hideLoading();
-                        getIvyView().loadAddPlanDialog(date,retailerMasterBO);
+                        getIvyView().loadAddPlanDialog(date, retailerMasterBO);
                     }
                 }));
     }
@@ -522,9 +532,14 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                 retailerMasterBO = rBo;
                 break;
             }
-
         }
         return retailerMasterBO;
+    }
+
+    @Override
+    public boolean isPastDate() {
+        int difference = DateTimeUtils.getDateCount(mSelectedDate,DateTimeUtils.now(DATE_GLOBAL),"yyyy/MM/dd");
+        return difference > 0;
     }
 
 }

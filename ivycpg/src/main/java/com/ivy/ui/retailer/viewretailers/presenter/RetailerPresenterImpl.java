@@ -63,6 +63,18 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
     }
 
     @Override
+    public void fetchUnPlannedRetailerList() {
+        visibleRetailerList.clear();
+
+        for (RetailerMasterBO retailerMasterBO : loadRetailerList()) {
+            if (getSelectedRetailerPlan(retailerMasterBO.getRetailerID()) == null) {
+                visibleRetailerList.add(retailerMasterBO);
+            }
+        }
+        getIvyView().populateRetailers(visibleRetailerList);
+    }
+
+    @Override
     public void fetchTodayPlannedRetailers() {
 
         visibleRetailerList.clear();
@@ -118,16 +130,15 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
 
         selectedDateRetailerPlanMap = null;
         selectedDateRetailerPlanList = null;
-
+        getIvyView().showLoading();
         getCompositeDisposable().add(retailerDataManager.getRetailerPlanList(date)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<HashMap<String, DateWisePlanBo>>() {
                     @Override
                     public void accept(HashMap<String, DateWisePlanBo> listHashMap) throws Exception {
-
+                        getIvyView().hideLoading();
                         selectedDateRetailerPlanMap = listHashMap;
-
                         selectedDateRetailerPlanList = new ArrayList<>(listHashMap.values());
 
                         if (isRetailerUpdate)
@@ -170,11 +181,10 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
             } else if (planFilterBo != null && filter.isEmpty() && retailerIds.contains(retailerMasterBO.getRetailerID())) {
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
                 filteredRetailerList.add(retailerMasterBO);
-            }
-            else if (planFilterBo == null && !filter.isEmpty() && retailerMasterBO.getRetailerName().contains(filter)) {
+            } else if (planFilterBo == null && !filter.isEmpty() && retailerMasterBO.getRetailerName().contains(filter)) {
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
                 filteredRetailerList.add(retailerMasterBO);
-            }else if(planFilterBo == null && filter.isEmpty()){
+            } else if (planFilterBo == null && filter.isEmpty()) {
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
                 filteredRetailerList.add(retailerMasterBO);
             }
@@ -186,38 +196,38 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
         getIvyView().focusMarker();
     }
 
-    public void removeDatePlan(DateWisePlanBo planBo){
+    public void removeDatePlan(DateWisePlanBo planBo) {
 
-        for (DateWisePlanBo dateWisePlanBo : selectedDateRetailerPlanList){
-            if (dateWisePlanBo.getEntityId() == planBo.getEntityId()){
+        for (DateWisePlanBo dateWisePlanBo : selectedDateRetailerPlanList) {
+            if (dateWisePlanBo.getEntityId() == planBo.getEntityId()) {
                 selectedDateRetailerPlanList.remove(dateWisePlanBo);
                 break;
             }
         }
 
-        if (selectedDateRetailerPlanMap.get(planBo.getEntityId()+"") != null){
-            selectedDateRetailerPlanMap.remove(planBo.getEntityId()+"");
+        if (selectedDateRetailerPlanMap.get(planBo.getEntityId() + "") != null) {
+            selectedDateRetailerPlanMap.remove(planBo.getEntityId() + "");
         }
     }
 
-    public void addDatePlan(DateWisePlanBo planBo){
+    public void addDatePlan(DateWisePlanBo planBo) {
 
         selectedDateRetailerPlanList.add(planBo);
-        selectedDateRetailerPlanMap.put(planBo.getEntityId()+"",planBo);
+        selectedDateRetailerPlanMap.put(planBo.getEntityId() + "", planBo);
 
     }
 
-    public void updateDatePlan(DateWisePlanBo planBo){
+    public void updateDatePlan(DateWisePlanBo planBo) {
 
         int i = 0;
-        for (DateWisePlanBo dateWisePlanBo : selectedDateRetailerPlanList){
-            if (dateWisePlanBo.getEntityId() == planBo.getEntityId()){
-                selectedDateRetailerPlanList.set(i,dateWisePlanBo);
+        for (DateWisePlanBo dateWisePlanBo : selectedDateRetailerPlanList) {
+            if (dateWisePlanBo.getEntityId() == planBo.getEntityId()) {
+                selectedDateRetailerPlanList.set(i, dateWisePlanBo);
                 break;
             }
             i++;
         }
-        selectedDateRetailerPlanMap.put(planBo.getEntityId()+"",planBo);
+        selectedDateRetailerPlanMap.put(planBo.getEntityId() + "", planBo);
 
     }
 

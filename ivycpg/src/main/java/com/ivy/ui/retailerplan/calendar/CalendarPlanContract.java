@@ -18,7 +18,7 @@ import java.util.List;
 public interface CalendarPlanContract {
 
     interface CalendarPlanView extends BaseIvyView {
-        void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList);
+        void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList,boolean ispastDate);
 
         void setMonthName(String monthName);
 
@@ -72,6 +72,8 @@ public interface CalendarPlanContract {
         DateWisePlanBo getSelectedRetailerPlan(String retailerId);
 
         RetailerMasterBO getPlanedRetailerBo (String retailerId);
+
+        boolean isPastDate();
 
     }
 }
