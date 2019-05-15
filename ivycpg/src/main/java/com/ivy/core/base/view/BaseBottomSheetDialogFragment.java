@@ -274,7 +274,10 @@ public abstract class BaseBottomSheetDialogFragment extends BottomSheetDialogFra
     }
 
     public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, boolean isCancelable) {
-        ((BaseActivity) context).showAlert(title, msg, positiveClickListener, isCancelable);
+        if (context instanceof BaseActivity)
+            ((BaseActivity) context).showAlert(title, msg, positiveClickListener, isCancelable);
+        else if (context instanceof IvyBaseActivityNoActionBar)
+            ((IvyBaseActivityNoActionBar) context).showAlert(title, msg, positiveClickListener, isCancelable);
     }
 
     @Override

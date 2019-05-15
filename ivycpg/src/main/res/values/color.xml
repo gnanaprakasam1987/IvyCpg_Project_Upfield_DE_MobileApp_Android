@@ -7,6 +7,8 @@
     <color name="colorAccent">#83c341</color>
     <color name="textColorPrimary">#004360</color>
 
+    <color name="colorSecondary">#dedede</color>
+
     <color name="colorBlueripple_pressed">#b4e5fe</color>
     <color name="colorBlueripple_selected">#81d4fd</color>
     <color name="colorBlueripple_focused">#4fc3fc</color>

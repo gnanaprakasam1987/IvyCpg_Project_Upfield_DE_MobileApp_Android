@@ -70,13 +70,16 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
 
     private ArrayList<String> filteredAttributeIds = new ArrayList<>();
 
+    private RetailerPlanFilterBo planFilterBo;
+
+    private String selectedDate;
+
     @Inject
     RetailerPlanFilterPresenterImpl<RetailerPlanFilterContract.RetailerPlanFilterView> presenter;
 
-    private RetailerPlanFilterBo planFilterBo;
-
-    public RetailerPlanFilterFragment(RetailerPlanFilterBo planFilterBo){
+    public RetailerPlanFilterFragment(String selectedDate, RetailerPlanFilterBo planFilterBo){
         this.planFilterBo = planFilterBo;
+        this.selectedDate = selectedDate;
     }
 
     @Override
@@ -147,8 +150,10 @@ public class RetailerPlanFilterFragment extends BaseBottomSheetDialogFragment
 
         planFilterBo = new RetailerPlanFilterBo();
 
-        if (presenter.isConfigureAvail(CODE_IS_NOT_VISITED))
-            planFilterBo.setIsNotVisited(notVisitedCheckBox.isChecked()?1:0);
+        if (presenter.isConfigureAvail(CODE_IS_NOT_VISITED)) {
+            planFilterBo.setIsNotVisited(notVisitedCheckBox.isChecked() ? 1 : 0);
+            planFilterBo.setSelectedDate(selectedDate);
+        }
 
         if (presenter.isConfigureAvail(CODE_LAST_VISIT_DATE))
             planFilterBo.setLastVisitDate(new FilterObjectBo(lastVisitFromDate.getText().toString(),

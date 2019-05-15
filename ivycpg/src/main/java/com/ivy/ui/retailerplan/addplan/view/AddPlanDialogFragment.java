@@ -27,6 +27,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.retailerplan.addplan.AddPlanContract;
 import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
@@ -59,7 +60,7 @@ import static com.ivy.utils.DateTimeUtils.TIME_HOUR_MINS;
 
 @SuppressLint("ValidFragment")
 public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment implements AddPlanContract.AddPlanView,
-        CommonReasonDialog.AddNonVisitListener {
+        CommonReasonDialog.AddNonVisitListener,CommonDialog.PositiveClickListener {
 
     @BindView(R.id.tv_add)
     TextView addPlan;
@@ -129,7 +130,9 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
         this.selectedDate = selectedDate;
 
         startTime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
-        endtime = DateTimeUtils.now(TIME_HOUR_MINS)+":00";
+
+        int endTimeDifference = Integer.parseInt(DateTimeUtils.now(TIME_HOUR_MINS))+1;
+        endtime = endTimeDifference+":00";
     }
 
     public AddPlanDialogFragment(String selectedDate, RetailerMasterBO retailerMaster,
@@ -286,14 +289,14 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     void viewProfile(){
 //        presenter.setRetailerMasterBo(retailerMasterBO);
         Intent i = new Intent(context, ProfileActivity.class);
-        i.putExtra("From", "RetailerMap");
+        i.putExtra("From", "RetailerView");
         i.putExtra("RetailerViewDate",selectedDate);
 
         int dateCount = DateTimeUtils.getDateCount(selectedDate,DateTimeUtils.now(DATE_GLOBAL),"yyyy/MM/dd");
-        if (dateCount < 0) {
+        if (dateCount > 0) {
             i.putExtra("HideStartVisit", true);
             i.putExtra("HideCancelVisit", true);
-        }else if (dateCount > 0){
+        }else if (dateCount < 0){
             i.putExtra("HideStartVisit", true);
             if (dateWisePlanBo != null && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED))
                 i.putExtra("HideCancelVisit", false);
@@ -386,7 +389,8 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
     @OnClick(R.id.tv_delete)
     void deletePlan(){
-        addPlanPresenter.deletePlan(dateWisePlanBo);
+
+        showAlert("Delete Plan", "Are You Sure Want To Delete ?", this, true);
     }
 
     private View.OnClickListener addToPlanListener = new View.OnClickListener() {
@@ -422,9 +426,17 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
             if (planList != null && !planList.isEmpty()){
 
+                if (planList.size() == 1){
+                    if (String.valueOf(planList.get(0).getEntityId()).equalsIgnoreCase(retailerMasterBO.getRetailerID()))
+                        return;
+                }
+
                 tvPlannedLayoutTxt.setVisibility(View.VISIBLE);
 
                 for (DateWisePlanBo planBo : planList){
+
+                    if (String.valueOf(planBo.getEntityId()).equalsIgnoreCase(retailerMasterBO.getRetailerID()))
+                        continue;
 
                     String timeSlot = planBo.getStartTime()+" - "+planBo.getEndTime();
 
@@ -461,7 +473,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
             addPlan.setVisibility(View.GONE);
 
-            if (DateTimeUtils.getDateCount(selectedDate,DateTimeUtils.now(DATE_GLOBAL),"yyyy/MM/dd") >= 0) {
+            if (DateTimeUtils.getDateCount(selectedDate,DateTimeUtils.now(DATE_GLOBAL),"yyyy/MM/dd") <= 0) {
 
                 if (dateWisePlanBo.getVisitStatus() == null) {
                     cancelPlan.setVisibility(View.GONE);
@@ -489,7 +501,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
         }else {
             visitElementGroup.setVisibility(View.GONE);
-            if (DateTimeUtils.getDateCount(selectedDate,DateTimeUtils.now(DATE_GLOBAL),"yyyy/MM/dd") >= 0)
+            if (DateTimeUtils.getDateCount(selectedDate,DateTimeUtils.now(DATE_GLOBAL),"yyyy/MM/dd") <= 0)
                 addPlan.setVisibility(View.VISIBLE);
             editPlan.setVisibility(View.GONE);
         }
@@ -549,5 +561,10 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     @Override
     public void onDismiss() {
         dismiss();
+    }
+
+    @Override
+    public void onPositiveButtonClick() {
+        addPlanPresenter.deletePlan(dateWisePlanBo);
     }
 }

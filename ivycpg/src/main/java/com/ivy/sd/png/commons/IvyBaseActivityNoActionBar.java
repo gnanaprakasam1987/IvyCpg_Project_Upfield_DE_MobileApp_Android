@@ -404,6 +404,12 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         dialog.show();
     }
 
+    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener,boolean isCancelable) {
+        CommonDialog dialog = new CommonDialog(this, title, msg, getResources().getString(R.string.ok), positiveClickListener);
+        dialog.setCancelable(isCancelable);
+        dialog.show();
+    }
+
     public void clearAppUrl() {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(this)

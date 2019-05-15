@@ -13,6 +13,7 @@
     app:cardUseCompatPadding="true"
     app:contentPadding="0dp"
     android:clickable="true"
+    app:cardElevation="@dimen/_3sdp"
     android:id="@+id/outlet_plan_window"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
@@ -32,8 +33,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_vertical|left"
             android:maxLines="1"
-            android:padding="@dimen/_3sdp"
-            android:maxLength="25"
+            android:padding="@dimen/_1sdp"
             android:text=""
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintHorizontal_weight="1"
@@ -45,13 +45,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center_vertical|left"
-            android:padding="@dimen/_3sdp"
+            android:padding="@dimen/_1sdp"
             android:text=""
             android:textColor="#8b000000"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/tv_outlet_name"
             app:layout_constraintTop_toBottomOf="@+id/tv_outlet_name" />
 
         <TextView
@@ -70,7 +69,7 @@
             android:paddingBottom="@dimen/_5sdp"
             android:paddingTop="@dimen/_5sdp"
             android:drawablePadding="@dimen/_5sdp"
-            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginTop="@dimen/_15sdp"
             app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address"/>
 
         <TextView
@@ -83,7 +82,7 @@
             android:drawableLeft="@drawable/ic_mail_black_24dp"
             app:layout_constraintStart_toEndOf="@+id/tv_profile"
             android:background="@drawable/curved_end_bg"
-            android:textColor="@color/FullBlack"
+            android:textColor="#354667"
             android:paddingLeft="@dimen/_10sdp"
             android:paddingRight="@dimen/_10sdp"
             android:paddingBottom="@dimen/_5sdp"
@@ -146,11 +145,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:gravity="center_vertical|left"
-            android:text="Add"
+            android:text="Add To Plan"
             android:drawableStart="@drawable/ic_note_add_black_24dp"
             android:drawableLeft="@drawable/ic_note_add_black_24dp"
             app:layout_constraintStart_toEndOf="@+id/tv_delete"
-            android:background="@drawable/curved_end_bg"
+            android:background="@drawable/curved_end_bg_addplan"
+            android:drawableTint="#FFFFFF"
             android:paddingLeft="@dimen/_10sdp"
             android:paddingRight="@dimen/_10sdp"
             android:paddingBottom="@dimen/_5sdp"
@@ -158,8 +158,8 @@
             android:drawablePadding="@dimen/_5sdp"
             android:layout_marginStart="@dimen/_10sdp"
             android:layout_marginLeft="@dimen/_10sdp"
-            android:textColor="@color/FullBlack"
-            android:visibility="gone"
+            android:textColor="#FFFFFF"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/tv_profile"
             app:layout_constraintTop_toTopOf="@+id/tv_profile"
             app:layout_constraintTop_toBottomOf="@+id/tv_outlet_address"/>
@@ -219,7 +219,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="center_vertical|left"
             android:maxLines="1"
-            android:padding="@dimen/_3sdp"
+            android:padding="@dimen/_1sdp"
             android:text="Visit Start Time"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_profile" />
@@ -261,7 +261,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="center_vertical|left"
             android:maxLines="1"
-            android:padding="@dimen/_3sdp"
+            android:padding="@dimen/_1sdp"
             android:text="Visit End Time"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_visit_time_txt" />
@@ -330,7 +330,7 @@
             android:layout_marginTop="@dimen/_15sdp"
             android:gravity="center_vertical|left"
             android:maxLines="1"
-            android:padding="@dimen/_3sdp"
+            android:padding="@dimen/_1sdp"
             android:text="Last Visit Date"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/planned_slot_grid_layout" />

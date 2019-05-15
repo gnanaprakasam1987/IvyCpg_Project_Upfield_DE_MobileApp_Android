@@ -201,7 +201,7 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
             return true;
         }else if (item.getItemId() == R.id.filter) {
 
-            RetailerPlanFilterFragment planFilterFragment = new RetailerPlanFilterFragment(planFilterBo);
+            RetailerPlanFilterFragment planFilterFragment = new RetailerPlanFilterFragment(mSelectedDate,planFilterBo);
             planFilterFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(),
                     "filter_plan_fragment");
 
