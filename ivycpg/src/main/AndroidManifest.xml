@@ -873,7 +873,7 @@
             android:name="com.ivy.ui.retailer.viewretailers.view.list.RetailerListActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name="com.ivy.cpg.view.DisplayAsset.DisplayAssetActivity"></activity>
+        <activity android:name="com.ivy.ui.DisplayAsset.DisplayAssetActivity"></activity>
     </application>
 
 </manifest>
