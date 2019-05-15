@@ -9,6 +9,8 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.bo.ParentLevelBo;
+import com.ivy.sd.png.bo.ReasonMaster;
+import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
@@ -639,7 +641,7 @@ public class PlanoGramHelper {
                             + planogram.getPid() + ","
                             + QT(planogram.getPlanogramCameraImgName()) + ","
                             + QT(imagePath) + ","
-                            + QT(planogram.getAdherence()) + ","
+                            + QT(planogram.getAdherence().equals("-1")?"0":planogram.getAdherence()) + ","
                             + QT(mBModel.getAppDataProvider().getRetailMaster().getRetailerID())
                             + "," + planogram.getReasonID() + ","
                             + planogram.getLocationID() + ","
@@ -815,5 +817,39 @@ public class PlanoGramHelper {
 
     }
 
+    public ArrayList<ReasonMaster> downloadPercentages(Context context){
+
+        ArrayList list=new ArrayList<ReasonMaster>();
+        ReasonMaster reason=new ReasonMaster();
+        reason.setReasonID("0");
+        reason.setReasonDesc("Select");
+        list.add(reason);
+        try {
+
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+
+            String sql = "select listID,listname from StandardListMaster "
+                    + "where listType = " + "'PLANO_COMP_PERCENT'";
+           Cursor c = db.selectSQL(sql);
+            SpinnerBO spinnerBO;
+            if (c != null) {
+                ReasonMaster reasonMaster;
+                while (c.moveToNext()) {
+                    reasonMaster=new ReasonMaster();
+                    reasonMaster.setReasonID(c.getString(0));
+                    reasonMaster.setReasonDesc(c.getString(1));
+                    list.add(reasonMaster);
+                }
+                c.close();
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+
+        return list;
+    }
 }
 
