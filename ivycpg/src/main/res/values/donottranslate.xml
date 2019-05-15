@@ -307,4 +307,6 @@
     <string name="enter_title">Please enter title</string>
     <string name="enter_desc">Please enter description</string>
     <string name="retailer_selection_mandatory">Choose any one retailer</string>
+
+    <string name="select_percentage">Select Percentage</string>
 </resources>

@@ -262,14 +262,10 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             }
         }
 
-        for (ReasonMaster temp : mBModel.reasonHelper.getReasonList()) {
-            if ("PLANO_COMP_PERCENT".equalsIgnoreCase(temp.getReasonCategory())
-                    || "POG".equalsIgnoreCase(temp.getReasonCategory())
-                    || "NONE".equalsIgnoreCase(temp.getReasonCategory())) {
-                percentageAdapter.add(temp);
 
-            }
-        }
+        ArrayList<ReasonMaster> percentageList=mPlanoGramHelper.downloadPercentages(getActivity());
+                percentageAdapter.addAll(percentageList);
+
     }
 
     @Override
@@ -669,7 +665,14 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     private void nextButtonClick() {
         try {
             if (isReasonSelected()) {
-                new SaveAsyncTask().execute();
+                if(isPercentageSelected()) {
+                    new SaveAsyncTask().execute();
+                }
+                else {
+                    Toast.makeText(getActivity(),
+                            getResources().getString(R.string.select_percentage),
+                            Toast.LENGTH_SHORT).show();
+                }
             } else {
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.select_reason),
@@ -767,6 +770,15 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         for (final PlanoGramBO planoGramBO : mPlanoGramList) {
             if (planoGramBO.getAdherence() != null && "0".equals(planoGramBO.getAdherence())
                     && "0".equals(planoGramBO.getReasonID())) {
+                return false;
+            }
+        }
+        return true;
+    }
+    private boolean isPercentageSelected() {
+        for (final PlanoGramBO planoGramBO : mPlanoGramList) {
+            if (planoGramBO.getAdherence() != null && "-1".equals(planoGramBO.getAdherence())
+                    && "0".equals(planoGramBO.getPercentageId())) {
                 return false;
             }
         }
@@ -1050,6 +1062,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         holder.rdPartial.setButtonDrawable(R.drawable.ic_partial_disabled);
                         holder.planoObj.setPercentageId("0");
                         holder.spinner_percentage.setSelection(0);
+                        holder.adherence_reason.setVisibility(View.VISIBLE);
                         holder.spinner_percentage.setVisibility(View.GONE);
                     }
                 }
@@ -1073,6 +1086,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
 
                         holder.planoObj.setAdherence("-1");
                         holder.layout_reason.setVisibility(View.VISIBLE);
+                        holder.adherence_reason.setVisibility(View.GONE);
                         holder.spinner_percentage.setVisibility(View.VISIBLE);
                     }
 
