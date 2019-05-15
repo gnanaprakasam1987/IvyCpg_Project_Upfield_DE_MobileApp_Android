@@ -49,9 +49,11 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
                     @Override
                     public void accept(DateWisePlanBo planBo) throws Exception {
 
-                        System.out.println("planBo = " + planBo.getVisitStatus());
+                        if (DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equalsIgnoreCase(planBo.getDate()))
+                            dataManager.getRetailMaster().setIsToday(1);
 
                         planBo.setOperationType("Add");
+
                         getIvyView().updateDatePlan(planBo);
 
                     }

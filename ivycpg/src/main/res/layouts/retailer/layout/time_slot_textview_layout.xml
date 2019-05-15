@@ -1,14 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/TextViewListItemSecondary"
+    android:textColor="@color/plan_view_secondary_text_color"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginLeft="@dimen/_10sdp"
     android:layout_marginStart="@dimen/_10sdp"
-    android:background="@drawable/curved_end_bg_green"
-    android:gravity="center_vertical|start"
+    android:background="@drawable/curved_end_bg_border"
+    android:gravity="center_vertical"
     android:maxLines="1"
-    android:text="10:00 - 12:00"
+    android:text=""
     android:layout_marginTop="@dimen/_10sdp"
     android:id="@+id/time_slot_textview"
-    android:padding="@dimen/_5sdp"/>
+    android:paddingTop="@dimen/_5sdp"
+    android:paddingBottom="@dimen/_5sdp"
+    android:paddingLeft="@dimen/_6sdp"
+    android:paddingRight="@dimen/_6sdp"
+    />

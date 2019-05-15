@@ -60,7 +60,11 @@ public abstract class BaseBottomSheetDialogFragment extends BottomSheetDialogFra
         View view = LayoutInflater.from(getContext()).inflate(setContentViewLayout(), null);
         dialog.setContentView(view);
 
-        mUnBinder = ButterKnife.bind(this, view);initializeDi();
+        ((View) view.getParent()).setBackgroundColor(getResources().getColor(android.R.color.transparent));
+
+        mUnBinder = ButterKnife.bind(this, view);
+
+        initializeDi();
 
         getMessageFromAliens();
 
