@@ -3,6 +3,7 @@ package com.ivy.utils;
 import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
 
+import com.aem.api.CardReader;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -128,7 +129,7 @@ public class DateTimeUtils {
         } else if (TIME_HOUR_MINS == dateFormat) {
             SimpleDateFormat sdf = new SimpleDateFormat("HH", Locale.ENGLISH);
             return sdf.format(cal.getTime());
-        }else {
+        } else {
             SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyyHHmmss", Locale.ENGLISH);
             return sdf.format(cal.getTime());
         }
@@ -384,7 +385,7 @@ public class DateTimeUtils {
         return endCalendar.before(startCalendar);
     }
 
-    public static Calendar getCalendarOfDate(Date date){
+    public static Calendar getCalendarOfDate(Date date) {
         final Calendar calendar = Calendar.getInstance(Locale.getDefault());
         calendar.setTime(date);
         calendar.set(Calendar.MILLISECOND, 0);
@@ -434,12 +435,12 @@ public class DateTimeUtils {
         }
     }
 
-    public static Date getDate(String date,String format){
+    public static Date getDate(String date, String format) {
         Calendar calendar = Calendar.getInstance();
         try {
             Date dateVal = new SimpleDateFormat(format, Locale.US).parse(date);
             calendar.setTime(dateVal);
-        }catch (Exception e){
+        } catch (Exception e) {
             Commons.printException(e);
         }
 
@@ -478,13 +479,14 @@ public class DateTimeUtils {
 
     /**
      * This Method Use to check whether the Time slot is between Two Time
+     *
      * @param fromTime
      * @param toTime
      * @param compareTime
-     * @param isFromTime - Whether to check with From Time or To Time
+     * @param isFromTime  - Whether to check with From Time or To Time
      * @return
      */
-    public static boolean isBetweenTime(String fromTime, String toTime, String compareTime, boolean isFromTime){
+    public static boolean isBetweenTime(String fromTime, String toTime, String compareTime, boolean isFromTime) {
 
         try {
             Date time1 = new SimpleDateFormat("HH:mm", Locale.US).parse(fromTime);
@@ -505,7 +507,7 @@ public class DateTimeUtils {
                         || (x.after(calendar1.getTime()) && x.before(calendar2.getTime()))) {
                     return true;
                 }
-            }else{
+            } else {
                 if ((x.after(calendar1.getTime()) && x.before(calendar2.getTime()))
                         || x.equals(calendar2.getTime())) {
                     return true;
