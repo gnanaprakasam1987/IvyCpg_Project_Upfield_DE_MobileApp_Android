@@ -321,4 +321,6 @@
     <string name="v_completed">V.Completed</string>
     <string name="v_pending">V.Pending</string>
 
+
+    <string name="select_percentage">Select Percentage</string>
 </resources>
