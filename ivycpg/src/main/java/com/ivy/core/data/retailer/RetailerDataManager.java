@@ -7,6 +7,7 @@ import com.ivy.sd.png.bo.RetailerMissedVisitBO;
 import java.util.ArrayList;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public interface RetailerDataManager {
 
@@ -19,6 +20,6 @@ public interface RetailerDataManager {
 
     Observable<ArrayList<RetailerMissedVisitBO>> fetchMissedRetailers();
 
-
+    Single<Boolean> updatePlanAndVisitCount(RetailerMasterBO retailerMasterBO);
 
 }

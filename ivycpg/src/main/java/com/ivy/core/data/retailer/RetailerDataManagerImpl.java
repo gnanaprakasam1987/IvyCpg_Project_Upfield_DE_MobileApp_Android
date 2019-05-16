@@ -31,7 +31,9 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
+import io.reactivex.SingleObserver;
 import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 import static com.ivy.sd.png.provider.ConfigurationMasterHelper.CODE_SHOW_ALL_ROUTE_FILTER;
@@ -750,35 +752,41 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
      *
      * @param retObj
      */
-    private void updatePlanAndVisitCount(RetailerMasterBO retObj) {
+    public Single<Boolean> updatePlanAndVisitCount(RetailerMasterBO retObj) {
 
-        try {
-            if (mDbUtil.isDbNullOrClosed())
-                initDb();
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
 
-            Cursor c;
-            c = mDbUtil.selectSQL("select PlanId From DatewisePlan where planStatus ='APPROVED'or 'PENDING' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()));
-            if (c != null
-                    && c.getCount() > 0) {
-                if (c.moveToNext())
-                    retObj.setTotalPlanned(c.getCount());
+                try {
+                    initDb();
 
-                c.close();
+                    Cursor c;
+                    c = mDbUtil.selectSQL("select PlanId From DatewisePlan where planStatus ='APPROVED'or 'PENDING' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()));
+                    if (c != null
+                            && c.getCount() > 0) {
+                        if (c.moveToNext())
+                            retObj.setTotalPlanned(c.getCount());
+
+                        c.close();
+                    }
+
+                    c = mDbUtil.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
+                    if (c != null
+                            && c.getCount() > 0) {
+                        if (c.moveToNext())
+                            retObj.setTotalVisited(c.getCount());
+
+                        c.close();
+                    }
+                } catch (Exception ignore) {
+
+                }
+                shutDownDb();
+
+                return true;
             }
-
-
-            c = mDbUtil.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
-            if (c != null
-                    && c.getCount() > 0) {
-                if (c.moveToNext())
-                    retObj.setTotalVisited(c.getCount());
-
-                c.close();
-            }
-        } catch (Exception ignore) {
-
-        }
-
+        });
     }
 
     public void updateIndicativeOrderedRetailer(RetailerMasterBO retObj, ArrayList<IndicativeBO> indicativeBOS) {

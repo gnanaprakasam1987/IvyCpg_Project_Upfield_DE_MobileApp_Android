@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ivy.core.base.view.BaseBottomSheetDialogFragment;
@@ -65,8 +66,14 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     @BindView(R.id.tv_add)
     TextView addPlan;
 
+    @BindView(R.id.tv_mail)
+    TextView sendEmail;
+
+    @BindView(R.id.tv_profile)
+    TextView userProfile;
+
     @BindView(R.id.tv_edit)
-    TextView editPlan;
+    ImageView editPlan;
 
     @BindView(R.id.tv_save)
     TextView savePlan;
@@ -86,14 +93,17 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     @BindView(R.id.tv_last_visit_date)
     TextView tvLastVisitDate;
 
+    @BindView(R.id.tv_last_visit_txt)
+    TextView tvLastVisitTxt;
+
     @BindView(R.id.tv_visit_time)
     TextView tvStartVisitTime;
 
-    @BindView(R.id.tv_visit_date)
-    TextView tvStartVisitDate;
-
-    @BindView(R.id.tv_visit_end_date)
-    TextView tvVisitEndDate;
+//    @BindView(R.id.tv_visit_date)
+//    TextView tvStartVisitDate;
+//
+//    @BindView(R.id.tv_visit_end_date)
+//    TextView tvVisitEndDate;
 
     @BindView(R.id.tv_visit_end_time)
     TextView tvVisitEndTime;
@@ -104,8 +114,14 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     @BindView(R.id.visitElementGroup)
     Group visitElementGroup;
 
+    @BindView(R.id.saveElementGroup)
+    Group saveElementGroup;
+
     @BindView(R.id.planned_slot_grid_layout)
     GridLayout timeSlotGridLayout;
+
+    @BindView(R.id.seperator_view)
+    View seperatorView;
 
     private BottomSheetBehavior bottomSheetBehavior;
 
@@ -376,6 +392,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
         CommonReasonDialog comReasonDialog = new CommonReasonDialog(context, "nonVisit");
         comReasonDialog.setNonvisitListener(this);
+        comReasonDialog.getFromScreenParam("RetailerView",selectedDate);
         comReasonDialog.show();
         WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
         Window window = comReasonDialog.getWindow();
@@ -387,6 +404,12 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
         }
     }
 
+    @OnClick(R.id.tv_cancel_edit)
+    void cancelEditView(){
+
+        setPlanWindowValues();
+    }
+
     @OnClick(R.id.tv_delete)
     void deletePlan(){
 
@@ -396,27 +419,28 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     private View.OnClickListener addToPlanListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
+
             if (addPlan.getVisibility() == View.VISIBLE){
-
                 visitElementGroup.setVisibility(View.VISIBLE);
-
-                setViewBackground(ContextCompat.getDrawable(context,R.drawable.edittext_bottom_border));
-
-            }else{
-
-                setViewBackground(ContextCompat.getDrawable(context,R.drawable.edittext_bottom_border));
-
-                tvStartVisitTime.setOnClickListener(startVisitTimeListener);
-                tvVisitEndTime.setOnClickListener(startVisitTimeListener);
             }
+
+            setViewBackground(ContextCompat.getDrawable(context,R.drawable.edittext_bottom_border));
+
+            tvStartVisitTime.setOnClickListener(startVisitTimeListener);
+            tvVisitEndTime.setOnClickListener(startVisitTimeListener);
+
+            saveElementGroup.setVisibility(View.VISIBLE);
+            hideShowViews(8);
+
+            seperatorView.setVisibility(View.VISIBLE);
 
             addPlan.setVisibility(View.GONE);
             editPlan.setVisibility(View.GONE);
 
             savePlan.setVisibility(View.VISIBLE);
 
-            tvStartVisitDate.setText(selectedDate);
-            tvVisitEndDate.setText(selectedDate);
+//            tvStartVisitDate.setText(selectedDate);
+//            tvVisitEndDate.setText(selectedDate);
 
             tvStartVisitTime.setText(startTime);
             tvVisitEndTime.setText(endtime);
@@ -431,6 +455,13 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                         return;
                 }
 
+                if (DeviceUtils.isTabletDevice(context))
+                    timeSlotGridLayout.setColumnCount(5);
+                else
+                    timeSlotGridLayout.setColumnCount(3);
+
+                timeSlotGridLayout.removeAllViews();
+                timeSlotGridLayout.setVisibility(View.VISIBLE);
                 tvPlannedLayoutTxt.setVisibility(View.VISIBLE);
 
                 for (DateWisePlanBo planBo : planList){
@@ -461,9 +492,21 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     private void setPlanWindowValues(){
 
         setViewBackground(null);
+        userProfile.setVisibility(View.VISIBLE);
+        sendEmail.setVisibility(View.VISIBLE);
+        tvPlannedLayoutTxt.setVisibility(View.GONE);
+        timeSlotGridLayout.setVisibility(View.GONE);
+        seperatorView.setVisibility(View.GONE);
+
+        saveElementGroup.setVisibility(View.GONE);
+
+        tvStartVisitTime.setOnClickListener(null);
+        tvVisitEndTime.setOnClickListener(null);
 
         tvOutletName.setText(retailerMasterBO.getRetailerName());
         tvOutletAddress.setText(retailerMasterBO.getAddress1());
+
+        saveElementGroup.setVisibility(View.GONE);
 
         if (dateWisePlanBo != null && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)) {
 
@@ -493,8 +536,8 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                 }
             }
 
-            tvStartVisitDate.setText(selectedDate);
-            tvVisitEndDate.setText(selectedDate);
+//            tvStartVisitDate.setText(selectedDate);
+//            tvVisitEndDate.setText(selectedDate);
 
             tvStartVisitTime.setText(startTime);
             tvVisitEndTime.setText(endtime);
@@ -553,7 +596,8 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
     @Override
     public void addReatailerReason() {
-
+        dateWisePlanBo.setOperationType("Delete");
+        updateDatePlan(dateWisePlanBo);
         showMessage(getString(R.string.saved_successfully));
         dismiss();
     }
@@ -566,5 +610,15 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     @Override
     public void onPositiveButtonClick() {
         addPlanPresenter.deletePlan(dateWisePlanBo);
+    }
+
+    private void hideShowViews(int isShow){
+
+        addPlan.setVisibility(isShow);
+        editPlan.setVisibility(isShow);
+        deletePlan.setVisibility(isShow);
+        cancelPlan.setVisibility(isShow);
+        sendEmail.setVisibility(isShow);
+        userProfile.setVisibility(isShow);
     }
 }
