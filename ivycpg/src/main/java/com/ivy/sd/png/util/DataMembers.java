@@ -365,7 +365,7 @@ public class DataMembers {
     private static final String tbl_NearExpiryDetail_cols = "Tid,PId,LocId,ExpDate,UOMId,UOMQty,isAuditDone,IsOwn";
     public static final String tbl_PlanogramDetail = "PlanogramDetails";
     public static final String tbl_PlanogramHeader = "PlanogramHeader";
-    private static final String tbl_PlanogramDetail_cols = "TiD,MappingId,PId,ImageName,ImagePath,Adherence,ReasonID,LocID,CounterId,isAuditDone";
+    private static final String tbl_PlanogramDetail_cols = "TiD,MappingId,PId,ImageName,ImagePath,Adherence,ReasonID,LocID,CounterId,isAuditDone,ComplianceStatus,CompliancePercentage";
     private static final String tbl_PlanogramHeader_cols = "TiD,RetailerId,Date,Timezone,RefId,Type,CounterId,DistributorID,ridSF,VisitId";
     public static final String tbl_CompetitorHeader = "CompetitorHeader";
     public static final String tbl_CompetitorDetails = "CompetitorDetails";
