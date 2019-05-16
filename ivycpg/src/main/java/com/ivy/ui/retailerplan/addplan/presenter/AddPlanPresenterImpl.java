@@ -1,8 +1,8 @@
 package com.ivy.ui.retailerplan.addplan.presenter;
 
 import com.ivy.core.base.presenter.BasePresenter;
-import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.datamanager.DataManager;
+import com.ivy.core.data.retailer.RetailerDataManager;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -14,8 +14,10 @@ import com.ivy.utils.rx.SchedulerProvider;
 
 import javax.inject.Inject;
 
+import io.reactivex.SingleSource;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 
 public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extends BasePresenter<V> implements AddPlanContract.AddPlanPresenter<V>{
 
@@ -27,14 +29,17 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
 
     private DataManager dataManager;
 
+    private RetailerDataManager retailerDataManager;
+
     @Inject
     public AddPlanPresenterImpl(DataManager dataManager, SchedulerProvider schedulerProvider
             , CompositeDisposable compositeDisposable, ConfigurationMasterHelper configurationMasterHelper
-            , V view, AddPlanDataManager addPlanDataManager) {
+            , V view, AddPlanDataManager addPlanDataManager, RetailerDataManager retailerDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
 
         this.addPlanDataManager = addPlanDataManager;
         this.dataManager = dataManager;
+        this.retailerDataManager = retailerDataManager;
     }
 
     @Override
@@ -43,12 +48,16 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
         DateWisePlanBo dateWisePlanBo = preparePlanObjects(date,startTime,endTime,retailerMasterBO);
 
         getCompositeDisposable().add(addPlanDataManager.savePlan(dateWisePlanBo)
-                .subscribeOn(getSchedulerProvider().io())
+                .flatMapSingle(new Function<DateWisePlanBo, SingleSource<DateWisePlanBo>>() {
+                    @Override
+                    public SingleSource<DateWisePlanBo> apply(DateWisePlanBo planBo) throws Exception {
+                        return retailerDataManager.updatePlanAndVisitCount(retailerMasterBO,planBo);
+                    }
+                }).subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<DateWisePlanBo>() {
                     @Override
                     public void accept(DateWisePlanBo planBo) throws Exception {
-
                         if (DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equalsIgnoreCase(planBo.getDate()))
                             dataManager.getRetailMaster().setIsToday(1);
 
@@ -79,9 +88,9 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
     }
 
     @Override
-    public void cancelPlan(DateWisePlanBo dateWisePlanBo) {
+    public void cancelPlan(DateWisePlanBo dateWisePlanBo,RetailerMasterBO retailerMasterBO) {
 
-        getCompositeDisposable().add(addPlanDataManager.cancelPlan(dateWisePlanBo)
+        getCompositeDisposable().add(retailerDataManager.updatePlanAndVisitCount(retailerMasterBO,dateWisePlanBo)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<DateWisePlanBo>() {
@@ -96,16 +105,25 @@ public class AddPlanPresenterImpl <V extends AddPlanContract.AddPlanView> extend
     }
 
     @Override
-    public void deletePlan(DateWisePlanBo dateWisePlanBo) {
+    public void deletePlan(DateWisePlanBo dateWisePlanBo,RetailerMasterBO retailerMasterBO) {
 
         getCompositeDisposable().add(addPlanDataManager.DeletePlan(dateWisePlanBo)
-                .subscribeOn(getSchedulerProvider().io())
+                .flatMapSingle(new Function<DateWisePlanBo, SingleSource<DateWisePlanBo>>() {
+                    @Override
+                    public SingleSource<DateWisePlanBo> apply(DateWisePlanBo planBo) throws Exception {
+                        return retailerDataManager.updatePlanAndVisitCount(retailerMasterBO,planBo);
+                    }
+                }).subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(new Consumer<DateWisePlanBo>() {
                     @Override
                     public void accept(DateWisePlanBo planBo) throws Exception {
+                        if (DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equalsIgnoreCase(planBo.getDate()))
+                            dataManager.getRetailMaster().setIsToday(0);
+
                         planBo.setOperationType("Delete");
                         getIvyView().updateDatePlan(planBo);
+
                     }
                 })
         );

@@ -3,6 +3,8 @@ package com.ivy.ui.retailerplan.addplan.di;
 
 import android.content.Context;
 
+import com.ivy.core.data.retailer.RetailerDataManager;
+import com.ivy.core.data.retailer.RetailerDataManagerImpl;
 import com.ivy.core.di.scope.PerActivity;
 import com.ivy.ui.retailerplan.addplan.AddPlanContract;
 import com.ivy.ui.retailerplan.addplan.data.AddPlanDataManager;
@@ -49,5 +51,10 @@ public class AddPlanModule {
     @Provides
     AddPlanDataManager addPlanDataManager(AddPlanDataManagerImpl addPlanDataManager){
         return addPlanDataManager;
+    }
+
+    @Provides
+    RetailerDataManager retailerDataManager(RetailerDataManagerImpl retailerDataManager){
+        return retailerDataManager;
     }
 }
