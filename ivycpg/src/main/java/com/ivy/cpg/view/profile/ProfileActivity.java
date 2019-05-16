@@ -173,6 +173,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private String retailerViewDate="";
 
     private boolean isFromRetailerMapScreen = false;
+    private final String RETAILERVIEW = "RetailerView";
 
     private List<LatLng> markerList = new ArrayList<>();
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID;
@@ -419,7 +420,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             calledBy = MENU_VISIT;
         }
 
-        if (calledBy.equalsIgnoreCase("RetailerView"))
+        if (calledBy.equalsIgnoreCase(RETAILERVIEW))
             isFromRetailerMapScreen = true;
     }
 
@@ -762,7 +763,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 CommonReasonDialog comReasonDialog = new CommonReasonDialog(ProfileActivity.this, "nonVisit");
                 comReasonDialog.setNonvisitListener(ProfileActivity.this);
                 if (isFromRetailerMapScreen)
-                    comReasonDialog.getFromScreenParam("RetailerView",retailerViewDate);
+                    comReasonDialog.getFromScreenParam(RETAILERVIEW,retailerViewDate);
                 comReasonDialog.show();
                 WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
                 Window window = comReasonDialog.getWindow();
@@ -1621,7 +1622,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
     private void retailerClick() {
 
-        if (!isClicked && calledBy.equals(MENU_VISIT)) {
+        if (!isClicked && (calledBy.equals(MENU_VISIT) || calledBy.equalsIgnoreCase(RETAILERVIEW))) {
 
             if (bmodel.configurationMasterHelper.IS_RETAILER_PHOTO_NEEDED) {
                 takePhotoForRetailer();

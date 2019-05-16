@@ -12,6 +12,7 @@ import com.ivy.sd.png.bo.RetailerMissedVisitBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
@@ -747,44 +748,51 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
     }
 
+    private void updatePlanAndVisitCount(RetailerMasterBO retObj){
+        try {
+
+            Cursor c;
+            c = mDbUtil.selectSQL("select PlanId From DatewisePlan where planStatus ='APPROVED'or 'PENDING' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()));
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext())
+                    retObj.setTotalPlanned(c.getCount());
+
+                c.close();
+            }
+
+            c = mDbUtil.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext())
+                    retObj.setTotalVisited(c.getCount());
+
+                c.close();
+            }
+        } catch (Exception ignore) {
+            Commons.printException(ignore);
+        }
+    }
+
     /**
      * update retailer plan and visit count
      *
      * @param retObj
      */
-    public Single<Boolean> updatePlanAndVisitCount(RetailerMasterBO retObj) {
+    @Override
+    public Single<DateWisePlanBo> updatePlanAndVisitCount(RetailerMasterBO retObj,DateWisePlanBo planBo) {
 
-        return Single.fromCallable(new Callable<Boolean>() {
+        return Single.fromCallable(new Callable<DateWisePlanBo>() {
             @Override
-            public Boolean call() throws Exception {
+            public DateWisePlanBo call() throws Exception {
 
-                try {
-                    initDb();
+                initDb();
 
-                    Cursor c;
-                    c = mDbUtil.selectSQL("select PlanId From DatewisePlan where planStatus ='APPROVED'or 'PENDING' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()));
-                    if (c != null
-                            && c.getCount() > 0) {
-                        if (c.moveToNext())
-                            retObj.setTotalPlanned(c.getCount());
+                updatePlanAndVisitCount(retObj);
 
-                        c.close();
-                    }
-
-                    c = mDbUtil.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
-                    if (c != null
-                            && c.getCount() > 0) {
-                        if (c.moveToNext())
-                            retObj.setTotalVisited(c.getCount());
-
-                        c.close();
-                    }
-                } catch (Exception ignore) {
-
-                }
                 shutDownDb();
 
-                return true;
+                return planBo;
             }
         });
     }

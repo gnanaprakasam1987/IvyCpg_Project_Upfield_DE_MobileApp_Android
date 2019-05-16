@@ -596,10 +596,8 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
     @Override
     public void addReatailerReason() {
-        dateWisePlanBo.setOperationType("Delete");
-        updateDatePlan(dateWisePlanBo);
+        addPlanPresenter.cancelPlan(dateWisePlanBo,retailerMasterBO);
         showMessage(getString(R.string.saved_successfully));
-        dismiss();
     }
 
     @Override
@@ -609,7 +607,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
     @Override
     public void onPositiveButtonClick() {
-        addPlanPresenter.deletePlan(dateWisePlanBo);
+        addPlanPresenter.deletePlan(dateWisePlanBo,retailerMasterBO);
     }
 
     private void hideShowViews(int isShow){

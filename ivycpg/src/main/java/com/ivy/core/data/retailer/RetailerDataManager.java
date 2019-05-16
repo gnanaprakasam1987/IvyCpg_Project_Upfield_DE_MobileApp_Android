@@ -3,6 +3,7 @@ package com.ivy.core.data.retailer;
 import com.ivy.sd.png.bo.IndicativeBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.RetailerMissedVisitBO;
+import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 
 import java.util.ArrayList;
 
@@ -20,6 +21,6 @@ public interface RetailerDataManager {
 
     Observable<ArrayList<RetailerMissedVisitBO>> fetchMissedRetailers();
 
-    Single<Boolean> updatePlanAndVisitCount(RetailerMasterBO retailerMasterBO);
+    Single<DateWisePlanBo> updatePlanAndVisitCount(RetailerMasterBO retailerMasterBO,DateWisePlanBo planBo);
 
 }
