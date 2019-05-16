@@ -11,7 +11,9 @@
         style="@style/RetailerNameListView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/card_margin"
+        android:layout_marginLeft="@dimen/card_margin"
+        android:layout_marginTop="@dimen/card_margin"
+        android:layout_marginRight="@dimen/card_margin"
         android:layout_toStartOf="@+id/tv_planned"
         android:layout_toLeftOf="@+id/tv_planned"
         android:singleLine="true"
@@ -32,37 +34,51 @@
 
     <TextView
         android:id="@+id/tv_location"
-        style="@style/RetailerSecondaryListView"
+        style="@style/TextViewListItemCaption"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_planned"
+        android:layout_below="@+id/tv_retialer_name"
         android:layout_marginLeft="@dimen/card_margin"
+        android:layout_marginTop="@dimen/dimen_1dp"
         android:layout_marginRight="@dimen/card_margin"
         android:layout_marginBottom="@dimen/card_margin"
+        android:layout_toStartOf="@+id/tv_planned"
+        android:layout_toLeftOf="@+id/tv_planned"
         android:singleLine="true" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_location"
-        android:layout_margin="@dimen/card_margin"
-        android:orientation="horizontal">
+        android:layout_marginLeft="@dimen/card_margin"
+        android:layout_marginTop="@dimen/dimens_4dp"
+        android:layout_marginRight="@dimen/card_margin"
+        android:gravity="center_vertical">
 
         <TextView
             android:id="@+id/tv_visit_freq"
             style="@style/TextViewCaptionNormal"
-            android:layout_width="@dimen/dimens_60dp"
-            android:layout_height="@dimen/dimens_40dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:minWidth="@dimen/dimens_40dp"
+            android:layout_centerVertical="true"
+            android:singleLine="true"
             android:layout_margin="@dimen/dimen_2dp"
             android:background="@drawable/rectangle_grey"
-            android:padding="@dimen/card_margin"
+            android:gravity="center"
+            android:padding="@dimen/dimens_4dp"
             android:textColor="@color/white" />
 
         <TextView
-            style="@style/TextViewListItemSecondary"
-            android:layout_width="0dp"
+            android:id="@+id/tv_text_freq"
+            style="@style/TextViewListItemCaption"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/tv_visit_freq"
+            android:layout_toRightOf="@+id/tv_visit_freq"
             android:ellipsize="middle"
             android:padding="@dimen/card_margin"
             android:singleLine="true"
@@ -70,19 +86,28 @@
 
         <TextView
             android:id="@+id/tv_visit_planned"
-            style="@style/TextViewListItemPrimary"
-            android:layout_width="@dimen/dimens_60dp"
-            android:layout_height="@dimen/dimens_40dp"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_margin="@dimen/dimen_2dp"
+            android:layout_toEndOf="@+id/tv_text_freq"
+            android:layout_toRightOf="@+id/tv_text_freq"
             android:background="@drawable/rectangle_green2"
-            android:padding="@dimen/card_margin"
+            android:gravity="center"
+            android:padding="@dimen/dimens_4dp"
+            android:minWidth="@dimen/dimens_40dp"
+            android:singleLine="true"
             android:textColor="@color/white" />
 
         <TextView
-            style="@style/TextViewListItemSecondary"
-            android:layout_width="0dp"
+            android:id="@+id/tv_text_completed"
+            style="@style/TextViewListItemCaption"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/tv_visit_planned"
+            android:layout_toRightOf="@+id/tv_visit_planned"
             android:ellipsize="middle"
             android:padding="@dimen/card_margin"
             android:singleLine="true"
@@ -90,22 +115,31 @@
 
         <TextView
             android:id="@+id/tv_visit_pending"
-            style="@style/TextViewListItemPrimary"
-            android:layout_width="@dimen/dimens_60dp"
-            android:layout_height="@dimen/dimens_40dp"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
             android:layout_margin="@dimen/dimen_2dp"
+            android:minWidth="@dimen/dimens_40dp"
+            android:layout_toEndOf="@+id/tv_text_completed"
+            android:layout_toRightOf="@+id/tv_text_completed"
             android:background="@drawable/rectangle_blue2"
-            android:padding="@dimen/card_margin"
+            android:gravity="center"
+            android:singleLine="true"
+            android:padding="@dimen/dimens_4dp"
             android:textColor="@color/white" />
 
         <TextView
-            style="@style/TextViewListItemSecondary"
-            android:layout_width="0dp"
+            android:id="@+id/tv_text_pending"
+            style="@style/TextViewListItemCaption"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/tv_visit_pending"
+            android:layout_toRightOf="@+id/tv_visit_pending"
             android:ellipsize="middle"
             android:padding="@dimen/card_margin"
             android:singleLine="true"
             android:text="@string/v_pending" />
-    </LinearLayout>
+    </RelativeLayout>
 </RelativeLayout>

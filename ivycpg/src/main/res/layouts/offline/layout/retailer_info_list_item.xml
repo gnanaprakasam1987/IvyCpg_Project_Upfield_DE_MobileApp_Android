@@ -3,17 +3,18 @@
     android:id="@+id/rl_week_date"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="@dimen/card_margin"
     android:orientation="vertical"
-    android:padding="@dimen/dimen_2dp">
+    android:padding="@dimen/dimens_8dp">
 
     <TextView
         android:id="@+id/tv_retialer_name"
         style="@style/TextViewCaptionNormal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="?attr/primarycolor"
         android:layout_margin="@dimen/dimen_2dp"
-        android:text="Shop Name" />
+        android:text="Shop Name"
+        android:textColor="?attr/primarycolor" />
 
     <TextView
         android:id="@+id/tv_visit_hours"
@@ -22,6 +23,5 @@
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_2dp"
         android:text="Visit Hours : 2:00 - 4:00" />
-
 
 </LinearLayout>
