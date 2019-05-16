@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -401,6 +402,14 @@ public class AssetAdapter extends BaseAdapter {
                         holder.execQtyRB.setEnabled(false);
                     }
 
+                }
+            });
+
+            holder.availQtyRB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                    holder.execQtyRB.setEnabled(checked);
+                    holder.execQtyRB.setChecked(false);
                 }
             });
 
