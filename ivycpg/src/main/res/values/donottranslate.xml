@@ -320,5 +320,9 @@
     <string name="v_frequency">V.Frequency</string>
     <string name="v_completed">V.Completed</string>
     <string name="v_pending">V.Pending</string>
+    <string name="plan_not_available">Plan not Available</string>
+    <string name="not_allowed_to_add_plan">Not Allowed to add plan for Past date</string>
 
+
+    <string name="select_percentage">Select Percentage</string>
 </resources>

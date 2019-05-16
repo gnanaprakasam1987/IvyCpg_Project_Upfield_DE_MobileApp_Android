@@ -38,6 +38,8 @@ public interface RetailerContract {
 
          void fetchRetailerList();
 
+         void fetchUnPlannedRetailerList();
+
          void fetchTodayPlannedRetailers();
 
          void setRetailerMasterBo(RetailerMasterBO retailerMasterBO);
