@@ -178,7 +178,7 @@ public class WebViewArchivalReportFragment extends IvyBaseFragment {
                 downloaderThread = new DownloaderThreadNew(getActivity(),
                         activityHandler, bmodel.getDigitalContentURLS(),
                         bmodel.userMasterHelper.getUserMasterBO()
-                                .getUserid(), transferUtility);
+                                .getUserid(), transferUtility,bmodel.getDigitalContentSFDCURLS());
                 downloaderThread.start();
             }
             else

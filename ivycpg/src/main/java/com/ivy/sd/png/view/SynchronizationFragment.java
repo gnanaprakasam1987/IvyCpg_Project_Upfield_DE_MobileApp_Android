@@ -1347,7 +1347,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                             try {
                                 downloaderThread = new DownloaderThreadNew(getActivity(),activityHandler,bmodel.getDigitalContentURLS(),
                                         bmodel.userMasterHelper.getUserMasterBO().getUserid(),
-                                        AzureConnectionHelper.getInstance().initializeAzureStorageConnection());
+                                        AzureConnectionHelper.getInstance().initializeAzureStorageConnection(),bmodel.getDigitalContentSFDCURLS());
                             } catch (Exception e) {
                                 Commons.printException(e);
                                 bmodel.showAlert(context.getString(R.string.error_message_general), 0);
@@ -1359,7 +1359,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                             downloaderThread = new DownloaderThreadNew(getActivity(),
                                     activityHandler, bmodel.getDigitalContentURLS(),
                                     bmodel.userMasterHelper.getUserMasterBO()
-                                            .getUserid(), transferUtility);
+                                            .getUserid(), transferUtility,bmodel.getDigitalContentSFDCURLS());
 
                         }
                         downloaderThread.start();
@@ -2220,7 +2220,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     try {
                         downloaderThread = new DownloaderThreadNew(getActivity(),activityHandler,bmodel.getDigitalContentURLS(),
                                 bmodel.userMasterHelper.getUserMasterBO().getUserid(),
-                                AzureConnectionHelper.getInstance().initializeAzureStorageConnection());
+                                AzureConnectionHelper.getInstance().initializeAzureStorageConnection(),bmodel.getDigitalContentSFDCURLS());
                     } catch (Exception e) {
                         Commons.printException(e);
                         bmodel.showAlert(context.getString(R.string.error_message_general), 0);
@@ -2232,7 +2232,7 @@ public class SynchronizationFragment extends IvyBaseFragment
                     downloaderThread = new DownloaderThreadNew(getActivity(),
                             activityHandler, bmodel.getDigitalContentURLS(),
                             bmodel.userMasterHelper.getUserMasterBO()
-                                    .getUserid(), transferUtility);
+                                    .getUserid(), transferUtility,bmodel.getDigitalContentSFDCURLS());
 
                 }
                 downloaderThread.start();
