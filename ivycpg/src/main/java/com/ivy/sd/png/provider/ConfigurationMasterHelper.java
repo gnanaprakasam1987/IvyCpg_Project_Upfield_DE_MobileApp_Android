@@ -1589,6 +1589,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER = "NOTE01";
     public boolean IS_ENABLE_EDIT_OPTION_FOR_OTHER_USER;
 
+    private static final String CODE_ENABLE_GLOBAL_GPS_DISTANCE = "GPSDISTANCE";
+    public int GLOBAL_GPS_DISTANCE;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2789,6 +2792,7 @@ public class ConfigurationMasterHelper {
         this.IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN=hashMapHHTModuleConfig.get(CODE_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) : false;
 
         this.IS_ENABLE_EDIT_OPTION_FOR_OTHER_USER = hashMapHHTModuleConfig.get(CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER) : false;
+        this.GLOBAL_GPS_DISTANCE = hashMapHHTModuleOrder.get(CODE_ENABLE_GLOBAL_GPS_DISTANCE) != null ? hashMapHHTModuleOrder.get(CODE_ENABLE_GLOBAL_GPS_DISTANCE) : 0;
     }
 
     private boolean isInOutModule() {
