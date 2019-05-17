@@ -1599,6 +1599,10 @@ public class BusinessModel extends Application {
                     retailer.setIndicateFlag(0);
                     retailer.setIsCollectionView("N");
 
+                    //set global gps distance for retailer from the config:GPSDISTANCE
+                    if (retailer.getGpsDistance() <=0 && configurationMasterHelper.GLOBAL_GPS_DISTANCE > 0)
+                        retailer.setGpsDistance(configurationMasterHelper.GLOBAL_GPS_DISTANCE);
+
                     updateRetailerPriceGRP(retailer, db);
 
                     if (configurationMasterHelper.IS_HANGINGORDER) {
