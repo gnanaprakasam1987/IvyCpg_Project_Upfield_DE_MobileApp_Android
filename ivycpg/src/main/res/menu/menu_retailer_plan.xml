@@ -5,36 +5,40 @@
     <item
         android:id="@+id/map_retailer"
         android:icon="@drawable/near_ret"
-        app:showAsAction="always"
         android:orderInCategory="3"
-        android:title="Retailers">
-    </item>
+        android:title="@string/map_view"
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/filter"
         android:icon="@drawable/ic_action_filter"
-        app:showAsAction="always"
-        android:orderInCategory="3"
+        android:orderInCategory="1"
+        android:title="@string/filter"
         android:visible="false"
-        android:title="Filter">
-    </item>
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/calendar"
         android:icon="@drawable/ic_calendar"
-        app:showAsAction="always"
-        android:orderInCategory="3"
         android:iconTint="@color/white"
-        android:title="Calendar">
-    </item>
+        android:orderInCategory="3"
+        android:title="@string/calendar_view"
+        app:showAsAction="always"/>
+
+    <item
+        android:id="@+id/copy"
+        android:icon="@drawable/ic_content_copy_white_24dp"
+        android:orderInCategory="2"
+        android:title="copy"
+        android:visible="false"
+        app:showAsAction="always"/>
 
     <item
         android:id="@+id/search"
         android:icon="@drawable/icon_search"
-        app:showAsAction="always"
         android:orderInCategory="3"
+        android:title="@string/search"
         app:actionViewClass="android.support.v7.widget.SearchView"
-        android:title="Search">
-    </item>
+        app:showAsAction="always"/>
 
 </menu>

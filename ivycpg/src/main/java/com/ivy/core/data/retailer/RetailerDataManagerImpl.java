@@ -748,7 +748,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
     }
 
-    private void updatePlanAndVisitCount(RetailerMasterBO retObj){
+    private void updatePlanAndVisitCount(RetailerMasterBO retObj) {
         try {
 
             Cursor c;
@@ -780,7 +780,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
      * @param retObj
      */
     @Override
-    public Single<DateWisePlanBo> updatePlanAndVisitCount(RetailerMasterBO retObj,DateWisePlanBo planBo) {
+    public Single<DateWisePlanBo> updatePlanAndVisitCount(RetailerMasterBO retObj, DateWisePlanBo planBo) {
 
         return Single.fromCallable(new Callable<DateWisePlanBo>() {
             @Override
@@ -793,6 +793,35 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 shutDownDb();
 
                 return planBo;
+            }
+        });
+    }
+
+    /**
+     * update retailer plan and visit count
+     *
+     * @param planList
+     */
+    @Override
+    public Single<Boolean> updatePlanVisitCount(List<DateWisePlanBo> planList) {
+
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+
+                initDb();
+                for (DateWisePlanBo dateWisePlanBo : planList) {
+                    for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
+                        if (retailerMasterBO.getRetailerID().equals("" + dateWisePlanBo.getEntityId())) {
+                            updatePlanAndVisitCount(retailerMasterBO);
+                        }
+                    }
+                }
+
+
+                shutDownDb();
+
+                return true;
             }
         });
     }
