@@ -49,6 +49,7 @@ public class DownloaderThreadNew extends Thread {
     // instance variables
     private Context parentActivity;
     private HashMap<String, String> downloadUrls;
+    private HashMap<String, String> sfdc_downloadUrls;
     private int userID;
     private Handler activityHandler;
 
@@ -76,10 +77,11 @@ public class DownloaderThreadNew extends Thread {
      * @param transferUtility  - Type of Data download , zip or apk or others
      */
     public DownloaderThreadNew(Context inParentActivity, Handler h,
-                               HashMap<String, String> imgUrls, int Userid, TransferUtility transferUtility) {
+                               HashMap<String, String> imgUrls, int Userid, TransferUtility transferUtility,HashMap<String, String> sfdcImgUrls) {
         if (imgUrls != null) {
             downloadUrls = imgUrls;
         }
+        sfdc_downloadUrls=sfdcImgUrls;
         parentActivity = inParentActivity;
         activityHandler = h;
         userID = Userid;
@@ -89,7 +91,7 @@ public class DownloaderThreadNew extends Thread {
             start_time = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
     }
 
-    public DownloaderThreadNew(Context context, Handler handler,  HashMap<String, String> imgUrls,int userID, CloudBlobContainer cloudBlobContainer) {
+    public DownloaderThreadNew(Context context, Handler handler,  HashMap<String, String> imgUrls,int userID, CloudBlobContainer cloudBlobContainer,HashMap<String, String> sfdcImgUrls) {
         parentActivity = context;
         activityHandler = handler;
         this.userID = userID;
@@ -97,6 +99,7 @@ public class DownloaderThreadNew extends Thread {
         if (imgUrls != null) {
             downloadUrls = imgUrls;
         }
+        sfdc_downloadUrls=sfdcImgUrls;
         bmodel = (BusinessModel) context.getApplicationContext();
         if (StringUtils.isEmptyString(start_time))
             start_time = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
@@ -144,12 +147,16 @@ public class DownloaderThreadNew extends Thread {
                         }
                     }
                 }
+
+
+
                 c.close();
-
-
                 db.closeDB();
+
+                mTotalSize = sfdc_downloadUrls.size()+downloadUrls.size();
+
                 msg = Message.obtain(activityHandler,
-                        DataMembers.MESSAGE_DOWNLOAD_STARTED, downloadUrls.size(), 0,
+                        DataMembers.MESSAGE_DOWNLOAD_STARTED, mTotalSize, 0,
                         "Digital Contents");
                 activityHandler.sendMessage(msg);
 
@@ -201,7 +208,6 @@ public class DownloaderThreadNew extends Thread {
 
                 float a = 0, b = 0;
 
-                mTotalSize = downloadUrls.size();
 
                 URL url;
                 URLConnection conn;
@@ -215,6 +221,151 @@ public class DownloaderThreadNew extends Thread {
                 File mfile, appfile, mPrintFile,mPrintFormatFile;
                 // AmazonS3Client s3 = null;
 
+                if(sfdc_downloadUrls.size()>0){
+
+                    for (Entry<String, String> imageurl : sfdc_downloadUrls.entrySet()) {
+                        try {
+                            String imagurl = SynchronizationHelper.instance_url + imageurl.getKey();
+                            String folderName = imageurl.getValue();
+
+                            // get the filename
+                            mFileName = "file.bin";
+
+                            index = imagurl.lastIndexOf('/');
+
+                            if (index >= 0) {
+                                String fileName[] = imagurl.split("%");
+                                mFileName = fileName[1];
+                                imagurl = fileName[0];
+                            }
+                            if (mFileName.equals("")) {
+                                mFileName = "file.bin";
+                            }
+                            // read and write the content
+
+                            if (folderName
+                                    .equalsIgnoreCase(DataMembers.APP_DIGITAL_CONTENT)) {
+                                outFile = new File(mAppDevicePath + "/"
+                                        + mFileName.replaceAll("%20", " "));
+                            } else if (folderName
+                                    .equalsIgnoreCase(DataMembers.PRINT)) {
+                                outFile = new File(mPrintDevicePath + "/"
+                                        + mFileName.replaceAll("%20", " "));
+
+                            } else if (folderName
+                                    .equalsIgnoreCase(DataMembers.PRINTFILE)) {
+                                outFile = new File(mPrintFileDevicePath + "/"
+                                        + mFileName.replaceAll("%20", " "));
+
+                            } else {
+
+                                mFolderPath = new File(mTranDevicePath + "/"
+                                        + folderName);
+
+                                if (!mFolderPath.exists())
+                                    mFolderPath.mkdir();
+
+                                outFile = new File(mFolderPath + "/"
+                                        + mFileName.replaceAll("%20", " "));
+                            }
+                            mfile = new File(mTranDevicePath + "/" + folderName + "/" + mFileName);
+                            appfile = new File(mAppDevicePath + "/" + mFileName);
+                            mPrintFile = new File(mPrintDevicePath + "/" + mFileName);
+                            mPrintFormatFile = new File(mPrintFileDevicePath + "/" + mFileName);
+
+
+                            if (mfile.exists()) {
+                                availe_flag = true;
+                            } else if (appfile.exists()) {
+                                availe_flag = true;
+                            } else if (mPrintFile.exists()) {
+                                availe_flag = true;
+                            } else if (mPrintFormatFile.exists()) {
+                                availe_flag = true;
+                            }  else {
+                                availe_flag = false;
+                            }
+                            if (!availe_flag) {
+                                // make connection
+                                url = new URL(imagurl.replaceAll(" ", "%20"));
+                                conn = url.openConnection();
+                                conn.setDoInput(true);
+                                conn.setConnectTimeout(CONNECTION_TIME_OUT);
+                                conn.addRequestProperty("Authorization", "Bearer " + SynchronizationHelper.access_token);
+                                conn.addRequestProperty("Content-Type", "application/json");
+                                conn.setUseCaches(false);
+
+                                if (!outFile.exists()) {
+
+                                    inStream = new BufferedInputStream(
+                                            conn.getInputStream(), DOWNLOAD_BUFFER_SIZE);
+
+                                    fileStream = new FileOutputStream(outFile);
+
+                                    outStream = new BufferedOutputStream(fileStream,
+                                            DOWNLOAD_BUFFER_SIZE);
+
+                                    byte[] data = new byte[DOWNLOAD_BUFFER_SIZE];
+
+                                    int bytesRead = 0;
+
+                                    while (!isInterrupted()
+                                            && (bytesRead = inStream.read(data, 0,
+                                            data.length)) >= 0) {
+                                        outStream.write(data, 0, bytesRead);
+                                    }
+
+                                    outStream.close();
+                                    fileStream.close();
+                                    inStream.close();
+                                }
+                                if (isInterrupted()) {
+                                    outFile.delete();
+                                    break;
+                                }
+
+                                i++;
+                                responseCount++;
+
+                                a = (float) i / (float) mTotalSize;
+                                b = a * 100;
+                                downloadPercentage = (int) b;
+
+                                msg = Message.obtain(activityHandler,
+                                        DataMembers.MESSAGE_UPDATE_PROGRESS_BAR,
+                                        downloadPercentage, 0);
+                                activityHandler.sendMessage(msg);
+
+                            } else {
+                                responseCount++;
+                                downloadPercentage = (int) (((float) responseCount / (float) mTotalSize) * 100);
+                                msg = Message.obtain(activityHandler,
+                                        DataMembers.MESSAGE_UPDATE_PROGRESS_BAR,
+                                        downloadPercentage, 0);
+                                activityHandler.sendMessage(msg);
+                            /*if (responseCount >= mTotalSize && !alertshown && !isImageDownloadCancelled) {
+
+                                alertshown = true;
+                                msg = Message.obtain(activityHandler,
+                                        DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC, 0, 0);
+                                activityHandler.sendMessage(msg);
+                            }*/
+                            }
+
+                        } catch (Exception e) {
+
+                            Commons.printException("Error in URL," + "" + e);
+                            continue;
+                        }
+
+                    }
+                    if (!isInterrupted()&&responseCount==mTotalSize) {
+                        msg = Message.obtain(activityHandler,
+                                DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC, 0, 0);
+                        activityHandler.sendMessage(msg);
+                    }
+
+                }
                 if (isAzureCloud) {
                     for (Entry<String, String> imageurl : downloadUrls.entrySet()) {
                         String imagurl = imageurl.getKey();
@@ -341,7 +492,8 @@ public class DownloaderThreadNew extends Thread {
                             Commons.printException(e);
                         }
                     }
-                }else {
+                }
+                else {
                     if (isAmazonCloud) {
                         System.setProperty("org.xml.sax.driver", "org.xmlpull.v1.sax2.Driver");
                         try {
@@ -582,6 +734,8 @@ public class DownloaderThreadNew extends Thread {
 
                     }
                 }
+
+
                 if (!isInterrupted() && !isAmazonCloud) {
                     msg = Message.obtain(activityHandler,
                             DataMembers.MESSAGE_DOWNLOAD_COMPLETE_DC, 0, 0);

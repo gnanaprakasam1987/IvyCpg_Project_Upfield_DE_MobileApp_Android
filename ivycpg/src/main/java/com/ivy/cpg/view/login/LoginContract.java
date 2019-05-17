@@ -65,9 +65,9 @@ public interface LoginContract {
 
         void goToDistributorSelection();
 
-        void downloadImagesThreadStart(HashMap<String, String> imgUrls, TransferUtility transferUtility);
+        void downloadImagesThreadStart(HashMap<String, String> imgUrls, TransferUtility transferUtility,HashMap<String, String> sfdcImgUrls);
 
-        void downloadImagesThreadStartFromAzure(HashMap<String, String> imgUrls, CloudBlobContainer cloudBlobContainer);
+        void downloadImagesThreadStartFromAzure(HashMap<String, String> imgUrls, CloudBlobContainer cloudBlobContainer,HashMap<String, String> sfdcImgUrls);
     }
 
 
