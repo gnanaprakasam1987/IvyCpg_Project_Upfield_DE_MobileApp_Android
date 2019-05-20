@@ -309,4 +309,5 @@
     <string name="retailer_selection_mandatory">Choose any one retailer</string>
 
     <string name="select_percentage">Select Percentage</string>
+    <string name="expected_resolution_date">Resolution Date</string>
 </resources>

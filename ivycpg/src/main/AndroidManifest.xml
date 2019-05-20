@@ -876,7 +876,8 @@
             android:exported="false" />
 
         <activity android:name="com.ivy.ui.DisplayAsset.DisplayAssetActivity" />
-        <activity android:name="com.ivy.ui.AssetServiceRequest.AssetServiceRequestActivity"></activity>
+        <activity android:name="com.ivy.ui.AssetServiceRequest.AssetServiceRequestActivity" />
+        <activity android:name="com.ivy.ui.AssetServiceRequest.NewAssetServiceRequest"></activity>
     </application>
 
 </manifest>

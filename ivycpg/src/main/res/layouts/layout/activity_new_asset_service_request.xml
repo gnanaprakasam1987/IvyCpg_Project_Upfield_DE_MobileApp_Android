@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ivy.ui.AssetServiceRequest.NewAssetServiceRequest"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dimen_10dp"
+    android:paddingRight="@dimen/dimen_10dp">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/layout_footer">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/label_asset_name"
+        style="@style/TextViewListItemSecondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/asset_name"
+        android:layout_marginTop="20dp"/>
+
+    <android.support.v7.widget.AppCompatSpinner
+        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+        android:id="@+id/spinner_assets"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:overlapAnchor="false"
+        android:spinnerMode="dialog"
+        android:minHeight="40dp"
+        />
+
+    <TextView
+        android:id="@+id/label_retailer_name"
+        style="@style/TextViewListItemSecondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/retailer_name"
+        android:layout_marginTop="20dp"/>
+    <android.support.v7.widget.AppCompatSpinner
+        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+        android:id="@+id/spinner_retailer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:overlapAnchor="false"
+        android:spinnerMode="dialog"
+        android:minHeight="40dp"
+        />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:weightSum="10">
+        <LinearLayout
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="6">
+            <TextView
+                android:id="@+id/label_serialNumber"
+                style="@style/TextViewListItemSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/serial_no"
+                />
+            <android.support.v7.widget.AppCompatEditText
+                style="@style/EditText_ListItem"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dimen_40dp"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="4">
+            <TextView
+                android:id="@+id/label_status"
+                style="@style/TextViewListItemSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/status"
+                />
+            <android.support.v7.widget.AppCompatSpinner
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+                android:id="@+id/spinner_status"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:overlapAnchor="false"
+                android:spinnerMode="dialog"
+                android:minHeight="40dp"
+                />
+
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="20dp"
+        android:weightSum="10">
+        <LinearLayout
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="6">
+            <TextView
+                android:id="@+id/label_issue_type"
+                style="@style/TextViewListItemSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/type"
+                />
+            <android.support.v7.widget.AppCompatSpinner
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+                android:id="@+id/spinner_issue_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:overlapAnchor="false"
+                android:spinnerMode="dialog"
+                android:minHeight="40dp"
+                />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="4">
+            <TextView
+                android:id="@+id/label_date"
+                style="@style/TextViewListItemSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/expected_resolution_date"
+                />
+            <android.support.v7.widget.AppCompatEditText
+                style="@style/EditText_ListItem"
+                android:id="@+id/button_resolution_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:overlapAnchor="false"
+                android:spinnerMode="dialog"
+                android:minHeight="40dp"
+                />
+
+        </LinearLayout>
+    </LinearLayout>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/label_photo"
+            style="@style/TextViewListItemSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/photo"
+            />
+
+        <LinearLayout
+            android:id="@+id/layout_photos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimen_5dp">
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/label_description"
+            style="@style/TextViewListItemSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/description"
+            android:layout_marginTop="@dimen/dimen_20dp"
+            />
+        <android.support.v7.widget.AppCompatEditText
+            style="?attr/boxCustomButtonSmallGrey"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_100dp"
+            android:layout_marginTop="@dimen/dimen_5dp"/>
+
+
+    </LinearLayout>
+        </LinearLayout>
+
+    </ScrollView>
+            <LinearLayout
+                android:id="@+id/layout_footer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:gravity="end|center_vertical"
+                android:padding="@dimen/dimen_5dp"
+                >
+                <Button
+                    android:id="@+id/btn_cancel"
+                    style="?attr/roundedCustomButtonSmallGrey"
+                    android:layout_margin="@dimen/target_top_margin"
+                    android:text="@string/cancel"
+                    android:textAllCaps="false"
+                    />
+                <Button
+                    android:id="@+id/btn_next"
+                    style="?attr/roundedCustomButtonSmall"
+                    android:layout_margin="@dimen/target_top_margin"
+                    android:text="@string/save"
+                    android:textAllCaps="false"
+                    />
+
+            </LinearLayout>
+
+</RelativeLayout>
