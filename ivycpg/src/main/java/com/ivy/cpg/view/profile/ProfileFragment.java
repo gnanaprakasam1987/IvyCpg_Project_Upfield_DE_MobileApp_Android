@@ -482,7 +482,7 @@ public class ProfileFragment extends IvyBaseFragment {
                                     Thread downloaderThread = new DownloaderThreadNew(getActivity(),
                                             activityHandler, hashMap,
                                             bmodel.userMasterHelper.getUserMasterBO()
-                                                    .getUserid(), transferUtility);
+                                                    .getUserid(), transferUtility,new HashMap<String, String>());
                                     downloaderThread.start();
                                 }
                             }
