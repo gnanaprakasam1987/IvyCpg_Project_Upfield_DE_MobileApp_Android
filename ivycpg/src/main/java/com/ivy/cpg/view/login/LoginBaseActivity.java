@@ -597,22 +597,23 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
     }
 
     @Override
-    public void downloadImagesThreadStart(HashMap<String, String> imgUrls, TransferUtility transferUtility) {
+    public void downloadImagesThreadStart(HashMap<String, String> imgUrls, TransferUtility transferUtility, HashMap<String, String> sfdcImgUrls) {
         Thread downloaderThread = new DownloaderThreadNew(LoginBaseActivity.this,
                 fileDownloadHandler, imgUrls,
                 businessModel.userMasterHelper.getUserMasterBO()
-                        .getUserid(), transferUtility);
+                        .getUserid(), transferUtility,sfdcImgUrls);
         downloaderThread.start();
     }
 
     @Override
-    public void downloadImagesThreadStartFromAzure(HashMap<String, String> imgUrls, CloudBlobContainer cloudBlobContainer){
+    public void downloadImagesThreadStartFromAzure(HashMap<String, String> imgUrls, CloudBlobContainer cloudBlobContainer, HashMap<String, String> sfdcImgUrls) {
         Thread downloadThread = new DownloaderThreadNew(LoginBaseActivity.this,fileDownloadHandler,imgUrls,
                 businessModel.userMasterHelper.getUserMasterBO().getUserid(),
-                cloudBlobContainer);
+                cloudBlobContainer,sfdcImgUrls);
         downloadThread.start();
     }
 
+  
     private void callProgressDialog(String title, String message, int maxValue, Message newMsg, boolean isHorizontalStyle) {
         progressDialog = new ProgressDialog(LoginBaseActivity.this);
         progressDialog.setTitle(title);

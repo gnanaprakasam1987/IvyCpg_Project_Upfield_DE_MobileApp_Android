@@ -300,7 +300,7 @@ public class BusinessModel extends Application {
 
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID = new HashMap<String, ArrayList<UserMasterBO>>();
     private boolean isDoubleEdit_temp;
-    private HashMap<String, String> digitalContentURLS;
+    private HashMap<String, String> digitalContentURLS,digitalContentSFDCURLS;
     private Handler handler;
     private Message mMessage;
     private File folder;
@@ -1598,6 +1598,10 @@ public class BusinessModel extends Application {
                     retailer.setHangingOrder(false);
                     retailer.setIndicateFlag(0);
                     retailer.setIsCollectionView("N");
+
+                    //set global gps distance for retailer from the config:GPSDISTANCE
+                    if (retailer.getGpsDistance() <=0 && configurationMasterHelper.GLOBAL_GPS_DISTANCE > 0)
+                        retailer.setGpsDistance(configurationMasterHelper.GLOBAL_GPS_DISTANCE);
 
                     updateRetailerPriceGRP(retailer, db);
 
@@ -3556,6 +3560,8 @@ public class BusinessModel extends Application {
         getimageDownloadURL();
         setDigitalContentURLS(new HashMap<>());
         setDigitalContentLargeFileURLS(new HashMap<>());
+        setDigitalContentSFDCURLS(new HashMap<>());
+
         configurationMasterHelper.getDigitalContentSize();
 
         boolean isDigiContentAvail = false;
@@ -3618,29 +3624,34 @@ public class BusinessModel extends Application {
                 }
             }
 
-            c = db.selectSQL("SELECT DISTINCT ImageURL,fileSize,imageid,imagename FROM DigitalContentMaster");
+            c = db.selectSQL("SELECT DISTINCT ImageURL,fileSize,imageid,imagename,ifnull(SM.listCode,'') FROM DigitalContentMaster left join standardListMaster SM ON SM.listId=storageType");
             if (c != null) {
                 while (c.moveToNext()) {
 
-                    if (configurationMasterHelper.DIGITAL_CONTENT_SIZE != -1 &&
-                            configurationMasterHelper.DIGITAL_CONTENT_SIZE < c.getLong(1)) {
-                        DigitalContentModel digitalContentBO = new DigitalContentModel();
+                    if(c.getString(4).equalsIgnoreCase("SFDC")){// SFDC type
+                        getDigitalContentSFDCURLS().put(c.getString(0) + "%" + c.getString(3) ,DataMembers.DIGITALCONTENT);
+                    }
+                    else {
+                        if (configurationMasterHelper.DIGITAL_CONTENT_SIZE != -1 &&
+                                configurationMasterHelper.DIGITAL_CONTENT_SIZE < c.getLong(1)) {
+                            DigitalContentModel digitalContentBO = new DigitalContentModel();
 
-                        String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
-                        digitalContentBO.setFileSize(c.getString(1));
-                        digitalContentBO.setImageID(c.getInt(2));
-                        digitalContentBO.setImgUrl(downloadUrl);
-                        digitalContentBO.setContentFrom(DataMembers.DIGITALCONTENT);
-                        digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+                            String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                            digitalContentBO.setFileSize(c.getString(1));
+                            digitalContentBO.setImageID(c.getInt(2));
+                            digitalContentBO.setImgUrl(downloadUrl);
+                            digitalContentBO.setContentFrom(DataMembers.DIGITALCONTENT);
+                            digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
 
-                        digitalContentLargeFileURLS.put(digitalContentBO.getImageID(), digitalContentBO);
+                            digitalContentLargeFileURLS.put(digitalContentBO.getImageID(), digitalContentBO);
 
-                    } else {
+                        } else {
 
-                        getDigitalContentURLS().put(
-                                DataMembers.IMG_DOWN_URL + "" + c.getString(0),
-                                DataMembers.DIGITALCONTENT);
+                            getDigitalContentURLS().put(
+                                    DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                                    DataMembers.DIGITALCONTENT);
 
+                        }
                     }
 
                 }
@@ -3758,6 +3769,14 @@ public class BusinessModel extends Application {
 
     public void setDigitalContentURLS(HashMap<String, String> digitalContentURLS) {
         this.digitalContentURLS = digitalContentURLS;
+    }
+
+    public HashMap<String, String> getDigitalContentSFDCURLS() {
+        return digitalContentSFDCURLS;
+    }
+
+    public void setDigitalContentSFDCURLS(HashMap<String, String> digitalContentSFDCURLS) {
+        this.digitalContentSFDCURLS = digitalContentSFDCURLS;
     }
 
     public Vector<RetailerMasterBO> getRetailerMaster() {
