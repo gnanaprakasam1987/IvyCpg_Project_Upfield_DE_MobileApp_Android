@@ -4,7 +4,6 @@ import android.text.format.DateUtils;
 
 import com.ivy.calendarlibrary.weekview.WeekViewEvent;
 import com.ivy.core.base.presenter.BasePresenter;
-import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
@@ -13,6 +12,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.retailer.viewretailers.data.RetailerDataManager;
 import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
+import com.ivy.ui.retailerplan.addplan.data.AddPlanDataManager;
 import com.ivy.ui.retailerplan.calendar.CalendarPlanContract;
 import com.ivy.ui.retailerplan.calendar.bo.CalenderBO;
 import com.ivy.ui.retailerplan.calendar.data.CalendarPlanDataManager;
@@ -28,13 +28,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
-import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
 
 import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.functions.Consumer;
 
 import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
 
@@ -54,7 +52,8 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     private List<WeekViewEvent> allEvents = new ArrayList<>();
     private ArrayList<DateWisePlanBo> selectedDateRetailerPlanList;
     private HashMap<String, DateWisePlanBo> selectedDateRetailerPlanMap;
-    private AppDataProvider appDataProvider;
+    private AddPlanDataManager addPlanDataManager;
+    private com.ivy.core.data.retailer.RetailerDataManager coreRetailerDataManager;
 
     @Inject
     CalendarPlanPresenterImpl(DataManager dataManager,
@@ -62,13 +61,15 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                               CompositeDisposable compositeDisposable,
                               ConfigurationMasterHelper configurationMasterHelper,
                               V view,
-                              AppDataProvider appDataProvider,
                               CalendarPlanDataManager calendarPlanDataManager,
-                              RetailerDataManager retailerDataManager) {
+                              RetailerDataManager retailerDataManager,
+                              com.ivy.core.data.retailer.RetailerDataManager coreRetailerDataManager,
+                              AddPlanDataManager addPlanDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
         this.calendarPlanDataManager = calendarPlanDataManager;
         this.retailerDataManager = retailerDataManager;
-        this.appDataProvider = appDataProvider;
+        this.addPlanDataManager = addPlanDataManager;
+        this.coreRetailerDataManager = coreRetailerDataManager;
 
     }
 
@@ -79,12 +80,9 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         getCompositeDisposable().add(retailerDataManager.getAllDateRetailerPlanList()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<HashMap<String, List<DateWisePlanBo>>>() {
-                    @Override
-                    public void accept(HashMap<String, List<DateWisePlanBo>> listHashMap) throws Exception {
-                        plannedListMap = listHashMap;
-                        updateEvents(onCreate);
-                    }
+                .subscribe(listHashMap -> {
+                    plannedListMap = listHashMap;
+                    updateEvents(onCreate);
                 }));
     }
 
@@ -92,48 +90,42 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         getCompositeDisposable().add(getEvents()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<List<WeekViewEvent>>() {
-                    @Override
-                    public void accept(List<WeekViewEvent> events) throws Exception {
-                        getIvyView().hideLoading();
-                        allEvents.clear();
-                        allEvents.addAll(events);
-                        if (onCreate) {
-                            setPlanDates();
-                            loadCalendar();
-                        } else {
-                            getIvyView().reloadView();
-                        }
+                .subscribe(events -> {
+                    getIvyView().hideLoading();
+                    allEvents.clear();
+                    allEvents.addAll(events);
+                    if (onCreate) {
+                        setPlanDates();
+                        loadCalendar();
+                    } else {
+                        getIvyView().reloadView();
                     }
                 }));
     }
 
 
     private Single<List<WeekViewEvent>> getEvents() {
-        return Single.fromCallable(new Callable<List<WeekViewEvent>>() {
-            @Override
-            public List<WeekViewEvent> call() throws Exception {
-                List<WeekViewEvent> events = new ArrayList<>();
-                for (Object o : plannedListMap.entrySet()) {
-                    Map.Entry pair = (Map.Entry) o;
-                    System.out.println(pair.getKey() + " = " + pair.getValue());
-                    for (DateWisePlanBo dateWisePlanBo : (ArrayList<DateWisePlanBo>) pair.getValue()) {
-                        if (dateWisePlanBo.getStartTime().length() > 0 && dateWisePlanBo.getEndTime().length() > 0) {
-                            Calendar startTime = Calendar.getInstance();
-                            startTime.setTime(DateTimeUtils.convertStringToDateObject(dateWisePlanBo.getDate() + " " +
-                                    dateWisePlanBo.getStartTime(), "yyyy/MM/dd HH:mm"));
-                            Calendar endTime = (Calendar) startTime.clone();
-                            endTime.setTime(DateTimeUtils.convertStringToDateObject(dateWisePlanBo.getDate() + " " +
-                                    dateWisePlanBo.getEndTime(), "yyyy/MM/dd HH:mm"));
-                            WeekViewEvent event = new WeekViewEvent(dateWisePlanBo.getPlanId(), dateWisePlanBo.getName(), dateWisePlanBo.getRetailerAddress(), startTime, endTime);
-                            event.setColor(R.attr.colorPrimary);
-                            event.setRetailerId("" + dateWisePlanBo.getEntityId());
-                            events.add(event);
-                        }
+        return Single.fromCallable(() -> {
+            List<WeekViewEvent> events = new ArrayList<>();
+            for (Object o : plannedListMap.entrySet()) {
+                Map.Entry pair = (Map.Entry) o;
+                System.out.println(pair.getKey() + " = " + pair.getValue());
+                for (DateWisePlanBo dateWisePlanBo : (ArrayList<DateWisePlanBo>) pair.getValue()) {
+                    if (dateWisePlanBo.getStartTime().length() > 0 && dateWisePlanBo.getEndTime().length() > 0) {
+                        Calendar startTime = Calendar.getInstance();
+                        startTime.setTime(DateTimeUtils.convertStringToDateObject(dateWisePlanBo.getDate() + " " +
+                                dateWisePlanBo.getStartTime(), "yyyy/MM/dd HH:mm"));
+                        Calendar endTime = (Calendar) startTime.clone();
+                        endTime.setTime(DateTimeUtils.convertStringToDateObject(dateWisePlanBo.getDate() + " " +
+                                dateWisePlanBo.getEndTime(), "yyyy/MM/dd HH:mm"));
+                        WeekViewEvent event = new WeekViewEvent(dateWisePlanBo.getPlanId(), dateWisePlanBo.getName(), dateWisePlanBo.getRetailerAddress(), startTime, endTime);
+                        event.setColor(R.attr.colorPrimary);
+                        event.setRetailerId("" + dateWisePlanBo.getEntityId());
+                        events.add(event);
                     }
                 }
-                return events;
             }
+            return events;
         });
     }
 
@@ -181,10 +173,10 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         String[] calendarDate = getMonthRange();
         int dayInWeekCount = getWeekDayCount(calendarDate[0]);
         mCalenderAllList = getDaysBetweenDates(calendarDate[0], calendarDate[1]);
-        getIvyView().loadCalendarView(mAllowedDates, dayInWeekCount, mCalenderAllList, isPastDate());
+        getIvyView().loadCalendarView(mAllowedDates, dayInWeekCount, mCalenderAllList);
         getIvyView().setMonthName(DateTimeUtils.convertDateObjectToRequestedFormat(
                 currentMonth.getTime(), "MMM yyyy"));
-        getIvyView().loadBottomSheet(getADayPlan(mSelectedDate));
+        getIvyView().loadRetailerInfoBtmSheet(getADayPlan(mSelectedDate));
     }
 
     @Override
@@ -503,14 +495,11 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         getCompositeDisposable().add(retailerDataManager.getRetailerPlanList(date)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<HashMap<String, DateWisePlanBo>>() {
-                    @Override
-                    public void accept(HashMap<String, DateWisePlanBo> listHashMap) throws Exception {
-                        selectedDateRetailerPlanMap = listHashMap;
-                        selectedDateRetailerPlanList = new ArrayList<>(listHashMap.values());
-                        getIvyView().hideLoading();
-                        getIvyView().loadAddPlanDialog(date, retailerMasterBO);
-                    }
+                .subscribe(listHashMap -> {
+                    selectedDateRetailerPlanMap = listHashMap;
+                    selectedDateRetailerPlanList = new ArrayList<>(listHashMap.values());
+                    getIvyView().hideLoading();
+                    getIvyView().loadAddPlanDialog(date, retailerMasterBO);
                 }));
     }
 
@@ -527,7 +516,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     @Override
     public RetailerMasterBO getPlanedRetailerBo(String retailerId) {
         RetailerMasterBO retailerMasterBO = null;
-        for (RetailerMasterBO rBo : appDataProvider.getRetailerMasters()) {
+        for (RetailerMasterBO rBo : getDataManager().getRetailerMasters()) {
             if (rBo.getRetailerID().equalsIgnoreCase(retailerId)) {
                 retailerMasterBO = rBo;
                 break;
@@ -538,8 +527,48 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
 
     @Override
     public boolean isPastDate() {
-        int difference = DateTimeUtils.getDateCount(mSelectedDate,DateTimeUtils.now(DATE_GLOBAL),"yyyy/MM/dd");
+        int difference = DateTimeUtils.getDateCount(mSelectedDate, DateTimeUtils.now(DATE_GLOBAL), "yyyy/MM/dd");
         return difference > 0;
+    }
+
+    @Override
+    public long getMaxPlanDate() {
+        return Objects.requireNonNull(DateTimeUtils.convertStringToDateObject(planToDate, generalPattern)).getTime();
+    }
+
+    @Override
+    public void deleteAndCopyPlan(String fromDate, String toDate) {
+        getIvyView().showLoading();
+        List<DateWisePlanBo> planList = getADayPlan(toDate);
+        getCompositeDisposable().add(addPlanDataManager.deletePlan(planList)
+                .flatMap(aBoolean -> coreRetailerDataManager.updatePlanVisitCount(planList))
+                .flatMap(aBoolean -> addPlanDataManager.copyPlan(getADayPlan(fromDate), toDate))
+                .flatMap(aBoolean -> coreRetailerDataManager.updatePlanVisitCount(getADayPlan(fromDate)))
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(aBoolean ->
+                {
+                    getIvyView().hideLoading();
+                    fetchEventsFromDb(false);
+                }));
+
+    }
+
+
+    @Override
+    public void copyPlan(String fromDate, String toDate) {
+        getIvyView().showLoading();
+        List<DateWisePlanBo> planList = getADayPlan(fromDate);
+        getCompositeDisposable().add(addPlanDataManager.copyPlan(planList, toDate)
+                .flatMap(aBoolean -> coreRetailerDataManager.updatePlanVisitCount(planList))
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe((aBoolean, throwable) ->
+                {
+                    getIvyView().hideLoading();
+                    fetchEventsFromDb(false);
+                }));
+
     }
 
 }

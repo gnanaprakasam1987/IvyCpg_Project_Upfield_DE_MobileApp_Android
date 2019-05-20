@@ -272,7 +272,10 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     @Override
     public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, CommonDialog.negativeOnClickListener negativeOnClickListener) {
-        ((BaseActivity) getActivity()).showAlert(title, msg, positiveClickListener, negativeOnClickListener);
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).showAlert(title, msg, positiveClickListener, negativeOnClickListener);
+        else if (getActivity() instanceof IvyBaseActivityNoActionBar)
+            ((IvyBaseActivityNoActionBar) getActivity()).showAlert(title, msg, positiveClickListener, negativeOnClickListener);
     }
 
     @Override

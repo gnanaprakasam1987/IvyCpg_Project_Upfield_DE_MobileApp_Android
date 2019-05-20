@@ -3,6 +3,8 @@ package com.ivy.ui.retailerplan.calendar.di;
 import android.content.Context;
 
 import com.ivy.core.di.scope.PerActivity;
+import com.ivy.ui.retailerplan.addplan.data.AddPlanDataManager;
+import com.ivy.ui.retailerplan.addplan.data.AddPlanDataManagerImpl;
 import com.ivy.ui.retailerplan.calendar.CalendarPlanContract;
 import com.ivy.ui.retailerplan.calendar.data.CalendarPlanDataManager;
 import com.ivy.ui.retailerplan.calendar.data.CalendarPlanDataManagerImpl;
@@ -61,6 +63,16 @@ public class CalendarPlanModule {
     RetailerDataManager retailerDataManager(RetailerDataManagerImpl retailerDataManagerImpl){
         return retailerDataManagerImpl;
     }
+
+    @Provides
+    AddPlanDataManager addPlanDataManager(AddPlanDataManagerImpl addPlanDataManagerImpl){
+        return addPlanDataManagerImpl;
+    }
+    @Provides
+    com.ivy.core.data.retailer.RetailerDataManager coreRetailerDataManager(com.ivy.core.data.retailer.RetailerDataManagerImpl retailerDataManagerImpl){
+        return retailerDataManagerImpl;
+    }
+
 }
 
 

@@ -18,7 +18,7 @@ import java.util.List;
 public interface CalendarPlanContract {
 
     interface CalendarPlanView extends BaseIvyView {
-        void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList,boolean ispastDate);
+        void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList);
 
         void setMonthName(String monthName);
 
@@ -28,7 +28,7 @@ public interface CalendarPlanContract {
 
         void loadTopWeekView(ArrayList<CalenderBO> mCalenderAllList, ArrayList<String> mAllowedDates);
 
-        void loadBottomSheet(List<DateWisePlanBo> retailerInfoList);
+        void loadRetailerInfoBtmSheet(List<DateWisePlanBo> retailerInfoList);
 
         void reloadView();
 
@@ -74,6 +74,12 @@ public interface CalendarPlanContract {
         RetailerMasterBO getPlanedRetailerBo (String retailerId);
 
         boolean isPastDate();
+
+        long getMaxPlanDate();
+
+        void deleteAndCopyPlan(String fromDate,String toDate);
+
+        void copyPlan(String fromDate,String toDate);
 
     }
 }

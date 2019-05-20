@@ -211,6 +211,9 @@ public class RetailerListFragment extends BaseFragment implements RetailerContra
 
     @Override
     public void onRetailerSelected(RetailerMasterBO retailerMasterBO) {
+
+        presenter.setRetailerMasterBo(retailerMasterBO);
+
         AddPlanDialogFragment addPlanDialogFragment;
         ArrayList<DateWisePlanBo> planList = presenter.getSelectedDateRetailerPlanList();
         if(mStartTime.length()==0)

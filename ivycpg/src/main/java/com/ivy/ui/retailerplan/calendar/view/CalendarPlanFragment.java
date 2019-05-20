@@ -1,6 +1,7 @@
 package com.ivy.ui.retailerplan.calendar.view;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.RectF;
@@ -36,7 +37,9 @@ import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.ui.retailer.viewretailers.view.list.RetailerListActivity;
 import com.ivy.ui.retailer.viewretailers.view.map.RetailerMapFragment;
 import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
@@ -57,6 +60,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
@@ -106,7 +110,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     CoordinatorLayout coordinatorLayout;
 
     RecyclerView rvRetailerInfo;
-    TextView tvNoPlan;
+    TextView tvNoPlan, tvNoVisit, tvFromDate, tvToDate, tvCopyPlan;
 
     @Inject
     CalendarPlanContract.CalendarPlanPresenter<CalendarPlanContract.CalendarPlanView> presenter;
@@ -116,7 +120,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     private int mSelectedType = 0;
     private final int MONTH = 0, DAY = 1, WEEK = 2;
     private Context mContext;
-    private BottomSheetBehavior behavior;
+    private BottomSheetBehavior rtlInfoBehavior, copyPlanBehavior;
     public static final int REQUEST_CODE = 1;
 
     @Override
@@ -152,6 +156,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         setUpToolbar(screenTitle);
         setHasOptionsMenu(true);
         initRetailerInfoBottmSheet();
+        initCopyPlanBottmSheet();
         presenter.fetchEventsFromDb(true);
 
         rvWeek.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -177,6 +182,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         mWeekView.setTimeTextPaint(getResources().getColor(R.color.black_bg1));
 
         ivNext.setOnClickListener(v -> {
+            hideCopyPlanBottomSheet();
             if (mSelectedType == WEEK || mSelectedType == DAY)
                 presenter.onNextWeekClicked(mSelectedType == DAY);
             else
@@ -185,11 +191,11 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         });
 
         ivPrev.setOnClickListener(v -> {
+            hideCopyPlanBottomSheet();
             if (mSelectedType == WEEK || mSelectedType == DAY)
                 presenter.onPreviousWeekClicked(mSelectedType == DAY);
             else
                 presenter.onPreviousMonthClicked();
-
         });
 
 
@@ -211,7 +217,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                     fabAddRetailer.setVisibility(View.GONE);
                     rvWeek.setVisibility(View.VISIBLE);
                     mWeekView.setVisibility(View.VISIBLE);
-                    hideBottomSheet();
+                    hideRetailerInfoBottomSheet();
                     presenter.loadADay();
                 } else {
                     mSelectedType = WEEK;
@@ -220,16 +226,28 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                     fabAddRetailer.setVisibility(View.GONE);
                     rvWeek.setVisibility(View.VISIBLE);
                     mWeekView.setVisibility(View.VISIBLE);
-                    hideBottomSheet();
+                    hideRetailerInfoBottomSheet();
                     presenter.loadAWeek();
                 }
             }
+            getActivity().invalidateOptionsMenu();
         });
 
         fabAddRetailer.setOnClickListener(v -> {
             Intent i = new Intent(getActivity(), RetailerListActivity.class);
             i.putExtra("selectedDate", presenter.getSelectedDate());
             startActivityForResult(i, REQUEST_CODE);
+        });
+
+        tvToDate.setOnClickListener(v -> {
+            showDatePickerDialog();
+        });
+
+        tvCopyPlan.setOnClickListener(v -> {
+            if (tvToDate.getText().toString().equals(mContext.getResources().getString(R.string.select_date)))
+                showMessage(mContext.getResources().getString(R.string.text_select_date));
+            else
+                proceesCopyPlan(tvFromDate.getText().toString(), tvToDate.getText().toString());
         });
     }
 
@@ -242,16 +260,50 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     }
 
     private void initRetailerInfoBottmSheet() {
-        View persistentbottomSheet = coordinatorLayout.findViewById(R.id.bottomsheet);
-        tvNoPlan = persistentbottomSheet.findViewById(R.id.tv_no_plan);
-        rvRetailerInfo = persistentbottomSheet.findViewById(R.id.rvRetailerInfo);
+        View retailerInfoBtmSheet = coordinatorLayout.findViewById(R.id.bottomsheet);
+        tvNoPlan = retailerInfoBtmSheet.findViewById(R.id.tv_no_plan);
+        rvRetailerInfo = retailerInfoBtmSheet.findViewById(R.id.rvRetailerInfo);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false);
         rvRetailerInfo.setLayoutManager(linearLayoutManager);
 
-        behavior = BottomSheetBehavior.from(persistentbottomSheet);
+        rtlInfoBehavior = BottomSheetBehavior.from(retailerInfoBtmSheet);
 
-        if (behavior != null)
-            behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+        if (rtlInfoBehavior != null)
+            rtlInfoBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                @Override
+                public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                    switch (newState) {
+                        case BottomSheetBehavior.STATE_HIDDEN:
+                            break;
+                        case BottomSheetBehavior.STATE_EXPANDED:
+                            break;
+                        case BottomSheetBehavior.STATE_COLLAPSED:
+                            break;
+                        case BottomSheetBehavior.STATE_DRAGGING:
+                            break;
+                        case BottomSheetBehavior.STATE_SETTLING:
+                            break;
+                    }
+                }
+
+                @Override
+                public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+                }
+            });
+    }
+
+    private void initCopyPlanBottmSheet() {
+        View copyPlanBtmSheet = coordinatorLayout.findViewById(R.id.copy_plan_btm_sheet);
+        tvNoVisit = copyPlanBtmSheet.findViewById(R.id.tv_no_visit_value);
+        tvFromDate = copyPlanBtmSheet.findViewById(R.id.tv_from_date_value);
+        tvToDate = copyPlanBtmSheet.findViewById(R.id.tv_to_date_value);
+        tvCopyPlan = copyPlanBtmSheet.findViewById(R.id.tv_copy_plan);
+
+        copyPlanBehavior = BottomSheetBehavior.from(copyPlanBtmSheet);
+
+        if (copyPlanBehavior != null)
+            copyPlanBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
                 @Override
                 public void onStateChanged(@NonNull View bottomSheet, int newState) {
                     switch (newState) {
@@ -276,10 +328,10 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     }
 
     @Override
-    public void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList, boolean isPastDate) {
+    public void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList) {
         MonthViewAdapter monthViewAdapter = new MonthViewAdapter(getActivity(), dayInWeekCount, mCalenderAllList, mAllowedDates, this);
         rvCalendar.setAdapter(monthViewAdapter);
-        if (isPastDate)
+        if (presenter.isPastDate())
             fabAddRetailer.setVisibility(View.GONE);
         else
             fabAddRetailer.setVisibility(View.VISIBLE);
@@ -314,9 +366,9 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     }
 
     @Override
-    public void loadBottomSheet(List<DateWisePlanBo> retailerInfoList) {
-        if (behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
-            behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+    public void loadRetailerInfoBtmSheet(List<DateWisePlanBo> retailerInfoList) {
+        if (rtlInfoBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+            rtlInfoBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
         }
         if (retailerInfoList.size() > 0) {
             tvNoPlan.setVisibility(View.GONE);
@@ -336,11 +388,11 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                 break;
             case DAY:
                 mWeekView.notifyDatasetChanged();
-                hideBottomSheet();
+                hideRetailerInfoBottomSheet();
                 break;
             case WEEK:
                 mWeekView.notifyDatasetChanged();
-                hideBottomSheet();
+                hideRetailerInfoBottomSheet();
                 break;
         }
     }
@@ -356,12 +408,17 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     }
 
 
-    private void hideBottomSheet() {
-        if (behavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
-            behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+    private void hideRetailerInfoBottomSheet() {
+        if (rtlInfoBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            rtlInfoBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
     }
 
+    private void hideCopyPlanBottomSheet() {
+        if (copyPlanBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+            copyPlanBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+        }
+    }
 
     @Override
     public void onADayRetailerSelected(String selectedDate) {
@@ -372,6 +429,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     @Override
     public void onWeekDateSelected(String selectedDate) {
+        hideCopyPlanBottomSheet();
         showMessage(selectedDate);
         presenter.setSelectedDate(selectedDate);
         if (mSelectedType == DAY)
@@ -386,7 +444,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
             fabAddRetailer.setVisibility(View.GONE);
         else
             fabAddRetailer.setVisibility(View.VISIBLE);
-        loadBottomSheet(planList);
+        loadRetailerInfoBtmSheet(planList);
 
     }
 
@@ -398,6 +456,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     @Override
     public void onEmptyViewClicked(Calendar time) {
+        hideCopyPlanBottomSheet();
         Commons.print(String.format(Locale.ENGLISH, "Event of %02d:%02d %s/%d",
                 time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE),
                 time.get(Calendar.MONTH) + 1, time.get(Calendar.DAY_OF_MONTH)));
@@ -413,6 +472,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     @Override
     public void onEventClick(WeekViewEvent event, RectF eventRect) {
+        hideCopyPlanBottomSheet();
         RetailerMasterBO retailerMasterBO = presenter.getPlanedRetailerBo(event.getRetailerId());
         if (retailerMasterBO != null) {
             presenter.fetchSelectedDateRetailerPlan(DateTimeUtils.convertDateObjectToRequestedFormat
@@ -454,6 +514,8 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         menu.findItem(R.id.filter).setVisible(false);
         menu.findItem(R.id.calendar).setVisible(false);
         menu.findItem(R.id.search).setVisible(false);
+        menu.findItem(R.id.copy).setVisible(mSelectedType == DAY);
+        hideCopyPlanBottomSheet();
     }
 
     @Override
@@ -482,9 +544,25 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
             ft.replace(R.id.fragment_content, fragment, MENU_MAP_PLAN);
             ft.commit();
             return true;
+        } else if (item.getItemId() == R.id.copy) {
+            loadCopyPlanBtmSheet();
+            return true;
         }
 
         return false;
+    }
+
+    private void loadCopyPlanBtmSheet() {
+        int no_of_visits = presenter.getADayPlan(presenter.getSelectedDate()).size();
+        if (no_of_visits > 0) {
+            if (copyPlanBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
+                copyPlanBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                tvFromDate.setText(presenter.getSelectedDate());
+                tvNoVisit.setText("" + no_of_visits);
+                tvToDate.setText(mContext.getResources().getString(R.string.select_date));
+            }
+        } else
+            showMessage(mContext.getResources().getString(R.string.plan_not_available));
     }
 
     @Override
@@ -511,5 +589,47 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     @Subscribe
     public void onMessageEvent(Object obj) {
         presenter.fetchEventsFromDb(false);
+    }
+
+    private void showDatePickerDialog() {
+        Calendar c = Calendar.getInstance();
+        int year = c.get(Calendar.YEAR);
+        int month = c.get(Calendar.MONTH);
+        int day = c.get(Calendar.DAY_OF_MONTH);
+
+        MyDatePickerDialog d = new MyDatePickerDialog(mContext, R.style.SellerDatePickerStyle,
+                mDateSetListener, year, month, day);
+        d.setPermanentTitle(getString(R.string.choose_date));
+        d.getDatePicker().setMinDate(c.getTimeInMillis());
+        d.getDatePicker().setMaxDate(presenter.getMaxPlanDate());
+        d.show();
+    }
+
+    private DatePickerDialog.OnDateSetListener mDateSetListener = (view, year, month, day) -> {
+        Calendar selectedDate = new GregorianCalendar(year, month, day);
+        tvToDate.setText(DateTimeUtils.convertDateObjectToRequestedFormat(selectedDate.getTime(), generalPattern));
+
+    };
+
+    private void proceesCopyPlan(String fromDate, String toDate) {
+        if (presenter.getADayPlan(toDate).size() > 0) {
+            showAlert("", mContext.getResources().getString(R.string.do_you_want_delete_plan_copy),
+                    new CommonDialog.PositiveClickListener() {
+                        @Override
+                        public void onPositiveButtonClick() {
+                            hideCopyPlanBottomSheet();
+                            presenter.deleteAndCopyPlan(fromDate, toDate);
+                        }
+                    }, new CommonDialog.negativeOnClickListener() {
+                        @Override
+                        public void onNegativeButtonClick() {
+
+                        }
+                    });
+        } else {
+            hideCopyPlanBottomSheet();
+            presenter.copyPlan(fromDate, toDate);
+        }
+
     }
 }
