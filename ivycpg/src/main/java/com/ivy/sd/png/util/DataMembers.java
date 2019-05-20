@@ -275,7 +275,7 @@ public class DataMembers {
     public static final String tbl_DTPMaster = "DTPMaster";
     public static final String tbl_retailerMaster = "RetailerMaster";
 
-    public static final String tbl_AssetService = "AssetServiceRequest";
+    public static final String tbl_AssetService = "AssetServiceRequestActivity";
     private static final String tbl_AssetService_cols = "Uid,date,AssetId,serialNum,reasonid,retailerid";
 
     public static final String tbl_AssetAddDelete = "AssetAddDelete";

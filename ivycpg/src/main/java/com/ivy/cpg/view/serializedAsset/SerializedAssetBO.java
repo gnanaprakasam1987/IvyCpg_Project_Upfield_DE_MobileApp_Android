@@ -43,6 +43,16 @@ public class SerializedAssetBO {
     private String assetBarCodeId;
     private String assetBarCodeReason;
 
+    public String getAssetServiceReqStatus() {
+        return assetServiceReqStatus;
+    }
+
+    public void setAssetServiceReqStatus(String assetServiceReqStatus) {
+        this.assetServiceReqStatus = assetServiceReqStatus;
+    }
+
+    private String assetServiceReqStatus="Pending";
+
     public String getAssetBarCodeId() {
         return assetBarCodeId;
     }

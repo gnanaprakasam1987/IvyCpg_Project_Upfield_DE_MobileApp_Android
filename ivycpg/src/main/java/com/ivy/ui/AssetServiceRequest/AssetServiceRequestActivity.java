@@ -11,11 +11,12 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
+import com.ivy.cpg.view.serializedAsset.SerializedAssetBO;
 import com.ivy.sd.png.asean.view.R;
 
 import java.util.ArrayList;
 
-public class AssetServiceRequest extends AppCompatActivity {
+public class AssetServiceRequestActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,11 +25,12 @@ public class AssetServiceRequest extends AppCompatActivity {
     }
 
 
+
     class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.MyViewHolder> {
 
-        ArrayList<AssetTrackingBO> data;
+        ArrayList<SerializedAssetBO> data;
 
-        RecyclerAdapter(ArrayList<UserMasterBO> data) {
+        RecyclerAdapter(ArrayList<SerializedAssetBO> data) {
             this.data = data;
         }
 
@@ -36,16 +38,16 @@ public class AssetServiceRequest extends AppCompatActivity {
         @Override
         public RecyclerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view = LayoutInflater.from(
-                    parent.getContext()).inflate(R.layout.list_item_backupseller, parent, false);
+                    parent.getContext()).inflate(R.layout.row_asset_service_request, parent, false);
             return new RecyclerAdapter.MyViewHolder(view);
         }
 
         @Override
         public void onBindViewHolder(@NonNull final RecyclerAdapter.MyViewHolder holder, int position) {
-            holder.userMasterBO = data.get(position);
-            holder.tv_username.setText(holder.userMasterBO.getUserName());
-            holder.radioButton.setChecked(holder.userMasterBO.isBackup());
-            holder.radioButton.setChecked(lastCheckedPos == position);
+            holder.assetTrackingBO = data.get(position);
+            holder.tv_assetName.setText(holder.assetTrackingBO.getAssetName());
+            holder.tv_serialNum.setText(holder.assetTrackingBO.getSerialNo());
+            holder.tv_status.setText(holder.assetTrackingBO.getAssetServiceReqStatus());
         }
 
         @Override
@@ -54,22 +56,15 @@ public class AssetServiceRequest extends AppCompatActivity {
         }
 
         class MyViewHolder extends RecyclerView.ViewHolder {
-            TextView tv_username;
-            RadioButton radioButton;
-            UserMasterBO userMasterBO;
+            TextView tv_assetName,tv_serialNum,tv_status;
+            SerializedAssetBO assetTrackingBO;
 
             MyViewHolder(View itemView) {
                 super(itemView);
-                tv_username = itemView.findViewById(R.id.tv_user_name);
-                radioButton = itemView.findViewById(R.id.rb_seller);
-                radioButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        lastCheckedPos = getAdapterPosition();
-                        userMasterBO.setBackup(true);
-                        notifyDataSetChanged();
-                    }
-                });
+                tv_assetName = itemView.findViewById(R.id.tv_asset_name);
+                tv_serialNum = itemView.findViewById(R.id.tv_serialNo);
+                tv_status = itemView.findViewById(R.id.tv_status);
+
             }
         }
     }
