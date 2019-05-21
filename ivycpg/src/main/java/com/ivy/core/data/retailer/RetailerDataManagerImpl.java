@@ -322,7 +322,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                             retailer.setIsCollectionView("N");
 
                                             //set global gps distance for retailer from the config:GPSDISTANCE
-                                            if (retailer.getGpsDistance() <=0 && configurationMasterHelper.GLOBAL_GPS_DISTANCE > 0)
+                                            if (retailer.getGpsDistance() <= 0 && configurationMasterHelper.GLOBAL_GPS_DISTANCE > 0)
                                                 retailer.setGpsDistance(configurationMasterHelper.GLOBAL_GPS_DISTANCE);
 
                                             updateRetailerPriceGRP(retailer);
@@ -827,6 +827,34 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
                 return true;
             }
+        });
+    }
+
+    @Override
+    public Single<Boolean> updateIsToday() {
+        return Single.fromCallable(() -> {
+            initDb();
+            List<String> retailerIds = new ArrayList<>();
+            Cursor c = mDbUtil.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND VisitStatus = 'PLANNED' " +
+                    "and Date = " + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            if (c != null
+                    && c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    retailerIds.add(c.getString(0));
+                }
+
+                c.close();
+            }
+            shutDownDb();
+            if (retailerIds.size() > 0)
+                for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
+                    retailerMasterBO.setIsToday(0);
+                    if (retailerIds.contains(retailerMasterBO.getRetailerID())) {
+                        retailerMasterBO.setIsToday(1);
+                    }
+                }
+
+            return true;
         });
     }
 

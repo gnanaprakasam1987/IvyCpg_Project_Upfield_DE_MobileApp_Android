@@ -274,5 +274,6 @@
         android:src="@drawable/ic_plus"
         app:layout_anchor="@+id/bottomsheet"
         app:layout_anchorGravity="top|end"
+        app:elevation="@dimen/card_elevation"
         app:useCompatPadding="true" />
 </android.support.design.widget.CoordinatorLayout>

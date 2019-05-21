@@ -62,7 +62,8 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                             + StringUtils.QT(dateWisePlanBo.getStartTime()) + ","
                             + StringUtils.QT(dateWisePlanBo.getEndTime()) + ","
                             + StringUtils.QT("PLANNED") + ","
-                            + StringUtils.QT("MOBILE");
+                            + StringUtils.QT("MOBILE") + ","
+                            + StringUtils.QT("APPROVED");
 
                     mDbUtil.insertSQL(DataMembers.tbl_date_wise_plan, DataMembers.tbl_date_wise_plan_cols, values);
 
@@ -194,7 +195,8 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
                                 + StringUtils.QT(dateWisePlanBo.getStartTime()) + ","
                                 + StringUtils.QT(dateWisePlanBo.getEndTime()) + ","
                                 + StringUtils.QT("PLANNED") + ","
-                                + StringUtils.QT("MOBILE");
+                                + StringUtils.QT("MOBILE")+ ","
+                                + StringUtils.QT("APPROVED");
 
                         mDbUtil.insertSQL(DataMembers.tbl_date_wise_plan, DataMembers.tbl_date_wise_plan_cols, values);
                     }
