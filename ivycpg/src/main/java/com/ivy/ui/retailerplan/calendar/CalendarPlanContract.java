@@ -7,6 +7,7 @@ import com.ivy.core.di.scope.PerActivity;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 import com.ivy.ui.retailerplan.calendar.bo.CalenderBO;
+import com.ivy.ui.retailerplan.calendar.bo.PeriodBo;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -71,15 +72,29 @@ public interface CalendarPlanContract {
 
         DateWisePlanBo getSelectedRetailerPlan(String retailerId);
 
-        RetailerMasterBO getPlanedRetailerBo (String retailerId);
+        RetailerMasterBO getPlanedRetailerBo(String retailerId);
 
-        boolean isPastDate();
+        boolean isPastDate(String mselectedDate);
 
         long getMaxPlanDate();
 
-        void deleteAndCopyPlan(String fromDate,String toDate);
+        void deleteAndCopyPlan(String fromDate, String toDate);
 
-        void copyPlan(String fromDate,String toDate);
+        void copyPlan(String fromDate, String toDate);
+
+        void setRetailerMasterBo(RetailerMasterBO retailerMasterBo);
+
+        List<PeriodBo> getWeekList();
+
+        int getWeeksPlanCount(String weekoNo);
+
+        String getWeekNo();
+
+        List<String> getWeekNoList();
+
+        void deleteCopyWeekPlan(String fromDate, String toDate);
+
+        void copyWeekPlan(String fromDate, String toDate);
 
     }
 }

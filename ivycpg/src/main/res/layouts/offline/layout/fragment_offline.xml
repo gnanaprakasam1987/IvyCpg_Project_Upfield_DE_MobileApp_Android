@@ -272,6 +272,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:src="@drawable/ic_plus"
+        app:elevation="@dimen/card_margin"
+        app:fabSize="normal"
         app:layout_anchor="@+id/bottomsheet"
         app:layout_anchorGravity="top|end"
         app:useCompatPadding="true" />

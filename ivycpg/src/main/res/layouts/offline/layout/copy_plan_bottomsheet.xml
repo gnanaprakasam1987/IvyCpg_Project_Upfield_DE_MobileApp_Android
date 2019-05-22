@@ -5,8 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
+    android:layout_marginLeft="@dimen/dimens_4dp"
+    android:layout_marginRight="@dimen/dimens_4dp"
+    android:clickable="true"
+    android:focusable="true"
     android:orientation="vertical"
     app:behavior_peekHeight="0dp"
+    app:cardCornerRadius="@dimen/card_margin"
+    app:cardElevation="@dimen/card_margin"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
     <RelativeLayout
@@ -15,9 +21,9 @@
 
         <TextView
             android:id="@+id/tv_title"
-            style="@style/TextViewListItemPrimary"
+            style="@style/TextViewListItemSecondary"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/height_list_row"
+            android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_centerVertical="true"
             android:background="?attr/primarycolor"
@@ -26,6 +32,7 @@
             android:singleLine="true"
             android:text="@string/copy_plan"
             android:textColor="@color/white" />
+
 
         <TextView
             android:id="@+id/tv_no_visit"
@@ -94,23 +101,36 @@
             android:drawablePadding="@dimen/card_margin"
             android:gravity="start"
             android:padding="@dimen/card_margin"
-            android:textColor="?attr/primarycolor" />
+            android:textColor="?attr/primarycolor"
+            android:visibility="visible" />
+
+        <TextView
+            android:id="@+id/tv_to_week_value"
+            style="@style/TextViewListItemSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_from_plan"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_margin="@dimen/card_margin"
+            android:background="@drawable/edittext_bottom_border"
+            android:gravity="start"
+            android:padding="@dimen/card_margin"
+            android:textColor="?attr/primarycolor"
+            android:visibility="invisible" />
 
         <TextView
             android:id="@+id/tv_copy_plan"
-            style="@style/TextViewCaptionNormal"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_to_date_value"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:padding="@dimen/dimens_4dp"
             android:layout_margin="@dimen/card_margin"
             android:background="@drawable/curved_end_bg_addplan"
-            android:drawableStart="@drawable/ic_content_copy_white_24dp"
-            android:drawableLeft="@drawable/ic_content_copy_white_24dp"
-            android:drawablePadding="@dimen/_5sdp"
             android:gravity="center"
-            android:padding="@dimen/card_margin"
             android:text="@string/copy"
             android:textColor="@color/white" />
 

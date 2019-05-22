@@ -22,4 +22,6 @@ public interface AddPlanDataManager extends AppDataManagerContract {
     Single<Boolean> deletePlan(List<DateWisePlanBo> planList);
 
     Single<Boolean> copyPlan(List<DateWisePlanBo> planList, String toDate);
+
+    Single<Boolean> copyPlan(List<DateWisePlanBo> planList);
 }
