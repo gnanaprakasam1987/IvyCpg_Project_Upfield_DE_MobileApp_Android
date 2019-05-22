@@ -5,10 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_alignParentBottom="true"
+    android:layout_marginLeft="@dimen/dimens_4dp"
+    android:layout_marginRight="@dimen/dimens_4dp"
+    android:clickable="true"
+    android:focusable="true"
     android:orientation="vertical"
     app:behavior_peekHeight="0dp"
-    app:cardElevation="@dimen/card_elevation"
-    app:cardCornerRadius="@dimen/card_elevation"
+    app:cardCornerRadius="@dimen/card_margin"
+    app:cardElevation="@dimen/card_margin"
     app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
     <RelativeLayout
@@ -117,19 +121,16 @@
 
         <TextView
             android:id="@+id/tv_copy_plan"
-            style="@style/TextViewCaptionNormal"
+            style="@style/TextViewListItemPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_to_date_value"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:padding="@dimen/dimens_4dp"
             android:layout_margin="@dimen/card_margin"
             android:background="@drawable/curved_end_bg_addplan"
-            android:drawableStart="@drawable/ic_content_copy_white_24dp"
-            android:drawableLeft="@drawable/ic_content_copy_white_24dp"
-            android:drawablePadding="@dimen/_5sdp"
             android:gravity="center"
-            android:padding="@dimen/dimens_8dp"
             android:text="@string/copy"
             android:textColor="@color/white" />
 

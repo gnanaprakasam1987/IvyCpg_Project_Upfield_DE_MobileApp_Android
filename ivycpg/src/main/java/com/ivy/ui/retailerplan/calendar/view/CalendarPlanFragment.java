@@ -125,7 +125,6 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     private Context mContext;
     private BottomSheetBehavior rtlInfoBehavior, copyPlanBehavior;
     public static final int REQUEST_CODE = 1;
-    private ArrayAdapter<String> mWeekAdapter;
     private int mSelectedIndex = 0;
 
     @Override
@@ -265,7 +264,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                 if (mSelectedType == DAY)
                     proceesCopyPlan(tvFromDate.getText().toString(), tvToDate.getText().toString());
                 else
-                    showMessage(mContext.getResources().getString(R.string.select_week));
+                    processWeekCopyPlan(tvFromDate.getText().toString(), tvToWeek.getText().toString());
             }
         });
     }
@@ -286,6 +285,8 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         rvRetailerInfo.setLayoutManager(linearLayoutManager);
 
         rtlInfoBehavior = BottomSheetBehavior.from(retailerInfoBtmSheet);
+        rtlInfoBehavior.setSkipCollapsed(true);
+        rtlInfoBehavior.setHideable(false);
 
         if (rtlInfoBehavior != null)
             rtlInfoBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
@@ -307,7 +308,6 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
                 @Override
                 public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-
                 }
             });
     }
@@ -346,16 +346,13 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                 }
             });
 
-        mWeekAdapter = new ArrayAdapter<>(mContext, android.R.layout.select_dialog_singlechoice);
-        mWeekAdapter.addAll(presenter.getWeekNoList());
-
     }
 
     @Override
     public void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList) {
         MonthViewAdapter monthViewAdapter = new MonthViewAdapter(getActivity(), dayInWeekCount, mCalenderAllList, mAllowedDates, this);
         rvCalendar.setAdapter(monthViewAdapter);
-        if (presenter.isPastDate())
+        if (presenter.isPastDate(presenter.getSelectedDate()))
             fabAddRetailer.setVisibility(View.GONE);
         else
             fabAddRetailer.setVisibility(View.VISIBLE);
@@ -431,7 +428,6 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                 "add_plan_fragment");
     }
 
-
     private void hideRetailerInfoBottomSheet() {
         if (rtlInfoBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
             rtlInfoBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
@@ -464,7 +460,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     public void onDateNoSelected(String selectedDate, List<DateWisePlanBo> planList) {
         showMessage(selectedDate);
         presenter.setSelectedDate(selectedDate);
-        if (presenter.isPastDate())
+        if (presenter.isPastDate(selectedDate))
             fabAddRetailer.setVisibility(View.GONE);
         else
             fabAddRetailer.setVisibility(View.VISIBLE);
@@ -484,7 +480,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         Commons.print(String.format(Locale.ENGLISH, "Event of %02d:%02d %s/%d",
                 time.get(Calendar.HOUR_OF_DAY), time.get(Calendar.MINUTE),
                 time.get(Calendar.MONTH) + 1, time.get(Calendar.DAY_OF_MONTH)));
-        if (presenter.isPastDate()) {
+        if (presenter.isPastDate(DateTimeUtils.convertDateObjectToRequestedFormat(time.getTime(), generalPattern))) {
             showMessage(Objects.requireNonNull(getActivity()).getResources().getString(R.string.not_allowed_to_add_plan));
         } else {
             Intent i = new Intent(getActivity(), RetailerListActivity.class);
@@ -654,17 +650,11 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     private void proceesCopyPlan(String fromDate, String toDate) {
         if (presenter.getADayPlan(toDate).size() > 0) {
             showAlert("", mContext.getResources().getString(R.string.do_you_want_delete_plan_copy),
-                    new CommonDialog.PositiveClickListener() {
-                        @Override
-                        public void onPositiveButtonClick() {
-                            hideCopyPlanBottomSheet();
-                            presenter.deleteAndCopyPlan(fromDate, toDate);
-                        }
-                    }, new CommonDialog.negativeOnClickListener() {
-                        @Override
-                        public void onNegativeButtonClick() {
+                    () -> {
+                        hideCopyPlanBottomSheet();
+                        presenter.deleteAndCopyPlan(fromDate, toDate);
+                    }, () -> {
 
-                        }
                     });
         } else {
             hideCopyPlanBottomSheet();
@@ -673,16 +663,40 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     }
 
-    private void showWeekSelectionDialog(){
+    private void processWeekCopyPlan(String fromWeek, String toWeek) {
+        if (presenter.getWeeksPlanCount(toWeek) > 0) {
+            showAlert("", mContext.getResources().getString(R.string.do_you_want_delete_plan_copy),
+                    () -> {
+                        mSelectedIndex = 0;
+                        hideCopyPlanBottomSheet();
+                        presenter.deleteCopyWeekPlan(fromWeek, toWeek);
+                    }, () -> {
+
+                    });
+        } else {
+            mSelectedIndex = 0;
+            hideCopyPlanBottomSheet();
+            presenter.copyWeekPlan(fromWeek, toWeek);
+        }
+
+    }
+
+    private void showWeekSelectionDialog() {
+
+        ArrayAdapter<String> mWeekAdapter = new ArrayAdapter<>(mContext, android.R.layout.select_dialog_singlechoice);
+        mWeekAdapter.addAll(presenter.getWeekNoList());
+
         AlertDialog.Builder builder;
 
         builder = new AlertDialog.Builder(mContext);
-        builder.setTitle(null);
+        builder.setTitle(mContext.getResources().getString(R.string.select_week));
         builder.setSingleChoiceItems(mWeekAdapter, mSelectedIndex,
                 (dialog, item) -> {
                     mSelectedIndex = item;
                     tvToWeek.setText(mWeekAdapter.getItem(item));
                     dialog.dismiss();
                 });
+
+        applyAlertDialogTheme(mContext, builder);
     }
 }

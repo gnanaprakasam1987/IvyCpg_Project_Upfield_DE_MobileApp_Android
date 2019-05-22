@@ -72,15 +72,15 @@ public interface CalendarPlanContract {
 
         DateWisePlanBo getSelectedRetailerPlan(String retailerId);
 
-        RetailerMasterBO getPlanedRetailerBo (String retailerId);
+        RetailerMasterBO getPlanedRetailerBo(String retailerId);
 
-        boolean isPastDate();
+        boolean isPastDate(String mselectedDate);
 
         long getMaxPlanDate();
 
-        void deleteAndCopyPlan(String fromDate,String toDate);
+        void deleteAndCopyPlan(String fromDate, String toDate);
 
-        void copyPlan(String fromDate,String toDate);
+        void copyPlan(String fromDate, String toDate);
 
         void setRetailerMasterBo(RetailerMasterBO retailerMasterBo);
 
@@ -91,6 +91,10 @@ public interface CalendarPlanContract {
         String getWeekNo();
 
         List<String> getWeekNoList();
+
+        void deleteCopyWeekPlan(String fromDate, String toDate);
+
+        void copyWeekPlan(String fromDate, String toDate);
 
     }
 }

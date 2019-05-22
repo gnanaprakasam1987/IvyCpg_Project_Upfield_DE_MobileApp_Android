@@ -124,10 +124,13 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                         Calendar endTime = (Calendar) startTime.clone();
                         endTime.setTime(DateTimeUtils.convertStringToDateObject(dateWisePlanBo.getDate() + " " +
                                 dateWisePlanBo.getEndTime(), "yyyy/MM/dd HH:mm"));
-                        WeekViewEvent event = new WeekViewEvent(dateWisePlanBo.getPlanId(), dateWisePlanBo.getName(), dateWisePlanBo.getRetailerAddress(), startTime, endTime);
-                        event.setColor(R.attr.colorPrimary);
-                        event.setRetailerId("" + dateWisePlanBo.getEntityId());
-                        events.add(event);
+                        RetailerMasterBO retailerMasterBO = getPlanedRetailerBo("" + dateWisePlanBo.getEntityId());
+                        if (retailerMasterBO != null) {
+                            WeekViewEvent event = new WeekViewEvent(dateWisePlanBo.getPlanId(), dateWisePlanBo.getName(), retailerMasterBO.getAddress1(), startTime, endTime);
+                            event.setColor(R.attr.colorPrimary);
+                            event.setRetailerId(retailerMasterBO.getRetailerID());
+                            events.add(event);
+                        }
                     }
                 }
             }
@@ -577,53 +580,14 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     }
 
     @Override
-    public boolean isPastDate() {
-        int difference = DateTimeUtils.getDateCount(mSelectedDate, DateTimeUtils.now(DATE_GLOBAL), "yyyy/MM/dd");
+    public boolean isPastDate(String selectedDate) {
+        int difference = DateTimeUtils.getDateCount(selectedDate, DateTimeUtils.now(DATE_GLOBAL), "yyyy/MM/dd");
         return difference > 0;
     }
 
     @Override
     public long getMaxPlanDate() {
         return Objects.requireNonNull(DateTimeUtils.convertStringToDateObject(planToDate, generalPattern)).getTime();
-    }
-
-    @Override
-    public void deleteAndCopyPlan(String fromDate, String toDate) {
-        getIvyView().showLoading();
-        List<DateWisePlanBo> planList = getADayPlan(toDate);
-        getCompositeDisposable().add(addPlanDataManager.deletePlan(planList)
-                .flatMap(aBoolean -> coreRetailerDataManager.updatePlanVisitCount(planList))
-                .flatMap(aBoolean -> addPlanDataManager.copyPlan(getADayPlan(fromDate), toDate))
-                .flatMap(aBoolean -> coreRetailerDataManager.updatePlanVisitCount(getADayPlan(fromDate)))
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(aBoolean ->
-                {
-                    if (DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equalsIgnoreCase(toDate))
-                        updateIsToday();
-                    getIvyView().hideLoading();
-                    fetchEventsFromDb(false);
-
-                }));
-
-    }
-
-
-    @Override
-    public void copyPlan(String fromDate, String toDate) {
-        getIvyView().showLoading();
-        List<DateWisePlanBo> planList = getADayPlan(fromDate);
-        getCompositeDisposable().add(addPlanDataManager.copyPlan(planList, toDate)
-                .flatMap(aBoolean -> coreRetailerDataManager.updatePlanVisitCount(planList))
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe((aBoolean, throwable) ->
-                {
-                    if (DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equalsIgnoreCase(toDate))
-                        updateIsToday();
-                    getIvyView().hideLoading();
-                    fetchEventsFromDb(false);
-                }));
     }
 
     @Override
@@ -735,5 +699,150 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
             }
         }
         return startDate;
+    }
+
+    private Single<List<DateWisePlanBo>> getListToDelete(String toWeekNo) {
+        return Single.fromCallable(() -> {
+            List<DateWisePlanBo> deleteList = new ArrayList<>();
+            if (weekList.size() > 0 && toWeekNo.length() > 0) {
+                Calendar startWeek = Calendar.getInstance();
+                startWeek.setTime(DateTimeUtils.convertStringToDateObject(getWeekStartDate(toWeekNo), generalPattern));
+                startWeek.setFirstDayOfWeek(Calendar.MONDAY);
+                startWeek.set(Calendar.DAY_OF_WEEK, startWeek.getFirstDayOfWeek());
+                setTimeToBeginningOfDay(startWeek);
+
+
+                Calendar endWeek = Calendar.getInstance();
+                endWeek.setTime(DateTimeUtils.convertStringToDateObject(getWeekStartDate(toWeekNo), generalPattern));
+                endWeek.set(Calendar.DAY_OF_WEEK, endWeek.getFirstDayOfWeek());
+                endWeek.add(Calendar.DATE, 7);
+                setTimeToEndOfDay(endWeek);
+
+                while (startWeek.getTime().before(endWeek.getTime())) {
+                    Date result = startWeek.getTime();
+                    deleteList.addAll(deleteList.size(), getADayPlan(DateTimeUtils.convertDateObjectToRequestedFormat(result, generalPattern)));
+                    startWeek.add(Calendar.DATE, 1);
+                }
+            }
+            return deleteList;
+        });
+    }
+
+    private Single<List<DateWisePlanBo>> getListToCopy(String fromWeekNo, String toWeekNo) {
+        return Single.fromCallable(() -> {
+            List<DateWisePlanBo> copyList = new ArrayList<>();
+            if (weekList.size() > 0 && fromWeekNo.length() > 0 && toWeekNo.length()>0) {
+                Calendar startWeek = Calendar.getInstance();
+                startWeek.setTime(DateTimeUtils.convertStringToDateObject(getWeekStartDate(fromWeekNo), generalPattern));
+                startWeek.setFirstDayOfWeek(Calendar.MONDAY);
+                startWeek.set(Calendar.DAY_OF_WEEK, startWeek.getFirstDayOfWeek());
+                setTimeToBeginningOfDay(startWeek);
+
+
+                Calendar endWeek = Calendar.getInstance();
+                endWeek.setTime(DateTimeUtils.convertStringToDateObject(getWeekStartDate(fromWeekNo), generalPattern));
+                endWeek.set(Calendar.DAY_OF_WEEK, endWeek.getFirstDayOfWeek());
+                endWeek.add(Calendar.DATE, 7);
+                setTimeToEndOfDay(endWeek);
+
+                Calendar copyWeek = Calendar.getInstance();
+                copyWeek.setTime(DateTimeUtils.convertStringToDateObject(getWeekStartDate(toWeekNo), generalPattern));
+                copyWeek.setFirstDayOfWeek(Calendar.MONDAY);
+                copyWeek.set(Calendar.DAY_OF_WEEK, copyWeek.getFirstDayOfWeek());
+                setTimeToBeginningOfDay(copyWeek);
+
+                while (startWeek.getTime().before(endWeek.getTime())) {
+                    Date result = startWeek.getTime();
+                    Date toCopyDate = copyWeek.getTime();
+                    for (DateWisePlanBo dateWisePlanBo : getADayPlan(DateTimeUtils.convertDateObjectToRequestedFormat(result, generalPattern))) {
+                        dateWisePlanBo.setDate(DateTimeUtils.convertDateObjectToRequestedFormat(toCopyDate, generalPattern));
+                        copyList.add(dateWisePlanBo);
+                    }
+                    startWeek.add(Calendar.DATE, 1);
+                    copyWeek.add(Calendar.DATE, 1);
+                }
+            }
+            return copyList;
+        });
+    }
+
+    @Override
+    public void deleteAndCopyPlan(String fromDate, String toDate) {
+        getIvyView().showLoading();
+        List<DateWisePlanBo> planList = getADayPlan(toDate);
+        getCompositeDisposable().add(addPlanDataManager.deletePlan(planList)
+                .flatMap(aBoolean -> coreRetailerDataManager.updatePlanVisitCount(planList))
+                .flatMap(aBoolean -> addPlanDataManager.copyPlan(getADayPlan(fromDate), toDate))
+                .flatMap(aBoolean -> coreRetailerDataManager.updatePlanVisitCount(getADayPlan(fromDate)))
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(aBoolean ->
+                {
+                    if (DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equalsIgnoreCase(toDate))
+                        updateIsToday();
+                    getIvyView().hideLoading();
+                    fetchEventsFromDb(false);
+
+                }));
+
+    }
+
+
+    @Override
+    public void copyPlan(String fromDate, String toDate) {
+        getIvyView().showLoading();
+        List<DateWisePlanBo> planList = getADayPlan(fromDate);
+        getCompositeDisposable().add(addPlanDataManager.copyPlan(planList, toDate)
+                .flatMap(aBoolean -> coreRetailerDataManager.updatePlanVisitCount(planList))
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe((aBoolean, throwable) ->
+                {
+                    if (DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL).equalsIgnoreCase(toDate))
+                        updateIsToday();
+                    getIvyView().hideLoading();
+                    fetchEventsFromDb(false);
+                }));
+    }
+
+    @Override
+    public void deleteCopyWeekPlan(String fromDate, String toDate) {
+        getIvyView().showLoading();
+        getCompositeDisposable().add(getListToDelete(toDate)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(deleteList -> {
+                    deleteWeekPlan(deleteList, fromDate, toDate);
+                }));
+    }
+
+    private void deleteWeekPlan(List<DateWisePlanBo> deleteList, String fromDate, String toDate) {
+        getCompositeDisposable().add(addPlanDataManager.deletePlan(deleteList)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(aBoolean -> {
+                    copyWeekPlan(fromDate, toDate);
+                }));
+    }
+
+    @Override
+    public void copyWeekPlan(String fromDate, String toDate) {
+        getIvyView().showLoading();
+        getCompositeDisposable().add(getListToCopy(fromDate, toDate)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(copyList -> {
+                    copyWeekPlan(copyList);
+                }));
+    }
+
+    private void copyWeekPlan(List<DateWisePlanBo> copyList) {
+        getCompositeDisposable().add(addPlanDataManager.copyPlan(copyList)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(aBoolean -> {
+                    updateIsToday();
+                    fetchEventsFromDb(false);
+                }));
     }
 }
