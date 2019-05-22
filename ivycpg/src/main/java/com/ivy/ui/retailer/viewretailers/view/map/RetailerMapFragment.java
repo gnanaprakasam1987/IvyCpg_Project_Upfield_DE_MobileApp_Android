@@ -616,6 +616,8 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
             if (dateWisePlanBO.getCancelReasonId() > 0)
                 drawable = R.drawable.marker_visit_cancelled;
+            else if("P".equals(retailerMasterBO.getIsVisited()))
+                drawable = R.drawable.marker_visit_paused;
         }
 
 
