@@ -31,13 +31,15 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
     private ArrayList<String> mAllowedDates;
     private int dayInWeekCount;
     private ArrayList<CalenderBO> mCalenderAllList;
+    private List<String> weekNoList;
 
-    public MonthViewAdapter(Context context, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList, ArrayList<String> mAllowedDates, CalendarClickListner calendarClickListner) {
+    public MonthViewAdapter(Context context, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList, ArrayList<String> mAllowedDates, CalendarClickListner calendarClickListner, List<String> weekNoList) {
         mContext = context;
         this.calendarClickListner = calendarClickListner;
         this.dayInWeekCount = dayInWeekCount;
         this.mCalenderAllList = mCalenderAllList;
         this.mAllowedDates = mAllowedDates;
+        this.weekNoList = weekNoList;
         populateMonth();
     }
 
@@ -71,8 +73,8 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
         int count = 1;
         for (int i = 0; i < mItems.size(); i++) {
             if (i % 8 == 0 && count <= rows) {
-                mItems.add(i, "" + count);
-                mItems1.add(i, "" + count);
+                mItems.add(i, "" + weekNoList.get(count-1));
+                mItems1.add(i, "" + weekNoList.get(count-1));
                 count++;
             }
         }

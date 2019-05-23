@@ -19,7 +19,7 @@ import java.util.List;
 public interface CalendarPlanContract {
 
     interface CalendarPlanView extends BaseIvyView {
-        void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList);
+        void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList , List<String> weekNoList);
 
         void setMonthName(String monthName);
 
@@ -34,6 +34,8 @@ public interface CalendarPlanContract {
         void reloadView();
 
         void loadAddPlanDialog(String date, RetailerMasterBO retailerMasterBO);
+
+        void setWeekDayText(List<String> weekDayText);
 
     }
 
@@ -88,7 +90,7 @@ public interface CalendarPlanContract {
 
         int getWeeksPlanCount(String weekoNo);
 
-        String getWeekNo();
+        String getWeekNo(String dateOfWeek);
 
         List<String> getWeekNoList();
 

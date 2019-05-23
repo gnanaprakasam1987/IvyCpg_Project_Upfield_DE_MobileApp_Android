@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.RectF;
 import android.os.Bundle;
@@ -40,7 +39,6 @@ import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.ui.retailer.viewretailers.view.list.RetailerListActivity;
@@ -111,6 +109,22 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
 
     @BindView(R.id.coordinator)
     CoordinatorLayout coordinatorLayout;
+
+    @BindView(R.id.txt_1)
+    TextView txtDay1;
+    @BindView(R.id.txt_2)
+    TextView txtDay2;
+    @BindView(R.id.txt_3)
+    TextView txtDay3;
+    @BindView(R.id.txt_4)
+    TextView txtDay4;
+    @BindView(R.id.txt_5)
+    TextView txtDay5;
+    @BindView(R.id.txt_6)
+    TextView txtDay6;
+    @BindView(R.id.txt_7)
+    TextView txtDay7;
+
 
     RecyclerView rvRetailerInfo;
     TextView tvNoPlan, tvNoVisit, tvFromDate, tvToDate, tvCopyPlan, tvToWeek;
@@ -349,8 +363,9 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
     }
 
     @Override
-    public void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList) {
-        MonthViewAdapter monthViewAdapter = new MonthViewAdapter(getActivity(), dayInWeekCount, mCalenderAllList, mAllowedDates, this);
+    public void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList, List<String> weekNoList) {
+        MonthViewAdapter monthViewAdapter = new MonthViewAdapter(getActivity(), dayInWeekCount, mCalenderAllList,
+                mAllowedDates, this, weekNoList);
         rvCalendar.setAdapter(monthViewAdapter);
         if (presenter.isPastDate(presenter.getSelectedDate()))
             fabAddRetailer.setVisibility(View.GONE);
@@ -426,6 +441,37 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                 presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID()), planList);
         addPlanDialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(),
                 "add_plan_fragment");
+    }
+
+    @Override
+    public void setWeekDayText(List<String> weekDayText) {
+
+        for (int i = 0; i < weekDayText.size(); i++) {
+            switch (i) {
+                case 0:
+                    txtDay1.setText(weekDayText.get(i));
+                    break;
+                case 1:
+                    txtDay2.setText(weekDayText.get(i));
+                    break;
+                case 2:
+                    txtDay3.setText(weekDayText.get(i));
+                    break;
+                case 3:
+                    txtDay4.setText(weekDayText.get(i));
+                    break;
+                case 4:
+                    txtDay5.setText(weekDayText.get(i));
+                    break;
+                case 5:
+                    txtDay6.setText(weekDayText.get(i));
+                    break;
+                case 6:
+                    txtDay7.setText(weekDayText.get(i));
+                    break;
+            }
+        }
+
     }
 
     private void hideRetailerInfoBottomSheet() {
@@ -578,7 +624,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         if (mSelectedType == DAY)
             no_of_visits = presenter.getADayPlan(presenter.getSelectedDate()).size();
         else
-            no_of_visits = presenter.getWeeksPlanCount(presenter.getWeekNo());
+            no_of_visits = presenter.getWeeksPlanCount(presenter.getWeekNo(presenter.getSelectedDate()));
         if (no_of_visits > 0) {
             if (copyPlanBehavior.getState() == BottomSheetBehavior.STATE_COLLAPSED) {
                 copyPlanBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -590,7 +636,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
                     tvToDate.setText(mContext.getResources().getString(R.string.select_date));
                 } else {
                     //week
-                    tvFromDate.setText(presenter.getWeekNo());
+                    tvFromDate.setText(presenter.getWeekNo(presenter.getSelectedDate()));
                     tvNoVisit.setText("" + no_of_visits);
                     tvToDate.setVisibility(View.INVISIBLE);
                     tvToWeek.setVisibility(View.VISIBLE);

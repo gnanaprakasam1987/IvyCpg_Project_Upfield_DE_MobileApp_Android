@@ -53,16 +53,17 @@ public class CalendarPlanDataManagerImpl implements CalendarPlanDataManager {
             List<String> allowedDates = new ArrayList<>();
             initDb();
             try {
-                String sql = "select MIN(STARTDATE),MAX(endDate) from VisitPlanPeriod   where PeriodType = 'MONTH'";
+                String sql = "select MIN(STARTDATE),MAX(endDate) from VisitPlanPeriod where PeriodType = 'MONTH'";
                 Cursor c = mDbUtil.selectSQL(sql);
                 if (c != null && c.getCount() > 0) {
                     while (c.moveToNext()) {
-                        allowedDates.add(c.getString(0));
-                        allowedDates.add(c.getString(1));
+                        if (c.getString(0) != null && c.getString(1) != null) {
+                            allowedDates.add(c.getString(0));
+                            allowedDates.add(c.getString(1));
+                        }
                     }
                     c.close();
                 }
-
                 shutDownDb();
             } catch (Exception e) {
                 Commons.printException("" + e);

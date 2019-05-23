@@ -370,6 +370,9 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
                                     }
 
+                                    if(configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
+                                        updateIsToday();
+
                                 } catch (Exception ignored) {
 
                                 }
@@ -1197,6 +1200,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                 configurationMasterHelper.SHOW_DATE_ROUTE = true;
                             } else if (value == 3) {
                                 configurationMasterHelper.SHOW_BEAT_ROUTE = true;
+                            } else if (value == 4) {
+                                configurationMasterHelper.SHOW_DATE_PLAN_ROUTE = true;
                             } else {
                                 configurationMasterHelper.SHOW_WEEK_ROUTE = true;
                             }

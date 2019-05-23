@@ -156,5 +156,10 @@
 
     <color name="transparent">#00000000</color>
 
+    <color name="complete_plan">#407ED321</color>
+    <color name="planed_plan">#404A90E2</color>
+    <color name="cancel_plan">#40FF0707</color>
+    <color name="pause_plan">#404A6BE2</color>
+
 
 </resources>
