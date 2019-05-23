@@ -20,6 +20,22 @@
         android:orderInCategory="101"
         android:title="@string/next"
         ivydist:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_close"
+        android:icon="@drawable/ic_action_circle_close"
+        android:orderInCategory="101"
+        android:title="@string/next"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_notification"
+        android:icon="@drawable/ic_action_notification"
+        android:orderInCategory="98"
+        android:title="@string/next"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
     <item
         android:id="@+id/menu_sort"
         android:icon="@drawable/ic_filter_icon"

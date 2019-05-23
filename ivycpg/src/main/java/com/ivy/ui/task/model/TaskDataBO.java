@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.task;
+package com.ivy.ui.task.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -35,6 +35,8 @@ public class TaskDataBO implements Parcelable {
     private boolean orderByAsc;
     private int serverTask;
     private String taskExecDate;
+    private int noOfDueDays;
+    private String lastVisitDate;
 
     protected TaskDataBO(Parcel in) {
         taskDesc = in.readString();
@@ -66,6 +68,8 @@ public class TaskDataBO implements Parcelable {
         orderByAsc = in.readByte() != 0;
         serverTask = in.readInt();
         taskExecDate = in.readString();
+        noOfDueDays = in.readInt();
+        lastVisitDate = in.readString();
     }
 
     public static final Creator<TaskDataBO> CREATOR = new Creator<TaskDataBO>() {
@@ -343,6 +347,22 @@ public class TaskDataBO implements Parcelable {
         this.taskExecDate = taskExecDate;
     }
 
+    public int getNoOfDueDays() {
+        return noOfDueDays;
+    }
+
+    public void setNoOfDueDays(int noOfDueDays) {
+        this.noOfDueDays = noOfDueDays;
+    }
+
+    public String getLastVisitDate() {
+        return lastVisitDate;
+    }
+
+    public void setLastVisitDate(String lastVisitDate) {
+        this.lastVisitDate = lastVisitDate;
+    }
+
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(taskDesc);
@@ -374,5 +394,8 @@ public class TaskDataBO implements Parcelable {
         parcel.writeByte((byte) (orderByAsc ? 1 : 0));
         parcel.writeInt(serverTask);
         parcel.writeString(taskExecDate);
+        parcel.writeInt(noOfDueDays);
+        parcel.writeString(lastVisitDate);
     }
+
 }

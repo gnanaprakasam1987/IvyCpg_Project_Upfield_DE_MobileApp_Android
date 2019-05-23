@@ -1,10 +1,12 @@
 package com.ivy.ui.task.data;
 
 import com.ivy.core.data.AppDataManagerContract;
-import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.ui.task.model.TaskDataBO;
+import com.ivy.ui.task.model.TaskRetailerBo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import io.reactivex.Observable;
 import io.reactivex.Single;
@@ -25,7 +27,7 @@ public interface TaskDataManager extends AppDataManagerContract {
 
     Single<Boolean> addAndUpdateTask(int channelId, TaskDataBO taskObj, String mode, ArrayList<TaskDataBO> taskImgList);
 
-    Observable<ArrayList<RetailerMasterBO>> fetchRetailers();
+    Observable<ArrayList<RetailerMasterBO>> fetchAllRetailers();
 
     Observable<ArrayList<TaskDataBO>> fetchTaskCategories(int prodLevelId);
 
@@ -34,4 +36,9 @@ public interface TaskDataManager extends AppDataManagerContract {
     Single<Boolean> deleteTaskData(String taskId, String taskOwner, int serverTask);
 
     Observable<ArrayList<String>> getDeletedImageList(String taskId);
+
+    Observable<HashMap<String, ArrayList<TaskDataBO>>> fetchUnPlanedTaskData(int toDateCount);
+
+    Observable<ArrayList<TaskRetailerBo>> fetchUnPlannedRetailers(int toDateCount);
+
 }

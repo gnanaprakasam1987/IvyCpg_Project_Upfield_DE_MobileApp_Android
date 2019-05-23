@@ -19,14 +19,11 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
@@ -36,10 +33,12 @@ import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.ui.task.TaskClickListener;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.TaskContract;
+import com.ivy.ui.task.TaskViewListener;
 import com.ivy.ui.task.adapter.BottomSortListAdapter;
 import com.ivy.ui.task.adapter.TaskListAdapter;
 import com.ivy.ui.task.di.DaggerTaskComponent;
 import com.ivy.ui.task.di.TaskModule;
+import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
@@ -53,11 +52,8 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
     private TabLayout tabLayout;
     private RecyclerView recyclerView;
-    private Button nxtBtn;
-    private LinearLayout footerLL;
     private boolean isChannelWise = false;
     private String mSelectedRetailerID = "0";
-    private String currentActivityCode;
     private String screenTitle;
     private String imageName = "";
     private static final int CAMERA_REQUEST_CODE = 1;
@@ -67,6 +63,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     private String mSelectedTaskId = "0";
     private String menuCode;
     private TaskConstant.SOURCE source;
+    private TaskViewListener taskViewListener;
 
 
     @Inject
@@ -93,8 +90,6 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         taskBgView = view.findViewById(R.id.task_bg_view);
         tabLayout = view.findViewById(R.id.tabs);
         tabLayout.addOnTabSelectedListener(this);
-        footerLL = view.findViewById(R.id.footer);
-        nxtBtn = view.findViewById(R.id.btn_close);
         recyclerView = view.findViewById(R.id.task_recycler_view);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -103,9 +98,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.bottomSheetLayout));
         bottomSheetBehavior.setHideable(false);
-        view.findViewById(R.id.task_bg_view).setOnClickListener(v -> {
-            hideBottomSheet();
-        });
+        view.findViewById(R.id.task_bg_view).setOnClickListener(v -> hideBottomSheet());
 
         setUpBottomSheet(view);
     }
@@ -129,9 +122,6 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
             if (bundle.containsKey(TaskConstant.FROM_PROFILE_SCREEN))
                 source = TaskConstant.SOURCE.PROFILE_SCREEN;
 
-            if (bundle.containsKey(TaskConstant.CURRENT_ACTIVITY_CODE))
-                currentActivityCode = bundle.getString(TaskConstant.CURRENT_ACTIVITY_CODE, "");
-
             if (bundle.containsKey(TaskConstant.SCREEN_TITLE))
                 screenTitle = bundle.getString(TaskConstant.SCREEN_TITLE, getString(R.string.task));
 
@@ -149,11 +139,6 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
         if (TaskConstant.SOURCE.PROFILE_SCREEN != source)
             setUpActionBar();
-
-        if (taskPresenter.isMoveNextActivity()) {
-            footerLL.setVisibility(View.VISIBLE);
-            nxtBtn.setOnClickListener(view -> moveNextActivity());
-        }
 
         if (TaskConstant.SOURCE.RETAILER == source) {
             mSelectedRetailerID = String.valueOf(taskPresenter.getRetailerID());
@@ -182,10 +167,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         }
 
         for (String tab_name : reason) {
-            @SuppressLint("InflateParams")
-            TextView tabOne = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
-            tabOne.setText(tab_name);
-            tabLayout.addTab(tabLayout.newTab().setCustomView(tabOne));
+            tabLayout.addTab(tabLayout.newTab().setText(tab_name));
         }
     }
 
@@ -233,17 +215,6 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
-    private void moveNextActivity() {
-
-        showAlert(getString(R.string.move_next_activity)
-                , getString(R.string.ok), () -> {
-                    Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
-                    intent.putExtra(TaskConstant.MOVE_NEXT_ACTIVITY, true);
-                    intent.putExtra(TaskConstant.CURRENT_ACTIVITY_CODE, currentActivityCode);
-                    startActivity(intent);
-                    getActivity().finish();
-                }, true);
-    }
 
     @Override
     public void onTaskExecutedClick(TaskDataBO taskDataBO) {
@@ -307,7 +278,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
         mSelectedTaskId = taskBO.getTaskId();
 
-        imageName = "TSK_" + taskBO.getTaskId() + "_" + taskBO.getTaskCategoryID()
+        imageName = "TSK_" + taskPresenter.getUserID()
                 + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)
                 + ".jpg";
 
@@ -393,6 +364,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     }
 
 
+
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
@@ -443,6 +415,16 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     }
 
     @Override
+    public void onDeleteSuccess() {
+        showMessage(R.string.saved_successfully);
+    }
+
+    @Override
+    public void showErrorMsg() {
+
+    }
+
+    @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_task, menu);
     }
@@ -450,6 +432,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
+        menu.findItem(R.id.menu_notification).setVisible(true);
         menu.findItem(R.id.menu_save).setVisible(false);
         menu.findItem(R.id.menu_sort).setVisible(true);
         if (!taskPresenter.isNewTask())
@@ -477,6 +460,8 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
                 taskBgView.setVisibility(View.VISIBLE);
                 bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
             }
+        } else if (i1 == R.id.menu_notification) {
+            taskViewListener.switchTaskView(true);
         }
         return super.onOptionsItemSelected(item);
     }
@@ -545,9 +530,9 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         showMessage(R.string.task_updated_successfully);
     }
 
-    @Override
-    public void showTaskDeletedMsg() {
-        showMessage(R.string.saved_successfully);
+
+    public void setTaskViewListener(TaskViewListener listener) {
+        this.taskViewListener = listener;
     }
 
 

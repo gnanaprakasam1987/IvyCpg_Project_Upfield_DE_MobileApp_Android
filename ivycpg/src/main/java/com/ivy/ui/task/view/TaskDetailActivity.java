@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
@@ -19,7 +20,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
@@ -29,6 +29,7 @@ import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.adapter.TaskImgListAdapter;
 import com.ivy.ui.task.di.DaggerTaskComponent;
 import com.ivy.ui.task.di.TaskModule;
+import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
@@ -96,6 +97,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     private String imageName = "";
     private String menuCode;
     private String screenTitle;
+    private boolean fromTaskNotification;
     @Inject
     TaskContract.TaskPresenter<TaskContract.TaskView> taskPresenter;
 
@@ -133,12 +135,14 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
             detailBo = getIntent().getExtras().getParcelable(TaskConstant.TASK_OBJECT);
             menuCode = getIntent().getExtras().getString(TaskConstant.MENU_CODE, "MENU_TASK");
             screenTitle = getIntent().getExtras().getString(TaskConstant.SCREEN_TITLE, getString(R.string.task_creation));
+            fromTaskNotification = getIntent().getExtras().getBoolean(TaskConstant.TASK_NOTIFICATION_SRC, false);
         }
     }
 
     @Override
     protected void setUpViews() {
         setUnBinder(ButterKnife.bind(this));
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         setUpToolBar(getString(R.string.task_detail));
         TaskConstant.TASK_SERVER_IMG_PATH = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
                 + taskPresenter.getUserID()
@@ -225,15 +229,61 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     }
 
     @Override
+    public void onDeleteSuccess() {
+        showAlert("", getString(R.string.deleted_sucessfully), () -> backNavigation());
+    }
+
+    @Override
+    public void showErrorMsg() {
+
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_edit_delete, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        if (fromTaskNotification) {
+            menu.findItem(R.id.menu_edit_note).setVisible(false);
+            menu.findItem(R.id.menu_delete_note).setVisible(false);
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            backNavigation();
+            if (!fromTaskNotification) {
+                backNavigation();
+            } else {
+                finish();
+                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            }
+            return true;
+        } else if (id == R.id.menu_edit_note) {
+            navigateToTaskCreation();
+            return true;
+        } else if (id == R.id.menu_delete_note) {
+            showDeleteAlert();
             return true;
         }
 
         return false;
+    }
+
+    private void navigateToTaskCreation() {
+        Intent i = new Intent(TaskDetailActivity.this, TaskCreationActivity.class);
+        i.putExtra(TaskConstant.MENU_CODE, menuCode);
+        i.putExtra(TaskConstant.SCREEN_TITLE, screenTitle);
+        i.putExtra(TaskConstant.TASK_SCREEN_MODE, 1);
+        i.putExtra(TaskConstant.TASK_DETAIL_SRC, true);
+        i.putExtra(TaskConstant.TASK_OBJECT, detailBo);
+        startActivity(i);
     }
 
     private void backNavigation() {
@@ -245,9 +295,15 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
                     TaskActivity.class).putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask)
                     .putExtra(TaskConstant.SCREEN_TITLE, screenTitle)
                     .putExtra(TaskConstant.MENU_CODE, menuCode));
-
         finish();
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+    }
+
+    private void showDeleteAlert() {
+        showAlert("", getString(R.string.do_you_want_to_delete_the_note),
+                () -> taskPresenter.deleteTask(detailBo.getTaskId(), detailBo.getTaskOwner(), detailBo.getServerTask()),
+                () -> {
+                });
     }
 
 
@@ -258,7 +314,6 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
             if (resultCode == 1) {
                 taskPresenter.updateTaskExecutionImg(imageName, detailBo.getTaskId(), true);
             }
-
         }
     }
 
@@ -288,7 +343,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
     private void prepareTaskPhotoCapture() {
 
-        imageName = "TSK_" + detailBo.getTaskId()
+        imageName = "TSK_" + taskPresenter.getUserID()
                 + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)
                 + ".jpg";
 

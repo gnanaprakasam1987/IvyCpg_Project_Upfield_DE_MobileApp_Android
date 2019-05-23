@@ -5585,7 +5585,7 @@ public class BusinessModel extends Application {
 
     /**
      * @See {@link RetailerDataManagerImpl#fetchRetailers()}
-     * @deprecated Handled inside the fetchRetailers() method itself
+     * @deprecated Handled inside the fetchAllRetailers() method itself
      */
     public void setWeeknoFoNewRetailer() {
         for (RetailerMasterBO retailer : getRetailerMaster()) {

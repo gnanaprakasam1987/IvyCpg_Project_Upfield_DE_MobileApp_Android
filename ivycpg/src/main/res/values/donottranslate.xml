@@ -309,4 +309,8 @@
     <string name="retailer_selection_mandatory">Choose any one retailer</string>
 
     <string name="select_percentage">Select Percentage</string>
+    <string name="due_in_next_days">Due in next %1$d days</string>
+    <string name="next_visit_date">Next Visit Date: </string>
+    <string name="next_visit_date_count">%1$d days to go</string>
+    <string name="pending_task">Pending Task</string>
 </resources>

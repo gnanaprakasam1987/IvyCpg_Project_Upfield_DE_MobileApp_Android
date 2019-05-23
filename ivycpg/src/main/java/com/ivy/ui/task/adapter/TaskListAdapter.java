@@ -21,10 +21,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.task.TaskDataBO;
+import com.ivy.lib.view.RibbonView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.ui.task.TaskClickListener;
 import com.ivy.ui.task.TaskConstant;
+import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.ui.task.view.SwipeRevealLayout;
 import com.ivy.ui.task.view.ViewBinderHelper;
 import com.ivy.utils.AppUtils;
@@ -76,6 +77,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         binderHelper.bind(holder.swipeLayout, taskBo.getTaskId());
 
         if (mTabPosition == 3
+                || taskBo.isChecked()
                 || (taskBo.isUpload() && taskBo.getIsdone().equals("1")))
             binderHelper.lockSwipe(taskBo.getTaskId());
 
@@ -89,19 +91,26 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             holder.taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
                     (taskBo.getTaskDueDate(), outDateFormat));
 
-        holder.taskCB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!taskBo.isChecked()) {
-                    holder.taskCB.setChecked(true);
-                    taskBo.setChecked(true);
-                } else {
-                    holder.taskCB.setChecked(false);
-                    taskBo.setChecked(false);
-                }
-                taskClickListener.onTaskExecutedClick(taskBo);
-
+        int daysCount = DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                taskBo.getTaskDueDate(), "yyyy/MM/dd");
+        if (daysCount <= 15) {
+            holder.dueDaysTv.setVisibility(View.VISIBLE);
+            holder.dueDaysTv.setText(String.format(mContext.getString(R.string.due_in_next_days), daysCount));
+        } else {
+            holder.dueDaysTv.setVisibility(View.GONE);
+        }
+        holder.taskCB.setOnClickListener(v -> {
+            if (!taskBo.isChecked()) {
+                holder.taskCB.setChecked(true);
+                taskBo.setChecked(true);
+                binderHelper.lockSwipe(taskBo.getTaskId());
+            } else {
+                holder.taskCB.setChecked(false);
+                taskBo.setChecked(false);
+                binderHelper.unlockSwipe(taskBo.getTaskId());
             }
+            taskClickListener.onTaskExecutedClick(taskBo);
+
         });
 
         holder.layoutrow.setOnClickListener(new View.OnClickListener() {
@@ -188,6 +197,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         CheckBox taskCB;
         TextView taskTitle;
         TextView taskProductLevel;
+        RibbonView dueDaysTv;
         LinearLayout layoutCB;
         LinearLayout layoutrow;
         AppCompatImageButton btnAttachFile;
@@ -208,6 +218,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             btnDeleteTask = itemView.findViewById(R.id.delete_button);
             btnEditTask = itemView.findViewById(R.id.edit_button);
             taskDueDateTv = itemView.findViewById(R.id.task_due_date_tv);
+            dueDaysTv = itemView.findViewById(R.id.due_days_Tv);
 
             if (TaskConstant.SOURCE.PROFILE_SCREEN == source) {
                 btnAttachFile.setVisibility(View.GONE);

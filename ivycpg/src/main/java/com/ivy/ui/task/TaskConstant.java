@@ -1,9 +1,5 @@
 package com.ivy.ui.task;
 
-import android.os.Environment;
-
-import com.ivy.sd.png.util.DataMembers;
-
 public class TaskConstant {
 
     public static final String RETAILER_WISE_TASK = "isRetailerWiseTask";
@@ -19,6 +15,10 @@ public class TaskConstant {
     public static final String SCREEN_TITLE = "screenTitle";
 
     public static final String MOVE_NEXT_ACTIVITY = "IsMoveNextActivity";
+
+    public static final String TASK_NOTIFICATION_SRC = "fromTaskNotification";
+
+    public static final String TASK_DETAIL_SRC = "fromTaskDetailSrc";
 
     public static final int SERVER_TASK = 1;
 
@@ -41,6 +41,8 @@ public class TaskConstant {
 
     public static final String PHOTO_CAPTURE_DIALOG_TAG = "ReasonDialogFragment";
 
+    public static final int FINISH_REQUEST = 2;
+
     public static final int TASK_DETAIL = 0;
 
     public static final int TASK_EDIT = 1;
@@ -61,9 +63,11 @@ public class TaskConstant {
 
     public static final String DESC_ORD_DATE = "(new—old)";
 
-    public static String TASK_SERVER_IMG_PATH ;
+    public static String TASK_SERVER_IMG_PATH;
 
     public static final String TAB_SELECTION = "tab_selection";
+
+    public static final String TASK_DATE_FORMAT = "dd-MM-yyyy";
 
 
     public static enum SOURCE {

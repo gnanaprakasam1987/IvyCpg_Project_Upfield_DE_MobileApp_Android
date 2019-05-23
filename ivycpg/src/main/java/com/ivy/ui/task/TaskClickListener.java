@@ -1,6 +1,6 @@
 package com.ivy.ui.task;
 
-import com.ivy.cpg.view.task.TaskDataBO;
+import com.ivy.ui.task.model.TaskDataBO;
 
 public interface TaskClickListener {
 

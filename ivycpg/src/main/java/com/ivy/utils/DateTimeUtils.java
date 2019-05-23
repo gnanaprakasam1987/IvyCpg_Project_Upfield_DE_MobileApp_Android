@@ -131,9 +131,29 @@ public class DateTimeUtils {
 
     }
 
-    public static String addDateToYear(int noOfYears) {
+    /**
+     *
+     * @param count given count value added with current date
+     *              + positive value : get future date
+     *              - negative value : get previous date (YEAR,MONTH,DATE)
+     * @param getType DATE - 5 , MONTH - 2 , YEAR - 1 //Constant value it should be fixed
+     * @return
+     */
+    public static String getRequestedDateByGetType(int count, int getType) {
         Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.YEAR, noOfYears); // to get previous year add -1
+
+        switch (getType) {
+
+            case Calendar.DATE:
+                cal.add(Calendar.DATE, count);
+                break;
+            case Calendar.MONTH:
+                cal.add(Calendar.MONTH, count);
+                break;
+            case Calendar.YEAR:
+                cal.add(Calendar.YEAR, count); // to get previous year add -1
+                break;
+        }
         // convert calendar to date
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
         return sdf.format(cal.getTime());

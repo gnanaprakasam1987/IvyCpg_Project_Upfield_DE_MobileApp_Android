@@ -14,7 +14,6 @@ import com.ivy.core.di.scope.ChannelInfo;
 import com.ivy.core.di.scope.OutletTimeStampInfo;
 import com.ivy.core.di.scope.ReasonInfo;
 import com.ivy.core.di.scope.UserInfo;
-import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -24,9 +23,10 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.data.TaskDataManager;
+import com.ivy.ui.task.model.TaskDataBO;
+import com.ivy.ui.task.model.TaskRetailerBo;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
-import com.ivy.utils.StringUtils;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.io.File;
@@ -38,11 +38,13 @@ import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function3;
 import io.reactivex.observers.DisposableObserver;
 
@@ -63,6 +65,8 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     private ArrayList<TaskDataBO> mTaskImgList = new ArrayList<>();
     ArrayList<TaskDataBO> taskPreparedList = new ArrayList<>();
     ArrayList<String> deletedImageList = new ArrayList<>();
+    ArrayList<TaskRetailerBo> taskRetailerListBo = new ArrayList<>();
+    HashMap<String, ArrayList<TaskDataBO>> taskistHashMap = new HashMap<>();
 
     @Inject
     public TaskPresenterImpl(DataManager dataManager,
@@ -98,7 +102,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
         getIvyView().showLoading();
 
         getCompositeDisposable().add(Observable.zip(mUserDataManager.fetchAllUsers(),
-                mChannelDataManager.fetchChannels(), mTaskDataManager.fetchRetailers()
+                mChannelDataManager.fetchChannels(), mTaskDataManager.fetchAllRetailers()
                 , (Function3<ArrayList<UserMasterBO>, ArrayList<ChannelBO>, ArrayList<RetailerMasterBO>, Object>) (userMasterBOS, channelBOS, retailerMasterBOS) -> {
                     mUserListBos.clear();
                     for (UserMasterBO userBo : userMasterBOS) {
@@ -521,12 +525,15 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
     @Override
-    public boolean validate(String taskTitle, String taskView) {
+    public boolean validate(String taskTitle, String taskView, String dueDate) {
         if (taskTitle.equals("")) {
             ((TaskContract.TaskCreationView) getIvyView()).showTaskTitleError();
             return false;
         } else if (taskView.equals("")) {
             ((TaskContract.TaskCreationView) getIvyView()).showTaskDescError();
+            return false;
+        } else if (dueDate == null) {
+            ((TaskContract.TaskCreationView) getIvyView()).showTaskDueDateError();
             return false;
         }
         return true;
@@ -553,6 +560,47 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
     @Override
+    public void fetchUnPlannedTask() {
+        getIvyView().showLoading();
+
+        getCompositeDisposable().add(Observable.zip(mTaskDataManager.fetchUnPlannedRetailers(mConfigurationMasterHelper.IS_TASK_DUDE_DATE_COUNT),
+                mTaskDataManager.fetchUnPlanedTaskData(mConfigurationMasterHelper.IS_TASK_DUDE_DATE_COUNT)
+                , new BiFunction<ArrayList<TaskRetailerBo>, HashMap<String, ArrayList<TaskDataBO>>, Boolean>() {
+                    @Override
+                    public Boolean apply(ArrayList<TaskRetailerBo> retailerMasterBOArrayList, HashMap<String, ArrayList<TaskDataBO>> taskRetailerList) throws Exception {
+
+                        taskRetailerListBo.clear();
+                        taskRetailerListBo.addAll(retailerMasterBOArrayList);
+
+                        taskistHashMap.clear();
+                        taskistHashMap.putAll(taskRetailerList);
+
+                        return true;
+                    }
+                }).subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<Boolean>() {
+                    @Override
+                    public void onNext(Boolean isFlag) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getIvyView().hideLoading();
+                        ((TaskContract.TaskUnplannedView) getIvyView()).showErrorMsg();
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        ((TaskContract.TaskUnplannedView) getIvyView()).updateUnplannedTaskList(taskRetailerListBo, taskistHashMap);
+                        getIvyView().hideLoading();
+                    }
+                }));
+    }
+
+    @Override
     public ArrayList<TaskDataBO> getTaskImgList() {
         return mTaskImgList;
     }
@@ -573,7 +621,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                         getIvyView().onError("Something went wrong");
                     }
                     getIvyView().hideLoading();
-                    ((TaskContract.TaskListView) getIvyView()).showTaskDeletedMsg();
+                    getIvyView().onDeleteSuccess();
                 }));
     }
 

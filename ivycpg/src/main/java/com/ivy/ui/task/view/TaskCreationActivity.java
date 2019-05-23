@@ -23,7 +23,6 @@ import android.widget.TextView;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
-import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
@@ -37,6 +36,7 @@ import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.adapter.TaskImgListAdapter;
 import com.ivy.ui.task.di.DaggerTaskComponent;
 import com.ivy.ui.task.di.TaskModule;
+import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
@@ -170,6 +170,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @Override
     protected void setUpViews() {
         setUnBinder(ButterKnife.bind(this));
+        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         setUpToolBar();
         setUpRecyclerView();
         TaskConstant.TASK_SERVER_IMG_PATH = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
@@ -253,13 +254,21 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         showAlert("", getString(R.string.saved_successfully), () -> {
             if (!isRetailerWiseTask)
                 startActivity(new Intent(TaskCreationActivity.this,
-                        HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
+                        HomeScreenActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        .putExtra(TaskConstant.MENU_CODE, menuCode));
             else
                 startActivity(new Intent(TaskCreationActivity.this,
-                        TaskActivity.class).putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask)
+                        TaskActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        .putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask)
                         .putExtra(TaskConstant.SCREEN_TITLE, screenTitle));
             finish();
+            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         });
+    }
+
+    @Override
+    public void showTaskDueDateError() {
+
     }
 
     @Override
@@ -270,6 +279,16 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @Override
     public void showImageUpdateMsg() {
         showMessage(R.string.image_saved);
+    }
+
+    @Override
+    public void onDeleteSuccess() {
+
+    }
+
+    @Override
+    public void showErrorMsg() {
+
     }
 
     TaskImgListAdapter.PhotoClickListener photoClickListener = this::prepareTaskPhotoCapture;
@@ -344,7 +363,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         String taskDuedate = dueDateBtn.getText().toString().isEmpty() ? null
                 : dueDateBtn.getText().toString();
         int taskChannelId;
-        if (!taskPresenter.validate(taskTitle.getText().toString(), taskView.getText().toString()))
+        if (!taskPresenter.validate(taskTitle.getText().toString(), taskView.getText().toString(), taskDuedate))
             return;
 
         switch (mode) {
@@ -459,19 +478,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     }
 
     private void prepareTaskPhotoCapture() {
-        int id = 0;
 
-        if (seller_rb.isChecked()) {
-            if (mSelectedSpinnerPos == 0)
-                id = taskPresenter.getUserID();
-            else
-                id = userMasterArrayAdapter.getItem(mSelectedSpinnerPos).getUserid();
-        } else if (channelwise_rb.isChecked())
-            id = channelArrayAdapter.getItem(mSelectedSpinnerPos).getChannelId();
-        else if (retailerwise_rb.isChecked())
-            id = retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getRetailerId();
-
-        imageName = "TSK_" + id
+        imageName = "TSK_" + taskPresenter.getUserID()
                 + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)
                 + ".jpg";
 
@@ -522,13 +530,15 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
 
     private void backNavigation() {
-        if (!isRetailerWiseTask)
-            startActivity(new Intent(TaskCreationActivity.this,
-                    HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
-        else
-            startActivity(new Intent(TaskCreationActivity.this,
-                    TaskActivity.class).putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask)
-                    .putExtra(TaskConstant.SCREEN_TITLE, screenTitle));
+
+            if (!isRetailerWiseTask)
+                startActivity(new Intent(TaskCreationActivity.this,
+                        HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
+            else
+                startActivity(new Intent(TaskCreationActivity.this,
+                        TaskActivity.class).putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask)
+                        .putExtra(TaskConstant.SCREEN_TITLE, screenTitle));
+
 
         finish();
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);

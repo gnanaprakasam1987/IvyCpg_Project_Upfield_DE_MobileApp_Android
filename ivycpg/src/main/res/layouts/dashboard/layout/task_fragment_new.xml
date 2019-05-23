@@ -11,37 +11,16 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/footer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="?attr/customFooterBackgroundColor"
-            android:minHeight="@dimen/footer_height"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <Button
-                android:id="@+id/btn_close"
-                style="?attr/roundedCustomButtonSmall"
-                android:layout_gravity="end"
-                android:layout_margin="@dimen/target_top_margin"
-                android:gravity="center"
-                android:text="@string/close"
-                android:textAllCaps="false" />
-
-        </LinearLayout>
-
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
-            style="@style/AppTabLayout"
+            style="?attr/tablayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_gravity="center_horizontal"
             app:tabGravity="fill"
-            app:tabIndicatorHeight="4dp"
-            app:tabMode="fixed" />
+            app:tabMode="fixed"
+            app:tabTextColor="@color/white" />
 
         <LinearLayout
             android:id="@+id/ListHeader"
@@ -82,7 +61,6 @@
             android:id="@+id/task_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/footer"
             android:layout_below="@+id/ListHeader"
             android:clipToPadding="false"
             android:orientation="horizontal"

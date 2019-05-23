@@ -1,16 +1,16 @@
 package com.ivy.ui.task;
 
-import android.support.annotation.StringRes;
-
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
-import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
+import com.ivy.ui.task.model.TaskDataBO;
+import com.ivy.ui.task.model.TaskRetailerBo;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public interface TaskContract {
 
@@ -22,15 +22,16 @@ public interface TaskContract {
         void updateImageListAdapter(ArrayList<TaskDataBO> imageList);
 
         void showImageUpdateMsg();
+
+        void onDeleteSuccess();
+
+        void showErrorMsg();
     }
 
     interface TaskListView extends TaskView {
 
         void showTaskUpdateMsg();
-
-        void showTaskDeletedMsg();
     }
-
 
     interface TaskCreationView extends TaskView {
 
@@ -49,6 +50,13 @@ public interface TaskContract {
         void showTaskDescError();
 
         void showTaskSaveAlertMsg();
+
+        void showTaskDueDateError();
+    }
+
+    interface TaskUnplannedView extends TaskView {
+
+        void updateUnplannedTaskList(ArrayList<TaskRetailerBo> retailerMasterBOS, HashMap<String, ArrayList<TaskDataBO>> taskHashMapList);
     }
 
 
@@ -97,10 +105,12 @@ public interface TaskContract {
 
         String outDateFormat();
 
-        boolean validate(String taskTitle, String taskView);
+        boolean validate(String taskTitle, String taskView, String dueDate);
 
         void saveModuleCompletion(String menuCode);
 
         boolean isNPPhotoReasonAvailable(String retailerID, String moduleName);
+
+        void fetchUnPlannedTask();
     }
 }
