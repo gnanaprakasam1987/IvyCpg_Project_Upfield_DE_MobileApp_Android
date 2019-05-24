@@ -306,7 +306,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
     @Override
     protected void setUpViews() {
         setUpToolbar(screenTitle);
-        presenter.fetchSelectedDateRetailerPlan(mSelectedDate,false);
+        presenter.fetchSelectedDateRetailerPlan(mSelectedDate, false);
         loadMap();
     }
 
@@ -606,7 +606,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
         DateWisePlanBo dateWisePlanBO = presenter.getSelectedRetailerPlan(retailerMasterBO.getRetailerID());
 
         if (dateWisePlanBO != null) {
-            if (dateWisePlanBO.getVisitStatus().equalsIgnoreCase(COMPLETED)) {
+            if (dateWisePlanBO.getVisitStatus().equalsIgnoreCase(COMPLETED) || "Y".equals(retailerMasterBO.getIsVisited())) {
 //                if (("N").equals(retailerMasterBO.isOrdered()))
 //                    drawable = R.drawable.marker_visit_non_productive;
 //                else
@@ -616,7 +616,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
 
             if (dateWisePlanBO.getCancelReasonId() > 0)
                 drawable = R.drawable.marker_visit_cancelled;
-            else if("P".equals(retailerMasterBO.getIsVisited()))
+            else if ("P".equals(retailerMasterBO.getIsVisited()))
                 drawable = R.drawable.marker_visit_paused;
         }
 
@@ -766,7 +766,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             return true;
         } else if (item.getItemId() == R.id.filter) {
 
-            RetailerPlanFilterFragment planFilterFragment = new RetailerPlanFilterFragment(mSelectedDate,planFilterBo);
+            RetailerPlanFilterFragment planFilterFragment = new RetailerPlanFilterFragment(mSelectedDate, planFilterBo);
             planFilterFragment.show(((FragmentActivity) context).getSupportFragmentManager(),
                     "filter_plan_fragment");
 
@@ -823,7 +823,7 @@ public class RetailerMapFragment extends BaseMapFragment implements RetailerCont
             }
         } else if (obj instanceof DateWisePlanBo) {
 
-            presenter.fetchSelectedDateRetailerPlan(mSelectedDate,true);
+            presenter.fetchSelectedDateRetailerPlan(mSelectedDate, true);
 
             getMap().clear();
         }

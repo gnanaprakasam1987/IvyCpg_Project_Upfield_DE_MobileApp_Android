@@ -143,79 +143,72 @@
                 android:textColor="@color/black_bg1" />
 
             <TextView
-                android:id="@+id/txt_mon"
+                android:id="@+id/txt_1"
                 style="@style/TextViewListTitleSecondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/mon"
                 android:textAllCaps="true"
                 android:textColor="@color/black_bg1" />
 
             <TextView
-                android:id="@+id/txt_tue"
+                android:id="@+id/txt_2"
                 style="@style/TextViewListTitleSecondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/tue"
                 android:textAllCaps="true"
                 android:textColor="@color/black_bg1" />
 
             <TextView
-                android:id="@+id/txt_wed"
+                android:id="@+id/txt_3"
                 style="@style/TextViewListTitleSecondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/wed"
                 android:textAllCaps="true"
                 android:textColor="@color/black_bg1" />
 
             <TextView
-                android:id="@+id/txt_thu"
+                android:id="@+id/txt_4"
                 style="@style/TextViewListTitleSecondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/thu"
                 android:textAllCaps="true"
                 android:textColor="@color/black_bg1" />
 
             <TextView
-                android:id="@+id/txt_fri"
+                android:id="@+id/txt_5"
                 style="@style/TextViewListTitleSecondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/fri"
                 android:textAllCaps="true"
                 android:textColor="@color/black_bg1" />
 
             <TextView
-                android:id="@+id/txt_sat"
+                android:id="@+id/txt_6"
                 style="@style/TextViewListTitleSecondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/sat"
                 android:textAllCaps="true"
                 android:textColor="@color/black_bg1" />
 
             <TextView
-                android:id="@+id/txt_sun"
+                android:id="@+id/txt_7"
                 style="@style/TextViewListTitleSecondary"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/sun"
                 android:textAllCaps="true"
                 android:textColor="@color/black_bg1" />
         </LinearLayout>
@@ -244,7 +237,7 @@
             app:dayBackgroundColor="#05000000"
             app:eventCornerRadius="@dimen/dimens_4dp"
             app:eventMarginVertical="@dimen/dimen_1dp"
-            app:eventTextColor="@color/white"
+            app:eventTextColor="@color/black_bg3"
             app:eventTextSize="@dimen/list_header_secondary_text_size"
             app:headerColumnBackground="#ffffffff"
             app:headerColumnTextColor="@color/white"
@@ -272,6 +265,8 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         android:src="@drawable/ic_plus"
+        app:elevation="@dimen/card_margin"
+        app:fabSize="normal"
         app:layout_anchor="@+id/bottomsheet"
         app:layout_anchorGravity="top|end"
         app:useCompatPadding="true" />

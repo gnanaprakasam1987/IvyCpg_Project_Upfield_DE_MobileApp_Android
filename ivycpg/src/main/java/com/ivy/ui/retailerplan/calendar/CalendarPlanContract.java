@@ -7,6 +7,7 @@ import com.ivy.core.di.scope.PerActivity;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 import com.ivy.ui.retailerplan.calendar.bo.CalenderBO;
+import com.ivy.ui.retailerplan.calendar.bo.PeriodBo;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -18,7 +19,7 @@ import java.util.List;
 public interface CalendarPlanContract {
 
     interface CalendarPlanView extends BaseIvyView {
-        void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList);
+        void loadCalendarView(ArrayList<String> mAllowedDates, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList , List<String> weekNoList);
 
         void setMonthName(String monthName);
 
@@ -33,6 +34,8 @@ public interface CalendarPlanContract {
         void reloadView();
 
         void loadAddPlanDialog(String date, RetailerMasterBO retailerMasterBO);
+
+        void setWeekDayText(List<String> weekDayText);
 
     }
 
@@ -71,15 +74,29 @@ public interface CalendarPlanContract {
 
         DateWisePlanBo getSelectedRetailerPlan(String retailerId);
 
-        RetailerMasterBO getPlanedRetailerBo (String retailerId);
+        RetailerMasterBO getPlanedRetailerBo(String retailerId);
 
-        boolean isPastDate();
+        boolean isPastDate(String mselectedDate);
 
         long getMaxPlanDate();
 
-        void deleteAndCopyPlan(String fromDate,String toDate);
+        void deleteAndCopyPlan(String fromDate, String toDate);
 
-        void copyPlan(String fromDate,String toDate);
+        void copyPlan(String fromDate, String toDate);
+
+        void setRetailerMasterBo(RetailerMasterBO retailerMasterBo);
+
+        List<PeriodBo> getWeekList();
+
+        int getWeeksPlanCount(String weekoNo);
+
+        String getWeekNo(String dateOfWeek);
+
+        List<String> getWeekNoList();
+
+        void deleteCopyWeekPlan(String fromDate, String toDate);
+
+        void copyWeekPlan(String fromDate, String toDate);
 
     }
 }

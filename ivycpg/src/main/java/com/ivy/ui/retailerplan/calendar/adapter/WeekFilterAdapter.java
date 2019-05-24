@@ -67,16 +67,17 @@ public class WeekFilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 holder.isValid = true;
             } else {
                 holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.light_gray));
+                holder.TvDay.setTextColor(mContext.getResources().getColor(R.color.light_gray));
                 holder.isValid = false;
             }
 
-            if (holder.calBO.isToday() && isDayView) {
+            if (holder.calBO.isToday() && isDayView && holder.isValid) {
                 holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.white));
                 holder.TVDate.setBackground(mContext.getResources().getDrawable(R.drawable.circle_blue_bg));
-            } else if (holder.calBO.isSelected() && isDayView) {
+            } else if (holder.calBO.isSelected() && isDayView && holder.isValid) {
                 holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.FullBlack));
                 holder.TVDate.setBackground(mContext.getResources().getDrawable(R.drawable.circle_calendar_select));
-            } else {
+            } else if (holder.isValid) {
                 holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.FullBlack));
                 holder.TVDate.setBackgroundColor(mContext.getResources().getColor(R.color.zxing_transparent));
             }

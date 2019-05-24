@@ -2,6 +2,7 @@ package com.ivy.utils;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
+import android.text.format.Time;
 
 import com.aem.api.CardReader;
 import com.ivy.sd.png.commons.SDUtil;
@@ -520,4 +521,20 @@ public class DateTimeUtils {
         return false;
     }
 
+    /**
+     * @return true if the supplied when is today else false
+     */
+    public static boolean isToday(long when) {
+        Time time = new Time();
+        time.set(when);
+
+        int thenYear = time.year;
+        int thenMonth = time.month;
+        int thenMonthDay = time.monthDay;
+
+        time.set(System.currentTimeMillis());
+        return (thenYear == time.year)
+                && (thenMonth == time.month)
+                && (thenMonthDay == time.monthDay);
+    }
 }

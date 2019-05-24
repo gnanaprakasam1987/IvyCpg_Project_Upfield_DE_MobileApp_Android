@@ -233,6 +233,8 @@
     <string name="copy">Copy</string>
     <string name="no_visits_copied">No. of Visit\'s Copied</string>
     <string name="do_you_want_delete_plan_copy">Do you want to delete existing plan and copy selected plan? </string>
+    <string name="from_to_date">From and To date are same! </string>
+    <string name="from_to_week">From and To week are same!</string>
 
     <string name="enter_time_slot">Enter Time Slot</string>
     <string name="select_salutation">Select Salutation</string>

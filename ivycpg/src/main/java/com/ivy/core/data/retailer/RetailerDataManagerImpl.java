@@ -322,7 +322,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                             retailer.setIsCollectionView("N");
 
                                             //set global gps distance for retailer from the config:GPSDISTANCE
-                                            if (retailer.getGpsDistance() <=0 && configurationMasterHelper.GLOBAL_GPS_DISTANCE > 0)
+                                            if (retailer.getGpsDistance() <= 0 && configurationMasterHelper.GLOBAL_GPS_DISTANCE > 0)
                                                 retailer.setGpsDistance(configurationMasterHelper.GLOBAL_GPS_DISTANCE);
 
                                             updateRetailerPriceGRP(retailer);
@@ -369,6 +369,9 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                         }
 
                                     }
+
+                                    if(configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
+                                        updateIsToday();
 
                                 } catch (Exception ignored) {
 
@@ -830,6 +833,34 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
         });
     }
 
+    @Override
+    public Single<Boolean> updateIsToday() {
+        return Single.fromCallable(() -> {
+            initDb();
+            List<String> retailerIds = new ArrayList<>();
+            Cursor c = mDbUtil.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND VisitStatus = 'PLANNED' " +
+                    "and Date = " + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            if (c != null
+                    && c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    retailerIds.add(c.getString(0));
+                }
+
+                c.close();
+            }
+            shutDownDb();
+            if (retailerIds.size() > 0)
+                for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
+                    retailerMasterBO.setIsToday(0);
+                    if (retailerIds.contains(retailerMasterBO.getRetailerID())) {
+                        retailerMasterBO.setIsToday(1);
+                    }
+                }
+
+            return true;
+        });
+    }
+
     public void updateIndicativeOrderedRetailer(RetailerMasterBO retObj, ArrayList<IndicativeBO> indicativeBOS) {
         retObj.setIndicateFlag(0);
         for (IndicativeBO indBo : indicativeBOS) {
@@ -1169,6 +1200,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                 configurationMasterHelper.SHOW_DATE_ROUTE = true;
                             } else if (value == 3) {
                                 configurationMasterHelper.SHOW_BEAT_ROUTE = true;
+                            } else if (value == 4) {
+                                configurationMasterHelper.SHOW_DATE_PLAN_ROUTE = true;
                             } else {
                                 configurationMasterHelper.SHOW_WEEK_ROUTE = true;
                             }

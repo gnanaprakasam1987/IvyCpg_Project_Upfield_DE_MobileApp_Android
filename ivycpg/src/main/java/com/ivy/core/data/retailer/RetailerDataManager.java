@@ -26,4 +26,6 @@ public interface RetailerDataManager {
 
     Single<Boolean> updatePlanVisitCount(List<DateWisePlanBo> planList);
 
+    Single<Boolean> updateIsToday();
+
 }
