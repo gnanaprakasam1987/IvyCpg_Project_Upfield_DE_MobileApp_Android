@@ -424,7 +424,7 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                 visitElementGroup.setVisibility(View.VISIBLE);
             }
 
-            setViewBackground(ContextCompat.getDrawable(context,R.drawable.edittext_bottom_border));
+            setViewBackground(ContextCompat.getDrawable(context,R.drawable.edittext_full_border));
 
             tvStartVisitTime.setOnClickListener(startVisitTimeListener);
             tvVisitEndTime.setOnClickListener(startVisitTimeListener);
