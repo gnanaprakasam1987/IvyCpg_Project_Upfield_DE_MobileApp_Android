@@ -1,6 +1,6 @@
 package com.ivy.ui.retailerplan.calendar.presenter;
 
-import android.text.format.DateUtils;
+import android.graphics.Color;
 
 import com.ivy.calendarlibrary.weekview.WeekViewEvent;
 import com.ivy.core.base.presenter.BasePresenter;
@@ -37,6 +37,8 @@ import io.reactivex.Single;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableObserver;
 
+import static com.ivy.ui.retailer.RetailerConstants.COMPLETED;
+import static com.ivy.ui.retailer.RetailerConstants.PLANNED;
 import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
 
 /**
@@ -61,6 +63,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     private List<PeriodBo> periodList = new ArrayList<>();
     private List<PeriodBo> weekList = new ArrayList<>();
     private List<String> dateList = new ArrayList<>();
+    private Calendar mStartDay;
 
     @Inject
     CalendarPlanPresenterImpl(DataManager dataManager,
@@ -127,7 +130,17 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                         RetailerMasterBO retailerMasterBO = getPlanedRetailerBo("" + dateWisePlanBo.getEntityId());
                         if (retailerMasterBO != null) {
                             WeekViewEvent event = new WeekViewEvent(dateWisePlanBo.getPlanId(), dateWisePlanBo.getName(), retailerMasterBO.getAddress1(), startTime, endTime);
-                            event.setColor(R.attr.colorPrimary);
+
+                            if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(COMPLETED) || "Y".equals(retailerMasterBO.getIsVisited()))
+                                event.setColor(Color.parseColor("#407ED321"));
+                            else if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED))
+                                event.setColor(Color.parseColor("#404A90E2"));
+
+                            if (dateWisePlanBo.getCancelReasonId() > 0)
+                                event.setColor(Color.parseColor("#40FF0707"));
+                            else if ("P".equals(retailerMasterBO.getIsVisited()))
+                                event.setColor(Color.parseColor("#404A6BE2"));
+
                             event.setRetailerId(retailerMasterBO.getRetailerID());
                             events.add(event);
                         }
@@ -161,7 +174,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                 .subscribeWith(new DisposableObserver<Object>() {
                     @Override
                     public void onNext(Object o) {
-                        if (dateList.size() > 0) {
+                        if (!dateList.isEmpty()) {
 
                             Calendar aCalendar = Calendar.getInstance();
                             aCalendar.setTime(DateTimeUtils.convertStringToDateObject(dateList.get(0), generalPattern));
@@ -172,6 +185,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                             zCalendar.setTime(DateTimeUtils.convertStringToDateObject(dateList.get(1), generalPattern));
                             planToDate = dateList.get(1);
                             Commons.print("planFromDate" + planToDate);
+
 
                         } else {
                             Calendar aCalendar = Calendar.getInstance();
@@ -187,6 +201,16 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                             Commons.print("planFromDate" + planToDate);
                         }
 
+
+                        mStartDay = Calendar.getInstance();
+                        if (!weekList.isEmpty())
+                            mStartDay.setTime(DateTimeUtils.convertStringToDateObject(weekList.get(0).getStartDate(), generalPattern));
+                        else {
+                            // mStartDay.setFirstDayOfWeek(Calendar.MONDAY);
+                            mStartDay.set(Calendar.DAY_OF_WEEK, mStartDay.getFirstDayOfWeek());
+                        }
+
+                        udpateMonthDayText();
                         setAllowedDates();
                         getIvyView().hideLoading();
                         loadCalendar();
@@ -227,7 +251,8 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         String[] calendarDate = getMonthRange();
         int dayInWeekCount = getWeekDayCount(calendarDate[0]);
         mCalenderAllList = getDaysBetweenDates(calendarDate[0], calendarDate[1]);
-        getIvyView().loadCalendarView(mAllowedDates, dayInWeekCount, mCalenderAllList);
+        List<String> weekNoList = getAMonthsWeekNoList(calendarDate[0], calendarDate[1]);
+        getIvyView().loadCalendarView(mAllowedDates, dayInWeekCount, mCalenderAllList, weekNoList);
         getIvyView().setMonthName(DateTimeUtils.convertDateObjectToRequestedFormat(
                 currentMonth.getTime(), "MMM yyyy") + ", " + getPeriodName());
         getIvyView().loadRetailerInfoBtmSheet(getADayPlan(mSelectedDate));
@@ -255,7 +280,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
 
         Calendar date = Calendar.getInstance();
         date.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
-        date.setFirstDayOfWeek(Calendar.MONDAY);
+        date.setFirstDayOfWeek(mStartDay.get(Calendar.DAY_OF_WEEK));
         date.set(Calendar.DAY_OF_WEEK, date.getFirstDayOfWeek());
         getIvyView().loadWeekView(date);
         getIvyView().setMonthName(DateTimeUtils.convertDateObjectToRequestedFormat(
@@ -456,7 +481,11 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         Calendar c = Calendar.getInstance();
         c.setTime(DateTimeUtils.convertStringToDateObject(date, generalPattern));
 
-        count = c.get(Calendar.DAY_OF_WEEK) - 1;
+        if (mStartDay.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY)
+            count = c.get(Calendar.DAY_OF_WEEK) - 1;
+        else
+            count = c.get(Calendar.DAY_OF_WEEK);
+
         if (count == 0) {
             count = 7;
         }
@@ -483,7 +512,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
             cBO.setCal_date(DateTimeUtils.convertDateObjectToRequestedFormat(result, generalPattern));
             cBO.setDay(goal);
             cBO.setDate(d);
-            cBO.setToday(DateUtils.isToday(result.getTime()));
+            cBO.setToday(DateTimeUtils.isToday(result.getTime()));
             cBO.setSelected(mSelectedDate.equalsIgnoreCase(cBO.getCal_date()));
             cBO.setPlanList(getADayPlan(cBO.getCal_date()));
             calLsit.add(cBO);
@@ -504,14 +533,14 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
 
         Calendar startWeek = Calendar.getInstance();
         startWeek.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
-        startWeek.setFirstDayOfWeek(Calendar.MONDAY);
+        startWeek.setFirstDayOfWeek(mStartDay.get(Calendar.DAY_OF_WEEK));
         startWeek.set(Calendar.DAY_OF_WEEK, startWeek.getFirstDayOfWeek());
         setTimeToBeginningOfDay(startWeek);
 
 
         Calendar endWeek = Calendar.getInstance();
         endWeek.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
-        endWeek.set(Calendar.DAY_OF_WEEK, endWeek.getFirstDayOfWeek());
+        endWeek.set(Calendar.DAY_OF_WEEK, startWeek.getFirstDayOfWeek());
         endWeek.add(Calendar.DATE, 7);
         setTimeToEndOfDay(endWeek);
 
@@ -529,14 +558,14 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
             cBO.setCal_date(DateTimeUtils.convertDateObjectToRequestedFormat(result, generalPattern));
             cBO.setDay(goal);
             cBO.setWeekDate(d);
-            cBO.setToday(DateUtils.isToday(result.getTime()));
+            cBO.setToday(DateTimeUtils.isToday(result.getTime()));
             cBO.setSelected(mSelectedDate.equalsIgnoreCase(cBO.getCal_date()));
             calLsit.add(cBO);
         }
         //adding week no at start position
         CalenderBO cBO = new CalenderBO();
         cBO.setDay("WK");
-        cBO.setWeekDate(getWeekNo());
+        cBO.setWeekDate(getWeekNo(mSelectedDate));
         calLsit.add(0, cBO);
 
         return calLsit;
@@ -606,14 +635,14 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         if (weekList.size() > 0 && weekNo.length() > 0) {
             Calendar startWeek = Calendar.getInstance();
             startWeek.setTime(DateTimeUtils.convertStringToDateObject(getWeekStartDate(weekNo), generalPattern));
-            startWeek.setFirstDayOfWeek(Calendar.MONDAY);
+            startWeek.setFirstDayOfWeek(mStartDay.get(Calendar.DAY_OF_WEEK));
             startWeek.set(Calendar.DAY_OF_WEEK, startWeek.getFirstDayOfWeek());
             setTimeToBeginningOfDay(startWeek);
 
 
             Calendar endWeek = Calendar.getInstance();
             endWeek.setTime(DateTimeUtils.convertStringToDateObject(getWeekStartDate(weekNo), generalPattern));
-            endWeek.set(Calendar.DAY_OF_WEEK, endWeek.getFirstDayOfWeek());
+            endWeek.set(Calendar.DAY_OF_WEEK, startWeek.getFirstDayOfWeek());
             endWeek.add(Calendar.DATE, 7);
             setTimeToEndOfDay(endWeek);
 
@@ -653,10 +682,10 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     }
 
     @Override
-    public String getWeekNo() {
+    public String getWeekNo(String dateOfWeek) {
         String weekNo = "";
         if (weekList.size() > 0) {
-            Date selectedDate = DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern);
+            Date selectedDate = DateTimeUtils.convertStringToDateObject(dateOfWeek, generalPattern);
             for (PeriodBo periodBo : weekList) {
                 assert selectedDate != null;
                 if (selectedDate.compareTo(DateTimeUtils.convertStringToDateObject(periodBo.getStartDate(), generalPattern)) >= 0
@@ -667,7 +696,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
             }
         } else {
             Calendar calendar = Calendar.getInstance();
-            calendar.setTime(DateTimeUtils.convertStringToDateObject(mSelectedDate, generalPattern));
+            calendar.setTime(DateTimeUtils.convertStringToDateObject(dateOfWeek, generalPattern));
             weekNo = "" + calendar.get(Calendar.WEEK_OF_YEAR);
         }
         return weekNo;
@@ -707,14 +736,14 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
             if (weekList.size() > 0 && toWeekNo.length() > 0) {
                 Calendar startWeek = Calendar.getInstance();
                 startWeek.setTime(DateTimeUtils.convertStringToDateObject(getWeekStartDate(toWeekNo), generalPattern));
-                startWeek.setFirstDayOfWeek(Calendar.MONDAY);
+                startWeek.setFirstDayOfWeek(mStartDay.get(Calendar.DAY_OF_WEEK));
                 startWeek.set(Calendar.DAY_OF_WEEK, startWeek.getFirstDayOfWeek());
                 setTimeToBeginningOfDay(startWeek);
 
 
                 Calendar endWeek = Calendar.getInstance();
                 endWeek.setTime(DateTimeUtils.convertStringToDateObject(getWeekStartDate(toWeekNo), generalPattern));
-                endWeek.set(Calendar.DAY_OF_WEEK, endWeek.getFirstDayOfWeek());
+                endWeek.set(Calendar.DAY_OF_WEEK, startWeek.getFirstDayOfWeek());
                 endWeek.add(Calendar.DATE, 7);
                 setTimeToEndOfDay(endWeek);
 
@@ -731,23 +760,23 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     private Single<List<DateWisePlanBo>> getListToCopy(String fromWeekNo, String toWeekNo) {
         return Single.fromCallable(() -> {
             List<DateWisePlanBo> copyList = new ArrayList<>();
-            if (weekList.size() > 0 && fromWeekNo.length() > 0 && toWeekNo.length()>0) {
+            if (weekList.size() > 0 && fromWeekNo.length() > 0 && toWeekNo.length() > 0) {
                 Calendar startWeek = Calendar.getInstance();
                 startWeek.setTime(DateTimeUtils.convertStringToDateObject(getWeekStartDate(fromWeekNo), generalPattern));
-                startWeek.setFirstDayOfWeek(Calendar.MONDAY);
+                startWeek.setFirstDayOfWeek(mStartDay.get(Calendar.DAY_OF_WEEK));
                 startWeek.set(Calendar.DAY_OF_WEEK, startWeek.getFirstDayOfWeek());
                 setTimeToBeginningOfDay(startWeek);
 
 
                 Calendar endWeek = Calendar.getInstance();
                 endWeek.setTime(DateTimeUtils.convertStringToDateObject(getWeekStartDate(fromWeekNo), generalPattern));
-                endWeek.set(Calendar.DAY_OF_WEEK, endWeek.getFirstDayOfWeek());
+                endWeek.set(Calendar.DAY_OF_WEEK, startWeek.getFirstDayOfWeek());
                 endWeek.add(Calendar.DATE, 7);
                 setTimeToEndOfDay(endWeek);
 
                 Calendar copyWeek = Calendar.getInstance();
                 copyWeek.setTime(DateTimeUtils.convertStringToDateObject(getWeekStartDate(toWeekNo), generalPattern));
-                copyWeek.setFirstDayOfWeek(Calendar.MONDAY);
+                copyWeek.setFirstDayOfWeek(mStartDay.get(Calendar.DAY_OF_WEEK));
                 copyWeek.set(Calendar.DAY_OF_WEEK, copyWeek.getFirstDayOfWeek());
                 setTimeToBeginningOfDay(copyWeek);
 
@@ -844,5 +873,44 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                     updateIsToday();
                     fetchEventsFromDb(false);
                 }));
+    }
+
+    private List<String> getAMonthsWeekNoList(String startDate, String endDate) {
+        List<String> weekNoList = new ArrayList<>();
+        Date startdate = DateTimeUtils.convertStringToDateObject(startDate, generalPattern);
+        Date enddate;
+        enddate = addDateNew(endDate);
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(startdate);
+
+        while (calendar.getTime().before(enddate)) {
+            weekNoList.add(getWeekNo(DateTimeUtils.convertDateObjectToRequestedFormat(calendar.getTime(), generalPattern)));
+            calendar.add(Calendar.DATE, 7);
+
+        }
+        return weekNoList;
+    }
+
+    private void udpateMonthDayText() {
+        List<String> dayTextList = new ArrayList<>();
+        Calendar startWeek = (Calendar) mStartDay.clone();
+        setTimeToBeginningOfDay(startWeek);
+
+
+        Calendar endWeek = (Calendar) mStartDay.clone();
+        endWeek.add(Calendar.DATE, 7);
+        setTimeToEndOfDay(endWeek);
+
+        while (startWeek.getTime().before(endWeek.getTime())) {
+            Date result = startWeek.getTime();
+            SimpleDateFormat outFormat = new SimpleDateFormat("EE", Locale.getDefault());
+            String goal = outFormat.format(result);
+            dayTextList.add(goal);
+            startWeek.add(Calendar.DATE, 1);
+        }
+
+        getIvyView().setWeekDayText(dayTextList);
+
     }
 }

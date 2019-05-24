@@ -83,48 +83,54 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         " LEFT join RetailerAddress as RA on RA.RetailerID = dwp.EntityId AND RA.IsPrimary=1 " +
                         " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER'" +
                         " ORDER BY dwp.Date asc,dwp.StartTime asc";
+                try {
 
-                initDb();
+                    initDb();
 
-                Cursor c = mDbUtil.selectSQL(sql);
+                    Cursor c = mDbUtil.selectSQL(sql);
 
-                if (c != null && c.getCount() > 0) {
-                    DateWisePlanBo dateWisePlanBO;
-                    while (c.moveToNext()) {
-                        dateWisePlanBO = new DateWisePlanBo();
+                    if (c != null && c.getCount() > 0) {
+                        DateWisePlanBo dateWisePlanBO;
+                        while (c.moveToNext()) {
+                            dateWisePlanBO = new DateWisePlanBo();
 
-                        dateWisePlanBO.setPlanId(c.getInt(0));
-                        dateWisePlanBO.setDistributorId(c.getInt(1));
-                        dateWisePlanBO.setUserId(c.getInt(2));
-                        dateWisePlanBO.setDate(c.getString(3));
-                        dateWisePlanBO.setEntityId(c.getInt(4));
-                        dateWisePlanBO.setEntityType(c.getString(5));
-                        dateWisePlanBO.setStatus(c.getString(6));
-                        dateWisePlanBO.setSequence(c.getInt(7));
-                        dateWisePlanBO.setName(c.getString(8));
-                        dateWisePlanBO.setStartTime(c.getString(9));
-                        dateWisePlanBO.setEndTime(c.getString(10));
+                            dateWisePlanBO.setPlanId(c.getInt(0));
+                            dateWisePlanBO.setDistributorId(c.getInt(1));
+                            dateWisePlanBO.setUserId(c.getInt(2));
+                             dateWisePlanBO.setDate(c.getString(3));
+                            dateWisePlanBO.setEntityId(c.getInt(4));
+                            dateWisePlanBO.setEntityType(c.getString(5));
+                            dateWisePlanBO.setStatus(c.getString(6));
+                            dateWisePlanBO.setSequence(c.getInt(7));
+                            dateWisePlanBO.setName(c.getString(8));
+                            dateWisePlanBO.setStartTime(c.getString(9));
+                            dateWisePlanBO.setEndTime(c.getString(10));
 
-                        if (c.getString(11) != null && c.getString(11).equalsIgnoreCase("MOBILE"))
-                            dateWisePlanBO.setServerData(false);
-                        else
-                            dateWisePlanBO.setServerData(true);
+                            if (c.getString(11) != null && c.getString(11).equalsIgnoreCase("MOBILE"))
+                                dateWisePlanBO.setServerData(false);
+                            else
+                                dateWisePlanBO.setServerData(true);
 
-                        dateWisePlanBO.setVisitStatus(c.getString(12));
-                        dateWisePlanBO.setCancelReasonId(c.getInt(13));
+                            dateWisePlanBO.setVisitStatus(c.getString(12));
+                            dateWisePlanBO.setCancelReasonId(c.getInt(13));
 
-                        if (datePlanHashMap.get(dateWisePlanBO.getDate()) == null) {
-                            ArrayList<DateWisePlanBo> plannedList = new ArrayList<>();
-                            plannedList.add(dateWisePlanBO);
-                            datePlanHashMap.put(dateWisePlanBO.getDate(), plannedList);
-                        } else {
-                            List<DateWisePlanBo> plannedList = datePlanHashMap.get(dateWisePlanBO.getDate());
-                            plannedList.add(dateWisePlanBO);
-                            datePlanHashMap.put(dateWisePlanBO.getDate(), plannedList);
+                            if (datePlanHashMap.get(dateWisePlanBO.getDate()) == null) {
+                                ArrayList<DateWisePlanBo> plannedList = new ArrayList<>();
+                                plannedList.add(dateWisePlanBO);
+                                datePlanHashMap.put(dateWisePlanBO.getDate(), plannedList);
+                            } else {
+                                List<DateWisePlanBo> plannedList = datePlanHashMap.get(dateWisePlanBO.getDate());
+                                plannedList.add(dateWisePlanBO);
+                                datePlanHashMap.put(dateWisePlanBO.getDate(), plannedList);
+                            }
                         }
+                        c.close();
                     }
+                    shutDownDb();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    shutDownDb();
                 }
-                shutDownDb();
 
                 return datePlanHashMap;
             }
@@ -144,39 +150,46 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         " FROM " + DataMembers.tbl_date_wise_plan + " as dwp " +
                         " inner join RetailerMaster as rm on rm.RetailerID = dwp.EntityId " +
                         " Where dwp.status != 'D' and dwp.EntityType = 'RETAILER' and dwp.Date=" + StringUtils.QT(date);
+                try {
 
-                initDb();
+                    initDb();
 
-                Cursor c = mDbUtil.selectSQL(sql);
+                    Cursor c = mDbUtil.selectSQL(sql);
 
-                if (c != null && c.getCount() > 0) {
-                    DateWisePlanBo dateWisePlanBO;
-                    while (c.moveToNext()) {
-                        dateWisePlanBO = new DateWisePlanBo();
+                    if (c != null && c.getCount() > 0) {
+                        DateWisePlanBo dateWisePlanBO;
+                        while (c.moveToNext()) {
+                            dateWisePlanBO = new DateWisePlanBo();
 
-                        dateWisePlanBO.setPlanId(c.getInt(0));
-                        dateWisePlanBO.setDistributorId(c.getInt(1));
-                        dateWisePlanBO.setUserId(c.getInt(2));
-                        dateWisePlanBO.setDate(c.getString(3));
-                        dateWisePlanBO.setEntityId(c.getInt(4));
-                        dateWisePlanBO.setEntityType(c.getString(5));
-                        dateWisePlanBO.setStatus(c.getString(6));
-                        dateWisePlanBO.setSequence(c.getInt(7));
-                        dateWisePlanBO.setName(c.getString(8));
-                        dateWisePlanBO.setStartTime(c.getString(9));
-                        dateWisePlanBO.setEndTime(c.getString(10));
+                            dateWisePlanBO.setPlanId(c.getInt(0));
+                            dateWisePlanBO.setDistributorId(c.getInt(1));
+                            dateWisePlanBO.setUserId(c.getInt(2));
+                            dateWisePlanBO.setDate(c.getString(3));
+                            dateWisePlanBO.setEntityId(c.getInt(4));
+                            dateWisePlanBO.setEntityType(c.getString(5));
+                            dateWisePlanBO.setStatus(c.getString(6));
+                            dateWisePlanBO.setSequence(c.getInt(7));
+                            dateWisePlanBO.setName(c.getString(8));
+                            dateWisePlanBO.setStartTime(c.getString(9));
+                            dateWisePlanBO.setEndTime(c.getString(10));
 
-                        if (c.getString(11) != null && !c.getString(11).equalsIgnoreCase("MOBILE"))
-                            dateWisePlanBO.setServerData(true);
-                        else
-                            dateWisePlanBO.setServerData(false);
+                            if (c.getString(11) != null && !c.getString(11).equalsIgnoreCase("MOBILE"))
+                                dateWisePlanBO.setServerData(true);
+                            else
+                                dateWisePlanBO.setServerData(false);
 
-                        dateWisePlanBO.setVisitStatus(c.getString(12));
+                            dateWisePlanBO.setVisitStatus(c.getString(12));
 
-                        dateWisePlanBO.setCancelReasonId(c.getInt(13));
+                            dateWisePlanBO.setCancelReasonId(c.getInt(13));
 
-                        datePlanHashMap.put(String.valueOf(dateWisePlanBO.getEntityId()), dateWisePlanBO);
+                            datePlanHashMap.put(String.valueOf(dateWisePlanBO.getEntityId()), dateWisePlanBO);
+                        }
+                        c.close();
                     }
+                    shutDownDb();
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    shutDownDb();
                 }
 
                 return datePlanHashMap;
