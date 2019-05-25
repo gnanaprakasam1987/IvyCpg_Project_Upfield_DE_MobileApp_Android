@@ -38,35 +38,18 @@
         android:minHeight="40dp"
         />
 
-    <TextView
-        android:id="@+id/label_retailer_name"
-        style="@style/TextViewListItemSecondary"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/retailer_name"
-        android:layout_marginTop="20dp"/>
-    <android.support.v7.widget.AppCompatSpinner
-        style="@style/Base.Widget.AppCompat.Spinner.Underlined"
-        android:id="@+id/spinner_retailer"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:overlapAnchor="false"
-        android:spinnerMode="dialog"
-        android:minHeight="40dp"
-        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="20dp"
-        android:weightSum="10">
+        >
         <LinearLayout
-            android:layout_width="@dimen/dimen_0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_weight="6">
+            >
             <TextView
                 android:id="@+id/label_serialNumber"
                 style="@style/TextViewListItemSecondary"
@@ -75,36 +58,14 @@
                 android:text="@string/serial_no"
                 />
             <android.support.v7.widget.AppCompatEditText
+                android:id="@+id/edittext_serialNumber"
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="@dimen/dimen_40dp"/>
 
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="@dimen/dimen_0dp"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="4">
-            <TextView
-                android:id="@+id/label_status"
-                style="@style/TextViewListItemSecondary"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/status"
-                />
-            <android.support.v7.widget.AppCompatSpinner
-                style="@style/Base.Widget.AppCompat.Spinner.Underlined"
-                android:id="@+id/spinner_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:overlapAnchor="false"
-                android:spinnerMode="dialog"
-                android:minHeight="40dp"
-                />
 
-        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -194,6 +155,7 @@
             android:layout_marginTop="@dimen/dimen_20dp"
             />
         <android.support.v7.widget.AppCompatEditText
+            android:id="@+id/edittext_description"
             style="?attr/boxCustomButtonSmallGrey"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_100dp"

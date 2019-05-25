@@ -53,6 +53,35 @@ public class SerializedAssetBO {
 
     private String assetServiceReqStatus="Pending";
 
+    public String getServiceProvider() {
+        return serviceProvider;
+    }
+
+    public void setServiceProvider(String serviceProvider) {
+        this.serviceProvider = serviceProvider;
+    }
+
+    public int getServiceProviderId() {
+        return serviceProviderId;
+    }
+
+    public void setServiceProviderId(int serviceProviderId) {
+        this.serviceProviderId = serviceProviderId;
+    }
+
+    private int serviceProviderId;
+    private String serviceProvider;
+
+    public String getIssueDescription() {
+        return issueDescription;
+    }
+
+    public void setIssueDescription(String issueDescription) {
+        this.issueDescription = issueDescription;
+    }
+
+    private String issueDescription;
+
     public String getAssetBarCodeId() {
         return assetBarCodeId;
     }

@@ -422,4 +422,23 @@ public class FileUtils {
         }
         return count;
     }
+
+    public String getFileNameFromUri(String uri){
+        String mFileName = "file.bin";
+
+        int index = uri.lastIndexOf('/');
+
+        if (index >= 0) {
+            mFileName = uri.substring(index + 1);
+
+            String[] file = mFileName.split("\\?");
+            if (file.length > 0)
+                mFileName = file[0];
+        }
+        if (mFileName.trim().equals("")) {
+            mFileName = "file.bin";
+        }
+        return mFileName;
+    }
+
 }
