@@ -15,6 +15,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 /**
  * Created by mansoor on 27/03/2019
@@ -124,6 +125,29 @@ public class CalendarPlanDataManagerImpl implements CalendarPlanDataManager {
                 shutDownDb();
             }
             return weekList;
+        });
+    }
+
+    @Override
+    public Single<Integer> loadConfiguration() {
+        return Single.fromCallable(() -> {
+            int monthBoundary = 3;
+            initDb();
+            try {
+                String sql = "select RField from HhtModuleMaster where hhtCode ='FUN84' and menu_type ='MENU_OFLNE_PLAN'";
+                Cursor c = mDbUtil.selectSQL(sql);
+                if (c != null && c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                       monthBoundary = c.getInt(0);
+                    }
+                    c.close();
+                }
+                shutDownDb();
+            } catch (Exception e) {
+                Commons.printException("" + e);
+                shutDownDb();
+            }
+            return monthBoundary;
         });
     }
 }

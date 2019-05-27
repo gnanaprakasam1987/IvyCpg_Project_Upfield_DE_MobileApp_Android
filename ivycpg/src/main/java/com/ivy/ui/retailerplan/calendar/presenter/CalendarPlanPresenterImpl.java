@@ -1,7 +1,5 @@
 package com.ivy.ui.retailerplan.calendar.presenter;
 
-import android.graphics.Color;
-
 import com.ivy.calendarlibrary.weekview.WeekViewEvent;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
@@ -59,7 +57,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     private HashMap<String, DateWisePlanBo> selectedDateRetailerPlanMap;
     private AddPlanDataManager addPlanDataManager;
     private com.ivy.core.data.retailer.RetailerDataManager coreRetailerDataManager;
-    private int startMonthDiff = 1, endMonthDiff = 1;
+    private int startMonthDiff,endMonthDiff;
     private List<PeriodBo> periodList = new ArrayList<>();
     private List<PeriodBo> weekList = new ArrayList<>();
     private List<String> dateList = new ArrayList<>();
@@ -132,14 +130,14 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                             WeekViewEvent event = new WeekViewEvent(dateWisePlanBo.getPlanId(), dateWisePlanBo.getName(), retailerMasterBO.getAddress1(), startTime, endTime);
 
                             if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(COMPLETED) || "Y".equals(retailerMasterBO.getIsVisited()))
-                                event.setColor(Color.parseColor("#407ED321"));
+                                event.setColor(getIvyView().getColorCode(1));
                             else if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED))
-                                event.setColor(Color.parseColor("#404A90E2"));
+                                event.setColor(getIvyView().getColorCode(2));
 
                             if (dateWisePlanBo.getCancelReasonId() > 0)
-                                event.setColor(Color.parseColor("#40FF0707"));
+                                event.setColor(getIvyView().getColorCode(3));
                             else if ("P".equals(retailerMasterBO.getIsVisited()))
-                                event.setColor(Color.parseColor("#404A6BE2"));
+                                event.setColor(getIvyView().getColorCode(4));
 
                             event.setRetailerId(retailerMasterBO.getRetailerID());
                             events.add(event);
@@ -862,6 +860,17 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(copyList -> {
                     copyWeekPlan(copyList);
+                }));
+    }
+
+    @Override
+    public void loadConfiguration() {
+        getCompositeDisposable().add(calendarPlanDataManager.loadConfiguration()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe((integer, throwable) -> {
+                    startMonthDiff = integer;
+                    endMonthDiff = integer;
                 }));
     }
 

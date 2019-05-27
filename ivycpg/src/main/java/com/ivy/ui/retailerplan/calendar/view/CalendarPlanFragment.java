@@ -14,6 +14,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
@@ -175,6 +176,7 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
         setHasOptionsMenu(true);
         initRetailerInfoBottmSheet();
         initCopyPlanBottmSheet();
+        presenter.loadConfiguration();
         presenter.fetchEventsFromDb(true);
 
         rvWeek.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
@@ -472,6 +474,27 @@ public class CalendarPlanFragment extends BaseFragment implements CalendarPlanCo
             }
         }
 
+    }
+
+    @Override
+    public int getColorCode(int type) {
+        int colorCode = ContextCompat.getColor(mContext, R.color.planed_plan);
+        switch (type) {
+            case 1:
+                colorCode = ContextCompat.getColor(mContext, R.color.complete_plan);
+                break;
+            case 2:
+                colorCode = ContextCompat.getColor(mContext, R.color.planed_plan);
+                break;
+            case 3:
+                colorCode = ContextCompat.getColor(mContext, R.color.cancel_plan);
+                break;
+            case 4:
+                colorCode = ContextCompat.getColor(mContext, R.color.pause_plan);
+                break;
+
+        }
+        return colorCode;
     }
 
     private void hideRetailerInfoBottomSheet() {
