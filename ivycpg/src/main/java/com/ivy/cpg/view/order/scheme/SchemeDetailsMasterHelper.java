@@ -435,7 +435,7 @@ public class SchemeDetailsMasterHelper {
             sb.append(" AND SCM.locationid in(0,").append(locationId).append(")");
             sb.append(" AND SCM.accountid in(0,").append(accountId).append(")");
             sb.append(" AND SCM.PriorityProductId in(0,").append(priorityProductId).append(")");
-            sb.append(" (AND (OP.GroupID IN(").append(mValidGrpIds).append(")").append(" OR OP.GroupID IS NULL) ");// if given scheme is not mapped for attribute wise  than IS NULL condition will work
+            sb.append(" AND (OP.GroupID IN(").append(mValidGrpIds).append(")").append(" OR OP.GroupID IS NULL) ");// if given scheme is not mapped for attribute wise  than IS NULL condition will work
             sb.append(" AND SAC.schemeApplyCOunt !=0 ").append(orderBy);
 
             Cursor c = db.selectSQL(sb.toString());
