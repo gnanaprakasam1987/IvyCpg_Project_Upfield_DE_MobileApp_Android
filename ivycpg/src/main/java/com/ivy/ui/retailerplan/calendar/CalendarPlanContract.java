@@ -37,6 +37,8 @@ public interface CalendarPlanContract {
 
         void setWeekDayText(List<String> weekDayText);
 
+        int getColorCode(int type);
+
     }
 
     @PerActivity
@@ -97,6 +99,8 @@ public interface CalendarPlanContract {
         void deleteCopyWeekPlan(String fromDate, String toDate);
 
         void copyWeekPlan(String fromDate, String toDate);
+
+        void loadConfiguration();
 
     }
 }
