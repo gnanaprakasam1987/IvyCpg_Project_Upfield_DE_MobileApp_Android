@@ -265,7 +265,7 @@
             android:maxLines="1"
             android:text="10:00"
             android:padding="@dimen/_5sdp"
-            android:background="@drawable/edittext_bottom_border"
+            android:background="@drawable/edittext_full_border"
             android:layout_marginRight="@dimen/_10sdp"
             app:layout_constraintRight_toLeftOf="@+id/tv_to_txt"
             app:layout_constraintTop_toTopOf="@+id/tv_visit_time_txt"
@@ -281,7 +281,7 @@
             android:maxLines="1"
             android:padding="@dimen/_5sdp"
             android:text="12:00"
-            android:background="@drawable/edittext_bottom_border"
+            android:background="@drawable/edittext_full_border"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/tv_visit_time_txt"
             app:layout_constraintBottom_toBottomOf="@+id/tv_visit_time_txt"/>
