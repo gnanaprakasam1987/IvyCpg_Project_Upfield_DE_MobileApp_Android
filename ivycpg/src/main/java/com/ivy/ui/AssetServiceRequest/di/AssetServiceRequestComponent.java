@@ -14,5 +14,5 @@ public interface AssetServiceRequestComponent {
 
     void inject(AssetServiceRequestActivity assetServiceRequestActivity);
 
-   // void inject(NewAssetServiceRequest newAssetServiceRequest);
+    void inject(NewAssetServiceRequest newAssetServiceRequest);
 }

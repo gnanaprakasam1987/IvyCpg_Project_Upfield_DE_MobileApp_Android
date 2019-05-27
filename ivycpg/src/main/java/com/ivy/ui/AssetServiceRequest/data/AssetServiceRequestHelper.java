@@ -3,6 +3,8 @@ package com.ivy.ui.AssetServiceRequest.data;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.ivy.core.data.app.AppDataProvider;
+import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.cpg.view.serializedAsset.SerializedAssetBO;
 import com.ivy.lib.existing.DBUtil;
@@ -14,6 +16,8 @@ import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
 
+import javax.inject.Inject;
+
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
@@ -22,6 +26,7 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
     private BusinessModel businessModel;
     private static AssetServiceRequestHelper instance = null;
     private DBUtil mDbUtil;
+    private AppDataProvider appDataProvider;
 
     public ArrayList<SerializedAssetBO> getAssetRequestList() {
         return assetRequestList;
@@ -43,7 +48,7 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
         mDbUtil.closeDB();
     }
 
-    private AssetServiceRequestHelper(Context context){
+   /* private AssetServiceRequestHelper(Context context){
         businessModel=(BusinessModel)context.getApplicationContext();
 
     }
@@ -53,6 +58,13 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
             instance = new AssetServiceRequestHelper(context);
 
         return instance;
+    }*/
+
+    @Inject
+    AssetServiceRequestHelper(@DataBaseInfo DBUtil mDbUtil, AppDataProvider appDataProvider) {
+        this.mDbUtil = mDbUtil;
+        this.appDataProvider = appDataProvider;
+
     }
 
     @Override
@@ -64,11 +76,11 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
                 setAssetRequestList(new ArrayList<>());
 
                 StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("Select AssetId,AssetName,SerialNumber,Date,SM.listName as issueType ,SM1.listName as serviceProvider" +
+                stringBuilder.append("Select A.AssetId,AssetName,SerialNumber,Date,SM.listName as issueType ,SM1.listName as serviceProvider" +
                         ",IssueDescription,ImagePath,Status,ExpectedResolutionDate");
-                stringBuilder.append("from SerializedAssetServiceRequest A left join AssetMaster B ON A.assetId=B.AssetId");
-                stringBuilder.append("left join StandardListMaster SM ON SM.listId=A.reasonId");
-                stringBuilder.append("left join StandardListMaster SM1 ON SM1.listId=A.ServiceProviderId");
+                stringBuilder.append(" from SerializedAssetServiceRequest A left join SerializedAssetMaster B ON A.assetId=B.AssetId");
+                stringBuilder.append(" left join StandardListMaster SM ON SM.listId=A.reasonId");
+                stringBuilder.append(" left join StandardListMaster SM1 ON SM1.listId=A.ServiceProviderId");
                 Cursor cursor = mDbUtil.selectSQL(stringBuilder.toString());
                 if (cursor.getCount() > 0) {
                     SerializedAssetBO assetBO;
@@ -107,6 +119,8 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
             ArrayList<SerializedAssetBO> assetList = new ArrayList<>();
             try {
 
+                initDb();
+
                 StringBuilder sb = new StringBuilder();
                 sb.append("select Distinct A.assetId,A.assetName,B.serialNumber,'',B.NFCNumber,'' as ParentHierarchy,AllocationRefId,");
                 sb.append("ifnull(A.assettype,'') as AssetTypeId,A.capacity as capacity,A.vendorid as vendorid,A.modelid as modelid,ifnull(SAVM.name,'') as name,");
@@ -120,10 +134,9 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
                 sb.append("left join SerializedAssetProductMapping C on C.AssetId=A.AssetId ");
                 sb.append("left join SerializedAssetVendorMaster SAVM on SAVM.id=A.vendorid ");
 
-                String allMasterSb = sb.toString();
 
                 sb.append("Where Retailerid in(0,");
-                sb.append(StringUtils.QT(businessModel.getRetailerMasterBO().getRetailerID())).append(")");
+                sb.append(StringUtils.QT(appDataProvider.getRetailMaster().getRetailerID())).append(")");
 
                 sb.append(" GROUP BY RetailerId,B.AssetId,B.SerialNumber ORDER BY RetailerId");
 
@@ -162,87 +175,13 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
 
                 }
 
+                shutDownDb();
+
             } catch (Exception ex) {
                 Commons.printException(ex);
             }
             return assetList;
         });
-    }
-
-    /*public boolean downloadRequests(Context context){
-
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
-        setAssetRequestList(new ArrayList<>());
-        try {
-            db.openDataBase();
-
-            StringBuilder stringBuilder=new StringBuilder();
-            stringBuilder.append("Select AssetId,AssetName,SerialNumber,Date,SM.listName as issueType ,SM1.listName as serviceProvider" +
-                    ",IssueDescription,ImagePath,Status,ExpectedResolutionDate");
-            stringBuilder.append("from SerializedAssetServiceRequest A left join AssetMaster B ON A.assetId=B.AssetId");
-            stringBuilder.append("left join StandardListMaster SM ON SM.listId=A.reasonId");
-            stringBuilder.append("left join StandardListMaster SM1 ON SM1.listId=A.ServiceProviderId");
-            Cursor cursor=db.selectSQL(stringBuilder.toString());
-            if(cursor.getCount()>0) {
-                SerializedAssetBO assetBO;
-                while (cursor.moveToNext()) {
-                    assetBO=new SerializedAssetBO();
-                    assetBO.setAssetID(cursor.getInt(0));
-                    assetBO.setAssetName(cursor.getString(1));
-                    assetBO.setSerialNo(cursor.getString(2));
-                    assetBO.setServiceDate(cursor.getString(3));// service requested date
-                    assetBO.setReasonDesc(cursor.getString(4));// Issue Type
-                    assetBO.setServiceProvider(cursor.getString(5));
-                    assetBO.setIssueDescription(cursor.getString(6));
-                    //assetBO.setImageName();
-                    assetBO.setAssetServiceReqStatus(cursor.getString(8));
-                    assetBO.setNewInstallDate(cursor.getString(9)); // Resolution date
-
-                    getAssetRequestList().add(assetBO);
-
-                }
-            }
-
-        }
-        catch (Exception ex){
-            Commons.printException(ex);
-            return false;
-        }
-
-        return true;
-    }*/
-
-    private void saveServiceRequest(Context context,SerializedAssetBO assetBO){
-
-        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
-        setAssetRequestList(new ArrayList<>());
-        try {
-            db.openDataBase();
-        String columns="uid,AssetId,RetailerId,Date,SerialNumber,ReasonId,serviceProviderId,IssueDescription,ImagePath,Status,ExpectedResolutionDate,Upload";
-
-        String id = businessModel.getAppDataProvider().getUser().getUserid()
-                + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
-
-        StringBuilder stringBuilder =new StringBuilder();
-        stringBuilder.append(id+",");
-        stringBuilder.append(assetBO.getAssetID()+",");
-        stringBuilder.append(assetBO.getServiceDate()+",");
-        stringBuilder.append(assetBO.getSerialNo()+",");
-        stringBuilder.append(assetBO.getReasonID()+",");
-        stringBuilder.append(assetBO.getServiceProviderId()+",");
-        stringBuilder.append(StringUtils.QT(assetBO.getIssueDescription())+",");
-        stringBuilder.append(StringUtils.QT(assetBO.getImageName())+",");
-        stringBuilder.append(StringUtils.QT(assetBO.getAssetServiceReqStatus()+","));
-        stringBuilder.append(StringUtils.QT(assetBO.getNewInstallDate())+",");
-        stringBuilder.append("'N'");
-
-        db.insertSQL(DataMembers.tbl_SerializedAssetServiceRequest,columns,stringBuilder.toString());
-
-        }
-        catch (Exception ex){
-            Commons.printException(ex);
-        }
-
     }
 
 

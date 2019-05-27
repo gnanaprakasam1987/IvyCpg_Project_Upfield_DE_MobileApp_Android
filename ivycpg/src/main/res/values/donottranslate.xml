@@ -310,4 +310,6 @@
 
     <string name="select_percentage">Select Percentage</string>
     <string name="expected_resolution_date">Resolution Date</string>
+    <string name="asset_service_request">Asset Service Request</string>
+    <string name="new_service_request">New Service Request</string>
 </resources>

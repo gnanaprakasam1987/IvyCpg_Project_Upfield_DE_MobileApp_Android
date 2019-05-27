@@ -1,7 +1,10 @@
 package com.ivy.ui.AssetServiceRequest.di;
 
 import com.ivy.core.di.scope.PerActivity;
+import com.ivy.cpg.view.asset.AssetServicePresenterImpl;
+import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.ui.AssetServiceRequest.AssetServiceRequestContractor;
+import com.ivy.ui.AssetServiceRequest.AssetServiceRequestPresenterImpl;
 import com.ivy.ui.AssetServiceRequest.data.AssetServiceRequestDataManager;
 import com.ivy.ui.AssetServiceRequest.data.AssetServiceRequestHelper;
 import com.ivy.ui.notes.NotesContract;
@@ -40,7 +43,14 @@ public class AssetServiceRequestModule {
 
 
     @Provides
-    AssetServiceRequestDataManager notesDataManager(AssetServiceRequestHelper dataManagerImpl) {
+    AssetServiceRequestDataManager provideDataManager(AssetServiceRequestHelper dataManagerImpl) {
         return dataManagerImpl;
     }
+
+    @Provides
+    @PerActivity
+    AssetServiceRequestContractor.Presenter<AssetServiceRequestContractor.AssetServiceView> providePresenter(AssetServiceRequestPresenterImpl<AssetServiceRequestContractor.AssetServiceView> presenter) {
+        return presenter;
+    }
+
 }

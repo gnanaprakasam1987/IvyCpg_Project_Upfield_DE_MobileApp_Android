@@ -6,6 +6,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,10 +25,12 @@ import com.ivy.cpg.view.serializedAsset.SerializedAssetBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.ui.AssetServiceRequest.di.AssetServiceRequestModule;
 //import com.ivy.ui.AssetServiceRequest.di.DaggerAssetServiceRequestComponent;
 import com.ivy.ui.AssetServiceRequest.di.DaggerAssetServiceRequestComponent;
 import com.ivy.ui.notes.di.NotesModule;
+import com.ivy.ui.task.TaskConstant;
 import com.ivy.utils.AppUtils;
 
 import java.util.ArrayList;
@@ -39,9 +42,11 @@ public class AssetServiceRequestActivity extends BaseActivity implements AssetSe
 
     FloatingActionButton fab_newServiceRequest;
     RecyclerView recyclerView;
-   /* @Inject
-    AppDataProvider appDataProvider;*/
+    @Inject
+    AppDataProvider appDataProvider;
     private boolean isFromReport;
+
+    String screenTitle;
 
     @Inject
     AssetServiceRequestContractor.Presenter<AssetServiceRequestContractor.AssetServiceView> presenter;
@@ -53,6 +58,16 @@ public class AssetServiceRequestActivity extends BaseActivity implements AssetSe
 
     @Override
     protected void setUpViews() {
+
+        Toolbar toolbar =  findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            setScreenTitle(screenTitle);
+        }
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
         recyclerView=findViewById(R.id.list_service_requests);
         fab_newServiceRequest=findViewById(R.id.fab);
@@ -91,7 +106,7 @@ public class AssetServiceRequestActivity extends BaseActivity implements AssetSe
 
 
 
-       // presenter.loadServiceRequests(appDataProvider.getRetailMaster().getRetailerID(),isFromReport);
+        presenter.loadServiceRequests(appDataProvider.getRetailMaster().getRetailerID(),isFromReport);
     }
 
     @Override
@@ -114,11 +129,24 @@ public class AssetServiceRequestActivity extends BaseActivity implements AssetSe
     @Override
     protected void getMessageFromAliens() {
 
+        if (getIntent().getExtras() != null) {
+            screenTitle = getIntent().getExtras().getString(TaskConstant.SCREEN_TITLE, getString(R.string.asset_service_request));
+            isFromReport = getIntent().getExtras().getBoolean("isFromReport", false);
+        }
     }
 
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            startActivity(new Intent(this,
+                    HomeScreenTwo.class));
+            finish();
+            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+        }
+
         return super.onOptionsItemSelected(item);
     }
 

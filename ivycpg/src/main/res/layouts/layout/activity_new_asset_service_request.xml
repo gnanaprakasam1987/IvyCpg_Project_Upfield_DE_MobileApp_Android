@@ -6,14 +6,20 @@
     android:layout_height="match_parent"
     tools:context="com.ivy.ui.AssetServiceRequest.NewAssetServiceRequest"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/dimen_10dp"
-    android:paddingRight="@dimen/dimen_10dp">
+    >
 
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar"
+        />
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/layout_footer">
+        android:layout_above="@+id/layout_footer"
+        android:paddingLeft="@dimen/dimen_10dp"
+        android:paddingRight="@dimen/dimen_10dp"
+        android:layout_below="@+id/toolbar">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -62,7 +68,11 @@
                 style="@style/EditText_ListItem"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="@dimen/dimen_40dp"/>
+                android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/._"
+                android:hint="@string/zero"
+                android:maxLength="50"
+                android:minHeight="@dimen/dimen_40dp"
+                android:gravity="start"/>
 
         </LinearLayout>
 
@@ -119,6 +129,7 @@
                 android:overlapAnchor="false"
                 android:spinnerMode="dialog"
                 android:minHeight="40dp"
+                android:clickable="false"
                 />
 
         </LinearLayout>
@@ -127,7 +138,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/dimen_20dp">
 
         <TextView
             android:id="@+id/label_photo"
@@ -145,6 +157,7 @@
             android:padding="@dimen/dimen_5dp">
 
         </LinearLayout>
+    </LinearLayout>
 
         <TextView
             android:id="@+id/label_description"
@@ -159,10 +172,13 @@
             style="?attr/boxCustomButtonSmallGrey"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_100dp"
-            android:layout_marginTop="@dimen/dimen_5dp"/>
+            android:layout_marginTop="@dimen/dimen_5dp"
+            android:gravity="start"
+            android:textColor="@color/FullBlack"
+            android:fontFamily="@font/roboto_medium"
+            />
 
 
-    </LinearLayout>
         </LinearLayout>
 
     </ScrollView>
@@ -174,13 +190,7 @@
                 android:gravity="end|center_vertical"
                 android:padding="@dimen/dimen_5dp"
                 >
-                <Button
-                    android:id="@+id/btn_cancel"
-                    style="?attr/roundedCustomButtonSmallGrey"
-                    android:layout_margin="@dimen/target_top_margin"
-                    android:text="@string/cancel"
-                    android:textAllCaps="false"
-                    />
+
                 <Button
                     android:id="@+id/btn_next"
                     style="?attr/roundedCustomButtonSmall"

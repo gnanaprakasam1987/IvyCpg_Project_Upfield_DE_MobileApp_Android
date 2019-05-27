@@ -3,6 +3,7 @@ package com.ivy.ui.AssetServiceRequest;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.reason.ReasonDataManager;
+import com.ivy.core.di.scope.ReasonInfo;
 import com.ivy.cpg.view.serializedAsset.SerializedAssetBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.model.BusinessModel;
@@ -22,7 +23,6 @@ import io.reactivex.observers.DisposableObserver;
 
 public class AssetServiceRequestPresenterImpl<V extends AssetServiceRequestContractor.AssetServiceView> extends BasePresenter<V> implements AssetServiceRequestContractor.Presenter<V>{
 
-    private BusinessModel businessModel;
     private AssetServiceRequestDataManager assetDataManager;
     private ReasonDataManager reasonDataManager;
 
@@ -30,11 +30,10 @@ public class AssetServiceRequestPresenterImpl<V extends AssetServiceRequestContr
     public AssetServiceRequestPresenterImpl(DataManager dataManager, SchedulerProvider schedulerProvider,
                                             CompositeDisposable compositeDisposable,
                                             ConfigurationMasterHelper configurationMasterHelper,
-                                            V view, BusinessModel businessModel, AssetServiceRequestDataManager assetDataManager, ReasonDataManager reasonDataManager){
+                                            V view, AssetServiceRequestDataManager assetDataManager,@ReasonInfo ReasonDataManager reasonDataManager){
 
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
 
-        this.businessModel=businessModel;
         this.assetDataManager =assetDataManager;
         this.reasonDataManager=reasonDataManager;
     }

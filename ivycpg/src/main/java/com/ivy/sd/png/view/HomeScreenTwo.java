@@ -40,6 +40,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.ui.AssetServiceRequest.AssetServiceRequestActivity;
 import com.ivy.ui.DisplayAsset.DisplayAssetActivity;
 import com.ivy.ui.DisplayAsset.DisplayAssetHelper;
 import com.ivy.cpg.view.Planorama.PlanoramaActivity;
@@ -3868,6 +3869,33 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 }
             }
+        else if(menu.getConfigCode().equals(MENU_ASSET_SERVICE_REQUEST) && hasLink == 1){
+
+            if (isPreviousDone(menu)
+                    || bmodel.configurationMasterHelper.IS_JUMP) {
+
+                bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
+
+                Intent i = new Intent(this,
+                        AssetServiceRequestActivity.class);
+                i.putExtra("menuName",menu.getMenuName());
+                i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(i);
+                finish();
+
+            }
+            else {
+                Toast.makeText(
+                        this,
+                        getResources().getString(
+                                R.string.please_complete_previous_activity),
+                        Toast.LENGTH_SHORT).show();
+                isCreated = false;
+
+            }
+        }
 
     }
 
