@@ -2025,7 +2025,7 @@ public class ConfigurationMasterHelper {
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 while (c.moveToNext()) {
-                    if (c.getInt(0) == 1) {
+                    if (c.getString(0).equals("1")) {
                         floating_np_reason_photo = true;
                     }
 
