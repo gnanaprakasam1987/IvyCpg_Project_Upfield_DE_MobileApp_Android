@@ -1,7 +1,9 @@
 package com.ivy.ui.task.view;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -68,9 +70,16 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     private String menuCode;
     private TaskConstant.SOURCE source;
 
+    private Context context;
 
     @Inject
     TaskContract.TaskPresenter<TaskContract.TaskView> taskPresenter;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
 
     @Override
     public void initializeDi() {
@@ -138,6 +147,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
             if (bundle.containsKey(TaskConstant.MENU_CODE))
                 menuCode = bundle.getString(TaskConstant.MENU_CODE);
         }
+
     }
 
     @Override
@@ -173,7 +183,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     // Add tabs to Tablayout
     private void addTabs() {
 
-        String[] reason = getActivity().getResources().getStringArray(
+        String[] reason = getResources().getStringArray(
                 R.array.task_tab_header);
 
         if (taskPresenter.isShowServerTaskOnly()) {
@@ -240,6 +250,10 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
                     Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
                     intent.putExtra(TaskConstant.MOVE_NEXT_ACTIVITY, true);
                     intent.putExtra(TaskConstant.CURRENT_ACTIVITY_CODE, currentActivityCode);
+
+                    if (isPreVisit)
+                        intent.putExtra("PreVisit",true);
+
                     startActivity(intent);
                     getActivity().finish();
                 }, true);
@@ -290,6 +304,10 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         }
 
         if (i != null) {
+
+            if (isPreVisit)
+                i.putExtra("PreVisit",true);
+
             i.putExtra(TaskConstant.RETAILER_WISE_TASK, (source == TaskConstant.SOURCE.RETAILER));
             i.putExtra(TaskConstant.TASK_OBJECT, taskBO);
             startActivity(i);
@@ -426,7 +444,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     @Override
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
 
-        recyclerView.setAdapter(new TaskListAdapter(getActivity(), updatedList, taskPresenter.outDateFormat(), this, source, (source == TaskConstant.SOURCE.RETAILER), tabLayout.getSelectedTabPosition()));
+        recyclerView.setAdapter(new TaskListAdapter(getActivity(), updatedList, taskPresenter.outDateFormat(), this, source, (source == TaskConstant.SOURCE.RETAILER), tabLayout.getSelectedTabPosition(), isPreVisit));
 
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
             hideBottomSheet();
@@ -467,7 +485,8 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         if (i1 == android.R.id.home) {
             backNavigation();
         } else if (i1 == R.id.menu_new_task) {
-            goToNewTaskActivity();
+            if (!isPreVisit)
+                goToNewTaskActivity();
         } else if (i1 == R.id.menu_reason) {
             goToNoTaskReasonDialog();
         } else if (i1 == R.id.menu_sort) {
@@ -484,11 +503,17 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     // Comment by Gp, Issue while going back from Activity Menu
     private void backNavigation() {
 
+        Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+
+        if (isPreVisit)
+            intent.putExtra("PreVisit",true);
+
         if (source == TaskConstant.SOURCE.RETAILER) {
-            taskPresenter.updateModuleTime();
-            startActivity(new Intent(getActivity(), HomeScreenTwo.class));
+            if (!isPreVisit)
+                taskPresenter.updateModuleTime();
+            startActivity(intent);
         } else
-            startActivity(new Intent(getActivity(), HomeScreenActivity.class));
+            startActivity(intent);
 
         getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         getActivity().finish();
@@ -510,12 +535,18 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         ReasonPhotoDialog dialog = new ReasonPhotoDialog();
         dialog.setOnDismissListener(dialog1 -> {
             if (taskPresenter.isNPPhotoReasonAvailable(String.valueOf(taskPresenter.getRetailerID()), "MENU_TASK")) {
-                if (source == TaskConstant.SOURCE.RETAILER) {
-                    taskPresenter.saveModuleCompletion(menuCode);
-                    startActivity(new Intent(getActivity(),
-                            HomeScreenTwo.class));
-                    getActivity().finish();
 
+                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+
+                if (isPreVisit)
+                    intent.putExtra("PreVisit",true);
+
+                if (source == TaskConstant.SOURCE.RETAILER) {
+                    if (!isPreVisit)
+                        taskPresenter.saveModuleCompletion(menuCode);
+                    startActivity(intent);
+
+                    getActivity().finish();
                 }
             }
         });

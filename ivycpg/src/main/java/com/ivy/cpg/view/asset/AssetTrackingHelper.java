@@ -451,8 +451,10 @@ public class AssetTrackingHelper {
             db.openDataBase();
 
             mBusinessModel.productHelper.getRetailerlevel(moduleName);
-            sb.append("select Distinct P.PosmId,P.Posmdesc,SBD.SerialNO,SBD.Target,SBD.Productid,SLM.listname,SLM.listid,SBD.NfcTagId,SBD.StoreLocId,SDM.listname as locname,PM.ParentHierarchy as ParentHierarchy from PosmMaster P  ");
+            sb.append("select Distinct P.PosmId,P.Posmdesc,SBD.SerialNO,SBD.Target,SBD.Productid,SLM.listname,SLM.listid,SBD.NfcTagId,SBD.StoreLocId,SDM.listname as locname,PM.ParentHierarchy as ParentHierarchy, ");
+            sb.append("SBDM.InstallDate,SBDM.LastServiceDate from PosmMaster P  ");
             sb.append("inner join POSMCriteriaMapping SBD on P.PosmID=SBD.posmid ");
+            sb.append("left join SbdMerchandisingMaster SBDM on SBDM.SBDID=P.PosmId ");
             sb.append("left join Standardlistmaster SLM on SLM.listid=SBD.PosmGroupLovId and SLM.ListType='POSM_GROUP_TYPE' ");
             sb.append("left join Standardlistmaster SDM on SDM.listid=SBD.StoreLocId and SDM.ListType='PL' ");
             sb.append("left join ProductMaster PM on PM.PID=SBD.Productid ");
@@ -461,22 +463,30 @@ public class AssetTrackingHelper {
             sb.append(" and ListType='SBD_TYPE') ");
 
             String allMasterSb = sb.toString();
-            sb.append(" and AccountId in(0,");
+            sb.append(" and SBD.AccountId in(0,");
             sb.append(mBusinessModel.getRetailerMasterBO().getAccountid() + ")");
-            sb.append(" and Retailerid in(0,");
+            sb.append(" and SBD.Retailerid in(0,");
             sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
-            sb.append(" and Classid in (0,");
+            sb.append(" and SBD.Classid in (0,");
             sb.append(mBusinessModel.getRetailerMasterBO().getClassid() + ")");
-            sb.append(" and Locid in(0,");
+            sb.append(" and SBD.Locid in(0,");
             sb.append(mBusinessModel.productHelper.getMappingLocationId(mBusinessModel.productHelper.locid, mBusinessModel.getRetailerMasterBO().getLocationId()));
             sb.append(")");
-            sb.append(" and (Channelid in(0,");
+            sb.append(" and (SBD.Channelid in(0,");
             sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid() + ")");
-            sb.append(" OR Channelid in (0,");
+            sb.append(" OR SBD.Channelid in (0,");
             sb.append(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext) + "))");
 
 
-            sb.append(" GROUP BY RetailerId,AccountId,Channelid,Locid,Classid,SBD.Productid,SBD.PosmId,SBD.SerialNO ORDER BY RetailerId,AccountId,Channelid,Locid,Classid");
+            if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
+                sb.append(" and (SBD.Productid = ");
+                sb.append(mBusinessModel.productHelper.getmSelectedGlobalProductId());
+                sb.append(" OR SBD.Productid = 0 )");
+
+                allMasterSb = allMasterSb + ("and (SBD.Productid = " + mBusinessModel.productHelper.getmSelectedGlobalProductId() + " OR SBD.Productid = 0 )");
+            }
+
+            sb.append(" GROUP BY SBD.RetailerId,SBD.AccountId,SBD.Channelid,SBD.Locid,SBD.Classid,SBD.Productid,SBD.PosmId,SBD.SerialNO ORDER BY SBD.RetailerId,SBD.AccountId,SBD.Channelid,SBD.Locid,SBD.Classid");
 
             Cursor c = db.selectSQL(sb.toString());
             Cursor c1 = db.selectSQL(allMasterSb);
@@ -505,6 +515,16 @@ public class AssetTrackingHelper {
                     assetTrackingBO.setTargetLocId(c.getInt(c.getColumnIndex("StoreLocId")));
                     assetTrackingBO.setLocationName(c.getString(c.getColumnIndex("locname")));
                     assetTrackingBO.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
+
+                    assetTrackingBO.setDisableInstallDate(c.getString(c.getColumnIndex("InstallDate")) != null &&
+                            !c.getString(c.getColumnIndex("InstallDate")).equals(""));
+
+                    assetTrackingBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(
+                            c.getString(c.getColumnIndex("InstallDate")),
+                            ConfigurationMasterHelper.outDateFormat));
+                    assetTrackingBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(
+                            c.getString(c.getColumnIndex("LastServiceDate")),
+                            ConfigurationMasterHelper.outDateFormat));
 
                     mAssetTrackingList.add(assetTrackingBO);
 
@@ -594,6 +614,16 @@ public class AssetTrackingHelper {
 
                     assetTrackingBO.setNFCTagId(c1.getString(c1.getColumnIndex("NfcTagId")));
                     assetTrackingBO.setParentHierarchy(c1.getString(c1.getColumnIndex("ParentHierarchy")));
+
+                    assetTrackingBO.setDisableInstallDate(c1.getString(c1.getColumnIndex("InstallDate")) != null &&
+                            !c1.getString(c1.getColumnIndex("InstallDate")).equals(""));
+
+                    assetTrackingBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(
+                            c1.getString(c1.getColumnIndex("InstallDate")),
+                            ConfigurationMasterHelper.outDateFormat));
+                    assetTrackingBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(
+                            c1.getString(c1.getColumnIndex("LastServiceDate")),
+                            ConfigurationMasterHelper.outDateFormat));
 
                     mAllAssetTrackingList.add(assetTrackingBO);
 

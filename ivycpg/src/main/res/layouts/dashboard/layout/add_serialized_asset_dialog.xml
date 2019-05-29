@@ -497,7 +497,7 @@
 
         <Button
             android:id="@+id/btn_save"
-            style="?attr/roundedCustomButtonSmall"
+            style="?attr/roundedCustomButtonSmall_Configured"
             android:text="@string/save"
             android:textAllCaps="false" />
 

@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.nearexpiry;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.net.ParseException;
 import android.os.Bundle;
@@ -9,6 +10,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -126,8 +128,11 @@ public class NearExpiryDateInputActivity extends IvyBaseActivityNoActionBar impl
             if (getSupportActionBar() != null) {
 
                 getSupportActionBar().setDisplayShowTitleEnabled(false);
-//            // Used to on / off the back arrow icon
-                getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+
+                if ((getIntent().getBooleanExtra("PreVisit",false)))
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                else
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 //           // Used to remove the app logo actionbar icon and set title as home
 //          // (title support click)
                 getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -2036,5 +2041,16 @@ public class NearExpiryDateInputActivity extends IvyBaseActivityNoActionBar impl
             }
             return row;
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

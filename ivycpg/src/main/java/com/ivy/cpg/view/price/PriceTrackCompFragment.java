@@ -167,13 +167,20 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                if (!isPreVisit)
+                    bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
+
+                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+
+                if (isPreVisit)
+                    intent.putExtra("PreVisit",true);
+
                 if (isFromChild)
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                            .putExtra("isStoreMenu", true));
+                    startActivity(intent.putExtra("isStoreMenu", true));
                 else
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
+                    startActivity(intent);
+
                 getActivity().finish();
             }
             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
@@ -423,6 +430,9 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
                             intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                             intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                         }
+
+                        if (isPreVisit)
+                            intent.putExtra("PreVisit",true);
 
                         startActivity(intent);
                         getActivity().finish();

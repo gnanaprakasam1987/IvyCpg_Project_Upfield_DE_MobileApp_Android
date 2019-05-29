@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.promotion;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -110,10 +111,20 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
     private ArrayAdapter<StandardListBO> mRatingAdapter;
     int selectedposition = -1;
 
+    private Context context;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        this.context = context;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_promotion, container, false);
+
         return view;
     }
 
@@ -1177,6 +1188,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                             intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                         }
 
+                        if (isPreVisit)
+                            intent.putExtra("PreVisit",true);
+
                         startActivity(intent);
                         getActivity().finish();
                     }
@@ -1311,16 +1325,21 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                if (!isPreVisit)
+                    businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
-                if (getActivity().getIntent().getBooleanExtra("isFromChild", false))
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                            .putExtra("isStoreMenu", true));
+
+                Intent intent = new Intent(getActivity(),HomeScreenTwo.class);
+                if (isPreVisit)
+                    intent.putExtra("PreVisit",true);
+
+                if (((Activity)context).getIntent().getBooleanExtra("isFromChild", false))
+                    startActivity(intent.putExtra("isStoreMenu", true));
                 else
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().finish();
+                    startActivity(intent);
+                ((Activity)context).finish();
             }
-            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
     }
 
@@ -1329,15 +1348,22 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
-                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+
+                if (!isPreVisit)
+                    businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
-                if (getActivity().getIntent().getBooleanExtra("isFromChild", false))
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                            .putExtra("isStoreMenu", true));
+                Intent intent = new Intent(getActivity(),HomeScreenTwo.class);
+
+                if (isPreVisit)
+                    intent.putExtra("PreVisit",true);
+
+                if (((Activity)context).getIntent().getBooleanExtra("isFromChild", false))
+                    startActivity(intent.putExtra("isStoreMenu", true));
                 else
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().finish();
-                getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                    startActivity(intent);
+                ((Activity)context).finish();
+
+                ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
 
             }
         }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {

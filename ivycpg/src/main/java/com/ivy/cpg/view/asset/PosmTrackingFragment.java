@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.asset;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -141,12 +142,16 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
     AssetTrackingHelper assetTrackingHelper;
     private ActionBar actionBar;
 
+    private Context context;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         mBModel = (BusinessModel) getActivity().getApplicationContext();
         mBModel.setContext(getActivity());
         assetTrackingHelper = AssetTrackingHelper.getInstance(getActivity());
+
+        this.context = context;
     }
 
 
@@ -172,14 +177,14 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
 
         Bundle extras = getArguments();
         if (extras == null) {
-            extras = getActivity().getIntent().getExtras();
+            extras = ((Activity)context).getIntent().getExtras();
         }
 
         if (extras != null) {
             screenCode = extras.getString("CurrentActivityCode");
             screenCode = screenCode != null ? screenCode : MENU_POSM;
         }
-        isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
+        isFromChild = ((Activity)context).getIntent().getBooleanExtra("isFromChild", false);
 
         if (!assetTrackingHelper.SHOW_LOCATION_POSM)
             view.findViewById(R.id.tv_store_loc).setVisibility(View.GONE);
@@ -373,21 +378,30 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                 mDrawerLayout.closeDrawers();
             else {
 
-                mBModel.outletTimeStampHelper
+                if (!isPreVisit)
+                    mBModel.outletTimeStampHelper
                         .updateTimeStampModuleWise(DateTimeUtils
                                 .now(DateTimeUtils.TIME));
 
                 if (screenCode.equalsIgnoreCase(MENU_POSM_CS)) {
-                    startActivity(new Intent(getActivity(),
-                            HomeScreenActivity.class).putExtra("menuCode", "MENU_COUNTER"));
+                    Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                    if (isPreVisit)
+                        intent.putExtra("PreVisit",true);
+
+                    startActivity(intent.putExtra("menuCode", "MENU_COUNTER"));
                 } else if (screenCode.equalsIgnoreCase(MENU_POSM)) {
+
+                    Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                    if (isPreVisit)
+                        intent.putExtra("PreVisit",true);
+
                     if (isFromChild)
-                        startActivity(new Intent(getActivity(),
-                                HomeScreenTwo.class).
-                                putExtra("isStoreMenu", true));
-                    else
-                        startActivity(new Intent(getActivity(),
-                                HomeScreenTwo.class));
+                        intent.putExtra("isStoreMenu", true);
+
+
+                    startActivity(intent);
                 }
                 getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
                 getActivity().finish();
@@ -414,7 +428,11 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
             return true;
 
         } else if (i == R.id.menu_survey) {
-            startActivity(new Intent(getActivity(), SurveyActivityNew.class));
+            Intent intent = new Intent(context, SurveyActivityNew.class);
+            if (isPreVisit)
+                intent.putExtra("PreVisit",true);
+
+            startActivity(intent);
             return true;
         } else if (i == R.id.menu_add) {
 
@@ -425,6 +443,8 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
         } else if (i == R.id.menu_remove) {
             Intent intent = new Intent(getActivity(), AssetPosmRemoveActivity.class);
             intent.putExtra("module", screenCode);
+            if (isPreVisit)
+                intent.putExtra("PreVisit",true);
             startActivity(intent);
             return true;
         } else if (i == R.id.menu_fivefilter) {
@@ -1415,6 +1435,9 @@ public class PosmTrackingFragment extends IvyBaseFragment implements
                                 HomeScreenActivity.class);
                         intent.putExtra("menuCode", "MENU_COUNTER");
                     }
+
+                    if (isPreVisit)
+                        intent.putExtra("PreVisit",true);
 
                     startActivity(intent);
                     getActivity().finish();

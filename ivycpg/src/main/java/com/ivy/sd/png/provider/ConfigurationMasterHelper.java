@@ -1592,6 +1592,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ENABLE_GLOBAL_GPS_DISTANCE = "GPSDISTANCE";
     public int GLOBAL_GPS_DISTANCE;
 
+    private final String CODE_PRE_VISIT = "PREVISIT";
+    public boolean IS_PRE_VISIT = false;
+
     private ConfigurationMasterHelper(Context context) {
         this.context = context;
         this.bmodel = (BusinessModel) context;
@@ -2025,7 +2028,7 @@ public class ConfigurationMasterHelper {
             Cursor c = db.selectSQL(sql);
             if (c != null && c.getCount() != 0) {
                 while (c.moveToNext()) {
-                    if (c.getInt(0) == 1) {
+                    if (c.getString(0).equals("1")) {
                         floating_np_reason_photo = true;
                     }
 
@@ -2793,6 +2796,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_ENABLE_EDIT_OPTION_FOR_OTHER_USER = hashMapHHTModuleConfig.get(CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER) : false;
         this.GLOBAL_GPS_DISTANCE = hashMapHHTModuleOrder.get(CODE_ENABLE_GLOBAL_GPS_DISTANCE) != null ? hashMapHHTModuleOrder.get(CODE_ENABLE_GLOBAL_GPS_DISTANCE) : 0;
+        this.IS_PRE_VISIT = hashMapHHTModuleConfig.get(CODE_PRE_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_PRE_VISIT) : false;
     }
 
     private boolean isInOutModule() {

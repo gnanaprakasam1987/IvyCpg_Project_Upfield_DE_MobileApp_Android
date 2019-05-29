@@ -35,7 +35,6 @@ import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -68,13 +67,42 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
         try {
-            if (bmodel.configurationMasterHelper.MVPTheme == 0) {
-                BaseActivity.mCurrentTheme=bmodel.configurationMasterHelper.getMVPTheme();
-                super.setTheme(bmodel.configurationMasterHelper.getMVPTheme());
-            } else {
-                BaseActivity.mCurrentTheme=bmodel.configurationMasterHelper.MVPTheme;
-                super.setTheme(bmodel.configurationMasterHelper.MVPTheme);
+
+            boolean isPrevisit = getIntent().getBooleanExtra("PreVisit",false);
+
+            int styleId ;
+
+            if (bmodel.configurationMasterHelper.MVPTheme == 0)
+                styleId = R.style.MVPTheme_Blue;
+            else
+                styleId = bmodel.configurationMasterHelper.MVPTheme;
+
+            if (isPrevisit){
+
+                switch (styleId){
+                    case R.style.MVPTheme_Blue:
+                        styleId = R.style.MVPTheme_Blue_disable;
+                        break;
+                    case R.style.MVPTheme_NBlue:
+                        styleId = R.style.MVPTheme_NBlue_disable;
+                        break;
+                    case R.style.MVPTheme_Green:
+                        styleId = R.style.MVPTheme_Green_disable;
+                        break;
+                    case R.style.MVPTheme_Red:
+                        styleId = R.style.MVPTheme_Red;
+                        break;
+                    case R.style.MVPTheme_Orange:
+                        styleId = R.style.MVPTheme_Orange_disable;
+                        break;
+                    default:
+                        break;
+                }
             }
+
+            BaseActivity.mCurrentTheme = styleId;
+            super.setTheme(styleId);
+
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -125,6 +153,10 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         listPermissionsNeededGroupName.put(Manifest.permission.CAMERA, getResources().getString(R.string.permission_camera));
         listPermissionsNeededGroupName.put(Manifest.permission.ACCESS_FINE_LOCATION, getResources().getString(R.string.permission_location));
         listPermissionsNeededGroupName.put(Manifest.permission.RECORD_AUDIO, getResources().getString(R.string.record_audio));
+    }
+
+    public void updateTheme(){
+
     }
 
     @Override

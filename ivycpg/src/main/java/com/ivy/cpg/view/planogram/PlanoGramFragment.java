@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.planogram;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -107,6 +108,10 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     private RecyclerView plano_recycler;
     ActionBar actionBar;
 
+    private Context context;
+
+    private boolean isPreVisit = false;
+
     public enum PlanogramCheck {
         NOTCOMPLETED,
         ADHERENCEFAILED,
@@ -116,9 +121,11 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mBModel = (BusinessModel) getActivity().getApplicationContext();
+        mBModel = (BusinessModel) context.getApplicationContext();
         mBModel.setContext(getActivity());
         mPlanoGramHelper = PlanoGramHelper.getInstance(getActivity());
+
+        this.context = context;
     }
 
     @Override
@@ -128,17 +135,19 @@ public class PlanoGramFragment extends IvyBaseFragment implements
         View view = inflater.inflate(R.layout.fragment_planogram, container, false);
 
         try {
-            mBModel = (BusinessModel) getActivity().getApplicationContext();
-            mBModel.setContext(getActivity());
+            mBModel = (BusinessModel) context.getApplicationContext();
+            mBModel.setContext(((Activity)context));
 
             // download data for planoGram
             mPlanoGramList = mPlanoGramHelper.getPlanogramMaster();
 
-            final Intent i = getActivity().getIntent();
+            final Intent i = ((Activity)context).getIntent();
             calledBy = i.getStringExtra("from");
             menuCode = i.getStringExtra("CurrentActivityCode");
             isDialogPopup = false;
             photoNamePath = FileUtils.photoFolderPath + "/";
+
+            isPreVisit = i.getBooleanExtra("PreVisit",false);
 
             loadReason();
             //mSelectedLocationId = Integer.parseInt(mPlanoGramHelper.getInStoreLocation().get(0).getListID());
@@ -149,7 +158,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             initializeViews(view);
 
             //load locations
-            locationAdapter = new ArrayAdapter<>(getActivity(),
+            locationAdapter = new ArrayAdapter<>(context,
                     android.R.layout.select_dialog_singlechoice);
             for (StandardListBO temp : mPlanoGramHelper.getInStoreLocation())
                 locationAdapter.add(temp);
@@ -219,7 +228,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 if (actionBar != null)
                     setScreenTitle(mPlanoGramHelper.mSelectedActivityName);
 
-                getActivity().invalidateOptionsMenu();
+                ((Activity)context).invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
@@ -227,7 +236,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 if (actionBar != null)
                     setScreenTitle(getResources().getString(R.string.filter));
 
-                getActivity().invalidateOptionsMenu();
+                ((Activity)context).invalidateOptionsMenu();
             }
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
@@ -245,7 +254,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
      * Populate list with specific reason type of the module.
      */
     private void loadReason() {
-        reasonAdapter = new ArrayAdapter<>(getActivity(),
+        reasonAdapter = new ArrayAdapter<>(context,
                 R.layout.spinner_bluetext_layout);
         reasonAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
@@ -645,10 +654,17 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     if (mBModel.reasonHelper.isNpReasonPhotoAvaiable(mBModel.retailerMasterBO.getRetailerID(), menuCode)) {
-                        mBModel.saveModuleCompletion(menuCode, true);
-                        startActivity(new Intent(getActivity(),
-                                HomeScreenTwo.class));
-                        getActivity().finish();
+
+                        if (!isPreVisit)
+                            mBModel.saveModuleCompletion(menuCode, true);
+
+                        Intent intent = new Intent(getActivity(),HomeScreenTwo.class);
+
+                        if (isPreVisit)
+                            intent.putExtra("PreVisit",true);
+
+                        startActivity(intent);
+                        ((Activity)context).finish();
                     }
                 }
             });
@@ -735,7 +751,8 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                             getActivity().finish();
                         }
                         if ("2".equals(calledBy)) {
-                            mBModel.outletTimeStampHelper
+                            if (!isPreVisit)
+                                mBModel.outletTimeStampHelper
                                     .updateTimeStampModuleWise(DateTimeUtils
                                             .now(DateTimeUtils.TIME));
                             Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
@@ -744,6 +761,9 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                                 intent.putExtra("IsMoveNextActivity", mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                                 intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                             }
+
+                            if (isPreVisit)
+                                intent.putExtra("PreVisit",true);
 
                             startActivity(intent);
                             getActivity().finish();
@@ -1328,6 +1348,9 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 auditLayout = v.findViewById(R.id.audit_layout);
                 audit = v.findViewById(R.id.btn_audit);
                 layout_reason=v.findViewById(R.id.layout_reason);
+
+                if (isPreVisit)
+                    layout_cameraImage.setEnabled(false);
             }
 
             private void setImageFromCamera() {
@@ -1354,7 +1377,7 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                         }
                     }
 
-                    if (isImgPresent) {
+                    if (isImgPresent && !isPreVisit) {
                         rdYes.setEnabled(true);
                         rdYes.setChecked(false);
                         rdNo.setEnabled(true);
@@ -1383,9 +1406,9 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                     rdNo.setButtonDrawable(R.drawable.ic_cross_disable);
                     rdPartial.setButtonDrawable(R.drawable.ic_partial_disabled);
 
-                    rdYes.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
-                    rdNo.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
-                    rdPartial.setTextColor(ContextCompat.getColor(getActivity(), R.color.plano_yes_grey));
+                    rdYes.setTextColor(ContextCompat.getColor(context, R.color.plano_yes_grey));
+                    rdNo.setTextColor(ContextCompat.getColor(context, R.color.plano_yes_grey));
+                    rdPartial.setTextColor(ContextCompat.getColor(context, R.color.plano_yes_grey));
                 }
                 if (planoObj.getAdherence() != null
                         && "1".equals(planoObj.getAdherence())) {
@@ -1537,11 +1560,19 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 if ("1".equals(calledBy) || "3".equals(calledBy)) {
                     getActivity().finish();
                 } else if ("2".equals(calledBy)) {
-                    mBModel.outletTimeStampHelper
+                    if (!isPreVisit)
+                        mBModel.outletTimeStampHelper
                             .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
-                    startActivityAndFinish(HomeScreenTwo.class);
-                }
 
+                    Intent intent = new Intent(context,HomeScreenTwo.class);
+
+                    if (isPreVisit)
+                        intent.putExtra("PreVisit",true);
+
+                    startActivity(intent);
+
+                    ((Activity)context).finish();
+                }
             }
         }
     }
@@ -1554,9 +1585,19 @@ public class PlanoGramFragment extends IvyBaseFragment implements
                 if ("1".equals(calledBy) || "3".equals(calledBy)) {
                     getActivity().finish();
                 } else if ("2".equals(calledBy)) {
-                    mBModel.outletTimeStampHelper
+
+                    if (!isPreVisit)
+                        mBModel.outletTimeStampHelper
                             .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
-                    startActivityAndFinish(HomeScreenTwo.class);
+
+                    Intent intent = new Intent(context,HomeScreenTwo.class);
+
+                    if (isPreVisit)
+                        intent.putExtra("PreVisit",true);
+
+                    startActivity(intent);
+
+                    ((Activity)context).finish();
                 }
             }
         }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {

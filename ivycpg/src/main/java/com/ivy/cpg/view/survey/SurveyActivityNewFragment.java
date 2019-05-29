@@ -141,12 +141,17 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private SurveyHelperNew surveyHelperNew;
     private LinearLayoutManager linearLayoutManager;
 
+    private Context context;
+    private boolean isPreVisit = false;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        bmodel = (BusinessModel) context.getApplicationContext();
+        bmodel.setContext(((Activity)context));
         surveyHelperNew = SurveyHelperNew.getInstance(context);
+
+        this.context = context;
     }
 
     @Override
@@ -158,10 +163,12 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         tabLayout.addOnTabSelectedListener(this);
         Bundle extras = getArguments();
         if (extras == null)
-            extras = getActivity().getIntent().getExtras();
+            extras = ((Activity)context).getIntent().getExtras();
         if (extras != null) {
             isFromChild = extras.getBoolean("isFromChild", false);
             mFrom = extras.getString("from") != null ? extras.getString("from") : "";
+
+            isPreVisit = extras.getBoolean("PreVisit",false);
         }
 
         initializeView(view);
@@ -172,15 +179,15 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         questionsRv = (RecyclerView) view.findViewById(R.id.lv_qustions);
         questionsRv.setHasFixedSize(false);
         questionsRv.setNestedScrollingEnabled(false);
-        linearLayoutManager = new LinearLayoutManager(getActivity());
+        linearLayoutManager = new LinearLayoutManager(context);
         questionsRv.setLayoutManager(linearLayoutManager);
         surveyScoreTextView = (TextView) view
                 .findViewById(R.id.questionScoreTV);
         surveyScoreTextView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        surveyScoreTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+        surveyScoreTextView.setTextColor(ContextCompat.getColor(context, R.color.white));
         overAllSurveyScoreTextView = (TextView) view.findViewById(R.id.surveyScoreTV);
         overAllSurveyScoreTextView.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-        overAllSurveyScoreTextView.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
+        overAllSurveyScoreTextView.setTextColor(ContextCompat.getColor(context, R.color.white));
         surveyScoreLinearLayout = (LinearLayout) view.findViewById(
                 R.id.questionScore_ll);
         surveyScoreOverAllLinearLayout = (LinearLayout) view.findViewById(
@@ -188,10 +195,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         saveButton = (Button) view.findViewById(R.id.save);
         saveButton.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
         saveButton.setOnClickListener(this);
-        if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(false);
-            ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        if (((AppCompatActivity) context).getSupportActionBar() != null) {
+            ((AppCompatActivity) context).getSupportActionBar().setDisplayShowHomeEnabled(true);
+            ((AppCompatActivity) context).getSupportActionBar().setDisplayShowTitleEnabled(false);
+            ((AppCompatActivity) context).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
         // set a custom shadow that overlays the main content when the drawer
         // opens
@@ -200,27 +207,25 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.END);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(((Activity)context), /* host Activity */
                 mDrawerLayout, /* DrawerLayout object */
                 R.string.ok, /* "open drawer" description for accessibility */
                 R.string.close /* "close drawer" description for accessibility */
         ) {
             public void onDrawerClosed(View view) {
-                //if (((AppCompatActivity) getActivity()).getSupportActionBar() != null)
                 setScreenTitle(bmodel.mSelectedActivityName);
-                getActivity().supportInvalidateOptionsMenu();
+                ((FragmentActivity)context).supportInvalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
-                //if (((AppCompatActivity) getActivity()).getSupportActionBar() != null)
                 setScreenTitle(getResources().getString(R.string.filter));
-                getActivity().supportInvalidateOptionsMenu();
+                ((FragmentActivity)context).supportInvalidateOptionsMenu();
             }
         };
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         Bundle extras = getArguments();
         if (extras == null) {
-            extras = getActivity().getIntent().getExtras();
+            extras = ((Activity)context).getIntent().getExtras();
         }
         try {
             if (extras != null) {
@@ -228,9 +233,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 mMenuCode = extras.getString("menucode", "");
                 screenMode = extras.getInt("screenMode", 0);
             } else {
-                mSurveyType = getActivity().getIntent().getExtras().getInt("SurveyType", 0);
-                mMenuCode = getActivity().getIntent().getExtras().getString("menucode", "");
-                screenMode = getActivity().getIntent().getExtras().getInt("screenMode", 0);
+                mSurveyType = ((Activity)context).getIntent().getExtras().getInt("SurveyType", 0);
+                mMenuCode = ((Activity)context).getIntent().getExtras().getString("menucode", "");
+                screenMode = ((Activity)context).getIntent().getExtras().getInt("screenMode", 0);
             }
         } catch (Exception e) {
             mSurveyType = 0;
@@ -248,7 +253,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     }
 
     private void showUserDialog() {
-        childList = AttendanceHelper.getInstance(getActivity()).loadChildUserList(getActivity().getApplicationContext());
+        childList = AttendanceHelper.getInstance(context).loadChildUserList(context.getApplicationContext());
         if (childList != null && childList.size() > 0) {
             if (childList.size() > 1) {
                 showDialog();
@@ -263,12 +268,12 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     }
 
     private void showDialog() {
-        ArrayAdapter<String> mChildUserNameAdapter = new ArrayAdapter<>(getActivity(),
+        ArrayAdapter<String> mChildUserNameAdapter = new ArrayAdapter<>(context,
                 android.R.layout.select_dialog_singlechoice);
         for (StandardListBO temp : childList)
             mChildUserNameAdapter.add(temp.getChildUserName());
         AlertDialog.Builder builder;
-        builder = new AlertDialog.Builder(getActivity());
+        builder = new AlertDialog.Builder(context);
         builder.setTitle("Select User");
         builder.setSingleChoiceItems(mChildUserNameAdapter, mSelectedIdIndex,
                 new DialogInterface.OnClickListener() {
@@ -291,8 +296,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     @Override
     public void onStart() {
         super.onStart();
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        bmodel = (BusinessModel) context.getApplicationContext();
+        bmodel.setContext(((Activity)context));
         if (surveyHelperNew.ENABLE_MULTIPLE_PHOTO)
             isMultiPhotoCaptureEnabled = true;
         loadListData();
@@ -324,7 +329,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         scale = scale / tabCount;
         // Add a survey in Tab
         for (int i = 0; i < tabCount; i++) {
-            TextView tabOne = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
+            TextView tabOne = (TextView) LayoutInflater.from(context).inflate(R.layout.custom_tab, null);
             tabOne.setGravity(Gravity.CENTER);
             tabOne.setWidth((int) scale);
             tabOne.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
@@ -354,7 +359,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         if (screenMode == 1)
             isViewMode = true;
         if (mSurveyType == 1) {
-            supervisiorAdapter = new ArrayAdapter<>(getActivity(),
+            supervisiorAdapter = new ArrayAdapter<>(context,
                     android.R.layout.select_dialog_singlechoice);
             for (UserMasterBO userBo : bmodel.userMasterHelper
                     .getUserMasterBO().getJoinCallUserList()) {
@@ -681,10 +686,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             holder.dragBtn.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(getActivity());
+                    SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(context);
                     surveyHelperNew.setQuestionBODragDrop(holder.questionBO);
                     surveyPhcapture = holder.questionBO;
-                    Intent intent = new Intent(getActivity(), DragDropPictureActivity.class);
+                    Intent intent = new Intent(context, DragDropPictureActivity.class);
                     intent.putExtra("BrandId", holder.questionBO.getBrandID());
                     intent.putExtra("QuestiionId", holder.questionBO.getQuestionID());
                     intent.putExtra("QuestionDesc", holder.questionBO.getQuestionDescription());
@@ -694,10 +699,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             });
             if (position % 2 == 0) {
                 holder.slantView.setColor(Color.WHITE);
-                holder.rowLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.white));
+                holder.rowLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
             } else {
-                holder.slantView.setColor(ContextCompat.getColor(getActivity(), R.color.divider_view_color));
-                holder.rowLayout.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.divider_view_color));
+                holder.slantView.setColor(ContextCompat.getColor(context, R.color.divider_view_color));
+                holder.rowLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.divider_view_color));
             }
             if ("".equals(holder.questionBO.getGroupName())) {
                 holder.groupNameLayout.setVisibility(View.GONE);
@@ -720,9 +725,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 holder.mandatoryView.setVisibility(View.GONE);
             }
             if (holder.questionBO.getIsBonus() == 1)
-                holder.questionTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.colorPrimary));
+                holder.questionTV.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary));
             else
-                holder.questionTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.list_item_values_text_color));
+                holder.questionTV.setTextColor(ContextCompat.getColor(context, R.color.list_item_values_text_color));
             holder.QscoreTV.setTag(holder.questionBO);
             int strminPhoto = holder.questionBO.getMinPhoto();
             if (strminPhoto == 1)
@@ -881,10 +886,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 groupName.setTypeface(bmodel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
                 minPhoto = (TextView) row
                         .findViewById(R.id.minphotoTV);
-                minPhoto.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray_text));
+                minPhoto.setTextColor(ContextCompat.getColor(context, R.color.gray_text));
                 imp = (TextView) row.findViewById(R.id.imp);
                 QscoreTV = (TextView) row.findViewById(R.id.scoreTV);
-                QscoreTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray_text));
+                QscoreTV.setTextColor(ContextCompat.getColor(context, R.color.gray_text));
                 QscoreTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
                 rowLayout = (LinearLayout) row
                         .findViewById(R.id.rowLayout);
@@ -911,7 +916,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             if (resultCode == 1) {
                 surveyPhcapture.getImageNames().add(path + imageName);
                 if (isMultiPhotoCaptureEnabled) {
-                    Toast.makeText(getActivity(), "Photo Captured and Saved Successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Photo Captured and Saved Successfully", Toast.LENGTH_SHORT).show();
                     isClicked = true;
                     if (surveyPhcapture.getImageNames().size() < surveyPhcapture.getMaxPhoto()) {
                         photoFunction(surveyPhcapture, 0);
@@ -937,7 +942,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                 final QuestionBO mCurrentQuestionBO, final TextView qScore, final LinearLayout subQuestionLL, final String qNO) {
         try {
             answerLL.removeAllViews();
-            RadioGroup mRadioGroup = new RadioGroup(getActivity());
+            RadioGroup mRadioGroup = new RadioGroup(context);
             mRadioGroup.setOrientation(RadioGroup.VERTICAL);
             mRadioGroup.setPadding(0, 0, 55, 0);
             LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
@@ -947,10 +952,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             boolean checked = false;
             for (int i = 0; i < answerCount; i++) {
                 if (answers.get(i).getAnswer() != null) {
-                    final RadioButton radioButton = new RadioButton(getActivity());
+                    final RadioButton radioButton = new RadioButton(context);
                     radioButton.setId(answers.get(i).getAnswerID());
                     radioButton.setText(answers.get(i).getAnswer());
-                    radioButton.setTextColor(ContextCompat.getColor(getActivity(), R.color.FullBlack));
+                    radioButton.setTextColor(ContextCompat.getColor(context, R.color.FullBlack));
                     radioButton.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_primary));
                     if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(
                             answers.get(i).getAnswerID())) {
@@ -977,7 +982,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                                              boolean isChecked) {
                                     View view = getView();
                                     if (view != null) {
-                                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                                         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                                     }
                                     if (isChecked) {
@@ -1031,7 +1036,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                     rvAdapter.notifyDataSetChanged();
                                 }
                             });
-                    LinearLayout linLayoutRad = new LinearLayout(getActivity());
+                    LinearLayout linLayoutRad = new LinearLayout(context);
                     linLayoutRad.addView(radioButton, params1);
                     mRadioGroup.addView(linLayoutRad);
                 }
@@ -1076,8 +1081,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
         setScreenTitle(bmodel.mSelectedActivityName);
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        bmodel = (BusinessModel) context.getApplicationContext();
+        bmodel.setContext(((Activity)context));
     }
 
     @Override
@@ -1102,10 +1107,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             mCurrentQuestionBO.getAnswersList().add(0, selectBo);
         }
         final ArrayList<AnswerBO> answers = mCurrentQuestionBO.getAnswersList();
-        final Spinner items = (Spinner) getActivity().getLayoutInflater().inflate(R.layout.cust_spinner, null);
-        /*final Spinner items;
-        items = new Spinner(getActivity());*/
-        ArrayAdapter<String> comboAdapter = new ArrayAdapter<>(getActivity(),
+        final Spinner items = (Spinner) ((Activity)context).getLayoutInflater().inflate(R.layout.cust_spinner, null);
+
+        ArrayAdapter<String> comboAdapter = new ArrayAdapter<>(context,
                 R.layout.spinner_bluetext_layout);
         int ansSize = answers.size();
         for (int i = 0; i < ansSize; i++) {
@@ -1169,7 +1173,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     public boolean onTouch(View view, MotionEvent motionEvent) {
                         View view1 = getView();
                         if (view1 != null) {
-                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                         }
                         return false;
@@ -1240,7 +1244,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                               final QuestionBO mCurrentQuestionBO, final TextView qScore, final LinearLayout subQuestionLL, final String qNO) {
         answerLL.removeAllViews();
         answerLL.setPadding(0, 0, 55, 0);
-        LinearLayout layoutTemp = new LinearLayout(getActivity());
+        LinearLayout layoutTemp = new LinearLayout(context);
         LinearLayout.LayoutParams layoutParamsTemp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
         layoutTemp.setOrientation(LinearLayout.VERTICAL);
         layoutTemp.setLayoutParams(layoutParamsTemp);
@@ -1253,10 +1257,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         mCurrentQuestionBO.setQuestScore(0);
         for (int i = 0; i < answerSize; i++) {
             if (answers.get(i).getAnswer() != null) {
-                checkBox = new CheckBox(getActivity());
+                checkBox = new CheckBox(context);
                 checkBox.setId(answers.get(i).getAnswerID());
                 checkBox.setText(answers.get(i).getAnswer());
-                checkBox.setTextColor(ContextCompat.getColor(getActivity(), R.color.FullBlack));
+                checkBox.setTextColor(ContextCompat.getColor(context, R.color.FullBlack));
                 checkBox.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_primary));
                 if (mCurrentQuestionBO.getSelectedAnswerIDs().contains(
                         answers.get(i).getAnswerID())) {
@@ -1295,7 +1299,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         Integer obj = buttonView.getId();
                         View view = getView();
                         if (view != null) {
-                            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
                             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                         }
                         if (isChecked) {
@@ -1428,7 +1432,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             }
             if (questBO != null) {
                 final ViewGroup parent = null;
-                LayoutInflater layoutInflater = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                LayoutInflater layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 View view = layoutInflater.inflate(R.layout.subquestionandanswerset, parent, false);
                 LinearLayout photoLayout = (LinearLayout) view
                         .findViewById(R.id.ll_photo);
@@ -1444,11 +1448,11 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 TextView minPhoto = (TextView) view
                         .findViewById(R.id.minphotoTV);
                 minPhoto.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                minPhoto.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray_text));
+                minPhoto.setTextColor(ContextCompat.getColor(context, R.color.gray_text));
                 TextView imp = (TextView) view.findViewById(R.id.imp);
                 TextView QscoreTV = (TextView) view.findViewById(R.id.scoreTV);
                 QscoreTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.THIN));
-                QscoreTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.gray_text));
+                QscoreTV.setTextColor(ContextCompat.getColor(context, R.color.gray_text));
                 LinearLayout answerLayout = (LinearLayout) view
                         .findViewById(R.id.answerLL);
                 LinearLayout subQuestLayout = (LinearLayout) view
@@ -1614,7 +1618,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                                 }
                                 Thread.sleep(10);
                                 Intent intent = new Intent(
-                                        getActivity(),
+                                        context,
                                         CameraActivity.class);
                                 String path =FileUtils.photoFolderPath + "/" + imageName;
                                 if (i == 0) {
@@ -1636,7 +1640,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     }
                 } else {
                     Toast.makeText(
-                            getActivity(),
+                            context,
                             getResources()
                                     .getString(
                                             R.string.please_select_atleast_one_sku),
@@ -1644,7 +1648,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 }
             } else {
                 Toast.makeText(
-                        getActivity(),
+                        context,
                         getResources()
                                 .getString(
                                         R.string.sdcard_is_not_ready_to_capture_img),
@@ -1654,14 +1658,14 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             String qType = questBO.getQuestionType();
             if ("OPT".equals(qType) || "MULTISELECT".equals(qType) || "POLL".equals(qType)) {
                 Toast.makeText(
-                        getActivity(),
+                        context,
                         getResources()
                                 .getString(
                                         R.string.selectoptionforphoto),
                         Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(
-                        getActivity(),
+                        context,
                         getResources()
                                 .getString(
                                         R.string.answer_to_take_photo),
@@ -1674,7 +1678,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                               final QuestionBO mCurrentQuestionBO, final LinearLayout subQLL) {
         answerLL.removeAllViews();
         subQLL.removeAllViews();
-        final EditText et = (EditText) getActivity().getLayoutInflater().inflate(R.layout.survey_dit_text, null);
+        final EditText et = (EditText) ((Activity)context).getLayoutInflater().inflate(R.layout.survey_dit_text, null);
         if (!mCurrentQuestionBO.getSelectedAnswer().isEmpty())
             et.setText(mCurrentQuestionBO.getSelectedAnswer().get(0));
         else
@@ -1813,7 +1817,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     int yy = calendar.get(Calendar.YEAR);
                     int mm = calendar.get(Calendar.MONTH);
                     int dd = calendar.get(Calendar.DAY_OF_MONTH);
-                    DatePickerDialog datePicker = new DatePickerDialog(getActivity(), R.style.DatePickerDialogStyle, new DatePickerDialog.OnDateSetListener() {
+                    DatePickerDialog datePicker = new DatePickerDialog(context, R.style.DatePickerDialogStyle, new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
                             Calendar selectedDate = new GregorianCalendar(year, monthOfYear,
@@ -1892,7 +1896,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        getActivity().getMenuInflater().inflate(
+        ((Activity)context).getMenuInflater().inflate(
                 R.menu.menu_survey, menu);
     }
 
@@ -2063,11 +2067,11 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             startActivity(intentsms);
             return true;
         } else if (i == R.id.menu_photo_capture) {
-            Intent intent = new Intent(getActivity(),
+            Intent intent = new Intent(context,
                     PhotoCaptureActivity.class);
             intent.putExtra("fromSurvey", true);
             startActivity(intent);
-            getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
+            ((Activity)context).overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
             return true;
         } else if (i == R.id.menu_reason) {
             bmodel.reasonHelper.downloadNpReason(bmodel.retailerMasterBO.getRetailerID(), mMenuCode);
@@ -2076,14 +2080,22 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 @Override
                 public void onDismiss(DialogInterface dialog) {
                     if (bmodel.reasonHelper.isNpReasonPhotoAvaiable(bmodel.retailerMasterBO.getRetailerID(), mMenuCode)) {
-                        bmodel.saveModuleCompletion(mMenuCode, true);
+
+                        if (!isPreVisit)
+                            bmodel.saveModuleCompletion(mMenuCode, true);
+
                         if (!mMenuCode.equalsIgnoreCase("MENU_SURVEY_SW")
                                 && !mMenuCode.equalsIgnoreCase("MENU_SURVEY01_SW")
                                 && !mMenuCode.equalsIgnoreCase("MENU_SURVEY_BA_CS")) {
-                            startActivity(new Intent(getActivity(),
-                                    HomeScreenTwo.class));
+
+                            Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                            if (isPreVisit)
+                                intent.putExtra("PreVisit",true);
+
+                            startActivity(intent);
                         }
-                        getActivity().finish();
+                        ((Activity)context).finish();
                     }
                 }
             });
@@ -2091,7 +2103,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             args.putString("modulename", mMenuCode);
             dialog.setCancelable(false);
             dialog.setArguments(args);
-            dialog.show(getActivity().getSupportFragmentManager(), "ReasonDialogFragment");
+            dialog.show(((FragmentActivity)context).getSupportFragmentManager(), "ReasonDialogFragment");
             return true;
         } else if (i == R.id.menu_select) {
             //select user
@@ -2106,7 +2118,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
      */
     private void showSupervisiorAlert() {
         AlertDialog.Builder alertBuilder;
-        alertBuilder = new AlertDialog.Builder(getActivity());
+        alertBuilder = new AlertDialog.Builder(context);
         alertBuilder.setTitle(null);
         alertBuilder.setSingleChoiceItems(supervisiorAdapter, selecteditem,
                 new DialogInterface.OnClickListener() {
@@ -2142,8 +2154,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         }
 
         protected void onPreExecute() {
-            builder = new AlertDialog.Builder(getActivity());
-            customProgressDialog(builder, getActivity().getResources().getString(R.string.loading));
+            builder = new AlertDialog.Builder(context);
+            customProgressDialog(builder, getResources().getString(R.string.loading));
             alertDialog = builder.create();
             alertDialog.show();
         }
@@ -2202,7 +2214,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         }
 
         protected void onPreExecute() {
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
             customProgressDialog(builder, getResources().getString(R.string.savingquestionanswers));
             alertDialog = builder.create();
             alertDialog.show();
@@ -2217,24 +2229,28 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             alertDialog.dismiss();
             surveyHelperNew.remarkDone = "N";
             checkClicked = false;
-            new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+            new CommonDialog(context.getApplicationContext(), context,
                     "", getResources().getString(R.string.saved_successfully),
-                    false, getActivity().getResources().getString(R.string.ok),
+                    false, getResources().getString(R.string.ok),
                     null, new CommonDialog.PositiveClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
                     questionsRv.invalidate();
-                    Bundle extras = getActivity().getIntent().getExtras();
+                    Bundle extras = ((Activity)context).getIntent().getExtras();
                     //Enabled global survey will re-direct to next screen or else screen remains same
                     if (bmodel.configurationMasterHelper.IS_SURVEY_GLOBAL_SAVE || tabCount == 1) {
                         if (extras != null && "HomeScreenTwo".equals(mFrom)) {
-                            Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+                            Intent intent = new Intent(context, HomeScreenTwo.class);
                             intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                             intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+
+                            if (isPreVisit)
+                                intent.putExtra("PreVisit",true);
+
                             startActivity(intent);
-                            getActivity().finish();
+                            ((Activity)context).finish();
                         } else if ("HomeScreen".equals(mFrom)) {
-                            HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) getActivity()).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
+                            HomeScreenFragment currentFragment = (HomeScreenFragment) ((FragmentActivity) (context)).getSupportFragmentManager().findFragmentById(R.id.homescreen_fragment);
                             if (currentFragment != null) {
                                 currentFragment.detach(mMenuCode);
                             }
@@ -2247,68 +2263,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 public void onNegativeButtonClick() {
                 }
             }).show();
-        }
-    }
-
-    public class OnSwipeTouchListener implements OnTouchListener {
-        private final GestureDetector gestureDetector = new GestureDetector(getActivity(),
-                new GestureListener());
-
-        public boolean onTouch(final View view, final MotionEvent motionEvent) {
-            return gestureDetector.onTouchEvent(motionEvent);
-        }
-
-        private final class GestureListener extends SimpleOnGestureListener {
-            private static final int SWIPE_THRESHOLD = 100;
-            private static final int SWIPE_VELOCITY_THRESHOLD = 100;
-
-            @Override
-            public boolean onDown(MotionEvent e) {
-                return true;
-            }
-
-            @Override
-            public boolean onFling(MotionEvent e1, MotionEvent e2,
-                                   float velocityX, float velocityY) {
-                try {
-                    float diffY = e2.getY() - e1.getY();
-                    float diffX = e2.getX() - e1.getX();
-                    if (Math.abs(diffX) > Math.abs(diffY)) {
-                        if (Math.abs(diffX) > SWIPE_THRESHOLD
-                                && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
-                            if (diffX > 0) {
-                                onSwipeRight();
-                            } else {
-                                onSwipeLeft();
-                            }
-                        }
-                    } else {
-                        if (Math.abs(diffY) > SWIPE_THRESHOLD
-                                && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
-                            if (diffY > 0) {
-                                onSwipeBottom();
-                            } else {
-                                onSwipeTop();
-                            }
-                        }
-                    }
-                } catch (Exception exception) {
-                    Commons.printException("" + exception);
-                }
-                return super.onFling(e1, e2, velocityX, velocityY);
-            }
-        }
-
-        public void onSwipeRight() {
-        }
-
-        public void onSwipeLeft() {
-        }
-
-        public void onSwipeTop() {
-        }
-
-        public void onSwipeBottom() {
         }
     }
 
@@ -2334,7 +2288,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 }
             }
         }
-        SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(getActivity());
+        SurveyHelperNew surveyHelperNew = SurveyHelperNew.getInstance(context);
         surveyHelperNew.setmQuestionData(mQuestions);
         rvAdapter = new QuestionAdapter();
         questionsRv.setAdapter(rvAdapter);
@@ -2343,7 +2297,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private void FiveFilterFragment() {
         try {
             mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getActivity()
+            android.support.v4.app.FragmentManager fm = ((FragmentActivity)context)
                     .getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");
@@ -2473,29 +2427,37 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             showAlert();
         } else {
             if (mFrom.equalsIgnoreCase("HomeScreenTwo")) {
-                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+                Intent intent = new Intent(context, HomeScreenTwo.class);
                 if (isFromChild)
                     intent.putExtra("isStoreMenu", true);
+
+                if (isPreVisit)
+                    intent.putExtra("PreVisit",true);
+
                 startActivity(intent);
             }
-            getActivity().finish();
-            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            ((Activity)context).finish();
+            ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
     }
 
     private void showAlert() {
-        CommonDialog dialog = new CommonDialog(getActivity(), getResources().getString(R.string.doyouwantgoback),
+        CommonDialog dialog = new CommonDialog(context, getResources().getString(R.string.doyouwantgoback),
                 "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
                 if (mFrom.equalsIgnoreCase("HomeScreenTwo")) {
-                    Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+                    Intent intent = new Intent(context, HomeScreenTwo.class);
                     if (isFromChild)
                         intent.putExtra("isStoreMenu", true);
+
+                    if (isPreVisit)
+                        intent.putExtra("PreVisit",true);
+
                     startActivity(intent);
                 }
-                getActivity().finish();
-                getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                ((Activity)context).finish();
+                ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             }
         }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {
             @Override

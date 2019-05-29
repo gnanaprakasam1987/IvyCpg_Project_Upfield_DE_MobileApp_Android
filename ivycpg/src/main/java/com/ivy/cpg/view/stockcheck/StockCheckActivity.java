@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
+import com.ivy.core.base.view.BaseActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -23,6 +24,7 @@ public class StockCheckActivity extends IvyBaseActivityNoActionBar implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.fragment_activity_stock_check);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
