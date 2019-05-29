@@ -309,4 +309,7 @@
     <string name="retailer_selection_mandatory">Choose any one retailer</string>
 
     <string name="select_percentage">Select Percentage</string>
+    <string name="signature_label">Signature</string>
+    <string name="sign_mandatory">Signature is mandatory</string>
+    <string name="could_not_init_file_system">Could not initiate File System.. Is Sdcard mounted properly?</string>
 </resources>
