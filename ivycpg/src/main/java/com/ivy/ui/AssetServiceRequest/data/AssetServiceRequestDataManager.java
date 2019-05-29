@@ -11,10 +11,13 @@ import io.reactivex.Single;
 public interface AssetServiceRequestDataManager extends AppDataManagerContract {
 
 
-    Observable<ArrayList<SerializedAssetBO>> fetchAssetServiceRequests(String retailerId, boolean isFromReport);
+    Observable<ArrayList<SerializedAssetBO>> fetchAssetServiceRequests(boolean isFromReport);
+    Single<Boolean> cancelServiceRequest(String requestId);
 
-    Observable<ArrayList<SerializedAssetBO>> fetchAssets(String retailerId);
+    Observable<ArrayList<SerializedAssetBO>> fetchAssets(boolean isFromReport);
 
     Single<Boolean> saveNewServiceRequest(SerializedAssetBO assetBO);
+
+    Single<Boolean> updateServiceRequest(SerializedAssetBO assetBO);
 
 }

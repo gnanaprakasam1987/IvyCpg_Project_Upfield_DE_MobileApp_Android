@@ -1,8 +1,11 @@
 package com.ivy.cpg.view.serializedAsset;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
-public class SerializedAssetBO {
+public class SerializedAssetBO implements Parcelable {
     private int assetID;
     private int Target;
     private int audit = 2;
@@ -42,6 +45,16 @@ public class SerializedAssetBO {
     private String assetTypeId;
     private String assetBarCodeId;
     private String assetBarCodeReason;
+
+    public String getRField() {
+        return RField;
+    }
+
+    public void setRField(String RField) {
+        this.RField = RField;
+    }
+
+    private String RField;
 
     public String getAssetServiceReqStatus() {
         return assetServiceReqStatus;
@@ -300,7 +313,7 @@ public class SerializedAssetBO {
         this.mServiceDate = mServiceDate;
     }
 
-    private String getReasonDesc() {
+    public String getReasonDesc() {
         return reasonDesc;
     }
 
@@ -581,4 +594,61 @@ public class SerializedAssetBO {
         else
             return AssetName;
     }
+
+    protected SerializedAssetBO(Parcel in) {
+        assetID = in.readInt();
+        AssetName = in.readString();
+        mNewInstallDate = in.readString();
+        reasonDesc = in.readString();
+        SerialNo = in.readString();
+        issueDescription = in.readString();
+        imageName = in.readString();
+        mServiceDate = in.readString();
+        reasonID=in.readInt();
+        serviceRequestedRetailer = in.readString();
+        RField=in.readString();
+
+    }
+
+    public static final Creator<SerializedAssetBO> CREATOR = new Creator<SerializedAssetBO>() {
+        @Override
+        public SerializedAssetBO createFromParcel(Parcel in) {
+            return new SerializedAssetBO(in);
+        }
+
+        @Override
+        public SerializedAssetBO[] newArray(int size) {
+            return new SerializedAssetBO[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeInt(assetID);
+        parcel.writeString(AssetName);
+        parcel.writeString(mNewInstallDate);
+        parcel.writeString(reasonDesc);
+        parcel.writeString(SerialNo);
+        parcel.writeString(issueDescription);
+        parcel.writeString(imageName);
+        parcel.writeString(mServiceDate);
+        parcel.writeInt(reasonID);
+        parcel.writeString(serviceRequestedRetailer);
+        parcel.writeString(RField);
+    }
+
+    public String getServiceRequestedRetailer() {
+        return serviceRequestedRetailer;
+    }
+
+    public void setServiceRequestedRetailer(String serviceRequestedRetailer) {
+        this.serviceRequestedRetailer = serviceRequestedRetailer;
+    }
+
+    private String serviceRequestedRetailer;
 }

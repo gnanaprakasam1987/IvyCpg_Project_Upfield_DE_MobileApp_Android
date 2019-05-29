@@ -312,4 +312,11 @@
     <string name="expected_resolution_date">Resolution Date</string>
     <string name="asset_service_request">Asset Service Request</string>
     <string name="new_service_request">New Service Request</string>
+    <string name="please_enter_serial_number">Please enter serial number</string>
+    <string name="select_issue_type">Select issue type</string>
+    <string name="request_cancelled_successfully">Request cancelled successfully.</string>
+    <string name="service_request_details">Service Request Details</string>
+    <string name="edit_service_request">Edit Service Request</string>
+    <string name="updated_successfully">Updated Successfully.</string>
+    <string name="do_u_want_to_update">Do you want to update?</string>
 </resources>

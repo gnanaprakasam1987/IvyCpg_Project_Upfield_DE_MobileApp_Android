@@ -13,11 +13,15 @@ public interface AssetServiceRequestContractor {
     @PerActivity
     interface Presenter<V extends AssetServiceView> extends BaseIvyPresenter<V> {
 
-        void loadServiceRequests(String retailerId, boolean isFromReport);
+        void loadServiceRequests(boolean isFromReport);
+        SerializedAssetBO getServiceRequestDetails(String requestId);
+        void cancelServiceRequest(String requestId);
 
-        void fetchLists(String retailerId);
+        void fetchLists(boolean isFromReport);
 
+        void validateRequests(SerializedAssetBO assetBO);
         void saveNewRequest(SerializedAssetBO assetBO);
+        void updateRequest(SerializedAssetBO assetBO);
 
     }
 
@@ -30,6 +34,8 @@ public interface AssetServiceRequestContractor {
 
     interface AssetServiceListView extends AssetServiceView{
         void listServiceRequests(ArrayList<SerializedAssetBO> requestList);
+        void onCancelledSuccessfully();
+
 
     }
 
@@ -37,7 +43,18 @@ public interface AssetServiceRequestContractor {
 
         void populateViews(ArrayList<SerializedAssetBO> assetList, ArrayList<ReasonMaster> issueTypes);
 
+        void showEmptyAssetMessage();
+        void showEmptyIssueTypeMessage();
+        void showEmptySerialNumberMessage();
+        void saveRequest();
         void onSavedSuccessfully();
+        void onUpdatedSuccessfully();
+
+    }
+
+    interface AssetServiceFullDetailView extends AssetServiceView{
+        void listServiceRequests(ArrayList<SerializedAssetBO> requestList);
+
 
     }
 }

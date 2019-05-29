@@ -695,7 +695,7 @@ public class LoadManagementHelper {
             c.close();
 
 
-        int difference=DateTimeUtils.getDateCount(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),tripStartDate,"yyyy/MM/dd");
+        int difference=DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),tripStartDate,"yyyy/MM/dd");
 
         if(difference>0)
             return false;

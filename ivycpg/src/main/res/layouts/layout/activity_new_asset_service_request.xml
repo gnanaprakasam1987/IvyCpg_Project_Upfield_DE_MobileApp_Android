@@ -100,7 +100,7 @@
                 style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                 android:id="@+id/spinner_issue_type"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/spinner_height"
                 android:gravity="center"
                 android:overlapAnchor="false"
                 android:spinnerMode="dialog"
@@ -120,16 +120,11 @@
                 android:layout_height="wrap_content"
                 android:text="@string/expected_resolution_date"
                 />
-            <android.support.v7.widget.AppCompatEditText
-                style="@style/EditText_ListItem"
+            <Button
+                style="@style/datePickerButton"
                 android:id="@+id/button_resolution_date"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:overlapAnchor="false"
-                android:spinnerMode="dialog"
-                android:minHeight="40dp"
-                android:clickable="false"
+                android:layout_height="@dimen/spinner_height"
                 />
 
         </LinearLayout>
@@ -155,6 +150,12 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:padding="@dimen/dimen_5dp">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recylerView_photo"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_100dp">
+
+            </android.support.v7.widget.RecyclerView>
 
         </LinearLayout>
     </LinearLayout>
@@ -169,13 +170,23 @@
             />
         <android.support.v7.widget.AppCompatEditText
             android:id="@+id/edittext_description"
-            style="?attr/boxCustomButtonSmallGrey"
+            style="@style/EditTextNormal"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_100dp"
-            android:layout_marginTop="@dimen/dimen_5dp"
-            android:gravity="start"
-            android:textColor="@color/FullBlack"
-            android:fontFamily="@font/roboto_medium"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dimens_4dp"
+            android:layout_marginStart="@dimen/list_margin"
+            android:layout_marginLeft="@dimen/list_margin"
+            android:layout_marginBottom="@dimen/list_margin"
+            android:background="@drawable/feedback_edit_selector"
+            android:cursorVisible="true"
+            android:gravity="start|top"
+            android:hint="@string/description"
+            android:inputType="textMultiLine"
+            android:maxLength="250"
+            android:maxLines="4"
+            android:padding="@dimen/dimen_6dp"
+            tools:ignore="Autofill"
             />
 
 

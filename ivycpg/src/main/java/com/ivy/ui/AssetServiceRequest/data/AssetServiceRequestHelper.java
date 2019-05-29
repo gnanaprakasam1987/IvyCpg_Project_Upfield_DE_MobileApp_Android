@@ -68,7 +68,7 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
     }
 
     @Override
-    public Observable<ArrayList<SerializedAssetBO>> fetchAssetServiceRequests(String retailerId, boolean isFromReport) {
+    public Observable<ArrayList<SerializedAssetBO>> fetchAssetServiceRequests( boolean isFromReport) {
         return Observable.fromCallable(() -> {
 
             try {
@@ -77,25 +77,33 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
 
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("Select A.AssetId,AssetName,SerialNumber,Date,SM.listName as issueType ,SM1.listName as serviceProvider" +
-                        ",IssueDescription,ImagePath,Status,ExpectedResolutionDate");
+                        ",IssueDescription,ImagePath,Status,ExpectedResolutionDate,A.uid,A.reasonId,RM.RetailerName");
                 stringBuilder.append(" from SerializedAssetServiceRequest A left join SerializedAssetMaster B ON A.assetId=B.AssetId");
                 stringBuilder.append(" left join StandardListMaster SM ON SM.listId=A.reasonId");
                 stringBuilder.append(" left join StandardListMaster SM1 ON SM1.listId=A.ServiceProviderId");
+                stringBuilder.append(" left join RetailerMaster RM ON RM.retailerId=A.retailerId");
+
+                if(!isFromReport)
+                stringBuilder.append(" where retailerId="+appDataProvider.getRetailMaster().getRetailerID());
+
                 Cursor cursor = mDbUtil.selectSQL(stringBuilder.toString());
                 if (cursor.getCount() > 0) {
                     SerializedAssetBO assetBO;
                     while (cursor.moveToNext()) {
                         assetBO = new SerializedAssetBO();
+                        assetBO.setRField(cursor.getString(10));
                         assetBO.setAssetID(cursor.getInt(0));
                         assetBO.setAssetName(cursor.getString(1));
                         assetBO.setSerialNo(cursor.getString(2));
                         assetBO.setServiceDate(cursor.getString(3));// service requested date
                         assetBO.setReasonDesc(cursor.getString(4));// Issue Type
+                        assetBO.setReasonID(cursor.getInt(11));// Issue type id
                         assetBO.setServiceProvider(cursor.getString(5));
                         assetBO.setIssueDescription(cursor.getString(6));
                         //assetBO.setImageName();
                         assetBO.setAssetServiceReqStatus(cursor.getString(8));
                         assetBO.setNewInstallDate(cursor.getString(9)); // Resolution date
+                        assetBO.setServiceRequestedRetailer(cursor.getString(12));
 
                         getAssetRequestList().add(assetBO);
 
@@ -113,7 +121,7 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
     }
 
     @Override
-    public Observable<ArrayList<SerializedAssetBO>> fetchAssets(String retailerId) {
+    public Observable<ArrayList<SerializedAssetBO>> fetchAssets(boolean isFromReport) {
         return Observable.fromCallable(() -> {
 
             ArrayList<SerializedAssetBO> assetList = new ArrayList<>();
@@ -134,11 +142,13 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
                 sb.append("left join SerializedAssetProductMapping C on C.AssetId=A.AssetId ");
                 sb.append("left join SerializedAssetVendorMaster SAVM on SAVM.id=A.vendorid ");
 
+                if(isFromReport) {
 
-                sb.append("Where Retailerid in(0,");
-                sb.append(StringUtils.QT(appDataProvider.getRetailMaster().getRetailerID())).append(")");
+                    sb.append("Where Retailerid =");
+                    sb.append(appDataProvider.getRetailMaster().getRetailerID());
+                }
 
-                sb.append(" GROUP BY RetailerId,B.AssetId,B.SerialNumber ORDER BY RetailerId");
+                sb.append("GROUP BY RetailerId,B.AssetId,B.SerialNumber ORDER BY RetailerId");
 
                 Cursor c = mDbUtil.selectSQL(sb.toString());
                 if (c.getCount() > 0) {
@@ -196,23 +206,92 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
 
                 String columns="uid,AssetId,RetailerId,Date,SerialNumber,ReasonId,serviceProviderId,IssueDescription,ImagePath,Status,ExpectedResolutionDate,Upload";
 
-                String id = businessModel.getAppDataProvider().getUser().getUserid()
+                String id = appDataProvider.getUser().getUserid()
                         + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
                 StringBuilder stringBuilder =new StringBuilder();
                 stringBuilder.append(id+",");
                 stringBuilder.append(assetBO.getAssetID()+",");
-                stringBuilder.append(assetBO.getServiceDate()+",");
-                stringBuilder.append(assetBO.getSerialNo()+",");
+                stringBuilder.append(appDataProvider.getRetailMaster().getRetailerID()+",");
+                stringBuilder.append(StringUtils.QT(assetBO.getServiceDate())+",");
+                stringBuilder.append(StringUtils.QT(assetBO.getSerialNo())+",");
                 stringBuilder.append(assetBO.getReasonID()+",");
                 stringBuilder.append(assetBO.getServiceProviderId()+",");
                 stringBuilder.append(StringUtils.QT(assetBO.getIssueDescription())+",");
                 stringBuilder.append(StringUtils.QT(assetBO.getImageName())+",");
-                stringBuilder.append(StringUtils.QT(assetBO.getAssetServiceReqStatus()+","));
+                stringBuilder.append(StringUtils.QT(assetBO.getAssetServiceReqStatus())+",");
                 stringBuilder.append(StringUtils.QT(assetBO.getNewInstallDate())+",");
                 stringBuilder.append("'N'");
 
                 mDbUtil.insertSQL(DataMembers.tbl_SerializedAssetServiceRequest,columns,stringBuilder.toString());
+
+                shutDownDb();
+
+            }
+            catch (Exception ex){
+                Commons.printException(ex);
+                return false;
+            }
+
+            return true;
+        });
+    }
+
+    @Override
+    public Single<Boolean> updateServiceRequest(SerializedAssetBO assetBO) {
+        return Single.fromCallable(() -> {
+
+            setAssetRequestList(new ArrayList<>());
+            try {
+                initDb();
+
+
+                StringBuilder stringBuilder =new StringBuilder();
+
+                stringBuilder.append("update "+DataMembers.tbl_SerializedAssetServiceRequest+" set ");
+                stringBuilder.append("AssetId="+assetBO.getAssetID()+",");
+                stringBuilder.append("SerialNumber="+StringUtils.QT(assetBO.getSerialNo())+",");
+                stringBuilder.append("ReasonId="+assetBO.getReasonID()+",");
+                stringBuilder.append("serviceProviderId="+assetBO.getServiceProviderId()+",");
+                stringBuilder.append("IssueDescription="+StringUtils.QT(assetBO.getIssueDescription())+",");
+                stringBuilder.append("ImagePath="+StringUtils.QT(assetBO.getImageName())+",");
+                stringBuilder.append("Status="+StringUtils.QT(assetBO.getAssetServiceReqStatus())+",");
+                stringBuilder.append("ExpectedResolutionDate="+StringUtils.QT(assetBO.getNewInstallDate())+",");
+                stringBuilder.append("Upload='N'");
+
+                stringBuilder.append(" where uid="+StringUtils.QT(assetBO.getRField()));
+
+
+
+                mDbUtil.updateSQL(stringBuilder.toString());
+
+                shutDownDb();
+
+            }
+            catch (Exception ex){
+                Commons.printException(ex);
+                return false;
+            }
+
+            return true;
+        });
+    }
+
+    @Override
+    public Single<Boolean> cancelServiceRequest(String requestId) {
+        return Single.fromCallable(() -> {
+
+            setAssetRequestList(new ArrayList<>());
+
+            try {
+
+                initDb();
+
+                String query="update "+DataMembers.tbl_SerializedAssetServiceRequest+" set status='CANCELLED' where uid="+StringUtils.QT(requestId);
+
+                mDbUtil.updateSQL(query);
+
+                shutDownDb();
 
             }
             catch (Exception ex){

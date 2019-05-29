@@ -1123,6 +1123,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
 
+            } else if (bmodel.configurationMasterHelper.IS_ENABLE_TRIP && !LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isValidTrip()) {
+                showDialog(2);
             } else if (isLeave_today) {
                 if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),

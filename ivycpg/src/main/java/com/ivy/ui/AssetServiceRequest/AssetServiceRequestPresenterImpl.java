@@ -25,6 +25,7 @@ public class AssetServiceRequestPresenterImpl<V extends AssetServiceRequestContr
 
     private AssetServiceRequestDataManager assetDataManager;
     private ReasonDataManager reasonDataManager;
+    private ArrayList<SerializedAssetBO> requestList;
 
     @Inject
     public AssetServiceRequestPresenterImpl(DataManager dataManager, SchedulerProvider schedulerProvider,
@@ -40,12 +41,12 @@ public class AssetServiceRequestPresenterImpl<V extends AssetServiceRequestContr
 
 
     @Override
-    public void loadServiceRequests(String retailerId, boolean isFromReport) {
+    public void loadServiceRequests(boolean isFromReport) {
 
         getIvyView().showLoading();
-        ArrayList<SerializedAssetBO> requestList = new ArrayList<>();
+        requestList = new ArrayList<>();
         getCompositeDisposable().add(assetDataManager.
-                fetchAssetServiceRequests(retailerId, isFromReport)
+                fetchAssetServiceRequests( isFromReport)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribeWith(new DisposableObserver<ArrayList<SerializedAssetBO>>() {
@@ -74,14 +75,14 @@ public class AssetServiceRequestPresenterImpl<V extends AssetServiceRequestContr
     }
 
     @Override
-    public void fetchLists(String retailerId) {
+    public void fetchLists(boolean isFromReport) {
 
         getIvyView().showLoading();
 
         ArrayList<ReasonMaster> issueTypeList=new ArrayList<>();
         ArrayList<SerializedAssetBO> assetsList=new ArrayList<>();
         getCompositeDisposable().add(Observable.zip(reasonDataManager.fetchReasonFromStdListMasterByListCode("ASSET_SER_REQ"),
-                assetDataManager.fetchAssets(retailerId),
+                assetDataManager.fetchAssets(isFromReport),
                 new BiFunction<ArrayList<ReasonMaster>, ArrayList<SerializedAssetBO>, Object>() {
                     @Override
                     public Boolean apply(ArrayList<ReasonMaster> issueTypes, ArrayList<SerializedAssetBO> assetList) {
@@ -119,6 +120,24 @@ public class AssetServiceRequestPresenterImpl<V extends AssetServiceRequestContr
     }
 
     @Override
+    public void validateRequests(SerializedAssetBO assetBO) {
+        if(assetBO.getSerialNo().equalsIgnoreCase("0")||
+                assetBO.getSerialNo().equalsIgnoreCase("")){
+            ((AssetServiceRequestContractor.AssetNewServiceView)getIvyView()).showEmptySerialNumberMessage();
+        }
+        else if(assetBO.getAssetID()==0){
+            ((AssetServiceRequestContractor.AssetNewServiceView)getIvyView()).showEmptyAssetMessage();
+        }
+        else if(assetBO.getReasonID()==0){
+            ((AssetServiceRequestContractor.AssetNewServiceView)getIvyView()).showEmptyIssueTypeMessage();
+        }
+        else {
+            ((AssetServiceRequestContractor.AssetNewServiceView)getIvyView()).saveRequest();
+        }
+
+    }
+
+    @Override
     public void saveNewRequest(SerializedAssetBO assetBO) {
 
         getIvyView().showLoading();
@@ -130,6 +149,54 @@ public class AssetServiceRequestPresenterImpl<V extends AssetServiceRequestContr
                     getIvyView().hideLoading();
                     if(isAdded)
                         ((AssetServiceRequestContractor.AssetNewServiceView)getIvyView()).onSavedSuccessfully();
+                    else ((AssetServiceRequestContractor.AssetNewServiceView)getIvyView()).showErrorMessage(0);
+
+                }));
+    }
+
+    @Override
+    public void updateRequest(SerializedAssetBO assetBO) {
+        getIvyView().showLoading();
+
+        getCompositeDisposable().add(assetDataManager.updateServiceRequest(assetBO)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(isAdded -> {
+                    getIvyView().hideLoading();
+                    if(isAdded)
+                        ((AssetServiceRequestContractor.AssetNewServiceView)getIvyView()).onSavedSuccessfully();
+                    else ((AssetServiceRequestContractor.AssetNewServiceView)getIvyView()).showErrorMessage(0);
+
+                }));
+    }
+
+    @Override
+    public SerializedAssetBO getServiceRequestDetails(String requestId) {
+
+        if(requestList!=null) {
+            for (SerializedAssetBO assetBO : requestList) {
+                if (assetBO.getRField().equals(requestId)) {
+                    return assetBO;
+                }
+            }
+        }
+
+        return new SerializedAssetBO();
+    }
+
+    @Override
+    public void cancelServiceRequest(String requestId) {
+        getIvyView().showLoading();
+
+        getCompositeDisposable().add(assetDataManager.cancelServiceRequest(requestId)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(isCancelled -> {
+                    getIvyView().hideLoading();
+                    if(isCancelled) {
+                        ((AssetServiceRequestContractor.AssetServiceListView) getIvyView()).onCancelledSuccessfully();
+                    }
+                    else ((AssetServiceRequestContractor.AssetNewServiceView)getIvyView()).showErrorMessage(0);
 
                 }));
     }
