@@ -64,7 +64,6 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
     private int mDay;
     Button btnSave, btnCancel;
     private String append = "";
-    private TextView txtSerialNo;
     private String serialNoTag;
     private final AssetTrackingBO assetBo = new AssetTrackingBO();
     AssetTrackingHelper assetTrackingHelper;
@@ -75,6 +74,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
         if (getDialog().getWindow() != null) {
             getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
+            getDialog().getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         }
 
         setCancelable(false);
@@ -85,7 +85,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         mBModel = (BusinessModel) context.getApplicationContext();
         assetTrackingHelper = AssetTrackingHelper.getInstance(context);
 
-        txtSerialNo = view.findViewById(R.id.label_scan);
+        TextView txtSerialNo = view.findViewById(R.id.label_scan);
         serialNoTag = getResources().getString(R.string.serial_no);
         ((TextView) view.findViewById(R.id.label_scan)).setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
         if (mBModel.labelsMasterHelper.applyLabels(view.findViewById(R.id.label_scan).getTag()) != null) {
@@ -117,6 +117,9 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
         Window window = getDialog().getWindow();
         if (window != null) {
+            lp.dimAmount = 0.50f;
+            lp.flags |= WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+            window.setAttributes(lp);
             //lp.copyFrom(window.getAttributes()); cmd for device alignment issue
             window.setAttributes(lp);
         }
@@ -326,7 +329,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
                         .equals(SELECT)
                         && !mBrand.getSelectedItem().toString()
                         .equals(SELECT)) {
-                    if(mSNO.getText().toString().trim().equals("")){
+                    if (mSNO.getText().toString().trim().equals("")) {
                         Toast.makeText(
                                 getActivity(),
                                 getResources()
@@ -352,7 +355,7 @@ public class AddAssetDialogFragment extends DialogFragment implements View.OnCli
 
                     } else {
                         Toast.makeText(
-                                getActivity(),serialNoTag + " " + getResources().getString(R.string.already_exist),
+                                getActivity(), serialNoTag + " " + getResources().getString(R.string.already_exist),
                                 Toast.LENGTH_SHORT).show();
                     }
                 } else {
