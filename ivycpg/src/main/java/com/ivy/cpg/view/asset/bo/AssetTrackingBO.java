@@ -44,7 +44,7 @@ public class AssetTrackingBO {
     private int targetLocId;
     private String locationName;
     private ArrayList<String> imageList;
-
+    private boolean isDisableInstallDate;
 
     private double weightage;
 
@@ -86,6 +86,7 @@ public class AssetTrackingBO {
         this.imageList = assetTrackingBO.getImageList();
         this.isSelectedReason = assetTrackingBO.isSelectedReason();
         this.parentHierarchy = assetTrackingBO.getParentHierarchy();
+        this.isDisableInstallDate = assetTrackingBO.isDisableInstallDate();
     }
 
     public int getExecutorQty() {
@@ -449,4 +450,11 @@ public class AssetTrackingBO {
 
     private ArrayList<CompanyBO> companyList;
 
+    public boolean isDisableInstallDate() {
+        return isDisableInstallDate;
+    }
+
+    public void setDisableInstallDate(boolean disableInstallDate) {
+        isDisableInstallDate = disableInstallDate;
+    }
 }
