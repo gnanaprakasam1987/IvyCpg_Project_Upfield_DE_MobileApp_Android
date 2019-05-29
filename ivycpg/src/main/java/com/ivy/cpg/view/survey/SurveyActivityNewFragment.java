@@ -4,17 +4,21 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -63,9 +67,23 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
+import com.ivy.lib.pdf.PDFGenerator;
 import com.ivy.sd.camera.CameraActivity;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -77,15 +95,20 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.SlantView;
 import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
+import com.ivy.utils.StringUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -140,6 +163,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     protected Boolean isMultiPhotoCaptureEnabled = false;
     private SurveyHelperNew surveyHelperNew;
     private LinearLayoutManager linearLayoutManager;
+    private String pdfName;
 
     private Context context;
     private boolean isPreVisit = false;
@@ -579,7 +603,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         if (surveyHelperNew.isAllAnswered()) {
 
                             if (surveyHelperNew.hasPhotoToSave())
-                                new SaveSurveyTask().execute();
+                                captureSignature();
                             else {
                                 bmodel.showAlert(
                                         getResources().getString(R.string.take_photos_to_save), 0);
@@ -603,7 +627,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
                         if (surveyHelperNew.isMandatoryQuestionAnswered()) {
                             if (surveyHelperNew.hasPhotoToSave())
-                                new SaveSurveyTask().execute();
+                                captureSignature();
                             else {
                                 bmodel.showAlert(
                                         getResources().getString(R.string.take_photos_to_save), 0);
@@ -631,7 +655,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                         if (surveyHelperNew.isAnsweredTypeEmail()) {
 
                             if (surveyHelperNew.hasPhotoToSave())
-                                new SaveSurveyTask().execute();
+                                captureSignature();
                             else {
                                 bmodel.showAlert(
                                         getResources().getString(R.string.take_photos_to_save), 0);
@@ -1981,7 +2005,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 if (surveyHelperNew.IS_SURVEY_ANSWER_ALL) {
                     if (surveyHelperNew.isAllAnswered()) {
                         if (surveyHelperNew.hasPhotoToSave())
-                            new SaveSurveyTask().execute();
+                            captureSignature();
                         else {
                             bmodel.showAlert(
                                     getResources().getString(R.string.take_photos_to_save), 0);
@@ -1997,7 +2021,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 } else if (surveyHelperNew.IS_SURVEY_ANSWER_MANDATORY) {
                     if (surveyHelperNew.isMandatoryQuestionAnswered()) {
                         if (surveyHelperNew.hasPhotoToSave())
-                            new SaveSurveyTask().execute();
+                            captureSignature();
                         else {
                             bmodel.showAlert(
                                     getResources().getString(R.string.take_photos_to_save), 0);
@@ -2017,7 +2041,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 } else {
                     if (surveyHelperNew.hasDataToSave()) {
                         if (surveyHelperNew.hasPhotoToSave())
-                            new SaveSurveyTask().execute();
+                            captureSignature();
                         else {
                             bmodel.showAlert(
                                     getResources().getString(R.string.take_photos_to_save), 0);
@@ -2229,10 +2253,13 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             alertDialog.dismiss();
             surveyHelperNew.remarkDone = "N";
             checkClicked = false;
-            new CommonDialog(context.getApplicationContext(), context,
+            String negBtn = null;
+            if (bmodel.configurationMasterHelper.IS_SURVEY_PDF_SHARE)
+                negBtn = getResources().getString(R.string.share);
+            new CommonDialog(getActivity().getApplicationContext(), getActivity(),
                     "", getResources().getString(R.string.saved_successfully),
-                    false, getResources().getString(R.string.ok),
-                    null, new CommonDialog.PositiveClickListener() {
+                    false, getActivity().getResources().getString(R.string.ok),
+                    negBtn, new CommonDialog.PositiveClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
                     questionsRv.invalidate();
@@ -2261,6 +2288,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             }, new CommonDialog.negativeOnClickListener() {
                 @Override
                 public void onNegativeButtonClick() {
+                    textToPdf();
                 }
             }).show();
         }
@@ -2468,4 +2496,136 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         dialog.show();
         dialog.setCancelable(false);
     }
-}
+
+    /**
+     * To capture signature for the survey.
+     */
+    private void captureSignature() {
+        if (hasSignature()) {
+            String imagename = "SUR_SGN_" + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS) + ".jpg";
+            String serverPath = "Survey/"
+                    + bmodel.getAppDataProvider().getUser().getDownloadDate()
+                    .replace("/", "") + "/"
+                    + bmodel.getAppDataProvider().getUser().getUserid() + "/" + imagename;
+            surveyHelperNew.setSignaturePath(serverPath);
+            CaptureSignatureDialog signatureDialog = new CaptureSignatureDialog(getActivity(), getResources().getString(R.string.signature_label),
+                    getResources().getString(R.string.please_sign_below), getResources().getString(R.string.save), new CaptureSignatureDialog.PositiveClickListener() {
+                @Override
+                public void onPositiveButtonClick(boolean isSignCaptured) {
+                    if (isSignCaptured)
+                        new SaveSurveyTask().execute();
+                    else
+                        Toast.makeText(getActivity(), getResources().getString(R.string.sign_mandatory), Toast.LENGTH_SHORT).show();
+                }
+            },
+                    getResources().getString(R.string.cancel), new CaptureSignatureDialog.NegativeOnClickListener() {
+                @Override
+                public void onNegativeButtonClick() {
+                    checkClicked = false;
+                }
+            }, imagename, surveyBO.getSignaturePath(), FileUtils.photoFolderPath + "/");
+            signatureDialog.show();
+        } else {
+            new SaveSurveyTask().execute();
+        }
+    }
+
+    /**
+     * Whether Signature required for the survey or not
+     *
+     * @return true or false
+     */
+    private boolean hasSignature() {
+        for (SurveyBO sBO : surveyHelperNew.getSurvey()) {
+            if (sBO.isSignatureRequired())
+                return true;
+        }
+        return false;
+    }
+
+    /**
+     * After the survey gets saved, it will get shared through email as PDF.
+     */
+    private void textToPdf() {
+        try {
+            if (FileUtils.createFilePathAndFolder(getActivity())) {
+                pdfName = "/Survey_" + surveyBO.getSurveyID() + "_" + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_PLAIN) + ".pdf";
+                boolean mIsFileAvailable = FileUtils.checkForNFilesInFolder(FileUtils.photoFolderPath, 1, pdfName);
+
+                if (mIsFileAvailable)
+                    FileUtils.deleteFiles(FileUtils.photoFolderPath, pdfName);
+
+                PDFGenerator pdfGenerator = new PDFGenerator(FileUtils.photoFolderPath, pdfName, FileUtils.photoFolderPath);
+
+                writeSurvey(pdfGenerator);
+                pdfGenerator.createPdf();
+                AppUtils.sendEmail(getActivity(), FileUtils.photoFolderPath + pdfName, "", new String[]{}, "Send email...");
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    /**
+     * To generate survey content for PDF creation.
+     *
+     * @param pdfGenerator - IVY Lib class used to generate PDF.
+     */
+    private void writeSurvey(PDFGenerator pdfGenerator) {
+        int qNo;
+        for (SurveyBO surBO : surveyHelperNew.getSurvey()) {
+            Phrase heading = pdfGenerator.addPhrase(surBO.getSurveyName(), PDFGenerator.FONT_BOLD);
+            Paragraph headerPara = pdfGenerator.addParagraph(PDFGenerator.ALIGNMENT_CENTER);
+            headerPara.add(heading);
+            headerPara.add(PDFGenerator.NEW_LINE);
+            pdfGenerator.getPdfWordCell().addElement(headerPara);
+            qNo = 1;
+            for (QuestionBO question : surBO.getQuestions()) {
+                String contentStr = qNo + "." + question.getQuestionDescription();
+                Phrase contentPhrase = pdfGenerator.addPhrase(contentStr, PDFGenerator.FONT_NORMAL);
+                Paragraph contentPara = pdfGenerator.addParagraph(PDFGenerator.ALIGNMENT_JUSTIFIED);
+                contentPara.add(PDFGenerator.NEW_LINE);
+                contentPara.add(contentPhrase);
+                pdfGenerator.getPdfWordCell().addElement(contentPara);
+
+                int answerSize = question.getSelectedAnswerIDs().size();
+                for (int j = 0; j < answerSize; j++) {
+                    if ("TEXT".equals(question.getQuestionType())
+                            || "FREE_TEXT".equals(question.getQuestionType())
+                            || "NUM".equals(question.getQuestionType())
+                            || "PERC".equals(question.getQuestionType())
+                            || "EMAIL".equals(question.getQuestionType())
+                            || "DATE".equals(question.getQuestionType())
+                            || "PH_NO".equals(question.getQuestionType())
+                            || "DECIMAL".equals(question.getQuestionType())
+                            && !question.getSelectedAnswer().isEmpty()) {
+                        String answerStr = PDFGenerator.addSpace(String.valueOf(qNo).length()) + question
+                                .getSelectedAnswer().get(j);
+                        Phrase answerPhrase = pdfGenerator.addPhrase(answerStr, PDFGenerator.FONT_BOLD_SMALL);
+                        Paragraph answerPara = pdfGenerator.addParagraph(PDFGenerator.ALIGNMENT_JUSTIFIED);
+                        answerPara.add(answerPhrase);
+                        answerPara.add(PDFGenerator.NEW_LINE);
+                        pdfGenerator.getPdfWordCell().addElement(answerPara);
+                        if (question.getImageNames() != null && !question.getImageNames().isEmpty()) {
+                            pdfGenerator.setImageList(new ArrayList<>());
+                            for (String imagePath : question.getImageNames()) {
+                                String[] splitPath = imagePath.split("/");
+                                String imagename = splitPath[splitPath.length - 1];
+                                pdfGenerator.getImageList().add(imagename);
+                            }
+                            pdfGenerator.addImagesToPdf();
+                        }
+                        break;
+                    }
+                }
+                qNo++;
+            }
+        }
+        if (!StringUtils.isEmptyString(surveyBO.getSignaturePath())) {
+            String[] splitPath = surveyBO.getSignaturePath().split("/");
+            String imagename = splitPath[splitPath.length - 1];
+            pdfGenerator.addSignature(FileUtils.photoFolderPath + "/" + imagename, PDFGenerator.ALIGNMENT_CENTER, 25);
+        }
+
+    }
+ }

@@ -1592,6 +1592,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ENABLE_GLOBAL_GPS_DISTANCE = "GPSDISTANCE";
     public int GLOBAL_GPS_DISTANCE;
 
+    public boolean IS_SURVEY_PDF_SHARE;
+    public static final String CODE_SURVEY_PDF_SHARE = "SURVEY15";
+
     private final String CODE_PRE_VISIT = "PREVISIT";
     public boolean IS_PRE_VISIT = false;
 
@@ -2794,6 +2797,7 @@ public class ConfigurationMasterHelper {
 
         this.IS_ENABLE_EDIT_OPTION_FOR_OTHER_USER = hashMapHHTModuleConfig.get(CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER) : false;
         this.GLOBAL_GPS_DISTANCE = hashMapHHTModuleOrder.get(CODE_ENABLE_GLOBAL_GPS_DISTANCE) != null ? hashMapHHTModuleOrder.get(CODE_ENABLE_GLOBAL_GPS_DISTANCE) : 0;
+        this.IS_SURVEY_PDF_SHARE = hashMapHHTModuleConfig.get(CODE_SURVEY_PDF_SHARE) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_PDF_SHARE) : false;
         this.IS_PRE_VISIT = hashMapHHTModuleConfig.get(CODE_PRE_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_PRE_VISIT) : false;
     }
 
