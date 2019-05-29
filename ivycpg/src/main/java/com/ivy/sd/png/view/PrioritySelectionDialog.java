@@ -9,12 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -28,18 +26,15 @@ import java.util.ArrayList;
  */
 
 public class PrioritySelectionDialog extends Dialog {
-    private String Title = "";
-    private TextView mTitleTV;
-    private Button mOkBtn, mDismisBtn;
-    private ListView mPriorityproductLV;
+    private String Title;
     private Context mContext;
 
-    int mSelectedpostion;
-    private int mhasLink = 0;
-    ArrayList<StandardListBO> mPriorityProductList = new ArrayList<>();
+    private int mSelectedpostion;
+    private int mhasLink;
+    private ArrayList<StandardListBO> mPriorityProductList;
     private PrioritySelectionListener prioritySelectionListener;
 
-    public PrioritySelectionDialog(@NonNull Context context, String mTitle, int hasLink, int mSelectedposition, ArrayList<StandardListBO> PriorityProductList) {
+    PrioritySelectionDialog(@NonNull Context context, String mTitle, int hasLink, int mSelectedposition, ArrayList<StandardListBO> PriorityProductList) {
         super(context);
         mContext = context;
         Title = mTitle;
@@ -57,16 +52,18 @@ public class PrioritySelectionDialog extends Dialog {
         setContentView(R.layout.custom_dialog_fragment);
 
 
-        mTitleTV = (TextView) findViewById(R.id.title);
-        mOkBtn = (Button) findViewById(R.id.btn_ok);
+        TextView mTitleTV = findViewById(R.id.title);
+        Button mOkBtn = findViewById(R.id.btn_ok);
 
-        if (mhasLink == 0)
+        if (mhasLink == 0) {
             mOkBtn.setVisibility(View.GONE);
+            (findViewById(R.id.footer)).setVisibility(View.GONE);
+        }
 
-        mDismisBtn = (Button) findViewById(R.id.btn_dismiss);
+        Button mDismisBtn = findViewById(R.id.btn_dismiss);
         mDismisBtn.setVisibility(View.GONE);
 
-        mPriorityproductLV = (ListView) findViewById(R.id.lv_colletion_print);
+        ListView mPriorityproductLV = findViewById(R.id.lv_colletion_print);
 
         mTitleTV.setText(Title);
 
@@ -77,13 +74,10 @@ public class PrioritySelectionDialog extends Dialog {
             mPriorityproductLV.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
             if (mSelectedpostion != -1)
                 mPriorityproductLV.setItemChecked(mSelectedpostion, true);
-            mPriorityproductLV.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            mPriorityproductLV.setOnItemClickListener((parent, view, position, id) -> {
 
-                    StandardListBO standardListBO = mPriorityProductList.get(position);
-                    prioritySelectionListener.updateSelectedItems(position, standardListBO);
-                }
+                StandardListBO standardListBO = mPriorityProductList.get(position);
+                prioritySelectionListener.updateSelectedItems(position, standardListBO);
             });
         } else if (mhasLink == 1) {
             MyAdapter adapter = new MyAdapter();
@@ -91,12 +85,7 @@ public class PrioritySelectionDialog extends Dialog {
         }
 
 
-        mOkBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                prioritySelectionListener.updatePriorityProducts(mPriorityProductList);
-            }
-        });
+        mOkBtn.setOnClickListener(v -> prioritySelectionListener.updatePriorityProducts(mPriorityProductList));
     }
 
 
@@ -124,16 +113,13 @@ public class PrioritySelectionDialog extends Dialog {
             final ViewHolder holder;
             if (convertView == null) {
                 holder = new ViewHolder();
+                assert inflater != null;
                 convertView = inflater.inflate(R.layout.list_priotityproduct,
                         parent, false);
-                holder.productNameTV = (TextView) convertView.findViewById(R.id.tv_product_name);
-                holder.productSelectCB = (CheckBox) convertView.findViewById(R.id.cb_productselect);
-                holder.productSelectCB.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                        holder.standardListBO.setChecked(isChecked);
-                    }
-                });
+                holder.productNameTV = convertView.findViewById(R.id.tv_product_name);
+                holder.productSelectCB = convertView.findViewById(R.id.cb_productselect);
+                holder.productSelectCB.setOnCheckedChangeListener(
+                        (buttonView, isChecked) -> holder.standardListBO.setChecked(isChecked));
                 convertView.setTag(holder);
 
             } else {
@@ -159,7 +145,7 @@ public class PrioritySelectionDialog extends Dialog {
         void updatePriorityProducts(ArrayList<StandardListBO> mPriorityProductList);
     }
 
-    public void setPrioritySelectionListener(Fragment Listner) {
+    void setPrioritySelectionListener(Fragment Listner) {
         this.prioritySelectionListener = (PrioritySelectionListener) Listner;
     }
 }
