@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.serializedAsset;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -73,6 +74,8 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
     private SerializedAssetAdapter adapter;
     private BusinessModel mBModel;
 
+    private Context context;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -81,6 +84,8 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
         assetTrackingHelper = SerializedAssetHelper.getInstance(getActivity());
         assetPresenter = new SerializedAssetPresenterImpl(getContext(), mBModel, assetTrackingHelper);
         assetPresenter.setView(this);
+
+        this.context = context;
     }
 
     @Override
@@ -287,7 +292,6 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
 
     }
 
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(
@@ -386,13 +390,21 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
                 mDrawerLayout.closeDrawers();
             } else {
-                if (assetTrackingHelper.getAssetTrackingList().size() == 0 && adapter.isEmpty()) {
+                if (assetTrackingHelper.getAssetTrackingList().size() == 0 && adapter.isEmpty()
+                        && !isPreVisit) {
                     save();
                 } else {
-                    assetPresenter.updateTimeStamp();
-                    startActivity(new Intent(getActivity(),
-                            HomeScreenTwo.class));
-                    getActivity().finish();
+                    if (!isPreVisit)
+                        assetPresenter.updateTimeStamp();
+
+                    Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                    if (isPreVisit)
+                        intent.putExtra("PreVisit",true);
+
+                    startActivity(intent);
+
+                    ((Activity)context).finish();
                 }
             }
             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
@@ -409,16 +421,25 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             dialog1.show(ft, MENU_SERIALIZED_ASSET);
             return true;
         } else if (i == R.id.menu_survey) {
-            startActivity(new Intent(getActivity(), SurveyActivityNew.class));
+
+            Intent intent = new Intent(context, SurveyActivityNew.class);
+            if (isPreVisit)
+                intent.putExtra("PreVisit",true);
+            startActivity(intent);
+
             return true;
         } else if (i == R.id.menu_add) {
 
-            Intent intent=new Intent(getActivity(),AddSerializedAssetActivity.class);
+            Intent intent = new Intent(context, AddSerializedAssetActivity.class);
+            if (isPreVisit)
+                intent.putExtra("PreVisit",true);
             startActivity(intent);
 
             return true;
         } else if (i == R.id.menu_remove) {
             Intent intent = new Intent(getActivity(), RemoveSerializedAssetActivity.class);
+            if (isPreVisit)
+                intent.putExtra("PreVisit",true);
             intent.putExtra("module", MENU_SERIALIZED_ASSET);
             startActivity(intent);
             return true;
@@ -429,6 +450,8 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
         } else if (i == R.id.menu_move) {
             if (assetPresenter.getAssetListSize() >= 0) {
                 Intent intent = new Intent(getActivity(), SerializedAssetMovementActivity.class);
+                if (isPreVisit)
+                    intent.putExtra("PreVisit",true);
                 intent.putExtra("module", MENU_SERIALIZED_ASSET);
                 startActivityForResult(intent, MOVEMENT_ASSET);
             } else {
@@ -438,8 +461,9 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             return true;
         } else if (i == R.id.menu_assetservice) {
 
-
             Intent intent = new Intent(getActivity(), SerializedAssetServiceActivity.class);
+            if (isPreVisit)
+                intent.putExtra("PreVisit",true);
             intent.putExtra("module", MENU_SERIALIZED_ASSET);
             startActivity(intent);
 
@@ -457,12 +481,20 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         if (mBModel.reasonHelper.isNpReasonPhotoAvaiable(mBModel.retailerMasterBO.getRetailerID(), MENU_SERIALIZED_ASSET)) {
-                            mBModel.saveModuleCompletion(MENU_SERIALIZED_ASSET, true);
-                            mBModel.outletTimeStampHelper
-                                    .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
-                            startActivity(new Intent(getActivity(),
-                                    HomeScreenTwo.class));
-                            getActivity().finish();
+
+                            if (!isPreVisit) {
+                                mBModel.saveModuleCompletion(MENU_SERIALIZED_ASSET, true);
+                                mBModel.outletTimeStampHelper
+                                        .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
+                            }
+
+                            Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                            if (isPreVisit)
+                                intent.putExtra("PreVisit",true);
+
+                            startActivity(intent);
+                            ((Activity)context).finish();
                         }
                     }
                 });
@@ -503,8 +535,6 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
         }
 
     }
-
-
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
@@ -645,6 +675,9 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
                     intent.putExtra("IsMoveNextActivity", mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                     intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                 }
+
+                if (isPreVisit)
+                    intent.putExtra("PreVisit",true);
 
                 startActivity(intent);
                 getActivity().finish();

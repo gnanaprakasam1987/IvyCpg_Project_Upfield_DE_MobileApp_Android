@@ -59,6 +59,19 @@
                 >
 
                 <TextView
+                    android:id="@+id/prodName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:paddingBottom="@dimen/card_child_margin"
+                    android:paddingStart="@dimen/card_child_margin"
+                    android:paddingEnd="@dimen/card_child_margin"
+                    android:text="@string/product_name"
+                    android:textColor="?attr/textColorSecondary"
+                    android:textSize="@dimen/text_size_primary"
+                    android:visibility="visible" />
+
+                <TextView
                     android:id="@+id/closePRODNAME"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -69,6 +82,7 @@
                     android:text="@string/Product_details"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     android:textColor="?attr/textColorPrimary"
+                    android:layout_below="@+id/prodName"
                     android:layout_toLeftOf="@+id/imageview_share"/>
 
                 <TextView
@@ -94,52 +108,6 @@
 
                     />
             </RelativeLayout>
-            <!--<LinearLayout-->
-            <!--android:id="@+id/pdt_details_layout"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginTop="@dimen/digital_bottom_margin"-->
-            <!--android:minHeight="40dp"-->
-            <!--android:orientation="vertical">-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/closePRODNAME"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:ellipsize="end"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:maxLines="2"-->
-            <!--android:minLines="2"-->
-            <!--android:padding="5dp"-->
-            <!--android:textColor="?attr/textColorPrimary"-->
-            <!--android:textSize="@dimen/text_size_primary"-->
-            <!--android:textStyle="normal"-->
-            <!--tools:text="est weter" />-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/date"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:padding="5dp"-->
-            <!--android:textColor="@color/GRAY_TEXT"-->
-            <!--android:textSize="@dimen/text_size_primary"-->
-            <!--tools:text="ser fser es" />-->
-            <!--</LinearLayout>-->
-
-            <TextView
-                android:id="@+id/prodName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                android:paddingBottom="@dimen/card_child_margin"
-                android:paddingStart="@dimen/card_child_margin"
-                android:paddingEnd="@dimen/card_child_margin"
-                android:text="@string/product_name"
-                android:textColor="?attr/textColorSecondary"
-                android:textSize="@dimen/text_size_primary"
-                android:visibility="visible" />
 
 
             <ImageView

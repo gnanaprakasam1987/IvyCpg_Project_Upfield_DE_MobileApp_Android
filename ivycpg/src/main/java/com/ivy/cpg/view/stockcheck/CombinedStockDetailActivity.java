@@ -62,18 +62,32 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
     private AppCompatCheckBox chkAvailability;
     private StockCheckHelper stockCheckHelper;
 
+    private boolean isPreVisit = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_availabilty_check);
 
+        screenTitle = getIntent().getStringExtra("screenTitle");
+        Pid = getIntent().getStringExtra("pid");
+        mSelectedLocationIndex = getIntent().getIntExtra("selectedLocationIndex", 0);
+
+        isPreVisit = getIntent().getBooleanExtra("PreVisit",false);
+
         toolbar = findViewById(R.id.toolbar);
         if (toolbar != null) {
 
             setSupportActionBar(toolbar);
-            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
-            getSupportActionBar().setDisplayShowHomeEnabled(true);
-            getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+            if (getSupportActionBar() != null) {
+                if (isPreVisit)
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+                else
+                    getSupportActionBar().setDisplayHomeAsUpEnabled(false);
+                getSupportActionBar().setDisplayShowHomeEnabled(true);
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
+            }
         }
 
 
@@ -86,9 +100,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                     Toast.LENGTH_SHORT).show();
             finish();
         }
-        screenTitle = getIntent().getStringExtra("screenTitle");
-        Pid = getIntent().getStringExtra("pid");
-        mSelectedLocationIndex = getIntent().getIntExtra("selectedLocationIndex", 0);
+
 
         initializeViews();
         process();
@@ -502,7 +514,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 etExpOuter.setEnabled(false);
                 etPriceOuter.setEnabled(false);
                 etMrpPriceOuter.setEnabled(false);
-            } else {
+            } else if (!isPreVisit){
                 etShelfOuter.setEnabled(true);
                 etExpOuter.setEnabled(true);
                 etPriceOuter.setEnabled(true);
@@ -513,7 +525,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 etExpCase.setEnabled(false);
                 etPriceCase.setEnabled(false);
                 etMrpPriceCase.setEnabled(false);
-            } else {
+            } else if (!isPreVisit){
                 etShelfCase.setEnabled(true);
                 etExpCase.setEnabled(true);
                 etPriceCase.setEnabled(true);
@@ -524,7 +536,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 etExpPiece.setEnabled(false);
                 etPricePiece.setEnabled(false);
                 etMrpPricePiece.setEnabled(false);
-            } else {
+            } else if (!isPreVisit){
                 etShelfPiece.setEnabled(true);
                 etExpPiece.setEnabled(true);
                 etPricePiece.setEnabled(true);
@@ -537,7 +549,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                     && (mProductMasterBO.getPcUomid() == 0 || !mProductMasterBO.isPieceMapped())) {
                 chkAvailability.setEnabled(false);
                 facingQty.setEnabled(false);
-            } else {
+            } else if (!isPreVisit){
                 chkAvailability.setEnabled(true);
                 facingQty.setEnabled(true);
             }

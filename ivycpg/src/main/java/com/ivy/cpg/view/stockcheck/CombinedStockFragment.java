@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.stockcheck;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,6 +12,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -141,6 +143,15 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     private boolean loadBothSalable;
     private StockCheckHelper stockCheckHelper;
 
+    private Context context;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        this.context = context;
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -149,14 +160,14 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         mDrawerLayout = (DrawerLayout) view.findViewById(
                 R.id.drawer_layout);
 
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        bmodel = (BusinessModel) context.getApplicationContext();
+        bmodel.setContext(((Activity)context));
         priceTrackingHelper = PriceTrackingHelper.getInstance(getContext());
         stockCheckHelper = StockCheckHelper.getInstance(getContext());
 
         loadBothSalable = bmodel.configurationMasterHelper.SHOW_SALABLE_AND_NON_SALABLE_SKU;
         try {
-            isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
+            isFromChild = ((Activity)context).getIntent().getBooleanExtra("isFromChild", false);
             if (bmodel.configurationMasterHelper.SHOW_SPL_FILTER) {
                 String defaultfilter = getDefaultFilter();
                 if (!"".equals(defaultfilter)) {
@@ -240,7 +251,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         super.onStart();
 
         DisplayMetrics dm = new DisplayMetrics();
-        getActivity().getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        ((Activity)context).getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
         mTotalScreenWidth = dm.widthPixels;
         ActionBarDrawerToggle mDrawerToggle;
 
@@ -270,7 +281,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         setScreenTitle(bmodel.mSelectedActivityName);
         getActionBar().setElevation(0);
 
-        mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
+        mDrawerToggle = new ActionBarDrawerToggle(((Activity)context), /* host Activity */
                 mDrawerLayout, /* DrawerLayout object */
                 R.string.ok, /* "open drawer" description for accessibility */
                 R.string.close /* "close drawer" description for accessibility */
@@ -288,7 +299,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             }
         };
 
-        inputManager = (InputMethodManager) getActivity().getSystemService(
+        inputManager = (InputMethodManager) context.getSystemService(
                 Context.INPUT_METHOD_SERVICE);
 
         viewFlipper = getView().findViewById(R.id.view_flipper);
@@ -309,7 +320,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         //((TextView) getView().findViewById(R.id.tvTitle)).setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
         mEdt_searchproductName.setOnEditorActionListener(this);
 
-        mLocationAdapter = new ArrayAdapter<>(getActivity(),
+        mLocationAdapter = new ArrayAdapter<>(context,
                 android.R.layout.select_dialog_singlechoice);
 
         for (StandardListBO temp : bmodel.productHelper.getInStoreLocation())
@@ -328,7 +339,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 if (bmodel.hasCombinedStkChecked()) {
                     onNextButtonClick();
                 } else
-                    Toast.makeText(getActivity(),
+                    Toast.makeText(context,
                             getResources().getString(R.string.no_data_tosave)
                             , Toast.LENGTH_LONG).show();
             }
@@ -349,7 +360,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     }
 
     private ActionBar getActionBar() {
-        return ((AppCompatActivity) getActivity()).getSupportActionBar();
+        return ((AppCompatActivity) context).getSupportActionBar();
     }
 
 
@@ -566,7 +577,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
      * Populate list with specific reason type of the module.
      */
     private void loadReason() {
-        spinnerAdapter = new ArrayAdapter<>(getActivity(),
+        spinnerAdapter = new ArrayAdapter<>(context,
                 android.R.layout.simple_spinner_item);
         spinnerAdapter
                 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -749,7 +760,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         private final ArrayList<ProductMasterBO> items;
 
         public MyAdapter(ArrayList<ProductMasterBO> items) {
-            super(getActivity(), R.layout.row_closingstock, items);
+            super(context, R.layout.row_closingstock, items);
             this.items = items;
         }
 
@@ -772,7 +783,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 final ProductMasterBO product = items.get(position);
 
                 if (row == null) {
-                    LayoutInflater inflater = getActivity().getLayoutInflater();
+                    LayoutInflater inflater = ((Activity)context).getLayoutInflater();
                     row = inflater.inflate(
                             R.layout.activity_combined_stock_listview, parent,
                             false);
@@ -802,10 +813,10 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                             bmodel.productHelper.setTotalScreenSize(mTotalScreenWidth);
 
                             SchemeDialog sc = new SchemeDialog(
-                                    getActivity(),
-                                    SchemeDetailsMasterHelper.getInstance(getActivity().getApplicationContext()).getSchemeList(), holder.pname,
+                                    context,
+                                    SchemeDetailsMasterHelper.getInstance(context.getApplicationContext()).getSchemeList(), holder.pname,
                                     holder.productId, holder.productObj, 1, mTotalScreenWidth);
-                            FragmentManager fm = getActivity().getSupportFragmentManager();
+                            FragmentManager fm = ((FragmentActivity)context).getSupportFragmentManager();
                             sc.show(fm, "");
 
                             return true;
@@ -837,11 +848,15 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                             if (viewFlipper.getDisplayedChild() != 0) {
                                 viewFlipper.showPrevious();
                             }
-                            Intent intent = new Intent(getActivity(),
+                            Intent intent = new Intent(context,
                                     CombinedStockDetailActivity.class);
                             intent.putExtra("screenTitle", holder.productObj.getProductName());
                             intent.putExtra("pid", holder.productObj.getProductID());
                             intent.putExtra("selectedLocationIndex", mSelectedLocationIndex);
+
+                            if (isPreVisit)
+                                intent.putExtra("PreVisit",true);
+
                             startActivity(intent);
 
                         }
@@ -1045,17 +1060,25 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         if (bmodel.hasCombinedStkChecked()) {
             showDialog(0);
         } else {
-            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
-                    .now(DateTimeUtils.TIME));
-            if (isFromChild)
-                startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                        .putExtra("isStoreMenu", true));
-            else
-                startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-            getActivity().finish();
-        }
-        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
 
+            if (!isPreVisit)
+                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                    .now(DateTimeUtils.TIME));
+
+            Intent intent = new Intent(context, HomeScreenTwo.class);
+
+            if (isPreVisit)
+                intent.putExtra("PreVisit",true);
+
+            if (isFromChild)
+                startActivity(intent.putExtra("isStoreMenu", true));
+            else
+                startActivity(intent);
+
+            ((Activity)context).finish();
+        }
+
+        ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
 
     @Override
@@ -1067,10 +1090,10 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             else {
                 onBackButonClick();
             }
-            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
         } else if (i == R.id.menu_survey) {
-            startActivity(new Intent(getActivity(), SurveyActivityNew.class));
+            startActivity(new Intent(context, SurveyActivityNew.class));
             return true;
         } else if (i == R.id.menu_competitor_filter) {
             competitorFilterClickedFragment();
@@ -1102,12 +1125,12 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             FiveFilterFragment();
             return true;
         } else if (i == R.id.menu_barcode) {
-            ((IvyBaseActivityNoActionBar) getActivity()).checkAndRequestPermissionAtRunTime(2);
-            int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
+            ((IvyBaseActivityNoActionBar) context).checkAndRequestPermissionAtRunTime(2);
+            int permissionStatus = ContextCompat.checkSelfPermission(context,
                     Manifest.permission.CAMERA);
             if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
                 //new IntentIntegrator(getActivity()).setBeepEnabled(false).initiateScan();
-                IntentIntegrator integrator = new IntentIntegrator(getActivity()) {
+                IntentIntegrator integrator = new IntentIntegrator(((Activity)context)) {
                     @Override
                     protected void startActivityForResult(Intent intent, int code) {
                         CombinedStockFragment.this.startActivityForResult(intent, IntentIntegrator.REQUEST_CODE); // REQUEST_CODE override
@@ -1115,7 +1138,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 };
                 integrator.setBeepEnabled(false).initiateScan();
             } else {
-                Toast.makeText(getActivity(),
+                Toast.makeText(context,
                         getResources().getString(R.string.permission_enable_msg)
                                 + " " + getResources().getString(R.string.permission_camera)
                         , Toast.LENGTH_LONG).show();
@@ -1151,7 +1174,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             if (getActionBar() != null)
                 setScreenTitle(getResources().getString(R.string.filter));
 
-            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            android.support.v4.app.FragmentManager fm = ((FragmentActivity)context).getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");
             FragmentTransaction ft = fm
@@ -1178,7 +1201,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     private void showLocation() {
         AlertDialog.Builder builder;
 
-        builder = new AlertDialog.Builder(getActivity());
+        builder = new AlertDialog.Builder(context);
         builder.setTitle(null);
         builder.setSingleChoiceItems(mLocationAdapter, mSelectedLocationIndex,
                 new DialogInterface.OnClickListener() {
@@ -1201,12 +1224,11 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         i.setAction(switchToProfile);
         // add additional info
         i.putExtra(extraData, "dist_sc");
-        getActivity().sendBroadcast(i);
+        context.sendBroadcast(i);
     }
 
     private void onNoteButtonClick() {
-        FragmentTransaction ft = getActivity()
-                .getSupportFragmentManager().beginTransaction();
+        FragmentTransaction ft = ((FragmentActivity)context).getSupportFragmentManager().beginTransaction();
         RemarksDialog dialog = new RemarksDialog("MENU_CLOSING");
         dialog.setCancelable(false);
         dialog.show(ft, "stk_chk_remark");
@@ -1229,21 +1251,28 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
         switch (id) {
             case 0:
-                CommonDialog dialog = new CommonDialog(getActivity(), getResources().getString(R.string.doyouwantgoback),
+                CommonDialog dialog = new CommonDialog(context, getResources().getString(R.string.doyouwantgoback),
                         "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
                         bmodel.productHelper.clearCombindStockCheckedTable();
 
-                        bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        if (!isPreVisit)
+                            bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                                 .now(DateTimeUtils.TIME));
+
+                        Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                        if (isPreVisit)
+                            intent.putExtra("PreVisit",true);
+
                         if (isFromChild)
-                            startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                                    .putExtra("isStoreMenu", true));
+                            startActivity(intent.putExtra("isStoreMenu", true));
                         else
-                            startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                        getActivity().finish();
-                        getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                            startActivity(intent);
+
+                        ((Activity)context).finish();
+                        ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
                     }
                 }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {
                     @Override
@@ -1256,7 +1285,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
                 break;
             case 1:
-                CommonDialog commonDialog = new CommonDialog(getActivity(),
+                CommonDialog commonDialog = new CommonDialog(context,
                         getResources().getString(R.string.no_items_added),
                         "",
                         getResources().getString(R.string.ok));
@@ -1265,7 +1294,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 commonDialog.setCancelable(false);
                 break;
             case 2:
-                CommonDialog commonDialog1 = new CommonDialog(getActivity(),
+                CommonDialog commonDialog1 = new CommonDialog(context,
                         getResources().getString(R.string.reason_required_for) + getResources().getString(R.string.non_stock_products),
                         "",
                         getResources().getString(R.string.ok));
@@ -1322,11 +1351,11 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         for (int i = 0; i < bmodel.configurationMasterHelper.getGenFilter().size(); i++) {
             ConfigureBO config = bmodel.configurationMasterHelper.getGenFilter().get(i);
 
-            TypedArray typearr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+            TypedArray typearr = context.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
             final int color = typearr.getColor(R.styleable.MyTextView_textColor, 0);
             final int indicator_color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
             Button tab;
-            tab = new Button(getActivity());
+            tab = new Button(context);
             tab.setText(config.getMenuName());
             tab.setTag(config.getConfigCode());
             tab.setGravity(Gravity.CENTER);
@@ -1334,7 +1363,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             tab.setTextColor(color);
             tab.setMaxLines(1);
             tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
-            tab.setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.transparent));
+            tab.setBackgroundColor(ContextCompat.getColor(context, android.R.color.transparent));
             tab.setWidth(width);
             tab.setOnClickListener(new OnClickListener() {
                 @Override
@@ -1359,7 +1388,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 x = tab.getLeft();
                 y = tab.getTop();
             }
-            Button tv_selection_identifier = new Button(getActivity());
+            Button tv_selection_identifier = new Button(context);
             tv_selection_identifier.setTag(config.getConfigCode() + config.getMenuName());
             tv_selection_identifier.setWidth(width);
             tv_selection_identifier.setBackgroundColor(indicator_color);
@@ -1474,7 +1503,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         }
 
         protected void onPreExecute() {
-            builder = new AlertDialog.Builder(getActivity());
+            builder = new AlertDialog.Builder(context);
 
             customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
@@ -1485,28 +1514,32 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             // result is the value returned from doInBackground
             alertDialog.dismiss();
             if (result == Boolean.TRUE) {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                if (!isPreVisit)
+                    bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
 
-                new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+                new CommonDialog(context.getApplicationContext(), context,
                         "", getResources().getString(R.string.saved_successfully),
-                        false, getActivity().getResources().getString(R.string.ok),
+                        false, getResources().getString(R.string.ok),
                         null,
 
                         new CommonDialog.PositiveClickListener() {
                             @Override
                             public void onPositiveButtonClick() {
 
-                                Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+                                Intent intent = new Intent(context, HomeScreenTwo.class);
 
-                                Bundle extras = getActivity().getIntent().getExtras();
+                                Bundle extras = ((Activity)context).getIntent().getExtras();
                                 if (extras != null) {
                                     intent.putExtra("IsMoveNextActivity", bmodel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                                     intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
+
+                                    if (extras.getBoolean("PreVisit",false))
+                                        intent.putExtra("PreVisit",true);
                                 }
 
                                 startActivity(intent);
-                                getActivity().finish();
+                                ((Activity)context).finish();
 
                             }
                         }, new CommonDialog.negativeOnClickListener() {
@@ -1522,15 +1555,15 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
     public void onClick(View v) {
         Button vw = (Button) v;
-        bmodel = (BusinessModel) getActivity().getApplicationContext();
-        bmodel.setContext(getActivity());
+        bmodel = (BusinessModel) context.getApplicationContext();
+        bmodel.setContext(((Activity)context));
         if (vw == mBtn_Search) {
             viewFlipper.showNext();
         } else if (vw == mBtnFilterPopup) {
             AlertDialog.Builder builderSingle = new AlertDialog.Builder(
-                    getActivity());
+                    context);
             final ArrayAdapter<String> arrayAdapter = new ArrayAdapter<>(
-                    getActivity(),
+                    context,
                     android.R.layout.select_dialog_singlechoice,
                     mSearchTypeArray);
             builderSingle.setAdapter(arrayAdapter,
@@ -1574,7 +1607,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
                 searchAsync = new SearchAsync();
                 searchAsync.execute();
             } else {
-                Toast.makeText(getActivity(), "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
+                Toast.makeText(context, "Enter atleast 3 letters.", Toast.LENGTH_SHORT)
                         .show();
             }
             return true;
@@ -1588,10 +1621,10 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-            Toast.makeText(this.getActivity(),
+            Toast.makeText(this.context,
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
-            getActivity().finish();
+            ((Activity)context).finish();
         }
         Commons.print("OnResume Called");
         switchProfile();
@@ -1878,7 +1911,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         if (selectedTabTag != null) {
             selectTab(selectedTabTag);
         }
-        getActivity().invalidateOptionsMenu();
+        ((Activity)context).invalidateOptionsMenu();
     }
 
     @Override
@@ -1887,12 +1920,12 @@ public class CombinedStockFragment extends IvyBaseFragment implements
         IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
         if (result != null) {
             if (result.getContents() == null) {
-                Toast.makeText(getActivity(), "Cancelled", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Cancelled", Toast.LENGTH_LONG).show();
             } else {
                 strBarCodeSearch = result.getContents();
             }
         } else {
-            Toast.makeText(getActivity(), getResources().getString(R.string.no_match_found), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, getResources().getString(R.string.no_match_found), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -1920,7 +1953,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             mDrawerLayout.openDrawer(GravityCompat.END);
             if (getActionBar() != null)
                 setScreenTitle(getResources().getString(R.string.filter));
-            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            android.support.v4.app.FragmentManager fm = ((FragmentActivity)context).getSupportFragmentManager();
             SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("filter");
             android.support.v4.app.FragmentTransaction ft = fm
@@ -1970,7 +2003,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             if (getActionBar() != null)
                 setScreenTitle(getResources().getString(R.string.competitor_filter));
 
-            android.support.v4.app.FragmentManager fm = getActivity()
+            android.support.v4.app.FragmentManager fm = ((FragmentActivity)context)
                     .getSupportFragmentManager();
             CompetitorFilterFragment frag = (CompetitorFilterFragment) fm
                     .findFragmentByTag("competitor filter");
@@ -2038,7 +2071,7 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             selectTab(bmodel.configurationMasterHelper.getGenFilter().get(0).getConfigCode());
         }
 
-        getActivity().invalidateOptionsMenu();
+        ((Activity)context).invalidateOptionsMenu();
     }
 
 }

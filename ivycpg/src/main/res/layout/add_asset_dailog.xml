@@ -158,7 +158,7 @@
 
         <Button
             android:id="@+id/btn_save"
-            style="?attr/roundedCustomButtonNormal"
+            style="?attr/roundedCustomButtonNormal_Configured"
             android:layout_centerVertical="true"
             android:layout_margin="@dimen/dimen_2dp"
             android:layout_toEndOf="@+id/btn_cancel"

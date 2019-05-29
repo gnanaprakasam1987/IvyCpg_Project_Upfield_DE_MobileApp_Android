@@ -92,7 +92,7 @@
 
         <Button
             android:id="@+id/btn_done"
-            style="?attr/roundedCustomButtonNormal"
+            style="?attr/roundedCustomButtonNormal_Configured"
             android:layout_gravity="center_vertical"
             android:text="@string/save"
             android:textAllCaps="false" />
