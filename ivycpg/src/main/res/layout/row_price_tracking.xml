@@ -84,6 +84,7 @@
             android:visibility="gone">
 
             <CheckBox
+                style="?attr/checkbox_style"
                 android:id="@+id/changed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -98,6 +99,7 @@
             android:visibility="gone">
 
             <CheckBox
+                style="?attr/checkbox_style"
                 android:id="@+id/compliance"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -114,6 +116,7 @@
             android:visibility="gone">
 
             <CheckBox
+                style="?attr/checkbox_style"
                 android:id="@+id/checkbox_pricetag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -127,7 +130,7 @@
 
             <EditText
                 android:id="@+id/caprice"
-                style="@style/EditText_ListItem"
+                style="?attr/edit_text_list_item_style"
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dimen_2dp"
@@ -138,7 +141,7 @@
 
             <EditText
                 android:id="@+id/ooprice"
-                style="@style/EditText_ListItem"
+                style="?attr/edit_text_list_item_style"
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dimen_2dp"
@@ -149,7 +152,7 @@
 
             <EditText
                 android:id="@+id/pcprice"
-                style="@style/EditText_ListItem"
+                style="?attr/edit_text_list_item_style"
                 android:layout_width="@dimen/dimen_0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/dimen_2dp"

@@ -42,6 +42,12 @@
         <attr name="roundedCustomButtonNormalTransparent" format="reference" />
         <attr name="roundedCustomDashboardButton" format="reference" />
         <attr name="boxCustomButtonSmallGrey" format="reference" />
+
+        <attr name="roundedCustomButtonSmall_Configured" format="reference" />
+        <attr name="roundedCustomButtonNormal_Configured" format="reference" />
+        <attr name="fabButtonStyle_Configured" format="reference" />
+        <attr name="imageStyle_Configured" format="reference" />
+        <attr name="buttonStyle_Configured" format="reference" />
     </declare-styleable>
 
     <declare-styleable name="MyCustomSpinner">
@@ -216,6 +222,17 @@
         <attr name="flingVelocity" format="integer" />
 
         <attr name="minDistRequestDisallowParent" format="dimension" />
+    </declare-styleable>
+
+
+    <declare-styleable name="CommonAttributeStyles">
+
+        <attr name="edit_text_list_item_style" format="reference"/>
+        <attr name="edit_text_normal_style" format="reference"/>
+        <attr name="radio_button_style" format="reference"/>
+        <attr name="keypad_style" format="reference"/>
+        <attr name="checkbox_style" format="reference"/>
+
     </declare-styleable>
 
 </resources>

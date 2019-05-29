@@ -205,7 +205,7 @@
 
             <Button
                 android:id="@+id/reject_btn"
-                style="@style/ButtonSmallRoundCornerOrange"
+                style="@style/ButtonSmallRoundCornerOrange_enabled"
                 android:layout_marginBottom="@dimen/activity_margin1"
                 android:layout_marginLeft="@dimen/dimen_5dp"
                 android:layout_marginStart="@dimen/dimen_5dp"

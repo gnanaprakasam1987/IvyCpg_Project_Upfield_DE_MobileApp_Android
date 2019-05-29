@@ -233,6 +233,7 @@
                     android:layout_height="wrap_content"
                     android:maxLines="1"
                     android:text="Email Primary"
+                    android:textAppearance="?android:textAppearanceLarge"
                     android:layout_marginLeft="@dimen/list_margin"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toEndOf="@id/tvTitle"

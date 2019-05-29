@@ -117,8 +117,12 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            startActivity(new Intent(this,
-                    HomeScreenTwo.class));
+
+            Intent intent = new Intent(this,HomeScreenTwo.class);
+            if (getIntent().getBooleanExtra("PreVisit",false))
+                intent.putExtra("PreVisit",true);
+
+            startActivity(intent);
             finish();
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
@@ -309,8 +313,6 @@ public class DisplayAssetActivity extends IvyBaseActivityNoActionBar implements 
         EditText editText_quantity;
 
     }
-
-
 
     @Override
     public void updateStatus(String companyName,double ownCompanyWeightage,double otherCompanyMaxWeightage,int flag) {

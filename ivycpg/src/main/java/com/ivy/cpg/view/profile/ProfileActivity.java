@@ -105,6 +105,7 @@ import com.ivy.ui.profile.edit.view.ProfileEditActivity;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.ui.task.view.TaskFragment;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import org.json.JSONObject;
 
@@ -161,7 +162,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private boolean mLocationConfirmationPassed;
     private boolean non_visit;
     private boolean is7InchTablet;
-    private boolean isClicked;
+    public boolean isClicked;
     private boolean isVisible = false;
     private boolean isLatLong;
     private static boolean firstLevZoom;
@@ -366,6 +367,20 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         drawRouteBtn.setOnClickListener(this);
         mapSwitchBtn = findViewById(R.id.profile_mapswitch);
         mapSwitchBtn.setOnClickListener(this);
+
+        findViewById(R.id.pre_visit).setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                bmodel.getAppDataProvider().setRetailerMaster(retailerObj);
+
+                downloadProductsAndPrice = new DownloadProductsAndPrice(ProfileActivity.this, getPhotoPath(), fnameStarts,
+                        mVisitMode, mNFCReasonId, true);
+                if (downloadProductsAndPrice.getStatus() != AsyncTask.Status.RUNNING) {
+                    downloadProductsAndPrice.setIsPrevisit(true);
+                    downloadProductsAndPrice.execute();
+                }
+            }
+        });
     }
 
     private void initilizeToolBar() {
@@ -839,6 +854,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             }
         });
 
+        if (bmodel.configurationMasterHelper.IS_PRE_VISIT)
+            findViewById(R.id.pre_visit).setVisibility(View.VISIBLE);
 
     }
 

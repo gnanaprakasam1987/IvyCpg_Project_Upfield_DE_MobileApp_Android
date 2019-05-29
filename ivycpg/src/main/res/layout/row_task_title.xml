@@ -24,7 +24,7 @@
 
             <Button
                 android:id="@+id/edit_button"
-                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                style="?attr/buttonStyle_Configured"
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="match_parent"
                 android:background="?attr/colorPrimaryDark"
@@ -43,7 +43,7 @@
 
             <Button
                 android:id="@+id/delete_button"
-                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                style="?attr/buttonStyle_Configured"
                 android:layout_width="@dimen/_80sdp"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
@@ -140,6 +140,7 @@
                 android:gravity="center">
 
                 <CheckBox
+                    style="?attr/checkbox_style"
                     android:id="@+id/task_title_CB"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
