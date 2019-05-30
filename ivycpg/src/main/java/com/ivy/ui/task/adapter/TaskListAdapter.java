@@ -21,16 +21,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.core.base.view.BaseActivity;
-import com.ivy.core.base.view.BaseFragment;
-import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.lib.view.RibbonView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.ui.task.TaskClickListener;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.ui.task.view.SwipeRevealLayout;
-import com.ivy.ui.task.view.TaskFragment;
 import com.ivy.ui.task.view.ViewBinderHelper;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
@@ -156,7 +152,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             }
         });
 
-        if (taskBo.isUpload() && taskBo.getIsdone().equals("1") ) {
+        if (taskBo.isUpload() && taskBo.getIsdone().equals("1")) {
             holder.taskCB.setEnabled(false);
             holder.taskTitle.setPaintFlags(holder.taskTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.taskProductLevel.setPaintFlags(holder.taskProductLevel.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
