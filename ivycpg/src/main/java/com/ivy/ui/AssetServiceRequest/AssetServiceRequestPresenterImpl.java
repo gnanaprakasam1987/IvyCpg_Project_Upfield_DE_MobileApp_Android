@@ -19,13 +19,16 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Function3;
 import io.reactivex.observers.DisposableObserver;
 
 public class AssetServiceRequestPresenterImpl<V extends AssetServiceRequestContractor.AssetServiceView> extends BasePresenter<V> implements AssetServiceRequestContractor.Presenter<V>{
 
+
     private AssetServiceRequestDataManager assetDataManager;
     private ReasonDataManager reasonDataManager;
     private ArrayList<SerializedAssetBO> requestList;
+    private ArrayList<String> configList;
 
     @Inject
     public AssetServiceRequestPresenterImpl(DataManager dataManager, SchedulerProvider schedulerProvider,
@@ -81,17 +84,20 @@ public class AssetServiceRequestPresenterImpl<V extends AssetServiceRequestContr
 
         ArrayList<ReasonMaster> issueTypeList=new ArrayList<>();
         ArrayList<SerializedAssetBO> assetsList=new ArrayList<>();
+        ArrayList<ReasonMaster> serviceProviderList=new ArrayList<>();
         getCompositeDisposable().add(Observable.zip(reasonDataManager.fetchReasonFromStdListMasterByListCode("ASSET_SER_REQ"),
-                assetDataManager.fetchAssets(isFromReport),
-                new BiFunction<ArrayList<ReasonMaster>, ArrayList<SerializedAssetBO>, Object>() {
+                assetDataManager.fetchAssets(isFromReport),assetDataManager.fetchServiceProvider(),
+                new Function3<ArrayList<ReasonMaster>, ArrayList<SerializedAssetBO>,ArrayList<ReasonMaster>, Object>() {
                     @Override
-                    public Boolean apply(ArrayList<ReasonMaster> issueTypes, ArrayList<SerializedAssetBO> assetList) {
+                    public Boolean apply(ArrayList<ReasonMaster> issueTypes, ArrayList<SerializedAssetBO> assetList,ArrayList<ReasonMaster> providers) {
                         issueTypeList.clear();
                         issueTypeList.addAll(issueTypes);
 
                         assetsList.clear();
                         assetsList.addAll(assetList);
 
+                        serviceProviderList.clear();
+                        serviceProviderList.addAll(providers);
                         return true;
                     }
                 }).subscribeOn(getSchedulerProvider().io())
@@ -111,7 +117,7 @@ public class AssetServiceRequestPresenterImpl<V extends AssetServiceRequestContr
                     @Override
                     public void onComplete() {
 
-                        ((AssetServiceRequestContractor.AssetNewServiceView)getIvyView()).populateViews(assetsList,issueTypeList);
+                        ((AssetServiceRequestContractor.AssetNewServiceView)getIvyView()).populateViews(assetsList,issueTypeList,serviceProviderList);
                         getIvyView().hideLoading();
 
                     }
@@ -199,5 +205,41 @@ public class AssetServiceRequestPresenterImpl<V extends AssetServiceRequestContr
                     else ((AssetServiceRequestContractor.AssetNewServiceView)getIvyView()).showErrorMessage(0);
 
                 }));
+    }
+
+    @Override
+    public void loadConfigs() {
+
+        getIvyView().showLoading();
+
+        configList = new ArrayList<>();
+        getCompositeDisposable().add(assetDataManager.
+                loadConfigs()
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribeWith(new DisposableObserver<ArrayList<String>>() {
+
+                    @Override
+                    public void onNext(ArrayList<String> list) {
+                        configList.clear();
+                        configList.addAll(list);
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        getIvyView().hideLoading();
+                        getIvyView().showErrorMessage(1);
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        if(configList.contains("SHOW_SERVICE_PROVIDER"))
+                        ((AssetServiceRequestContractor.AssetServiceListView) getIvyView()).listServiceRequests(requestList);
+
+                        getIvyView().hideLoading();
+                    }
+                }));
+
     }
 }

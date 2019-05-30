@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -43,12 +44,13 @@ public class NewAssetServiceRequest extends BaseActivity implements AssetService
 
     private SerializedAssetBO currentAssetBO;
     private Button button_save,button_resolution_date;
-    private Spinner spinner_assets,spinner_issue_type;
+    private Spinner spinner_assets,spinner_issue_type,spinner_service_provider;
     private EditText edittext_serialNumber,edittext_description;
     GridImageViewAdapter adapter;
     ArrayList<String> imageNameList;
     RecyclerView recyclerView;
     private boolean isEditMode,isFromReport;
+    LinearLayout layout_service_provider;
 
 
     @Inject
@@ -80,10 +82,12 @@ public class NewAssetServiceRequest extends BaseActivity implements AssetService
 
         spinner_assets=findViewById(R.id.spinner_assets);
         spinner_issue_type=findViewById(R.id.spinner_issue_type);
+        spinner_service_provider=findViewById(R.id.spinner_service_provider);
         edittext_serialNumber=findViewById(R.id.edittext_serialNumber);
         button_resolution_date=findViewById(R.id.button_resolution_date);
         edittext_description=findViewById(R.id.edittext_description);
         button_save=findViewById(R.id.btn_next);
+        layout_service_provider=findViewById(R.id.layout_service_provider);
         button_save.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -176,7 +180,7 @@ public class NewAssetServiceRequest extends BaseActivity implements AssetService
 
 
     @Override
-    public void populateViews(ArrayList<SerializedAssetBO> assetList, ArrayList<ReasonMaster> issueTypes) {
+    public void populateViews(ArrayList<SerializedAssetBO> assetList, ArrayList<ReasonMaster> issueTypes,ArrayList<ReasonMaster> serviceProviders) {
 
         ArrayAdapter<SerializedAssetBO> assetAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item);
@@ -204,6 +208,15 @@ public class NewAssetServiceRequest extends BaseActivity implements AssetService
         adapter=new GridImageViewAdapter(this,imageNameList,FileUtils.photoFolderPath,this);
         recyclerView.setAdapter(adapter);
 
+        //
+        ArrayAdapter<ReasonMaster> providerAdapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_spinner_item);
+        providerAdapter
+                .setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
+        providerAdapter.add(new ReasonMaster("0",getResources().getString(R.string.select)));
+        providerAdapter.addAll(serviceProviders);
+        spinner_service_provider.setAdapter(providerAdapter);
+
         if(isEditMode){
             for(int i=0;i<assetList.size();i++){
                 if(currentAssetBO.getAssetID()==assetList.get(i).getAssetID()){
@@ -214,6 +227,13 @@ public class NewAssetServiceRequest extends BaseActivity implements AssetService
 
             for(int i=0;i<issueTypes.size();i++){
                 if(currentAssetBO.getReasonID()==Integer.parseInt(issueTypes.get(i).getReasonID())){
+                    spinner_issue_type.setSelection(i+1);
+                    break;
+                }
+            }
+
+            for(int i=0;i<serviceProviders.size();i++){
+                if(currentAssetBO.getServiceProviderId()==Integer.parseInt(serviceProviders.get(i).getReasonID())){
                     spinner_issue_type.setSelection(i+1);
                     break;
                 }
@@ -376,5 +396,10 @@ public class NewAssetServiceRequest extends BaseActivity implements AssetService
     @Override
     public void showEmptyIssueTypeMessage() {
         Toast.makeText(this,getResources().getString(R.string.select_issue_type),Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void showServiceProvider() {
+        layout_service_provider.setVisibility(View.VISIBLE);
     }
 }

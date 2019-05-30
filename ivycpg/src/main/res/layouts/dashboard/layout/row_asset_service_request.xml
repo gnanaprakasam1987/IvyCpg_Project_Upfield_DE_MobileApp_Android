@@ -5,8 +5,8 @@
     android:id="@+id/swipe_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="@dimen/list_card_height"
-    app:dragEdge="right">
+    app:dragEdge="right"
+    >
 
 
     <FrameLayout
@@ -15,11 +15,12 @@
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="@dimen/asset_service_row_height"
+            android:layout_height="match_parent"
             android:layout_gravity="center_horizontal|end"
             android:gravity="center"
             android:orientation="horizontal"
             tools:ignore="UselessParent"
+
             >
 
             <Button
@@ -32,9 +33,9 @@
                 android:fontFamily="@font/roboto_medium"
                 android:gravity="center_vertical"
                 android:padding="@dimen/_14sdp"
-                android:text="@string/edit"
                 android:textAlignment="center"
                 android:clickable="true"
+                android:text="@string/edit"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_secondary"
@@ -52,10 +53,10 @@
                 android:fontFamily="@font/roboto_medium"
                 android:gravity="center_vertical"
                 android:padding="@dimen/_14sdp"
-                android:text="@string/cancel"
                 android:textAlignment="center"
                 android:clickable="true"
                 android:focusable="true"
+                android:text="@string/cancel"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_secondary" />
@@ -67,21 +68,18 @@
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:background="@drawable/bg_card"
         android:clickable="true"
-        android:focusable="true">
-        <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="match_parent"
-            android:id="@+id/card"
-            android:layout_height="@dimen/asset_service_row_height"
-            android:layout_marginTop="@dimen/dimen_5dp"
-            android:layout_marginLeft="@dimen/dimen_5dp"
-            android:layout_marginRight="@dimen/dimen_5dp">
+        android:focusable="true"
+        >
+
     <RelativeLayout
+        android:id="@+id/layout_row"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="@dimen/dimen_5dp">
+        android:layout_height="match_parent"
+        android:padding="@dimen/dimen_5dp"
+        android:layout_gravity="center_vertical">
         <TextView
             android:id="@+id/tv_asset_name"
             style="@style/TextViewListItemPrimary"
@@ -91,7 +89,6 @@
             android:gravity="start"
             android:maxLines="1"
             android:text="@string/asset_name"
-            android:layout_marginBottom="@dimen/dimen_10dp"
             />
 
         <TextView
@@ -100,12 +97,21 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:maxLines="2"
             android:tag="asset_serialno"
             android:text="@string/serial_no"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tv_asset_name"
+            android:layout_marginBottom="@dimen/dimen_20dp"
             />
+
+        <TextView
+            android:id="@+id/tv_createdby"
+            style="@style/TextViewListItemSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="@string/status"
+            android:layout_alignParentBottom="true"/>
 
         <TextView
             android:id="@+id/tv_status"
@@ -113,14 +119,12 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:maxLines="2"
             android:text="@string/status"
-            android:layout_below="@+id/tv_asset_name"
             android:layout_alignParentRight="true"
-            android:layout_alignParentBottom="true"/>
+            android:layout_alignParentBottom="true"
+            />
 
     </RelativeLayout>
-        </android.support.v7.widget.CardView>
 
     </FrameLayout>
 </com.ivy.ui.task.view.SwipeRevealLayout>

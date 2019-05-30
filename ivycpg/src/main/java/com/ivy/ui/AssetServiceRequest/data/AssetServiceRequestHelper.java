@@ -8,6 +8,7 @@ import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.cpg.view.serializedAsset.SerializedAssetBO;
 import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -77,14 +78,14 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
 
                 StringBuilder stringBuilder = new StringBuilder();
                 stringBuilder.append("Select A.AssetId,AssetName,SerialNumber,Date,SM.listName as issueType ,SM1.listName as serviceProvider" +
-                        ",IssueDescription,ImagePath,Status,ExpectedResolutionDate,A.uid,A.reasonId,RM.RetailerName");
+                        ",IssueDescription,ImagePath,ApprovalStatus,ExpectedResolutionDate,A.uid,A.reasonId,RM.RetailerName,createdBy,Status");
                 stringBuilder.append(" from SerializedAssetServiceRequest A left join SerializedAssetMaster B ON A.assetId=B.AssetId");
                 stringBuilder.append(" left join StandardListMaster SM ON SM.listId=A.reasonId");
                 stringBuilder.append(" left join StandardListMaster SM1 ON SM1.listId=A.ServiceProviderId");
                 stringBuilder.append(" left join RetailerMaster RM ON RM.retailerId=A.retailerId");
 
                 if(!isFromReport)
-                stringBuilder.append(" where retailerId="+appDataProvider.getRetailMaster().getRetailerID());
+                stringBuilder.append(" where A.retailerId="+appDataProvider.getRetailMaster().getRetailerID());
 
                 Cursor cursor = mDbUtil.selectSQL(stringBuilder.toString());
                 if (cursor.getCount() > 0) {
@@ -104,6 +105,9 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
                         assetBO.setAssetServiceReqStatus(cursor.getString(8));
                         assetBO.setNewInstallDate(cursor.getString(9)); // Resolution date
                         assetBO.setServiceRequestedRetailer(cursor.getString(12));
+                        assetBO.setRemarks(cursor.getString(13));// reused to hold created by value.
+                        assetBO.setRemarks(assetBO.getRemarks()!=null?assetBO.getRemarks():"-");
+                        assetBO.setStatus(cursor.getString(14));
 
                         getAssetRequestList().add(assetBO);
 
@@ -195,6 +199,43 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
     }
 
 
+    @Override
+    public Observable<ArrayList<ReasonMaster>> fetchServiceProvider() {
+        return Observable.fromCallable(() -> {
+
+            ArrayList<ReasonMaster> serviceProviderList = new ArrayList<>();
+            try {
+
+                initDb();
+
+                StringBuilder sb = new StringBuilder();
+                sb.append("select serviceProviderId,serviceProviderName from SerializedAssetServiceProvider");
+
+                Cursor c = mDbUtil.selectSQL(sb.toString());
+                if (c.getCount() > 0) {
+                    ReasonMaster reasonBO;
+                    while (c.moveToNext()) {
+                        reasonBO = new ReasonMaster();
+                        reasonBO.setReasonID(c.getString(0));
+                        reasonBO.setReasonDesc(c.getString(1));
+
+
+
+                        serviceProviderList.add(reasonBO);
+
+                    }
+
+                }
+
+                shutDownDb();
+
+            } catch (Exception ex) {
+                Commons.printException(ex);
+            }
+            return serviceProviderList;
+        });
+    }
+
 
     @Override
     public Single<Boolean> saveNewServiceRequest(SerializedAssetBO assetBO) {
@@ -204,7 +245,7 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
             try {
                 initDb();
 
-                String columns="uid,AssetId,RetailerId,Date,SerialNumber,ReasonId,serviceProviderId,IssueDescription,ImagePath,Status,ExpectedResolutionDate,Upload";
+                String columns="uid,AssetId,RetailerId,Date,SerialNumber,ReasonId,serviceProviderId,IssueDescription,ImagePath,approvalStatus,ExpectedResolutionDate,Upload,Status";
 
                 String id = appDataProvider.getUser().getUserid()
                         + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
@@ -221,7 +262,8 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
                 stringBuilder.append(StringUtils.QT(assetBO.getImageName())+",");
                 stringBuilder.append(StringUtils.QT(assetBO.getAssetServiceReqStatus())+",");
                 stringBuilder.append(StringUtils.QT(assetBO.getNewInstallDate())+",");
-                stringBuilder.append("'N'");
+                stringBuilder.append("'N'"+",");
+                stringBuilder.append("'I'");
 
                 mDbUtil.insertSQL(DataMembers.tbl_SerializedAssetServiceRequest,columns,stringBuilder.toString());
 
@@ -255,9 +297,12 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
                 stringBuilder.append("serviceProviderId="+assetBO.getServiceProviderId()+",");
                 stringBuilder.append("IssueDescription="+StringUtils.QT(assetBO.getIssueDescription())+",");
                 stringBuilder.append("ImagePath="+StringUtils.QT(assetBO.getImageName())+",");
-                stringBuilder.append("Status="+StringUtils.QT(assetBO.getAssetServiceReqStatus())+",");
+                stringBuilder.append("ApprovalStatus="+StringUtils.QT(assetBO.getAssetServiceReqStatus())+",");
                 stringBuilder.append("ExpectedResolutionDate="+StringUtils.QT(assetBO.getNewInstallDate())+",");
                 stringBuilder.append("Upload='N'");
+
+                if(!assetBO.getStatus().equals("I"))// If not a new one then updating as U to denote it.
+                 stringBuilder.append(",status='U'");
 
                 stringBuilder.append(" where uid="+StringUtils.QT(assetBO.getRField()));
 
@@ -287,7 +332,7 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
 
                 initDb();
 
-                String query="update "+DataMembers.tbl_SerializedAssetServiceRequest+" set status='CANCELLED' where uid="+StringUtils.QT(requestId);
+                String query="update "+DataMembers.tbl_SerializedAssetServiceRequest+" set ApprovalStatus='CANCELLED' where uid="+StringUtils.QT(requestId);
 
                 mDbUtil.updateSQL(query);
 
@@ -302,6 +347,45 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
             return true;
         });
     }
+
+    @Override
+    public Observable<ArrayList<String>> loadConfigs() {
+        return Observable.fromCallable(() -> {
+
+            ArrayList<String> configs=new ArrayList<>();
+
+            try {
+
+
+               initDb();
+
+                String sql = "SELECT hhtCode, RField FROM "
+                        + DataMembers.tbl_HhtModuleMaster
+                        + " WHERE menu_type = 'ASSET_SERVICE_REQUEST' AND flag='1' and ForSwitchSeller = 0";
+
+                Cursor c = mDbUtil.selectSQL(sql);
+
+                if (c != null && c.getCount() != 0) {
+                    while (c.moveToNext()) {
+                        if (c.getString(0).equalsIgnoreCase(CODE_SHOW_SERVICE_PROVIDER) && c.getString(1).equalsIgnoreCase("1"))
+                            configs.add("SHOW_SERVICE_PROVIDER");
+
+                    }
+                    c.close();
+                }
+               shutDownDb();
+
+
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
+
+            return configs;
+        });
+    }
+
+    private String CODE_SHOW_SERVICE_PROVIDER="ASR01";
+
 
     @Override
     public void tearDown() {

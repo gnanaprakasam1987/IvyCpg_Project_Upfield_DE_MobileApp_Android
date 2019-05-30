@@ -52,9 +52,10 @@
         android:layout_marginTop="20dp"
         >
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_weight="6"
             >
             <TextView
                 android:id="@+id/label_serialNumber"
@@ -73,6 +74,34 @@
                 android:maxLength="50"
                 android:minHeight="@dimen/dimen_40dp"
                 android:gravity="start"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layout_service_provider"
+            android:layout_width="@dimen/dimen_0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_weight="4"
+            android:visibility="gone"
+            >
+            <TextView
+                android:id="@+id/label_service_provider"
+                style="@style/TextViewListItemSecondary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/service_provider"
+                />
+            <android.support.v7.widget.AppCompatSpinner
+                style="@style/Base.Widget.AppCompat.Spinner.Underlined"
+                android:id="@+id/spinner_service_provider"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/spinner_height"
+                android:gravity="center"
+                android:overlapAnchor="false"
+                android:spinnerMode="dialog"
+                android:minHeight="40dp"
+                />
 
         </LinearLayout>
 

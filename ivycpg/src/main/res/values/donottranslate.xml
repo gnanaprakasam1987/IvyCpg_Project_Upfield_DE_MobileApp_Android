@@ -319,4 +319,5 @@
     <string name="edit_service_request">Edit Service Request</string>
     <string name="updated_successfully">Updated Successfully.</string>
     <string name="do_u_want_to_update">Do you want to update?</string>
+    <string name="service_provider">Service provider</string>
 </resources>

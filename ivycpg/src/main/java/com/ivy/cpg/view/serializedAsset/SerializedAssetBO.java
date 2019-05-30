@@ -607,6 +607,9 @@ public class SerializedAssetBO implements Parcelable {
         reasonID=in.readInt();
         serviceRequestedRetailer = in.readString();
         RField=in.readString();
+        serviceProviderId = in.readInt();
+        mRemarks=in.readString();
+        status=in.readString();
 
     }
 
@@ -640,6 +643,9 @@ public class SerializedAssetBO implements Parcelable {
         parcel.writeInt(reasonID);
         parcel.writeString(serviceRequestedRetailer);
         parcel.writeString(RField);
+        parcel.writeInt(serviceProviderId);
+        parcel.writeString(mRemarks);
+        parcel.writeString(status);
     }
 
     public String getServiceRequestedRetailer() {
@@ -651,4 +657,14 @@ public class SerializedAssetBO implements Parcelable {
     }
 
     private String serviceRequestedRetailer;
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    private String status;
 }

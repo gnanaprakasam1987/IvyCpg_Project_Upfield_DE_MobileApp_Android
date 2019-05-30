@@ -22,6 +22,7 @@ public interface AssetServiceRequestContractor {
         void validateRequests(SerializedAssetBO assetBO);
         void saveNewRequest(SerializedAssetBO assetBO);
         void updateRequest(SerializedAssetBO assetBO);
+        void loadConfigs();
 
     }
 
@@ -41,7 +42,9 @@ public interface AssetServiceRequestContractor {
 
     interface AssetNewServiceView extends AssetServiceView{
 
-        void populateViews(ArrayList<SerializedAssetBO> assetList, ArrayList<ReasonMaster> issueTypes);
+        void populateViews(ArrayList<SerializedAssetBO> assetList, ArrayList<ReasonMaster> issueTypes,ArrayList<ReasonMaster> serviceProviders);
+
+        void showServiceProvider();
 
         void showEmptyAssetMessage();
         void showEmptyIssueTypeMessage();

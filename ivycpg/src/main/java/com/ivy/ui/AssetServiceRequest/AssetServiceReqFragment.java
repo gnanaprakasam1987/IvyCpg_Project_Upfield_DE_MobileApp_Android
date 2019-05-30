@@ -4,18 +4,19 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.core.base.presenter.BasePresenter;
-import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.cpg.view.serializedAsset.SerializedAssetBO;
@@ -24,7 +25,6 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.ui.AssetServiceRequest.di.AssetServiceRequestModule;
 import com.ivy.ui.AssetServiceRequest.di.DaggerAssetServiceRequestComponent;
-import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.view.SwipeRevealLayout;
 import com.ivy.ui.task.view.ViewBinderHelper;
 
@@ -72,6 +72,7 @@ public class AssetServiceReqFragment extends BaseFragment implements AssetServic
 
 
         recyclerView=view.findViewById(R.id.list_service_requests);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
         LinearLayoutManager layout = new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL,false);
         recyclerView.setLayoutManager(layout);
 
@@ -160,6 +161,8 @@ public class AssetServiceReqFragment extends BaseFragment implements AssetServic
             holder.tv_serialNum.setText(serialNum);
             holder.tv_status.setText(holder.assetTrackingBO.getAssetServiceReqStatus());
 
+            holder.tv_createdby.setText("Created by "+holder.assetTrackingBO.getRemarks()+" @ "+holder.assetTrackingBO.getServiceRequestedRetailer());
+
             if(REQUEST_STATUS_PENDING.equalsIgnoreCase(holder.assetTrackingBO.getAssetServiceReqStatus())){
                 holder.tv_status.setTextColor(getResources().getColor(R.color.RED));
             }
@@ -193,7 +196,7 @@ public class AssetServiceReqFragment extends BaseFragment implements AssetServic
                 }
             });
 
-            holder.cardView.setOnClickListener(new View.OnClickListener() {
+            holder.rowView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent=new Intent(getActivity(),AssetServiceRequestViewActivity.class);
@@ -212,11 +215,12 @@ public class AssetServiceReqFragment extends BaseFragment implements AssetServic
 
         class MyViewHolder extends RecyclerView.ViewHolder {
             private SwipeRevealLayout swipeLayout;
-            TextView tv_assetName,tv_serialNum,tv_status;
+            TextView tv_assetName,tv_serialNum,tv_status,tv_createdby;
             SerializedAssetBO assetTrackingBO;
             Button btnEditRequest;
             Button btnCancelRequest;
-            CardView cardView;
+            RelativeLayout rowView;
+
 
             MyViewHolder(View itemView) {
                 super(itemView);
@@ -226,7 +230,8 @@ public class AssetServiceReqFragment extends BaseFragment implements AssetServic
                 tv_status = itemView.findViewById(R.id.tv_status);
                 btnCancelRequest = itemView.findViewById(R.id.delete_button);
                 btnEditRequest = itemView.findViewById(R.id.edit_button);
-                cardView = itemView.findViewById(R.id.card);
+                rowView = itemView.findViewById(R.id.layout_row);
+                tv_createdby=itemView.findViewById(R.id.tv_createdby);
 
             }
         }
