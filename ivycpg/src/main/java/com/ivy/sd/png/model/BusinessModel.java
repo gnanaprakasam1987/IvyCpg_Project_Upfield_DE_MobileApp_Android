@@ -3669,6 +3669,17 @@ public class BusinessModel extends Application {
                 c.close();
             }
 
+            c = db.selectSQL("SELECT DISTINCT ImageName FROM SerializedAssetMaster");
+            if (c != null) {
+                while ((c.moveToNext())) {
+                    getDigitalContentURLS().put(
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                            DataMembers.SERIALIZED_ASSET_DIG_CONTENT);
+
+                }
+                c.close();
+            }
+
             db.closeDB();
 
             getDigitalContentURLS().put(
