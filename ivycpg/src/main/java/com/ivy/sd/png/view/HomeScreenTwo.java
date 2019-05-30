@@ -208,7 +208,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_PLANORMA = "MENU_PLANORAMA";
     public static final String MENU_DISPLAY_ASSET = "MENU_DISPLAY_ASSET";
     public static final String MENU_RTR_NOTES = "MENU_NOTES";
-    public static final String MENU_ASSET_SERVICE_REQUEST = "ASSET_SERVICE_REQUEST";
+    public static final String MENU_ASSET_SERVICE_REQUEST = "MENU_ASSET_SERVICE";
 
     private final int INVOICE_CREDIT_BALANCE = 1;// Order Not Allowed when credit balance is 0
     private final int SALES_TYPES = 2;// show preVan seller dialog

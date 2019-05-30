@@ -81,7 +81,7 @@ public class StandardListMasterConstants {
 	public static final String MENU_RETPERFO_RPT="MENU_RETPERFO_RPT";
 	public static final String MENU_ARCHV_RPT = "MENU_ARCHV_RPT";
 	public static final String MENU_DELIVERY_RPT = "MENU_DELIVERY_RPT";
-	public static final String MENU_ASSET_SERVICE_REQ_RPT = "MENU_ASSET_SERVICE_REQ_RPT";
+	public static final String MENU_ASSET_SERVICE_REQ_RPT = "MENU_ASSET_SERVICE_RPT";
 
 	public static final String VISITCONFIG_PLANNING = "MENU_PLANNING";
 	public static final String VISITCONFIG_COVERAGE = "MENU_VISIT";

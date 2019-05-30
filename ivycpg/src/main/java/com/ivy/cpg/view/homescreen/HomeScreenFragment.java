@@ -750,7 +750,13 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             Toast.LENGTH_SHORT).show();
             } else if (bmodel.configurationMasterHelper.IS_ENABLE_TRIP && !LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isValidTrip()) {
                 showDialog(2);
-            } else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
+            }
+            else if(!LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isDownloadedDateValid()){
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.next_day_coverage),
+                        Toast.LENGTH_SHORT).show();
+            }
+            else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
                     && isInandOutModuleEnabled
                     && AttendanceHelper.getInstance(getContext()).isSellerWorking(getContext())) {
                 Toast.makeText(getActivity(),

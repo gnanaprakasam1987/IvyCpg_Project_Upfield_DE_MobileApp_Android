@@ -361,13 +361,13 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
 
                 String sql = "SELECT hhtCode, RField FROM "
                         + DataMembers.tbl_HhtModuleMaster
-                        + " WHERE menu_type = 'ASSET_SERVICE_REQUEST' AND flag='1' and ForSwitchSeller = 0";
+                        + " WHERE menu_type = 'ASSET_SERVICE' AND flag='1' and ForSwitchSeller = 0";
 
                 Cursor c = mDbUtil.selectSQL(sql);
 
                 if (c != null && c.getCount() != 0) {
                     while (c.moveToNext()) {
-                        if (c.getString(0).equalsIgnoreCase(CODE_SHOW_SERVICE_PROVIDER) && c.getString(1).equalsIgnoreCase("1"))
+                        if (c.getString(0).equalsIgnoreCase(CODE_SHOW_SERVICE_PROVIDER))
                             configs.add("SHOW_SERVICE_PROVIDER");
 
                     }
