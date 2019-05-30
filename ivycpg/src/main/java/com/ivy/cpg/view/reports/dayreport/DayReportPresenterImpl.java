@@ -94,7 +94,8 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 String eff = outlet.getKlgsEffCoverage();
                 con.setMenuNumber(eff);
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT03") || con.getConfigCode().equalsIgnoreCase("DAYRT31")) {
-                con.setMenuNumber(visitedcalls + "/" + totalcalls);
+                if (totalcalls > 0)
+                    con.setMenuNumber(visitedcalls + "/" + totalcalls);
 
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT04") || con.getConfigCode().equalsIgnoreCase("DAYRT32")) {
                 int productivecalls = 0;
@@ -241,7 +242,7 @@ public class DayReportPresenterImpl implements DayReportPresenter {
 
                 }
                 con.setMenuNumber(mBusinessModel.formatValue(FBvalue) + "");
-                if(!db.isDbNullOrClosed())
+                if (!db.isDbNullOrClosed())
                     db.closeDB();
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT17")) {
                 double FB2value = 0;
@@ -260,7 +261,7 @@ public class DayReportPresenterImpl implements DayReportPresenter {
 
                 }
                 con.setMenuNumber(mBusinessModel.formatValue(FB2value) + "");
-                if(!db.isDbNullOrClosed())
+                if (!db.isDbNullOrClosed())
                     db.closeDB();
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT18")) {
                 final float totalWeight = dashBoardHelper.getTotalWeight("");
@@ -273,9 +274,11 @@ public class DayReportPresenterImpl implements DayReportPresenter {
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT21")) {
                 con.setMenuNumber(SDUtil.format(dayReportHelper.getFITscoreForAllRetailers(), 2, 0) + "");
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT22")) {
-                con.setMenuNumber(SDUtil.format((dayReportHelper.getFITscoreForAllRetailers() / totalcalls), 2, 0) + "");
+                if (totalcalls > 0)
+                    con.setMenuNumber(SDUtil.format((dayReportHelper.getFITscoreForAllRetailers() / totalcalls), 2, 0) + "");
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT23")) {
-                con.setMenuNumber(dayReportHelper.getGreenFITscoreRetailersCount() + "/" + totalcalls);
+                if (totalcalls > 0)
+                    con.setMenuNumber(dayReportHelper.getGreenFITscoreRetailersCount() + "/" + totalcalls);
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT24")) {
 
                 con.setMenuNumber(outlet.getNoofOrder() + "");
@@ -348,20 +351,19 @@ public class DayReportPresenterImpl implements DayReportPresenter {
 
                 con.setMenuNumber(mBusinessModel.formatValue(mBusinessModel.fitscoreHelper.getFitScoreAverage()) + "");
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT36")) { //Total time spent on retailer vs Total calls
-
-                con.setMenuNumber(outlet.getAverageTimeSpent() + "/" + totalcalls);
+                if (totalcalls > 0)
+                    con.setMenuNumber(outlet.getAverageTimeSpent() + "/" + totalcalls);
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT37")) { //Total no of deviated calls
-
                 con.setMenuNumber(outlet.getDeviatedCalls());
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT38")) { //Sos completed vs Total calls
-
-                con.setMenuNumber(outlet.getSosCount() + "/" + totalcalls);
+                if (totalcalls > 0)
+                    con.setMenuNumber(outlet.getSosCount() + "/" + totalcalls);
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT39")) { //Price Check completed vs Total calls
-
-                con.setMenuNumber(outlet.getPriceCheckCount() + "/" + totalcalls);
+                if (totalcalls > 0)
+                    con.setMenuNumber(outlet.getPriceCheckCount() + "/" + totalcalls);
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT40")) { //Planogram completed vs Total calls
-
-                con.setMenuNumber(outlet.getPlanogramCount() + "/" + totalcalls);
+                if (totalcalls > 0)
+                    con.setMenuNumber(outlet.getPlanogramCount() + "/" + totalcalls);
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT41")) { // Coverage route based
                 con.setMenuNumber(outlet.getTotRouteCalls());
             } else if (con.getConfigCode().equalsIgnoreCase("DAYRT42")) { // visited outlet vs Coverage route based

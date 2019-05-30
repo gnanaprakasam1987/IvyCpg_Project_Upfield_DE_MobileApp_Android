@@ -2,6 +2,7 @@ package com.ivy.cpg.view.competitor;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.TypedArray;
@@ -52,16 +53,20 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
     private String from = "";
     private String calledBy = "0";
     private TabLayout tabLayout;
-    private boolean isFromChild;
+    private boolean isFromChild,isPreVisit = false;
     private CompetitorTrackingHelper competitorTrackingHelper;
 
-    @Override
-    public void onAttach(Activity activity) {
+    private Context context;
 
-        super.onAttach(activity);
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
         competitorTrackingHelper = CompetitorTrackingHelper.getInstance(getActivity());
+
+        this.context = context;
     }
 
     @Override
@@ -71,10 +76,11 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
 
         viewInitialise(view);
 
-        final Intent i = getActivity().getIntent();
+        final Intent i = ((Activity)context).getIntent();
         from = i.getStringExtra("from");
         calledBy = from != null ? from : "0";
         isFromChild = i.getBooleanExtra("isFromChild", false);
+        isPreVisit = i.getBooleanExtra("PreVisit", false);
 
         return view;
 
@@ -155,6 +161,9 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
                                 intent.putExtra("IsMoveNextActivity", true);
                                 intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                             }
+
+                            if (isPreVisit)
+                                intent.putExtra("PreVisit",true);
 
                             startActivity(intent);
                             getActivity().finish();
@@ -258,14 +267,22 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
 //                startActivity(new Intent(getActivity(), CSHomeScreen.class));
                 getActivity().finish();
             } else {
-                bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+
+                if (!isPreVisit)
+                    bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
+
+                Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                if (isPreVisit)
+                    intent.putExtra("PreVisit",true);
+
                 if (isFromChild)
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                            .putExtra("isStoreMenu", true));
+                    startActivity(intent.putExtra("isStoreMenu", true));
                 else
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().finish();
+                    startActivity(intent);
+
+                ((Activity)context).finish();
             }
             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
@@ -326,8 +343,14 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
 //                startActivity(new Intent(getActivity(), CSHomeScreen.class));
                 getActivity().finish();
             } else {
-                startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().finish();
+
+                Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                if (isPreVisit)
+                    intent.putExtra("PreVisit",true);
+
+                startActivity(intent);
+                ((Activity)context).finish();
             }
         }
 
@@ -415,6 +438,10 @@ public class CompetitorTackingFragment extends IvyBaseFragment {
                     intent.putExtra("companyId", holder.mCompetitorBO.getCompanyID());
                     intent.putExtra("competitorId", holder.mCompetitorBO.getCompetitorpid());
                     intent.putExtra("from", calledBy);
+
+                    if (isPreVisit)
+                        intent.putExtra("PreVisit",true);
+
                     startActivity(intent);
 
                 }

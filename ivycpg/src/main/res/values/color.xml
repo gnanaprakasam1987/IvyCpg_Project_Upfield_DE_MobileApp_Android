@@ -148,6 +148,8 @@
     <color name="picker_default_selected_text_color">@android:color/black</color>
     <color name="picker_default_selector_color">#646464</color>
 
+    <color name="tab_text_color">#5EFFFFFF</color>
+
 
     <!-- ********************************Planning sub/ LoadManagement Module **************************-->
 

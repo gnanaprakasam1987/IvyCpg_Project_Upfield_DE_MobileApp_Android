@@ -142,7 +142,7 @@
 
             <Button
                 android:id="@+id/btn_save"
-                style="?attr/roundedCustomButtonNormal"
+                style="?attr/roundedCustomButtonNormal_Configured"
                 android:layout_gravity="center"
                 android:layout_margin="@dimen/target_top_margin"
                 android:gravity="center"

@@ -378,7 +378,9 @@ public class AssetAdapter extends BaseAdapter {
                         holder.reason1Spin.setSelection(0);
                         holder.mConditionSpin.setEnabled(true);
                         holder.mConditionSpin.setSelection(0);
-                        holder.mInstallDate.setEnabled(true);
+                        if(!holder.assetBO.isDisableInstallDate()) {
+                            holder.mInstallDate.setEnabled(true);
+                        }
                         holder.mServiceDate.setEnabled(true);
 
                         holder.execQtyRB.setEnabled(true);
@@ -393,10 +395,14 @@ public class AssetAdapter extends BaseAdapter {
                         holder.mConditionSpin.setSelection(0);
                         holder.mInstallDate.setEnabled(false);
                         holder.mServiceDate.setEnabled(false);
-                        holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-                        holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-                        holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-                        holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                        if (holder.assetBO.getInstallDate() == null) {
+                            holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                            holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                        }
+                        if (holder.assetBO.getServiceDate() == null) {
+                            holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                            holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                        }
 
                         holder.execQtyRB.setChecked(false);
                         holder.execQtyRB.setEnabled(false);
@@ -485,7 +491,9 @@ public class AssetAdapter extends BaseAdapter {
             holder.mConditionSpin.setSelection(mAssetPresenter
                     .getItemIndex(holder.assetBO.getConditionID(),
                             mAssetPresenter.getAssetConditionList(),false));
-            holder.mInstallDate.setEnabled(true);
+            if(!holder.assetBO.isDisableInstallDate()) {
+                holder.mInstallDate.setEnabled(true);
+            }
             holder.mServiceDate.setEnabled(true);
 
         } else {
@@ -499,10 +507,14 @@ public class AssetAdapter extends BaseAdapter {
             holder.mServiceDate.setEnabled(false);
             holder.assetBO.setImageName("");
             holder.assetBO.setImgName("");
-            holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-            holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-            holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
-            holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+            if (holder.assetBO.getInstallDate() == null) {
+                holder.assetBO.setInstallDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                holder.mInstallDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+            }
+            if (holder.assetBO.getServiceDate() == null) {
+                holder.assetBO.setServiceDate(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+                holder.mServiceDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat));
+            }
 
         }
 
@@ -584,6 +596,9 @@ public class AssetAdapter extends BaseAdapter {
 //                holder.assetBO.getAvailQty() == 1);
 //        holder.availQtyRB.setEnabled((assetTrackingHelper.SHOW_ASSET_BARCODE && holder.assetBO.getSerialNo().equals(""))
 //                || holder.assetBO.getNFCTagId().isEmpty());
+
+        holder.mInstallDate.setEnabled(!holder.assetBO.isDisableInstallDate());
+        holder.mInstallDate.setClickable(!holder.assetBO.isDisableInstallDate());
 
         if (mBModel.configurationMasterHelper.isAuditEnabled()){
             holder.reason1Spin.setEnabled(false);

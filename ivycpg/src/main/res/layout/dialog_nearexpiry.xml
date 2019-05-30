@@ -39,7 +39,7 @@
 
         <Button
             android:id="@+id/btn_ok"
-            style="?attr/roundedCustomButtonSmall"
+            style="?attr/roundedCustomButtonSmall_Configured"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"

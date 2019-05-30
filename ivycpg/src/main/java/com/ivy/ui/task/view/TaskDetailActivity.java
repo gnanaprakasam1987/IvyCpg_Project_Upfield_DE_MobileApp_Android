@@ -290,11 +290,18 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         if (!isRetailerWiseTask)
             startActivity(new Intent(TaskDetailActivity.this,
                     HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
-        else
-            startActivity(new Intent(TaskDetailActivity.this,
-                    TaskActivity.class).putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask)
+        else {
+
+            Intent intent = new Intent(TaskDetailActivity.this,
+                    TaskActivity.class);
+            if (getIntent().getBooleanExtra("PreVisit",false))
+                intent.putExtra("PreVisit",true);
+
+            startActivity(intent.putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask)
                     .putExtra(TaskConstant.SCREEN_TITLE, screenTitle)
                     .putExtra(TaskConstant.MENU_CODE, menuCode));
+        }
+
         finish();
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }

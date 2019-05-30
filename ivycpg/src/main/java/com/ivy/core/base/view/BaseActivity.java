@@ -105,8 +105,14 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         initializeDi();
 
+        boolean isPrevisit = getIntent().getBooleanExtra("PreVisit",false);
+
         if (mCurrentTheme != 0) {
-            setTheme(mCurrentTheme);
+
+            if (!isPrevisit)
+                setTheme(mCurrentTheme);
+            else
+                setTheme(preVisitTheme(mCurrentTheme));
             initScreen();
         } else
             showLoading();
@@ -502,42 +508,66 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     @Override
     public void setBlueTheme() {
         mCurrentTheme = R.style.MVPTheme_Blue;
-        setTheme(R.style.MVPTheme_Blue);
+        boolean isPrevisit = getIntent().getBooleanExtra("PreVisit",false);
+        if (!isPrevisit)
+            setTheme(mCurrentTheme);
+        else
+            setTheme(preVisitTheme(mCurrentTheme));
         initScreen();
     }
 
     @Override
     public void setPinkTheme() {
         mCurrentTheme = R.style.MVPTheme_Green;
-        setTheme(R.style.MVPTheme_Green);
+        boolean isPrevisit = getIntent().getBooleanExtra("PreVisit",false);
+        if (!isPrevisit)
+            setTheme(mCurrentTheme);
+        else
+            setTheme(preVisitTheme(mCurrentTheme));
         initScreen();
     }
 
     @Override
     public void setGreenTheme() {
         mCurrentTheme = R.style.MVPTheme_Green;
-        setTheme(R.style.MVPTheme_Green);
+        boolean isPrevisit = getIntent().getBooleanExtra("PreVisit",false);
+        if (!isPrevisit)
+            setTheme(mCurrentTheme);
+        else
+            setTheme(preVisitTheme(mCurrentTheme));
         initScreen();
     }
 
     @Override
     public void setNavyBlueTheme() {
         mCurrentTheme = R.style.MVPTheme_NBlue;
-        setTheme(R.style.MVPTheme_NBlue);
+        boolean isPrevisit = getIntent().getBooleanExtra("PreVisit",false);
+        if (!isPrevisit)
+            setTheme(mCurrentTheme);
+        else
+            setTheme(preVisitTheme(mCurrentTheme));
         initScreen();
     }
 
     @Override
     public void setOrangeTheme() {
         mCurrentTheme = R.style.MVPTheme_Orange;
-        setTheme(R.style.MVPTheme_Orange);
+        boolean isPrevisit = getIntent().getBooleanExtra("PreVisit",false);
+        if (!isPrevisit)
+            setTheme(mCurrentTheme);
+        else
+            setTheme(preVisitTheme(mCurrentTheme));
         initScreen();
     }
 
     @Override
     public void setRedTheme() {
         mCurrentTheme = R.style.MVPTheme_Red;
-        setTheme(R.style.MVPTheme_Red);
+        boolean isPrevisit = getIntent().getBooleanExtra("PreVisit",false);
+        if (!isPrevisit)
+            setTheme(mCurrentTheme);
+        else
+            setTheme(preVisitTheme(mCurrentTheme));
         initScreen();
     }
 
@@ -640,6 +670,28 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
                 }
             }
         });
+    }
+
+    private int preVisitTheme(int styleId){
+        switch (styleId){
+            case R.style.MVPTheme_Blue:
+                styleId = R.style.MVPTheme_Blue_disable;
+                return styleId;
+            case R.style.MVPTheme_NBlue:
+                styleId = R.style.MVPTheme_NBlue_disable;
+                return styleId;
+            case R.style.MVPTheme_Green:
+                styleId = R.style.MVPTheme_Green_disable;
+                return styleId;
+            case R.style.MVPTheme_Red:
+                styleId = R.style.MVPTheme_Red;
+                return styleId;
+            case R.style.MVPTheme_Orange:
+                styleId = R.style.MVPTheme_Orange_disable;
+                return styleId;
+            default:
+                return styleId;
+        }
     }
 }
 

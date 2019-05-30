@@ -28,4 +28,5 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation files('libs/ksoap2-android-assembly-3.3.0-jar-with-dependencies.jar')
     implementation 'net.zetetic:android-database-sqlcipher:3.5.2@aar'
+    implementation 'com.itextpdf:itextg:5.5.10'
 }

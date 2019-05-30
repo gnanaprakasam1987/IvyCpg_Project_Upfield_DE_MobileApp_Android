@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.asset;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
@@ -83,15 +85,18 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
     private AssetAdapter adapter;
     private BusinessModel mBModel;
 
+    private Context context;
+
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mBModel = (BusinessModel) getActivity().getApplicationContext();
-        mBModel.setContext(getActivity());
+        mBModel = (BusinessModel) context.getApplicationContext();
+        mBModel.setContext(((Activity)context));
         assetTrackingHelper = AssetTrackingHelper.getInstance(getActivity());
         assetPresenter = new AssetPresenterImpl(getContext(), mBModel, assetTrackingHelper);
         assetPresenter.setView(this);
+        this.context = context;
     }
 
     @Override
@@ -311,7 +316,6 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
 
     }
 
-
     @Override
     public void updateInitialLoad(Vector<StandardListBO> mList) {
 
@@ -329,7 +333,6 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
         assetPresenter.updateList();
 
     }
-
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -444,22 +447,28 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
 
                         assetPresenter.removeExistingImage(mAssetId, fileNameStarts, path);
 
-                        System.out.println("Deleted Image " + mAssetId + " = " + photoPath);
+                        Commons.print("Deleted Image " + mAssetId + " = " + photoPath);
                         //it.remove(); // avoids a ConcurrentModificationException
                     }
                     mBModel.getPhotosTakeninCurrentAssetTracking().clear();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                if (adapter.isEmpty()) {
+                if (adapter.isEmpty() && !isPreVisit) {
                     save();
                 } else {
-                    assetPresenter.updateTimeStamp();
-                    startActivity(new Intent(getActivity(),
-                            HomeScreenTwo.class));
-                    getActivity().finish();
+                    if (!isPreVisit)
+                        assetPresenter.updateTimeStamp();
+
+                    Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                    if (isPreVisit)
+                        intent.putExtra("PreVisit",true);
+
+                    startActivity(intent);
+                    ((Activity)context).finish();
                 }
-                getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             }
             return true;
         } else if (i == R.id.menu_next) {
@@ -470,14 +479,20 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
             assetPresenter.updateList();
             return true;
         } else if (i == R.id.menu_remarks) {
-            FragmentTransaction ft = getActivity()
+            FragmentTransaction ft = ((FragmentActivity)context)
                     .getSupportFragmentManager().beginTransaction();
             RemarksDialog dialog1 = new RemarksDialog(MENU_ASSET);
             dialog1.setCancelable(false);
             dialog1.show(ft, MENU_ASSET);
             return true;
         } else if (i == R.id.menu_survey) {
-            startActivity(new Intent(getActivity(), SurveyActivityNew.class));
+
+            Intent intent = new Intent(getActivity(), SurveyActivityNew.class);
+
+            if (isPreVisit)
+                intent.putExtra("PreVisit",true);
+
+            startActivity(intent);
             return true;
         } else if (i == R.id.menu_add) {
 
@@ -488,6 +503,8 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
         } else if (i == R.id.menu_remove) {
             Intent intent = new Intent(getActivity(), AssetPosmRemoveActivity.class);
             intent.putExtra("module", MENU_ASSET);
+            if (isPreVisit)
+                intent.putExtra("PreVisit",true);
             startActivity(intent);
             return true;
         } else if (i == R.id.menu_loc_filter) {
@@ -502,6 +519,8 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                 Intent intent = new Intent(getActivity(), AssetMovementActivity.class);
                 intent.putExtra("index", mSelectedLocationIndex);
                 intent.putExtra("module", MENU_ASSET);
+                if (isPreVisit)
+                    intent.putExtra("PreVisit",true);
                 startActivityForResult(intent, MOVEMENT_ASSET);
             } else {
                 Toast.makeText(getActivity(), getResources().getString(R.string.no_assets_exists),
@@ -510,9 +529,10 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
             return true;
         } else if (i == R.id.menu_assetservice) {
 
-
             Intent intent = new Intent(getActivity(), AssetServiceActivity.class);
             intent.putExtra("module", MENU_ASSET);
+            if (isPreVisit)
+                intent.putExtra("PreVisit",true);
             startActivity(intent);
 
             return true;
@@ -529,12 +549,20 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         if (mBModel.reasonHelper.isNpReasonPhotoAvaiable(mBModel.retailerMasterBO.getRetailerID(), MENU_ASSET)) {
-                            mBModel.saveModuleCompletion(MENU_ASSET, true);
-                            mBModel.outletTimeStampHelper
-                                    .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
-                            startActivity(new Intent(getActivity(),
-                                    HomeScreenTwo.class));
-                            getActivity().finish();
+
+                            if (!isPreVisit) {
+                                mBModel.saveModuleCompletion(MENU_ASSET, true);
+                                mBModel.outletTimeStampHelper
+                                        .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
+                            }
+
+                            Intent intent = new Intent(getActivity(),HomeScreenTwo.class);
+                            if (isPreVisit)
+                                intent.putExtra("PreVisit",true);
+
+                            startActivity(intent);
+
+                            ((Activity)context).finish();
                         }
                     }
                 });
@@ -542,7 +570,7 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                 args.putString("modulename", MENU_ASSET);
                 dialog.setCancelable(false);
                 dialog.setArguments(args);
-                dialog.show(getActivity().getSupportFragmentManager(), "ReasonDialogFragment");
+                dialog.show(((FragmentActivity)context).getSupportFragmentManager(), "ReasonDialogFragment");
             }
             catch (Exception ex){
                 Commons.printException(ex);
@@ -576,7 +604,6 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
 
     }
 
-
     @Override
     public void updateAssets(ArrayList<AssetTrackingBO> mList, boolean isUnMapped, Bundle mBundle) {
 
@@ -589,7 +616,6 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
         }
     }
 
-
     /**
      * Updating List by NFC tag
      *
@@ -600,7 +626,6 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
         assetPresenter.setBarcode(ALL);
         assetPresenter.updateList();
     }
-
 
     @Override
     public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2) {
@@ -680,8 +705,6 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
     }
 
 
-
-
     @Override
     public void showError(String errorMsg) {
         String titleText;
@@ -723,19 +746,25 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
                 mDrawerLayout.closeDrawers();
             } else {
-                assetPresenter.updateTimeStamp();
-                startActivity(new Intent(getActivity(),
-                        HomeScreenTwo.class));
-                getActivity().finish();
+                if (!isPreVisit)
+                    assetPresenter.updateTimeStamp();
+
+                Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                if (isPreVisit)
+                    intent.putExtra("PreVisit",true);
+
+                startActivity(intent);
+                ((Activity)context).finish();
             }
-            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         } else {
             assetPresenter.updateTimeStamp();
             if (alertDialog != null) {
                 alertDialog.dismiss();
             }
 
-            new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+            new CommonDialog(context.getApplicationContext(), context,
                     "", getResources().getString(R.string.saved_successfully),
                     false, getActivity().getResources().getString(R.string.ok),
                     null, new CommonDialog.PositiveClickListener() {
@@ -754,6 +783,9 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
                         intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                     }
 
+                    if (isPreVisit)
+                        intent.putExtra("PreVisit",true);
+
                     startActivity(intent);
                     getActivity().finish();
 
@@ -765,8 +797,6 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
             }).show();
         }
     }
-
-
 
     /**
      * Show location dialog
@@ -790,7 +820,6 @@ AssetTrackingFragment extends IvyBaseFragment implements OnEditorActionListener,
 
         mBModel.applyAlertDialogTheme(builderDialog);
     }
-
 
     @Override
     public void updateBrandText(String mFilterText, int id) {

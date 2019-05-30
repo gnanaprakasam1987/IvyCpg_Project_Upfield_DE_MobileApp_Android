@@ -21,12 +21,16 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.core.base.view.BaseActivity;
+import com.ivy.core.base.view.BaseFragment;
+import com.ivy.cpg.view.task.TaskDataBO;
 import com.ivy.lib.view.RibbonView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.ui.task.TaskClickListener;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.ui.task.view.SwipeRevealLayout;
+import com.ivy.ui.task.view.TaskFragment;
 import com.ivy.ui.task.view.ViewBinderHelper;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
@@ -43,8 +47,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
     private Boolean isRetailerWiseTask;
     private int mTabPosition;
     private final ViewBinderHelper binderHelper = new ViewBinderHelper();
+    private boolean isPreVisit = false;
 
-    public TaskListAdapter(Context mContext, ArrayList<TaskDataBO> taskDatas, String outDateFormat, TaskClickListener taskClickListener, TaskConstant.SOURCE source, boolean isRetailerWiseTask, int mTabPosition) {
+    public TaskListAdapter(Context mContext, ArrayList<TaskDataBO> taskDatas, String outDateFormat, TaskClickListener taskClickListener, TaskConstant.SOURCE source, boolean isRetailerWiseTask, int mTabPosition, boolean isPreVisit) {
         this.taskDatas = taskDatas;
         this.mContext = mContext;
         this.outDateFormat = outDateFormat;
@@ -52,6 +57,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         this.source = source;
         this.isRetailerWiseTask = isRetailerWiseTask;
         this.mTabPosition = mTabPosition;
+
+        this.isPreVisit = isPreVisit;
 
         // to open only one row at a time
         binderHelper.setOpenOnlyOne(true);
@@ -149,12 +156,13 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             }
         });
 
-        if (taskBo.isUpload() && taskBo.getIsdone().equals("1")) {
+        if (taskBo.isUpload() && taskBo.getIsdone().equals("1") ) {
             holder.taskCB.setEnabled(false);
             holder.taskTitle.setPaintFlags(holder.taskTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
             holder.taskProductLevel.setPaintFlags(holder.taskProductLevel.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
         } else {
-            holder.taskCB.setEnabled(true);
+            if (!isPreVisit)
+                holder.taskCB.setEnabled(true);
             holder.taskTitle.setPaintFlags(holder.taskTitle.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
             holder.taskProductLevel.setPaintFlags(holder.taskProductLevel.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
         }
