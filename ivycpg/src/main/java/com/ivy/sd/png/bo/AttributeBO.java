@@ -1,5 +1,7 @@
 package com.ivy.sd.png.bo;
 
+import java.util.HashMap;
+
 /**
  * Created by rajkumar.s on 16-02-2016.
  */
@@ -88,5 +90,46 @@ public class AttributeBO {
     @Override
     public String toString() {
         return attributeName;
+    }
+
+    private int levelCount;
+
+    public int getLevelCount() {
+        return levelCount;
+    }
+
+    public void setLevelCount(int levelCount) {
+        this.levelCount = levelCount;
+    }
+
+    private HashMap<String,AttributeBO> attributeBOHashMap =new HashMap<>();
+
+    private AttributeBO childAttributeBO;
+
+    public HashMap<String, AttributeBO> getAttributeBOHashMap() {
+        return attributeBOHashMap;
+    }
+
+    public void setAttributeBOHashMap(HashMap<String, AttributeBO> attributeBOHashMap) {
+        this.attributeBOHashMap = attributeBOHashMap;
+    }
+
+
+    public AttributeBO getChildAttributeBO() {
+        return childAttributeBO;
+    }
+
+    public void setChildAttributeBO(AttributeBO childAttributeBO) {
+        this.childAttributeBO = childAttributeBO;
+    }
+
+    private boolean isAttributeSelected;
+
+    public boolean isAttributeSelected() {
+        return isAttributeSelected;
+    }
+
+    public void setAttributeSelected(boolean attributeSelected) {
+        isAttributeSelected = attributeSelected;
     }
 }

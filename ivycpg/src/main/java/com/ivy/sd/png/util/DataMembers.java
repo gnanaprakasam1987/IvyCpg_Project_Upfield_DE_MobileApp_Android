@@ -676,7 +676,7 @@ public class DataMembers {
     public static final String tbl_display_scheme_tracking_cols = "Tid,Date,UserId,DistributorId,RetailerId,SchemeId,SlabId,IsAvailable";
 
     public static final String tbl_date_wise_plan = "DatewisePlan";
-    public static final String tbl_date_wise_plan_cols = "PlanId,DistributorId,UserId,Date,EntityId,EntityType,Status,Sequence";
+    public static final String tbl_date_wise_plan_cols = "PlanId,DistributorId,UserId,Date,EntityId,EntityType,Status,Sequence,StartTime,EndTime,VisitStatus,PlanSource,planStatus";
 
     public static final String tbl_retailer_kpi_modified = "RetailerKPIModifiedDetail";
     public static final String tbl_retailer_kpi_modified_cols = "KPIId,KPITypeLovId,KPIParamLovId,Target";
@@ -1192,6 +1192,8 @@ public class DataMembers {
     static {
         uploadAttendanceColumn.put(tbl_attendancedetail,
                 tbl_attendancedetail_cols);
+        uploadAttendanceColumn.put(tbl_AttendanceTimeDetails,
+                tbl_AttendanceTimeDetails_cols);
     }
 
     public static final HashMap<String, String> uploadSIHTable = new HashMap<>();

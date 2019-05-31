@@ -775,4 +775,7 @@
 
     <dimen name="retailer_name_list">20sp</dimen>
     <dimen name="retailer_address_list">18sp</dimen>
+
+    <!--Calendar Planning-->
+    <dimen name="time_column_width">16dp</dimen>
 </resources>

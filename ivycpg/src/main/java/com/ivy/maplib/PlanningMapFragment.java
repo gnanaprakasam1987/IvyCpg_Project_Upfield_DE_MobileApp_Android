@@ -1679,9 +1679,10 @@ public class PlanningMapFragment extends SupportMapFragment implements
         } else if (retailerMasterBO.getIsToday() == 1 || "Y".equals(retailerMasterBO.getIsDeviated()))
             drawable = R.drawable.marker_visit_planned;
 
-
         if (retailerMasterBO.isHasNoVisitReason())
             drawable = R.drawable.marker_visit_cancelled;
+        else if("P".equals(retailerMasterBO.getIsVisited()))
+            drawable = R.drawable.marker_visit_paused;
 
 
         return drawable;

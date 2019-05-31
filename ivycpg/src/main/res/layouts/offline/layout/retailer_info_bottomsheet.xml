@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottomsheet"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dimens_200dp"
+    android:layout_alignParentBottom="true"
+    android:layout_marginLeft="@dimen/dimens_4dp"
+    android:layout_marginRight="@dimen/dimens_4dp"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:padding="@dimen/dimens_4dp"
+    app:behavior_peekHeight="0dp"
+    app:cardCornerRadius="@dimen/card_margin"
+    app:cardElevation="@dimen/card_margin"
+    app:contentPadding="@dimen/dimens_4dp"
+    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rvRetailerInfo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/tv_no_plan"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="@string/plan_not_available" />
+
+</android.support.v7.widget.CardView>

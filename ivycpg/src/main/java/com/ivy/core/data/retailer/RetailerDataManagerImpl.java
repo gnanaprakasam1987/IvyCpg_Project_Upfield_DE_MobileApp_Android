@@ -12,6 +12,7 @@ import com.ivy.sd.png.bo.RetailerMissedVisitBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
@@ -31,7 +32,9 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
+import io.reactivex.SingleObserver;
 import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 import static com.ivy.sd.png.provider.ConfigurationMasterHelper.CODE_SHOW_ALL_ROUTE_FILTER;
@@ -319,7 +322,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                             retailer.setIsCollectionView("N");
 
                                             //set global gps distance for retailer from the config:GPSDISTANCE
-                                            if (retailer.getGpsDistance() <=0 && configurationMasterHelper.GLOBAL_GPS_DISTANCE > 0)
+                                            if (retailer.getGpsDistance() <= 0 && configurationMasterHelper.GLOBAL_GPS_DISTANCE > 0)
                                                 retailer.setGpsDistance(configurationMasterHelper.GLOBAL_GPS_DISTANCE);
 
                                             updateRetailerPriceGRP(retailer);
@@ -341,6 +344,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                                 updateWalkingSequenceDayWise(retailer, weekText[0]);
 
                                             }
+                                            //update plan count and visit count from datewiseplan table
+                                            updatePlanAndVisitCount(retailer);
 
                                             if (configurationMasterHelper.SUBD_RETAILER_SELECTION | configurationMasterHelper.IS_LOAD_ONLY_SUBD)
                                                 if (retailer.getSubdId() != 0) {
@@ -364,6 +369,9 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                         }
 
                                     }
+
+                                    if(configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
+                                        updateIsToday();
 
                                 } catch (Exception ignored) {
 
@@ -747,6 +755,112 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
     }
 
+    private void updatePlanAndVisitCount(RetailerMasterBO retObj) {
+        try {
+
+            Cursor c;
+            c = mDbUtil.selectSQL("select PlanId From DatewisePlan where planStatus ='APPROVED'or 'PENDING' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()));
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext())
+                    retObj.setTotalPlanned(c.getCount());
+
+                c.close();
+            }
+
+            c = mDbUtil.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext())
+                    retObj.setTotalVisited(c.getCount());
+
+                c.close();
+            }
+        } catch (Exception ignore) {
+            Commons.printException(ignore);
+        }
+    }
+
+    /**
+     * update retailer plan and visit count
+     *
+     * @param retObj
+     */
+    @Override
+    public Single<DateWisePlanBo> updatePlanAndVisitCount(RetailerMasterBO retObj, DateWisePlanBo planBo) {
+
+        return Single.fromCallable(new Callable<DateWisePlanBo>() {
+            @Override
+            public DateWisePlanBo call() throws Exception {
+
+                initDb();
+
+                updatePlanAndVisitCount(retObj);
+
+                shutDownDb();
+
+                return planBo;
+            }
+        });
+    }
+
+    /**
+     * update retailer plan and visit count
+     *
+     * @param planList
+     */
+    @Override
+    public Single<Boolean> updatePlanVisitCount(List<DateWisePlanBo> planList) {
+
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+
+                initDb();
+                for (DateWisePlanBo dateWisePlanBo : planList) {
+                    for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
+                        if (retailerMasterBO.getRetailerID().equals("" + dateWisePlanBo.getEntityId())) {
+                            updatePlanAndVisitCount(retailerMasterBO);
+                        }
+                    }
+                }
+
+
+                shutDownDb();
+
+                return true;
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> updateIsToday() {
+        return Single.fromCallable(() -> {
+            initDb();
+            List<String> retailerIds = new ArrayList<>();
+            Cursor c = mDbUtil.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND VisitStatus = 'PLANNED' " +
+                    "and Date = " + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            if (c != null
+                    && c.getCount() > 0) {
+                while (c.moveToNext()) {
+                    retailerIds.add(c.getString(0));
+                }
+
+                c.close();
+            }
+            shutDownDb();
+            if (retailerIds.size() > 0)
+                for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
+                    retailerMasterBO.setIsToday(0);
+                    if (retailerIds.contains(retailerMasterBO.getRetailerID())) {
+                        retailerMasterBO.setIsToday(1);
+                    }
+                }
+
+            return true;
+        });
+    }
+
     public void updateIndicativeOrderedRetailer(RetailerMasterBO retObj, ArrayList<IndicativeBO> indicativeBOS) {
         retObj.setIndicateFlag(0);
         for (IndicativeBO indBo : indicativeBOS) {
@@ -1086,6 +1200,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                 configurationMasterHelper.SHOW_DATE_ROUTE = true;
                             } else if (value == 3) {
                                 configurationMasterHelper.SHOW_BEAT_ROUTE = true;
+                            } else if (value == 4) {
+                                configurationMasterHelper.SHOW_DATE_PLAN_ROUTE = true;
                             } else {
                                 configurationMasterHelper.SHOW_WEEK_ROUTE = true;
                             }

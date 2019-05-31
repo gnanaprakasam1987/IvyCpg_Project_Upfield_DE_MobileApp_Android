@@ -1,0 +1,273 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/coordinator"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ivy.ui.retailerplan.calendar.view.CalendarPlanFragment">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/llMonthHeader"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/add_btn_widht"
+            android:layout_gravity="center_horizontal"
+            android:background="?attr/colorPrimary"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/img_prev"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@null"
+                android:focusable="true"
+                android:padding="@dimen/dimen_5dp"
+                android:src="@drawable/ic_chevron_left_black_24dp"
+                android:tint="@color/white" />
+
+            <ImageView
+                android:id="@+id/img_next"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@+id/img_prev"
+                android:layout_toRightOf="@+id/img_prev"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:contentDescription="@null"
+                android:focusable="true"
+                android:padding="@dimen/dimen_5dp"
+                android:src="@drawable/ic_chevron_right_black_24dp"
+                android:tint="@color/white" />
+
+            <TextView
+                android:id="@+id/tv_month"
+                style="@style/TextViewNormal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@+id/radioGrp"
+                android:layout_toLeftOf="@+id/radioGrp"
+                android:layout_toEndOf="@+id/img_next"
+                android:layout_toRightOf="@+id/img_next"
+                android:fontFamily="@font/roboto_medium"
+                android:singleLine="true"
+                android:text="@string/text_current_month"
+                android:textColor="@color/white" />
+
+
+            <RadioGroup
+                android:id="@+id/radioGrp"
+                android:layout_width="@dimen/list_product_name_width_init"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/card_margin"
+                android:layout_marginRight="@dimen/card_margin"
+                android:checkedButton="@id/rbMonth"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rbMonth"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimen_30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_bg_radio_button"
+                    android:button="@null"
+                    android:fontFamily="@font/roboto_light"
+                    android:gravity="center"
+                    android:padding="@dimen/padding_rb"
+                    android:text="@string/month"
+                    android:textColor="@color/selector_text_radio_button"
+                    android:textSize="@dimen/text_size_caption" />
+
+                <RadioButton
+                    android:id="@+id/rbWeek"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimen_30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_bg_radio_button"
+                    android:button="@null"
+                    android:fontFamily="@font/roboto_light"
+                    android:gravity="center"
+                    android:padding="@dimen/padding_rb"
+                    android:text="@string/week"
+                    android:textColor="@color/selector_text_radio_button"
+                    android:textSize="@dimen/text_size_caption" />
+
+                <RadioButton
+                    android:id="@+id/rbDay"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimen_30dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_bg_radio_button"
+                    android:button="@null"
+                    android:fontFamily="@font/roboto_light"
+                    android:gravity="center"
+                    android:padding="@dimen/padding_rb"
+                    android:text="@string/day"
+                    android:textColor="@color/selector_text_radio_button"
+                    android:textSize="@dimen/text_size_caption" />
+
+            </RadioGroup>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_titleList"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_30dp"
+            android:layout_below="@+id/llMonthHeader"
+            android:layout_gravity="center"
+            android:background="@color/user_hierarchy_bg_border"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="@dimen/dimen_4dp">
+
+            <TextView
+                android:id="@+id/txt_week"
+                style="@style/TextViewListTitleSecondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="wk"
+                android:textAllCaps="true"
+                android:textColor="@color/black_bg1" />
+
+            <TextView
+                android:id="@+id/txt_1"
+                style="@style/TextViewListTitleSecondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textAllCaps="true"
+                android:textColor="@color/black_bg1" />
+
+            <TextView
+                android:id="@+id/txt_2"
+                style="@style/TextViewListTitleSecondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textAllCaps="true"
+                android:textColor="@color/black_bg1" />
+
+            <TextView
+                android:id="@+id/txt_3"
+                style="@style/TextViewListTitleSecondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textAllCaps="true"
+                android:textColor="@color/black_bg1" />
+
+            <TextView
+                android:id="@+id/txt_4"
+                style="@style/TextViewListTitleSecondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textAllCaps="true"
+                android:textColor="@color/black_bg1" />
+
+            <TextView
+                android:id="@+id/txt_5"
+                style="@style/TextViewListTitleSecondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textAllCaps="true"
+                android:textColor="@color/black_bg1" />
+
+            <TextView
+                android:id="@+id/txt_6"
+                style="@style/TextViewListTitleSecondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textAllCaps="true"
+                android:textColor="@color/black_bg1" />
+
+            <TextView
+                android:id="@+id/txt_7"
+                style="@style/TextViewListTitleSecondary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textAllCaps="true"
+                android:textColor="@color/black_bg1" />
+        </LinearLayout>
+
+        <com.ivy.calendarlibrary.monthview.MonthView
+            android:id="@+id/rv_calendar"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/ll_titleList" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_week"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/llMonthHeader"
+            android:fitsSystemWindows="true"
+            android:visibility="gone" />
+
+        <com.ivy.calendarlibrary.weekview.WeekView
+            android:id="@+id/week_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/rv_week"
+            android:visibility="gone"
+            app:columnGap="8dp"
+            app:dayBackgroundColor="#05000000"
+            app:eventCornerRadius="@dimen/dimens_4dp"
+            app:eventMarginVertical="@dimen/dimen_1dp"
+            app:eventTextColor="@color/black_bg3"
+            app:eventTextSize="@dimen/list_header_secondary_text_size"
+            app:headerColumnBackground="#ffffffff"
+            app:headerColumnTextColor="@color/white"
+            app:headerRowBackgroundColor="?attr/primarycolor"
+            app:headerRowPadding="0dp"
+            app:hourHeight="@dimen/dimens_60dp"
+            app:overlappingEventGap="@dimen/dimens_4dp"
+            app:textSize="@dimen/list_header_text_size"
+            app:todayBackgroundColor="#05000000"
+            app:todayHeaderTextColor="?attr/accentcolor" />
+
+
+    </RelativeLayout>
+
+
+    <include layout="@layout/retailer_info_bottomsheet" />
+
+    <include layout="@layout/copy_plan_bottomsheet" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_retailer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:src="@drawable/ic_plus"
+        app:elevation="@dimen/card_margin"
+        app:fabSize="normal"
+        app:layout_anchor="@+id/bottomsheet"
+        app:layout_anchorGravity="top|end"
+        app:useCompatPadding="true" />
+</android.support.design.widget.CoordinatorLayout>

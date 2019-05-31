@@ -937,6 +937,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_DATE_ROUTE;
     public boolean SHOW_BEAT_ROUTE;
     public boolean SHOW_WEEK_ROUTE;
+    public boolean SHOW_DATE_PLAN_ROUTE;
     public boolean SHOW_RFIELD4;//RTRS26
     public boolean SHOW_MISSED_RETAILER;//RTRS28
     public boolean VALIDATE_TRADE_COVERAGE;//RTRS29
@@ -5467,6 +5468,8 @@ public class ConfigurationMasterHelper {
                         SHOW_DATE_ROUTE = true;
                     } else if (value == 3) {
                         SHOW_BEAT_ROUTE = true;
+                    } else if (value == 4) {
+                        SHOW_DATE_PLAN_ROUTE = true;
                     } else {
                         SHOW_WEEK_ROUTE = true;
                     }

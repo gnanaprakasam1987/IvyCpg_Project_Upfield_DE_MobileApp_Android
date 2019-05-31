@@ -634,7 +634,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
         builder.setSingleChoiceItems(locationAdapter, selectedLocation,
                 onLocationDialogClickListener);
 
-        AppUtils.applyAlertDialogTheme(this, builder);
+        applyAlertDialogTheme(this, builder);
     }
 
     private DialogInterface.OnClickListener onLocationDialogClickListener = new DialogInterface.OnClickListener() {
@@ -780,7 +780,7 @@ public class PhotoCaptureActivity extends BaseActivity implements PhotoCaptureCo
                 });
 
         builder.setCancelable(false);
-        AppUtils.applyAlertDialogTheme(this, builder);
+        applyAlertDialogTheme(this, builder);
     }
 
 

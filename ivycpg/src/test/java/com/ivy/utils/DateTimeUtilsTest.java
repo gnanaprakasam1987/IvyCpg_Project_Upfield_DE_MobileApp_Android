@@ -356,13 +356,6 @@ public class DateTimeUtilsTest {
     }
 
     @Test
-    public void testConvertToServerDateFormatDefaultException(){
-
-        DateTimeUtils.defaultDateFormat = "yyyy/MM/ab";
-        Assert.assertEquals("02/14/2019",DateTimeUtils.convertToServerDateFormat("02/14/2019","yyyy/MM/ab"));
-    }
-
-    @Test
     public void testConvertDateObjectToRequestedFormat(){
         Calendar valentinesDay = Calendar.getInstance();
         valentinesDay.set(2019, Calendar.FEBRUARY, 14,15,40,33);
@@ -381,7 +374,7 @@ public class DateTimeUtilsTest {
 
     @After
     public void tearDown() {
-        DateTimeUtils.defaultDateFormat = "MM/dd/yyyy";
+
     }
 
 
