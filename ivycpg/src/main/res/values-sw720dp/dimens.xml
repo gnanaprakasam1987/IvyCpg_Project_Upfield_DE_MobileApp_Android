@@ -20,8 +20,6 @@
     <!-- New Visit Targe Screen -->
 
 
-
-
     <!-- Generic Text size *********************** Don't change the values -->
 
 
@@ -91,7 +89,6 @@
     <!--*************************END OF Generic Text size***************************-->
 
 
-
     <!-- UI Elements -->
     <dimen name="list_title_height">30dp</dimen>
     <dimen name="list_item_width">150dp</dimen>
@@ -147,6 +144,6 @@
     <dimen name="profile_collopsing_layout_height">350dp</dimen>
     <dimen name="profile_header_frame_layout_height">100dp</dimen>
 
-
-
+    <!--Calendar Planning-->
+    <dimen name="time_column_width">27dp</dimen>
 </resources>

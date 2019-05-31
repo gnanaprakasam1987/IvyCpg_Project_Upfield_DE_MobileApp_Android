@@ -1,8 +1,10 @@
 package com.ivy.cpg.view.sf;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -11,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -107,6 +110,14 @@ public class SOSFragment extends IvyBaseFragment implements
 
     private final int SHARE_SHELF_RESULT_CODE = 112;
 
+    private Context context;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        this.context = context;
+    }
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -117,9 +128,9 @@ public class SOSFragment extends IvyBaseFragment implements
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        mBModel = (BusinessModel) getActivity().getApplicationContext();
-        mBModel.setContext(getActivity());
-        mSFHelper = SalesFundamentalHelper.getInstance(getActivity());
+        mBModel = (BusinessModel) context.getApplicationContext();
+        mBModel.setContext(((Activity)context));
+        mSFHelper = SalesFundamentalHelper.getInstance(context);
         initializeViews(view);
     }
 
@@ -140,10 +151,10 @@ public class SOSFragment extends IvyBaseFragment implements
 
 
         if (mBModel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
-            Toast.makeText(this.getActivity(),
+            Toast.makeText(context,
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();
-            getActivity().finish();
+            ((Activity)context).finish();
         }
 
         if (getActionBar() != null) {
@@ -152,10 +163,10 @@ public class SOSFragment extends IvyBaseFragment implements
             getActionBar().setElevation(0);
         }
 
-        isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
+        isFromChild = ((Activity)context).getIntent().getBooleanExtra("isFromChild", false);
 
         // load location filter
-        mLocationAdapter = new ArrayAdapter<>(getActivity(),
+        mLocationAdapter = new ArrayAdapter<>(context,
                 android.R.layout.select_dialog_singlechoice);
 
         for (SFLocationBO temp : mSFHelper.getLocationList())
@@ -199,7 +210,7 @@ public class SOSFragment extends IvyBaseFragment implements
                 GravityCompat.END);
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
 
-        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(), /* host Activity */
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(((Activity)context), /* host Activity */
                 mDrawerLayout,
                 R.string.ok,
                 R.string.close
@@ -209,7 +220,7 @@ public class SOSFragment extends IvyBaseFragment implements
                     setScreenTitle(mSFHelper.mSelectedActivityName);
                 }
 
-                getActivity().invalidateOptionsMenu();
+                ((Activity)context).invalidateOptionsMenu();
             }
 
             public void onDrawerOpened(View drawerView) {
@@ -217,7 +228,7 @@ public class SOSFragment extends IvyBaseFragment implements
                     setScreenTitle(getResources().getString(R.string.filter));
                 }
 
-                getActivity().invalidateOptionsMenu();
+                ((Activity)context).invalidateOptionsMenu();
             }
         };
 
@@ -284,7 +295,7 @@ public class SOSFragment extends IvyBaseFragment implements
     }
 
     private ActionBar getActionBar() {
-        return ((AppCompatActivity) getActivity()).getSupportActionBar();
+        return ((AppCompatActivity) context).getSupportActionBar();
     }
 
     /**
@@ -327,7 +338,7 @@ public class SOSFragment extends IvyBaseFragment implements
      * Initialize Adapter and add reason
      */
     private void loadReasons() {
-        spinnerAdapter = new ArrayAdapter<>(getActivity(),
+        spinnerAdapter = new ArrayAdapter<>(context,
                 R.layout.spinner_bluetext_layout);
         spinnerAdapter
                 .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
@@ -345,7 +356,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
         if (!(spinnerAdapter.getCount() > 0)) {
             ReasonMaster reasonMasterBo = new ReasonMaster();
-            reasonMasterBo.setReasonDesc(getActivity().getResources().getString(R.string.select_reason));
+            reasonMasterBo.setReasonDesc(getResources().getString(R.string.select_reason));
             reasonMasterBo.setReasonID("0");
             spinnerAdapter.add(reasonMasterBo);
         }
@@ -366,8 +377,8 @@ public class SOSFragment extends IvyBaseFragment implements
                     mImageName, HomeScreenTwo.MENU_SOS, mSelectedLocationIndex);
         }else if (requestCode == SHARE_SHELF_RESULT_CODE){
 
-            if (getActivity() != null)
-                getActivity().overridePendingTransition(0, R.anim.zoom_exit);
+            ((Activity)context).overridePendingTransition(0, R.anim.zoom_exit);
+
             if (resultCode == 1){
                 mCategoryForDialog.clear();
                 mCategoryForDialog.addAll(mSFHelper.getmCategoryForDialogSOSBO());
@@ -397,7 +408,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
             mDrawerLayout.openDrawer(GravityCompat.END);
 
-            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            android.support.v4.app.FragmentManager fm = ((FragmentActivity)context).getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");
             android.support.v4.app.FragmentTransaction ft = fm
@@ -502,7 +513,7 @@ public class SOSFragment extends IvyBaseFragment implements
             FiveFilterFragment();
             return true;
         } else if (i == R.id.menu_remarks) {
-            android.support.v4.app.FragmentManager ft = getActivity()
+            android.support.v4.app.FragmentManager ft = ((FragmentActivity)context)
                     .getSupportFragmentManager();
             RemarksDialog remarksDialog = new RemarksDialog(
                     HomeScreenTwo.MENU_SOS);
@@ -611,7 +622,7 @@ public class SOSFragment extends IvyBaseFragment implements
     private void showAlertOnBackClick() {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(
-                getActivity());
+                context);
         builder.setTitle("");
         builder.setMessage(getResources().getString(
                 R.string.do_u_want_to_delete_tran));
@@ -619,18 +630,24 @@ public class SOSFragment extends IvyBaseFragment implements
                 new android.content.DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
-                        mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                        if (!isPreVisit)
+                            mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                                 .now(DateTimeUtils.TIME));
 
                         if (totalImgList != null)
                             deleteUnsavedImageFromFolder();
 
+                        Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                        if (isPreVisit)
+                            intent.putExtra("PreVisit",true);
+
                         if (isFromChild)
-                            startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                                    .putExtra("isStoreMenu", true));
+                            startActivity(intent.putExtra("isStoreMenu", true));
                         else
-                            startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                        getActivity().finish();
+                            startActivity(intent);
+
+                        ((Activity)context).finish();
 
                     }
                 });
@@ -655,15 +672,15 @@ public class SOSFragment extends IvyBaseFragment implements
      */
     private void showFileDeleteAlertWithImage(final String imageNameStarts,
                                               final String imageSrc) {
-        final CommonDialog commonDialog = new CommonDialog(getActivity().getApplicationContext(), //Context
-                getActivity(), //Context
+        final CommonDialog commonDialog = new CommonDialog(context.getApplicationContext(), //Context
+                context, //Context
                 "", //Title
                 getResources().getString(R.string.word_already) + " " + 1 + " " + getResources().getString(R.string.word_photocaptured_delete_retake), //Message
                 true, //ToDisplayImage
                 getResources().getString(R.string.yes), //Positive Button
                 getResources().getString(R.string.no), //Negative Button
                 false, //MoveToNextActivity
-                getActivity().getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + imageSrc, //LoadImage
+                context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + DataMembers.photoFolderName + "/" + imageSrc, //LoadImage
                 new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
@@ -672,7 +689,7 @@ public class SOSFragment extends IvyBaseFragment implements
                                 imageNameStarts);
                         if (dialog != null)
                             dialog.dismiss();
-                        Intent intent = new Intent(getActivity(),
+                        Intent intent = new Intent(context,
                                 CameraActivity.class);
                         intent.putExtra(CameraActivity.QUALITY, 40);
                         String path = FileUtils.photoFolderPath + "/" + mImageName;
@@ -710,8 +727,8 @@ public class SOSFragment extends IvyBaseFragment implements
     private void getTotalValue(final int categoryId) {
         mSelectedET = null;
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        dialog = new Dialog(getActivity());
+        ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.dialog_salesfundamental_total);
@@ -854,8 +871,8 @@ public class SOSFragment extends IvyBaseFragment implements
     private void getCategoryTotalValue(final int categoryId) {
         mSelectedET = null;
         DisplayMetrics displayMetrics = new DisplayMetrics();
-        getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-        dialog = new Dialog(getActivity());
+        ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+        dialog = new Dialog(context);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setCancelable(false);
         dialog.setContentView(R.layout.dialog_sfcategory_total);
@@ -956,7 +973,7 @@ public class SOSFragment extends IvyBaseFragment implements
                             if (isValid)
                                 calculateTotalValues();
                             else
-                                Toast.makeText(getActivity(), getResources().
+                                Toast.makeText(context, getResources().
                                         getString(R.string.total_value_less_than_actual_value), Toast.LENGTH_LONG).show();
                             calculateTotalValues();
                             if (dialog != null && isValid) {
@@ -981,7 +998,7 @@ public class SOSFragment extends IvyBaseFragment implements
     private void showLocation() {
         AlertDialog.Builder builder;
 
-        builder = new AlertDialog.Builder(getActivity());
+        builder = new AlertDialog.Builder(context);
         builder.setTitle(null);
         builder.setSingleChoiceItems(mLocationAdapter, mSelectedLocationIndex,
                 new DialogInterface.OnClickListener() {
@@ -1018,7 +1035,7 @@ public class SOSFragment extends IvyBaseFragment implements
         private final List<SOSBO> items;
 
         public MyAdapter(List<SOSBO> mList) {
-            super(getActivity(), R.layout.row_sos, mList);
+            super(context, R.layout.row_sos, mList);
             this.items = mList;
         }
 
@@ -1044,8 +1061,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
                 holder = new ViewHolder();
 
-                LayoutInflater inflater = LayoutInflater.from(getActivity()
-                        .getBaseContext());
+                LayoutInflater inflater = LayoutInflater.from((context));
                 row = inflater.inflate(R.layout.row_sos, parent, false);
 
                 holder.audit = row
@@ -1165,11 +1181,15 @@ public class SOSFragment extends IvyBaseFragment implements
                             bundle.putInt("flag", ShelfShareHelper.SOS);
                             bundle.putInt("selectedlocation", mSelectedLocationIndex);
 
-                            Intent intent = new Intent(getActivity(),SOSMeasureActivity.class);
+                            Intent intent = new Intent(context,SOSMeasureActivity.class);
+
+                            if (isPreVisit)
+                                intent.putExtra("PreVisit",true);
+
                             intent.putExtras(bundle);
 
                             startActivityForResult(intent, SHARE_SHELF_RESULT_CODE);
-                            getActivity().overridePendingTransition(R.anim.zoom_enter,R.anim.hold);
+                            ((Activity)context).overridePendingTransition(R.anim.zoom_enter,R.anim.hold);
                         }
                     }
                 });
@@ -1201,7 +1221,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
                                 showFileDeleteAlertWithImage(mFirstName, holder.mSOS.getLocations().get(mSelectedLocationIndex).getImgName());
                             } else {
-                                Intent intent = new Intent(getActivity(),
+                                Intent intent = new Intent(context,
                                         CameraActivity.class);
                                 intent.putExtra(CameraActivity.QUALITY, 40);
                                 String path = FileUtils.photoFolderPath + "/"
@@ -1214,7 +1234,7 @@ public class SOSFragment extends IvyBaseFragment implements
 
                         } else {
                             Toast.makeText(
-                                    getActivity(),
+                                    context,
                                     R.string.sdcard_is_not_ready_to_capture_img,
                                     Toast.LENGTH_SHORT).show();
                         }
@@ -1340,7 +1360,7 @@ public class SOSFragment extends IvyBaseFragment implements
                     && (!"".equals(holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName()))
                     && (!"null".equals(holder.mSOS.getLocations().get(mSelectedLocationIndex).getImageName()))) {
 
-                Glide.with(getActivity())
+                Glide.with(context)
                         .load(FileUtils.photoFolderPath + "/" + holder.mSOS.getLocations().get(mSelectedLocationIndex).getImgName())
                         .asBitmap()
                         .centerCrop()
@@ -1349,7 +1369,7 @@ public class SOSFragment extends IvyBaseFragment implements
                         .into(new BitmapImageViewTarget(holder.btnPhoto));
 
             } else {
-                holder.btnPhoto.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.drawable.ic_photo_camera));
+                holder.btnPhoto.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_photo_camera));
             }
 
             return row;
@@ -1403,7 +1423,7 @@ public class SOSFragment extends IvyBaseFragment implements
         }
 
         protected void onPreExecute() {
-            builder = new AlertDialog.Builder(getActivity());
+            builder = new AlertDialog.Builder(context);
 
             customProgressDialog(builder, getResources().getString(R.string.saving));
             alertDialog = builder.create();
@@ -1420,22 +1440,25 @@ public class SOSFragment extends IvyBaseFragment implements
                 alertDialog.dismiss();
             if (result == Boolean.TRUE) {
                 totalImgList.clear();
-                new CommonDialog(getActivity().getApplicationContext(), getActivity(),
+                new CommonDialog(context.getApplicationContext(), context,
                         "", getResources().getString(R.string.saved_successfully),
-                        false, getActivity().getResources().getString(R.string.ok),
+                        false, getResources().getString(R.string.ok),
                         null, new CommonDialog.PositiveClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
-                        Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
+                        Intent intent = new Intent(context, HomeScreenTwo.class);
 
-                        Bundle extras = getActivity().getIntent().getExtras();
+                        Bundle extras = ((Activity)context).getIntent().getExtras();
                         if (extras != null) {
                             intent.putExtra("IsMoveNextActivity", mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                             intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                         }
 
+                        if (isPreVisit)
+                            intent.putExtra("PreVisit",true);
+
                         startActivity(intent);
-                        getActivity().finish();
+                        ((Activity)context).finish();
                     }
                 }, new CommonDialog.negativeOnClickListener() {
                     @Override
@@ -1473,8 +1496,7 @@ public class SOSFragment extends IvyBaseFragment implements
             if (row == null) {
                 holder = new CompetitorHolder();
 
-                LayoutInflater inflater = LayoutInflater.from(getActivity()
-                        .getBaseContext());
+                LayoutInflater inflater = LayoutInflater.from(context);
 
                 row = inflater.inflate(
                         R.layout.row_salesfundamental_total_list, parent, false);
@@ -1598,8 +1620,7 @@ public class SOSFragment extends IvyBaseFragment implements
             if (row == null) {
                 holder = new CategoryHolder();
 
-                LayoutInflater inflater = LayoutInflater.from(getActivity()
-                        .getBaseContext());
+                LayoutInflater inflater = LayoutInflater.from(context);
 
                 row = inflater.inflate(
                         R.layout.row_sfcategory_total_list, parent, false);
@@ -1835,7 +1856,7 @@ public class SOSFragment extends IvyBaseFragment implements
                 }
             } else {
                 sb = "";
-                Toast.makeText(getActivity(), getResources().getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, getResources().getString(R.string.exceed_limt), Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -1851,34 +1872,52 @@ public class SOSFragment extends IvyBaseFragment implements
                 if (mSFHelper.getLstSOS_PRJSpecific() != null || totalImgList.size() > 0)
                     showAlertOnBackClick();
                 else {
-                    mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+
+                    if (!isPreVisit)
+                        mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                             .now(DateTimeUtils.TIME));
+
+                    Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                    if (isPreVisit)
+                        intent.putExtra("PreVisit",true);
+
                     if (isFromChild)
-                        startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                                .putExtra("isStoreMenu", true));
+                        startActivity(intent.putExtra("isStoreMenu", true));
                     else
-                        startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                    getActivity().finish();
+                        startActivity(intent);
+
+                    ((Activity)context).finish();
+
                 }
             }
-            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
     }
 
     private void showBackDialog() {
-        CommonDialog dialog = new CommonDialog(getActivity(), getResources().getString(R.string.doyouwantgoback),
+        CommonDialog dialog = new CommonDialog(context, getResources().getString(R.string.doyouwantgoback),
                 "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+
+                if (!isPreVisit)
+                    mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
+
+                Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                if (isPreVisit)
+                    intent.putExtra("PreVisit",true);
+
                 if (isFromChild)
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                            .putExtra("isStoreMenu", true));
+                    startActivity(intent.putExtra("isStoreMenu", true));
                 else
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().finish();
-                getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                    startActivity(intent);
+
+                ((Activity)context).finish();
+
+                ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             }
         }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {
             @Override

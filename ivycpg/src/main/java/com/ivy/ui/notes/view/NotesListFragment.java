@@ -372,9 +372,16 @@ public class NotesListFragment extends BaseFragment implements NotesContract.Not
     }
 
     private void onBackPressed() {
-        if (!isFromHomeScreen) {
-            mPresenter.updateModuleTime();
-            startActivity(HomeScreenTwo.class);
+        if (!isFromHomeScreen &&
+                (getActivity() != null)) {
+
+            if (!isPreVisit)
+                mPresenter.updateModuleTime();
+
+            Intent intent = new Intent(getActivity(),HomeScreenTwo.class);
+            if (isPreVisit)
+                intent.putExtra("PreVisit",true);
+            startActivity(intent);
         }
 
         Objects.requireNonNull(getActivity()).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);

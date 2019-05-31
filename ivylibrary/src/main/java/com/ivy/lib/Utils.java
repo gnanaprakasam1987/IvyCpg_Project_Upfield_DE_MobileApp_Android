@@ -2,9 +2,17 @@ package com.ivy.lib;
 
 import android.content.Context;
 import android.database.DatabaseUtils;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Environment;
+import android.support.annotation.NonNull;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.widget.AppCompatImageView;
 import android.text.TextUtils;
+import android.widget.ImageView;
+
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -657,6 +665,26 @@ public class Utils {
 			sSDpath="";
 		}
 		return sSDpath;
+	}
+
+	/**
+	 * This method used re
+	 * @param context
+	 * @param imageView
+	 * @param radius
+	 * @return
+	 */
+	public static BitmapImageViewTarget getRoundedImageTarget(@NonNull final Context context, @NonNull final AppCompatImageView imageView,
+															  final float radius) {
+		return new BitmapImageViewTarget(imageView) {
+			@Override
+			protected void setResource(final Bitmap resource) {
+				RoundedBitmapDrawable circularBitmapDrawable =
+						RoundedBitmapDrawableFactory.create(context.getResources(), resource);
+				circularBitmapDrawable.setCornerRadius(radius);
+				imageView.setImageDrawable(circularBitmapDrawable);
+			}
+		};
 	}
 
 }

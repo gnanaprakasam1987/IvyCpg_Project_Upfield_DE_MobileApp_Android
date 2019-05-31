@@ -43,7 +43,7 @@ import android.widget.ViewFlipper;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.nonfield.NonFieldBO;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.CalenderBO;
+import com.ivy.ui.retailerplan.calendar.bo.CalenderBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
@@ -924,8 +924,6 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
 
                                         tvDayDate.setText(String.format("%s - %s", mItems.get(position), dayOfTheWeek));
 
-                                        timeSlots(dateStr);
-
                                         mViewFlipper.showNext();
 
                                         setDateWiseAdapter(mDayWiseList, dateStr);
@@ -1627,61 +1625,6 @@ public class OfflinePlanningActivity extends IvyBaseActivityNoActionBar {
         NonFieldBO nonFieldBO;
         TextView tvName,tvAddress;
         ImageView ivEntityType;
-    }
-
-    //test
-    private void timeSlots(String dateStr) {
-        try {
-
-            Date date = DateTimeUtils.convertStringToDateObject(dateStr, "yyyy/MM/dd");
-
-            Calendar startCalendar = Calendar.getInstance();
-            Calendar endCalendar = Calendar.getInstance();
-
-            startCalendar.setTime(date);
-            startCalendar.set(Calendar.HOUR_OF_DAY, 0);
-            startCalendar.set(Calendar.MINUTE, 0);
-            startCalendar.set(Calendar.SECOND, 0);
-            startCalendar.set(Calendar.MILLISECOND, 0);
-
-            endCalendar.setTime(date);
-            endCalendar.set(Calendar.HOUR_OF_DAY, 23);
-            endCalendar.set(Calendar.MINUTE, 59);
-            endCalendar.set(Calendar.SECOND, 59);
-            endCalendar.set(Calendar.MILLISECOND, 999);
-
-            SimpleDateFormat slotTime = new SimpleDateFormat("hh:mma", Locale.US);
-            SimpleDateFormat slotDate = new SimpleDateFormat(", dd/MM/yy", Locale.US);
-            while (DateTimeUtils.isFutureDate(endCalendar, startCalendar)) {
-                String slotStartTime = slotTime.format(startCalendar.getTime());
-                String slotStartDate = slotDate.format(startCalendar.getTime());
-
-                startCalendar.add(Calendar.MINUTE, 60);
-                String slotEndTime = slotTime.format(startCalendar.getTime());
-
-                Log.d("DATE", slotStartTime + " - " + slotEndTime + slotStartDate);
-            }
-
-
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(date);
-
-            for (int i = cal.getFirstDayOfWeek(); i <= 7; i++) {
-                cal.set(Calendar.DAY_OF_WEEK, i);
-                System.out.println(cal.getTime());//Returns Date
-            }
-
-            cal.set(Calendar.WEEK_OF_MONTH, cal.get(Calendar.WEEK_OF_MONTH) - 1);
-
-            for (int i = cal.getFirstDayOfWeek(); i <= 7; i++) {
-                cal.set(Calendar.DAY_OF_WEEK, i);
-                System.out.println(cal.getTime());//Returns Date
-            }
-
-
-        } catch (Exception e) {
-            Commons.printException(e);
-        }
     }
 
 

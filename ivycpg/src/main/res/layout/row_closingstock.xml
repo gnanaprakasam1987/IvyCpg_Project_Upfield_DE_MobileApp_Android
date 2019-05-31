@@ -17,34 +17,35 @@
 
     <EditText
         android:id="@+id/woqty"
-        style="@style/EditText_ListItem"
+        style="?attr/edit_text_list_item_style"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:text="@string/zero" />
 
     <EditText
         android:id="@+id/souterqty"
-        style="@style/EditText_ListItem"
+        style="?attr/edit_text_list_item_style"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:text="@string/zero" />
 
     <EditText
         android:id="@+id/shpqty"
-        style="@style/EditText_ListItem"
+        style="?attr/edit_text_list_item_style"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:text="@string/zero" />
 
     <EditText
         android:id="@+id/shcqty"
-        style="@style/EditText_ListItem"
+        style="?attr/edit_text_list_item_style"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="wrap_content"
         android:text="@string/zero"
         android:visibility="gone" />
 
     <CheckBox
+        style="?attr/checkbox_style"
         android:id="@+id/checkstock"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="match_parent"
@@ -54,7 +55,7 @@
 
     <EditText
         android:id="@+id/whcqty"
-        style="@style/EditText_ListItem"
+        style="?attr/edit_text_list_item_style"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="match_parent"
         android:text="@string/zero"
@@ -62,7 +63,7 @@
 
     <EditText
         android:id="@+id/whpqty"
-        style="@style/EditText_ListItem"
+        style="?attr/edit_text_list_item_style"
         android:layout_width="@dimen/list_item_width_medium"
         android:layout_height="match_parent"
         android:text="@string/zero" />

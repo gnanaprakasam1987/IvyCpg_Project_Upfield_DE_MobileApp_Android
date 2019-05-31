@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.serializedAsset;
 
 import android.app.Activity;
+import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
@@ -12,10 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -25,13 +28,19 @@ import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.MyDialogCloseListener;
 import com.ivy.utils.DateTimeUtils;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 /**
  * Created by anish.k on 9/25/2017.
@@ -40,32 +49,43 @@ import java.util.ArrayList;
 
 public class SerializedAssetMovementDialog extends DialogFragment {
 
-    protected BusinessModel mBModel;
-    protected TextView TVOutletName, TVSerialNo, TVAssetName;
-    protected Spinner /*SpToOutletName,*/ SpReason;
-    protected AutoCompleteTextView autoCompleteToOutletName;
-    protected EditText ETDesc;
-    protected Button BTCancel, BTSave;
-    protected ArrayList<ReasonMaster> mAssetReasonList;
-    protected ArrayList<RetailerMasterBO> retailerMasterBOs;
-    protected String serialNo,reasonId,toRetailerId="0",assetName,/*brand,*/retailerName;
-    protected Integer retailerSelected=-1,assetId,referenceId;
+    private BusinessModel mBModel;
+    private TextView TVOutletName, TVSerialNo, TVAssetName;
+    private Spinner /*SpToOutletName,*/ SpReason;
+    private AutoCompleteTextView autoCompleteToOutletName;
+    private EditText ETDesc;
+    private Button BTCancel, BTSave;
+    private EditText rentalPriceEdTxt;
+    private Button addEffToDateBtn;
+    private ArrayList<ReasonMaster> mAssetReasonList;
+    private ArrayList<RetailerMasterBO> retailerMasterBOs;
+    private String serialNo, reasonId, toRetailerId = "0", assetName,/*brand,*/
+            retailerName;
+    private Integer retailerSelected = -1, assetId;
+    private double rentalPrice;
+    private String effToDateStr;
+    private String referenceId;
     private final SerializedAssetBO assetBo = new SerializedAssetBO();
     SerializedAssetHelper assetTrackingHelper;
-    private String movementType="RTR_WH";
+    private String movementType = "RTR_WH";
+    private Context context;
+    private int mYear;
+    private int mMonth;
+    private int mDay;
+    private MyDatePickerDialog effToDatePrickerDialog;
 
     ArrayList<String> mRetailerNameList = new ArrayList<>();
     ArrayList<String> mRetailerIdList = new ArrayList<>();
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        if(getDialog().getWindow()!=null) {
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        if (getDialog().getWindow() != null) {
             getDialog().getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         }
         setCancelable(false);
         View view = inflater.inflate(R.layout.move_serialized_asset_dialog, container);
         getDialog().getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        Context context = getActivity();
+        context = getActivity();
         mBModel = (BusinessModel) context.getApplicationContext();
 
         assetTrackingHelper = SerializedAssetHelper.getInstance(context);
@@ -74,16 +94,44 @@ public class SerializedAssetMovementDialog extends DialogFragment {
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        TVOutletName = (TextView) view.findViewById(R.id.input_current_outletcode);
-        TVSerialNo = (TextView) view.findViewById(R.id.input_movement_serialNo);
-        TVAssetName = (TextView) view.findViewById(R.id.input_movement_assetName);
-        //SpToOutletName = (Spinner) view.findViewById(R.id.spinnerMovementOutletName);
-        autoCompleteToOutletName = (AutoCompleteTextView) view.findViewById(R.id.autoCompleteMovementOutletName);
-        SpReason = (Spinner) view.findViewById(R.id.spinnerMovementReason);
-        ETDesc = (EditText) view.findViewById(R.id.input_move_description);
-        BTCancel = (Button) view.findViewById(R.id.btn_dialog_move_cancel);
-        BTSave = (Button) view.findViewById(R.id.btn_dialog_move);
+    public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
+        TVOutletName = view.findViewById(R.id.input_current_outletcode);
+        TVSerialNo = view.findViewById(R.id.input_movement_serialNo);
+        TVAssetName = view.findViewById(R.id.input_movement_assetName);
+        autoCompleteToOutletName = view.findViewById(R.id.autoCompleteMovementOutletName);
+        SpReason = view.findViewById(R.id.spinnerMovementReason);
+        ETDesc = view.findViewById(R.id.input_move_description);
+        BTCancel = view.findViewById(R.id.btn_dialog_move_cancel);
+        BTSave = view.findViewById(R.id.btn_dialog_move);
+        rentalPriceEdTxt = view.findViewById(R.id.rental_price_edt);
+        addEffToDateBtn = view.findViewById(R.id.eff_to_date_button);
+
+
+        if (!assetTrackingHelper.SHOW_ASSET_RENTAL_PRICE) {
+            view.findViewById(R.id.label_rental_price_title).setVisibility(View.GONE);
+            rentalPriceEdTxt.setVisibility(View.GONE);
+        } else {
+
+            if (mBModel.labelsMasterHelper.applyLabels(view.findViewById(
+                    R.id.label_rental_price_title).getTag()) != null)
+                ((TextView) view.findViewById(R.id.label_rental_price_title))
+                        .setText(mBModel.labelsMasterHelper
+                                .applyLabels(view.findViewById(
+                                        R.id.label_rental_price_title).getTag()));
+        }
+
+        if (!assetTrackingHelper.SHOW_ASSET_EFFECTIVE_DATE) {
+            view.findViewById(R.id.eff_to_date_label).setVisibility(View.GONE);
+            addEffToDateBtn.setVisibility(View.GONE);
+        } else {
+            if (mBModel.labelsMasterHelper.applyLabels(view.findViewById(
+                    R.id.eff_to_date_label).getTag()) != null)
+                ((TextView) view.findViewById(R.id.eff_to_date_label))
+                        .setText(mBModel.labelsMasterHelper
+                                .applyLabels(view.findViewById(
+                                        R.id.eff_to_date_label).getTag()));
+        }
+
         BTCancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,31 +145,26 @@ public class SerializedAssetMovementDialog extends DialogFragment {
             }
         });
 
-        TVAssetName.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.LIGHT));
-        TVSerialNo.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        ((TextView) view.findViewById(R.id.input_current_outletcode_title)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        ((TextView) view.findViewById(R.id.to_outletcode_title)).setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.MEDIUM));
-        TVOutletName.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-        BTCancel.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-        BTSave.setTypeface(mBModel.configurationMasterHelper.getFontBaloobhai(ConfigurationMasterHelper.FontType.REGULAR));
-
 
         serialNo = getArguments().getString("serialNo");
         retailerName = getArguments().getString("retailerName");
         assetName = getArguments().getString("assetName");
         //brand=getArguments().getString("brand");
-        assetId=getArguments().getInt("assetId");
-        referenceId=getArguments().getInt("referenceId");
+        assetId = getArguments().getInt("assetId");
+        referenceId = getArguments().getString("referenceId");
+        rentalPrice = getArguments().getDouble("rentalPrice");
+        effToDateStr = getArguments().getString("effToDate");
+
         String mSerialNo = getString(R.string.serial_no);
-        if (mBModel.labelsMasterHelper.applyLabels(view.findViewById(
-                R.id.input_movement_serialNo).getTag()) != null)
+        if (mBModel.labelsMasterHelper.applyLabels(TVSerialNo.getTag()) != null)
             mSerialNo = mBModel.labelsMasterHelper
-                    .applyLabels(view.findViewById(
-                            R.id.input_movement_serialNo).getTag());
+                    .applyLabels(TVSerialNo.getTag());
         String mSerialNumber = mSerialNo + ": " + serialNo;
         TVSerialNo.setText(mSerialNumber);
         TVOutletName.setText(retailerName);
         TVAssetName.setText(assetName);
+        rentalPriceEdTxt.setText(String.valueOf(rentalPrice));
+        addEffToDateBtn.setText((DateTimeUtils.convertFromServerDateToRequestedFormat(effToDateStr, ConfigurationMasterHelper.outDateFormat)));
         initSpinner();
 
         super.onViewCreated(view, savedInstanceState);
@@ -129,9 +172,9 @@ public class SerializedAssetMovementDialog extends DialogFragment {
 
     private void initSpinner() {
         //Generating Reason List
-        mAssetReasonList=new ArrayList<>();
+        mAssetReasonList = new ArrayList<>();
         mBModel.reasonHelper.loadAssetReasonsBasedOnType("ASSET_MOVE");
-        mAssetReasonList.add(new ReasonMaster("0","--Select Reason--"));
+        mAssetReasonList.add(new ReasonMaster("0", "--Select Reason--"));
         mAssetReasonList.addAll(mBModel.reasonHelper.getAssetReasonsBasedOnType());
 
         ArrayAdapter<ReasonMaster> mAssetReasonSpinAdapter = new ArrayAdapter<>(getActivity(), R.layout.spinner_bluetext_layout, mAssetReasonList);
@@ -140,7 +183,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         SpReason.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                reasonId =mAssetReasonList.get(position).getReasonID();
+                reasonId = mAssetReasonList.get(position).getReasonID();
             }
 
             @Override
@@ -160,7 +203,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         mRetailerNameList = new ArrayList<>();
         mRetailerIdList = new ArrayList<>();
         for (int i = 0; i < retailerMasterBOs.size(); i++) {
-            if(!retailerMasterBOs.get(i).getMovRetailerId().equals(mBModel.getRetailerMasterBO().getRetailerID())) {
+            if (!retailerMasterBOs.get(i).getMovRetailerId().equals(mBModel.getRetailerMasterBO().getRetailerID())) {
                 mRetailerNameList.add(retailerMasterBOs.get(i).getMovRetailerName());
                 mRetailerIdList.add(retailerMasterBOs.get(i).getMovRetailerId());
             }
@@ -179,55 +222,89 @@ public class SerializedAssetMovementDialog extends DialogFragment {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 int selectedPosition = mRetailerNameList.indexOf((String) adapterView.getItemAtPosition(position));
-                toRetailerId=mRetailerIdList.get(selectedPosition);
-                if(selectedPosition>0)
-                    movementType="RTR_RTR";
-                else movementType="RTR_WH";
+                toRetailerId = mRetailerIdList.get(selectedPosition);
+                if (selectedPosition > 0)
+                    movementType = "RTR_RTR";
+                else movementType = "RTR_WH";
             }
         });
-//        SpToOutletName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-//            @Override
-//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-//                retailerSelected=position;
-//                toRetailerId=mRetailerIdList.get(position);
-//
-//                if(position>0)
-//                    movementType="RTR_RTR";
-//                else movementType="RTR_WH";
-//            }
-//
-//            @Override
-//            public void onNothingSelected(AdapterView<?> parent) {
-//
-//            }
-//        });
+
+
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
+
+        addEffToDateBtn.setOnClickListener(v -> {
+            hideSoftInputFromWindow();
+            if (effToDatePrickerDialog == null)
+                createInstallDatePicker();
+
+            effToDatePrickerDialog.show();
+        });
     }
+
+    private void createInstallDatePicker() {
+        // Launch Date Picker Dialog
+        effToDatePrickerDialog = new MyDatePickerDialog(
+                context, R.style.DatePickerDialogStyle, mDateSetListener, mYear, mMonth, mDay);
+        effToDatePrickerDialog.setPermanentTitle(getString(R.string.choose_date));
+    }
+
+    private DatePickerDialog.OnDateSetListener mDateSetListener = new DatePickerDialog.OnDateSetListener() {
+        @Override
+        public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+            mYear = year;
+            mMonth = month;
+            mDay = dayOfMonth;
+            Calendar selectedDate = new GregorianCalendar(
+                    year, month, dayOfMonth);
+            addEffToDateBtn.setText(DateTimeUtils
+                    .convertDateObjectToRequestedFormat(
+                            selectedDate.getTime(),
+                            ConfigurationMasterHelper.outDateFormat));
+            Calendar mCurrentCalendar = Calendar
+                    .getInstance();
+            if (mCurrentCalendar.after(selectedDate)) {
+
+                Toast.makeText(context, context.getString(R.string.select_future_date), Toast.LENGTH_LONG).show();
+
+                addEffToDateBtn.setText("");
+
+                mYear = mCurrentCalendar.get(Calendar.YEAR);
+                mMonth = mCurrentCalendar.get(Calendar.MONTH);
+                mDay = mCurrentCalendar.get(Calendar.DAY_OF_MONTH);
+
+            }
+        }
+    };
 
     private void saveFunction() {
         if (validateDestinationData() && validateDesc() && validateDestination())
             //if (SpToOutletName.getSelectedItemPosition() != 0 && retailerSelected>0) {
-                if (SpReason.getSelectedItemPosition() != 0) {
+            if (SpReason.getSelectedItemPosition() != 0) {
 
-                    setAddAssetDetails();
-                    mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET, true);
-                    assetTrackingHelper
-                            .saveAssetMovementDetails(getContext().getApplicationContext(), movementType,referenceId);
-                    Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
-                            Toast.LENGTH_SHORT).show();
-                    dismiss();
-                } else {
-                    Toast.makeText(mBModel, "Select Reason and Try again", Toast.LENGTH_SHORT).show();
-                }
+                setAddAssetDetails();
+                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET, true);
+                assetTrackingHelper
+                        .saveAssetMovementDetails(getContext().getApplicationContext(), movementType, referenceId);
+                Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
+                        Toast.LENGTH_SHORT).show();
+                dismiss();
+            } else {
+                Toast.makeText(mBModel, "Select Reason and Try again", Toast.LENGTH_SHORT).show();
+            }
            /* } else {
                 Toast.makeText(mBModel, "Select OutletName and Try again", Toast.LENGTH_SHORT).show();
             }*/
     }
+
     private void setAddAssetDetails() {
 
         String todayDate = DateTimeUtils.convertFromServerDateToRequestedFormat(
                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
-        String remarks=ETDesc.getText().toString().trim();
+        String remarks = ETDesc.getText().toString().trim();
 
         assetBo.setPOSM(String.valueOf(assetId));
         assetBo.setBrand("");//assetTrackingHelper.getAssetBrandIds(brand));
@@ -236,6 +313,8 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         assetBo.setReasonId(reasonId);
         assetBo.setRemarks(remarks);
         assetBo.setToRetailerId(toRetailerId);
+        assetBo.setRentalPrice(SDUtil.convertToDouble(rentalPriceEdTxt.getText().toString()));
+        assetBo.setEffectiveToDate(addEffToDateBtn.getText().toString());
         assetTrackingHelper.setAssetTrackingBO(assetBo);
 
     }
@@ -278,8 +357,8 @@ public class SerializedAssetMovementDialog extends DialogFragment {
     public void onDismiss(DialogInterface dialog) {
         super.onDismiss(dialog);
         Activity activity = getActivity();
-        if(activity instanceof MyDialogCloseListener)
-            ((MyDialogCloseListener)activity).handleDialogClose(dialog);
+        if (activity instanceof MyDialogCloseListener)
+            ((MyDialogCloseListener) activity).handleDialogClose(dialog);
     }
 
     @Override
@@ -290,12 +369,17 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
 
         Window window = getDialog().getWindow();
-        if(window!=null) {
+        if (window != null) {
             lp.copyFrom(window.getAttributes());
             window.setAttributes(lp);
         }
     }
 
+    private void hideSoftInputFromWindow() {
+        InputMethodManager inputManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(
+                rentalPriceEdTxt.getWindowToken(), 0);
+    }
 
 
 }

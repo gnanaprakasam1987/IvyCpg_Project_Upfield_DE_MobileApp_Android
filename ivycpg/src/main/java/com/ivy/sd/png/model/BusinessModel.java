@@ -1606,16 +1606,22 @@ public class BusinessModel extends Application {
                     updateRetailerPriceGRP(retailer, db);
 
                     if (configurationMasterHelper.IS_HANGINGORDER) {
-                        OrderHelper.getInstance(getContext()).updateHangingOrder(getContext(), retailer,db);
+                        OrderHelper.getInstance(getContext()).updateHangingOrder(getContext(), retailer, db);
                     }
                     updateIndicativeOrderedRetailer(retailer);
 
                     if (configurationMasterHelper.isRetailerBOMEnabled) {
                         setIsBOMAchieved(retailer, db);
                     }
+
+                    updatePlanAndVisitCount(retailer, db);
+
                     getRetailerMaster().add(retailer);
 
                     mRetailerBOByRetailerid.put(retailer.getRetailerID(), retailer);
+
+                    if(configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
+                        updateIsToday(db);
 
 
                 }
@@ -1712,6 +1718,60 @@ public class BusinessModel extends Application {
             Commons.printException("Exception ", e);
         }
 
+    }
+
+    /**
+     * update retailer plan and visit count
+     *
+     * @param retObj
+     */
+    private void updatePlanAndVisitCount(RetailerMasterBO retObj, DBUtil db) {
+
+        try {
+            Cursor c;
+            c = db.selectSQL("select PlanId From DatewisePlan where planStatus ='APPROVED'or 'PENDING' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()));
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext())
+                    retObj.setTotalPlanned(c.getCount());
+
+                c.close();
+            }
+
+
+            c = db.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
+            if (c != null
+                    && c.getCount() > 0) {
+                if (c.moveToNext())
+                    retObj.setTotalVisited(c.getCount());
+
+                c.close();
+            }
+        } catch (Exception ignore) {
+
+        }
+
+    }
+
+    private void updateIsToday(DBUtil db) {
+        List<String> retailerIds = new ArrayList<>();
+        Cursor c = db.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND VisitStatus = 'PLANNED' " +
+                "and Date = " + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+        if (c != null
+                && c.getCount() > 0) {
+            while (c.moveToNext()) {
+                retailerIds.add(c.getString(0));
+            }
+
+            c.close();
+        }
+        if (retailerIds.size() > 0)
+            for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
+                retailerMasterBO.setIsToday(0);
+                if (retailerIds.contains(retailerMasterBO.getRetailerID())) {
+                    retailerMasterBO.setIsToday(1);
+                }
+            }
     }
 
     @Deprecated
@@ -2647,6 +2707,25 @@ public class BusinessModel extends Application {
     }
 
 
+    public void saveCancelVistreason(String reasonId,String date) {
+        try {
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
+            );
+            db.createDataBase();
+            db.openDataBase();
+
+            String query = "Update DatewisePlan set cancelReasonId="+StringUtils.QT(reasonId)+",VisitStatus = 'CANCELLED' , Status = 'D' "
+                    +" where EntityId="+StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())+" and Date="+StringUtils.QT(date);
+
+            db.updateSQL(query);
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+
     /**
      * @See {@link  com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;}
      * @since CPG131 replaced by {@link com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp#getRetailerAttribute}
@@ -3521,12 +3600,12 @@ public class BusinessModel extends Application {
                     .selectSQL("SELECT DISTINCT ImgURL,imgId FROM PlanogramImageInfo");
             if (c != null) {
                 while (c.moveToNext()) {
-                    if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN){
+                    if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
 
                         DigitalContentModel digitalContentBO = new DigitalContentModel();
 
                         String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
-                        digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES*2));//approx 2mb
+                        digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES * 2));//approx 2mb
                         digitalContentBO.setImageID(c.getInt(1));
                         digitalContentBO.setImgUrl(downloadUrl);
                         digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);
@@ -3534,8 +3613,7 @@ public class BusinessModel extends Application {
 
                         digitalContentLargeFileURLS.put(digitalContentBO.getImageID(), digitalContentBO);
 
-                    }
-                    else {
+                    } else {
                         getDigitalContentURLS().put(
                                 DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                                 DataMembers.PLANOGRAM);
@@ -3556,7 +3634,7 @@ public class BusinessModel extends Application {
                             DigitalContentModel digitalContentBO = new DigitalContentModel();
 
                             String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
-                            digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES*2));// approx  2 mb
+                            digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES * 2));// approx  2 mb
                             digitalContentBO.setImageID(c.getInt(1));
                             digitalContentBO.setImgUrl(downloadUrl);
                             digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);
@@ -3664,6 +3742,17 @@ public class BusinessModel extends Application {
                     getDigitalContentURLS().put(
                             DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                             DataMembers.TASK_DIGITAL_CONTENT);
+
+                }
+                c.close();
+            }
+
+            c = db.selectSQL("SELECT DISTINCT ImageName FROM SerializedAssetMaster");
+            if (c != null) {
+                while ((c.moveToNext())) {
+                    getDigitalContentURLS().put(
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                            DataMembers.SERIALIZED_ASSET_DIG_CONTENT);
 
                 }
                 c.close();
@@ -4340,6 +4429,8 @@ public class BusinessModel extends Application {
                 mBucketName = mBucketDetails + "/" + "Order" + path;
             } else if (imageName.startsWith("TSK_")) {
                 mBucketName = mBucketDetails + "/" + "Task" + path;
+            } else if (imageName.startsWith("SUR_SGN_")) {
+                mBucketName = mBucketDetails + "/" + "Survey" + path;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = mBucketDetails + "/" + "PhotoCapture" + path;
@@ -4824,7 +4915,7 @@ public class BusinessModel extends Application {
     /**
      * @param folderPath
      * @param fnamesStarts
-     * @See {@link FileUtils#deleteFiles(String, String)}
+     * @See {@link FileUtils#deleteFiles(String,String)}
      * @deprecated
      */
     public void deleteFiles(String folderPath, String fnamesStarts) {
@@ -7613,6 +7704,8 @@ public class BusinessModel extends Application {
                 mBucketName = "SalesReturn" + path + imageName;
             } else if (imageName.startsWith("ORD_")) {
                 mBucketName = "Order" + path + imageName;
+            } else if (imageName.startsWith("SUR_SGN_")) {
+                mBucketName = "Survey" + path + imageName;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = "PhotoCapture" + path + imageName;

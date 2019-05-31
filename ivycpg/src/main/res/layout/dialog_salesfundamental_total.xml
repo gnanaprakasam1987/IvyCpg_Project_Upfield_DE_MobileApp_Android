@@ -74,7 +74,7 @@
 
                 <EditText
                     android:id="@+id/et_total"
-                    style="@style/EditText_ListItem"
+                    style="?attr/edit_text_list_item_style"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
@@ -133,7 +133,7 @@
 
         <Button
             android:id="@+id/btn_done"
-            style="?attr/roundedCustomButtonNormal"
+            style="?attr/roundedCustomButtonNormal_Configured"
             android:layout_gravity="center_vertical"
             android:text="@string/save"
             android:textAllCaps="false" />

@@ -2,4 +2,5 @@
 <resources>
     <string name="app_name">IVYLib</string>
     <string name="choose_month">Choose Month</string>
+    <string name="image_not_available">Image file not available</string>
 </resources>

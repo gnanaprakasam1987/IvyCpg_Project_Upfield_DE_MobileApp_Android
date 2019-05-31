@@ -1,0 +1,407 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ivy.cpg.view.serializedAsset.SerializedAssetDetailActivity">
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/toolbar"
+        android:fillViewport="true"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/toolbar">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/asset_name_tv"
+                style="@style/TextViewNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_toStartOf="@+id/asset_price_label"
+                android:layout_toLeftOf="@+id/asset_price_label"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:text="@string/asset_name" />
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/asset_price_label"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toStartOf="@+id/asset_price_tv"
+                android:layout_toLeftOf="@+id/asset_price_tv"
+                android:paddingTop="@dimen/_8sdp"
+                android:tag="asset_price"
+                android:text="@string/price" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/asset_price_tv"
+                style="@style/TextViewNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:paddingRight="@dimen/_8sdp"
+                android:text="@string/zero_zero" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/asset_serial_no_tv"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/asset_name_tv"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:text="@string/serial_no" />
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/sih_qty_label"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/asset_serial_no_tv"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:tag="asset_sih_qty"
+                android:text="@string/sih" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/sih_qty_tv"
+                style="@style/TextViewNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/asset_serial_no_tv"
+                android:layout_centerVertical="true"
+                android:layout_toEndOf="@+id/sih_qty_label"
+                android:layout_toRightOf="@+id/sih_qty_label"
+                android:paddingTop="@dimen/_8sdp"
+                android:text="@string/zero" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/asset_rental_price_label"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/asset_serial_no_tv"
+                android:layout_toStartOf="@+id/asset_rental_price_tv"
+                android:layout_toLeftOf="@+id/asset_rental_price_tv"
+                android:paddingTop="@dimen/_8sdp"
+                android:tag="asset_rent_price"
+                android:text="@string/rental_price" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/asset_rental_price_tv"
+                style="@style/TextViewNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/asset_serial_no_tv"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:paddingRight="@dimen/_8sdp"
+                android:text="@string/zero_zero" />
+
+            <View
+                android:id="@+id/divider1"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_1dp"
+                android:layout_below="@+id/sih_qty_tv"
+                android:layout_margin="@dimen/_8sdp"
+                android:background="@color/divider_view_color" />
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/install_date_label"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider1"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:tag="asset_installed_on"
+                android:text="@string/installed_on" />
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/install_date_tv"
+                style="@style/TextViewNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/install_date_label"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:text="@string/date" />
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/service_date_label"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider1"
+                android:layout_marginStart="@dimen/_50sdp"
+                android:layout_marginLeft="@dimen/_50sdp"
+                android:layout_toEndOf="@+id/install_date_label"
+                android:layout_toRightOf="@+id/install_date_label"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:tag="laset_service_date"
+                android:text="@string/last_service_date" />
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/service_date_tv"
+                style="@style/TextViewNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/install_date_label"
+                android:layout_alignStart="@+id/service_date_label"
+                android:layout_alignLeft="@+id/service_date_label"
+                android:layout_toEndOf="@+id/install_date_tv"
+                android:layout_toRightOf="@+id/install_date_tv"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:text="@string/date" />
+
+
+            <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_1dp"
+                android:layout_below="@+id/service_date_tv"
+                android:layout_margin="@dimen/_8sdp"
+                android:background="@color/divider_view_color" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/asset_type_label"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider2"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:tag="asset_type"
+                android:text="@string/type" />
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/asset_type_tv"
+                style="@style/TextViewNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/asset_type_label"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:text="@string/type" />
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/asset_model_label"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider2"
+                android:layout_alignStart="@+id/asset_model_tv"
+                android:layout_alignLeft="@+id/asset_model_tv"
+                android:layout_toEndOf="@+id/asset_type_label"
+                android:layout_toRightOf="@+id/asset_type_label"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:tag="asset_model"
+                android:text="@string/model" />
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/asset_model_tv"
+                style="@style/TextViewNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/asset_model_label"
+                android:layout_alignStart="@+id/service_date_label"
+                android:layout_alignLeft="@+id/service_date_label"
+                android:layout_toEndOf="@+id/asset_type_tv"
+                android:layout_toRightOf="@+id/asset_type_tv"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:text="@string/model" />
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/asset_vendor_label"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/asset_type_tv"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:tag="asset_vendor"
+                android:text="@string/vendor" />
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/asset_vendor_tv"
+                style="@style/TextViewNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/asset_vendor_label"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:text="@string/vendor" />
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/asset_capacity_label"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/asset_model_tv"
+                android:layout_alignStart="@+id/asset_capacity_tv"
+                android:layout_alignLeft="@+id/asset_capacity_tv"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_toEndOf="@+id/asset_vendor_label"
+                android:layout_toRightOf="@+id/asset_vendor_label"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:tag="asset_capacity"
+                android:text="@string/capacity" />
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/asset_capacity_tv"
+                style="@style/TextViewNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/asset_capacity_label"
+                android:layout_alignStart="@+id/service_date_label"
+                android:layout_alignLeft="@+id/service_date_label"
+                android:layout_toEndOf="@+id/asset_vendor_tv"
+                android:layout_toRightOf="@+id/asset_vendor_tv"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:text="@string/capacity" />
+
+
+            <View
+                android:id="@+id/divider3"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_1dp"
+                android:layout_below="@+id/asset_capacity_tv"
+                android:layout_margin="@dimen/_8sdp"
+                android:background="@color/divider_view_color" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/eff_from_date_label"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider3"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:tag="asset_eff_from_date"
+                android:text="@string/effective_from" />
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/eff_from_date_tv"
+                style="@style/TextViewNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/eff_from_date_label"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:text="@string/dummy_txt" />
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/eff_to_date_label"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider3"
+                android:layout_alignStart="@+id/asset_capacity_tv"
+                android:layout_alignLeft="@+id/asset_capacity_tv"
+                android:layout_marginTop="@dimen/_8sdp"
+                android:layout_toEndOf="@+id/asset_vendor_label"
+                android:layout_toRightOf="@+id/asset_vendor_label"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:tag="asset_eff_to_date"
+                android:text="@string/effective_to" />
+
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/eff_to_date_tv"
+                style="@style/TextViewNormal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/eff_from_date_label"
+                android:layout_alignStart="@+id/service_date_label"
+                android:layout_alignLeft="@+id/service_date_label"
+                android:layout_toEndOf="@+id/eff_from_date_label"
+                android:layout_toRightOf="@+id/eff_from_date_tv"
+                android:paddingStart="@dimen/_8sdp"
+                android:paddingEnd="@dimen/_8sdp"
+                android:text="@string/dummy_txt" />
+
+            <View
+                android:id="@+id/divider4"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_1dp"
+                android:layout_below="@+id/eff_from_date_tv"
+                android:layout_margin="@dimen/_8sdp"
+                android:background="@color/divider_view_color" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/asset_image_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/divider4"
+                android:clipToPadding="false"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        </RelativeLayout>
+    </android.support.v4.widget.NestedScrollView>
+</RelativeLayout>

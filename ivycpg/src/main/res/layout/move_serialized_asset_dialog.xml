@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:padding="@dimen/dimen_16dp">
+
+
+    <TextView
+        android:id="@+id/input_movement_assetName"
+        style="@style/TextViewNormal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="@dimen/dimen_10dp"
+        android:layout_marginEnd="@dimen/dimen_10dp"
+        android:text="@string/asset_name" />
+
+
+    <TextView
+        android:id="@+id/input_movement_serialNo"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_movement_assetName"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="@dimen/dimen_10dp"
+        android:layout_marginEnd="@dimen/dimen_10dp"
+        android:tag="asset_serialno"
+        android:text="@string/serial_no" />
+
+    <Spinner
+        android:id="@+id/spinnerMovementReason"
+        android:layout_width="@dimen/spinner_width"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_movement_assetName"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="@dimen/dimen_10dp"
+        android:layout_marginEnd="@dimen/dimen_10dp"
+        android:background="@android:color/transparent" />
+
+
+    <TextView
+        android:id="@+id/input_current_outletcode_title"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_movement_serialNo"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="@dimen/dimen_10dp"
+        android:layout_marginEnd="@dimen/dimen_10dp"
+        android:text="@string/from" />
+
+    <TextView
+        android:id="@+id/input_current_outletcode"
+        style="@style/TextViewNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_current_outletcode_title"
+        android:layout_marginStart="@dimen/dimen_10dp"
+        android:layout_marginEnd="@dimen/dimen_10dp"
+        android:text="@string/dummy_txt"
+        android:textStyle="normal" />
+
+
+    <TextView
+        android:id="@+id/to_outletcode_title"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_movement_serialNo"
+        android:layout_alignStart="@+id/autoCompleteMovementOutletName"
+        android:layout_alignLeft="@+id/autoCompleteMovementOutletName"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dimen_10dp"
+        android:layout_marginRight="@dimen/dimen_10dp"
+        android:gravity="start"
+        android:text="@string/to"
+        android:textAlignment="textStart"
+        android:textStyle="normal" />
+
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteMovementOutletName"
+        android:layout_width="@dimen/spinner_width"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/to_outletcode_title"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginStart="@dimen/dimen_10dp"
+        android:layout_marginEnd="@dimen/dimen_10dp"
+        android:layout_marginBottom="@dimen/card_child_margin"
+        android:ems="10"
+        android:hint="@string/search"
+        android:imeOptions="actionDone"
+        android:maxLines="1"
+        android:textSize="@dimen/spinner_normal" />
+
+
+    <TextView
+        android:id="@+id/label_rental_price_title"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/autoCompleteMovementOutletName"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="@dimen/dimen_10dp"
+        android:tag="asset_rent_price"
+        android:layout_marginEnd="@dimen/dimen_10dp"
+        android:text="@string/rental_price" />
+
+    <EditText
+        android:id="@+id/rental_price_edt"
+        style="@style/EditTextNormal"
+        android:layout_width="@dimen/list_item_date_picker_width"
+        android:layout_height="@dimen/list_item_date_picker_height"
+        android:layout_below="@+id/label_rental_price_title"
+        android:layout_marginStart="@dimen/dimen_10dp"
+        android:layout_marginEnd="@dimen/dimen_10dp"
+        android:background="@drawable/edittext_bottom_border"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:hint="@string/price"
+        android:gravity="start|center"
+        android:textAlignment="textStart"
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/eff_to_date_label"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/autoCompleteMovementOutletName"
+        android:layout_alignStart="@+id/autoCompleteMovementOutletName"
+        android:layout_alignLeft="@+id/autoCompleteMovementOutletName"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:tag="asset_eff_to_date"
+        android:layout_marginEnd="@dimen/dimen_10dp"
+        android:layout_marginRight="@dimen/dimen_10dp"
+        android:gravity="start"
+        android:text="@string/choose_eff_to_date"
+        android:textAlignment="textStart" />
+
+    <Button
+        android:id="@+id/eff_to_date_button"
+        style="@style/datePickerButton"
+        android:layout_width="@dimen/list_item_date_picker_width"
+        android:layout_height="@dimen/list_item_date_picker_height"
+        android:layout_below="@+id/eff_to_date_label"
+        android:layout_alignStart="@+id/autoCompleteMovementOutletName"
+        android:layout_alignLeft="@+id/autoCompleteMovementOutletName"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/dimen_10dp"
+        android:layout_marginRight="@dimen/dimen_10dp"
+        android:gravity="start|center"
+        android:textAlignment="textStart"
+        android:hint="@string/effective_to"
+        android:textSize="@dimen/font_small" />
+
+
+    <EditText
+        android:id="@+id/input_move_description"
+        style="@style/EditTextGravity"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/feedbck_edit_ht"
+        android:layout_below="@+id/eff_to_date_button"
+        android:layout_marginStart="@dimen/dimen_10dp"
+        android:layout_marginTop="@dimen/dimen_10dp"
+        android:layout_marginEnd="@dimen/dimen_10dp"
+        android:background="@drawable/feedback_edit_selector"
+        android:hint="@string/description"
+        android:imeOptions="actionDone"
+        android:inputType="text"
+        android:lines="2"
+        android:maxLength="200"
+        android:maxLines="3"
+        android:minLines="2"
+        android:padding="@dimen/spin_linlay_margin"
+        android:singleLine="false" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/input_move_description"
+        android:layout_marginTop="@dimen/dimen_10dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_dialog_move_cancel"
+            style="?attr/roundedCustomButtonNormalTransparent"
+            android:layout_gravity="center"
+            android:layout_margin="@dimen/dimen_10dp"
+            android:text="@string/cancel"
+            android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/btn_dialog_move"
+                style="?attr/roundedCustomButtonNormal_Configured"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/dimen_10dp"
+                android:text="@string/moveAsset"
+                android:textAllCaps="false" />
+
+    </LinearLayout>
+</RelativeLayout>

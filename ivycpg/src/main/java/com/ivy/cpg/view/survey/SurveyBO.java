@@ -12,6 +12,8 @@ public class SurveyBO {
 	private float maxBonusScore;
 
 	private float achievedScore, targtScore, bonusScoreAchieved;
+	private boolean isSignatureRequired;
+	private String signaturePath;
 
 
 	private final ArrayList<QuestionBO> questions = new ArrayList<>();
@@ -75,5 +77,21 @@ public class SurveyBO {
 
 	public void setSurveyFreq(String surveyFreq) {
 		this.surveyFreq = surveyFreq;
+	}
+
+	public boolean isSignatureRequired() {
+		return isSignatureRequired;
+	}
+
+	public void setSignatureRequired(boolean signatureRequired) {
+		isSignatureRequired = signatureRequired;
+	}
+
+	public String getSignaturePath() {
+		return signaturePath;
+	}
+
+	public void setSignaturePath(String signaturePath) {
+		this.signaturePath = signaturePath;
 	}
 }

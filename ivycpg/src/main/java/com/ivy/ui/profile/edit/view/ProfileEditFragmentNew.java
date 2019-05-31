@@ -272,7 +272,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 }
             }
         });
-        AppUtils.applyAlertDialogTheme(getActivity(), builder);
+        applyAlertDialogTheme(getActivity(), builder);
     }
 
     @Override

@@ -42,6 +42,7 @@
             android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/dimen_6dp"
             android:layout_marginRight="@dimen/dimen_6dp"
+            style="?attr/roundedCustomButtonSmall_Configured"
             android:background="@drawable/icon_save" />
     </RelativeLayout>
 

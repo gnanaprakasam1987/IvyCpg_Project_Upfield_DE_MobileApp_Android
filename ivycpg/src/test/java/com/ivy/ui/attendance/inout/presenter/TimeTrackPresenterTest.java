@@ -207,6 +207,7 @@ public class TimeTrackPresenterTest {
         mockConfigurationHelper.IS_REALTIME_LOCATION_CAPTURE = true;
         mockConfigurationHelper.IS_UPLOAD_ATTENDANCE = true;
         mockConfigurationHelper.IS_IN_OUT_MANDATE = true;
+        mockConfigurationHelper.IS_ATTENDANCE_SYNCUPLOAD = true;
 
         when(mView.isUpdateRealTimeIn()).thenReturn(true);
 
@@ -243,6 +244,7 @@ public class TimeTrackPresenterTest {
         then(mView).should(inOrder).showLoading();
         then(mView).should(inOrder).isUpdateRealTimeIn();
         then(mView).should(inOrder).uploadAttendance("IN");
+        then(mView).should(inOrder).uploadAttendanceToServer();
         then(mView).should(inOrder).populateDataToList(timeTrackList);
         then(mView).should(inOrder).hideLoading();
         then(mView).shouldHaveNoMoreInteractions();

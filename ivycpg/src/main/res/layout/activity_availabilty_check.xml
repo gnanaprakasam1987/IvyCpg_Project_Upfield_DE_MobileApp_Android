@@ -55,6 +55,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tvTitleAvaialabilty" />
 
             <android.support.v7.widget.AppCompatCheckBox
+                style="?attr/checkbox_style"
                 android:id="@+id/is_distributed"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
@@ -84,6 +85,7 @@
                 app:layout_constraintTop_toTopOf="@+id/tv_is_distributed" />
 
             <android.support.v7.widget.AppCompatCheckBox
+                style="?attr/checkbox_style"
                 android:id="@+id/is_listed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -114,6 +116,7 @@
                 app:layout_constraintTop_toTopOf="@+id/tv_is_listed" />
 
             <android.support.v7.widget.AppCompatCheckBox
+                style="?attr/checkbox_style"
                 android:id="@+id/chk_availability"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -145,6 +148,7 @@
                 app:layout_constraintTop_toTopOf="@+id/tv_is_listed" />
 
             <android.support.v7.widget.AppCompatCheckBox
+                style="?attr/checkbox_style"
                 android:id="@+id/chk_price_tag"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -231,7 +235,7 @@
 
             <EditText
                 android:id="@+id/et_avail_pcValue"
-                style="@style/EditText_ListItem"
+                style="?attr/edit_text_list_item_style"
                 android:layout_width="@dimen/discount_editbox_width"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -261,7 +265,7 @@
 
             <EditText
                 android:id="@+id/et_avail_csValue"
-                style="@style/EditText_ListItem"
+                style="?attr/edit_text_list_item_style"
                 android:layout_width="@dimen/discount_editbox_width"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -291,7 +295,7 @@
 
             <EditText
                 android:id="@+id/et_avail_ouValue"
-                style="@style/EditText_ListItem"
+                style="?attr/edit_text_list_item_style"
                 android:layout_width="@dimen/discount_editbox_width"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -322,7 +326,7 @@
 
             <EditText
                 android:id="@+id/et_faceqty_csValue"
-                style="@style/EditText_ListItem"
+                style="?attr/edit_text_list_item_style"
                 android:layout_width="@dimen/discount_editbox_width"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -492,7 +496,7 @@
 
             <EditText
                 android:id="@+id/et_price_pcValue"
-                style="@style/EditText_ListItem"
+                style="?attr/edit_text_list_item_style"
                 android:layout_width="@dimen/discount_editbox_width"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -523,7 +527,7 @@
 
             <EditText
                 android:id="@+id/et_price_csValue"
-                style="@style/EditText_ListItem"
+                style="?attr/edit_text_list_item_style"
                 android:layout_width="@dimen/discount_editbox_width"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -554,7 +558,7 @@
 
             <EditText
                 android:id="@+id/et_price_ouValue"
-                style="@style/EditText_ListItem"
+                style="?attr/edit_text_list_item_style"
                 android:layout_width="@dimen/discount_editbox_width"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -594,7 +598,7 @@
 
                 <RadioButton
                     android:id="@+id/priceYes"
-                    style="@style/TextViewListItemSecondary"
+                    style="?attr/radio_button_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:button="@drawable/ic_tick_disable"
@@ -602,7 +606,7 @@
 
                 <RadioButton
                     android:id="@+id/priceno"
-                    style="@style/TextViewListItemSecondary"
+                    style="?attr/radio_button_style"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/_6sdp"
@@ -635,7 +639,7 @@
 
             <EditText
                 android:id="@+id/et_priceMrp_pcValue"
-                style="@style/EditText_ListItem"
+                style="?attr/edit_text_list_item_style"
                 android:layout_width="@dimen/discount_editbox_width"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -665,7 +669,7 @@
 
             <EditText
                 android:id="@+id/et_priceMrp_csValue"
-                style="@style/EditText_ListItem"
+                style="?attr/edit_text_list_item_style"
                 android:layout_width="@dimen/discount_editbox_width"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -697,7 +701,7 @@
 
             <EditText
                 android:id="@+id/et_priceMrp_ouValue"
-                style="@style/EditText_ListItem"
+                style="?attr/edit_text_list_item_style"
                 android:layout_width="@dimen/discount_editbox_width"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -759,7 +763,7 @@
 
             <EditText
                 android:id="@+id/et_exp_pcValue"
-                style="@style/EditText_ListItem"
+                style="?attr/edit_text_list_item_style"
                 android:layout_width="@dimen/discount_editbox_width"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -789,7 +793,7 @@
 
             <EditText
                 android:id="@+id/et_exp_csValue"
-                style="@style/EditText_ListItem"
+                style="?attr/edit_text_list_item_style"
                 android:layout_width="@dimen/discount_editbox_width"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -819,7 +823,7 @@
 
             <EditText
                 android:id="@+id/et_exp_ouValue"
-                style="@style/EditText_ListItem"
+                style="?attr/edit_text_list_item_style"
                 android:layout_width="@dimen/discount_editbox_width"
                 android:layout_height="wrap_content"
                 android:gravity="start"
@@ -887,7 +891,7 @@
 
         <Button
             android:id="@+id/btn_save"
-            style="?attr/roundedCustomButtonSmall"
+            style="?attr/roundedCustomButtonSmall_Configured"
             android:layout_gravity="end"
             android:layout_margin="@dimen/target_top_margin"
             android:gravity="center"

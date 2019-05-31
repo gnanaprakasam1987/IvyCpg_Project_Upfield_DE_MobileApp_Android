@@ -833,7 +833,7 @@
     <string name="title_activity_product_scheme_details">نشاط وتفاصيل ونظام المنتجات.</string>
     <string name="pls_select_chequeno">نرجو إدخال رقم الشيك.</string>
     <string name="average_lines">الخطوط المتوسطة.</string>
-    <string name="add_plane">أضف إلى الخطة </string>
+    <string name="add_plan">أضف إلى الخطة </string>
     <string name="non_visit">لا توجد زيارة </string>
     <string name="are_you_sure_you_want_to_logout">هل أنت متأكد من أنك ترغب في الخروج ؟</string>
     <string name="vaload_heder_text">اختيار الجودة لكل تشغيلة.</string>

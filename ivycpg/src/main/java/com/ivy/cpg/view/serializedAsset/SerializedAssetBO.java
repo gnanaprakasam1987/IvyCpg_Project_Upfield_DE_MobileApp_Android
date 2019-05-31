@@ -1,8 +1,11 @@
 package com.ivy.cpg.view.serializedAsset;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
-public class SerializedAssetBO {
+public class SerializedAssetBO implements Parcelable {
     private int assetID;
     private int Target;
     private int audit = 2;
@@ -28,6 +31,7 @@ public class SerializedAssetBO {
     private String imageName = "";
     private String AssetName;
     private String SerialNo = "0";
+    private String newSerialNo = "0";
     //private int mProductId;
     private boolean isSelectedToRemove;
     private int targetLocId;
@@ -42,6 +46,97 @@ public class SerializedAssetBO {
     private String assetTypeId;
     private String assetBarCodeId;
     private String assetBarCodeReason;
+    private String deliveryDate;
+    private int sihQty = 0;
+    private double assetPrice;
+    private String assetImage;
+    private String requestedDate;
+    private String approvalStatus;
+    private boolean isChecked;
+    private String transferType;
+    private double rentalPrice;
+    private String effectiveToDate;
+    private String effectiveFromDate;
+
+
+    protected SerializedAssetBO(Parcel in) {
+        assetID = in.readInt();
+        Target = in.readInt();
+        audit = in.readInt();
+        competitorQty = in.readInt();
+        executorQty = in.readInt();
+        reason1ID = in.readString();
+        reasonDesc = in.readString();
+        conditionID = in.readString();
+        mInstallDate = in.readString();
+        mLastInstallDate = in.readString();
+        mServiceDate = in.readString();
+        mPOSM = in.readString();
+        mBrand = in.readString();
+        mNewInstallDate = in.readString();
+        mSNO = in.readString();
+        mReasonId = in.readString();
+        mRemarks = in.readString();
+        mToRetailerId = in.readString();
+        mPOSMName = in.readString();
+        mFlag = in.readString();
+        mSBDId = in.readString();
+        groupLevelName = in.readString();
+        mNFCTagId = in.readString();
+        groupLevelId = in.readInt();
+        availQty = in.readInt();
+        scanComplete = in.readInt();
+        imageName = in.readString();
+        AssetName = in.readString();
+        SerialNo = in.readString();
+        newSerialNo = in.readString();
+        isSelectedToRemove = in.readByte() != 0;
+        targetLocId = in.readInt();
+        locationName = in.readString();
+        imageList = in.createStringArrayList();
+        capacity = in.readInt();
+        vendorId = in.readString();
+        vendorName = in.readString();
+        modelId = in.readString();
+        modelName = in.readString();
+        assetType = in.readString();
+        assetTypeId = in.readString();
+        assetBarCodeId = in.readString();
+        assetBarCodeReason = in.readString();
+        deliveryDate = in.readString();
+        sihQty = in.readInt();
+        assetPrice = in.readDouble();
+        assetImage = in.readString();
+        requestedDate = in.readString();
+        approvalStatus = in.readString();
+        isChecked = in.readByte() != 0;
+        flag = in.readInt();
+        referenceId = in.readString();
+        isPromo = in.readString();
+        isDisplay = in.readString();
+        reasonID = in.readInt();
+        locationID = in.readInt();
+        actual = in.readInt();
+        imgName = in.readString();
+        parentHierarchy = in.readString();
+        isSelectedReason = in.readByte() != 0;
+        transferType = in.readString();
+        rentalPrice = in.readDouble();
+        effectiveFromDate = in.readString();
+        effectiveToDate = in.readString();
+    }
+
+    public static final Creator<SerializedAssetBO> CREATOR = new Creator<SerializedAssetBO>() {
+        @Override
+        public SerializedAssetBO createFromParcel(Parcel in) {
+            return new SerializedAssetBO(in);
+        }
+
+        @Override
+        public SerializedAssetBO[] newArray(int size) {
+            return new SerializedAssetBO[size];
+        }
+    };
 
     public String getAssetBarCodeId() {
         return assetBarCodeId;
@@ -62,7 +157,7 @@ public class SerializedAssetBO {
     private int flag = 0;
 
 
-    private int referenceId = 0;
+    private String referenceId = "0";
 
 
     public SerializedAssetBO() {
@@ -115,6 +210,17 @@ public class SerializedAssetBO {
         this.assetBarCodeId = serializedAssetBO.getAssetBarCodeId();
         this.assetBarCodeReason = serializedAssetBO.getAssetBarCodeReason();
         this.mLastInstallDate = serializedAssetBO.getmLastInstallDate();
+        this.deliveryDate = serializedAssetBO.getDeliveryDate();
+        this.sihQty = serializedAssetBO.getSihQty();
+        this.assetPrice = serializedAssetBO.getAssetPrice();
+        this.assetImage = serializedAssetBO.getAssetImage();
+        this.newSerialNo = serializedAssetBO.getNewSerialNo();
+        this.requestedDate = serializedAssetBO.getRequestedDate();
+        this.approvalStatus = serializedAssetBO.getApprovalStatus();
+        this.isChecked = serializedAssetBO.isChecked();
+        this.rentalPrice = serializedAssetBO.getRentalPrice();
+        this.effectiveFromDate = serializedAssetBO.getEffectiveFromDate();
+        this.effectiveToDate = serializedAssetBO.getEffectiveToDate();
     }
 
     public int getExecutorQty() {
@@ -457,11 +563,11 @@ public class SerializedAssetBO {
 
     private boolean isSelectedReason = false;
 
-    public int getReferenceId() {
+    public String getReferenceId() {
         return referenceId;
     }
 
-    public void setReferenceId(int referenceId) {
+    public void setReferenceId(String referenceId) {
         this.referenceId = referenceId;
     }
 
@@ -529,6 +635,111 @@ public class SerializedAssetBO {
         this.mLastInstallDate = mLastInstallDate;
     }
 
+    public String getDeliveryDate() {
+        return deliveryDate;
+    }
+
+    public void setDeliveryDate(String deliveryDate) {
+        this.deliveryDate = deliveryDate;
+    }
+
+
+    public String getmInstallDate() {
+        return mInstallDate;
+    }
+
+    public void setmInstallDate(String mInstallDate) {
+        this.mInstallDate = mInstallDate;
+    }
+
+    public int getSihQty() {
+        return sihQty;
+    }
+
+    public void setSihQty(int sihQty) {
+        this.sihQty = sihQty;
+    }
+
+    public double getAssetPrice() {
+        return assetPrice;
+    }
+
+    public void setAssetPrice(double assetPrice) {
+        this.assetPrice = assetPrice;
+    }
+
+    public String getAssetImage() {
+        return assetImage;
+    }
+
+    public void setAssetImage(String assetImage) {
+        this.assetImage = assetImage;
+    }
+
+    public String getNewSerialNo() {
+        return newSerialNo;
+    }
+
+    public void setNewSerialNo(String newSerialNo) {
+        this.newSerialNo = newSerialNo;
+    }
+
+    public String getRequestedDate() {
+        return requestedDate;
+    }
+
+    public void setRequestedDate(String requestedDate) {
+        this.requestedDate = requestedDate;
+    }
+
+    public String getApprovalStatus() {
+        return approvalStatus;
+    }
+
+    public void setApprovalStatus(String approvalStatus) {
+        this.approvalStatus = approvalStatus;
+    }
+
+    public boolean isChecked() {
+        return isChecked;
+    }
+
+    public void setChecked(boolean checked) {
+        isChecked = checked;
+    }
+
+    public String getTransferType() {
+        return transferType;
+    }
+
+    public void setTransferType(String transferType) {
+        this.transferType = transferType;
+    }
+
+    public double getRentalPrice() {
+        return rentalPrice;
+    }
+
+    public void setRentalPrice(double rentalPrice) {
+        this.rentalPrice = rentalPrice;
+    }
+
+    public String getEffectiveToDate() {
+        return effectiveToDate;
+    }
+
+    public void setEffectiveToDate(String effectiveToDate) {
+        this.effectiveToDate = effectiveToDate;
+    }
+
+    public String getEffectiveFromDate() {
+        return effectiveFromDate;
+    }
+
+    public void setEffectiveFromDate(String effectiveFromDate) {
+        this.effectiveFromDate = effectiveFromDate;
+    }
+
     @Override
     public String toString() {
         if (flag == 1)
@@ -541,5 +752,78 @@ public class SerializedAssetBO {
             return assetBarCodeReason;
         else
             return AssetName;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(assetID);
+        dest.writeInt(Target);
+        dest.writeInt(audit);
+        dest.writeInt(competitorQty);
+        dest.writeInt(executorQty);
+        dest.writeString(reason1ID);
+        dest.writeString(reasonDesc);
+        dest.writeString(conditionID);
+        dest.writeString(mInstallDate);
+        dest.writeString(mLastInstallDate);
+        dest.writeString(mServiceDate);
+        dest.writeString(mPOSM);
+        dest.writeString(mBrand);
+        dest.writeString(mNewInstallDate);
+        dest.writeString(mSNO);
+        dest.writeString(mReasonId);
+        dest.writeString(mRemarks);
+        dest.writeString(mToRetailerId);
+        dest.writeString(mPOSMName);
+        dest.writeString(mFlag);
+        dest.writeString(mSBDId);
+        dest.writeString(groupLevelName);
+        dest.writeString(mNFCTagId);
+        dest.writeInt(groupLevelId);
+        dest.writeInt(availQty);
+        dest.writeInt(scanComplete);
+        dest.writeString(imageName);
+        dest.writeString(AssetName);
+        dest.writeString(SerialNo);
+        dest.writeString(newSerialNo);
+        dest.writeByte((byte) (isSelectedToRemove ? 1 : 0));
+        dest.writeInt(targetLocId);
+        dest.writeString(locationName);
+        dest.writeStringList(imageList);
+        dest.writeInt(capacity);
+        dest.writeString(vendorId);
+        dest.writeString(vendorName);
+        dest.writeString(modelId);
+        dest.writeString(modelName);
+        dest.writeString(assetType);
+        dest.writeString(assetTypeId);
+        dest.writeString(assetBarCodeId);
+        dest.writeString(assetBarCodeReason);
+        dest.writeString(deliveryDate);
+        dest.writeInt(sihQty);
+        dest.writeDouble(assetPrice);
+        dest.writeString(assetImage);
+        dest.writeString(requestedDate);
+        dest.writeString(approvalStatus);
+        dest.writeByte((byte) (isChecked ? 1 : 0));
+        dest.writeInt(flag);
+        dest.writeString(referenceId);
+        dest.writeString(isPromo);
+        dest.writeString(isDisplay);
+        dest.writeInt(reasonID);
+        dest.writeInt(locationID);
+        dest.writeInt(actual);
+        dest.writeString(imgName);
+        dest.writeString(parentHierarchy);
+        dest.writeByte((byte) (isSelectedReason ? 1 : 0));
+        dest.writeString(transferType);
+        dest.writeDouble(rentalPrice);
+        dest.writeString(effectiveFromDate);
+        dest.writeString(effectiveToDate);
     }
 }

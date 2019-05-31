@@ -3,13 +3,16 @@ package com.ivy.core.base.view;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -22,10 +25,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +51,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
 
 import java.util.ArrayList;
@@ -105,8 +112,14 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         initializeDi();
 
+        boolean isPrevisit = getIntent().getBooleanExtra("PreVisit",false);
+
         if (mCurrentTheme != 0) {
-            setTheme(mCurrentTheme);
+
+            if (!isPrevisit)
+                setTheme(mCurrentTheme);
+            else
+                setTheme(preVisitTheme(mCurrentTheme));
             initScreen();
         } else
             showLoading();
@@ -502,42 +515,66 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     @Override
     public void setBlueTheme() {
         mCurrentTheme = R.style.MVPTheme_Blue;
-        setTheme(R.style.MVPTheme_Blue);
+        boolean isPrevisit = getIntent().getBooleanExtra("PreVisit",false);
+        if (!isPrevisit)
+            setTheme(mCurrentTheme);
+        else
+            setTheme(preVisitTheme(mCurrentTheme));
         initScreen();
     }
 
     @Override
     public void setPinkTheme() {
         mCurrentTheme = R.style.MVPTheme_Green;
-        setTheme(R.style.MVPTheme_Green);
+        boolean isPrevisit = getIntent().getBooleanExtra("PreVisit",false);
+        if (!isPrevisit)
+            setTheme(mCurrentTheme);
+        else
+            setTheme(preVisitTheme(mCurrentTheme));
         initScreen();
     }
 
     @Override
     public void setGreenTheme() {
         mCurrentTheme = R.style.MVPTheme_Green;
-        setTheme(R.style.MVPTheme_Green);
+        boolean isPrevisit = getIntent().getBooleanExtra("PreVisit",false);
+        if (!isPrevisit)
+            setTheme(mCurrentTheme);
+        else
+            setTheme(preVisitTheme(mCurrentTheme));
         initScreen();
     }
 
     @Override
     public void setNavyBlueTheme() {
         mCurrentTheme = R.style.MVPTheme_NBlue;
-        setTheme(R.style.MVPTheme_NBlue);
+        boolean isPrevisit = getIntent().getBooleanExtra("PreVisit",false);
+        if (!isPrevisit)
+            setTheme(mCurrentTheme);
+        else
+            setTheme(preVisitTheme(mCurrentTheme));
         initScreen();
     }
 
     @Override
     public void setOrangeTheme() {
         mCurrentTheme = R.style.MVPTheme_Orange;
-        setTheme(R.style.MVPTheme_Orange);
+        boolean isPrevisit = getIntent().getBooleanExtra("PreVisit",false);
+        if (!isPrevisit)
+            setTheme(mCurrentTheme);
+        else
+            setTheme(preVisitTheme(mCurrentTheme));
         initScreen();
     }
 
     @Override
     public void setRedTheme() {
         mCurrentTheme = R.style.MVPTheme_Red;
-        setTheme(R.style.MVPTheme_Red);
+        boolean isPrevisit = getIntent().getBooleanExtra("PreVisit",false);
+        if (!isPrevisit)
+            setTheme(mCurrentTheme);
+        else
+            setTheme(preVisitTheme(mCurrentTheme));
         initScreen();
     }
 
@@ -640,6 +677,57 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
                 }
             }
         });
+    }
+
+    private int preVisitTheme(int styleId){
+        switch (styleId){
+            case R.style.MVPTheme_Blue:
+                styleId = R.style.MVPTheme_Blue_disable;
+                return styleId;
+            case R.style.MVPTheme_NBlue:
+                styleId = R.style.MVPTheme_NBlue_disable;
+                return styleId;
+            case R.style.MVPTheme_Green:
+                styleId = R.style.MVPTheme_Green_disable;
+                return styleId;
+            case R.style.MVPTheme_Red:
+                styleId = R.style.MVPTheme_Red;
+                return styleId;
+            case R.style.MVPTheme_Orange:
+                styleId = R.style.MVPTheme_Orange_disable;
+                return styleId;
+            default:
+                return styleId;
+        }
+    }
+
+    public AlertDialog applyAlertDialogTheme(Context context, AlertDialog.Builder builder) {
+        TypedArray typearr = context.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+        AlertDialog dialog = builder.show();
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+
+        int screenWidth = (int) (metrics.widthPixels * 0.80);
+        dialog.getWindow().setLayout(screenWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        int alertTitleId = context.getResources().getIdentifier("alertTitle", "id", "android");
+        TextView alertTitle = dialog.getWindow().getDecorView().findViewById(alertTitleId);
+        alertTitle.setTextColor(typearr.getColor(R.styleable.MyTextView_primarycolor, 0)); // change title text color
+
+        Button negativeBtn = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        negativeBtn.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
+        negativeBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
+
+        Button postiveBtn = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        postiveBtn.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
+        postiveBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
+
+        // Set title divider color
+        int titleDividerId = context.getResources().getIdentifier("titleDivider", "id", "android");
+        View titleDivider = dialog.findViewById(titleDividerId);
+        if (titleDivider != null)
+            titleDivider.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_primarycolor, 0));
+
+        return dialog;
     }
 }
 

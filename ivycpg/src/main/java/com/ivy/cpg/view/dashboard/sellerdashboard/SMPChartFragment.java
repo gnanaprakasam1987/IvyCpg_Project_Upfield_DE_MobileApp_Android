@@ -23,6 +23,7 @@ import com.ivy.cpg.view.dashboard.DashBoardBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
 
@@ -174,16 +175,21 @@ public class SMPChartFragment extends Fragment {
     }
 
     public void setOffset(PieChart mChart) {
-        Display display = getActivity().getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        int height = size.y;
+        try {
+            Display display = getActivity().getWindowManager().getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+            int height = size.y;
 
-        int offset = (int) (height * 0.20); /* percent to move */
+            int offset = (int) (height * 0.20); /* percent to move */
 
-        LinearLayout.LayoutParams rlParams =
-                (LinearLayout.LayoutParams) mChart.getLayoutParams();
-        rlParams.setMargins(0, 10, 0, -offset);
-        mChart.setLayoutParams(rlParams);
+            LinearLayout.LayoutParams rlParams =
+                    (LinearLayout.LayoutParams) mChart.getLayoutParams();
+            rlParams.setMargins(0, 10, 0, -offset);
+            mChart.setLayoutParams(rlParams);
+        }catch (Exception e)
+        {
+            Commons.printException(e);
+        }
     }
 }

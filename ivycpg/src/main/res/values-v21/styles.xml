@@ -93,48 +93,105 @@
 
 
     <!--Button Rounded styles-->
-    <style name="ButtonSmallRoundCornerBlue" parent="@style/ButtonSmall">
+    <style name="ButtonSmallRoundCornerBlue_enabled" parent="@style/ButtonSmall">
         <item name="android:background">@drawable/ripple_button_rounded_corner_blue</item>
     </style>
 
-    <style name="ButtonNormalRoundCornerBlue" parent="@style/ButtonNormal">
+    <style name="ButtonNormalRoundCornerBlue_enabled" parent="@style/ButtonNormal">
         <item name="android:background">@drawable/ripple_button_rounded_corner_blue</item>
     </style>
 
-    <style name="ButtonSmallRoundCornerRed" parent="@style/ButtonSmall">
+    <style name="ButtonSmallRoundCornerRed_enabled" parent="@style/ButtonSmall">
         <item name="android:background">@drawable/ripple_button_rounded_corner_red</item>
     </style>
 
-    <style name="ButtonNormalRoundCornerRed" parent="@style/ButtonNormal">
+    <style name="ButtonNormalRoundCornerRed_enabled" parent="@style/ButtonNormal">
         <item name="android:background">@drawable/ripple_button_rounded_corner_red</item>
     </style>
 
-    <style name="ButtonSmallRoundCornerOrange" parent="@style/ButtonSmall">
+    <style name="ButtonSmallRoundCornerOrange_enabled" parent="@style/ButtonSmall">
         <item name="android:background">@drawable/ripple_button_rounded_corner_orange</item>
     </style>
 
-    <style name="ButtonNormalRoundCornerOrange" parent="@style/ButtonNormal">
+    <style name="ButtonNormalRoundCornerOrange_enabled" parent="@style/ButtonNormal">
         <item name="android:background">@drawable/ripple_button_rounded_corner_orange</item>
     </style>
 
-    <style name="ButtonSmallRoundCornerGreen" parent="@style/ButtonSmall">
+    <style name="ButtonSmallRoundCornerGreen_enabled" parent="@style/ButtonSmall">
         <item name="android:background">@drawable/ripple_button_rounded_corner_green</item>
     </style>
 
-    <style name="ButtonNormalRoundCornerGreen" parent="@style/ButtonNormal">
+    <style name="ButtonNormalRoundCornerGreen_enabled" parent="@style/ButtonNormal">
         <item name="android:background">@drawable/ripple_button_rounded_corner_green</item>
     </style>
 
-
-    <style name="ButtonSmallRoundCornerGrey" parent="@style/ButtonSmall">
+    <style name="ButtonSmallRoundCornerGrey_enabled" parent="@style/ButtonSmall">
         <item name="android:background">@drawable/button_round_corner_grey</item>
     </style>
 
-    <style name="ButtonNormalRoundCornerGrey" parent="@style/ButtonNormal">
+    <style name="ButtonNormalRoundCornerGrey_enabled" parent="@style/ButtonNormal">
         <item name="android:background">@drawable/button_round_corner_grey</item>
     </style>
-    <style name="ButtonSmallBoxCornerGrey" parent="@style/ButtonSmall">
+
+    <style name="ButtonSmallBoxCornerGrey_enabled" parent="@style/ButtonSmall">
         <item name="android:background">@drawable/button_box_corner_grey</item>
+    </style>
+
+
+    <style name="ButtonSmallRoundCornerBlue_disabled" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_disabled</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="ButtonNormalRoundCornerBlue_disabled" parent="@style/ButtonNormal">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_disabled</item>
+        <item name="android:enabled">false</item>
+        <item name="textColor">@color/half_Black</item>
+    </style>
+
+    <style name="ButtonSmallRoundCornerRed_disabled" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_disabled</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="ButtonNormalRoundCornerRed_disabled" parent="@style/ButtonNormal">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_disabled</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="ButtonSmallRoundCornerOrange_disabled" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_disabled</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="ButtonNormalRoundCornerOrange_disabled" parent="@style/ButtonNormal">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_disabled</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="ButtonSmallRoundCornerGreen_disabled" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_disabled</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="ButtonNormalRoundCornerGreen_disabled" parent="@style/ButtonNormal">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_disabled</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="ButtonSmallRoundCornerGrey_disabled" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_disabled</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="ButtonNormalRoundCornerGrey_disabled" parent="@style/ButtonNormal">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_disabled</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="ButtonSmallBoxCornerGrey_disabled" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/ripple_button_rounded_corner_disabled</item>
+        <item name="android:enabled">false</item>
     </style>
 
     <!--Button Rounded styles-->

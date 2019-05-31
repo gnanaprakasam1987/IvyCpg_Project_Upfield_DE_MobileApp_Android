@@ -239,7 +239,7 @@
                 android:layout_marginStart="@dimen/profile_history_20dp"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
-                android:text="@string/add_plane"
+                android:text="@string/add_plan"
                 android:textAllCaps="false" />
 
             <Button
@@ -276,11 +276,60 @@
                 android:layout_marginStart="@dimen/profile_history_20dp"
                 android:layout_marginTop="@dimen/target_top_margin"
                 android:onClick="onClick"
-                android:text="@string/add_plane"
+                android:text="@string/add_plan"
                 android:textAllCaps="false"
                 android:visibility="gone" />
 
+            <Button
+                android:id="@+id/pre_visit"
+                style="?attr/roundedCustomButtonNormal"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/target_top_margin"
+                android:layout_marginEnd="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
+                android:layout_marginTop="@dimen/target_top_margin"
+                android:onClick="onClick"
+                android:text="Pre-Visit"
+                android:visibility="gone"
+                android:textAllCaps="false" />
+
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/retailer_plan_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="gone"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/cancel_visit_retailer"
+                style="?attr/roundedCustomButtonNormal"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/target_top_margin"
+                android:layout_marginEnd="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
+                android:layout_marginTop="@dimen/target_top_margin"
+                android:onClick="onClick"
+                android:text="@string/non_visit"
+                android:textAllCaps="false"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/start_visit_retailer"
+                style="?attr/roundedCustomButtonNormal"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/target_top_margin"
+                android:layout_marginEnd="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
+                android:layout_marginTop="@dimen/target_top_margin"
+                android:onClick="onClick"
+                android:text="@string/start_visit"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
+
     </LinearLayout>
 
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.ivy.cpg.view.nearexpiry;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -78,6 +79,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
     private final static int NEAR_EXPIRY_RESULT_CODE = 119;
     private MyAdapter mSchedule;
+
+    private Context context;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -193,6 +196,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         mBModel = (BusinessModel) getActivity().getApplicationContext();
         mBModel.setContext(getActivity());
         mNearExpiryHelper = NearExpiryTrackingHelper.getInstance(getActivity());
+
+        this.context = context;
     }
 
     @Override
@@ -451,6 +456,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                         args.putString("PID", id);
 
                         Intent intent = new Intent(getActivity(), NearExpiryDateInputActivity.class);
+                        if (isPreVisit)
+                            intent.putExtra("PreVisit",true);
                         intent.putExtras(args);
 
                         startActivityForResult(intent, NEAR_EXPIRY_RESULT_CODE);
@@ -615,6 +622,9 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                             intent.putExtra("IsMoveNextActivity", mBModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                             intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                         }
+
+                        if (isPreVisit)
+                            intent.putExtra("PreVisit",true);
 
                         startActivity(intent);
                         getActivity().finish();
@@ -904,14 +914,20 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                if (!isPreVisit)
+                    mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
+                Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                if (isPreVisit)
+                    intent.putExtra("PreVisit",true);
+
                 if (isFromChild)
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                            .putExtra("isStoreMenu", true));
+                    startActivity(intent.putExtra("isStoreMenu", true));
                 else
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().finish();
+                    startActivity(intent);
+
+                ((Activity)context).finish();
             }
             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
@@ -922,14 +938,23 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
-                mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+
+                if (!isPreVisit)
+                    mBModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
+
+                Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                if (isPreVisit)
+                    intent.putExtra("PreVisit",true);
+
                 if (isFromChild)
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                            .putExtra("isStoreMenu", true));
+                    startActivity(intent.putExtra("isStoreMenu", true));
                 else
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().finish();
+                    startActivity(intent);
+
+                ((Activity)context).finish();
+
                 getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
 
             }
