@@ -94,7 +94,10 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
 
     @Override
     public void showLoading(String message) {
-        ((BaseActivity) getActivity()).showLoading(message);
+        if (getActivity() instanceof BaseActivity)
+            ((BaseActivity) getActivity()).showLoading(message);
+        else
+            showDialog(message);
     }
 
     @Override
