@@ -110,6 +110,15 @@ public class SerializedAssetBO implements Parcelable {
         requestedDate = in.readString();
         approvalStatus = in.readString();
         isChecked = in.readByte() != 0;
+        transferType = in.readString();
+        rentalPrice = in.readDouble();
+        effectiveToDate = in.readString();
+        effectiveFromDate = in.readString();
+        RField = in.readString();
+        assetServiceReqStatus = in.readString();
+        serviceProviderId = in.readInt();
+        serviceProvider = in.readString();
+        issueDescription = in.readString();
         flag = in.readInt();
         referenceId = in.readString();
         isPromo = in.readString();
@@ -120,10 +129,8 @@ public class SerializedAssetBO implements Parcelable {
         imgName = in.readString();
         parentHierarchy = in.readString();
         isSelectedReason = in.readByte() != 0;
-        transferType = in.readString();
-        rentalPrice = in.readDouble();
-        effectiveFromDate = in.readString();
-        effectiveToDate = in.readString();
+        serviceRequestedRetailer = in.readString();
+        status = in.readString();
     }
 
     public static final Creator<SerializedAssetBO> CREATOR = new Creator<SerializedAssetBO>() {
@@ -217,60 +224,7 @@ public class SerializedAssetBO implements Parcelable {
         this.flag = flag;
     }
 
-    public SerializedAssetBO(SerializedAssetBO serializedAssetBO) {
-        this.assetID = serializedAssetBO.getAssetID();
-        this.Target = serializedAssetBO.getTarget();
-        this.AssetName = serializedAssetBO.getAssetName();
-        this.audit = serializedAssetBO.getAudit();
-        this.availQty = serializedAssetBO.getAvailQty();
-        this.scanComplete = serializedAssetBO.getScanComplete();
-        this.competitorQty = serializedAssetBO.getCompetitorQty();
-        this.conditionID = serializedAssetBO.getConditionID();
-        this.imageName = serializedAssetBO.getImageName();
-        this.imgName = serializedAssetBO.getImgName();
-        this.mBrand = serializedAssetBO.getBrand();
-        this.mInstallDate = serializedAssetBO.getInstallDate();
-        this.mNewInstallDate = serializedAssetBO.getNewInstallDate();
-        this.mPOSM = serializedAssetBO.getPOSM();
-        this.mSBDId = serializedAssetBO.getSBDId();
-        this.mServiceDate = serializedAssetBO.getServiceDate();
-        this.mPOSMName = serializedAssetBO.getPOSMName();
-        this.mFlag = serializedAssetBO.getFlag();
-        //this.mProductId = serializedAssetBO.getProductId();
-        this.mSNO = serializedAssetBO.getSNO();
-        this.reason1ID = serializedAssetBO.getReason1ID();
-        this.reasonDesc = serializedAssetBO.getReasonDesc();
-        this.groupLevelId = serializedAssetBO.getGroupLevelId();
-        this.groupLevelName = serializedAssetBO.getGroupLevelName();
-        this.executorQty = serializedAssetBO.getExecutorQty();
-        this.SerialNo = serializedAssetBO.getSerialNo();
-        this.mNFCTagId = serializedAssetBO.getNFCTagId();
-        this.targetLocId = serializedAssetBO.getTargetLocId();
-        this.locationName = serializedAssetBO.getLocationName();
-        this.imageList = serializedAssetBO.getImageList();
-        this.isSelectedReason = serializedAssetBO.isSelectedReason();
-        this.capacity = serializedAssetBO.getCapacity();
-        this.vendorId = serializedAssetBO.getVendorId();
-        this.vendorName = serializedAssetBO.getVendorName();
-        this.modelId = serializedAssetBO.getModelId();
-        this.modelName = serializedAssetBO.getModelName();
-        this.assetType = serializedAssetBO.getAssetType();
-        this.assetTypeId = serializedAssetBO.getAssetTypeId();
-        this.assetBarCodeId = serializedAssetBO.getAssetBarCodeId();
-        this.assetBarCodeReason = serializedAssetBO.getAssetBarCodeReason();
-        this.mLastInstallDate = serializedAssetBO.getmLastInstallDate();
-        this.deliveryDate = serializedAssetBO.getDeliveryDate();
-        this.sihQty = serializedAssetBO.getSihQty();
-        this.assetPrice = serializedAssetBO.getAssetPrice();
-        this.assetImage = serializedAssetBO.getAssetImage();
-        this.newSerialNo = serializedAssetBO.getNewSerialNo();
-        this.requestedDate = serializedAssetBO.getRequestedDate();
-        this.approvalStatus = serializedAssetBO.getApprovalStatus();
-        this.isChecked = serializedAssetBO.isChecked();
-        this.rentalPrice = serializedAssetBO.getRentalPrice();
-        this.effectiveFromDate = serializedAssetBO.getEffectiveFromDate();
-        this.effectiveToDate = serializedAssetBO.getEffectiveToDate();
-    }
+
 
     public int getExecutorQty() {
         return executorQty;
@@ -803,58 +757,9 @@ public class SerializedAssetBO implements Parcelable {
             return AssetName;
     }
 
-    protected SerializedAssetBO(Parcel in) {
-        assetID = in.readInt();
-        AssetName = in.readString();
-        mNewInstallDate = in.readString();
-        reasonDesc = in.readString();
-        SerialNo = in.readString();
-        issueDescription = in.readString();
-        imageName = in.readString();
-        mServiceDate = in.readString();
-        reasonID=in.readInt();
-        serviceRequestedRetailer = in.readString();
-        RField=in.readString();
-        serviceProviderId = in.readInt();
-        mRemarks=in.readString();
-        status=in.readString();
 
-    }
 
-    public static final Creator<SerializedAssetBO> CREATOR = new Creator<SerializedAssetBO>() {
-        @Override
-        public SerializedAssetBO createFromParcel(Parcel in) {
-            return new SerializedAssetBO(in);
-        }
 
-        @Override
-        public SerializedAssetBO[] newArray(int size) {
-            return new SerializedAssetBO[size];
-        }
-    };
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(assetID);
-        parcel.writeString(AssetName);
-        parcel.writeString(mNewInstallDate);
-        parcel.writeString(reasonDesc);
-        parcel.writeString(SerialNo);
-        parcel.writeString(issueDescription);
-        parcel.writeString(imageName);
-        parcel.writeString(mServiceDate);
-        parcel.writeInt(reasonID);
-        parcel.writeString(serviceRequestedRetailer);
-        parcel.writeString(RField);
-        parcel.writeInt(serviceProviderId);
-        parcel.writeString(mRemarks);
-        parcel.writeString(status);
-    }
 
     public String getServiceRequestedRetailer() {
         return serviceRequestedRetailer;
@@ -882,70 +787,80 @@ public class SerializedAssetBO implements Parcelable {
     }
 
     @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(assetID);
-        dest.writeInt(Target);
-        dest.writeInt(audit);
-        dest.writeInt(competitorQty);
-        dest.writeInt(executorQty);
-        dest.writeString(reason1ID);
-        dest.writeString(reasonDesc);
-        dest.writeString(conditionID);
-        dest.writeString(mInstallDate);
-        dest.writeString(mLastInstallDate);
-        dest.writeString(mServiceDate);
-        dest.writeString(mPOSM);
-        dest.writeString(mBrand);
-        dest.writeString(mNewInstallDate);
-        dest.writeString(mSNO);
-        dest.writeString(mReasonId);
-        dest.writeString(mRemarks);
-        dest.writeString(mToRetailerId);
-        dest.writeString(mPOSMName);
-        dest.writeString(mFlag);
-        dest.writeString(mSBDId);
-        dest.writeString(groupLevelName);
-        dest.writeString(mNFCTagId);
-        dest.writeInt(groupLevelId);
-        dest.writeInt(availQty);
-        dest.writeInt(scanComplete);
-        dest.writeString(imageName);
-        dest.writeString(AssetName);
-        dest.writeString(SerialNo);
-        dest.writeString(newSerialNo);
-        dest.writeByte((byte) (isSelectedToRemove ? 1 : 0));
-        dest.writeInt(targetLocId);
-        dest.writeString(locationName);
-        dest.writeStringList(imageList);
-        dest.writeInt(capacity);
-        dest.writeString(vendorId);
-        dest.writeString(vendorName);
-        dest.writeString(modelId);
-        dest.writeString(modelName);
-        dest.writeString(assetType);
-        dest.writeString(assetTypeId);
-        dest.writeString(assetBarCodeId);
-        dest.writeString(assetBarCodeReason);
-        dest.writeString(deliveryDate);
-        dest.writeInt(sihQty);
-        dest.writeDouble(assetPrice);
-        dest.writeString(assetImage);
-        dest.writeString(requestedDate);
-        dest.writeString(approvalStatus);
-        dest.writeByte((byte) (isChecked ? 1 : 0));
-        dest.writeInt(flag);
-        dest.writeString(referenceId);
-        dest.writeString(isPromo);
-        dest.writeString(isDisplay);
-        dest.writeInt(reasonID);
-        dest.writeInt(locationID);
-        dest.writeInt(actual);
-        dest.writeString(imgName);
-        dest.writeString(parentHierarchy);
-        dest.writeByte((byte) (isSelectedReason ? 1 : 0));
-        dest.writeString(transferType);
-        dest.writeDouble(rentalPrice);
-        dest.writeString(effectiveFromDate);
-        dest.writeString(effectiveToDate);
+    public void writeToParcel(Parcel parcel, int i) {
+
+        parcel.writeInt(assetID);
+        parcel.writeInt(Target);
+        parcel.writeInt(audit);
+        parcel.writeInt(competitorQty);
+        parcel.writeInt(executorQty);
+        parcel.writeString(reason1ID);
+        parcel.writeString(reasonDesc);
+        parcel.writeString(conditionID);
+        parcel.writeString(mInstallDate);
+        parcel.writeString(mLastInstallDate);
+        parcel.writeString(mServiceDate);
+        parcel.writeString(mPOSM);
+        parcel.writeString(mBrand);
+        parcel.writeString(mNewInstallDate);
+        parcel.writeString(mSNO);
+        parcel.writeString(mReasonId);
+        parcel.writeString(mRemarks);
+        parcel.writeString(mToRetailerId);
+        parcel.writeString(mPOSMName);
+        parcel.writeString(mFlag);
+        parcel.writeString(mSBDId);
+        parcel.writeString(groupLevelName);
+        parcel.writeString(mNFCTagId);
+        parcel.writeInt(groupLevelId);
+        parcel.writeInt(availQty);
+        parcel.writeInt(scanComplete);
+        parcel.writeString(imageName);
+        parcel.writeString(AssetName);
+        parcel.writeString(SerialNo);
+        parcel.writeString(newSerialNo);
+        parcel.writeByte((byte) (isSelectedToRemove ? 1 : 0));
+        parcel.writeInt(targetLocId);
+        parcel.writeString(locationName);
+        parcel.writeStringList(imageList);
+        parcel.writeInt(capacity);
+        parcel.writeString(vendorId);
+        parcel.writeString(vendorName);
+        parcel.writeString(modelId);
+        parcel.writeString(modelName);
+        parcel.writeString(assetType);
+        parcel.writeString(assetTypeId);
+        parcel.writeString(assetBarCodeId);
+        parcel.writeString(assetBarCodeReason);
+        parcel.writeString(deliveryDate);
+        parcel.writeInt(sihQty);
+        parcel.writeDouble(assetPrice);
+        parcel.writeString(assetImage);
+        parcel.writeString(requestedDate);
+        parcel.writeString(approvalStatus);
+        parcel.writeByte((byte) (isChecked ? 1 : 0));
+        parcel.writeString(transferType);
+        parcel.writeDouble(rentalPrice);
+        parcel.writeString(effectiveToDate);
+        parcel.writeString(effectiveFromDate);
+        parcel.writeString(RField);
+        parcel.writeString(assetServiceReqStatus);
+        parcel.writeInt(serviceProviderId);
+        parcel.writeString(serviceProvider);
+        parcel.writeString(issueDescription);
+        parcel.writeInt(flag);
+        parcel.writeString(referenceId);
+        parcel.writeString(isPromo);
+        parcel.writeString(isDisplay);
+        parcel.writeInt(reasonID);
+        parcel.writeInt(locationID);
+        parcel.writeInt(actual);
+        parcel.writeString(imgName);
+        parcel.writeString(parentHierarchy);
+        parcel.writeByte((byte) (isSelectedReason ? 1 : 0));
+        parcel.writeString(serviceRequestedRetailer);
+        parcel.writeString(status);
     }
+
+
 }

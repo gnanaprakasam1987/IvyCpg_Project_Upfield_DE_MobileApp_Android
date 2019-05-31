@@ -1280,8 +1280,8 @@ public class SurveyHelperNew {
                                         + "," + userid
                                         + "," + QT(sBO.getSurveyFreq())
                                         + "," + QT(getSignaturePath());
+
                                 qBO.setSignaturePath(getSignaturePath());
-                                        + "," + QT(sBO.getSurveyFreq());
 
                                 if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
                                     headerValues= headerValues+"," + StringUtils.QT(LoadManagementHelper.getInstance(context.getApplicationContext()).getTripId());
