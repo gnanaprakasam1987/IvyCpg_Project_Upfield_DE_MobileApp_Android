@@ -164,7 +164,7 @@ public class AssetServiceReqFragment extends BaseFragment implements AssetServic
             holder.tv_createdby.setText("Created by "+holder.assetTrackingBO.getRemarks()+" @ "+holder.assetTrackingBO.getServiceRequestedRetailer());
 
             if(REQUEST_STATUS_PENDING.equalsIgnoreCase(holder.assetTrackingBO.getAssetServiceReqStatus())){
-                holder.tv_status.setTextColor(getResources().getColor(R.color.RED));
+                holder.tv_status.setTextColor(getResources().getColor(R.color.colorPrimaryOrange));
             }
             else if(REQUEST_STATUS_CANCELLED.equalsIgnoreCase(holder.assetTrackingBO.getAssetServiceReqStatus())){
                 holder.tv_status.setTextColor(getResources().getColor(R.color.RED));

@@ -170,7 +170,7 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
 
                         assetTrackingBO.setNFCTagId(c.getString(c.getColumnIndex("NFCNumber")));
                         assetTrackingBO.setParentHierarchy("");
-                        assetTrackingBO.setReferenceId(c.getInt(c.getColumnIndex("AllocationRefId")));
+                        assetTrackingBO.setReferenceId(c.getString(c.getColumnIndex("AllocationRefId")));
                         assetTrackingBO.setCapacity(c.getInt(c.getColumnIndex("capacity")));
                         assetTrackingBO.setVendorId(c.getString(c.getColumnIndex("vendorid")));
                         assetTrackingBO.setVendorName(c.getString(c.getColumnIndex("name")));
