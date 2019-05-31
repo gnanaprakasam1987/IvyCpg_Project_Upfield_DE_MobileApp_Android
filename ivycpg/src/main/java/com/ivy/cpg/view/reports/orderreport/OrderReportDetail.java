@@ -39,7 +39,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
         OnClickListener {
 
     private Button back;
-    private TextView text_total, totalLines, tv_lbl_total_lines, txtWeight;
+    private TextView label_total, text_total, totalLines, tv_lbl_total_lines, tv_lbl_total_wgt,txtWeight;
 
     private BusinessModel businessModel;
     private OrderReportBO obj;
@@ -56,7 +56,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
     private TextView productName;
     private EditText mEdt_searchProductName;
 
-    private String orderID ="";
+    private String orderID = "";
     private ReportHelper reportHelper;
 
     public void onCreate(Bundle savedInstanceState) {
@@ -70,19 +70,28 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
 
         inputManager = (InputMethodManager) getSystemService(
                 INPUT_METHOD_SERVICE);
-        productName =  findViewById(R.id.productTvName);
+        productName = findViewById(R.id.productTvName);
 
         reportHelper = ReportHelper.getInstance(this);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
+
+        //total lines
         totalLines = findViewById(R.id.txttotallines);
         tv_lbl_total_lines = findViewById(R.id.lbl_total_lines);
-        TextView outletName = findViewById(R.id.BtnBrandPrev);
-        TextView label_total = findViewById(R.id.label_totalValue);
+
+        label_total = findViewById(R.id.label_totalValue);
+        text_total = findViewById(R.id.txttotal);
+
+        tv_lbl_total_wgt = findViewById(R.id.label_totalweight);
         txtWeight = findViewById(R.id.txtWeight);
+
+
+        TextView outletName = findViewById(R.id.BtnBrandPrev);
+
         label_total.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         tv_lbl_total_lines.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.label_totalweight)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
+        tv_lbl_total_wgt.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         txtWeight.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
 
         try {
@@ -138,13 +147,12 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
             }
 
 
-            text_total = (TextView) findViewById(R.id.txttotal);
             String value = getResources().getString(R.string.order_report)
                     + obj.getRetailerName();
             outletName.setText(value);
 
 
-            elv = (ExpandableListView) findViewById(R.id.elv);
+            elv = findViewById(R.id.elv);
 
             setSupportActionBar(toolbar);
             // Set title to toolbar
@@ -170,10 +178,6 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
             if (!businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
                 findViewById(R.id.title_weight).setVisibility(View.GONE);
 
-            if (!businessModel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER) {
-                findViewById(R.id.label_totalValue).setVisibility(View.GONE);
-                findViewById(R.id.txttotal).setVisibility(View.GONE);
-            }
             if (!businessModel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
                 findViewById(R.id.lpc).setVisibility(View.GONE);
             }
@@ -232,13 +236,23 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
             findViewById(R.id.view1).setVisibility(View.GONE);
         }
 
+        if (businessModel.configurationMasterHelper.SHOW_TOTAL_VALUE_ORDER) {
+            text_total.setText(SDUtil.format(TotalValue,
+                    businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
+                    0, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+        } else {
+            text_total.setVisibility(View.GONE);
+            label_total.setVisibility(View.GONE);
+            findViewById(R.id.view2).setVisibility(View.GONE);
+        }
 
-        text_total.setText(SDUtil.format(TotalValue,
-                businessModel.configurationMasterHelper.VALUE_PRECISION_COUNT,
-                0, businessModel.configurationMasterHelper.IS_DOT_FOR_GROUP));
+        if (businessModel.configurationMasterHelper.SHOW_ORDER_WEIGHT){
+            txtWeight.setText(Utils.formatAsTwoDecimal((double) TotalWeight));
+        }else{
+            tv_lbl_total_wgt.setVisibility(View.GONE);
+            txtWeight.setVisibility(View.GONE);
+        }
 
-
-        txtWeight.setText(Utils.formatAsTwoDecimal((double) TotalWeight));
 
 
         elv.setAdapter(new MyAdapter());
@@ -286,7 +300,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
                 row.setOnClickListener(new OnClickListener() {
 
                     public void onClick(View v) {
-                         productName.setText(holder.productName);
+                        productName.setText(holder.productName);
                     }
                 });
 
@@ -534,7 +548,7 @@ public class OrderReportDetail extends IvyBaseActivityNoActionBar implements
             case android.R.id.home:
                 onBackButtonClick();
                 break;
-            case R.id.menu_print :
+            case R.id.menu_print:
                 preparePrintData();
                 break;
         }

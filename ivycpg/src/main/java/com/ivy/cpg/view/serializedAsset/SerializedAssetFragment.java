@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.serializedAsset;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -73,6 +74,8 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
     private SerializedAssetAdapter adapter;
     private BusinessModel mBModel;
 
+    private Context context;
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -81,6 +84,8 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
         assetTrackingHelper = SerializedAssetHelper.getInstance(getActivity());
         assetPresenter = new SerializedAssetPresenterImpl(getContext(), mBModel, assetTrackingHelper);
         assetPresenter.setView(this);
+
+        this.context = context;
     }
 
     @Override
@@ -223,21 +228,21 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
         }
 
 
-            try {
-                if (view != null) {
-                    if (mBModel.labelsMasterHelper.applyLabels(view.findViewById(
-                            R.id.tv_isAvail).getTag()) != null) {
-                        ((TextView) view.findViewById(R.id.tv_isAvail))
-                                .setText(mBModel.labelsMasterHelper
-                                        .applyLabels(view.findViewById(
-                                                R.id.tv_isAvail).getTag()));
+        try {
+            if (view != null) {
+                if (mBModel.labelsMasterHelper.applyLabels(view.findViewById(
+                        R.id.tv_isAvail).getTag()) != null) {
+                    ((TextView) view.findViewById(R.id.tv_isAvail))
+                            .setText(mBModel.labelsMasterHelper
+                                    .applyLabels(view.findViewById(
+                                            R.id.tv_isAvail).getTag()));
 
-                    }
                 }
-
-            } catch (Exception e) {
-                Commons.printException("" + e);
             }
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
 
 
         try {
@@ -287,7 +292,6 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
 
     }
 
-
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         getActivity().getMenuInflater().inflate(
@@ -303,9 +307,16 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             drawerOpen = mDrawerLayout.isDrawerOpen(GravityCompat.END);
         }
 
+        String str_assetRequest;
         String str_addasset;
         String str_removeasset;
         String str_assetservice;
+        String str_assetUpdate;
+
+        if (mBModel.labelsMasterHelper.applyLabels("request_asset") != null)
+            str_assetRequest = mBModel.labelsMasterHelper.applyLabels("request_asset");
+        else
+            str_assetRequest = getResources().getString(R.string.new_request);
 
         if (mBModel.labelsMasterHelper.applyLabels("add_asset") != null)
             str_addasset = mBModel.labelsMasterHelper.applyLabels("add_asset");
@@ -322,9 +333,16 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
         else
             str_assetservice = getResources().getString(R.string.asset_service);
 
+        if (mBModel.labelsMasterHelper.applyLabels("asset_update") != null)
+            str_assetUpdate = mBModel.labelsMasterHelper.applyLabels("asset_update");
+        else
+            str_assetUpdate = getResources().getString(R.string.asset_update_request);
+
+        menu.findItem(R.id.menu_request).setTitle(str_assetRequest);
         menu.findItem(R.id.menu_add).setTitle(str_addasset);
         menu.findItem(R.id.menu_remove).setTitle(str_removeasset);
         menu.findItem(R.id.menu_assetservice).setTitle(str_assetservice);
+        menu.findItem(R.id.menu_asset_change).setTitle(str_assetUpdate);
 
         if (mSelectedIdByLevelId != null) {
             for (Integer id : mSelectedIdByLevelId.keySet()) {
@@ -386,13 +404,21 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
                 mDrawerLayout.closeDrawers();
             } else {
-                if (assetTrackingHelper.getAssetTrackingList().size() == 0 && adapter.isEmpty()) {
+                if (assetTrackingHelper.getAssetTrackingList().size() == 0 && adapter.isEmpty()
+                        && !isPreVisit) {
                     save();
                 } else {
-                    assetPresenter.updateTimeStamp();
-                    startActivity(new Intent(getActivity(),
-                            HomeScreenTwo.class));
-                    getActivity().finish();
+                    if (!isPreVisit)
+                        assetPresenter.updateTimeStamp();
+
+                    Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                    if (isPreVisit)
+                        intent.putExtra("PreVisit", true);
+
+                    startActivity(intent);
+
+                    ((Activity) context).finish();
                 }
             }
             getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
@@ -409,16 +435,28 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             dialog1.show(ft, MENU_SERIALIZED_ASSET);
             return true;
         } else if (i == R.id.menu_survey) {
-            startActivity(new Intent(getActivity(), SurveyActivityNew.class));
-            return true;
-        } else if (i == R.id.menu_add) {
 
-            Intent intent=new Intent(getActivity(),AddSerializedAssetActivity.class);
+            Intent intent = new Intent(context, SurveyActivityNew.class);
+            if (isPreVisit)
+                intent.putExtra("PreVisit", true);
             startActivity(intent);
 
             return true;
+        } else if (i == R.id.menu_add) {
+
+            Intent intent = new Intent(context, AddSerializedAssetActivity.class);
+            if (isPreVisit)
+                intent.putExtra("PreVisit", true);
+            startActivity(intent);
+
+            return true;
+        } else if (i == R.id.menu_request) {
+            startActivity(new Intent(getActivity(), SerializedAssetRequestActivity.class));
+            return true;
         } else if (i == R.id.menu_remove) {
             Intent intent = new Intent(getActivity(), RemoveSerializedAssetActivity.class);
+            if (isPreVisit)
+                intent.putExtra("PreVisit", true);
             intent.putExtra("module", MENU_SERIALIZED_ASSET);
             startActivity(intent);
             return true;
@@ -429,6 +467,8 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
         } else if (i == R.id.menu_move) {
             if (assetPresenter.getAssetListSize() >= 0) {
                 Intent intent = new Intent(getActivity(), SerializedAssetMovementActivity.class);
+                if (isPreVisit)
+                    intent.putExtra("PreVisit", true);
                 intent.putExtra("module", MENU_SERIALIZED_ASSET);
                 startActivityForResult(intent, MOVEMENT_ASSET);
             } else {
@@ -438,18 +478,18 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             return true;
         } else if (i == R.id.menu_assetservice) {
 
-
             Intent intent = new Intent(getActivity(), SerializedAssetServiceActivity.class);
+            if (isPreVisit)
+                intent.putExtra("PreVisit", true);
             intent.putExtra("module", MENU_SERIALIZED_ASSET);
             startActivity(intent);
 
             return true;
-        }else if(i== R.id.menu_assetScan){
+        } else if (i == R.id.menu_assetScan) {
 
             scanBarCode();
 
-        }
-        else if (i == R.id.menu_reason) {
+        } else if (i == R.id.menu_reason) {
             try {
                 mBModel.reasonHelper.downloadNpReason(mBModel.retailerMasterBO.getRetailerID(), MENU_SERIALIZED_ASSET);
                 ReasonPhotoDialog dialog = new ReasonPhotoDialog();
@@ -457,12 +497,20 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
                     @Override
                     public void onDismiss(DialogInterface dialog) {
                         if (mBModel.reasonHelper.isNpReasonPhotoAvaiable(mBModel.retailerMasterBO.getRetailerID(), MENU_SERIALIZED_ASSET)) {
-                            mBModel.saveModuleCompletion(MENU_SERIALIZED_ASSET, true);
-                            mBModel.outletTimeStampHelper
-                                    .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
-                            startActivity(new Intent(getActivity(),
-                                    HomeScreenTwo.class));
-                            getActivity().finish();
+
+                            if (!isPreVisit) {
+                                mBModel.saveModuleCompletion(MENU_SERIALIZED_ASSET, true);
+                                mBModel.outletTimeStampHelper
+                                        .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
+                            }
+
+                            Intent intent = new Intent(context, HomeScreenTwo.class);
+
+                            if (isPreVisit)
+                                intent.putExtra("PreVisit", true);
+
+                            startActivity(intent);
+                            ((Activity) context).finish();
                         }
                     }
                 });
@@ -471,17 +519,22 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
                 dialog.setCancelable(false);
                 dialog.setArguments(args);
                 dialog.show(getActivity().getSupportFragmentManager(), "ReasonDialogFragment");
-            }
-            catch (Exception ex){
+            } catch (Exception ex) {
                 Commons.printException(ex);
             }
+            return true;
+        } else if (i == R.id.menu_asset_approval) {
+            startActivity(new Intent(getActivity(), SerializedAssetApprovalActivity.class));
+            return true;
+        } else if (i == R.id.menu_asset_change) {
+            startActivity(new Intent(getActivity(), SerialNoChangeActivity.class));
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    private void scanBarCode(){
+    private void scanBarCode() {
         {
             ((SerializedAssetActivity) getActivity()).checkAndRequestPermissionAtRunTime(2);
             int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
@@ -503,8 +556,6 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
         }
 
     }
-
-
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
@@ -646,6 +697,9 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
                     intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                 }
 
+                if (isPreVisit)
+                    intent.putExtra("PreVisit", true);
+
                 startActivity(intent);
                 getActivity().finish();
 
@@ -762,7 +816,6 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
         super.onDestroy();
         assetTrackingHelper.clear();
     }
-
 
 
 }

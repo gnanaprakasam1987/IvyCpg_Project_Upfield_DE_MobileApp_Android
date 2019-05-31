@@ -42,9 +42,21 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     private Dialog dialog;
     private TextView progressMsgTxt;
 
+    public boolean isPreVisit = false;
+    private Context context;
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+        isPreVisit = ((Activity)context).getIntent().getBooleanExtra("PreVisit",false);
+
         return inflater.inflate(setContentViewLayout(), container, false);
     }
 

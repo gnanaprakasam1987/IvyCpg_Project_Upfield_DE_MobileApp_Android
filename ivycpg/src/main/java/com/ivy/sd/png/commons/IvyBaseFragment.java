@@ -1,6 +1,8 @@
 package com.ivy.sd.png.commons;
 
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -30,6 +32,9 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
     BusinessModel bmodel;
     TextView messagetv;
 
+    public boolean isPreVisit = false;
+    private Context context;
+
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         SharedPreferences sharedPrefs = PreferenceManager
@@ -49,6 +54,11 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
         super.onConfigurationChanged(newConfig);
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        this.context = context;
+    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,6 +66,8 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
 
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+
+        isPreVisit = ((Activity)context).getIntent().getBooleanExtra("PreVisit",false);
     }
 
     public void setScreenTitle(String title) {

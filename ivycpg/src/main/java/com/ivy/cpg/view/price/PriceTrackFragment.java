@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.price;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -116,6 +117,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     private InputMethodManager inputManager;
     private TextView productName;
 
+    private Context context;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -140,7 +143,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     }
 
     public void initialiseViews(View view) {
-        isFromChild = getActivity().getIntent().getBooleanExtra("isFromChild", false);
+        isFromChild = ((Activity)context).getIntent().getBooleanExtra("isFromChild", false);
+
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
                 GravityCompat.START);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
@@ -368,6 +372,8 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         priceTrackingHelper = PriceTrackingHelper.getInstance(getContext());
         setHasOptionsMenu(true);
         priceTrackingHelper.mSelectedFilter = -1;
+
+        this.context = context;
     }
 
     @Override
@@ -502,7 +508,10 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
             return true;
         } else if (i == R.id.menu_survey) {
-            startActivity(new Intent(getActivity(), SurveyActivityNew.class));
+            Intent intent = new Intent(getActivity(), SurveyActivityNew.class);
+            if (isPreVisit)
+                intent.putExtra("PreVisit",true);
+            startActivity(intent);
             return true;
         } else if (i == R.id.menu_fivefilter) {
             FiveFilterFragment();
@@ -743,6 +752,9 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                             intent.putExtra("IsMoveNextActivity", businessModel.configurationMasterHelper.MOVE_NEXT_ACTIVITY);
                             intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
                         }
+
+                        if (isPreVisit)
+                            intent.putExtra("PreVisit",true);
 
                         startActivity(intent);
                         getActivity().finish();
@@ -1925,16 +1937,22 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
                 mDrawerLayout.closeDrawers();
             else {
-                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+                if (!isPreVisit)
+                    businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
+
+                Intent intent = new Intent(getActivity(),HomeScreenTwo.class);
+                if (isPreVisit)
+                    intent.putExtra("PreVisit",true);
+
                 if (isFromChild)
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                            .putExtra("isStoreMenu", true));
+                    startActivity(intent.putExtra("isStoreMenu", true));
                 else
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().finish();
+                    startActivity(intent);
+
+                ((Activity)context).finish();
             }
-            getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
     }
 
@@ -1943,15 +1961,23 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                 "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
-                businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
+
+                if (!isPreVisit)
+                    businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
+
+                Intent intent = new Intent(getActivity(),HomeScreenTwo.class);
+                if (isPreVisit)
+                    intent.putExtra("PreVisit",true);
+
                 if (isFromChild)
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class)
-                            .putExtra("isStoreMenu", true));
+                    startActivity(intent.putExtra("isStoreMenu", true));
                 else
-                    startActivity(new Intent(getActivity(), HomeScreenTwo.class));
-                getActivity().finish();
-                getActivity().overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                    startActivity(intent);
+
+                ((Activity)context).finish();
+
+                ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
 
             }
         }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {

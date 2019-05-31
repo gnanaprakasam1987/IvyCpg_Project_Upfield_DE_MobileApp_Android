@@ -1,7 +1,7 @@
 package com.ivy.cpg.view.serializedAsset;
 
 import android.Manifest;
-import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -13,15 +13,14 @@ import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -39,6 +38,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
@@ -59,13 +59,16 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
     private static final String SELECT = "-Select-";
     private static final String ALL = "All";
     private Spinner mAsset;
-    private EditText mSNO, editext_NFC_number;
-    private Button btnAddInstallDate;
-    EditText edittext;
+    private EditText mSNO, editext_NFC_number, assetRentPriceEdTxt;
+    private Button btnAddInstallDate, btnAddEffTodate;
+    private EditText edittext;
 
     private int mYear;
     private int mMonth;
     private int mDay;
+    private int instYear;
+    private int instMonth;
+    private int instDay;
     Button btnSave;
     private String append = "";
 
@@ -106,6 +109,9 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
     private ArrayAdapter<AssetAddDetailBO> mAssetSpinAdapter;
     private TextView txtNFCLabel, txtSerialNo;
     String nfcTag = "", serialNoTag = "";
+    private MyDatePickerDialog installDatePickerDialog;
+    private MyDatePickerDialog effToDatePrickerDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,15 +130,14 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             setScreenTitle(getResources().getString(R.string.addnewasset));
         }
 
-        txtNFCLabel = findViewById(R.id.txtNFCLabel);
-        ((TextView) findViewById(R.id.txtNFCLabel)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        if (mBModel.labelsMasterHelper.applyLabels(findViewById(R.id.txtNFCLabel).getTag()) != null){
-            nfcTag = mBModel.labelsMasterHelper.applyLabels(findViewById(R.id.txtNFCLabel).getTag());
-            ((TextView) findViewById(R.id.txtNFCLabel)).setText(nfcTag);
+        txtNFCLabel = findViewById(R.id.label_nfc_scan);
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(R.id.label_nfc_scan).getTag()) != null) {
+            nfcTag = mBModel.labelsMasterHelper.applyLabels(findViewById(R.id.label_nfc_scan).getTag());
+            ((TextView) findViewById(R.id.label_nfc_scan)).setText(nfcTag);
         }
 
         txtSerialNo = findViewById(R.id.label_scan);
-        serialNoTag = getResources().getString(R.string.serial_no);
+        serialNoTag = getString(R.string.serial_no);
         ((TextView) findViewById(R.id.label_scan)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         if (mBModel.labelsMasterHelper.applyLabels(findViewById(R.id.label_scan).getTag()) != null) {
             serialNoTag = mBModel.labelsMasterHelper.applyLabels(findViewById(R.id.label_scan).getTag());
@@ -167,10 +172,18 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                             .applyLabels(findViewById(
                                     R.id.label_asset_capacity).getTag()));
 
+
+        if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                R.id.install_date_label).getTag()) != null)
+            ((TextView) findViewById(R.id.install_date_label))
+                    .setText(mBModel.labelsMasterHelper
+                            .applyLabels(findViewById(
+                                    R.id.install_date_label).getTag()));
+
         mAsset = findViewById(R.id.spinner_asset);
         btnAddInstallDate = findViewById(R.id.date_button);
         mSNO = findViewById(R.id.etxt_sno);
-        editext_NFC_number = findViewById(R.id.etxt_nfc_number);
+        editext_NFC_number = findViewById(R.id.etxt_nfc_no);
         btnSave = findViewById(R.id.btn_save);
         btnSave.setOnClickListener(this);
         imageView_barcode_scan = findViewById(R.id.imageView_barcode_scan);
@@ -183,20 +196,52 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         typeSpinner = findViewById(R.id.spinner_type);
         barcodeNoReasonSpinner = findViewById(R.id.spinner_bar_code_reason);
         nfcNoReasonSpinner = findViewById(R.id.spinner_nfc_reason);
+        assetRentPriceEdTxt = findViewById(R.id.etxt_rental_price);
+        btnAddEffTodate = findViewById(R.id.eff_to_date_button);
 
 
-        if (!assetTrackingHelper.SHOW_ASSET_TYPE)
-            findViewById(R.id.ll_asset_type).setVisibility(View.GONE);
-        if (!assetTrackingHelper.SHOW_ASSET_CAPACITY)
-            findViewById(R.id.ll_asset_capacity).setVisibility(View.GONE);
-        if (!assetTrackingHelper.SHOW_ASSET_MODEL)
-            findViewById(R.id.ll_asset_model).setVisibility(View.GONE);
-        if (!assetTrackingHelper.SHOW_ASSET_VENDOR)
-            findViewById(R.id.ll_asset_vendor).setVisibility(View.GONE);
+        if (!assetTrackingHelper.SHOW_ASSET_TYPE) {
+            findViewById(R.id.label_asset_type).setVisibility(View.GONE);
+            typeSpinner.setVisibility(View.GONE);
+        }
+        if (!assetTrackingHelper.SHOW_ASSET_CAPACITY) {
+            findViewById(R.id.label_asset_capacity).setVisibility(View.GONE);
+            capacitySpinner.setVisibility(View.GONE);
+        }
+        if (!assetTrackingHelper.SHOW_ASSET_MODEL) {
+            findViewById(R.id.label_asset_model).setVisibility(View.GONE);
+            modelSpinner.setVisibility(View.GONE);
+        }
+        if (!assetTrackingHelper.SHOW_ASSET_VENDOR) {
+            findViewById(R.id.label_asset_vendor).setVisibility(View.GONE);
+            vendorSpinner.setVisibility(View.GONE);
+        }
+
+        if (!assetTrackingHelper.SHOW_ASSET_RENTAL_PRICE) {
+            findViewById(R.id.label_rental_price).setVisibility(View.GONE);
+            assetRentPriceEdTxt.setVisibility(View.GONE);
+        } else {
+            if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.label_rental_price).getTag()) != null)
+                ((TextView) findViewById(R.id.label_rental_price))
+                        .setText(mBModel.labelsMasterHelper
+                                .applyLabels(findViewById(
+                                        R.id.label_rental_price).getTag()));
+        }
+
+        if (!assetTrackingHelper.SHOW_ASSET_EFFECTIVE_DATE) {
+            findViewById(R.id.eff_to_date_label).setVisibility(View.GONE);
+            btnAddEffTodate.setVisibility(View.GONE);
+        } else {
+            if (mBModel.labelsMasterHelper.applyLabels(findViewById(
+                    R.id.eff_to_date_label).getTag()) != null)
+                ((TextView) findViewById(R.id.eff_to_date_label))
+                        .setText(mBModel.labelsMasterHelper
+                                .applyLabels(findViewById(
+                                        R.id.eff_to_date_label).getTag()));
+        }
 
         loadData();
-
-
     }
 
 
@@ -290,7 +335,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         reasonMaster.setReasonID("0");
         noBarCodeReasonList.add(0, reasonMaster);
 
-        capacityList.add(0,ALL);
+        capacityList.add(0, ALL);
 
         ArrayAdapter<SerializedAssetBO> mModelAdapter = new ArrayAdapter<>(this,
                 R.layout.spinner_bluetext_layout, modelList);
@@ -328,8 +373,8 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int position, long arg3) {
-                    mSelectedCapacity = capacityList.get(position);
-                    filterPosm();
+                mSelectedCapacity = capacityList.get(position);
+                filterPosm();
             }
 
             @Override
@@ -344,8 +389,8 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int position, long arg3) {
-                        mSelectedVendor = vendorList.get(position).getVendorId();
-                        filterPosm();
+                mSelectedVendor = vendorList.get(position).getVendorId();
+                filterPosm();
             }
 
             @Override
@@ -360,8 +405,8 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             @Override
             public void onItemSelected(AdapterView<?> arg0, View arg1,
                                        int position, long arg3) {
-                        mSelectedModel = modelList.get(position).getModelId();
-                        filterPosm();
+                mSelectedModel = modelList.get(position).getModelId();
+                filterPosm();
             }
 
             @Override
@@ -422,7 +467,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         });
 
 
-           String todayDate = DateTimeUtils.convertFromServerDateToRequestedFormat(
+        String todayDate = DateTimeUtils.convertFromServerDateToRequestedFormat(
                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 ConfigurationMasterHelper.outDateFormat);
 
@@ -433,56 +478,28 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         mMonth = c.get(Calendar.MONTH);
         mDay = c.get(Calendar.DAY_OF_MONTH);
 
+        final Calendar c1 = Calendar.getInstance();
+        instYear = c1.get(Calendar.YEAR);
+        instMonth = c1.get(Calendar.MONTH);
+        instDay = c1.get(Calendar.DAY_OF_MONTH);
 
-        btnAddInstallDate.setOnClickListener(new View.OnClickListener() {
 
-            public void onClick(View v) {
-                Button b = (Button) v;
-                if (b == btnAddInstallDate) {
+        btnAddInstallDate.setOnClickListener(v -> {
+            hideSoftInputFromWindow();
+            if (installDatePickerDialog == null)
+                createInstallDatePicker();
 
-                    // Launch Date Picker Dialog
-                    DatePickerDialog dpd = new DatePickerDialog(
-                            AddSerializedAssetActivity.this, R.style.DatePickerDialogStyle,
-                            new DatePickerDialog.OnDateSetListener() {
-
-                                @Override
-                                public void onDateSet(DatePicker view,
-                                                      int year, int monthOfYear,
-                                                      int dayOfMonth) {
-                                    mYear = year;
-                                    mMonth = monthOfYear;
-                                    mDay = dayOfMonth;
-                                    Calendar selectedDate = new GregorianCalendar(
-                                            year, monthOfYear, dayOfMonth);
-                                    btnAddInstallDate.setText(DateTimeUtils
-                                            .convertDateObjectToRequestedFormat(
-                                                    selectedDate.getTime(),
-                                                    ConfigurationMasterHelper.outDateFormat));
-                                    Calendar mCurrentCalendar = Calendar
-                                            .getInstance();
-                                    if (selectedDate.after(mCurrentCalendar)) {
-                                        Toast.makeText(
-                                                AddSerializedAssetActivity.this,
-                                                R.string.future_date_not_allowed,
-                                                Toast.LENGTH_SHORT).show();
-                                        btnAddInstallDate.setText(DateTimeUtils
-                                                .convertDateObjectToRequestedFormat(
-                                                        mCurrentCalendar.getTime(),
-                                                        ConfigurationMasterHelper.outDateFormat));
-
-                                        mYear = mCurrentCalendar.get(Calendar.YEAR);
-                                        mMonth = mCurrentCalendar.get(Calendar.MONTH);
-                                        mDay = mCurrentCalendar.get(Calendar.DAY_OF_MONTH);
-
-                                    }
-
-                                }
-                            }, mYear, mMonth, mDay);
-                    dpd.show();
-                }
-
-            }
+            installDatePickerDialog.show();
         });
+
+        btnAddEffTodate.setOnClickListener(v -> {
+            hideSoftInputFromWindow();
+            if (effToDatePrickerDialog == null)
+                createEffectiveToDatePicker();
+
+            effToDatePrickerDialog.show();
+        });
+
 
         mSNO.addTextChangedListener(new TextWatcher() {
 
@@ -505,6 +522,74 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         });
     }
 
+    private void createInstallDatePicker() {
+        // Launch Date Picker Dialog
+        installDatePickerDialog = new MyDatePickerDialog(
+                AddSerializedAssetActivity.this, R.style.DatePickerDialogStyle,
+                (view, year, monthOfYear, dayOfMonth) -> {
+                    instYear = year;
+                    instMonth = monthOfYear;
+                    instDay = dayOfMonth;
+                    Calendar selectedDate = new GregorianCalendar(
+                            year, monthOfYear, dayOfMonth);
+                    btnAddInstallDate.setText(DateTimeUtils
+                            .convertDateObjectToRequestedFormat(
+                                    selectedDate.getTime(),
+                                    ConfigurationMasterHelper.outDateFormat));
+                    Calendar mCurrentCalendar = Calendar
+                            .getInstance();
+                    if (selectedDate.after(mCurrentCalendar)) {
+
+                        showMessage(getString(R.string.future_date_not_allowed));
+
+                        btnAddInstallDate.setText(DateTimeUtils
+                                .convertDateObjectToRequestedFormat(
+                                        mCurrentCalendar.getTime(),
+                                        ConfigurationMasterHelper.outDateFormat));
+
+                        instYear = mCurrentCalendar.get(Calendar.YEAR);
+                        instMonth = mCurrentCalendar.get(Calendar.MONTH);
+                        instDay = mCurrentCalendar.get(Calendar.DAY_OF_MONTH);
+
+                    }
+
+                }, instYear, instMonth, instDay);
+        installDatePickerDialog.setPermanentTitle(getString(R.string.choose_date));
+    }
+
+    private void createEffectiveToDatePicker() {
+        // Launch Date Picker Dialog
+        effToDatePrickerDialog = new MyDatePickerDialog(
+                AddSerializedAssetActivity.this, R.style.DatePickerDialogStyle,
+                (view, year, monthOfYear, dayOfMonth) -> {
+                    mYear = year;
+                    mMonth = monthOfYear;
+                    mDay = dayOfMonth;
+                    Calendar selectedDate = new GregorianCalendar(
+                            year, monthOfYear, dayOfMonth);
+                    btnAddEffTodate.setText(DateTimeUtils
+                            .convertDateObjectToRequestedFormat(
+                                    selectedDate.getTime(),
+                                    ConfigurationMasterHelper.outDateFormat));
+                    Calendar mCurrentCalendar = Calendar
+                            .getInstance();
+                    if (mCurrentCalendar.after(selectedDate)) {
+
+                        showMessage(getString(R.string.select_future_date));
+
+                        btnAddEffTodate.setText("");
+
+                        mYear = mCurrentCalendar.get(Calendar.YEAR);
+                        mMonth = mCurrentCalendar.get(Calendar.MONTH);
+                        mDay = mCurrentCalendar.get(Calendar.DAY_OF_MONTH);
+
+                    }
+
+                }, mYear, mMonth, mDay);
+        effToDatePrickerDialog.setPermanentTitle(getString(R.string.choose_date));
+    }
+
+
     /**
      * Set values for adding asset
      */
@@ -522,6 +607,10 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
         assetBo.setNFCTagId(editext_NFC_number.getText().toString());
 
+        assetBo.setRentalPrice(SDUtil.convertToDouble(assetRentPriceEdTxt.getText().toString()));
+
+        assetBo.setEffectiveToDate(btnAddEffTodate.getText().toString());
+
         assetTrackingHelper.setAssetTrackingBO(assetBo);
 
 
@@ -535,22 +624,28 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             try {
                 if (mAsset.getSelectedItemPosition() != 0
                         && serialNoValidation()) {
-                    if(editext_NFC_number.getText().toString().trim().equals("")){
-                        Toast.makeText(AddSerializedAssetActivity.this,
-                                getResources()
-                                        .getString(
-                                                R.string.enter) + " " + nfcTag,
-                                Toast.LENGTH_SHORT).show();
+                    /*if (editext_NFC_number.getText().toString().trim().equals("")) {
+
+                        showMessage(getString(R.string.enter) + " " + nfcTag);
+                        return;
+                    }*/
+                    if (mSNO.getText().toString().trim().equals("")) {
+
+                        showMessage(getString(R.string.enter) + " " + serialNoTag);
                         return;
                     }
-                    if(mSNO.getText().toString().trim().equals("")){
-                        Toast.makeText(AddSerializedAssetActivity.this,
-                                getResources()
-                                        .getString(
-                                                R.string.enter) + " " + serialNoTag,
-                                Toast.LENGTH_SHORT).show();
+                    if (btnAddEffTodate.getText().toString().isEmpty()) {
+
+                        showMessage(getString(R.string.choose_eff_to_date));
                         return;
                     }
+
+                    String rentPriceErrorMsg = rentalPriceValidation();
+                    if (!rentPriceErrorMsg.isEmpty()) {
+                        showMessage(rentPriceErrorMsg);
+                        return;
+                    }
+
                     if (!assetTrackingHelper
                             .getUniqueSerialNo(mSNO.getText()
                                     .toString())) {
@@ -558,12 +653,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                             if (assetBo.getImageName() != null && assetBo.getImageName().length() > 0) {
                                 saveNewAsset();
                             } else {
-                                Toast.makeText(
-                                        this,
-                                        getResources()
-                                                .getString(
-                                                        R.string.photo_mandatory),
-                                        Toast.LENGTH_SHORT).show();
+                                showMessage(getString(R.string.photo_mandatory));
                             }
                         } else {
                             saveNewAsset();
@@ -571,9 +661,8 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
 
                     } else {
-                        Toast.makeText(
-                                this,serialNoTag + " " + getResources().getString(R.string.already_exist),
-                                Toast.LENGTH_SHORT).show();
+
+                        showMessage(serialNoTag + " " + getResources().getString(R.string.already_exist));
                         //enabled edit option if serial no already exists
                         enableBarCodeViews(true);
                     }
@@ -594,11 +683,9 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                 }
 
             } catch (Exception e) {
-                Toast.makeText(
-                        this,
-                        getResources().getString(
-                                R.string.no_assets_exists),
-                        Toast.LENGTH_SHORT).show();
+
+                showMessage(getString(
+                        R.string.no_assets_exists));
             }
         } else if (view.getId() == R.id.btn_cancel) {
             //dismiss();
@@ -613,18 +700,25 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                                 .toString())) {
                     takePhoto();
                 } else {
-                    Toast.makeText(
-                            this,serialNoTag + " " + getResources().getString(R.string.already_exist),
-                            Toast.LENGTH_SHORT).show();
+                    showMessage(serialNoTag + " "
+                            + getResources().getString(R.string.already_exist));
                 }
             } else {
-                Toast.makeText(
-                        this,
-                        getResources().getString(
-                                R.string.no_assets_exists),
-                        Toast.LENGTH_SHORT).show();
+                showMessage(getString(
+                        R.string.enter_serial_no));
             }
         }
+    }
+
+    private String rentalPriceValidation() {
+        if (SDUtil.convertToInt(assetRentPriceEdTxt.getText().toString()) <= 0)
+            return getString(R.string.rental_price_must_be_grater_than_zero);
+
+        else if (assetRentPriceEdTxt.getText().toString().isEmpty())
+            return getString(R.string.enter_rental_price);
+
+        else
+            return "";
     }
 
     private boolean serialNoValidation() {
@@ -653,12 +747,9 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
         assetTrackingHelper
                 .saveNewAsset(getApplicationContext());
-        Toast.makeText(
-                this,
-                getResources()
-                        .getString(
-                                R.string.saved_successfully),
-                Toast.LENGTH_SHORT).show();
+
+        showMessage(getString(
+                R.string.saved_successfully));
         finish();
     }
 
@@ -676,14 +767,14 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                 };
                 integrator.setBeepEnabled(false).initiateScan();
             } else {
-                Toast.makeText(this,
-                        getResources().getString(R.string.permission_enable_msg)
-                                + " " + getResources().getString(R.string.permission_camera)
-                        , Toast.LENGTH_LONG).show();
+                showMessage(getString(R.string.permission_enable_msg)
+                        + " " + getResources().getString(R.string.permission_camera));
             }
         }
-        if (!assetTrackingHelper.SHOW_SERIAL_NO_REASON)
-            findViewById(R.id.barcode_reason_layout).setVisibility(View.GONE);
+        if (!assetTrackingHelper.SHOW_SERIAL_NO_REASON) {
+            findViewById(R.id.txt_bar_code_sp_label).setVisibility(View.GONE);
+            barcodeNoReasonSpinner.setVisibility(View.GONE);
+        }
 
     }
 
@@ -739,7 +830,9 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             if (requestCode == IntentIntegrator.REQUEST_CODE) {
                 if (result != null) {
                     if (result.getContents() == null) {
-                        Toast.makeText(this, getResources().getString(R.string.serial_no_not_captured_kindly_choose_reason), Toast.LENGTH_LONG).show();
+
+                        showMessage(getString(R.string.serial_no_not_captured_kindly_choose_reason));
+
                         barcodeNoReasonSpinner.setSelection(0);
                         enableBarCodeViews(true);
                         isSerialNumberCaptured = false;
@@ -827,16 +920,11 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                 }
 
             } else {
-                Toast.makeText(this, getResources().getString(R.string.external_storage_not_available)
-                        , Toast.LENGTH_SHORT)
-                        .show();
-
+                showMessage(getString(R.string.external_storage_not_available));
             }
         } else {
-            Toast.makeText(this,
-                    getResources().getString(R.string.permission_enable_msg)
-                            + " " + getResources().getString(R.string.permission_camera)
-                    , Toast.LENGTH_LONG).show();
+            showMessage(getString(R.string.permission_enable_msg)
+                    + " " + getResources().getString(R.string.permission_camera));
         }
 
     }
@@ -895,7 +983,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
         if (capacitySpinner.getSelectedItemPosition() == 0 && vendorSpinner.getSelectedItemPosition() == 0 && modelSpinner.getSelectedItemPosition() == 0 && typeSpinner.getSelectedItemPosition() == 0)
             filterList.addAll(posmList);
 
-        if(filterList.get(0)!= null && !filterList.get(0).getPOSMDescription().equalsIgnoreCase(SELECT)){
+        if (filterList.get(0) != null && !filterList.get(0).getPOSMDescription().equalsIgnoreCase(SELECT)) {
             AssetAddDetailBO tempPosm = new AssetAddDetailBO();
             tempPosm.setPOSMId("0");
             tempPosm.setPOSMDescription(SELECT);
@@ -908,7 +996,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
     public void updatedData(ArrayList<AssetAddDetailBO> filterList) {
         mAssetSpinAdapter.clear();
-        if (filterList != null){
+        if (filterList != null) {
             for (AssetAddDetailBO assetAddDetailBO : filterList) {
                 mAssetSpinAdapter.insert(assetAddDetailBO, mAssetSpinAdapter.getCount());
             }
@@ -919,5 +1007,11 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
     private void enableBarCodeViews(boolean flag) {
         barcodeNoReasonSpinner.setEnabled(flag);
         mSNO.setEnabled(flag);
+    }
+
+    private void hideSoftInputFromWindow() {
+        InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(
+                getCurrentFocus().getWindowToken(), 0);
     }
 }

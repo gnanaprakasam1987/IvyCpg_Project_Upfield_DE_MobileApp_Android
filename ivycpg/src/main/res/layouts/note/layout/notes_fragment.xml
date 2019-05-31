@@ -117,7 +117,8 @@
             app:backgroundTint="?attr/accentcolor"
             app:borderWidth="0dp"
             app:useCompatPadding="true"
-            tools:ignore="UnusedAttribute" />
+            tools:ignore="UnusedAttribute"
+            style="?attr/fabButtonStyle_Configured"/>
     </RelativeLayout>
 
     <View

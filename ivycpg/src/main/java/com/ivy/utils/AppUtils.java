@@ -317,5 +317,34 @@ public class AppUtils {
         };
     }
 
+    /**
+     * Used to share file's through email
+     * @param context - Activity context
+     * @param filePath - Path of the file
+     * @param subject - Email subject
+     * @param recipients - List of recipients to send this mail
+     * @param title - Title of the email intent
+     */
+    public static void sendEmail(Context context, String filePath, String subject, String[] recipients, String title) {
+        Uri path;
+        try {
+            File file = new File(filePath);
+            if (file.exists()) {
+                if (Build.VERSION.SDK_INT >= 24) {
+                    path = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".provider", file);
+                } else {
+                    path = Uri.fromFile(file);
+                }
+                Intent intent = new Intent(android.content.Intent.ACTION_SEND);
+                intent.setType("vnd.android.cursor.dir/email");
+                intent.putExtra(Intent.EXTRA_EMAIL, recipients);
+                intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+                intent.putExtra(Intent.EXTRA_STREAM, path);
+                context.startActivity(Intent.createChooser(intent , title));
+            }
+        } catch (ActivityNotFoundException e) {
+            Commons.printException(e);
+        }
+    }
 
 }

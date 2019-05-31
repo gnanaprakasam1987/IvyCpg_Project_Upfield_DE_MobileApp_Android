@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ivy.cpg.view.serializedAsset.SerialNoChangeActivity">
+
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar"/>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/approvel_list_view"
+        android:layout_below="@+id/toolbar"
+        android:layout_above="@+id/footer_rl"
+        />
+
+    <RelativeLayout
+        android:id="@+id/footer_rl"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/footer_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/footer_bg_color"
+        android:gravity="end"
+        android:orientation="horizontal"
+        android:padding="@dimen/footer_padding">
+
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_save"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_centerVertical="true"
+            android:text="@string/approval"
+            android:textAllCaps="false" />
+
+    </RelativeLayout>
+
+</RelativeLayout>

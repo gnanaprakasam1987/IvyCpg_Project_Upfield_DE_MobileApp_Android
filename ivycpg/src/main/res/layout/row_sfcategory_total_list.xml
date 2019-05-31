@@ -40,7 +40,7 @@
 
         <EditText
             android:id="@+id/et_total"
-            style="@style/EditText_ListItem"
+            style="?attr/edit_text_list_item_style"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center|start"
@@ -71,7 +71,7 @@
 
         <EditText
             android:id="@+id/et_actual"
-            style="@style/EditText_ListItem"
+            style="?attr/edit_text_list_item_style"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center|start"

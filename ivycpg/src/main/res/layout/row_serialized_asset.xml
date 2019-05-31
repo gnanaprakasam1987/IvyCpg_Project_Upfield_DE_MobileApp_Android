@@ -32,6 +32,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/asset_detail"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="5.5"
@@ -67,6 +68,7 @@
             android:gravity="center">
 
             <CheckBox
+                style="?attr/checkbox_style"
                 android:id="@+id/radio_avail_qty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
@@ -80,6 +82,7 @@
             android:gravity="center">
 
             <CheckBox
+                style="?attr/checkbox_style"
                 android:id="@+id/radio_exec_qty"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
