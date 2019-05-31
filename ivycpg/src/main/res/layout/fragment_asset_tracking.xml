@@ -15,6 +15,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_above="@+id/line"
             android:orientation="vertical">
 
             <LinearLayout
@@ -98,7 +99,6 @@
                 android:elevation="@dimen/floating_btn_elevation"
                 android:src="@drawable/barcode_scan"
                 android:visibility="gone"
-
                 app:backgroundTint="?attr/primarycolor"
                 app:borderWidth="0dp" />
 
@@ -125,7 +125,7 @@
 
             <Button
                 android:id="@+id/btn_save"
-                style="?attr/roundedCustomButtonSmall"
+                style="?attr/roundedCustomButtonSmall_Configured"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"

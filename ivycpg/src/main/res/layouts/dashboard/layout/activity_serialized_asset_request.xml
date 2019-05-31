@@ -1,0 +1,223 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_noise"
+    android:orientation="vertical">
+
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+
+    <RelativeLayout
+        android:id="@+id/ll_asset_filters"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:layout_marginStart="@dimen/dimens_10dp"
+        android:layout_marginLeft="@dimen/dimens_10dp"
+        android:layout_marginTop="@dimen/dimens_40dp"
+        android:layout_marginEnd="@dimen/dimens_10dp"
+        android:layout_marginRight="@dimen/dimens_10dp"
+        android:orientation="vertical">
+
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/label_asset_type"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:tag="asset_type"
+            android:text="@string/type" />
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/spinner_type"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="@dimen/spinner_height"
+            android:layout_below="@+id/label_asset_type"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:background="@android:color/transparent"
+            android:gravity="start"
+            android:overlapAnchor="false"
+            android:textAlignment="textStart"
+            tools:targetApi="lollipop" />
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/label_asset_model"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/spinner_model"
+            android:layout_alignLeft="@+id/spinner_model"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/label_asset_type"
+            android:layout_toRightOf="@+id/label_asset_type"
+            android:tag="asset_model"
+            android:text="@string/model" />
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/spinner_model"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="@dimen/spinner_height"
+            android:layout_below="@+id/label_asset_model"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginLeft="@dimen/_20sdp"
+            android:layout_toEndOf="@+id/spinner_type"
+            android:layout_toRightOf="@+id/spinner_type"
+            android:background="@android:color/transparent"
+            android:gravity="start"
+            android:overlapAnchor="false"
+            android:textAlignment="textStart"
+            tools:targetApi="lollipop" />
+
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/label_asset_vendor"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/spinner_type"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:tag="asset_vendor"
+            android:text="@string/vendor" />
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/spinner_vendor"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="@dimen/spinner_height"
+            android:layout_below="@+id/label_asset_vendor"
+            android:background="@android:color/transparent"
+            android:gravity="start"
+            android:overlapAnchor="false"
+            android:textAlignment="textStart"
+            tools:targetApi="lollipop" />
+
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/label_asset_capacity"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/spinner_model"
+            android:layout_alignStart="@+id/spinner_model"
+            android:layout_alignLeft="@+id/spinner_model"
+            android:layout_toEndOf="@+id/label_asset_vendor"
+            android:layout_toRightOf="@+id/label_asset_vendor"
+            android:tag="asset_capacity"
+            android:text="@string/capacity" />
+
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/spinner_capcity"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="@dimen/spinner_height"
+            android:layout_below="@+id/label_asset_capacity"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginLeft="@dimen/_20sdp"
+            android:layout_toEndOf="@+id/spinner_vendor"
+            android:layout_toRightOf="@+id/spinner_vendor"
+            android:background="@android:color/transparent"
+            android:gravity="start"
+            android:overlapAnchor="false"
+            android:textAlignment="textStart"
+            tools:targetApi="lollipop" />
+
+        <View
+            android:id="@+id/line_view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/spinner_capcity"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:layout_marginBottom="@dimen/_10sdp"
+            android:background="@color/gray_text" />
+
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/asset_reason_label"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/line_view"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:tag="choose_asset_name"
+            android:text="@string/addasset" />
+
+        <android.support.v7.widget.AppCompatAutoCompleteTextView
+            android:id="@+id/auto_complete_tv_asset"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="@dimen/spinner_height"
+            android:layout_below="@+id/asset_reason_label"
+            android:layout_gravity="center_vertical"
+            android:paddingTop="@dimen/_10sdp"
+            android:gravity="start"
+            android:drawableEnd="@drawable/ic_arrow_drop_down"
+            android:drawableRight="@drawable/ic_arrow_drop_down"
+            android:ems="10"
+            android:hint="@string/search"
+            android:imeOptions="actionDone"
+            android:inputType="text"
+            android:maxLines="1"
+            android:textColor="?attr/primarycolor"
+            android:textColorHint="?attr/primarycolor"
+            android:textSize="@dimen/spinner_normal" />
+
+
+        <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/delivery_date_Tv"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/line_view"
+            android:layout_alignStart="@+id/delivery_date_button"
+            android:layout_alignLeft="@+id/delivery_date_button"
+            android:layout_toEndOf="@+id/asset_reason_label"
+            android:layout_toRightOf="@+id/asset_reason_label"
+            android:tag="asset_delivery_date"
+            android:text="@string/delivery_date_label" />
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/delivery_date_button"
+            style="@style/datePickerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/delivery_date_Tv"
+            android:layout_marginStart="@dimen/_20sdp"
+            android:layout_marginLeft="@dimen/_20sdp"
+            android:layout_toEndOf="@+id/auto_complete_tv_asset"
+            android:layout_toRightOf="@+id/auto_complete_tv_asset"
+            android:gravity="center"
+            android:text="@string/delivery_date_label" />
+
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/footer_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/footer_bg_color"
+        android:gravity="end"
+        android:orientation="horizontal"
+        android:padding="@dimen/footer_padding">
+
+
+        <android.support.v7.widget.AppCompatButton
+            android:id="@+id/btn_save"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_centerVertical="true"
+            android:text="@string/save"
+            android:textAllCaps="false" />
+
+    </RelativeLayout>
+</RelativeLayout>
+

@@ -280,6 +280,19 @@
                 android:textAllCaps="false"
                 android:visibility="gone" />
 
+            <Button
+                android:id="@+id/pre_visit"
+                style="?attr/roundedCustomButtonNormal"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/target_top_margin"
+                android:layout_marginEnd="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
+                android:layout_marginTop="@dimen/target_top_margin"
+                android:onClick="onClick"
+                android:text="Pre-Visit"
+                android:visibility="gone"
+                android:textAllCaps="false" />
+
         </LinearLayout>
 
         <LinearLayout

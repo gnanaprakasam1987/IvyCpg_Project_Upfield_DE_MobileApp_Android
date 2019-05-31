@@ -8,126 +8,7 @@
         <item name="listcolor">@color/list_odd_item_bg</item>
         <item name="listcolor_alt">@color/list_even_item_bg</item>
 
-        <!--<item name="bottomSheetDialogTheme">@style/AppBottomSheetDialogTheme</item>-->
-
     </style>
-
-    <style name="MVPTheme.Blue" parent="AppTheme1.Base">
-
-        <item name="android:colorControlHighlight" tools:targetApi="lollipop">
-            @color/colorBlueripple_pressed
-        </item>
-        <item name="android:colorControlNormal" tools:targetApi="lollipop">@color/half_Black</item>
-
-        <!--Standard Theme colour setting -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-
-        <item name="android:textColorPrimary">@color/textColorPrimary</item>
-        <item name="android:textColorSecondary">@color/half_Black</item>
-
-        <!--screen background -->
-        <item name="android:windowBackground">@color/white</item>
-
-
-        <!--Customize all Labels based on Theme -->
-        <item name="textFieldStyle">@style/TextViewLabel</item>
-        <item name="textColor">@color/white</item>
-
-        <!--Customize Title of Dialogs like Discount,Initiative,..etc -->
-        <item name="dialogTitleStyle">@style/DialogTitleTextStyle</item>
-
-
-        <!--Colors used in Alert dialog and progress dialog -->
-        <item name="primarycolor">@color/colorPrimary</item>
-        <item name="accentcolor">@color/colorAccent</item>
-        <item name="textColorPrimary">@color/list_item_text_primary_color</item>
-        <item name="textColorSecondary">@color/list_item_secondary_text_color</item>
-
-
-        <!--Deviation screen week selection  -->
-        <item name="weekBackground">@color/blue_week_background</item>
-        <item name="selectWeekBackground">@drawable/week_butto_text_color</item>
-
-        <!--Tab Layout style -->
-        <item name="tablayout">@style/AppTabLayout</item>
-
-        <!--Alert dialog style -->
-        <item name="android:alertDialogTheme">@style/DialogStyleBlue</item>
-        <item name="android:dialogTheme" tools:targetApi="lollipop">@style/DialogStyleBlue</item>
-
-        <!-- Custom Buttons small for dialogs -->
-        <item name="roundedCustomButtonSmallGrey">@style/ButtonSmallRoundCornerGrey</item>
-        <item name="roundedCustomButtonSmall">@style/ButtonSmallRoundCornerBlue</item>
-        <item name="roundedCustomButtonSmallTransparent">@style/ButtonSmallRoundCornerTransparent
-        </item>
-
-        <!--Custom button normal for footer and screens -->
-        <item name="roundedCustomButtonNormalGrey">@style/ButtonNormalRoundCornerGrey</item>
-        <item name="roundedCustomButtonNormal">@style/ButtonNormalRoundCornerBlue</item>
-        <item name="roundedCustomButtonNormalTransparent">
-            @style/ButtonNormalRoundCornerTransparent
-        </item>
-
-        <!--Trade coverage top bar-->
-        <item name="tradeCoverageBackgroundOne">@color/black_bg1</item>
-        <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
-        <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
-
-        <!--Header background color-->
-        <item name="customHeaderBackgroundColor">@color/heading_bg_color_blue</item>
-
-
-        <!--Footer background style-->
-        <item name="customFooterBackgroundColor">@color/footer_bg_color</item>
-        <!--Header background style-->
-        <item name="customListTitleBackgroundColor">@color/list_title_bg_color</item>
-        <!--UOM selection in order taking - JNJ -->
-        <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
-
-        <!--Custom List Title - TextViews Style-->
-        <item name="listHeaderTitleTextColor">@color/list_header_text_color</item>
-        <item name="listItemPrimaryTextColor">@color/list_item_primary_text_color</item>
-        <item name="captionTextColor">@color/caption_text_color</item>
-        <item name="listItemValueTextColor">@color/list_item_values_text_color</item>
-
-
-        <item name="roundedCustomDashboardButton">@drawable/dot_circle_green</item>
-
-
-        <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
-        <item name="homescreenbackground">@drawable/burger_menu_bg</item>
-        <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
-        <item name="dashboardSpinnerSelector">@color/divider_view_color</item>
-        <!--CustomTextViews-->
-        <item name="SearchViewStyle">@style/SearchViewStyle</item>
-
-        <item name="highLightColor">@color/highlighter</item>
-
-        <item name="startAndEndOfTheDayHeaderLayoutBg">@color/startAndEndOfTheDayHeaderLayoutBg_blue</item>
-
-    </style>
-
-    <style name="MyButtonBlue" parent="Base.Widget.AppCompat.Button">
-        <item name="android:background">@drawable/ripple_blue</item>
-        <item name="android:layout_margin">0dp</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="borderlessButtonStyle">@style/Widget.AppCompat.Button.Borderless</item>
-        <item name="android:textSize">@dimen/font_small</item>
-    </style>
-
-
-    <!-- To apply theme for dialogs
-           colorAccent: To apply theme color accent to progress bar spinner, check boxes, Edittexts,....
-           windowBackground: To avoid two alert dialog frames in prelollipop devices
-           buttonStyle: To apply theme button style to custon buttons in Dialog Fragment-->
-    <style name="DialogStyleBlue" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">?attr/accentcolor</item>
-        <item name="android:windowBackground">@android:color/white</item>
-        <item name="android:buttonStyle">@style/MyButtonBlue</item>
-    </style>
-
 
     <!-- To apply for date picker dialogs theme accent color set in positive button and
 negative button and neutral button -->
@@ -168,10 +49,10 @@ negative button and neutral button -->
 
     <style name="AppTabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">@dimen/font_small</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/tab_text_color</item>
         <item name="android:gravity">center</item>
+        <item name="textAllCaps">true</item>
     </style>
-
 
     <style name="SearchViewStyle" parent="Widget.AppCompat.SearchView">
         <!-- Gets rid of the search icon -->
@@ -189,426 +70,7 @@ negative button and neutral button -->
         <item name="android:textColorSecondary">@color/white</item>
     </style>
 
-    <!--Blue Theme End-->
-
-    <!--N Blue Theme Start-->
-
-    <style name="MVPTheme.NBlue" parent="AppTheme1.Base">
-        <item name="android:colorControlHighlight" tools:targetApi="lollipop">
-            @color/colorNBlueripple_pressed
-        </item>
-        <item name="android:colorControlNormal" tools:targetApi="lollipop">@color/half_Black</item>
-
-        <item name="colorPrimary">@color/colorPrimaryNBlue</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDarkNBlue</item>
-        <item name="colorAccent">@color/colorAccentNBlue</item>
-
-        <!--screen background -->
-        <item name="android:windowBackground">@color/screen_bg_color</item>
-
-        <item name="android:textColorPrimary">@color/textColorPrimaryNBlue</item>
-        <item name="android:textColorSecondary">@color/textColorSecondaryNBlue</item>
-
-        <!--Customize all Labels based on Theme -->
-        <item name="textFieldStyle">@style/TextViewLabel</item>
-        <!--Customize Title of Dialogs like Discount,Initiative,..etc -->
-        <item name="dialogTitleStyle">@style/DialogTitleTextStyle</item>
-
-        <!--Colors used in Alert dialog and progress dialog -->
-        <item name="primarycolor">@color/colorPrimaryNBlue</item>
-        <item name="accentcolor">@color/colorAccentNBlue</item>
-        <item name="textColorPrimary">@color/textColorPrimaryNBlue</item>
-        <item name="textColorSecondary">@color/textColorSecondaryNBlue</item>
-        <item name="textColor">@color/textColorSecondaryNBlue</item>
-
-
-        <item name="weekBackground">@color/nblue_week_background</item>
-        <item name="selectWeekBackground">@drawable/week_button_text_color_nblue</item>
-        <item name="tablayout">@style/AppTabLayout</item>
-
-        <item name="android:alertDialogTheme">@style/DialogStyleNBlue</item>
-        <item name="android:dialogTheme" tools:targetApi="lollipop">@style/DialogStyleNBlue</item>
-        <!-- Custom Buttons -->
-        <item name="roundedCustomButtonSmallGrey">@style/ButtonSmallRoundCornerGrey</item>
-        <item name="roundedCustomButtonSmall">@style/ButtonSmallRoundCornerNBlue</item>
-        <item name="roundedCustomButtonSmallTransparent">@style/ButtonSmallRoundCornerTransparent
-        </item>
-        <item name="roundedCustomButtonNormalGrey">@style/ButtonNormalRoundCornerGrey</item>
-        <item name="roundedCustomButtonNormal">@style/ButtonNormalRoundCornerNBlue</item>
-        <item name="roundedCustomButtonNormalTransparent">
-            @style/ButtonNormalRoundCornerTransparent
-        </item>
-        <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
-
-        <!--Custom List Title - TextViews Style-->
-        <item name="listHeaderTitleTextColor">@color/list_header_text_color_nblue</item>
-        <item name="captionTextColor">@color/caption_text_color_nblue</item>
-        <item name="listItemPrimaryTextColor">@color/list_item_primary_text_color_nblue</item>
-        <item name="listItemValueTextColor">@color/list_item_values_text_color_nblue</item>
-
-        <!--Header background color-->
-        <item name="customHeaderBackgroundColor">@color/heading_bg_color_nblue</item>
-
-        <item name="customFooterBackgroundColor">@color/footer_bg_color_nblue</item>
-        <item name="customListTitleBackgroundColor">@color/list_title_bg_color_nblue</item>
-        <item name="roundedCustomDashboardButton">@drawable/dot_circle_nblue</item>
-
-
-        <!--Trade coverage top bar-->
-        <item name="tradeCoverageBackgroundOne">@color/blue_bg1</item>
-        <item name="tradeCoverageBackgroundTwo">@color/blue_bg2</item>
-        <item name="tradeCoverageBackgroundThree">@color/blue_bg3</item>
-
-        <item name="dashboardSpinnerBackground">@drawable/curved_blue_bg</item>
-        <item name="homescreenbackground">@drawable/burger_menu_nblue_bg</item>
-        <item name="mtdDashboardBackground">@drawable/curved_nblue_bg</item>
-        <item name="dashboardSpinnerSelector">@color/footer_bg_color_nblue</item>
-
-        <!--CustomTextViews-->
-        <item name="SearchViewStyle">@style/SearchViewStyle</item>
-
-        <item name="highLightColor">@color/highlighter_nblue</item>
-
-        <item name="startAndEndOfTheDayHeaderLayoutBg">@color/startAndEndOfTheDayHeaderLayoutBg_blue</item>
-
-    </style>
-
-
-    <style name="MyButtonNBlue" parent="Base.Widget.AppCompat.Button">
-        <item name="android:background">@drawable/ripple_nblue</item>
-        <item name="android:layout_margin">0dp</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="borderlessButtonStyle">@style/Widget.AppCompat.Button.Borderless</item>
-        <item name="android:textSize">@dimen/font_small</item>
-    </style>
-
-
-    <!-- To apply theme for dialogs
-           colorAccent: To apply theme color accent to progress bar spinner, check boxes, Edittexts,....
-           windowBackground: To avoid two alert dialog frames in prelollipop devices
-           buttonStyle: To apply theme button style to custon buttons in Dialog Fragment-->
-    <style name="DialogStyleNBlue" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">@color/colorAccentNBlue</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="android:buttonStyle">@style/MyButtonNBlue</item>
-    </style>
-
-
-    <!--N Blue Theme End-->
-
-
-    <!--Red Theme Start-->
-
-    <style name="MVPTheme.Red" parent="AppTheme1.Base">
-        <item name="android:colorControlHighlight" tools:targetApi="lollipop">
-            @color/colorRedripple_pressed
-        </item>
-        <item name="android:colorControlNormal" tools:targetApi="lollipop">@color/half_Black</item>
-        <item name="colorPrimary">@color/colorPrimaryRed</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDarkRed</item>
-        <item name="colorAccent">@color/colorAccentRed</item>
-        <item name="android:windowBackground">@color/windowBackground</item>
-        <!-- <item name="android:textColor">@color/textColorSecondaryRed</item>-->
-        <item name="android:textColorPrimary">@color/textColorPrimaryRed</item>
-        <item name="android:textColorSecondary">@color/textColorPrimaryRed</item>
-
-
-        <!--Customize Title of Dialogs like Discount,Initiative,..etc -->
-        <item name="dialogTitleStyle">@style/DialogTitleTextStyle</item>
-        <!--Customize all Labels based on Theme -->
-        <item name="textFieldStyle">@style/TextViewLabel</item>
-
-
-        <!--Colors used in Alert dialog and progress dialog -->
-        <item name="textColorPrimary">@color/textColorPrimaryRed</item>
-        <item name="primarycolor">@color/colorPrimaryRed</item>
-        <item name="accentcolor">@color/colorAccentRed</item>
-        <item name="textColorSecondary">@color/textColorPrimaryRed</item>
-        <item name="textColor">@color/white</item>
-        <item name="weekBackground">@color/red_week_background</item>
-        <item name="selectWeekBackground">@drawable/week_button_text_color_red</item>
-
-        <item name="tablayout">@style/AppTabLayout</item>
-        <!-- Dialog -->
-        <item name="android:alertDialogTheme">@style/DialogStyleRed
-        </item>
-        <item name="android:dialogTheme" tools:targetApi="lollipop">@style/DialogStyleRed</item>
-        <!--<item name="android:datePickerDialogTheme" tools:targetApi="lollipop">-->
-        <!--@style/DialogStyleRed-->
-        <!--</item>-->
-        <!-- Custom Buttons -->
-        <item name="roundedCustomButtonSmallGrey">@style/ButtonSmallRoundCornerGrey</item>
-        <item name="roundedCustomButtonSmall">@style/ButtonSmallRoundCornerRed</item>
-        <item name="roundedCustomButtonSmallTransparent">@style/ButtonSmallRoundCornerTransparent
-        </item>
-        <item name="roundedCustomButtonNormalGrey">@style/ButtonNormalRoundCornerGrey</item>
-        <item name="roundedCustomButtonNormal">@style/ButtonNormalRoundCornerRed</item>
-        <item name="roundedCustomButtonNormalTransparent">
-            @style/ButtonNormalRoundCornerTransparent
-        </item>
-        <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
-        <!-- Custom Buttons -->
-        <!--CustomTextViews-->
-        <item name="listHeaderTitleTextColor">@color/list_header_text_color_red</item>
-        <item name="listItemPrimaryTextColor">@color/list_item_primary_text_color_red</item>
-        <item name="captionTextColor">@color/caption_text_color_red</item>
-        <item name="listItemValueTextColor">@color/list_item_values_text_color_red</item>
-
-        <!--Header background color-->
-        <item name="customHeaderBackgroundColor">@color/heading_bg_color_red</item>
-
-        <item name="customFooterBackgroundColor">@color/footer_bg_color_red</item>
-        <item name="customListTitleBackgroundColor">@color/list_title_bg_color_red</item>
-        <item name="roundedCustomDashboardButton">@drawable/dot_circle_green</item>
-
-
-        <item name="tradeCoverageBackgroundOne">@color/black_bg1</item>
-        <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
-        <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
-        <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
-        <item name="homescreenbackground">@drawable/burger_menu_bg</item>
-        <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
-        <item name="dashboardSpinnerSelector">@color/divider_view_color</item>
-        <!--CustomTextViews-->
-        <item name="SearchViewStyle">@style/SearchViewStyle</item>
-
-        <item name="highLightColor">@color/highlighter_red</item>
-
-        <item name="startAndEndOfTheDayHeaderLayoutBg">@color/startAndEndOfTheDayHeaderLayoutBg_red</item>
-
-    </style>
-
-    <style name="MyButtonRed" parent="Base.Widget.AppCompat.Button">
-        <item name="android:background">@drawable/ripple_red</item>
-        <item name="android:layout_margin">0dp</item>
-        <item name="android:textColor">@color/white</item>
-        <item name="borderlessButtonStyle">@style/Widget.AppCompat.Button.Borderless</item>
-        <item name="android:textSize">@dimen/font_small</item>
-    </style>
-
-
-    <!-- To apply theme for dialogs
-           colorAccent: To apply theme color accent to progress bar spinner, check boxes, Edittexts,....
-           windowBackground: To avoid two alert dialog frames in prelollipop devices
-           buttonStyle: To apply theme button style to custon buttons in Dialog Fragment-->
-    <style name="DialogStyleRed" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">@color/colorAccentRed</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="buttonStyle">@style/MyButtonRed</item>
-    </style>
-
-
-    <!--Red Theme End-->
-
-
-    <!--Orange Theme Start-->
-
-    <style name="MVPTheme.Orange" parent="AppTheme1.Base">
-        <item name="android:colorControlHighlight" tools:targetApi="lollipop">
-            @color/colorOrangeripple_pressed
-        </item>
-        <item name="android:colorControlNormal" tools:targetApi="lollipop">@color/half_Black</item>
-        <item name="colorPrimary">@color/colorPrimaryOrange</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDarkOrange</item>
-        <item name="colorAccent">@color/colorAccentOrange</item>
-        <item name="android:windowBackground">@color/windowBackground</item>
-        <!-- <item name="android:textColor">@color/textColorSecondaryRed</item>-->
-        <item name="android:textColorPrimary">@color/half_Black</item>
-        <item name="android:textColorSecondary">@color/half_Black</item>
-
-        <!--Customize Title of Dialogs like Discount,Initiative,..etc -->
-        <item name="dialogTitleStyle">@style/DialogTitleTextStyle</item>
-        <!--Customize all Labels based on Theme -->
-        <item name="textFieldStyle">@style/TextViewLabel</item>
-
-        <!--Colors used in Alert dialog and progress dialog -->
-        <item name="textColorPrimary">@color/textColorPrimaryOrange</item>
-        <item name="primarycolor">@color/colorPrimaryOrange</item>
-        <item name="accentcolor">@color/colorAccentOrange</item>
-        <item name="textColorSecondary">@color/textColorSecondaryOrange</item>
-        <item name="textColor">@color/white</item>
-        <item name="weekBackground">@color/orange_week_background</item>
-
-        <item name="selectWeekBackground">@drawable/week_button_text_color_orange</item>
-
-        <item name="tablayout">@style/AppTabLayout</item>
-        <!-- Dialog -->
-        <item name="android:alertDialogTheme">@style/DialogStyleOrange
-        </item>
-        <item name="android:dialogTheme" tools:targetApi="lollipop">@style/DialogStyleOrange</item>
-        <!--<item name="android:datePickerDialogTheme" tools:targetApi="lollipop">-->
-        <!--@style/DialogStyleOrange-->
-        <!--</item>-->
-        <!-- Custom Buttons -->
-        <item name="roundedCustomButtonSmallGrey">@style/ButtonSmallRoundCornerGrey</item>
-        <item name="roundedCustomButtonSmall">@style/ButtonSmallRoundCornerOrange</item>
-        <item name="roundedCustomButtonSmallTransparent">@style/ButtonSmallRoundCornerTransparent
-        </item>
-        <item name="roundedCustomButtonNormalGrey">@style/ButtonNormalRoundCornerGrey</item>
-        <item name="roundedCustomButtonNormal">@style/ButtonNormalRoundCornerOrange</item>
-        <item name="roundedCustomButtonNormalTransparent">
-            @style/ButtonNormalRoundCornerTransparent
-        </item>
-        <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
-
-        <!--Custom List Title - TextViews Style-->
-        <item name="listHeaderTitleTextColor">@color/list_header_text_color_orange</item>
-        <item name="listItemPrimaryTextColor">@color/list_item_primary_text_color_orange</item>
-        <item name="captionTextColor">@color/caption_text_color_orange</item>
-        <item name="listItemValueTextColor">@color/list_item_values_text_color_orange</item>
-
-        <!--Header background color-->
-        <item name="customHeaderBackgroundColor">@color/heading_bg_color_orange</item>
-
-        <item name="customFooterBackgroundColor">@color/footer_bg_color_orange</item>
-        <item name="customListTitleBackgroundColor">@color/list_title_bg_color_orange</item>
-        <item name="roundedCustomDashboardButton">@drawable/dot_circle_green</item>
-
-
-        <item name="tradeCoverageBackgroundOne">@color/black_bg1</item>
-        <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
-        <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
-
-        <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
-        <item name="homescreenbackground">@drawable/burger_menu_bg</item>
-        <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
-        <item name="dashboardSpinnerSelector">@color/divider_view_color</item>
-        <!--CustomTextViews-->
-        <item name="SearchViewStyle">@style/SearchViewStyle</item>
-
-        <item name="highLightColor">@color/highlighter_orange</item>
-
-        <item name="startAndEndOfTheDayHeaderLayoutBg">@color/startAndEndOfTheDayHeaderLayoutBg_orange</item>
-
-    </style>
-
-    <style name="MyButtonOrange" parent="Base.Widget.AppCompat.Button">
-        <item name="android:background">@drawable/ripple_orange</item>
-        <item name="android:layout_margin">0dp</item>
-        <item name="android:textColor">@color/colorAccentOrange</item>
-        <item name="borderlessButtonStyle">@style/Widget.AppCompat.Button.Borderless</item>
-        <item name="android:textSize">@dimen/font_small</item>
-    </style>
-
-
-    <!-- To apply theme for dialogs
-           colorAccent: To apply theme color accent to progress bar spinner, check boxes, Edittexts,....
-           windowBackground: To avoid two alert dialog frames in prelollipop devices
-           buttonStyle: To apply theme button style to custon buttons in Dialog Fragment-->
-    <style name="DialogStyleOrange" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">@color/colorAccentOrange</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="buttonStyle">@style/MyButtonOrange</item>
-    </style>
-
-
-    <!--Orange Theme End-->
-
-
-    <!--Green Theme Start-->
-
-    <style name="MVPTheme.Green" parent="AppTheme1.Base">
-        <item name="android:colorControlHighlight" tools:targetApi="lollipop">
-            @color/colorGreenripple_pressed
-        </item>
-        <item name="android:colorControlNormal" tools:targetApi="lollipop">@color/half_Black</item>
-        <item name="colorPrimary">@color/colorPrimaryCB</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDarkCB</item>
-        <item name="colorAccent">@color/colorAccentCB</item>
-        <item name="android:windowBackground">@color/windowBackground</item>
-        <!-- <item name="android:textColor">@color/textColorSecondaryRed</item>-->
-        <item name="android:textColorPrimary">@color/half_Black</item>
-        <item name="android:textColorSecondary">@color/half_Black</item>
-
-        <!--Customize Title of Dialogs like Discount,Initiative,..etc -->
-        <item name="dialogTitleStyle">@style/DialogTitleTextStyle</item>
-        <!--Customize all Labels based on Theme -->
-        <item name="textFieldStyle">@style/TextViewLabel</item>
-
-        <!--Colors used in Alert dialog and progress dialog -->
-        <item name="textColorPrimary">@color/textColorPrimaryCB</item>
-        <item name="primarycolor">@color/colorPrimaryCB</item>
-        <item name="accentcolor">@color/colorAccentCB</item>
-        <item name="textColorSecondary">@color/textColorSecondaryCB</item>
-        <item name="textColor">@color/white</item>
-        <item name="weekBackground">@color/green_week_background</item>
-
-        <item name="selectWeekBackground">@drawable/week_button_text_color_green</item>
-
-        <item name="tablayout">@style/AppTabLayout</item>
-        <!-- Dialog -->
-        <item name="android:alertDialogTheme">@style/DialogStyleCarlsberg
-        </item>
-        <item name="android:dialogTheme" tools:targetApi="lollipop">@style/DialogStyleCarlsberg
-        </item>
-        <!--<item name="android:datePickerDialogTheme" tools:targetApi="lollipop">-->
-        <!--@style/DialogStyleCarlsberg-->
-        <!--</item>-->
-        <!-- Custom Buttons -->
-        <item name="roundedCustomButtonSmallGrey">@style/ButtonSmallRoundCornerGrey</item>
-        <item name="roundedCustomButtonSmall">@style/ButtonSmallRoundCornerGreen</item>
-        <item name="roundedCustomButtonSmallTransparent">@style/ButtonSmallRoundCornerTransparent
-        </item>
-        <item name="roundedCustomButtonNormalGrey">@style/ButtonNormalRoundCornerGrey</item>
-        <item name="roundedCustomButtonNormal">@style/ButtonNormalRoundCornerGreen</item>
-        <item name="roundedCustomButtonNormalTransparent">
-            @style/ButtonNormalRoundCornerTransparent
-        </item>
-        <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
-
-        <!--Custom List Title - TextViews Style-->
-        <item name="listHeaderTitleTextColor">@color/list_header_text_color_green</item>
-        <item name="listItemPrimaryTextColor">@color/list_item_primary_text_color_green</item>
-        <item name="captionTextColor">@color/caption_text_color_green</item>
-        <item name="listItemValueTextColor">@color/list_item_values_text_color_green</item>
-
-        <!--Header background color-->
-        <item name="customHeaderBackgroundColor">@color/heading_bg_color_green</item>
-
-        <item name="customFooterBackgroundColor">@color/footer_bg_color_green</item>
-        <item name="customListTitleBackgroundColor">@color/list_title_bg_color_green</item>
-        <item name="roundedCustomDashboardButton">@drawable/dot_circle_green</item>
-
-
-        <item name="tradeCoverageBackgroundOne">@color/black_bg1</item>
-        <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
-        <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
-        <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
-        <item name="homescreenbackground">@drawable/burger_menu_bg</item>
-        <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
-        <item name="dashboardSpinnerSelector">@color/divider_view_color</item>
-        <item name="SearchViewStyle">@style/SearchViewStyle</item>
-        <item name="highLightColor">@color/highlighter_green</item>
-
-        <item name="startAndEndOfTheDayHeaderLayoutBg">@color/startAndEndOfTheDayHeaderLayoutBg_green</item>
-
-    </style>
-
-    <style name="MyButtonCarlsberg" parent="Base.Widget.AppCompat.Button">
-        <item name="android:background">@drawable/ripple_green</item>
-        <item name="android:layout_margin">0dp</item>
-        <item name="android:textColor">@color/colorAccentCB</item>
-        <item name="borderlessButtonStyle">@style/Widget.AppCompat.Button.Borderless</item>
-        <item name="android:textSize">@dimen/font_small</item>
-    </style>
-
-
-    <!-- To apply theme for dialogs
-           colorAccent: To apply theme color accent to progress bar spinner, check boxes, Edittexts,....
-           windowBackground: To avoid two alert dialog frames in prelollipop devices
-           buttonStyle: To apply theme button style to custon buttons in Dialog Fragment-->
-    <style name="DialogStyleCarlsberg" parent="Theme.AppCompat.Light.Dialog">
-        <item name="colorAccent">@color/colorAccentCB</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
-        <item name="buttonStyle">@style/MyButtonCarlsberg</item>
-    </style>
-
-
-    <!--Green Theme End-->
-
-
     <!-- Common for all theme-->
-
     <style name="TextViewLabel" parent="@android:style/Widget.TextView">
         <item name="android:textColor">?attr/textColorPrimary</item>
         <item name="android:gravity">left</item>
@@ -635,8 +97,8 @@ negative button and neutral button -->
         <item name="android:fontFamily">@font/roboto_medium</item>
         <item name="android:textStyle">bold</item>
     </style>
-
     <!-- End of Common for all theme-->
+
     <!-- common Theme -->
 
     <!-- Rounded Button -->
@@ -708,7 +170,7 @@ negative button and neutral button -->
 
     <style name="TextViewNormal" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/text_size_primary</item>
-        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:fontFamily">@font/roboto_medium</item>
         <item name="android:textColor">@color/FullBlack</item>
     </style>
 
@@ -724,21 +186,17 @@ negative button and neutral button -->
         <item name="android:textColor">?attr/primarycolor</item>
     </style>
 
-
     <style name="TextViewCaptionNormal" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/text_size_primary</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:textColor">?attr/captionTextColor</item>
     </style>
 
-
     <style name="TradeCoverageHeaderText" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/trade_coverage_text_size</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:textColor">?attr/accentcolor</item>
     </style>
-
-
 
     <!-- List View Header Text Style-->
     <style name="TextViewListTitle" parent="@android:style/Widget.TextView">
@@ -772,16 +230,12 @@ negative button and neutral button -->
         <item name="android:textColor">?attr/highLightColor</item>
     </style>
 
-
     <!-- List Item Caption View Text Style-->
     <style name="TextViewListItemCaption" parent="@android:style/Widget.TextView">
         <item name="android:textSize">@dimen/text_size_caption</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
         <item name="android:textColor">?attr/captionTextColor</item>
     </style>
-
-
-
 
     <!-- Footer View Text Style-->
     <style name="TextViewFooterLabel" parent="@android:style/Widget.TextView">
@@ -795,7 +249,6 @@ negative button and neutral button -->
         <item name="android:textColor">@color/white</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
-
 
     <!-- List Item Value View Text Style-->
     <style name="TextViewListItemValues" parent="@android:style/Widget.TextView">
@@ -821,7 +274,6 @@ negative button and neutral button -->
         <item name="android:textColor">@color/FullBlack</item>
         <item name="android:fontFamily">@font/roboto_regular</item>
     </style>
-
 
     <!-- checkbox used only asset-->
     <style name="checkBox_for_remove_asset_Style" parent="Base.Theme.AppCompat">
@@ -908,7 +360,6 @@ negative button and neutral button -->
     </style>
     <!-- Activity Click Effect -->
     <!-- common Theme -->
-
 
     <!-- Burger Menu Styles -->
     <style name="userLogoImageView">
@@ -1000,16 +451,16 @@ negative button and neutral button -->
     <style name="PreferencesTheme">
         <item name="android:windowBackground">@drawable/background_noise</item>
         <!-- Custom Buttons -->
-        <item name="roundedCustomButtonSmallGrey">@style/ButtonSmallRoundCornerGrey</item>
-        <item name="roundedCustomButtonSmall">@style/ButtonSmallRoundCornerBlue</item>
-        <item name="roundedCustomButtonSmallTransparent">@style/ButtonSmallRoundCornerTransparent
+        <item name="roundedCustomButtonSmallGrey">@style/ButtonSmallRoundCornerGrey_enabled</item>
+        <item name="roundedCustomButtonSmall">@style/ButtonSmallRoundCornerBlue_enabled</item>
+        <item name="roundedCustomButtonSmallTransparent">@style/ButtonSmallRoundCornerTransparent_enabled
         </item>
-        <item name="roundedCustomButtonNormalGrey">@style/ButtonNormalRoundCornerGrey</item>
-        <item name="roundedCustomButtonNormal">@style/ButtonNormalRoundCornerBlue</item>
+        <item name="roundedCustomButtonNormalGrey">@style/ButtonNormalRoundCornerGrey_enabled</item>
+        <item name="roundedCustomButtonNormal">@style/ButtonNormalRoundCornerBlue_enabled</item>
         <item name="roundedCustomButtonNormalTransparent">
-            @style/ButtonNormalRoundCornerTransparent
+            @style/ButtonNormalRoundCornerTransparent_enabled
         </item>
-        <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey</item>
+        <item name="boxCustomButtonSmallGrey">@style/ButtonSmallBoxCornerGrey_enabled</item>
         <!-- Custom Buttons -->
     </style>
 
@@ -1029,67 +480,60 @@ negative button and neutral button -->
     </style>
 
     <!--Button Rounded styles-->
-    <style name="ButtonSmallRoundCornerBlue" parent="@style/ButtonSmall">
-        <item name="android:background">@drawable/button_rounded_corner_blue</item>
-    </style>
 
-    <style name="ButtonNormalRoundCornerBlue" parent="@style/ButtonNormal">
-        <item name="android:background">@drawable/button_rounded_corner_blue</item>
-    </style>
-
-    <style name="ButtonSmallRoundCornerNBlue" parent="@style/ButtonSmall">
-        <item name="android:background">@drawable/button_rounded_corner_nblue</item>
-    </style>
-
-    <style name="ButtonNormalRoundCornerNBlue" parent="@style/ButtonNormal">
-        <item name="android:background">@drawable/button_rounded_corner_nblue</item>
-    </style>
-
-    <style name="ButtonSmallRoundCornerRed" parent="@style/ButtonSmall">
-        <item name="android:background">@drawable/button_rounded_corner_red</item>
-    </style>
-
-    <style name="ButtonNormalRoundCornerRed" parent="@style/ButtonNormal">
-        <item name="android:background">@drawable/button_rounded_corner_red</item>
-    </style>
-
-    <style name="ButtonSmallRoundCornerOrange" parent="@style/ButtonSmall">
-        <item name="android:background">@drawable/button_rounded_corner_orange</item>
-    </style>
-
-    <style name="ButtonNormalRoundCornerOrange" parent="@style/ButtonNormal">
-        <item name="android:background">@drawable/button_rounded_corner_orange</item>
-    </style>
-
-
-    <style name="ButtonSmallRoundCornerGreen" parent="@style/ButtonSmall">
-        <item name="android:background">@drawable/button_rounded_corner_green</item>
-    </style>
-
-    <style name="ButtonNormalRoundCornerGreen" parent="@style/ButtonNormal">
-        <item name="android:background">@drawable/button_rounded_corner_green</item>
-    </style>
-
-    <style name="ButtonSmallRoundCornerGrey" parent="@style/ButtonSmall">
+    <style name="ButtonSmallRoundCornerGrey_enabled" parent="@style/ButtonSmall">
         <item name="android:background">@drawable/button_round_corner_grey</item>
+        <item name="android:enabled">true</item>
     </style>
 
-    <style name="ButtonNormalRoundCornerGrey" parent="@style/ButtonNormal">
+    <style name="ButtonNormalRoundCornerGrey_enabled" parent="@style/ButtonNormal">
         <item name="android:background">@drawable/button_round_corner_grey</item>
+        <item name="android:enabled">true</item>
     </style>
 
-    <style name="ButtonSmallRoundCornerTransparent" parent="@style/ButtonSmall">
+    <style name="ButtonSmallRoundCornerTransparent_enabled" parent="@style/ButtonSmall">
         <item name="android:background">@drawable/button_round_corner_transparent</item>
+        <item name="android:enabled">true</item>
     </style>
 
-    <style name="ButtonNormalRoundCornerTransparent" parent="@style/ButtonNormal">
+    <style name="ButtonNormalRoundCornerTransparent_enabled" parent="@style/ButtonNormal">
         <item name="android:background">@drawable/button_round_corner_transparent</item>
         <item name="android:textColor">@color/half_Black</item>
+        <item name="android:enabled">true</item>
     </style>
 
-    <style name="ButtonSmallBoxCornerGrey" parent="@style/ButtonSmall">
+    <style name="ButtonSmallBoxCornerGrey_enabled" parent="@style/ButtonSmall">
         <item name="android:background">@drawable/button_box_corner_grey</item>
+        <item name="android:enabled">true</item>
     </style>
+
+
+    <style name="ButtonSmallRoundCornerGrey_disabled" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/button_round_corner_grey_disabled</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="ButtonNormalRoundCornerGrey_disabled" parent="@style/ButtonNormal">
+        <item name="android:background">@drawable/button_round_corner_grey_disabled</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="ButtonSmallRoundCornerTransparent_disabled" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/button_round_corner_grey_disabled</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="ButtonNormalRoundCornerTransparent_disabled" parent="@style/ButtonNormal">
+        <item name="android:background">@drawable/button_round_corner_grey_disabled</item>
+        <item name="android:textColor">@color/half_Black</item>
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="ButtonSmallBoxCornerGrey_disabled" parent="@style/ButtonSmall">
+        <item name="android:background">@drawable/button_round_corner_grey_disabled</item>
+        <item name="android:enabled">false</item>
+    </style>
+
     <!--Button Rounded styles-->
 
     <!-- Profile TabLayout Style-->
@@ -1170,6 +614,88 @@ negative button and neutral button -->
 
     <style name="ButtonNormal_Box_grey" parent="ButtonNormal_Box">
         <item name="android:colorBackground">@color/grey_odd</item>
+    </style>
+
+    <style name="edit_text_normal_enabled" parent="@style/EditTextNormal">
+        <item name="android:enabled">true</item>
+    </style>
+
+    <style name="edit_text_normal_disabled" parent="@style/EditTextNormal">
+        <item name="android:enabled">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:editable">false</item>
+        <item name="android:clickable">false</item>
+    </style>
+
+    <style name="edit_text_list_item_enabled" parent="@style/EditText_ListItem">
+        <item name="android:enabled">true</item>
+    </style>
+
+    <style name="edit_text_list_item_disabled" parent="@style/EditText_ListItem">
+        <item name="android:enabled">false</item>
+        <item name="android:focusable">false</item>
+        <item name="android:editable">false</item>
+        <item name="android:clickable">false</item>
+    </style>
+
+    <style name="checkbox_style_enabled" parent="Base.Widget.AppCompat.CompoundButton.CheckBox">
+
+        <item name="android:enabled">true</item>
+        <item name="android:clickable">true</item>
+
+    </style>
+
+    <style name="checkbox_style_disabled" parent="Base.Widget.AppCompat.CompoundButton.CheckBox">
+
+        <item name="android:enabled">false</item>
+        <item name="android:clickable">false</item>
+
+    </style>
+
+    <style name="keypad_button_enabled" parent="@style/ButtonKeyPad">
+        <item name="android:enabled">true</item>
+    </style>
+
+    <style name="keypad_button_disabled" parent="@style/ButtonKeyPad">
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="radio_button_style_enabled" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:enabled">true</item>
+        <item name="android:textSize">@dimen/text_size_secondary</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">@color/FullBlack</item>
+    </style>
+
+    <style name="radio_button_style_disabled" parent="Widget.AppCompat.CompoundButton.RadioButton">
+        <item name="android:enabled">false</item>
+        <item name="android:textSize">@dimen/text_size_secondary</item>
+        <item name="android:fontFamily">@font/roboto_regular</item>
+        <item name="android:textColor">@color/FullBlack</item>
+    </style>
+
+    <style name="fab_icon_style_enabled" parent="Widget.Design.FloatingActionButton">
+        <item name="android:enabled">true</item>
+    </style>
+
+    <style name="fab_icon_style_disabled" parent="Widget.Design.FloatingActionButton">
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="image_style_enabled" parent="Widget.Design.FloatingActionButton">
+        <item name="android:enabled">true</item>
+    </style>
+
+    <style name="image_style_disabled" parent="Widget.Design.FloatingActionButton">
+        <item name="android:enabled">false</item>
+    </style>
+
+    <style name="button_normal_style_enabled" parent="Base.Widget.AppCompat.Button">
+        <item name="android:enabled">true</item>
+    </style>
+
+    <style name="button_normal_style_disabled" parent="Base.Widget.AppCompat.Button">
+        <item name="android:enabled">false</item>
     </style>
 
 

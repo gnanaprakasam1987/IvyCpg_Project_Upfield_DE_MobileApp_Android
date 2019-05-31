@@ -181,7 +181,7 @@
 
         <Button
             android:id="@+id/btn_dialog_move"
-            style="?attr/roundedCustomButtonNormal"
+            style="?attr/roundedCustomButtonNormal_Configured"
             android:layout_gravity="center"
             android:layout_margin="@dimen/dimen_10dp"
             android:text="@string/moveAsset"

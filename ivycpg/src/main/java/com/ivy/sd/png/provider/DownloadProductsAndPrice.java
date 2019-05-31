@@ -34,7 +34,7 @@ public class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolea
     private BusinessModel bmodel;
     private Context mContext;
     private String photoPath = "", fnameStarts = "", mVisitMode = "", mNFCReasonId = "";
-    private boolean isProfile;
+    private boolean isProfile,isPreVisit;
     private static final String MENU_STK_ORD = "MENU_STK_ORD";
 
     public DownloadProductsAndPrice(Context context, String photoPath, String fnameStarts, String visitMode,
@@ -46,6 +46,10 @@ public class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolea
         this.mNFCReasonId = nfcReasonId;
         this.isProfile = isFromProfile;
         bmodel = (BusinessModel) mContext.getApplicationContext();
+    }
+
+    public void setIsPrevisit(boolean isPreVisit){
+        this.isPreVisit = isPreVisit;
     }
 
     @Override
@@ -140,7 +144,9 @@ public class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolea
 
     protected void onPostExecute(Boolean result) {
         if (!isCancelled()) {
-            if (isProfile)
+            if (isPreVisit)
+                startPreVisit();
+            else if (isProfile)
                 saveTimeStamp();
             if (alertDialog != null && alertDialog.isShowing())
                 alertDialog.dismiss();
@@ -190,6 +196,13 @@ public class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolea
         } else {
             Toast.makeText(mContext, mContext.getString(R.string.not_able_to_register_visit), Toast.LENGTH_LONG).show();
         }
+    }
+
+    private void startPreVisit(){
+        Intent i = new Intent(mContext, HomeScreenTwo.class);
+        i.setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
+        i.putExtra("PreVisit",true);
+        mContext.startActivity(i);
     }
 
     private float calculateDistanceBetweenRetailers() {

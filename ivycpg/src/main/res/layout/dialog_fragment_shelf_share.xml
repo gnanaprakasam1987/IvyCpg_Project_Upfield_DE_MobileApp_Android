@@ -253,7 +253,7 @@
 
         <Button
             android:id="@+id/btnDoneShelfShare"
-            style="?attr/roundedCustomButtonSmall"
+            style="?attr/roundedCustomButtonSmall_Configured"
             android:layout_gravity="center_vertical"
             android:layout_margin="@dimen/target_top_margin"
             android:text="@string/save"

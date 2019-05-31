@@ -106,7 +106,7 @@
     </RelativeLayout>
     <Button
         android:id="@+id/btn_save"
-        style="?attr/roundedCustomButtonSmall"
+        style="?attr/roundedCustomButtonSmall_Configured"
         android:layout_width="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"

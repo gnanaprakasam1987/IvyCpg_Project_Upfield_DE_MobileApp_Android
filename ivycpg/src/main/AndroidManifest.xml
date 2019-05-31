@@ -863,6 +863,12 @@
         <activity
             android:name="com.ivy.ui.task.view.TaskDetailActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetDetailActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetRequestActivity"
+            android:screenOrientation="portrait" />
 
         <service
             android:name="com.ivy.cpg.view.sync.largefiledownload.FileDownloadIntentService"
@@ -870,10 +876,18 @@
             android:exported="false" />
 
         <activity
+            android:name="com.ivy.ui.DisplayAsset.DisplayAssetActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.serializedAsset.SerialNoChangeActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.cpg.view.serializedAsset.SerializedAssetApprovalActivity"
+            android:screenOrientation="portrait" />
+        <activity
             android:name="com.ivy.ui.retailer.viewretailers.view.list.RetailerListActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name="com.ivy.ui.DisplayAsset.DisplayAssetActivity"></activity>
     </application>
 
 </manifest>
