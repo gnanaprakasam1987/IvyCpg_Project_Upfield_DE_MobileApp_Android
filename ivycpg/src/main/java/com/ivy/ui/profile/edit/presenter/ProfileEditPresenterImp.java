@@ -169,6 +169,8 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             }
         }
 
+        boolean isAttributeExist = false;
+
         for (ConfigureBO configureBO : profileConfig) {    /*First level  looping for prepare condition */
 
             if ((configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.LATTITUDE) && configureBO.isFlag() == 1)
@@ -178,11 +180,14 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 longitude = retailerMasterBO.getLongitude() + "";
             }
 
-            if (configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.ATTRIBUTE) && configureBO.isFlag() == 1)
+            if (configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.ATTRIBUTE) && configureBO.isFlag() == 1) {
+                isAttributeExist = true;
                 getAtrributeList();
+            }
         }
 
-        getProfileEditDetails();
+        if (!isAttributeExist)
+            getProfileEditDetails();
     }
 
     private void getProfileEditDetails() {
@@ -250,7 +255,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 mProfileDataManager.downloadChannelWiseAttributeList(),
                 mProfileDataManager.downloadAttributeListForRetailer(retailerMasterBO.getRetailerID()),
                 mProfileDataManager.downloadEditAttributeList(retailerMasterBO.getRetailerID()),
-                mProfileDataManager.downloadRetailerAttribute(),
+                mProfileDataManager.downloadRetailerChildAttribute(),
                 new Function5<ArrayList<Integer>, ChannelWiseAttributeList, ArrayList<NewOutletAttributeBO>,
                         ArrayList<NewOutletAttributeBO>, ArrayList<NewOutletAttributeBO>, Boolean>() {
                     @Override
@@ -350,6 +355,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
 
                     @Override
                     public void onComplete() {
+                        getProfileEditDetails();
                     }
                 })
         );

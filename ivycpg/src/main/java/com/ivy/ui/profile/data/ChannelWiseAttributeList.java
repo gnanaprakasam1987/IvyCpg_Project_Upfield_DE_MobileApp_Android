@@ -10,14 +10,14 @@ public class ChannelWiseAttributeList {
 
     private HashMap<Integer, ArrayList<NewOutletAttributeBO>>  mAttributeBOListByLocationID;
 
-    private HashMap<Integer, ArrayList<Integer>> mAttributeListByLocationID;
+    private HashMap<Integer, ArrayList<Integer>> mAttributeIdListByLocationID;
 
     public ChannelWiseAttributeList(){}
 
     public ChannelWiseAttributeList(HashMap<Integer, ArrayList<NewOutletAttributeBO>> mAttributeBOListByLocationID,
                                     HashMap<Integer, ArrayList<Integer>> mAttributeListByLocationID) {
         this.mAttributeBOListByLocationID = mAttributeBOListByLocationID;
-        this.mAttributeListByLocationID = mAttributeListByLocationID;
+        this.mAttributeIdListByLocationID = mAttributeListByLocationID;
     }
 
     public HashMap<Integer, ArrayList<NewOutletAttributeBO>> getAttributeBOListByLocationID() {
@@ -31,7 +31,7 @@ public class ChannelWiseAttributeList {
 
 
     public HashMap<Integer, ArrayList<Integer>> getAttributeListByLocationID() {
-        return mAttributeListByLocationID;
+        return mAttributeIdListByLocationID;
     }
 
 

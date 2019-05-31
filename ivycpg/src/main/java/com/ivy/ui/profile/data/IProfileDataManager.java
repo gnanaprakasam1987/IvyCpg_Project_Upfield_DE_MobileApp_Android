@@ -54,7 +54,7 @@ public interface IProfileDataManager {
 
     Observable<ArrayList<NewOutletAttributeBO>> downloadAttributeListForRetailer(String RetailerID);
 
-    Observable<ArrayList<NewOutletAttributeBO>> downloadRetailerAttribute();
+    Observable<ArrayList<NewOutletAttributeBO>> downloadRetailerChildAttribute();
 
     Observable<ArrayList<NewOutletAttributeBO>> downloadAttributeParentList(ArrayList<NewOutletAttributeBO> attribList);
 

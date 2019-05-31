@@ -232,6 +232,8 @@ public class ProfileEditFragmentNew extends BaseFragment
         mButtonSave.setTypeface(FontUtils.getFontBalooHai(getContext(), FontUtils.FontType.REGULAR));
         setHasOptionsMenu(true);
         profileEditPresenter.getProfileEditDataFromLocalDataBase();
+        mScrollView.removeAllViews();
+        mRootLinearLayout = null;
         mScrollView.addView(getmRootLinearLayout());
     }
 

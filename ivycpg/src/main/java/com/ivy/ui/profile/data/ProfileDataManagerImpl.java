@@ -525,7 +525,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
             @Override
             public ChannelWiseAttributeList call() throws Exception {
 
-                HashMap<Integer, ArrayList<Integer>> mAttributeListByLocationID = null;
+                HashMap<Integer, ArrayList<Integer>> mAttributeIdListByLocationID = null;
                 HashMap<Integer, ArrayList<NewOutletAttributeBO>> mAttributeBOListByLocationID = null;
                 ChannelWiseAttributeList channelWiseAttributeList = new ChannelWiseAttributeList();
                 try {
@@ -535,7 +535,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
                         mAttributeBOListByLocationID = new HashMap<>();
 
-                        mAttributeListByLocationID = new HashMap<>();
+                        mAttributeIdListByLocationID = new HashMap<>();
 
                         NewOutletAttributeBO newOutletAttributeBO;
 
@@ -548,7 +548,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
                             if (mAttributeBOListByLocationID.get(c.getInt(1)) != null) {
                                 mAttributeBOListByLocationID.get(c.getInt(1)).add(newOutletAttributeBO);
-                                mAttributeListByLocationID.get(c.getInt(1)).add(c.getInt(0));
+                                mAttributeIdListByLocationID.get(c.getInt(1)).add(c.getInt(0));
                             } else {
                                 ArrayList<NewOutletAttributeBO> mAtrributeList = new ArrayList<>();
                                 mAtrributeList.add(newOutletAttributeBO);
@@ -557,14 +557,14 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
                                 ArrayList<Integer> list = new ArrayList<>();
                                 list.add(c.getInt(0));
-                                mAttributeListByLocationID.put(c.getInt(1), list);
+                                mAttributeIdListByLocationID.put(c.getInt(1), list);
                             }
 
                         }
                         c.close();
                     }
 
-                    channelWiseAttributeList = new ChannelWiseAttributeList(mAttributeBOListByLocationID, mAttributeListByLocationID);
+                    channelWiseAttributeList = new ChannelWiseAttributeList(mAttributeBOListByLocationID, mAttributeIdListByLocationID);
 
                 } catch (Exception e) {
                     Commons.printException(e);
@@ -647,7 +647,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
 
     /*It will return the RetailerAttribute Child */
     @Override
-    public Observable<ArrayList<NewOutletAttributeBO>> downloadRetailerAttribute() {
+    public Observable<ArrayList<NewOutletAttributeBO>> downloadRetailerChildAttribute() {
         return Observable.fromCallable(new Callable<ArrayList<NewOutletAttributeBO>>() {
             @Override
             public ArrayList<NewOutletAttributeBO> call() throws Exception {

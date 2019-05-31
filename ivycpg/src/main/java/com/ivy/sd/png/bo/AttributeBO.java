@@ -89,4 +89,50 @@ public class AttributeBO {
     public String toString() {
         return attributeName;
     }
+
+    private int levelCount;
+    private boolean isRetailerAttributeId;
+    private boolean isRetailerEditAttributeId;
+    private int channelId;
+    private boolean isMandatory;
+
+    public boolean isRetailerAttributeId() {
+        return isRetailerAttributeId;
+    }
+
+    public void setRetailerAttributeId(boolean retailerAttributeId) {
+        isRetailerAttributeId = retailerAttributeId;
+    }
+
+    public boolean isRetailerEditAttributeId() {
+        return isRetailerEditAttributeId;
+    }
+
+    public void setRetailerEditAttributeId(boolean retailerEditAttributeId) {
+        isRetailerEditAttributeId = retailerEditAttributeId;
+    }
+
+    public int getLevelCount() {
+        return levelCount;
+    }
+
+    public void setLevelCount(int levelCount) {
+        this.levelCount = levelCount;
+    }
+
+    public int getChannelId() {
+        return channelId;
+    }
+
+    public void setChannelId(int channelId) {
+        this.channelId = channelId;
+    }
+
+    public boolean isMandatory() {
+        return isMandatory;
+    }
+
+    public void setMandatory(boolean mandatory) {
+        isMandatory = mandatory;
+    }
 }

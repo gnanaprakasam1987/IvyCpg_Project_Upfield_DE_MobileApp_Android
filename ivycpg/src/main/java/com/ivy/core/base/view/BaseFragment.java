@@ -4,6 +4,7 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,6 +40,19 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     private Unbinder mUnBinder;
     private Dialog dialog;
     private TextView progressMsgTxt;
+
+    private Context context;
+
+    public Context getContext() {
+        return context;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        this.context = context;
+    }
 
     @Nullable
     @Override

@@ -19,6 +19,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.ui.profile.attribute.view.ProfileAttributeFragment;
 import com.ivy.ui.profile.edit.view.ProfileEditFragmentNew;
 
 import java.util.ArrayList;
@@ -107,9 +108,10 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
 
                 ViewPagerAdapter adapter = new ViewPagerAdapter(getChildFragmentManager());
 
-                if (isFromEditProfileView)
+                if (isFromEditProfileView) {
                     adapter.addFragment(new ProfileEditFragmentNew(), getResources().getString(R.string.profile_edit_screen__title));
-                else
+                    adapter.addFragment(new ProfileAttributeFragment(), getResources().getString(R.string.attribute));
+                }else
                     adapter.addFragment(new NewOutletFragment(), getResources().getString(R.string.outlet));
 
 
