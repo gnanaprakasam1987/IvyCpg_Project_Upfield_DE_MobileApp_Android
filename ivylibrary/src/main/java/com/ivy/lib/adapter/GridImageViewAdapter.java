@@ -3,6 +3,7 @@ package com.ivy.lib.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.AppCompatTextView;
@@ -43,7 +44,7 @@ public class GridImageViewAdapter extends RecyclerView.Adapter<GridImageViewAdap
 
 
     @Override
-    public ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public GridImageViewAdapter.ImageViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.row_image_list, parent, false);
 
@@ -51,41 +52,28 @@ public class GridImageViewAdapter extends RecyclerView.Adapter<GridImageViewAdap
     }
 
     @Override
-    public void onBindViewHolder(final ImageViewHolder holder, int position) {
+    public void onBindViewHolder(final GridImageViewAdapter.ImageViewHolder holder, int position) {
 
-        String imageName = imageList.get(position);
+        String imageName = null;
 
-        if (imageAdapterListener != null
-                && holder.getAdapterPosition() == 0) {
-            holder.deleteImg.setVisibility(View.GONE);
-            holder.imageView.setImageResource(R.drawable.bg_add_photo);
-            holder.fileNameTv.setVisibility(View.GONE);
+
+        if (imageAdapterListener != null) {
+
+            if (holder.getAdapterPosition() == 0) {
+                handleViewVisibility(holder, View.GONE);
+                holder.imageView.setImageDrawable(ContextCompat.getDrawable(mContext, R.drawable.bg_add_photo));
+            } else {
+                handleViewVisibility(holder, View.VISIBLE);
+                imageName = imageList.get(holder.getAdapterPosition() - 1);
+                updateItemView(holder, imageName);
+            }
+            holder.selectedPos = holder.getAdapterPosition() - 1;
         } else {
-            if (imageAdapterListener != null)
-                holder.deleteImg.setVisibility(View.VISIBLE);
-
-            String path = filePath + imageName;
-
-            Uri uri = Uri.parse("file://" + path);
-
-
-            Glide.with(mContext).load(uri)
-                    .asBitmap()
-                    .diskCacheStrategy(DiskCacheStrategy.NONE)
-                    .skipMemoryCache(true)
-                    .centerCrop()
-                    .placeholder(R.drawable.no_image_available)
-                    .error(R.drawable.no_image_available)
-                    .into(Utils.getRoundedImageTarget(mContext, holder.imageView, (float) 6));
-
-            holder.fileNameTv.setVisibility(View.VISIBLE);
-            holder.fileNameTv.setText(imageName);
-
+            holder.deleteImg.setVisibility(View.GONE);
+            imageName = imageList.get(holder.getAdapterPosition());
+            updateItemView(holder, imageName);
+            holder.selectedPos = holder.getAdapterPosition();
         }
-
-
-
-
 
         holder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,12 +82,12 @@ public class GridImageViewAdapter extends RecyclerView.Adapter<GridImageViewAdap
                         && holder.getAdapterPosition() == 0)
                     imageAdapterListener.onTakePhoto();
                 else {
-                    if (imageList.get(holder.getAdapterPosition()) != null
-                            && !imageList.get(holder.getAdapterPosition()).isEmpty()) {
+                    if (imageList.get(holder.selectedPos) != null
+                            && !imageList.get(holder.selectedPos).isEmpty()) {
                         Intent viewIntent = new Intent(mContext, ImageViewActivity.class);
                         viewIntent.putExtra("FilePath", filePath);
                         viewIntent.putStringArrayListExtra("imageName", imageList);
-                        viewIntent.putExtra("selectedPos", holder.getAdapterPosition());
+                        viewIntent.putExtra("selectedPos", holder.selectedPos);
                         mContext.startActivity(viewIntent);
                     } else
                         Toast.makeText(mContext, mContext.getString(R.string.image_not_available), Toast.LENGTH_LONG).show();
@@ -110,22 +98,49 @@ public class GridImageViewAdapter extends RecyclerView.Adapter<GridImageViewAdap
         holder.deleteImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageAdapterListener.deletePhoto(imageList.get(holder.getAdapterPosition()));
+                imageAdapterListener.deletePhoto(imageList.get(holder.getAdapterPosition()-1),holder.getAdapterPosition()-1);
             }
         });
 
 
     }
 
+    private void handleViewVisibility(ImageViewHolder holder, int visibility) {
+        holder.deleteImg.setVisibility(visibility);
+        holder.fileNameTv.setVisibility(visibility);
+    }
+
+    private void updateItemView(ImageViewHolder holder, String imageName) {
+
+        String path = filePath + imageName;
+
+        Uri uri = Uri.parse("file://" + path);
+        Glide.with(mContext).load(uri)
+                .asBitmap()
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
+                .skipMemoryCache(true)
+                .centerCrop()
+                .placeholder(R.drawable.no_image_available)
+                .error(R.drawable.no_image_available)
+                .into(Utils.getRoundedImageTarget(mContext, holder.imageView, (float) 6));
+
+        holder.fileNameTv.setText(imageName);
+
+    }
+
     @Override
     public int getItemCount() {
+        if (imageAdapterListener == null)
             return imageList.size();
+        else
+            return imageList.size() + 1;
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder {
         private AppCompatImageView imageView;
         private AppCompatImageView deleteImg;
         private AppCompatTextView fileNameTv;
+        private int selectedPos;
 
         public ImageViewHolder(View itemView) {
             super(itemView);
@@ -137,7 +152,14 @@ public class GridImageViewAdapter extends RecyclerView.Adapter<GridImageViewAdap
 
             DisplayMetrics displaymetrics = new DisplayMetrics();
             ((AppCompatActivity) mContext).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
-            imageView.getLayoutParams().height = displaymetrics.heightPixels / 4;
+
+            if (imageAdapterListener != null) {
+                imageView.getLayoutParams().height = displaymetrics.heightPixels / 4;
+                imageView.getLayoutParams().width = displaymetrics.widthPixels / 4;
+                fileNameTv.getLayoutParams().width = displaymetrics.widthPixels / 4;
+            } else {
+                imageView.getLayoutParams().height = displaymetrics.heightPixels / 6;
+            }
         }
     }
 

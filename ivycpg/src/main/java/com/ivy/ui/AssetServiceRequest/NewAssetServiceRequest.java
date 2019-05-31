@@ -204,8 +204,7 @@ public class NewAssetServiceRequest extends BaseActivity implements AssetService
         spinner_issue_type.setAdapter(issueTypeAdapter);
 
         imageNameList=new ArrayList<>();
-        imageNameList.add("captureImage");
-        adapter=new GridImageViewAdapter(this,imageNameList,FileUtils.photoFolderPath,this);
+        adapter=new GridImageViewAdapter(this,imageNameList,FileUtils.photoFolderPath+"/",this);
         recyclerView.setAdapter(adapter);
 
         //
@@ -368,9 +367,11 @@ public class NewAssetServiceRequest extends BaseActivity implements AssetService
     }
 
     @Override
-    public void deletePhoto(String fileName) {
+    public void deletePhoto(String fileName,int position) {
         FileUtils.deleteFiles(FileUtils.photoFolderPath,
                 fileName);
+        imageNameList.remove(position);
+        adapter.notifyDataSetChanged();
     }
 
     private final DatePickerDialog.OnDateSetListener mDeliverDatePickerListener = new DatePickerDialog.OnDateSetListener() {
