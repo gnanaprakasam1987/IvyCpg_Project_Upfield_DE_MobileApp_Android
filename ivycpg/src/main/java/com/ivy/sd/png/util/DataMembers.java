@@ -61,6 +61,7 @@ public class DataMembers {
     public static final String CATALOG = "CAT";
     public static final String USER = "USER";
     public static final String TASK_DIGITAL_CONTENT = "TDC";
+    public static final String SERIALIZED_ASSET_DIG_CONTENT = "SADC";
 
     public static final int NOTIFY_WEB_UPLOAD_SUCCESS = 32;
     public static final int NOTIFY_WEB_UPLOAD_ERROR = 33;
@@ -282,7 +283,7 @@ public class DataMembers {
     private static final String tbl_AssetAddDelete_cols = "uid,retailerid,AssetId,serialNum,installdate,creationdate,flag,mappingid,productid,TypeLovId,reasonid,remarks,toRetailerId";
 
     public static final String tbl_SerializedAssetHeader = "SerializedAssetHeader";
-    public static final String tbl_SerializedAssetHeader_cols = "uid,DateTime,RetailerId,remarks";
+    public static final String tbl_SerializedAssetHeader_cols = "uid,DateTime,RetailerId,remarks,VisitId";
 
     public static final String tbl_SerializedAssetDetail = "SerializedAssetDetail";
     public static final String tbl_SerializedAssetDetail_cols = "uid,AssetID,isAvailable,ReasonID,SerialNumber,conditionId,NFCNumber,installdate,lastServicedate,isAuditDone";
@@ -294,10 +295,16 @@ public class DataMembers {
     public static final String tbl_SerializedAssetServiceRequest_cols = "Uid,date,AssetId,serialNumber,reasonid,retailerid,serviceProviderId,IssueDescription,ImagePath,Status,ExpectedResolutionDate";
 
     public static final String tbl_SerializedAssetTransfer = "SerializedAssetTransfer";
-    private static final String tbl_SerializedAssetTransfer_cols = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId";
+    private static final String tbl_SerializedAssetTransfer_cols = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId,rentPrice,toDate,VisitId,DeliveryDate,Qty";
 
     public static final String tbl_SerializedAssetTransferImages = "SerializedAssetTransferImages";
     private static final String tbl_SerializedAssetTransferImg__cols = "uid,ImageName";
+
+    public static final String tbl_SerializedAssetUpdate = "SerializedAssetUpdate";
+    private static final String tbl_SerializedAssetUpdate_cols = "Uid,AssetId,serialNumber,AllocationRefId,NewSerialNumber,Date,RetailerId,rentPrice,toDate,VisitId";
+
+    public static final String tbl_SerializedAssetApproval = "SerializedAssetApproval";
+    private static final String tbl_SerializedAssetApproval_cols = "AssetId,RetailerId,RequestId,RequestedDate,ApprovalStatus,ApprovalDate,SerialNumber,Type";
 
     public static final String tbl_HhtModuleMaster = "HhtModuleMaster";
     public static final String tbl_HhtMenuMaster = "HhtMenuMaster";
@@ -921,6 +928,8 @@ public class DataMembers {
         uploadColumn.put(tbl_SerializedAssetTransfer, tbl_SerializedAssetTransfer_cols);
         uploadColumn.put(tbl_SerializedAssetTransferImages, tbl_SerializedAssetTransferImg__cols);
         uploadColumn.put(tbl_SerializedAssetServiceRequest, tbl_SerializedAssetServiceRequest_cols);
+        uploadColumn.put(tbl_SerializedAssetUpdate,tbl_SerializedAssetUpdate_cols);
+        uploadColumn.put(tbl_SerializedAssetApproval,tbl_SerializedAssetApproval_cols);
 
         uploadColumn.put(tbl_DigitalContent_Tracking_Header, tbl_DigitalContent_Tracking_Header_cols);
         uploadColumn.put(tbl_DigitalContent_Tracking_Detail, tbl_DigitalContent_Tracking_Detail_cols);
@@ -1079,6 +1088,8 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_SerializedAssetTransfer, tbl_SerializedAssetTransfer_cols);
         uploadColumnWithRetailer.put(tbl_SerializedAssetTransferImages, tbl_SerializedAssetTransferImg__cols);
         uploadColumnWithRetailer.put(tbl_SerializedAssetServiceRequest, tbl_SerializedAssetServiceRequest_cols);
+        uploadColumnWithRetailer.put(tbl_SerializedAssetUpdate,tbl_SerializedAssetUpdate_cols);
+        uploadColumnWithRetailer.put(tbl_SerializedAssetApproval,tbl_SerializedAssetApproval_cols);
 
         uploadColumnWithRetailer.put(tbl_DigitalContent_Tracking_Header, tbl_DigitalContent_Tracking_Header_cols);
         uploadColumnWithRetailer.put(tbl_DigitalContent_Tracking_Detail, tbl_DigitalContent_Tracking_Detail_cols);

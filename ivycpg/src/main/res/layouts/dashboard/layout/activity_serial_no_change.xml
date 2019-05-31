@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.ivy.cpg.view.serializedAsset.SerialNoChangeActivity">
+
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+
+    <RelativeLayout
+        android:id="@+id/ll_header"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_header_height"
+        android:layout_below="@+id/toolbar"
+        android:background="@color/list_title_bg_color"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="@dimen/list_padding_left_n_right"
+        android:paddingEnd="@dimen/list_padding_left_n_right">
+
+
+        <TextView
+            android:id="@+id/tv_header_asset_name"
+            style="@style/TextViewListTitle"
+            android:layout_width="@dimen/price_product_name"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:gravity="start"
+            android:tag="asset_name"
+            android:text="@string/asset_name" />
+
+        <TextView
+            android:id="@+id/tv_isAvail"
+            style="@style/TextViewListTitle"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/_3sdp"
+            android:layout_marginLeft="@dimen/_3sdp"
+            android:layout_toEndOf="@+id/tv_header_asset_name"
+            android:layout_toRightOf="@+id/tv_header_asset_name"
+            android:gravity="start"
+            android:tag="actual"
+            android:text="@string/serial_no" />
+
+
+    </RelativeLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/serial_no_change_list_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/footer"
+        android:layout_below="@+id/ll_header" />
+
+    <RelativeLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?attr/customFooterBackgroundColor"
+        android:minHeight="@dimen/footer_height"
+        android:orientation="horizontal"
+        android:padding="@dimen/footer_padding">
+
+        <Button
+            android:id="@+id/btn_save_sno_change"
+            style="?attr/roundedCustomButtonSmall"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:text="@string/save"
+            android:textAllCaps="false" />
+    </RelativeLayout>
+
+
+</RelativeLayout>

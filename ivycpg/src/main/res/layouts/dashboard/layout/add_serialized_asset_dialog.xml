@@ -6,484 +6,472 @@
     android:background="@drawable/background_noise"
     android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/ll_toolbar"
+
+    <include
+        android:id="@+id/toolbar"
+        layout="@layout/material_tool_bar" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/label_asset_type"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:tag="asset_type"
+        android:text="@string/type" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/spinner_type"
+        android:layout_width="@dimen/spinner_width"
+        android:layout_height="@dimen/spinner_height"
+        android:layout_below="@+id/label_asset_type"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:background="@android:color/transparent"
+        android:gravity="start"
+        android:overlapAnchor="false"
+        android:textAlignment="textStart"
+        tools:targetApi="lollipop" />
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/label_asset_model"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:layout_alignStart="@+id/spinner_model"
+        android:layout_alignLeft="@+id/spinner_model"
+        android:layout_toEndOf="@+id/label_asset_type"
+        android:layout_toRightOf="@+id/label_asset_type"
+        android:tag="asset_model"
+        android:text="@string/model" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/spinner_model"
+        android:layout_width="@dimen/spinner_width"
+        android:layout_height="@dimen/spinner_height"
+        android:layout_below="@+id/label_asset_model"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginLeft="@dimen/_20sdp"
+        android:layout_toEndOf="@+id/spinner_type"
+        android:layout_toRightOf="@+id/spinner_type"
+        android:background="@android:color/transparent"
+        android:gravity="start"
+        android:overlapAnchor="false"
+        android:textAlignment="textStart"
+        tools:targetApi="lollipop" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/label_asset_vendor"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spinner_type"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:tag="asset_vendor"
+        android:text="@string/vendor" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/spinner_vendor"
+        android:layout_width="@dimen/spinner_width"
+        android:layout_height="@dimen/spinner_height"
+        android:layout_below="@+id/label_asset_vendor"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginLeft="@dimen/_10sdp"
+        android:background="@android:color/transparent"
+        android:gravity="start"
+        android:overlapAnchor="false"
+        android:textAlignment="textStart"
+        tools:targetApi="lollipop" />
+
+
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/label_asset_capacity"
+        style="@style/TextViewCaptionNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spinner_model"
+        android:layout_alignStart="@+id/spinner_model"
+        android:layout_alignLeft="@+id/spinner_model"
+        android:layout_toEndOf="@+id/label_asset_vendor"
+        android:layout_toRightOf="@+id/label_asset_vendor"
+        android:tag="asset_capacity"
+        android:text="@string/capacity" />
+
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/spinner_capcity"
+        android:layout_width="@dimen/spinner_width"
+        android:layout_height="@dimen/spinner_height"
+        android:layout_below="@+id/label_asset_capacity"
+        android:layout_marginStart="@dimen/_20sdp"
+        android:layout_marginLeft="@dimen/_20sdp"
+        android:layout_toEndOf="@+id/spinner_vendor"
+        android:layout_toRightOf="@+id/spinner_vendor"
+        android:background="@android:color/transparent"
+        android:gravity="start"
+        android:overlapAnchor="false"
+        android:textAlignment="textStart"
+        tools:targetApi="lollipop" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/spinner_capcity"
+        android:layout_margin="@dimen/_6sdp"
+        android:background="@color/gray_text" />
+
+
+    <RelativeLayout
+        android:id="@+id/layout_one"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true">
+        android:layout_below="@+id/divider"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:orientation="horizontal">
 
-        <include
-            android:id="@+id/toolbar"
-            layout="@layout/material_tool_bar" />
-    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/ll_asset_filters"
+        <TextView
+            android:id="@+id/asset_reason_label"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:tag="choose_asset_name"
+            android:text="@string/addasset" />
+
+        <Spinner
+            android:id="@+id/spinner_asset"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="@dimen/spinner_height"
+            android:layout_below="@+id/asset_reason_label"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_vertical"
+            android:background="@android:color/transparent"
+            android:gravity="start"
+            android:overlapAnchor="false"
+            android:textAlignment="textStart"
+            tools:ignore="UnusedAttribute" />
+
+
+        <ImageView
+            android:id="@+id/iv_photo"
+            android:layout_width="@dimen/dimens_40dp"
+            android:layout_height="@dimen/dimens_40dp"
+            android:layout_below="@+id/asset_reason_label"
+            android:layout_marginStart="@dimen/dimen_10dp"
+            android:layout_marginLeft="@dimen/dimen_12dp"
+            android:layout_marginTop="@dimen/dimen_5dp"
+            android:layout_marginBottom="@dimen/dimen_5dp"
+            android:layout_toEndOf="@+id/spinner_asset"
+            android:layout_toRightOf="@+id/spinner_asset"
+            android:src="@drawable/ic_photo_camera_blue_24dp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_barcode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_toolbar"
-        android:layout_marginStart="@dimen/dimens_10dp"
-        android:layout_marginLeft="@dimen/dimens_10dp"
-        android:layout_marginTop="@dimen/dimens_40dp"
-        android:layout_marginEnd="@dimen/dimens_10dp"
-        android:layout_marginRight="@dimen/dimens_10dp"
+        android:layout_below="@+id/layout_one"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/dimens_20dp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:baselineAligned="false"
+        android:gravity="center"
         android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/label_barcode"
+            style="@style/TextViewCaptionNormal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:padding="@dimen/dimens_4dp"
+            android:tag="asset_barcode"
+            android:text="@string/barcode"
+            android:visibility="visible" />
 
-            <LinearLayout
-                android:id="@+id/ll_asset_type"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/dimens_10dp"
-                android:layout_marginRight="@dimen/dimens_10dp"
-                android:layout_weight="2.5"
-                android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/label_asset_type"
-                    style="@style/TextViewCaptionNormal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:tag="asset_type"
-                    android:text="@string/type" />
+        <ImageView
+            android:id="@+id/imageView_barcode_scan"
+            android:layout_width="@dimen/dimen_40dp"
+            android:layout_height="@dimen/dimen_40dp"
+            android:layout_below="@+id/label_barcode"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:background="@drawable/dot_circle_blue"
+            android:contentDescription="@string/barcode"
+            android:scaleType="center"
+            android:src="@drawable/barcode_scan" />
 
-                <Spinner
-                    android:id="@+id/spinner_type"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/spinner_height"
-                    android:background="@android:color/transparent"
-                    android:gravity="start"
-                    android:overlapAnchor="false"
-                    android:textAlignment="textStart" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_asset_model"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/dimens_10dp"
-                android:layout_marginLeft="@dimen/dimens_10dp"
-                android:layout_weight="2.5"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/label_asset_model"
-                    style="@style/TextViewCaptionNormal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:tag="asset_model"
-                    android:text="@string/model" />
-
-                <Spinner
-                    android:id="@+id/spinner_model"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/spinner_height"
-                    android:background="@android:color/transparent"
-                    android:gravity="start"
-                    android:overlapAnchor="false"
-                    android:textAlignment="textStart" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/txt_bar_code_sp_label"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimens_20dp"
-            android:baselineAligned="false"
-            android:orientation="horizontal">
+            android:layout_below="@+id/imageView_barcode_scan"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:gravity="start"
+            android:tag="asset_barcode_reason"
+            android:text="@string/select_reason"
+            android:textAlignment="textStart" />
 
-            <LinearLayout
-                android:id="@+id/ll_asset_vendor"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginEnd="@dimen/dimens_10dp"
-                android:layout_marginRight="@dimen/dimens_10dp"
-                android:layout_weight="2.5"
-                android:orientation="vertical">
+        <Spinner
+            android:id="@+id/spinner_bar_code_reason"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="@dimen/spinner_height"
+            android:layout_below="@+id/txt_bar_code_sp_label"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginEnd="@dimen/_10sdp"
+            android:layout_marginRight="@dimen/_10sdp"
+            android:background="@android:color/transparent"
+            android:gravity="start"
+            android:overlapAnchor="false"
+            android:textAlignment="textStart"
+            tools:ignore="UnusedAttribute" />
 
-                <TextView
-                    android:id="@+id/label_asset_vendor"
-                    style="@style/TextViewCaptionNormal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:tag="asset_vendor"
-                    android:text="@string/vendor" />
-
-                <Spinner
-                    android:id="@+id/spinner_vendor"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/spinner_height"
-                    android:background="@android:color/transparent"
-                    android:gravity="start"
-                    android:overlapAnchor="false"
-                    android:textAlignment="textStart" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/ll_asset_capacity"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="@dimen/dimens_10dp"
-                android:layout_marginLeft="@dimen/dimens_10dp"
-                android:layout_weight="2.5"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/label_asset_capacity"
-                    style="@style/TextViewCaptionNormal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:tag="asset_capacity"
-                    android:text="@string/capacity" />
-
-                <Spinner
-                    android:id="@+id/spinner_capcity"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/spinner_height"
-                    android:background="@android:color/transparent"
-                    android:gravity="start"
-                    android:overlapAnchor="false"
-                    android:textAlignment="textStart" />
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray_text" />
-    </LinearLayout>
+        <TextView
+            android:id="@+id/label_scan"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView_barcode_scan"
+            android:layout_alignStart="@+id/etxt_sno"
+            android:layout_alignLeft="@+id/etxt_sno"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_toEndOf="@+id/txt_bar_code_sp_label"
+            android:layout_toRightOf="@+id/txt_bar_code_sp_label"
+            android:tag="asset_serialno"
+            android:text="@string/addassetsno" />
 
 
-    <LinearLayout
-        android:id="@+id/ll_asset_date_sno_nfc"
+        <EditText
+            android:id="@+id/etxt_sno"
+            style="@style/EditText_ListItem"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/label_scan"
+            android:layout_gravity="bottom"
+            android:layout_toEndOf="@+id/spinner_bar_code_reason"
+            android:layout_toRightOf="@+id/spinner_bar_code_reason"
+            android:cursorVisible="true"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/._"
+            android:gravity="start"
+            android:hint="@string/zero"
+            android:maxLength="50"
+            android:paddingBottom="10dp"
+            android:textAlignment="textStart" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/layout_nfccode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_asset_filters"
-        android:layout_marginStart="@dimen/dimens_10dp"
-        android:layout_marginLeft="@dimen/dimens_10dp"
-        android:layout_marginTop="@dimen/dimens_40dp"
-        android:layout_marginEnd="@dimen/dimens_10dp"
-        android:layout_marginRight="@dimen/dimens_10dp"
+        android:layout_below="@+id/layout_barcode"
+        android:layout_gravity="center"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/dimens_20dp"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:baselineAligned="false"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/label_nfccode"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:gravity="center"
+            android:padding="@dimen/dimens_4dp"
+            android:tag="asset_nfccode"
+            android:text="@string/nfc_code" />
+
+        <ImageView
+            android:id="@+id/imageView_nfc_scan"
+            android:layout_width="@dimen/dimen_40dp"
+            android:layout_height="@dimen/dimen_40dp"
+            android:layout_below="@+id/label_nfccode"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center"
+            android:background="@drawable/dot_circle_blue"
+            android:contentDescription="@string/barcode"
+            android:scaleType="center"
+            android:src="@drawable/barcode_scan" />
+
+        <TextView
+            android:id="@+id/txt_nfc_reason_label"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView_nfc_scan"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:gravity="start"
+            android:tag="asset_barcode_reason"
+            android:text="@string/select_reason"
+            android:textAlignment="textStart" />
+
+        <Spinner
+            android:id="@+id/spinner_nfc_reason"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="@dimen/spinner_height"
+            android:layout_below="@+id/txt_nfc_reason_label"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:background="@android:color/transparent"
+            android:gravity="start"
+            android:overlapAnchor="false"
+            android:textAlignment="textStart"
+            tools:ignore="UnusedAttribute" />
+
+        <TextView
+            android:id="@+id/label_nfc_scan"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/imageView_nfc_scan"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:tag="asset_serialno"
+            android:text="@string/addassetsno" />
+
+
+        <EditText
+            android:id="@+id/etxt_nfc_no"
+            style="@style/EditText_ListItem"
+            android:layout_width="@dimen/spinner_width"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/label_nfc_scan"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="bottom"
+            android:cursorVisible="true"
+            android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/._"
+            android:hint="@string/zero"
+            android:maxLength="50"
+            android:paddingBottom="10dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/llnewassetPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_nfccode"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginTop="@dimen/dimen_10dp"
+        android:layout_marginEnd="@dimen/_10sdp"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/layout_one"
-            android:layout_width="match_parent"
+
+        <TextView
+            android:id="@+id/install_date_label"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginRight="@dimen/_20sdp"
+            android:tag="asset_install_date"
+            android:text="@string/addassetinstall" />
 
-
-            <TextView
-                android:id="@+id/asset_reason_label"
-                style="@style/TextViewCaptionNormal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_gravity="center_vertical"
-                android:gravity="center"
-                android:tag="choose_asset_name"
-                android:text="@string/addasset" />
-
-            <Spinner
-                android:id="@+id/spinner_asset"
-                android:layout_width="@dimen/spinner_width"
-                android:layout_height="@dimen/spinner_height"
-                android:layout_below="@+id/asset_reason_label"
-                android:layout_centerInParent="true"
-                android:layout_gravity="center_vertical"
-                android:background="@android:color/transparent"
-                android:gravity="start"
-                android:overlapAnchor="false"
-                android:textAlignment="textStart"
-                tools:ignore="UnusedAttribute" />
-
-
-            <ImageView
-                android:id="@+id/iv_photo"
-                android:layout_width="@dimen/dimens_40dp"
-                android:layout_height="@dimen/dimens_40dp"
-                android:layout_below="@+id/asset_reason_label"
-                android:layout_marginStart="@dimen/dimen_10dp"
-                android:layout_marginLeft="@dimen/dimen_12dp"
-                android:layout_marginTop="@dimen/dimen_5dp"
-                android:layout_marginBottom="@dimen/dimen_5dp"
-                android:layout_toEndOf="@+id/spinner_asset"
-                android:layout_toRightOf="@+id/spinner_asset"
-                android:src="@drawable/ic_photo_camera_blue_24dp" />
-
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/layout_barcode"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/date_button"
+            style="@style/datePickerButton"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dimens_20dp"
-            android:baselineAligned="false"
+            android:layout_below="@+id/install_date_label"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginEnd="@dimen/_20sdp"
+            android:layout_marginRight="@dimen/_20sdp"
             android:gravity="center"
-            android:orientation="vertical">
+            android:text="@string/servicedate" />
 
-            <TextView
-                android:id="@+id/label_barcode"
-                style="@style/TextViewCaptionNormal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:gravity="center"
-                android:padding="@dimen/dimens_4dp"
-                android:tag="asset_barcode"
-                android:text="@string/barcode"
-                android:visibility="visible" />
-
-
-            <ImageView
-                android:id="@+id/imageView_barcode_scan"
-                android:layout_width="@dimen/dimen_40dp"
-                android:layout_height="@dimen/dimen_40dp"
-                android:layout_centerInParent="true"
-                android:background="@drawable/dot_circle_blue"
-                android:layout_gravity="center"
-                android:layout_below="@+id/label_barcode"
-                android:scaleType="center"
-                android:src="@drawable/barcode_scan" />
-
-
-            <LinearLayout
-                android:id="@+id/layout_two"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/imageView_barcode_scan"
-                android:layout_marginTop="@dimen/dimens_12dp"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/barcode_reason_layout"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimens_10dp"
-                    android:layout_marginLeft="@dimen/dimens_10dp"
-                    android:layout_weight="2.5"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/txt_bar_code_sp_label"
-                        style="@style/TextViewCaptionNormal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="start"
-                        android:tag="asset_barcode_reason"
-                        android:text="@string/select_reason"
-                        android:textAlignment="textStart" />
-
-                    <Spinner
-                        android:id="@+id/spinner_bar_code_reason"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/spinner_height"
-                        android:background="@android:color/transparent"
-                        android:gravity="start"
-                        android:overlapAnchor="false"
-                        android:textAlignment="textStart"
-                        tools:ignore="UnusedAttribute" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/layout_three"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dimens_10dp"
-                    android:layout_marginRight="@dimen/dimens_10dp"
-                    android:layout_weight="2.5"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/label_scan"
-                        style="@style/TextViewCaptionNormal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:tag="asset_serialno"
-                        android:text="@string/addassetsno" />
-
-
-                    <EditText
-                        android:id="@+id/etxt_sno"
-                        style="@style/EditText_ListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="bottom"
-                        android:cursorVisible="true"
-                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/._"
-                        android:hint="@string/zero"
-                        android:maxLength="50"
-                        android:paddingBottom="10dp" />
-
-
-                </LinearLayout>
-
-
-            </LinearLayout>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:id="@+id/layout_nfccode"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/eff_to_date_label"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="@dimen/dimens_20dp"
-            android:baselineAligned="false"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:tag="asset_eff_to_date"
+            android:text="@string/choose_eff_to_date" />
+
+        <Button
+            android:id="@+id/eff_to_date_button"
+            style="@style/datePickerButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/eff_to_date_label"
+            android:layout_alignStart="@+id/eff_to_date_label"
+            android:layout_alignLeft="@+id/eff_to_date_label"
+            android:layout_toEndOf="@+id/date_button"
+            android:layout_toRightOf="@+id/date_button"
             android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:hint="@string/effective_to" />
 
-            <TextView
-                android:id="@+id/label_nfccode"
-                style="@style/TextViewCaptionNormal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:gravity="center"
-                android:padding="@dimen/dimens_4dp"
-                android:tag="asset_nfccode"
-                android:text="@string/nfc_code" />
-
-            <ImageView
-                android:id="@+id/imageView_nfccode_scan"
-                android:layout_width="@dimen/dimens_40dp"
-                android:layout_height="@dimen/dimens_40dp"
-                android:layout_below="@+id/label_nfccode"
-                android:layout_centerInParent="true"
-                android:src="@drawable/barcode_scan_black" />
-
-
-            <LinearLayout
-                android:id="@+id/layout_two_nfc"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/imageView_nfccode_scan"
-                android:layout_marginTop="@dimen/dimens_4dp"
-                android:baselineAligned="false"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/layout_three_nfc"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/dimens_10dp"
-                    android:layout_marginRight="@dimen/dimens_10dp"
-                    android:layout_weight="2.5"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/label_nfc_scan_reason"
-                        style="@style/TextViewCaptionNormal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:tag="choose_asset_nfc_reason"
-                        android:text="@string/select_reason" />
-
-
-                    <Spinner
-                        android:id="@+id/spinner_nfc_reason"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/spinner_height"
-                        android:background="@android:color/transparent"
-                        android:gravity="start"
-                        android:overlapAnchor="false"
-                        android:textAlignment="textStart"
-                        tools:ignore="UnusedAttribute" />
-
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/dimens_10dp"
-                    android:layout_marginLeft="@dimen/dimens_10dp"
-                    android:layout_weight="2.5"
-                    android:gravity="center_vertical"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/txtNFCLabel"
-                        style="@style/TextViewCaptionNormal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:tag="asset_nfcno"
-                        android:text="@string/enter_nfc_number" />
-
-                    <EditText
-                        android:id="@+id/etxt_nfc_number"
-                        style="@style/EditText_ListItem"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:cursorVisible="true"
-                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789/._"
-                        android:hint="@string/zero"
-                        android:maxLength="50" />
-                </LinearLayout>
-            </LinearLayout>
-        </RelativeLayout>
-
-        <LinearLayout
-            android:id="@+id/llnewassetPhoto"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/label_rental_price"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/dimen_8dp"
-            android:layout_marginLeft="@dimen/dimen_8dp"
-            android:layout_marginTop="@dimen/dimen_10dp"
-            android:layout_marginEnd="@dimen/dimen_8dp"
-            android:layout_marginRight="@dimen/dimen_8dp"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/TextViewCaptionNormal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:tag="asset_install_date"
-                android:text="@string/addassetinstall" />
-
-            <Button
-                android:id="@+id/date_button"
-                style="@style/datePickerButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="@string/servicedate" />
-        </LinearLayout>
-    </LinearLayout>
+            android:layout_below="@+id/eff_to_date_button"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="@dimen/_6sdp"
+            android:tag="asset_rent_price"
+            android:text="@string/rental_price" />
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimens_12dp"
-        android:layout_marginBottom="@dimen/dimens_12dp">
-
-        <include
-            android:id="@+id/keypad"
-            layout="@layout/keypad"
-            android:layout_width="fill_parent"
+        <EditText
+            android:id="@+id/etxt_rental_price"
+            style="@style/EditText_ListItem"
+            android:layout_width="@dimen/spinner_width"
             android:layout_height="wrap_content"
-            android:visibility="gone" />
-    </LinearLayout>
+            android:layout_below="@+id/label_rental_price"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:layout_gravity="bottom"
+            android:cursorVisible="true"
+            android:digits="0123456789."
+            android:gravity="start"
+            android:hint="@string/enter_rental_price"
+            android:inputType="numberDecimal"
+            android:maxLength="10"
+            android:paddingBottom="10dp"
+            android:textAlignment="textStart" />
+
+    </RelativeLayout>
+
 
     <LinearLayout
         android:layout_width="match_parent"

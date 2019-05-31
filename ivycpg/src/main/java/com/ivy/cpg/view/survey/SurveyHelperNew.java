@@ -70,6 +70,7 @@ public class SurveyHelperNew {
     public String photocapturemenutype;
     public String multiplePhotoCapture;
 
+    private String SignaturePath = "";
 
     private SurveyHelperNew(Context context) {
         this.context = context;
@@ -98,6 +99,14 @@ public class SurveyHelperNew {
 
     public void setFromCSsurvey(boolean fromCSsurvey) {
         this.fromCSsurvey = fromCSsurvey;
+    }
+
+    public String getSignaturePath() {
+        return SignaturePath;
+    }
+
+    public void setSignaturePath(String signaturePath) {
+        SignaturePath = signaturePath;
     }
 
     private String QT(String data) // Quote
@@ -404,7 +413,7 @@ public class SurveyHelperNew {
             sb.append(" SMP.Weight,ifnull(SMP.GroupName,''), SMP.isScore, A.isPhotoReq, A.minPhoto,");
             sb.append(" A.maxPhoto,A.isBonus, IFNULL(OM.OptionId,0), OM.OptionText, OSM.Score,");
             sb.append(" CASE OSM.isExcluded WHEN '1' THEN 'true' ELSE 'false' END as isExcluded,");
-            sb.append(" IFNULL(OD.DQID,0),IFNULL(SLM.listname,'NO FREQ') as freq,SMP.maxScore FROM SurveyCriteriaMapping SCM");
+            sb.append(" IFNULL(OD.DQID,0),IFNULL(SLM.listname,'NO FREQ') as freq,SMP.maxScore,SM.IsSignatureRequired FROM SurveyCriteriaMapping SCM");
             sb.append(" INNER JOIN StandardListMaster SL On SL.Listid=SCM.CriteriaType and SL.listtype='SURVEY_CRITERIA_TYPE'");
             sb.append(" INNER JOIN SurveyMapping SMP ON SMP.SurveyId = SCM.SurveyId");
             sb.append(" INNER JOIN SurveyMaster SM ON SM.SurveyId = SCM.SurveyId");
@@ -452,6 +461,7 @@ public class SurveyHelperNew {
                         surveyBO.setSurveyName(c.getString(1));
                         surveyBO.setMaxBonusScore(c.getFloat(2));
                         surveyBO.setSurveyFreq(c.getString(c.getColumnIndex("freq")));
+                        surveyBO.setSignatureRequired(c.getInt(c.getColumnIndex("IsSignatureRequired")) == 1);
 
                         questionIndex = 0;
                         tempQuestionId = c.getInt(3);
@@ -1135,7 +1145,7 @@ public class SurveyHelperNew {
                     // update joint call
                     bmodel.outletTimeStampHelper.updateJointCallDetailsByModuleWise(menuCode, uid, oldUid);
 
-                    String headerColumns = "uid, surveyid, date, retailerid,distributorID, ModuleID,SupervisiorId,achScore,tgtScore,menucode,AchBonusPoint,MaxBonusPoint,Remark,type,counterid,refid,userid,frequency,tripUid";
+                    String headerColumns = "uid, surveyid, date, retailerid,distributorID, ModuleID,SupervisiorId,achScore,tgtScore,menucode,AchBonusPoint,MaxBonusPoint,Remark,type,counterid,refid,userid,frequency,SignaturePath,tripUid";
 
                     mAllQuestions.addAll(sBO.getQuestions());
                     questionSize = mAllQuestions.size();
@@ -1268,6 +1278,9 @@ public class SurveyHelperNew {
                                         + "," + qBO.getMaxBonusScore()
                                         + "," + QT(remarkDone) + "," + QT(type) + ",0,''"
                                         + "," + userid
+                                        + "," + QT(sBO.getSurveyFreq())
+                                        + "," + QT(getSignaturePath());
+                                qBO.setSignaturePath(getSignaturePath());
                                         + "," + QT(sBO.getSurveyFreq());
 
                                 if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
@@ -1302,7 +1315,7 @@ public class SurveyHelperNew {
                                 + superwiserID
                                 + " AND userid=" + userid
                                 + " AND frequency!='MULTIPLE'";
-                        ;
+
 
                         Cursor headerCursor = db.selectSQL(sql);
 
@@ -1332,7 +1345,7 @@ public class SurveyHelperNew {
                         // update joint call
                         bmodel.outletTimeStampHelper.updateJointCallDetailsByModuleWise(menuCode, uid, oldUid);
 
-                        String headerColumns = "uid, surveyid, date, retailerid,DistributorID, ModuleID,SupervisiorId,achScore,tgtScore,menucode,AchBonusPoint,MaxBonusPoint,Remark,type,counterid,refid,userid,frequency,ridSF,VisitId";
+                        String headerColumns = "uid, surveyid, date, retailerid,DistributorID, ModuleID,SupervisiorId,achScore,tgtScore,menucode,AchBonusPoint,MaxBonusPoint,Remark,type,counterid,refid,userid,frequency,ridSF,VisitId,SignaturePath";
 
                         mAllQuestions.addAll(sBO.getQuestions());
                         questionSize = mAllQuestions.size();
@@ -1468,8 +1481,10 @@ public class SurveyHelperNew {
                                             + "," + userid
                                             + "," + QT(sBO.getSurveyFreq())
                                             + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF())
-                                            + "," + bmodel.getAppDataProvider().getUniqueId();
+                                            + "," + bmodel.getAppDataProvider().getUniqueId()
+                                            + "," + QT(getSignaturePath());
 
+                                    surBO.setSignaturePath(getSignaturePath());
                                     db.insertSQL("AnswerHeader", headerColumns, headerValues);
                                 }
 
@@ -1658,7 +1673,7 @@ public class SurveyHelperNew {
                 uid = "0";
 
                 StringBuilder sb = new StringBuilder();
-                sb.append("SELECT uid FROM AnswerHeader  ");
+                sb.append("SELECT uid,SignaturePath FROM AnswerHeader  ");
                 sb.append(" WHERE retailerid = " + QT(retailerid) + " AND distributorID = " + distID + " AND surveyid = ");
                 sb.append(+surveyId + " AND date = ");
                 sb.append(QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
@@ -1669,6 +1684,7 @@ public class SurveyHelperNew {
                 if (answerHeaderCursor != null) {
                     if (answerHeaderCursor.moveToNext()) {
                         uid = answerHeaderCursor.getString(0);
+                        sBO.setSignaturePath(answerHeaderCursor.getString(1));
                         isLocalData = true;
                     }
                     answerHeaderCursor.close();

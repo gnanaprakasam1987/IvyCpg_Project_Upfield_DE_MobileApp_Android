@@ -309,6 +309,24 @@
     <string name="retailer_selection_mandatory">Choose any one retailer</string>
 
     <string name="select_percentage">Select Percentage</string>
+    <string name="signature_label">Signature</string>
+    <string name="sign_mandatory">Signature is mandatory</string>
+    <string name="could_not_init_file_system">Could not initiate File System.. Is Sdcard mounted properly?</string>
+    <string name="asset_request">New Asset Request </string>
+    <string name="survey">Survey</string>
+    <string name="last_service_date">Last Service Date</string>
+    <string name="old_serial_no">Old SNo: </string>
+    <string name="serial_no_change_request">Update Serial No</string>
+    <string name="asset_update_request">Asset Update Request</string>
+    <string name="requested_date">Req Date</string>
+    <string name="asset_approval">Asset Approval</string>
+    <string name="approval">Approval</string>
+    <string name="rental_price">Rental Price</string>
+    <string name="effective_from">Eff From Date</string>
+    <string name="effective_to">Eff To Date</string>
+    <string name="enter_rental_price">Enter Retailer Price</string>
+    <string name="choose_eff_to_date">Choose Eff To Date</string>
+    <string name="rental_price_must_be_grater_than_zero">Rental Price must be grater than of %d</string>
     <string name="expected_resolution_date">Resolution Date</string>
     <string name="asset_service_request">Asset Service Request</string>
     <string name="new_service_request">New Service Request</string>

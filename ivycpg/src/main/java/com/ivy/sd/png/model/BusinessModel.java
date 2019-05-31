@@ -3669,6 +3669,17 @@ public class BusinessModel extends Application {
                 c.close();
             }
 
+            c = db.selectSQL("SELECT DISTINCT ImageName FROM SerializedAssetMaster");
+            if (c != null) {
+                while ((c.moveToNext())) {
+                    getDigitalContentURLS().put(
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                            DataMembers.SERIALIZED_ASSET_DIG_CONTENT);
+
+                }
+                c.close();
+            }
+
             db.closeDB();
 
             getDigitalContentURLS().put(
@@ -4340,6 +4351,8 @@ public class BusinessModel extends Application {
                 mBucketName = mBucketDetails + "/" + "Order" + path;
             } else if (imageName.startsWith("TSK_")) {
                 mBucketName = mBucketDetails + "/" + "Task" + path;
+            } else if (imageName.startsWith("SUR_SGN_")) {
+                mBucketName = mBucketDetails + "/" + "Survey" + path;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = mBucketDetails + "/" + "PhotoCapture" + path;
@@ -7613,6 +7626,8 @@ public class BusinessModel extends Application {
                 mBucketName = "SalesReturn" + path + imageName;
             } else if (imageName.startsWith("ORD_")) {
                 mBucketName = "Order" + path + imageName;
+            } else if (imageName.startsWith("SUR_SGN_")) {
+                mBucketName = "Survey" + path + imageName;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = "PhotoCapture" + path + imageName;

@@ -98,7 +98,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_CLOUD_STORAGE = "CLOUD_STORAGE";
     public boolean IS_CLOUD_STORAGE_AVAILABLE;
     public boolean IS_SFDC_CLOUD_STORAGE;
-    public boolean IS_S3_CLOUD_STORAGE=true;// default storage.
+    public boolean IS_S3_CLOUD_STORAGE = true;// default storage.
     public boolean IS_AZURE_CLOUD_STORAGE;
 
     // Show Tax in Invoice
@@ -1581,7 +1581,7 @@ public class ConfigurationMasterHelper {
     public int ret_skip_otp_flag = 0; // 0 otp edittext, 1 Show reason spinner, 2 Soft Alert, 3 Hard Alert
 
     private static final String CODE_SHOW_PAUSE_CALL_ANALYSIS = "FUN81";
-    public boolean IS_SHOW_PAUSE_CALL_ANALYSIS = true;
+    public boolean IS_SHOW_PAUSE_CALL_ANALYSIS;
 
     private static final String CODE_DISABLE_CALL_ANALAYSIS_TIMER = "FUN82";
     public boolean IS_DISABLE_CALL_ANALYSIS_TIMER = true;
@@ -1591,6 +1591,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_ENABLE_GLOBAL_GPS_DISTANCE = "GPSDISTANCE";
     public int GLOBAL_GPS_DISTANCE;
+
+    public boolean IS_SURVEY_PDF_SHARE;
+    public static final String CODE_SURVEY_PDF_SHARE = "SURVEY15";
 
     private final String CODE_PRE_VISIT = "PREVISIT";
     public boolean IS_PRE_VISIT = false;
@@ -2186,21 +2189,18 @@ public class ConfigurationMasterHelper {
         this.SHOW_SALES_RETURN_IN_INVOICE = hashMapHHTModuleConfig.get(CODE_SALES_RETURN_IN_INVOICE) != null ? hashMapHHTModuleConfig.get(CODE_SALES_RETURN_IN_INVOICE) : false;
         this.SHOW_CREDIT_INVOICE_COUNT = hashMapHHTModuleConfig.get(CODE_CREDIT_INVOICE_COUNT) != null ? hashMapHHTModuleConfig.get(CODE_CREDIT_INVOICE_COUNT) : false;
 
-        IS_CLOUD_STORAGE_AVAILABLE=hashMapHHTModuleConfig.get(CODE_CLOUD_STORAGE) != null ? hashMapHHTModuleConfig.get(CODE_CLOUD_STORAGE) : false;
-        if(IS_CLOUD_STORAGE_AVAILABLE){
-            int cloudStorageType=hashMapHHTModuleOrder.get(CODE_CLOUD_STORAGE);
-            if(cloudStorageType==0){
-                IS_S3_CLOUD_STORAGE=true;
-            }
-            else if(cloudStorageType==1){
-                IS_SFDC_CLOUD_STORAGE=true;
-            }
-            else if(cloudStorageType==2){
-                IS_AZURE_CLOUD_STORAGE=true;
-            }
-            else {
+        IS_CLOUD_STORAGE_AVAILABLE = hashMapHHTModuleConfig.get(CODE_CLOUD_STORAGE) != null ? hashMapHHTModuleConfig.get(CODE_CLOUD_STORAGE) : false;
+        if (IS_CLOUD_STORAGE_AVAILABLE) {
+            int cloudStorageType = hashMapHHTModuleOrder.get(CODE_CLOUD_STORAGE);
+            if (cloudStorageType == 0) {
+                IS_S3_CLOUD_STORAGE = true;
+            } else if (cloudStorageType == 1) {
+                IS_SFDC_CLOUD_STORAGE = true;
+            } else if (cloudStorageType == 2) {
+                IS_AZURE_CLOUD_STORAGE = true;
+            } else {
                 // default flag
-                IS_S3_CLOUD_STORAGE=true;
+                IS_S3_CLOUD_STORAGE = true;
             }
         }
 
@@ -2776,7 +2776,7 @@ public class ConfigurationMasterHelper {
         this.IS_VOICE_TO_TEXT = hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) != null ? hashMapHHTModuleOrder.get(CODE_VOICE_TO_TEXT) : -1;
         this.IS_SKIP_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_SKIP_CALL_ANALYSIS) : false;
         this.IS_COLLECTION_DELETE = hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) != null ? hashMapHHTModuleConfig.get(CODE_COLLECTION_DELETE) : false;
-        this.IS_VALIDATE_DUE_DAYS = hashMapHHTModuleConfig.get(CODE_VALIDATE_DUE_DATE ) != null ? hashMapHHTModuleConfig.get(CODE_VALIDATE_DUE_DATE) : false;
+        this.IS_VALIDATE_DUE_DAYS = hashMapHHTModuleConfig.get(CODE_VALIDATE_DUE_DATE) != null ? hashMapHHTModuleConfig.get(CODE_VALIDATE_DUE_DATE) : false;
         this.IS_SHOW_TASK_PRODUCT_LEVEL = hashMapHHTModuleConfig.get(CODE_SHOW_TASK_PRODUCT_LEVEL) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_TASK_PRODUCT_LEVEL) : false;
         if (hashMapHHTModuleConfig.get(CODE_SHOW_TASK_PRODUCT_LEVEL) != null) {
             TASK_PRODUCT_LEVEL_NO = hashMapHHTModuleOrder.get(CODE_SHOW_TASK_PRODUCT_LEVEL);
@@ -2786,16 +2786,18 @@ public class ConfigurationMasterHelper {
         this.IS_SHOW_RETAILER_LAST_VISITEDBY = isShowLastVisitedBy();
 
         this.IS_ENABLE_TRIP = hashMapHHTModuleConfig.get(CODE_TO_ENABLE_TRIP) != null ? hashMapHHTModuleConfig.get(CODE_TO_ENABLE_TRIP) : false;
-        if(hashMapHHTModuleOrder.get(CODE_TO_ENABLE_TRIP) != null && hashMapHHTModuleOrder.get(CODE_TO_ENABLE_TRIP)==1)
-        this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP =true;
-        else this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP =false;
+        if (hashMapHHTModuleOrder.get(CODE_TO_ENABLE_TRIP) != null && hashMapHHTModuleOrder.get(CODE_TO_ENABLE_TRIP) == 1)
+            this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP = true;
+        else this.IS_ALLOW_USER_TO_CONTINUE_FOR_MULTIPLE_DAYS_WITH_SAME_TRIP = false;
         this.ret_skip_otp_flag = hashMapHHTModuleOrder.get(CODE_SHOW_LOCATION_PWD_DIALOG) != null ? hashMapHHTModuleOrder.get(CODE_SHOW_LOCATION_PWD_DIALOG) : 0;
         this.IS_DISABLE_CALL_ANALYSIS_TIMER = hashMapHHTModuleConfig.get(CODE_DISABLE_CALL_ANALAYSIS_TIMER) != null ? hashMapHHTModuleConfig.get(CODE_DISABLE_CALL_ANALAYSIS_TIMER) : false;
+        this.IS_SHOW_PAUSE_CALL_ANALYSIS = hashMapHHTModuleConfig.get(CODE_SHOW_PAUSE_CALL_ANALYSIS) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_PAUSE_CALL_ANALYSIS) : false;
 
-        this.IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN=hashMapHHTModuleConfig.get(CODE_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) : false;
+        this.IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN = hashMapHHTModuleConfig.get(CODE_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) != null ? hashMapHHTModuleConfig.get(CODE_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) : false;
 
         this.IS_ENABLE_EDIT_OPTION_FOR_OTHER_USER = hashMapHHTModuleConfig.get(CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER) != null ? hashMapHHTModuleConfig.get(CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER) : false;
         this.GLOBAL_GPS_DISTANCE = hashMapHHTModuleOrder.get(CODE_ENABLE_GLOBAL_GPS_DISTANCE) != null ? hashMapHHTModuleOrder.get(CODE_ENABLE_GLOBAL_GPS_DISTANCE) : 0;
+        this.IS_SURVEY_PDF_SHARE = hashMapHHTModuleConfig.get(CODE_SURVEY_PDF_SHARE) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_PDF_SHARE) : false;
         this.IS_PRE_VISIT = hashMapHHTModuleConfig.get(CODE_PRE_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_PRE_VISIT) : false;
     }
 
