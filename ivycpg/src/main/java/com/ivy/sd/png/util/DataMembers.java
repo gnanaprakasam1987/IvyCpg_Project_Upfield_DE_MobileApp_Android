@@ -1192,6 +1192,8 @@ public class DataMembers {
     static {
         uploadAttendanceColumn.put(tbl_attendancedetail,
                 tbl_attendancedetail_cols);
+        uploadAttendanceColumn.put(tbl_AttendanceTimeDetails,
+                tbl_AttendanceTimeDetails_cols);
     }
 
     public static final HashMap<String, String> uploadSIHTable = new HashMap<>();

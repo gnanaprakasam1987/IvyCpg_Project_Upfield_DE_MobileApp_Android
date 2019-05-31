@@ -2,8 +2,12 @@ package com.ivy.ui.attendance.inout.view;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,12 +27,14 @@ import com.ivy.cpg.locationservice.realtime.RealTimeLocation;
 import com.ivy.cpg.locationservice.realtime.RealTimeLocationTracking;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.nonfield.NonFieldTwoBo;
+import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.location.LocationUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.ui.attendance.inout.TimeTrackingContract;
 import com.ivy.ui.attendance.inout.adapter.TimeTrackListClickListener;
 import com.ivy.ui.attendance.inout.adapter.TimeTrackingAdapter;
@@ -58,6 +64,7 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
     private String screenTitle;
     private InOutReasonDialog dialog;
     InOutReasonDialog.OnMyDialogResult onmydailogresult;
+    private Context mContext;
 
     @Inject
     TimeTrackingContract.TimeTrackingPresenter<TimeTrackingContract.TimeTrackingView> presenter;
@@ -298,6 +305,47 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
             }
         }
 
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+    public Handler getHandler() {
+        return handler;
+    }
+
+    private Handler handler = new Handler() {
+        public void handleMessage(Message msg) {
+
+        }
+    };
+
+    @Override
+    public void uploadAttendanceToServer() {
+        new UploadAttendance().execute();
+    }
+
+    class UploadAttendance extends AsyncTask<Void, Void, Integer> {
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected Integer doInBackground(Void... params) {
+            return UploadHelper.getInstance(mContext).uploadUsingHttp(getHandler(), DataMembers.ATTENDANCE_UPLOAD, mContext);
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            super.onPostExecute(result);
+            if (result == 1) {
+                showAlert("", getResources().getString(R.string.successfully_uploaded));
+            } else if (result == 2 ) {
+                showAlert("", getResources().getString(R.string.upload_failed_please_try_again));
+            }
+        }
     }
 
 
