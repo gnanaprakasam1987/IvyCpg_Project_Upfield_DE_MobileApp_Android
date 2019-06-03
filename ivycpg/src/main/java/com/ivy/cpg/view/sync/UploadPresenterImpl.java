@@ -305,14 +305,19 @@ public class UploadPresenterImpl implements SyncContractor.SyncPresenter {
         return mUploadHelper.getVisitedRetailerIds();
     }
 
+    public void setIsVisitedRetailerList(List<SyncRetailerBO> isVisitedRetailerList){
+        this.isVisitedRetailerList = isVisitedRetailerList;
+    }
+
     @Override
     public void prepareSelectedRetailerIds() {
         mUploadHelper.setVisitedRetailerIds(new StringBuilder());
         for (SyncRetailerBO sbo : isVisitedRetailerList) {
-            if (sbo.isChecked())
-                mUploadHelper.getVisitedRetailerIds().append(
-                        mBModel.QT(sbo.getRetailerId()));
+            //if (sbo.isChecked()) {
+            mUploadHelper.getVisitedRetailerIds().append(
+                    mBModel.QT(sbo.getRetailerId()));
             mUploadHelper.getVisitedRetailerIds().append(",");
+            //}
         }
         if (mUploadHelper.getVisitedRetailerIds() != null && mUploadHelper.getVisitedRetailerIds().toString().length() > 0) {
             mUploadHelper.getVisitedRetailerIds().delete(mUploadHelper.getVisitedRetailerIds().length() - 1, mUploadHelper.getVisitedRetailerIds().length());
