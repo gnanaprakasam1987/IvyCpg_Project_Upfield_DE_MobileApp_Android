@@ -2,7 +2,9 @@ package com.ivy.utils;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.StringDef;
+import android.text.format.Time;
 
+import com.aem.api.CardReader;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -32,7 +34,8 @@ public class DateTimeUtils {
     public static final int DATE_DOB_FORMAT_PLAIN = 10;
     public static final int TIME = 0;
     public static final int DATE = 1;
-    public static String defaultDateFormat = "MM/dd/yyyy";
+    public static final int TIME_HOUR_MINS = 11;
+    public static final String defaultDateFormat = "MM/dd/yyyy";
     private static final String serverDateFormat = "yyyy/MM/dd";
     public static int DATE_TIME_ID = 3;
 
@@ -123,6 +126,9 @@ public class DateTimeUtils {
             return sdf.format(cal.getTime());
         } else if (DATE_DOB_FORMAT_PLAIN == dateFormat) {
             SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);
+            return sdf.format(cal.getTime());
+        } else if (TIME_HOUR_MINS == dateFormat) {
+            SimpleDateFormat sdf = new SimpleDateFormat("HH", Locale.ENGLISH);
             return sdf.format(cal.getTime());
         } else {
             SimpleDateFormat sdf = new SimpleDateFormat("MMddyyyyHHmmss", Locale.ENGLISH);
@@ -396,6 +402,10 @@ public class DateTimeUtils {
         return endCalendar.after(startCalendar);
     }
 
+    public static boolean isPastDate(Calendar endCalendar, Calendar startCalendar) {
+        return endCalendar.before(startCalendar);
+    }
+
     public static Calendar getCalendarOfDate(Date date) {
         final Calendar calendar = Calendar.getInstance(Locale.getDefault());
         calendar.setTime(date);
@@ -446,6 +456,19 @@ public class DateTimeUtils {
         }
     }
 
+    public static Date getDate(String date, String format) {
+        Calendar calendar = Calendar.getInstance();
+        try {
+            Date dateVal = new SimpleDateFormat(format, Locale.US).parse(date);
+            calendar.setTime(dateVal);
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+
+        return calendar.getTime();
+
+    }
+
     /**
      * MDH -> M - represent Month , D - represent Date , H - represent hours and min
      *
@@ -475,4 +498,63 @@ public class DateTimeUtils {
 
     }
 
+    /**
+     * This Method Use to check whether the Time slot is between Two Time
+     *
+     * @param fromTime
+     * @param toTime
+     * @param compareTime
+     * @param isFromTime  - Whether to check with From Time or To Time
+     * @return
+     */
+    public static boolean isBetweenTime(String fromTime, String toTime, String compareTime, boolean isFromTime) {
+
+        try {
+            Date time1 = new SimpleDateFormat("HH:mm", Locale.US).parse(fromTime);
+            Calendar calendar1 = Calendar.getInstance();
+            calendar1.setTime(time1);
+
+            Date time2 = new SimpleDateFormat("HH:mm", Locale.US).parse(toTime);
+            Calendar calendar2 = Calendar.getInstance();
+            calendar2.setTime(time2);
+
+            Date d = new SimpleDateFormat("HH:mm", Locale.US).parse(compareTime);
+            Calendar calendar3 = Calendar.getInstance();
+            calendar3.setTime(d);
+
+            Date x = calendar3.getTime();
+            if (isFromTime) {
+                if (x.equals(calendar1.getTime())
+                        || (x.after(calendar1.getTime()) && x.before(calendar2.getTime()))) {
+                    return true;
+                }
+            } else {
+                if ((x.after(calendar1.getTime()) && x.before(calendar2.getTime()))
+                        || x.equals(calendar2.getTime())) {
+                    return true;
+                }
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    /**
+     * @return true if the supplied when is today else false
+     */
+    public static boolean isToday(long when) {
+        Time time = new Time();
+        time.set(when);
+
+        int thenYear = time.year;
+        int thenMonth = time.month;
+        int thenMonthDay = time.monthDay;
+
+        time.set(System.currentTimeMillis());
+        return (thenYear == time.year)
+                && (thenMonth == time.month)
+                && (thenMonthDay == time.monthDay);
+    }
 }

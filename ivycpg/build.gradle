@@ -177,6 +177,8 @@ android {
                     'src/main/res/layouts/photocapture',
                     'src/main/res/layouts/activation',
                     'src/main/res/layouts/note',
+                    'src/main/res/layouts/offline',
+                    'src/main/res/layouts/retailer',
                     'src/main/res/layouts',
                     'src/main/res'
             ]
@@ -229,6 +231,8 @@ static def getLayoutList(path) {
 dependencies {
 
     implementation project(':ivylibrary')
+
+    implementation project(':calendarlibrary')
 
     //Networking
     implementation 'com.android.volley:volley:1.1.0'
@@ -345,5 +349,6 @@ dependencies {
 
     // Microsoft Azure Storage
     implementation 'com.microsoft.azure.android:azure-storage-android:0.8.0@aar'
+
 }
 apply plugin: 'com.google.gms.google-services'

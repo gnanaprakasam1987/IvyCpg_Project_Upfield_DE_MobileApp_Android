@@ -3,20 +3,26 @@ package com.ivy.sd.png.commons;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -39,6 +45,7 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.FilterFiveFragment;
+import com.ivy.utils.FontUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -429,6 +436,18 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         dialog.show();
     }
 
+    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener,boolean isCancelable) {
+        CommonDialog dialog = new CommonDialog(this, title, msg, getResources().getString(R.string.ok), positiveClickListener);
+        dialog.setCancelable(isCancelable);
+        dialog.show();
+    }
+
+    public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, CommonDialog.negativeOnClickListener negativeOnClickListener) {
+        CommonDialog dialog = new CommonDialog(this, title, msg, getResources().getString(R.string.ok), positiveClickListener, getString(R.string.cancel), negativeOnClickListener);
+        dialog.setCancelable(false);
+        dialog.show();
+    }
+
     public void clearAppUrl() {
         SharedPreferences.Editor editor = PreferenceManager
                 .getDefaultSharedPreferences(this)
@@ -437,5 +456,35 @@ public class IvyBaseActivityNoActionBar extends AppCompatActivity implements
         editor.putString("application", "");
         editor.putString("activationKey", "");
         editor.commit();
+    }
+
+
+    public AlertDialog applyAlertDialogTheme(Context context, AlertDialog.Builder builder) {
+        TypedArray typearr = context.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+        AlertDialog dialog = builder.show();
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+
+        int screenWidth = (int) (metrics.widthPixels * 0.80);
+        dialog.getWindow().setLayout(screenWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        int alertTitleId = context.getResources().getIdentifier("alertTitle", "id", "android");
+        TextView alertTitle = dialog.getWindow().getDecorView().findViewById(alertTitleId);
+        alertTitle.setTextColor(typearr.getColor(R.styleable.MyTextView_primarycolor, 0)); // change title text color
+
+        Button negativeBtn = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        negativeBtn.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
+        negativeBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
+
+        Button postiveBtn = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        postiveBtn.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
+        postiveBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
+
+        // Set title divider color
+        int titleDividerId = context.getResources().getIdentifier("titleDivider", "id", "android");
+        View titleDivider = dialog.findViewById(titleDividerId);
+        if (titleDivider != null)
+            titleDivider.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_primarycolor, 0));
+
+        return dialog;
     }
 }

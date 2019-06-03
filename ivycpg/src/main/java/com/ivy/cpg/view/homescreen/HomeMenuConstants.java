@@ -60,6 +60,7 @@ public class HomeMenuConstants {
     public static final String MENU_SUBD = "MENU_SUBD";
     public static final String MENU_Q_CALL = "MENU_QUICK_CALL";
     public static final String MENU_NOTES_SW = "MENU_NOTES_SW";
+    public static final String MENU_MAP_PLAN = "MENU_MAP_PLAN";
     public static final String TASK_NOTIFICATION = "taskNotificationFlag";
 
 
@@ -106,6 +107,7 @@ public class HomeMenuConstants {
         put(MENU_SUPERVISOR_CALLANALYSIS, R.drawable.ic_new_retailer_icon);
         put(MENU_ROUTE_KPI, R.drawable.ic_vector_dashboard);
         put(MENU_DENOMINATION, R.drawable.ic_vector_dashboard);
+        put(MENU_MAP_PLAN, R.drawable.ic_show_me_map);
         put(MENU_NOTES_SW,R.drawable.task_add);
 
     }};

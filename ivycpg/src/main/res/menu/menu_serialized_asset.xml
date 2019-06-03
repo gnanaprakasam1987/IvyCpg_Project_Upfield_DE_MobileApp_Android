@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ivydist="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/menu_all"
+        android:orderInCategory="100"
+        android:title="ALL"
+        android:visible="false"
+        ivydist:showAsAction="never" />
+    <item
+        android:id="@+id/menu_remarks"
+        android:icon="@drawable/ic_remark"
+        android:orderInCategory="99"
+        android:title="@string/order_remarks"
+        ivydist:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_request"
+        android:icon="@drawable/task_add"
+        android:orderInCategory="96"
+        android:title="@string/asset_request"
+        ivydist:showAsAction="never" />
+    <item
+        android:id="@+id/menu_add"
+        android:icon="@drawable/task_add"
+        android:orderInCategory="97"
+        android:title="Add new posm"
+        ivydist:showAsAction="never" />
+    <item
+        android:id="@+id/menu_remove"
+        android:icon="@drawable/ic_action_content_remove"
+        android:orderInCategory="98"
+        android:title="Remove posm"
+        ivydist:showAsAction="never" />
+    <item
+        android:id="@+id/menu_move"
+        android:icon="@drawable/ic_action_content_remove"
+        android:orderInCategory="98"
+        android:title="Move Asset"
+        ivydist:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_survey"
+        android:icon="@drawable/icon_survey"
+        android:orderInCategory="101"
+        android:title="Survey"
+        android:visible="false"
+        ivydist:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_fivefilter"
+        android:icon="@drawable/icon_menu_filter"
+        android:orderInCategory="95"
+        android:title="@string/fivefilter"
+        android:visible="false"
+        ivydist:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_assetservice"
+        android:icon="@drawable/ic_action_content_remove"
+        android:orderInCategory="98"
+        android:title="Asset Service"
+        ivydist:showAsAction="never" />
+
+    <item
+        android:id="@+id/menu_assetScan"
+        android:icon="@drawable/barcode_scan"
+        android:orderInCategory="98"
+        android:title="Asset Scan"
+        ivydist:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_asset_approval"
+        android:icon="@drawable/ic_thumb_up_white_24dp"
+        android:orderInCategory="97"
+        android:title="Asset Scan"
+        ivydist:showAsAction="always" />
+
+
+
+    <item
+        android:id="@+id/menu_asset_change"
+        android:icon="@drawable/barcode_scan"
+        android:orderInCategory="98"
+        android:title="@string/asset_update_request"
+        ivydist:showAsAction="never" />
+
+
+    <item
+        android:id="@+id/menu_reason"
+        android:icon="@drawable/icon_review_plan"
+        android:orderInCategory="101"
+        android:title="Reason"
+        android:visible="false"
+        ivydist:showAsAction="never" />
+
+</menu>
+

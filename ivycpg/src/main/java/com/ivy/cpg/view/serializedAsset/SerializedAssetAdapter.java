@@ -145,6 +145,8 @@ public class SerializedAssetAdapter extends BaseAdapter {
                     R.layout.row_serialized_asset, parent, false);
             row.setTag(holder);
 
+            holder.assetDetailLL = row
+                    .findViewById(R.id.asset_detail);
             holder.audit = row
                     .findViewById(R.id.btn_audit);
             holder.assetNameTV = row
@@ -184,6 +186,11 @@ public class SerializedAssetAdapter extends BaseAdapter {
 
             if (assetTrackingHelper.SHOW_ASSET_EXECUTED)
                 holder.execQtyLL.setVisibility(View.VISIBLE);
+
+
+            holder.assetDetailLL.setOnClickListener(v ->
+                    mContext.startActivity(new Intent(mContext, SerializedAssetDetailActivity.class)
+                            .putExtra("detailBo", holder.assetBO)));
 
             holder.audit.setOnClickListener(new View.OnClickListener() {
 
@@ -651,6 +658,7 @@ public class SerializedAssetAdapter extends BaseAdapter {
         ImageButton audit;
         CheckBox execQtyRB;
         LinearLayout execQtyLL;
+        LinearLayout assetDetailLL;
     }
 
     private void setPictureToImageView(String imageName, ImageView imageView) {

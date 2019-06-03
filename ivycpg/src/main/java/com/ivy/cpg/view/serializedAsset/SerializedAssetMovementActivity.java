@@ -39,7 +39,7 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        if(getSupportActionBar()!=null) {
+        if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(getResources().getString(R.string.moveAsset));
@@ -60,7 +60,7 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
     protected void onStart() {
         super.onStart();
 
-            updateList();
+        updateList();
 
     }
 
@@ -73,11 +73,10 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
         mAssetTrackingList = assetTrackingHelper.removeMovedAsset(this);
 
 
-        if(mAssetTrackingList != null && mAssetTrackingList.size()>0) {
+        if (mAssetTrackingList != null && mAssetTrackingList.size() > 0) {
             recyclerAdapter = new RecyclerAdapter(mAssetTrackingList);
             recyclerView.setAdapter(recyclerAdapter);
-        }
-        else {
+        } else {
             recyclerView.setAdapter(null);
             Toast.makeText(SerializedAssetMovementActivity.this, getResources().getString(R.string.no_assets_exists),
                     Toast.LENGTH_SHORT).show();
@@ -137,7 +136,7 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
                 serialNo = mBModel.labelsMasterHelper
                         .applyLabels((Object) "asset_serialno");
 
-            serialNo = serialNo +  " : " + holder.assetTrackingBO.getSerialNo();
+            serialNo = serialNo + " : " + holder.assetTrackingBO.getSerialNo();
 
             String strLabel;
             if (assetTrackingHelper.SHOW_ASSET_VENDOR) {
@@ -154,7 +153,7 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
                         .applyLabels((Object) "asset_model") != null)
                     strLabel = mBModel.labelsMasterHelper
                             .applyLabels((Object) "asset_model");
-                serialNo = serialNo + "   " + strLabel  + " : " + holder.assetTrackingBO.getModelName();
+                serialNo = serialNo + "   " + strLabel + " : " + holder.assetTrackingBO.getModelName();
             }
             if (assetTrackingHelper.SHOW_ASSET_TYPE) {
                 strLabel = getResources().getString(R.string.type);
@@ -184,7 +183,9 @@ public class SerializedAssetMovementActivity extends IvyBaseActivityNoActionBar 
                     args.putString("serialNo", holder.assetTrackingBO.getSerialNo());
                     args.putString("assetName", holder.assetTrackingBO.getAssetName());
                     args.putInt("assetId", holder.assetTrackingBO.getAssetID());
-                    args.putInt("referenceId", holder.assetTrackingBO.getReferenceId());
+                    args.putString("referenceId", holder.assetTrackingBO.getReferenceId());
+                    args.putDouble("rentalPrice", holder.assetTrackingBO.getRentalPrice());
+                    args.putString("effToDate", holder.assetTrackingBO.getEffectiveToDate());
                     movementAssetDialog.setArguments(args);
                     movementAssetDialog.show(getSupportFragmentManager(), "Asset");
                 }

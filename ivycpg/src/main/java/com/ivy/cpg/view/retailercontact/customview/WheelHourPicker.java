@@ -87,18 +87,27 @@ public class WheelHourPicker extends WheelPicker<String> {
             instance.setTime((Date) value);
             valueItem = instance.get(Calendar.HOUR_OF_DAY);
         }
+
         return String.format(getCurrentLocale(), FORMAT, valueItem);
     }
 
     @Override
     public void setDefault(String defaultValue) {
         try {
-            int hour = Integer.parseInt(defaultValue);
-            if (isAmPm && hour >= MAX_HOUR_AM_PM) {
-                hour -= MAX_HOUR_AM_PM;
-            }
 
-            super.setDefault(getFormattedValue(hour));
+            Object hour;
+            if (!defaultValue.contains(":")) {
+                int hourVal = Integer.parseInt(defaultValue);
+                if (isAmPm && (int)hourVal >= MAX_HOUR_AM_PM) {
+                    hourVal -= MAX_HOUR_AM_PM;
+                }
+
+                hour = hourVal;
+                super.setDefault(getFormattedValue(hour));
+            }
+            else {
+                super.setDefault(defaultValue);
+            }
         } catch (Exception e){
             e.printStackTrace();
         }

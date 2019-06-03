@@ -119,6 +119,17 @@ public class DBUtil extends SQLiteOpenHelper {
             return db_encrypted.rawQuery(sql, null);
     }
 
+    public Cursor selectSQL(String sql,String[] args) {
+        if (BuildConfig.DEBUG) {
+            Log.d(this.getClass().getName(), sql+args);
+        }
+
+        if (!isEncrypted)
+            return db.rawQuery(sql, args);
+        else
+            return db_encrypted.rawQuery(sql, args);
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int arg1, int arg2) {
         // TODO Auto-generated method stub

@@ -675,7 +675,8 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         Calendar cal = Calendar.getInstance();
         cal.set(day, month, year);
 
-        picker = new DatePickerDialog(getContext(), R.style.SellerDatePickerStyle, mDateSetListener, day, month, year);
+        picker = new DatePickerDialog(getContext(), R.style.SellerDatePickerStyle, mDateSetListener,
+                day, month, year);
         picker.getDatePicker().setMaxDate(new Date().getTime());
         picker.updateDate(year, month - 1, day);
 

@@ -1,0 +1,370 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.ivy.maplib.MapWrapperLayout
+        android:id="@+id/mapContainerLayout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/storeFilterSwitch" />
+
+    <android.support.v7.widget.SwitchCompat
+        android:id="@+id/storeFilterSwitch"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue_bg1"
+        android:drawablePadding="@dimen/_5sdp"
+        android:paddingBottom="@dimen/_10sdp"
+        android:paddingLeft="@dimen/_10sdp"
+        android:paddingRight="@dimen/_10sdp"
+        android:paddingTop="@dimen/_10sdp"
+        android:text="@string/all_retailer"
+        android:textColor="@color/btn_round_text_color"
+        android:textOff="@string/all_retailer"
+        android:textOn="@string/day_plan"
+        android:textSize="@dimen/_12sdp"
+        android:thumb="@drawable/customswitchselector"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:track="@drawable/my_custom_track" />
+
+    <android.support.v7.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:elevation="5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/storeFilterSwitch">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:background="@color/white"
+            android:padding="@dimen/dimen_5dp">
+
+            <ImageView
+                android:id="@+id/retailer_legend_info_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:src="@drawable/map_info_legends"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_legend_planned"
+                style="@style/TextViewCaptionNormal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_marginStart="@dimen/dimen_5dp"
+                android:drawableLeft="@drawable/legend_visit_planned"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/legend_visit_planned"
+                android:padding="@dimen/_8sdp"
+                android:text="@string/text_planned"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/retailer_legend_info_img" />
+
+
+            <TextView
+                android:id="@+id/tv_legend_completed"
+                style="@style/TextViewCaptionNormal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_marginStart="@dimen/dimen_5dp"
+                android:layout_marginTop="@dimen/dimens_4dp"
+                android:drawableLeft="@drawable/legend_visit_completed"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/legend_visit_completed"
+                android:padding="@dimen/_8sdp"
+                android:text="@string/visit_completed"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_legend_planned" />
+
+            <TextView
+                android:id="@+id/tv_legend_unplanned"
+                style="@style/TextViewCaptionNormal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_marginStart="@dimen/dimen_5dp"
+                android:layout_marginTop="@dimen/dimens_4dp"
+                android:drawableLeft="@drawable/legend_visit_unplanned"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/legend_visit_unplanned"
+                android:padding="@dimen/_8sdp"
+                android:text="@string/visit_unplanned"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_legend_completed" />
+
+
+            <TextView
+                android:id="@+id/tv_legend_non_productive"
+                style="@style/TextViewCaptionNormal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_marginStart="@dimen/dimen_5dp"
+                android:layout_marginTop="@dimen/dimens_4dp"
+                android:drawableLeft="@drawable/legend_visit_non_productive"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/legend_visit_non_productive"
+                android:padding="@dimen/_8sdp"
+                android:text="@string/non_productive"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_legend_unplanned" />
+
+
+            <TextView
+                android:id="@+id/tv_legend_cancelled"
+                style="@style/TextViewCaptionNormal"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                android:layout_marginStart="@dimen/dimen_5dp"
+                android:layout_marginTop="@dimen/dimens_4dp"
+                android:drawableLeft="@drawable/legend_visit_cancelled"
+                android:drawablePadding="10dp"
+                android:drawableStart="@drawable/legend_visit_cancelled"
+                android:padding="@dimen/_8sdp"
+                android:text="@string/cancelled"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/tv_legend_non_productive" />
+
+            <android.support.constraint.Group
+                android:id="@+id/legendGroup"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="tv_legend_planned,tv_legend_completed,tv_legend_unplanned,tv_legend_non_productive,tv_legend_cancelled" />
+
+        </android.support.constraint.ConstraintLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/fab4_bottom_margin"
+        android:layout_marginEnd="@dimen/profile_23dp"
+        android:layout_marginRight="@dimen/profile_23dp"
+        android:clickable="true"
+        android:src="@drawable/ic_gps"
+        android:tint="@color/light_gray"
+        android:visibility="gone"
+        app:backgroundTint="@color/white"
+        app:fabSize="mini"
+        app:pressedTranslationZ="12dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/fab3_bottom_margin"
+        android:layout_marginEnd="@dimen/profile_23dp"
+        android:layout_marginRight="@dimen/profile_23dp"
+        android:clickable="true"
+        android:src="@drawable/map_marker_radius"
+        android:tint="@color/light_gray"
+        android:visibility="gone"
+        app:backgroundTint="@color/white"
+        app:fabSize="mini"
+        app:pressedTranslationZ="12dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/fab2_bottom_margin"
+        android:layout_marginEnd="@dimen/profile_23dp"
+        android:layout_marginRight="@dimen/profile_23dp"
+        android:clickable="true"
+        android:src="@drawable/ic_my_location"
+        android:tint="@color/light_gray"
+        android:visibility="gone"
+        app:backgroundTint="@color/white"
+        app:fabSize="mini"
+        app:pressedTranslationZ="12dp" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/_80sdp"
+        android:layout_marginEnd="@dimen/sos_dialog_margin"
+        android:layout_marginRight="@dimen/sos_dialog_margin"
+        android:clickable="true"
+        android:src="@drawable/ic_navigation"
+        android:tint="@color/green_productivity"
+        android:visibility="gone"
+        app:backgroundTint="@color/FullBlack"
+        app:fabSize="normal"
+        app:layout_constraintBottom_toTopOf="@+id/bottom_view"
+        app:layout_constraintRight_toRightOf="parent"
+        app:pressedTranslationZ="12dp" />
+
+    <LinearLayout
+        android:id="@+id/bottom_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="?attr/colorPrimaryDark"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/profile_history_20dp"
+            android:layout_marginStart="@dimen/profile_history_20dp"
+            android:layout_marginTop="@dimen/profile_history_20dp"
+            android:orientation="horizontal">
+
+            <ImageButton
+                android:id="@+id/car_direction"
+                android:layout_width="@dimen/retailer_map_button_width"
+                android:layout_height="@dimen/retailer_map_button_hegight"
+                android:layout_marginEnd="@dimen/profile_history_10dp"
+                android:layout_marginRight="@dimen/profile_history_10dp"
+                android:background="@drawable/map_button_round_corner_white"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_directions_car"
+                android:tint="@color/highlighter" />
+
+            <ImageButton
+                android:id="@+id/walk_direction"
+                android:layout_width="@dimen/retailer_map_button_width"
+                android:layout_height="@dimen/retailer_map_button_hegight"
+                android:layout_marginLeft="@dimen/profile_history_10dp"
+                android:layout_marginStart="@dimen/profile_history_10dp"
+                android:background="@drawable/button_round_corner_transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_directions_walk"
+                android:tint="@color/divider_view_color" />
+
+            <ImageButton
+                android:id="@+id/clear_route_id"
+                android:layout_width="@dimen/retailer_map_button_width"
+                android:layout_height="@dimen/retailer_map_button_hegight"
+                android:layout_marginLeft="@dimen/profile_history_25dp"
+                android:layout_marginStart="@dimen/profile_history_25dp"
+                android:background="@drawable/button_round_corner_transparent"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_clear_route"
+                android:tint="@color/white" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/profile_22dp"
+            android:layout_marginLeft="@dimen/profile_22dp"
+            android:layout_marginStart="@dimen/profile_22dp"
+            android:layout_marginTop="@dimen/profile_history_10dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_margin="@dimen/plano_adherence_bottom"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/from_txtid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|start"
+                    android:text="@string/from"
+                    android:textColor="@color/divider_view_color"
+                    android:textSize="@dimen/text_size_caption" />
+
+                <TextView
+                    android:id="@+id/from_txt_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|start"
+                    android:layout_marginTop="@dimen/retailer_5dp"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_caption" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/plano_adherence_bottom"
+                android:layout_marginLeft="@dimen/profile_history_20dp"
+                android:layout_marginStart="@dimen/profile_history_20dp"
+                android:layout_marginTop="@dimen/plano_adherence_bottom"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/to_txtid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="top|start"
+                    android:text="@string/to"
+                    android:textColor="@color/divider_view_color"
+                    android:textSize="@dimen/text_size_caption" />
+
+                <TextView
+                    android:id="@+id/to_txt_value"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|start"
+                    android:layout_marginTop="@dimen/retailer_5dp"
+                    android:text=""
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_caption" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/hrs_txt_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|bottom"
+                android:layout_margin="@dimen/plano_adherence_bottom"
+                android:layout_marginEnd="@dimen/profile_22dp"
+                android:layout_marginLeft="@dimen/profile_history_10dp"
+                android:layout_marginRight="@dimen/profile_22dp"
+                android:layout_marginStart="@dimen/profile_history_10dp"
+                android:layout_marginTop="@dimen/hrs_text_margin_top"
+                android:gravity="end|bottom"
+                android:text="1hr 39min (2.3 m)"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_primary"
+                android:visibility="gone" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

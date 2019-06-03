@@ -3,13 +3,16 @@ package com.ivy.core.base.view;
 import android.Manifest;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.LayoutRes;
@@ -22,10 +25,13 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -45,6 +51,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.FontUtils;
 import com.ivy.utils.NetworkUtils;
 
 import java.util.ArrayList;
@@ -692,6 +699,35 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
             default:
                 return styleId;
         }
+    }
+
+    public AlertDialog applyAlertDialogTheme(Context context, AlertDialog.Builder builder) {
+        TypedArray typearr = context.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+        AlertDialog dialog = builder.show();
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+
+        int screenWidth = (int) (metrics.widthPixels * 0.80);
+        dialog.getWindow().setLayout(screenWidth, LinearLayout.LayoutParams.WRAP_CONTENT);
+
+        int alertTitleId = context.getResources().getIdentifier("alertTitle", "id", "android");
+        TextView alertTitle = dialog.getWindow().getDecorView().findViewById(alertTitleId);
+        alertTitle.setTextColor(typearr.getColor(R.styleable.MyTextView_primarycolor, 0)); // change title text color
+
+        Button negativeBtn = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+        negativeBtn.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
+        negativeBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
+
+        Button postiveBtn = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+        postiveBtn.setTypeface(FontUtils.getFontRoboto(context, FontUtils.FontType.MEDIUM));
+        postiveBtn.setTextColor(typearr.getColor(R.styleable.MyTextView_accentcolor, 0)); // change button text color
+
+        // Set title divider color
+        int titleDividerId = context.getResources().getIdentifier("titleDivider", "id", "android");
+        View titleDivider = dialog.findViewById(titleDividerId);
+        if (titleDivider != null)
+            titleDivider.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_primarycolor, 0));
+
+        return dialog;
     }
 }
 
