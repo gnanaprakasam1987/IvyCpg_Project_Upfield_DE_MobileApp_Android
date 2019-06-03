@@ -3,6 +3,8 @@ package com.ivy.ui.AssetServiceRequest;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -11,6 +13,8 @@ import android.widget.Toast;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.cpg.view.serializedAsset.SerializedAssetBO;
+import com.ivy.lib.ImageAdapterListener;
+import com.ivy.lib.adapter.GridImageViewAdapter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -20,6 +24,7 @@ import com.ivy.ui.AssetServiceRequest.di.DaggerAssetServiceRequestComponent;
 import com.ivy.ui.notes.NoteConstant;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -28,13 +33,19 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 
-public class AssetServiceRequestViewActivity extends BaseActivity implements AssetServiceRequestContractor.AssetServiceFullDetailView{
+public class AssetServiceRequestViewActivity extends BaseActivity implements AssetServiceRequestContractor.AssetServiceFullDetailView,ImageAdapterListener {
 
     @Inject
     AssetServiceRequestContractor.Presenter<AssetServiceRequestContractor.AssetServiceView> presenter;
 
     @Inject
     AppDataProvider appDataProvider;
+
+    @BindView(R.id.recylerView_photo)
+    RecyclerView recyclerView;
+
+    GridImageViewAdapter adapter;
+    ArrayList<String> imageNameList;
 
     String requestId;
     boolean isFromReport;
@@ -68,6 +79,12 @@ public class AssetServiceRequestViewActivity extends BaseActivity implements Ass
         textview_serial_num.setText(assetBO.getSerialNo());
         textview_description.setText(assetBO.getIssueDescription());
 
+        imageNameList=new ArrayList<>();
+        imageNameList.add(assetBO.getImageName());
+
+        adapter=new GridImageViewAdapter(this,imageNameList,FileUtils.photoFolderPath+"/",this);
+        recyclerView.setAdapter(adapter);
+
     }
 
     @Override
@@ -99,6 +116,10 @@ public class AssetServiceRequestViewActivity extends BaseActivity implements Ass
             getSupportActionBar().setDisplayShowTitleEnabled(false);
             setScreenTitle(getResources().getString(R.string.service_request_details));
         }
+
+        LinearLayoutManager layout = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,
+                false);
+        recyclerView.setLayoutManager(layout);
     }
 
     @Override
@@ -120,5 +141,15 @@ public class AssetServiceRequestViewActivity extends BaseActivity implements Ass
             overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onTakePhoto() {
+
+    }
+
+    @Override
+    public void deletePhoto(String fileName, int position) {
+
     }
 }
