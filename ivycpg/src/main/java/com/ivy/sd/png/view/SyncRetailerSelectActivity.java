@@ -3,6 +3,7 @@ package com.ivy.sd.png.view;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -20,6 +21,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -169,8 +171,13 @@ public class SyncRetailerSelectActivity extends IvyBaseActivityNoActionBar imple
         // TODO Auto-generated method stub
         if (v.getId() == R.id.dialog_sync_retailer_select_save) {
             //syncRetailerDismissListener.onDismiss(this);
-
-            setResult(Activity.RESULT_OK);
+            Intent resultIntent = new Intent();
+            Bundle b = new Bundle();
+            ArrayList<SyncRetailerBO> visitedRetailerList = new ArrayList();
+            visitedRetailerList.addAll(isVisitedRetailerList);
+            b.putParcelableArrayList("VisitedList", visitedRetailerList);
+            resultIntent.putExtras(b);
+            setResult(Activity.RESULT_OK, resultIntent);
             finish();
 
 

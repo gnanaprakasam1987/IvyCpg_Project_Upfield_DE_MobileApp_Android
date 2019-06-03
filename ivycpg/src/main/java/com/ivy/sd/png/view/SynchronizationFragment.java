@@ -1101,6 +1101,8 @@ public class SynchronizationFragment extends IvyBaseFragment
 
             case 1:
                 if (resultCode == Activity.RESULT_OK) {
+                    Bundle returnValue = data.getExtras();
+                    presenter.setIsVisitedRetailerList(returnValue.getParcelableArrayList("VisitedList"));
                     presenter.prepareSelectedRetailerIds();
                     if (presenter.getVisitedRetailerId() != null
                             && presenter.getVisitedRetailerId().toString().length() > 0) {
@@ -2536,12 +2538,25 @@ public class SynchronizationFragment extends IvyBaseFragment
 
     @Override
     public void showRetailerSelectionScreen(List<SyncRetailerBO> isVisitedRetailerList) {
-        Intent intent = new Intent(getActivity(), SyncRetailerSelectActivity.class);
-        SyncVisitedRetailer catObj = new SyncVisitedRetailer(isVisitedRetailerList);
-        Bundle bun = new Bundle();
-        bun.putParcelable("list", catObj);
-        intent.putExtras(bun);
-        startActivityForResult(intent, 1);
+//        Intent intent = new Intent(getActivity(), SyncRetailerSelectActivity.class);
+//        SyncVisitedRetailer catObj = new SyncVisitedRetailer(isVisitedRetailerList);
+//        Bundle bun = new Bundle();
+//        bun.putParcelable("list", catObj);
+//        intent.putExtras(bun);
+//        startActivityForResult(intent, 1);
+
+        presenter.prepareSelectedRetailerIds();
+        if (presenter.getVisitedRetailerId() != null
+                && presenter.getVisitedRetailerId().toString().length() > 0) {
+            isClicked = false;
+            presenter.upload();
+        } else {
+            bmodel.showAlert(
+                    getResources()
+                            .getString(R.string.no_unsubmitted_orders), 0);
+            isClicked = false;
+            //dialog.dismiss();
+        }
     }
 
     @Override
