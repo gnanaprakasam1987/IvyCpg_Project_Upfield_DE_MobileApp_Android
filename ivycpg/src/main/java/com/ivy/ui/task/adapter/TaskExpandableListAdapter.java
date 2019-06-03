@@ -44,7 +44,10 @@ public class TaskExpandableListAdapter extends BaseExpandableListAdapter {
     @Override
     public int getChildrenCount(int groupPosition) {
 
-        return taskListHashMap.get(taskRetailerListBo.get(groupPosition).getRetailerId()).size();
+        if (taskListHashMap != null)
+            return taskListHashMap.get(taskRetailerListBo.get(groupPosition).getRetailerId()).size();
+        else
+            return 0;
     }
 
     @Override

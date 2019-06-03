@@ -263,7 +263,7 @@
                 android:layout_height="@dimen/list_item_date_picker_height"
                 android:layout_gravity="center_vertical"
                 android:text="@string/link_user"
-                app:layout_constraintBottom_toTopOf="@+id/guideline2"
+                app:layout_constraintBottom_toTopOf="@+id/barrier"
                 app:layout_constraintRight_toLeftOf="@+id/guideline1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/peer_user" />
@@ -276,7 +276,7 @@
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
                 android:spinnerMode="dialog"
-                app:layout_constraintBottom_toTopOf="@+id/guideline2"
+                app:layout_constraintBottom_toTopOf="@+id/barrier"
                 app:layout_constraintLeft_toRightOf="@+id/guideline1"
                 app:layout_constraintTop_toBottomOf="@+id/spinner_peer" />
 
@@ -295,12 +295,7 @@
                 android:orientation="vertical"
                 app:layout_constraintGuide_percent="0.35" />
 
-            <android.support.constraint.Guideline
-                android:id="@+id/guideline2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.50" />
+
 
 
             <android.support.v7.widget.RecyclerView
@@ -313,7 +308,7 @@
                 app:layout_constraintBottom_toTopOf="@+id/task_desc_tv"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/guideline2" />
+                app:layout_constraintTop_toBottomOf="@+id/barrier" />
 
 
             <TextView
@@ -348,6 +343,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/task_desc_tv"
                 tools:ignore="Autofill" />
 
+
+            <android.support.constraint.Barrier
+                android:id="@+id/barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="link_group,task_img_recycler_view"/>
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 

@@ -135,9 +135,6 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @BindView(R.id.toolbar)
     Toolbar toolbar;
 
-    @BindView(R.id.applicable_tv)
-    TextView applicableTV;
-
     @BindView(R.id.task_img_recycler_view)
     RecyclerView imgListRecyclerView;
 
@@ -215,7 +212,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @Override
     protected void setUpViews() {
         setUnBinder(ButterKnife.bind(this));
-        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         setUpToolBar();
         setUpRecyclerView();
         setUpRetailerSelection();
@@ -248,7 +245,6 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     private void handleViewVisibility(int visibilityState) {
         //  radioGroup.setVisibility(visibilityState);
         parentSpinner.setVisibility(visibilityState);
-        applicableTV.setVisibility(visibilityState);
         mode = "retailer";
     }
 
@@ -401,9 +397,11 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         switch (radioBtn.getId()) {
 
             case R.id.seller_selection:
+                retailerSelectionRb.setChecked(false);
                 handleSellerSelectionVisibility();
                 break;
             case R.id.retailer_selection:
+                sellerSelectionRb.setChecked(false);
                 handleRetSelectionVisibility();
                 break;
         }
@@ -469,30 +467,35 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     private void hideSpinnerVisibility(int visibility) {
         if (parentSpinner.getVisibility() == View.VISIBLE) {
+            parenUserRBtn.setChecked(false);
             parentSpinner.setVisibility(visibility);
             if (!parentUserMasterArrayAdapter.isEmpty())
                 parentSpinner.setSelection(0);
         }
 
         if (childSpinner.getVisibility() == View.VISIBLE) {
+            childUserRb.setChecked(false);
             childSpinner.setVisibility(visibility);
             if (!childUserMasterArrayAdapter.isEmpty())
                 childSpinner.setSelection(0);
         }
 
         if (peerSpinner.getVisibility() == View.VISIBLE) {
+            peerUserRb.setChecked(false);
             peerSpinner.setVisibility(visibility);
             if (!childUserMasterArrayAdapter.isEmpty())
                 childSpinner.setSelection(0);
         }
 
         if (linkSpinner.getVisibility() == View.VISIBLE) {
+            linkUserRb.setChecked(false);
             linkSpinner.setVisibility(visibility);
             if (!linkUserMasterArrayAdapter.isEmpty())
                 linkSpinner.setSelection(0);
         }
 
         if (retSelectionAutoCompTxt.getVisibility() == View.VISIBLE) {
+            retailerSelectionRb.setChecked(false);
             retSelectionAutoCompTxt.setVisibility(visibility);
             if (!retailerMasterArrayAdapter.isEmpty())
                 retSelectionAutoCompTxt.setSelection(0);

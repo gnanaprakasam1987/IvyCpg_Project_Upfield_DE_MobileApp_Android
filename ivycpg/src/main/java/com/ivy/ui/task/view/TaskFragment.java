@@ -1,7 +1,5 @@
 package com.ivy.ui.task.view;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -16,16 +15,13 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
-import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
@@ -66,6 +62,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     private String menuCode;
     private TaskConstant.SOURCE source;
     private TaskViewListener taskViewListener;
+    private FloatingActionButton taskCreationFAB;
 
     private Context context;
 
@@ -96,6 +93,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
     @Override
     public void init(View view) {
+        taskCreationFAB = view.findViewById(R.id.fab_create_task);
         taskBgView = view.findViewById(R.id.task_bg_view);
         tabLayout = view.findViewById(R.id.tabs);
         tabLayout.addOnTabSelectedListener(this);
@@ -110,6 +108,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         view.findViewById(R.id.task_bg_view).setOnClickListener(v -> hideBottomSheet());
 
         setUpBottomSheet(view);
+
     }
 
     @Override
@@ -155,7 +154,26 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         }
 
         addTabs();
+        if (!taskPresenter.isNewTask())
+            taskCreationFAB.hide();
+        else {
+            taskCreationFAB.setOnClickListener(v -> {
+                if (!isPreVisit)
+                    goToNewTaskActivity();
+            });
+        }
 
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0 && taskCreationFAB.getVisibility() == View.VISIBLE) {
+                    taskCreationFAB.hide();
+                } else if (dy < 0 && taskCreationFAB.getVisibility() != View.VISIBLE) {
+                    taskCreationFAB.show();
+                }
+            }
+        });
 
     }
 
@@ -194,11 +212,14 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
                         }
                         break;
                     case BottomSheetBehavior.STATE_DRAGGING:
+                        taskCreationFAB.animate().scaleX(0).scaleY(0).setDuration(300).start();
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
+                        taskCreationFAB.animate().scaleX(0).scaleY(0).setDuration(300).start();
                         break;
                     case BottomSheetBehavior.STATE_HIDDEN:
                         taskBgView.setVisibility(View.GONE);
+                        taskCreationFAB.animate().scaleX(1).scaleY(1).setDuration(300).start();
                         break;
                     case BottomSheetBehavior.STATE_SETTLING:
                         break;
@@ -273,7 +294,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         if (i != null) {
 
             if (isPreVisit)
-                i.putExtra("PreVisit",true);
+                i.putExtra("PreVisit", true);
 
             i.putExtra(TaskConstant.RETAILER_WISE_TASK, (source == TaskConstant.SOURCE.RETAILER));
             i.putExtra(TaskConstant.TASK_OBJECT, taskBO);
@@ -378,7 +399,6 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     }
 
 
-
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
@@ -449,8 +469,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         menu.findItem(R.id.menu_notification).setVisible(true);
         menu.findItem(R.id.menu_save).setVisible(false);
         menu.findItem(R.id.menu_sort).setVisible(true);
-        if (!taskPresenter.isNewTask())
-            menu.findItem(R.id.menu_new_task).setVisible(false);
+        menu.findItem(R.id.menu_new_task).setVisible(false);
 
         if (source == TaskConstant.SOURCE.RETAILER)//this is applicable for store wise task
             menu.findItem(R.id.menu_reason).setVisible(taskPresenter.isNoTaskReason());
@@ -487,7 +506,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
 
         if (isPreVisit)
-            intent.putExtra("PreVisit",true);
+            intent.putExtra("PreVisit", true);
 
         if (source == TaskConstant.SOURCE.RETAILER) {
             if (!isPreVisit)
@@ -520,7 +539,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
                 Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
 
                 if (isPreVisit)
-                    intent.putExtra("PreVisit",true);
+                    intent.putExtra("PreVisit", true);
 
                 if (source == TaskConstant.SOURCE.RETAILER) {
                     if (!isPreVisit)

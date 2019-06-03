@@ -208,6 +208,11 @@ public class UserDataManagerImpl implements UserDataManager {
         });
     }
 
+    /**
+     *  * Method to use download joinCall users list from usermaster where isDeviceuser = 0 and relationShip = PARENT
+     *  * Set the joint call users list inside UserMasterBO
+     * @return joinCallUserList
+     */
     @Override
     public Completable fetchJoinCallDetails() {
         return Completable.fromCallable(new Callable() {
@@ -223,7 +228,7 @@ public class UserDataManagerImpl implements UserDataManager {
                     if (configurationMasterHelper.userLevel != null && configurationMasterHelper.userLevel.length() > 0)
                         sb.append("userLevel in (").append(configurationMasterHelper.userLevel).append(")");
                     else
-                        sb.append("relationship !='CHILD'");
+                        sb.append("relationship ='PARENT'");
 
                     Cursor c = mDbUtil.selectSQL(sb.toString());
                     if (c != null) {

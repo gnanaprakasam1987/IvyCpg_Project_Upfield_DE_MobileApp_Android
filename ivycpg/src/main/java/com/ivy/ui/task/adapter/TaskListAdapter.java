@@ -96,7 +96,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
 
         int daysCount = DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                 taskBo.getTaskDueDate(), "yyyy/MM/dd");
-        if (daysCount <= 15) {
+        if (daysCount > 0) {
             holder.dueDaysTv.setVisibility(View.VISIBLE);
             holder.dueDaysTv.setText(String.format(mContext.getString(R.string.due_in_next_days), daysCount));
         } else {

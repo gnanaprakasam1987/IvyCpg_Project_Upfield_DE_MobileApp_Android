@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    >
 
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -68,6 +70,7 @@
 
     </RelativeLayout>
 
+
     <View
         android:id="@+id/task_bg_view"
         android:layout_width="match_parent"
@@ -78,5 +81,21 @@
         android:visibility="gone" />
 
     <include layout="@layout/sort_by_bottom_sheet" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_create_task"
+        style="?attr/fabButtonStyle_Configured"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/floating_btn_elevation"
+        android:src="@drawable/task_add"
+        android:visibility="visible"
+        app:backgroundTint="?attr/accentcolor"
+        app:borderWidth="0dp"
+        app:useCompatPadding="true"
+        app:layout_anchor="@+id/bottomSheetLayout"
+        app:layout_anchorGravity="top|end"
+        tools:ignore="UnusedAttribute" />
+
 </android.support.design.widget.CoordinatorLayout>
 

@@ -272,36 +272,10 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                             if (isRetailerWise) {
                                 if (String.valueOf(dataBO.getRid()).equals(retailerID)) {
                                     taskPreparedList.add(dataBO);
-                                  /*  if (taskType == 1) { // server
-                                        if (dataBO.getUsercreated()
-                                                .equals("0")) {
-                                            taskPreparedList.add(dataBO);
-                                        }
-                                    } else if (taskType == 2) { // user
-                                        if (dataBO.getUsercreated()
-                                                .equals("1")) {
-                                            taskPreparedList.add(dataBO);
-                                        }
-                                    } else {
-                                        taskPreparedList.add(dataBO);
-                                    }*/
                                 } else if (isSurveywise) {
                                     for (String chId : channelIds) {
                                         if (chId.equals(String.valueOf(dataBO.getChannelId()))) {
                                             taskPreparedList.add(dataBO);
-                                         /*   if (taskType == 1) { // server
-                                                if (dataBO.getUsercreated()
-                                                        .equals("0")) {
-                                                    taskPreparedList.add(dataBO);
-                                                }
-                                            } else if (taskType == 2) { // user
-                                                if (dataBO.getUsercreated()
-                                                        .equals("1")) {
-                                                    taskPreparedList.add(dataBO);
-                                                }
-                                            } else {
-                                                taskPreparedList.add(dataBO);
-                                            }*/
                                         }
                                     }
                                 }
@@ -311,20 +285,6 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                                         && (dataBO.getUserId() == getUserID()
                                         || dataBO.getUserId() == 0)) {
                                     taskPreparedList.add(dataBO);
-                                  /*  if (taskType == 1) { // server
-                                        if (dataBO.getUsercreated().toUpperCase()
-                                                .equals("0")) {
-                                            taskPreparedList.add(dataBO);
-                                        }
-                                    } else if (taskType == 2) { // user
-                                        if (dataBO.getUsercreated().toUpperCase()
-                                                .equals("1")) {
-                                            taskPreparedList.add(dataBO);
-                                        }
-
-                                    } else {
-                                        taskPreparedList.add(dataBO);
-                                    }*/
                                 }
                             }
                         }
@@ -493,7 +453,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
 
     @Override
     public int getRetailerID() {
-        return appDataProvider.getRetailMaster().getRetailerID() == null ? 0 : SDUtil.convertToInt(appDataProvider.getRetailMaster().getRetailerID());
+        return appDataProvider.getRetailMaster() == null ? 0 : SDUtil.convertToInt(appDataProvider.getRetailMaster().getRetailerID());
     }
 
 
