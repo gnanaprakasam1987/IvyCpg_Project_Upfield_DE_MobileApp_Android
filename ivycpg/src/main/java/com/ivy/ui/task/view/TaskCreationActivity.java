@@ -3,7 +3,9 @@ package com.ivy.ui.task.view;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.constraint.Group;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.AppCompatAutoCompleteTextView;
 import android.support.v7.widget.AppCompatSpinner;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,12 +13,13 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -25,7 +28,6 @@ import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -47,6 +49,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -82,7 +85,34 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     EditText taskTitle;
 
     @BindView(R.id.spinner_seller)
-    Spinner spinnerSelection;
+    Spinner parentSpinner;
+
+    @BindView(R.id.auto_complete_txt_retailer)
+    AppCompatAutoCompleteTextView retSelectionAutoCompTxt;
+
+    @BindView(R.id.spinner_child)
+    Spinner childSpinner;
+
+    @BindView(R.id.spinner_peer)
+    Spinner peerSpinner;
+
+    @BindView(R.id.spinner_link)
+    Spinner linkSpinner;
+
+    @BindView(R.id.seller_selection)
+    RadioButton sellerSelectionRb;
+
+    @BindView(R.id.retailer_selection)
+    RadioButton retailerSelectionRb;
+
+    @BindView(R.id.self_user)
+    RadioButton selfUserRb;
+
+    @BindView(R.id.peer_user)
+    RadioButton peerUserRb;
+
+    @BindView(R.id.link_user)
+    RadioButton linkUserRb;
 
     @BindView(R.id.task_category_spinner)
     AppCompatSpinner categorySpinner;
@@ -90,16 +120,13 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @BindView(R.id.task_category_tv)
     TextView productLevelTV;
 
-    @BindView(R.id.rg_selection)
-    RadioGroup radioGroup;
+    @BindView(R.id.parent_user)
+    RadioButton parenUserRBtn;
 
-    @BindView(R.id.seller)
-    RadioButton seller_rb;
+    @BindView(R.id.child_user)
+    RadioButton childUserRb;
 
-    @BindView(R.id.Channelwise)
-    RadioButton channelwise_rb;
-
-    @BindView(R.id.Retailerwise)
+    @BindView(R.id.retailer_wise)
     RadioButton retailerwise_rb;
 
     @BindView(R.id.saveTask)
@@ -117,13 +144,31 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @BindView(R.id.task_due_date_btn)
     Button dueDateBtn;
 
-    private ArrayAdapter<UserMasterBO> userMasterArrayAdapter;
+    @BindView(R.id.retailer_group)
+    Group retailerGroup;
 
-    private ArrayAdapter<ChannelBO> channelArrayAdapter;
+    @BindView(R.id.peer_group)
+    Group peerGroup;
+
+    @BindView(R.id.link_group)
+    Group linkGroup;
+
+    @BindView(R.id.product_level_group)
+    Group productLevelGroup;
+
+    private ArrayAdapter<UserMasterBO> parentUserMasterArrayAdapter;
+
+    private ArrayAdapter<UserMasterBO> childUserMasterArrayAdapter;
+
+    private ArrayAdapter<UserMasterBO> peerUserMasterArrayAdapter;
+
+    private ArrayAdapter<UserMasterBO> linkUserMasterArrayAdapter;
 
     private ArrayAdapter<RetailerMasterBO> retailerMasterArrayAdapter;
 
     private ArrayAdapter<TaskDataBO> taskCategoryArrayAdapter;
+
+    private HashMap<String, ArrayList<UserMasterBO>> linkUserListHashMap = new HashMap<>();
 
     private ArrayList<String> capturedImgList = new ArrayList<>();
 
@@ -173,18 +218,20 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         setUpToolBar();
         setUpRecyclerView();
+        setUpRetailerSelection();
+        setUpAdapter();
         TaskConstant.TASK_SERVER_IMG_PATH = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
                 + taskPresenter.getUserID()
                 + DataMembers.DIGITAL_CONTENT + "/"
                 + DataMembers.TASK_DIGITAL_CONTENT;
 
         //allow only create task only for retailer if not from seller Task
+        taskPresenter.fetchData(taskPresenter.getRetailerID());
+
         if (isRetailerWiseTask) {
-            handleViewVisibility(View.GONE);
+            handleViewVisibility(View.VISIBLE);
         } else {
-            setUpAdapter();
-            taskPresenter.fetchData();
-            setUpSpinnerData(0);
+            handleViewVisibility(View.GONE);
         }
 
         setUpCategoryAdapter();
@@ -199,18 +246,10 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
 
     private void handleViewVisibility(int visibilityState) {
-        radioGroup.setVisibility(visibilityState);
-        spinnerSelection.setVisibility(visibilityState);
+        //  radioGroup.setVisibility(visibilityState);
+        parentSpinner.setVisibility(visibilityState);
         applicableTV.setVisibility(visibilityState);
         mode = "retailer";
-    }
-
-    @Override
-    public void setTaskChannelListData(ArrayList<ChannelBO> channelList) {
-        channelArrayAdapter.clear();
-        channelArrayAdapter.add(new ChannelBO(0, getString(R.string.all_channel)));
-        channelArrayAdapter.addAll(channelList);
-        channelArrayAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -219,15 +258,22 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         retailerMasterArrayAdapter.add(new RetailerMasterBO(0, getString(R.string.all_retailer)));
         retailerMasterArrayAdapter.addAll(retailerList);
         retailerMasterArrayAdapter.notifyDataSetChanged();
+        retSelectionAutoCompTxt.setAdapter(retailerMasterArrayAdapter);
     }
 
     @Override
-    public void setTaskUserListData(ArrayList<UserMasterBO> userList) {
-        userMasterArrayAdapter.clear();
-        userMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_seller)));
-        userMasterArrayAdapter.addAll(userList);
-        userMasterArrayAdapter.notifyDataSetChanged();
-        setUpSpinnerData(0);
+    public void setParentUserListData(ArrayList<UserMasterBO> userList) {
+        if (!userList.isEmpty()) {
+            parentUserMasterArrayAdapter.clear();
+            parentUserMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_seller)));
+            parentUserMasterArrayAdapter.addAll(userList);
+            parentUserMasterArrayAdapter.notifyDataSetChanged();
+            parentSpinner.setAdapter(parentUserMasterArrayAdapter);
+        } else {
+            parenUserRBtn.setVisibility(View.GONE);
+            parentSpinner.setVisibility(View.GONE);
+        }
+
     }
 
     @Override
@@ -238,6 +284,52 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         taskCategoryArrayAdapter.notifyDataSetChanged();
         categorySpinner.setAdapter(taskCategoryArrayAdapter);
     }
+
+    @Override
+    public void setChildUserListData(ArrayList<UserMasterBO> childUserList) {
+        if (!childUserList.isEmpty()) {
+            childUserMasterArrayAdapter.clear();
+            childUserMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_seller)));
+            childUserMasterArrayAdapter.addAll(childUserList);
+            childUserMasterArrayAdapter.notifyDataSetChanged();
+            childSpinner.setAdapter(childUserMasterArrayAdapter);
+        } else {
+            childUserRb.setVisibility(View.GONE);
+            childSpinner.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void setPeerUserListData(ArrayList<UserMasterBO> peerUserList) {
+        if (!peerUserList.isEmpty()) {
+            peerUserMasterArrayAdapter.clear();
+            peerUserMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_seller)));
+            peerUserMasterArrayAdapter.addAll(peerUserList);
+            peerUserMasterArrayAdapter.notifyDataSetChanged();
+            peerSpinner.setAdapter(peerUserMasterArrayAdapter);
+        } else {
+            peerGroup.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void setLinkUserListData(HashMap<String, ArrayList<UserMasterBO>> linkUserListMap) {
+        if (!linkUserListMap.isEmpty()) {
+            linkUserListHashMap.clear();
+            linkUserListHashMap.putAll(linkUserListMap);
+        } else {
+            linkGroup.setVisibility(View.GONE);
+        }
+    }
+
+    private void setUpLinkUserAdapter(String retailerId) {
+        linkUserMasterArrayAdapter.clear();
+        linkUserMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_seller)));
+        linkUserMasterArrayAdapter.addAll(linkUserListHashMap.get(retailerId));
+        linkUserMasterArrayAdapter.notifyDataSetChanged();
+        linkSpinner.setAdapter(linkUserMasterArrayAdapter);
+    }
+
 
     @Override
     public void showTaskTitleError() {
@@ -272,6 +364,11 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     }
 
     @Override
+    public void showLinkUserError() {
+
+    }
+
+    @Override
     public void updateImageListAdapter(ArrayList<TaskDataBO> imageList) {
         imgListRecyclerView.setAdapter(new TaskImgListAdapter(TaskCreationActivity.this, imageList, false, photoClickListener));
     }
@@ -298,33 +395,112 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         return mode;
     }
 
-    @OnClick({R.id.seller, R.id.Channelwise, R.id.Retailerwise})
-    public void onTaskCheckChangedListener(RadioButton radioBtn) {
 
+    @OnClick({R.id.seller_selection, R.id.retailer_selection})
+    public void onChoiceCheckChangeListener(RadioButton radioBtn) {
         switch (radioBtn.getId()) {
-            case R.id.seller:
-                seller_rb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
-                channelwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
-                retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
-                setUpSpinnerData(0);
-                mode = "seller";
+
+            case R.id.seller_selection:
+                handleSellerSelectionVisibility();
                 break;
-            case R.id.Channelwise:
-                seller_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
-                channelwise_rb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
-                retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
-                setUpSpinnerData(1);
-                mode = "channel";
-                break;
-            case R.id.Retailerwise:
-                seller_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
-                channelwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
-                retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
-                setUpSpinnerData(2);
-                mode = "retailer";
+            case R.id.retailer_selection:
+                handleRetSelectionVisibility();
                 break;
         }
     }
+
+    @OnClick({R.id.self_user, R.id.parent_user, R.id.child_user, R.id.retailer_wise, R.id.peer_user, R.id.link_user})
+    public void onTaskCheckChangedListener(RadioButton radioBtn) {
+
+        switch (radioBtn.getId()) {
+            case R.id.self_user:
+                parenUserRBtn.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+                childUserRb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
+                retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
+                mode = "seller";
+                hideSpinnerVisibility(View.GONE);
+                break;
+
+            case R.id.parent_user:
+                parenUserRBtn.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+                childUserRb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
+                retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
+                mode = "parent";
+                hideSpinnerVisibility(View.GONE);
+                parentSpinner.setVisibility(View.VISIBLE);
+                break;
+
+            case R.id.child_user:
+                parenUserRBtn.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
+                childUserRb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+                retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
+                mode = "child";
+                hideSpinnerVisibility(View.GONE);
+                childSpinner.setVisibility(View.VISIBLE);
+                break;
+
+            case R.id.retailer_wise:
+                parenUserRBtn.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
+                childUserRb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
+                retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+                mode = "retailer";
+                hideSpinnerVisibility(View.GONE);
+                retSelectionAutoCompTxt.setVisibility(View.VISIBLE);
+                break;
+
+            case R.id.peer_user:
+                parenUserRBtn.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
+                childUserRb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
+                retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+                mode = "peer";
+                break;
+
+            case R.id.link_user:
+                parenUserRBtn.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
+                childUserRb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
+                retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
+                hideSpinnerVisibility(View.GONE);
+                linkSpinner.setVisibility(View.VISIBLE);
+                break;
+
+
+        }
+    }
+
+    private void hideSpinnerVisibility(int visibility) {
+        if (parentSpinner.getVisibility() == View.VISIBLE) {
+            parentSpinner.setVisibility(visibility);
+            if (!parentUserMasterArrayAdapter.isEmpty())
+                parentSpinner.setSelection(0);
+        }
+
+        if (childSpinner.getVisibility() == View.VISIBLE) {
+            childSpinner.setVisibility(visibility);
+            if (!childUserMasterArrayAdapter.isEmpty())
+                childSpinner.setSelection(0);
+        }
+
+        if (peerSpinner.getVisibility() == View.VISIBLE) {
+            peerSpinner.setVisibility(visibility);
+            if (!childUserMasterArrayAdapter.isEmpty())
+                childSpinner.setSelection(0);
+        }
+
+        if (linkSpinner.getVisibility() == View.VISIBLE) {
+            linkSpinner.setVisibility(visibility);
+            if (!linkUserMasterArrayAdapter.isEmpty())
+                linkSpinner.setSelection(0);
+        }
+
+        if (retSelectionAutoCompTxt.getVisibility() == View.VISIBLE) {
+            retSelectionAutoCompTxt.setVisibility(visibility);
+            if (!retailerMasterArrayAdapter.isEmpty())
+                retSelectionAutoCompTxt.setSelection(0);
+        }
+
+
+    }
+
 
     @OnItemSelected(R.id.spinner_seller)
     public void onUserSpinnerSelected(Spinner spinner, int position) {
@@ -362,29 +538,36 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         String taskTitleDec = AppUtils.validateInput(taskTitle.getText().toString());
         String taskDuedate = dueDateBtn.getText().toString().isEmpty() ? null
                 : dueDateBtn.getText().toString();
-        int taskChannelId;
+        int taskCreatedId = 0, linkUserId = 0;
         if (!taskPresenter.validate(taskTitle.getText().toString(), taskView.getText().toString(), taskDuedate))
             return;
 
         switch (mode) {
             case TaskConstant.SELLER_WISE:
-                if (mSelectedSpinnerPos == 0)
-                    taskChannelId = taskPresenter.getUserID();
-                else
-                    taskChannelId = userMasterArrayAdapter.getItem(mSelectedSpinnerPos).getUserid();
-
+                taskCreatedId = taskPresenter.getUserID();
                 break;
+
+            case TaskConstant.PARENT_WISE:
+                taskCreatedId = ((UserMasterBO) parentSpinner.getSelectedItem()).getUserid();
+                break;
+
+
+            case TaskConstant.CHILD_WISE:
+                taskCreatedId = ((UserMasterBO) childSpinner.getSelectedItem()).getUserid();
+                break;
+
             case TaskConstant.RETAILER_WISE:
                 if (!isRetailerWiseTask)
-                    taskChannelId = retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getRetailerId();
+                    taskCreatedId = retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getRetailerId();
                 else
-                    taskChannelId = taskPresenter.getRetailerID();
+                    taskCreatedId = taskPresenter.getRetailerID();
+
+                if (linkSpinner != null)
+                    linkUserId = ((UserMasterBO) linkSpinner.getSelectedItem()).getUserid();
                 break;
-            default:
-                if (mSelectedSpinnerPos == 0)
-                    taskChannelId = -1;
-                else
-                    taskChannelId = channelArrayAdapter.getItem(mSelectedSpinnerPos).getChannelId();
+
+            case TaskConstant.PEERT_WISE:
+                taskCreatedId = ((UserMasterBO) peerSpinner.getSelectedItem()).getUserid();
                 break;
         }
 
@@ -396,7 +579,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         taskBo.setTaskDueDate(taskDuedate);
         taskBo.setTaskCategoryID(mSelectedCategoryID);
 
-        taskPresenter.onSaveButtonClick(taskChannelId, taskBo);
+        taskPresenter.onSaveButtonClick(taskCreatedId, taskBo, linkUserId);
     }
 
 
@@ -424,51 +607,88 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         imgListRecyclerView.setLayoutManager(layoutManager);
     }
 
-    private void setUpAdapter() {
-        userMasterArrayAdapter = new ArrayAdapter<>(this,
-                R.layout.spinner_blacktext_layout);
-        userMasterArrayAdapter.setDropDownViewResource(R.layout.spinner_blacktext_list_item);
-
-        channelArrayAdapter = new ArrayAdapter<>(this,
-                R.layout.spinner_blacktext_layout);
-        channelArrayAdapter.setDropDownViewResource(R.layout.spinner_blacktext_list_item);
-
+    private void setUpRetailerSelection() {
         retailerMasterArrayAdapter = new ArrayAdapter<>(this,
                 R.layout.spinner_blacktext_layout);
         retailerMasterArrayAdapter.setDropDownViewResource(R.layout.spinner_blacktext_list_item);
+
+        retSelectionAutoCompTxt.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                retSelectionAutoCompTxt.showDropDown();
+                return false;
+            }
+        });
+
+        retSelectionAutoCompTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                setUpLinkUserAdapter(retailerMasterArrayAdapter.getItem(position).getRetailerID());
+            }
+        });
     }
+
+    private void setUpAdapter() {
+        parentUserMasterArrayAdapter = new ArrayAdapter<>(this,
+                R.layout.spinner_blacktext_layout);
+        parentUserMasterArrayAdapter.setDropDownViewResource(R.layout.spinner_blacktext_list_item);
+
+        childUserMasterArrayAdapter = new ArrayAdapter<>(this,
+                R.layout.spinner_blacktext_layout);
+        childUserMasterArrayAdapter.setDropDownViewResource(R.layout.spinner_blacktext_list_item);
+
+        peerUserMasterArrayAdapter = new ArrayAdapter<>(this,
+                R.layout.spinner_blacktext_layout);
+        peerUserMasterArrayAdapter.setDropDownViewResource(R.layout.spinner_blacktext_list_item);
+
+        linkUserMasterArrayAdapter = new ArrayAdapter<>(this,
+                R.layout.spinner_blacktext_layout);
+        linkUserMasterArrayAdapter.setDropDownViewResource(R.layout.spinner_blacktext_list_item);
+
+    }
+
 
     private void setUpSpinnerData(int isFrom) {
-        mSelectedSpinnerPos = 0;
-
-        switch (isFrom) {
-            case 0:
-                if (userMasterArrayAdapter.getCount() == 2)
-                    spinnerSelection.setVisibility(View.GONE);
-                spinnerSelection.setAdapter(userMasterArrayAdapter);
-                handleVisibility(View.INVISIBLE);
-                break;
-            case 1:
-                spinnerSelection.setVisibility(View.VISIBLE);
-                spinnerSelection.setAdapter(channelArrayAdapter);
-                if (taskPresenter.isShowProdLevel())
-                    handleVisibility(View.VISIBLE);
-                break;
-            case 2:
-                spinnerSelection.setVisibility(View.VISIBLE);
-                spinnerSelection.setAdapter(retailerMasterArrayAdapter);
-                if (taskPresenter.isShowProdLevel())
-                    handleVisibility(View.VISIBLE);
-                break;
-        }
-
 
     }
 
+    private void handleSellerSelectionVisibility() {
+        if (productLevelGroup.getVisibility() == View.VISIBLE) {
+            productLevelGroup.setVisibility(View.GONE);
+            categorySpinner.setSelection(0);
+        }
 
-    private void handleVisibility(int visibility) {
-        productLevelTV.setVisibility(visibility);
-        categorySpinner.setVisibility(visibility);
+        if (retailerwise_rb.getVisibility() == View.VISIBLE) {
+            retailerGroup.setVisibility(View.GONE);
+            retSelectionAutoCompTxt.setSelection(0);
+        }
+
+        if (linkGroup.getVisibility() == View.VISIBLE) {
+            linkGroup.setVisibility(View.GONE);
+            linkSpinner.setSelection(0);
+        }
+
+        if (!peerUserMasterArrayAdapter.isEmpty()) {
+            peerGroup.setVisibility(View.VISIBLE);
+            peerSpinner.setSelection(0);
+        }
+    }
+
+    private void handleRetSelectionVisibility() {
+        if (taskPresenter.isShowProdLevel()) {
+            productLevelGroup.setVisibility(View.VISIBLE);
+            categorySpinner.setSelection(0);
+        }
+
+        if (linkGroup.getVisibility() == View.GONE) {
+            linkGroup.setVisibility(View.VISIBLE);
+            if (!linkUserMasterArrayAdapter.isEmpty())
+                linkSpinner.setSelection(0);
+        }
+
+        if (peerUserRb.getVisibility() == View.VISIBLE)
+            peerGroup.setVisibility(View.GONE);
     }
 
     private void setUpCategoryAdapter() {
@@ -497,47 +717,15 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 CAMERA_REQUEST_CODE);
     }
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_task, menu);
-        return super.onCreateOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        menu.findItem(R.id.menu_save).setVisible(false);
-        menu.findItem(R.id.menu_new_task).setVisible(false);
-
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int i = item.getItemId();
-        if (i == android.R.id.home) {
-            if (!capturedImgList.isEmpty()
-                    && capturedImgList.size() > 1)
-                backButtonAlertDialog();
-            else
-                backNavigation();
-
-
-            return true;
-        }
-        return false;
-    }
-
-
     private void backNavigation() {
 
-            if (!isRetailerWiseTask)
-                startActivity(new Intent(TaskCreationActivity.this,
-                        HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
-            else
-                startActivity(new Intent(TaskCreationActivity.this,
-                        TaskActivity.class).putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask)
-                        .putExtra(TaskConstant.SCREEN_TITLE, screenTitle));
+        if (!isRetailerWiseTask)
+            startActivity(new Intent(TaskCreationActivity.this,
+                    HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
+        else
+            startActivity(new Intent(TaskCreationActivity.this,
+                    TaskActivity.class).putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask)
+                    .putExtra(TaskConstant.SCREEN_TITLE, screenTitle));
 
 
         finish();
@@ -604,17 +792,17 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
         if (!isRetailerWiseTask) {
             if (taskDataObj.getMode().equalsIgnoreCase(TaskConstant.SELLER_WISE)) {
-                seller_rb.setChecked(true);
+                parenUserRBtn.setChecked(true);
                 setUpSpinnerData(0);
-                spinnerSelection.setSelection(getAdapterPosition(userMasterArrayAdapter.getCount(), taskBo.getMode()));
+                parentSpinner.setSelection(getAdapterPosition(parentUserMasterArrayAdapter.getCount(), taskBo.getMode()));
             } else if (taskDataObj.getMode().equalsIgnoreCase(TaskConstant.RETAILER_WISE)) {
                 retailerwise_rb.setChecked(true);
                 setUpSpinnerData(1);
-                spinnerSelection.setSelection(getAdapterPosition(channelArrayAdapter.getCount(), taskBo.getMode()));
+                parentSpinner.setSelection(getAdapterPosition(childUserMasterArrayAdapter.getCount(), taskBo.getMode()));
             } else {
-                channelwise_rb.setChecked(true);
+                childUserRb.setChecked(true);
                 setUpSpinnerData(2);
-                spinnerSelection.setSelection(getAdapterPosition(retailerMasterArrayAdapter.getCount(), taskBo.getMode()));
+                parentSpinner.setSelection(getAdapterPosition(retailerMasterArrayAdapter.getCount(), taskBo.getMode()));
             }
         }
         taskView.setText(taskDataObj.getTaskDesc());
@@ -626,15 +814,15 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         for (int i = 0; i < length; i++) {
             switch (mode) {
                 case TaskConstant.SELLER_WISE:
-                    if (userMasterArrayAdapter.getItem(i).getUserid() == taskBo.getUserId())
+                    if (parentUserMasterArrayAdapter.getItem(i).getUserid() == taskBo.getUserId())
                         return i;
                     break;
                 case TaskConstant.RETAILER_WISE:
                     if (retailerMasterArrayAdapter.getItem(i).getRetailerId() == taskBo.getRid())
                         return i;
                     break;
-                case TaskConstant.CHANNEL_WISE:
-                    if (channelArrayAdapter.getItem(i).getChannelId() == taskBo.getChannelId())
+                case TaskConstant.CHILD_WISE:
+                    if (childUserMasterArrayAdapter.getItem(i).getUserid() == taskBo.getUserId())
                         return i;
                     break;
                 default:
@@ -644,6 +832,37 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             }
         }
         return -1;
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_task, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        menu.findItem(R.id.menu_save).setVisible(false);
+        menu.findItem(R.id.menu_new_task).setVisible(false);
+
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int i = item.getItemId();
+        if (i == android.R.id.home) {
+            if (!capturedImgList.isEmpty()
+                    && capturedImgList.size() > 1)
+                backButtonAlertDialog();
+            else
+                backNavigation();
+
+
+            return true;
+        }
+        return false;
     }
 
 }

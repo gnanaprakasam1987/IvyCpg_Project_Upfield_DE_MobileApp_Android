@@ -3,7 +3,6 @@ package com.ivy.ui.task;
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
-import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.ui.task.model.TaskDataBO;
@@ -37,13 +36,17 @@ public interface TaskContract {
 
         String getTaskMode();
 
-        void setTaskChannelListData(ArrayList<ChannelBO> channelList);
-
         void setTaskRetailerListData(ArrayList<RetailerMasterBO> retailerList);
 
-        void setTaskUserListData(ArrayList<UserMasterBO> userList);
+        void setParentUserListData(ArrayList<UserMasterBO> parentUserList);
 
         void setTaskCategoryListData(ArrayList<TaskDataBO> categoryList);
+
+        void setChildUserListData(ArrayList<UserMasterBO> childUserList);
+
+        void setPeerUserListData(ArrayList<UserMasterBO> peerUserList);
+
+        void setLinkUserListData(HashMap<String, ArrayList<UserMasterBO>> linkUserListMap);
 
         void showTaskTitleError();
 
@@ -52,6 +55,8 @@ public interface TaskContract {
         void showTaskSaveAlertMsg();
 
         void showTaskDueDateError();
+
+        void showLinkUserError();
     }
 
     interface TaskUnplannedView extends TaskView {
@@ -63,7 +68,9 @@ public interface TaskContract {
     @PerActivity
     interface TaskPresenter<V extends TaskView> extends BaseIvyPresenter<V> {
 
-        void fetchData();
+        void fetchTaskCreationConfig();
+
+        void fetchData(int retailerId);
 
         void fetchTaskCategory();
 
@@ -75,7 +82,7 @@ public interface TaskContract {
 
         void addNewImage(String imageName);
 
-        void onSaveButtonClick(int channelId, TaskDataBO taskObj);
+        void onSaveButtonClick(int channelId, TaskDataBO taskObj, int linkUserId);
 
         void updateTaskExecution(String retailerID, TaskDataBO taskDataBO);
 

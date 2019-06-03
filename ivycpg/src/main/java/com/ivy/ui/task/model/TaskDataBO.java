@@ -37,6 +37,7 @@ public class TaskDataBO implements Parcelable {
     private String taskExecDate;
     private int noOfDueDays;
     private String lastVisitDate;
+    private String linkUserName;
 
     protected TaskDataBO(Parcel in) {
         taskDesc = in.readString();
@@ -70,6 +71,7 @@ public class TaskDataBO implements Parcelable {
         taskExecDate = in.readString();
         noOfDueDays = in.readInt();
         lastVisitDate = in.readString();
+        linkUserName= in.readString();
     }
 
     public static final Creator<TaskDataBO> CREATOR = new Creator<TaskDataBO>() {
@@ -363,6 +365,14 @@ public class TaskDataBO implements Parcelable {
         this.lastVisitDate = lastVisitDate;
     }
 
+    public String getLinkUserName() {
+        return linkUserName;
+    }
+
+    public void setLinkUserName(String linkUserName) {
+        this.linkUserName = linkUserName;
+    }
+
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(taskDesc);
@@ -396,6 +406,7 @@ public class TaskDataBO implements Parcelable {
         parcel.writeString(taskExecDate);
         parcel.writeInt(noOfDueDays);
         parcel.writeString(lastVisitDate);
+        parcel.writeString(linkUserName);
     }
 
 }

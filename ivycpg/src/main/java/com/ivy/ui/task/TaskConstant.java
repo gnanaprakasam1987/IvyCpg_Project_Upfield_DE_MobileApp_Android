@@ -49,9 +49,15 @@ public class TaskConstant {
 
     public static final String SELLER_WISE = "seller";
 
+    public static final String PARENT_WISE = "parent";
+
+    public static final String CHILD_WISE = "child";
+
     public static final String RETAILER_WISE = "retailer";
 
-    public static final String CHANNEL_WISE = "channel";
+    public static final String PEERT_WISE="peer";
+
+    public static final String LINK_WISE = "link";
 
     public static final String PRODUCT_LEVEL_WISE = "Category";
 

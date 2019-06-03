@@ -25,7 +25,7 @@ public interface TaskDataManager extends AppDataManagerContract {
 
     Single<Boolean> updateTaskExecutionImage(String imageName, String taskId);
 
-    Single<Boolean> addAndUpdateTask(int channelId, TaskDataBO taskObj, String mode, ArrayList<TaskDataBO> taskImgList);
+    Single<Boolean> addAndUpdateTask(int channelId, TaskDataBO taskObj, String mode, ArrayList<TaskDataBO> taskImgList, int linkUserId);
 
     Observable<ArrayList<RetailerMasterBO>> fetchAllRetailers();
 
@@ -40,5 +40,6 @@ public interface TaskDataManager extends AppDataManagerContract {
     Observable<HashMap<String, ArrayList<TaskDataBO>>> fetchUnPlanedTaskData(int toDateCount);
 
     Observable<ArrayList<TaskRetailerBo>> fetchUnPlannedRetailers(int toDateCount);
+
 
 }

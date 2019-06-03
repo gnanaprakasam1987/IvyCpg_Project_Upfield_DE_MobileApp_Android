@@ -316,4 +316,9 @@
     <string name="next_visit_date">Next Visit Date: </string>
     <string name="next_visit_date_count">%1$d days to go</string>
     <string name="pending_task">Pending Task</string>
+    <string name="parent">Parent User</string>
+    <string name="child">Child User</string>
+    <string name="link_user">Link User</string>
+    <string name="peer_user">Peer User</string>
+    <string name="choose_retailer">Retailer</string>
 </resources>

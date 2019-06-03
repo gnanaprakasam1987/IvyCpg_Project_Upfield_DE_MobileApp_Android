@@ -371,7 +371,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
      * @return
      */
     @Override
-    public Single<Boolean> addAndUpdateTask(int selectedId, TaskDataBO taskObj, String mode, ArrayList<TaskDataBO> taskImgList) {
+    public Single<Boolean> addAndUpdateTask(int selectedId, TaskDataBO taskObj, String mode, ArrayList<TaskDataBO> taskImgList, int linkUserId) {
 
         //remove Quotes
         String title = StringUtils.removeQuotes(taskObj.getTasktitle());
@@ -483,43 +483,26 @@ public class TaskDataManagerImpl implements TaskDataManager {
                         try {
                             String columns = "taskid,retailerid,usercreated,upload,date,uid,userid,channelid";
                             String values;
-                            if (selectedId == -1) {// for all channel
-                                String[] chrid = getChannelRetailerId(0);
-                                for (String aChrid : chrid) {
-
-                                    values = finalTid + "," + aChrid + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0" + "," + "0";
-                                    mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
-                                            columns, values);
-                                }
-
-                            } else if (mode.equals("seller")) {
-
-                                values = finalTid + "," + 0 + "," + "1" + "," + "'N'," + date + "," + uID + "," + selectedId + "," + "0";
-                                mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster, columns,
-                                        values);
-                            } else if (mode.equals("retailer")) {
+                            if (mode.equals("retailer")) {
                                 if (selectedId == -2) {
                                     String[] chrid = getRetailerIdlist();
                                     for (String aChrid : chrid) {
 
                                         values = finalTid + "," + aChrid + "," + "1" + ","
-                                                + "'N'," + date + "," + uID + "," + "0" + "," + "0";
+                                                + "'N'," + date + "," + uID + "," + linkUserId + "," + "0";
                                         mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
                                                 columns, values);
                                     }
                                 } else {
-                                    values = finalTid + "," + selectedId + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0" + "," + "0";
+                                    values = finalTid + "," + selectedId + "," + "1" + "," + "'N'," + date + "," + uID + "," + linkUserId + "," + "0";
                                     mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
                                             columns, values);
                                 }
                             } else {
 
-                                String[] chrid = getChannelRetailerId(selectedId);
-                                for (String aChrid : chrid) {
-                                    values = finalTid + "," + aChrid + "," + "1" + "," + "'N'," + date + "," + uID + "," + "0" + "," + selectedId;
-                                    mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
-                                            columns, values);
-                                }
+                                values = finalTid + "," + 0 + "," + "1" + "," + "'N'," + date + "," + uID + "," + selectedId + "," + "0";
+                                mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster, columns,
+                                        values);
                             }
                             shutDownDb();
                             return true;
@@ -835,38 +818,6 @@ public class TaskDataManagerImpl implements TaskDataManager {
         });
     }
 
-
-    private String[] getChannelRetailerId(int channelId) {
-        ArrayList<String> channelRId = new ArrayList<>();
-        int siz = appDataProvider.getRetailerMasters().size();
-        if (channelId == 0) {
-            for (int ii = 0; ii < siz; ii++) {
-
-                if (((appDataProvider.getRetailerMasters().get(ii).getIsToday() == 1))
-                        || appDataProvider.getRetailerMasters().get(ii).getIsDeviated()
-                        .equals("Y")) {
-                    channelRId.add(appDataProvider.getRetailerMasters().get(ii)
-                            .getRetailerID());
-                }
-            }
-        } else {
-            for (int ii = 0; ii < siz; ii++) {
-                if (((appDataProvider.getRetailerMasters().get(ii).getIsToday() == 1) || appDataProvider
-                        .getRetailerMasters().get(ii).getIsDeviated()
-                        .equals("Y"))
-                        && appDataProvider.getRetailerMasters().get(ii).getChannelID() == channelId) {
-                    channelRId.add(appDataProvider.getRetailerMasters().get(ii)
-                            .getRetailerID());
-                }
-            }
-        }
-        String data[] = new String[channelRId.size()];
-        for (int i = 0; i < channelRId.size(); i++) {
-            data[i] = channelRId.get(i);
-        }
-        return data;
-
-    }
 
     private String[] getRetailerIdlist() {
         ArrayList<String> RId = new ArrayList<>();

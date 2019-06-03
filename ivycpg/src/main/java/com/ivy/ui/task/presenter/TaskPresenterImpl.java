@@ -14,7 +14,6 @@ import com.ivy.core.di.scope.ChannelInfo;
 import com.ivy.core.di.scope.OutletTimeStampInfo;
 import com.ivy.core.di.scope.ReasonInfo;
 import com.ivy.core.di.scope.UserInfo;
-import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -45,7 +44,8 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Function3;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function5;
 import io.reactivex.observers.DisposableObserver;
 
 import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
@@ -59,14 +59,22 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     private AppDataProvider appDataProvider;
     private OutletTimeStampDataManager mOutletTimeStampDataManager;
     private ReasonDataManager mReasonDataManager;
-    private ArrayList<UserMasterBO> mUserListBos = new ArrayList<>();
-    private ArrayList<ChannelBO> mChannelListBos = new ArrayList<>();
+    private ArrayList<UserMasterBO> parentUserListBos = new ArrayList<>();
+    private ArrayList<UserMasterBO> childUserListBos = new ArrayList<>();
+    private ArrayList<UserMasterBO> peerUSerListBos = new ArrayList<>();
+    private HashMap<String, ArrayList<UserMasterBO>> linkUserListMap = new HashMap<>();
     private ArrayList<RetailerMasterBO> mRetailerListBos = new ArrayList<>();
     private ArrayList<TaskDataBO> mTaskImgList = new ArrayList<>();
     ArrayList<TaskDataBO> taskPreparedList = new ArrayList<>();
     ArrayList<String> deletedImageList = new ArrayList<>();
     ArrayList<TaskRetailerBo> taskRetailerListBo = new ArrayList<>();
     HashMap<String, ArrayList<TaskDataBO>> taskistHashMap = new HashMap<>();
+
+    private int TASK_PRODUCT_LEVEL_NO;
+    private boolean IS_SHOW_TASK_PRODUCT_LEVEL;
+    private boolean IS_DISABLE_CALL_ANALYSIS_TIMER;
+    private boolean IS_SHOW_ONLY_SERVER_TASK;
+    private boolean IS_NEW_TASK;
 
     @Inject
     public TaskPresenterImpl(DataManager dataManager,
@@ -97,42 +105,46 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
 
 
     @Override
+    public void fetchTaskCreationConfig() {
+
+    }
+
+    @Override
     // @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    public void fetchData() {
+    public void fetchData(int retailerId) {
         getIvyView().showLoading();
 
-        getCompositeDisposable().add(Observable.zip(mUserDataManager.fetchAllUsers(),
-                mChannelDataManager.fetchChannels(), mTaskDataManager.fetchAllRetailers()
-                , (Function3<ArrayList<UserMasterBO>, ArrayList<ChannelBO>, ArrayList<RetailerMasterBO>, Object>) (userMasterBOS, channelBOS, retailerMasterBOS) -> {
-                    mUserListBos.clear();
-                    for (UserMasterBO userBo : userMasterBOS) {
-                        if (userBo.getUserid() == appDataProvider.getUser().getUserid()) {
-                            userBo.setUserName("Self");
-                            break;
-                        }
+        getCompositeDisposable().add(Observable.zip(mUserDataManager.fetchParentUsers()
+                , mUserDataManager.fetchChildUsers(), mUserDataManager.fetchPeerUsers(),
+                mUserDataManager.fetchLinkUsers(retailerId),
+                mTaskDataManager.fetchAllRetailers(), new Function5<ArrayList<UserMasterBO>, ArrayList<UserMasterBO>, ArrayList<UserMasterBO>, HashMap<String, ArrayList<UserMasterBO>>, ArrayList<RetailerMasterBO>, Object>() {
+                    @Override
+                    public Object apply(ArrayList<UserMasterBO> parentUserMasterBOs, ArrayList<UserMasterBO> childUserMasterBOs, ArrayList<UserMasterBO> peerUserMasterBOs, HashMap<String, ArrayList<UserMasterBO>> linkUserMasterListMap, ArrayList<RetailerMasterBO> retailerMasterBOs) throws Exception {
+
+
+                        parentUserListBos.clear();
+                        parentUserListBos.addAll(parentUserMasterBOs);
+
+                        childUserListBos.clear();
+                        childUserListBos.addAll(childUserMasterBOs);
+
+                        peerUSerListBos.clear();
+                        peerUSerListBos.addAll(peerUserMasterBOs);
+
+                        linkUserListMap.clear();
+                        linkUserListMap.putAll(linkUserMasterListMap);
+
+                        mRetailerListBos.clear();
+                        mRetailerListBos.addAll(retailerMasterBOs);
+
+                        return true;
                     }
-                    mUserListBos.addAll(userMasterBOS);
-
-
-                    mChannelListBos.clear();
-                    mChannelListBos.addAll(channelBOS);
-
-                    mRetailerListBos.clear();
-                    mRetailerListBos.addAll(retailerMasterBOS);
-
-                    return true;
                 }).subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribeWith(new DisposableObserver<Object>() {
                     @Override
                     public void onNext(Object o) {
-                        ((TaskContract.TaskCreationView) getIvyView()).setTaskUserListData(mUserListBos);
 
-                        ((TaskContract.TaskCreationView) getIvyView()).setTaskChannelListData(mChannelListBos);
-
-                        ((TaskContract.TaskCreationView) getIvyView()).setTaskRetailerListData(mRetailerListBos);
-
-                        getIvyView().hideLoading();
                     }
 
                     @Override
@@ -144,8 +156,21 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                     @Override
                     public void onComplete() {
 
+                        ((TaskContract.TaskCreationView) getIvyView()).setParentUserListData(parentUserListBos);
+
+                        ((TaskContract.TaskCreationView) getIvyView()).setChildUserListData(childUserListBos);
+
+                        ((TaskContract.TaskCreationView) getIvyView()).setPeerUserListData(peerUSerListBos);
+
+                        ((TaskContract.TaskCreationView) getIvyView()).setLinkUserListData(linkUserListMap);
+
+                        ((TaskContract.TaskCreationView) getIvyView()).setTaskRetailerListData(mRetailerListBos);
+
+                        getIvyView().hideLoading();
                     }
                 }));
+
+
     }
 
     @Override
@@ -326,10 +351,13 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
         getCompositeDisposable().add(mChannelDataManager.fetchChannelIds()
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribe(channelId -> {
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String channelId) throws Exception {
 
-                    if (channelId != null && channelId.length() > 0)
-                        channelIds.add(Arrays.toString(channelId.split(",")));
+                        if (channelId != null && channelId.length() > 0)
+                            channelIds.add(Arrays.toString(channelId.split(",")));
+                    }
                 }));
 
         return channelIds;
@@ -403,10 +431,10 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
 
 
     @Override
-    public void onSaveButtonClick(int channelId, TaskDataBO taskObj) {
+    public void onSaveButtonClick(int channelId, TaskDataBO taskObj, int linkUserId) {
         getIvyView().showLoading();
         getCompositeDisposable().add(mTaskDataManager.addAndUpdateTask(channelId
-                , taskObj, ((TaskContract.TaskCreationView) getIvyView()).getTaskMode(), getTaskImgList()).subscribeOn(getSchedulerProvider().io())
+                , taskObj, ((TaskContract.TaskCreationView) getIvyView()).getTaskMode(), getTaskImgList(), linkUserId).subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(isAdded -> {
                     getIvyView().hideLoading();
