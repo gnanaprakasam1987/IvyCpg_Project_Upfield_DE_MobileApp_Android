@@ -533,7 +533,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                     for (RetailerMasterBO retBo : appDataProvider.getRetailerMasters()) {
 
                         temp = new RetailerMasterBO();
-                        temp.setTretailerId(SDUtil.convertToInt(retBo.getRetailerID()));
+                        temp.setRetailerID(retBo.getRetailerID());
                         temp.setTretailerName(retBo.getRetailerName());
                         retailerMaster.add(temp);
                     }

@@ -30,6 +30,7 @@ import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
@@ -228,7 +229,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         if (isRetailerWiseTask) {
             handleViewVisibility(View.VISIBLE);
         } else {
-            handleViewVisibility(View.GONE);
+            handleViewVisibility(View.INVISIBLE);
         }
 
         setUpCategoryAdapter();
@@ -285,7 +286,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     public void setChildUserListData(ArrayList<UserMasterBO> childUserList) {
         if (!childUserList.isEmpty()) {
             childUserMasterArrayAdapter.clear();
-            childUserMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_seller)));
+            childUserMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_child)));
             childUserMasterArrayAdapter.addAll(childUserList);
             childUserMasterArrayAdapter.notifyDataSetChanged();
             childSpinner.setAdapter(childUserMasterArrayAdapter);
@@ -299,7 +300,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     public void setPeerUserListData(ArrayList<UserMasterBO> peerUserList) {
         if (!peerUserList.isEmpty()) {
             peerUserMasterArrayAdapter.clear();
-            peerUserMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_seller)));
+            peerUserMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_peer)));
             peerUserMasterArrayAdapter.addAll(peerUserList);
             peerUserMasterArrayAdapter.notifyDataSetChanged();
             peerSpinner.setAdapter(peerUserMasterArrayAdapter);
@@ -320,7 +321,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     private void setUpLinkUserAdapter(String retailerId) {
         linkUserMasterArrayAdapter.clear();
-        linkUserMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_seller)));
+        linkUserMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_link)));
         linkUserMasterArrayAdapter.addAll(linkUserListHashMap.get(retailerId));
         linkUserMasterArrayAdapter.notifyDataSetChanged();
         linkSpinner.setAdapter(linkUserMasterArrayAdapter);
@@ -425,6 +426,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
                 mode = "parent";
                 hideSpinnerVisibility(View.GONE);
+                unCheckedSelfRB();
                 parentSpinner.setVisibility(View.VISIBLE);
                 break;
 
@@ -434,6 +436,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
                 mode = "child";
                 hideSpinnerVisibility(View.GONE);
+                unCheckedSelfRB();
                 childSpinner.setVisibility(View.VISIBLE);
                 break;
 
@@ -451,6 +454,9 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 childUserRb.setTextColor(ContextCompat.getColor(this, R.color.textColorPrimary));
                 retailerwise_rb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
                 mode = "peer";
+                hideSpinnerVisibility(View.GONE);
+                unCheckedSelfRB();
+                peerSpinner.setVisibility(View.VISIBLE);
                 break;
 
             case R.id.link_user:
@@ -465,17 +471,24 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         }
     }
 
+
+    private void unCheckedSelfRB(){
+        if (selfUserRb.isChecked())
+            selfUserRb.setChecked(false);
+    }
+
     private void hideSpinnerVisibility(int visibility) {
+
         if (parentSpinner.getVisibility() == View.VISIBLE) {
             parenUserRBtn.setChecked(false);
-            parentSpinner.setVisibility(visibility);
+            parentSpinner.setVisibility(View.INVISIBLE);
             if (!parentUserMasterArrayAdapter.isEmpty())
                 parentSpinner.setSelection(0);
         }
 
         if (childSpinner.getVisibility() == View.VISIBLE) {
             childUserRb.setChecked(false);
-            childSpinner.setVisibility(visibility);
+            childSpinner.setVisibility(View.INVISIBLE);
             if (!childUserMasterArrayAdapter.isEmpty())
                 childSpinner.setSelection(0);
         }
@@ -520,6 +533,21 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         }
     }
 
+    @OnItemSelected(R.id.spinner_child)
+    public void onChildSpinnerSelected(Spinner spinner, int position) {
+        ((TextView) spinner.getSelectedView().findViewById(android.R.id.text1)).setGravity(Gravity.START);
+    }
+
+    @OnItemSelected(R.id.spinner_peer)
+    public void onPeerSpinnerSelected(Spinner spinner, int position) {
+        ((TextView) spinner.getSelectedView().findViewById(android.R.id.text1)).setGravity(Gravity.START);
+    }
+
+    @OnItemSelected(R.id.spinner_link)
+    public void onLinkSpinnerSelected(Spinner spinner, int position) {
+        ((TextView) spinner.getSelectedView().findViewById(android.R.id.text1)).setGravity(Gravity.START);
+    }
+
     @OnClick(R.id.task_due_date_btn)
     public void onDueDateClick() {
         DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
@@ -561,7 +589,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
             case TaskConstant.RETAILER_WISE:
                 if (!isRetailerWiseTask)
-                    taskCreatedId = retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getRetailerId();
+                    taskCreatedId = SDUtil.convertToInt(retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getRetailerID());
                 else
                     taskCreatedId = taskPresenter.getRetailerID();
 
@@ -674,6 +702,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
         if (!peerUserMasterArrayAdapter.isEmpty()) {
             peerGroup.setVisibility(View.VISIBLE);
+            peerSpinner.setVisibility(View.INVISIBLE);
             peerSpinner.setSelection(0);
         }
     }
@@ -684,8 +713,13 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             categorySpinner.setSelection(0);
         }
 
+        retailerGroup.setVisibility(View.VISIBLE);
+        retSelectionAutoCompTxt.setVisibility(View.INVISIBLE);
+        retSelectionAutoCompTxt.setSelection(0);
+
         if (linkGroup.getVisibility() == View.GONE) {
             linkGroup.setVisibility(View.VISIBLE);
+            linkSpinner.setVisibility(View.INVISIBLE);
             if (!linkUserMasterArrayAdapter.isEmpty())
                 linkSpinner.setSelection(0);
         }
@@ -821,7 +855,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                         return i;
                     break;
                 case TaskConstant.RETAILER_WISE:
-                    if (retailerMasterArrayAdapter.getItem(i).getRetailerId() == taskBo.getRid())
+                    if (SDUtil.convertToInt(retailerMasterArrayAdapter.getItem(i).getRetailerID()) == taskBo.getRid())
                         return i;
                     break;
                 case TaskConstant.CHILD_WISE:

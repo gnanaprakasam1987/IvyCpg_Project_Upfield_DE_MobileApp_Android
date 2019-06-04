@@ -361,4 +361,7 @@
     <string name="peer_user">Peer User</string>
     <string name="choose_retailer">Retailer</string>
     <string name="over_due">Overdue</string>
+    <string name="select_peer">Select Peer</string>
+    <string name="select_child">Select child</string>
+    <string name="select_link">Select Link</string>
 </resources>
