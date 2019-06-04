@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <EditText xmlns:android="http://schemas.android.com/apk/res/android"
+        style="@style/EditTextGreyNew"
+        android:id="@+id/et_sur_barcode"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignBottom="@+id/imageView_barcode_scan"
+        android:layout_toLeftOf="@+id/imageView_barcode_scan"
+        android:layout_toStartOf="@+id/imageView_barcode_scan"
+        android:textCursorDrawable="@null" />
+
+    <ImageView
+        android:id="@+id/imageView_barcode_scan"
+        android:layout_width="@dimen/dimens_50dp"
+        android:layout_height="@dimen/dimen_30dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:contentDescription="@drawable/barcode_scan_black"
+        android:src="@drawable/barcode_scan_black" />
+
+</RelativeLayout>
