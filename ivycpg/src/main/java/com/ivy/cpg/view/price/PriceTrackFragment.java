@@ -60,6 +60,7 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.CompetitorFilterInterface;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CompetitorFilterFragment;
@@ -119,13 +120,14 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
     private Context context;
 
+    ProductTaggingHelper productTaggingHelper;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         view = inflater.inflate(R.layout.fragment_price_tracking, container,
                 false);
-
+        productTaggingHelper=ProductTaggingHelper.getInstance(getActivity());
         mDrawerLayout = (DrawerLayout) view.findViewById(
                 R.id.drawer_layout);
         btnSave = (Button) view.findViewById(R.id.btn_save);
@@ -642,9 +644,9 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
     private void nextButtonClick() {
         try {
-            if (priceTrackingHelper.hasDataTosave(businessModel.productHelper.getTaggedProducts())) {
+            if (priceTrackingHelper.hasDataTosave(productTaggingHelper.getTaggedProducts())) {
                 if (priceTrackingHelper.IS_PRICE_CHANGE_REASON == 1)
-                    if (priceTrackingHelper.hasPriceChangeReason(businessModel.productHelper.getTaggedProducts()))
+                    if (priceTrackingHelper.hasPriceChangeReason(productTaggingHelper.getTaggedProducts()))
                         new SaveAsyncTask().execute();
                     else
                         Toast.makeText(getActivity(),
@@ -673,7 +675,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         }
 
 
-        Vector<ProductMasterBO> items = businessModel.productHelper.getTaggedProducts();
+        Vector<ProductMasterBO> items = productTaggingHelper.getTaggedProducts();
         if (parentIdList != null && !parentIdList.isEmpty()) {
             for (CompetitorFilterLevelBO mParentBO : parentIdList) {
                 for (ProductMasterBO sku : items) {
@@ -705,7 +707,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                priceTrackingHelper.savePriceTransaction(getContext().getApplicationContext(), businessModel.productHelper.getTaggedProducts());
+                priceTrackingHelper.savePriceTransaction(getContext().getApplicationContext(), productTaggingHelper.getTaggedProducts());
                 businessModel.saveModuleCompletion(HomeScreenTwo.MENU_PRICE, true);
                 businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
@@ -771,7 +773,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
 
     private void onLoadModule(int filteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts) {
-        Vector<ProductMasterBO> items = businessModel.productHelper.getTaggedProducts();
+        Vector<ProductMasterBO> items = productTaggingHelper.getTaggedProducts();
         if (items == null) {
             businessModel.showAlert(
                     getResources().getString(R.string.no_products_exists), 0);
@@ -909,7 +911,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
     }
 
     private void onLoadModule() {
-        Vector<ProductMasterBO> items = businessModel.productHelper.getTaggedProducts();
+        Vector<ProductMasterBO> items = productTaggingHelper.getTaggedProducts();
 
         if (items == null) {
             businessModel.showAlert(
@@ -1785,17 +1787,17 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
             Vector<ProductMasterBO> items = new Vector<>();
             if (businessModel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 0) {
-                for (ProductMasterBO productBo : businessModel.productHelper.getTaggedProducts()) {
+                for (ProductMasterBO productBo : productTaggingHelper.getTaggedProducts()) {
                     if (productBo.getIsSaleable() == 1 && productBo.getOwn() == 1)
                         items.add(productBo);
                 }
             } else if (businessModel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 1) {
-                for (ProductMasterBO productBo : businessModel.productHelper.getTaggedProducts()) {
+                for (ProductMasterBO productBo : productTaggingHelper.getTaggedProducts()) {
                     if (productBo.getIsSaleable() == 1 && productBo.getOwn() == 0)
                         items.add(productBo);
                 }
             } else if (businessModel.configurationMasterHelper.LOAD_STOCK_COMPETITOR == 2) {
-                items = businessModel.productHelper.getTaggedProducts();
+                items = productTaggingHelper.getTaggedProducts();
             }
 
             if (items.isEmpty()) {
@@ -1931,7 +1933,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
     private void onBackButonClick() {
 
-        if (priceTrackingHelper.hasDataTosave(businessModel.productHelper.getTaggedProducts())) {
+        if (priceTrackingHelper.hasDataTosave(productTaggingHelper.getTaggedProducts())) {
             showBackDialog();
         } else {
             if (mDrawerLayout.isDrawerOpen(GravityCompat.END))

@@ -49,7 +49,9 @@ public class ProductTaggingHelper {
             return new Vector<ProductMasterBO>();
         return mTaggedProducts;
     }
-
+    public ArrayList<ProductTaggingBO> getProductTaggingList() {
+        return productTaggingList;
+    }
 
     /**
      * get tagged products and update the productBO.
@@ -390,10 +392,10 @@ public class ProductTaggingHelper {
                     product.setLocations(productHelper.cloneInStoreLocationList(productHelper.getStoreLocations()));
                     for (int i = 0; i < productHelper.getStoreLocations().size(); i++) {
                         product.getLocations().get(i)
-                                .setNearexpiryDate(productHelper.cloneDateList(dateList));
+                                .setNearexpiryDate(productHelper.cloneDateList(productHelper.getNearExpiryDateList()));
                     }
 
-                    competitorProductMaster.add(product);
+                    productHelper.getCompetitorProductMaster().add(product);
 
                 }
                 cur.close();
@@ -439,4 +441,12 @@ public class ProductTaggingHelper {
             return "";
         }
     }
+
+    public ProductMasterBO getTaggedProductBOById(String productId) {
+        if (mTaggedProductById == null)
+            return null;
+        return mTaggedProductById.get(productId);
+    }
+
+
 }

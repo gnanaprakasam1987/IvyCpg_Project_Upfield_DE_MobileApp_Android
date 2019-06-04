@@ -77,6 +77,7 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CustomKeyBoard;
@@ -220,6 +221,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
     private static final int SALES_RETURN = 3;
     SearchAsync searchAsync;
     private StockCheckHelper stockCheckHelper;
+    private ProductTaggingHelper productTaggingHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,6 +234,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         orderHelper = OrderHelper.getInstance(this);
         stockCheckHelper = StockCheckHelper.getInstance(this);
+        productTaggingHelper=ProductTaggingHelper.getInstance(this);
 
         if (bmodel.configurationMasterHelper.SHOW_BARCODE)
             checkAndRequestPermissionAtRunTime(2);
@@ -622,10 +625,10 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
 
     private boolean isProductsAvailable(String filterCode) {
         try {
-            if (filterCode.equalsIgnoreCase("ALL") && bmodel.productHelper.getTaggedProducts().size() > 0) {
+            if (filterCode.equalsIgnoreCase("ALL") && ProductTaggingHelper.getInstance(this).getTaggedProducts().size() > 0) {
                 return true;
             } else {
-                for (ProductMasterBO bo : bmodel.productHelper.getTaggedProducts()) {
+                for (ProductMasterBO bo : productTaggingHelper.getTaggedProducts()) {
                     if (isSpecialFilterAppliedProduct(filterCode, bo)) {
                         return true;
                     }
@@ -683,7 +686,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
         if (filterCode.equals("ALL")) {
             switch (applyLevel) {
                 case "ALL":
-                    for (ProductMasterBO product : bmodel.productHelper.getTaggedProducts()) {
+                    for (ProductMasterBO product : productTaggingHelper.getTaggedProducts()) {
                         for (int j = 0; j < product.getLocations().size(); j++) {
                             if ((stockCheckHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() < 0)
                                     || (stockCheckHelper.SHOW_STOCK_SC && product.getLocations().get(j).getShelfCase() < 0)
@@ -697,7 +700,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                 case "ANY":
                     //ANY
                     boolean isStockChecked = true;
-                    for (ProductMasterBO product : bmodel.productHelper.getTaggedProducts()) {
+                    for (ProductMasterBO product : productTaggingHelper.getTaggedProducts()) {
                         for (int j = 0; j < product.getLocations().size(); j++) {
                             isStockChecked = false;
                             if ((stockCheckHelper.SHOW_STOCK_SP && product.getLocations().get(j).getShelfPiece() > -1)
@@ -716,7 +719,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
             switch (applyLevel) {
                 case "ALL": {
                     boolean isStockChecked;
-                    for (ProductMasterBO product : bmodel.productHelper.getTaggedProducts()) {
+                    for (ProductMasterBO product : productTaggingHelper.getTaggedProducts()) {
                         if (isSpecialFilterAppliedProduct(filterCode, product) && product.getIsSaleable() == 1) {
                             isStockChecked = false;
                             for (int j = 0; j < product.getLocations().size(); j++) {
@@ -738,7 +741,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                 case "ANY": {
                     //ANY
                     boolean isStockChecked = true;
-                    for (ProductMasterBO product : bmodel.productHelper.getTaggedProducts()) {
+                    for (ProductMasterBO product : productTaggingHelper.getTaggedProducts()) {
                         if (isSpecialFilterAppliedProduct(filterCode, product) && product.getIsSaleable() == 1) {
                             isStockChecked = false;
                             for (int j = 0; j < product.getLocations().size(); j++) {
@@ -763,7 +766,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
         if (filterCode.equals("ALL")) {
             switch (applyLevel) {
                 case "ALL":
-                    for (ProductMasterBO product : bmodel.productHelper.getTaggedProducts()) {
+                    for (ProductMasterBO product : productTaggingHelper.getTaggedProducts()) {
                         if (product.getOrderedCaseQty() <= 0 && product.getOrderedPcsQty() <= 0 && product.getOrderedOuterQty() <= 0) {
                             return false;
                         }
@@ -771,7 +774,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                     return false;
                 case "ANY":
                     //ANY
-                    for (ProductMasterBO product : bmodel.productHelper.getTaggedProducts()) {
+                    for (ProductMasterBO product : productTaggingHelper.getTaggedProducts()) {
                         if (product.getOrderedCaseQty() > 0 || product.getOrderedPcsQty() > 0 || product.getOrderedOuterQty() > 0) {
                             return true;
                         }
@@ -783,7 +786,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
         } else {
             switch (applyLevel) {
                 case "ALL":
-                    for (ProductMasterBO product : bmodel.productHelper.getTaggedProducts()) {
+                    for (ProductMasterBO product : productTaggingHelper.getTaggedProducts()) {
                         if (isSpecialFilterAppliedProduct(filterCode, product)) {
                             if (product.getOrderedCaseQty() <= 0 && product.getOrderedPcsQty() <= 0 && product.getOrderedOuterQty() <= 0) {
                                 return false;
@@ -793,7 +796,7 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
                     return false;
                 case "ANY":
                     //ANY
-                    for (ProductMasterBO product : bmodel.productHelper.getTaggedProducts()) {
+                    for (ProductMasterBO product : productTaggingHelper.getTaggedProducts()) {
                         if (isSpecialFilterAppliedProduct(filterCode, product)) {
                             if (product.getOrderedCaseQty() > 0 || product.getOrderedPcsQty() > 0 || product.getOrderedOuterQty() > 0) {
                                 return true;
@@ -3835,13 +3838,11 @@ public class SubDStockCheckActivity extends IvyBaseActivityNoActionBar implement
     private Vector<ProductMasterBO> filterWareHouseProducts() {
         Vector<ProductMasterBO> newItems = new Vector<>();
         if (bmodel.configurationMasterHelper.IS_LOAD_WAREHOUSE_PRD_ONLY) {
-            for (ProductMasterBO products : bmodel.productHelper
-                    .getTaggedProducts()) {
+            for (ProductMasterBO products : ProductTaggingHelper.getInstance(this).getTaggedProducts()) {
                 if (products.isAvailableinWareHouse()) newItems.add(products);
             }
         } else {
-            newItems.addAll(bmodel.productHelper
-                    .getTaggedProducts());
+            newItems.addAll(ProductTaggingHelper.getInstance(this).getTaggedProducts());
         }
         return newItems;
     }

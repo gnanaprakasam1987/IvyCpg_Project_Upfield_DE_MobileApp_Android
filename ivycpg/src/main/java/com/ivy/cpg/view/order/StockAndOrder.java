@@ -105,6 +105,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.model.ProductSearchCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
@@ -428,7 +429,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
             int mContentLevel = bmodel.productHelper.getContentLevel(bmodel.getContext(), "MENU_STK_ORD");
-            bmodel.productHelper.getTaggingDetails("MAX_ORD_VAL", mContentLevel); //MAX_ORD_VAL
+            ProductTaggingHelper.getInstance(this).getTaggingDetails(this,"MAX_ORD_VAL", mContentLevel); //MAX_ORD_VAL
         }
 
         String title;

@@ -123,6 +123,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.DownloadProductsAndPrice;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -2421,7 +2422,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
 
                 // Download Tagged products and update the product master obj
-                bmodel.productHelper.downloadTaggedProducts("PC");
+                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this,"PC");
 
                 // Load Price related configurations.
                 priceTrackingHelper.loadPriceCheckConfiguration(getApplicationContext(), bmodel.getRetailerMasterBO().getSubchannelid());
@@ -2431,7 +2432,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         bmodel.productHelper.downloadCompetitorFiveFilterLevels();
                     }
                     bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE);
-                    bmodel.productHelper.downloadCompetitorTaggedProducts("PC");
+                    ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this,"PC");
                 }
 
                 priceTrackingHelper.clearPriceCheck();
@@ -2486,13 +2487,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
 
                 // Download Tagged products and update the product master obj
-                bmodel.productHelper.downloadTaggedProducts("PC");
+                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this,"PC");
 
                 // Load Price related configurations.
                 priceTrackingHelper.loadPriceCheckConfiguration(getApplicationContext(), bmodel.getRetailerMasterBO().getSubchannelid());
                 //its menu price comp
                 bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE_COMP);
-                bmodel.productHelper.downloadCompetitorTaggedProducts("PC");
+                ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this,"PC");
 
                 priceTrackingHelper.clearPriceCheck();
                 priceTrackingHelper.loadPriceTransaction(getApplicationContext());
@@ -3824,10 +3825,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             // More than 15 characters not allowed in sync. So code shortened..
             if (menu.getConfigCode().equals(MENU_COMBINED_STOCK)) {
                 stockCheckHelper.loadCmbStkChkConfiguration(this, bmodel.retailerMasterBO.getSubchannelid());
-                bmodel.productHelper.downloadTaggedProducts("MENU_COMB_STK");
+                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this,"MENU_COMB_STK");
             } else {
                 stockCheckHelper.loadStockCheckConfiguration(this, bmodel.retailerMasterBO.getSubchannelid());
-                bmodel.productHelper.downloadTaggedProducts(MENU_STOCK);
+                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this,MENU_STOCK);
             }
 
             /** Download location to load in the filter. **/
@@ -3840,12 +3841,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
                 bmodel.productHelper.downloadCompetitorProducts(MENU_STOCK);
                 if (menu.getConfigCode().equals(MENU_COMBINED_STOCK))
-                    bmodel.productHelper.downloadCompetitorTaggedProducts("MENU_COMB_STK");
+                    ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this,"MENU_COMB_STK");
                 else
-                    bmodel.productHelper.downloadCompetitorTaggedProducts(menu.getConfigCode());
+                    ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this,menu.getConfigCode());
             }
 
-            if (bmodel.productHelper.getTaggedProducts().size() > 0) {
+            if (ProductTaggingHelper.getInstance(this).getTaggedProducts().size() > 0) {
                 if (stockCheckHelper.SHOW_STOCK_AVGDAYS && menu.getConfigCode().equals(MENU_COMBINED_STOCK))
                     bmodel.productHelper.loadRetailerWiseInventoryFlexQty();
 

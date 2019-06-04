@@ -125,6 +125,7 @@ import com.ivy.sd.png.provider.OrderAndInvoiceHelper;
 import com.ivy.sd.png.provider.OutletTimeStampHelper;
 import com.ivy.sd.png.provider.PrintHelper;
 import com.ivy.sd.png.provider.ProductHelper;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.provider.ProfileHelper;
 import com.ivy.sd.png.provider.ReasonHelper;
 import com.ivy.sd.png.provider.RemarksHelper;
@@ -2410,11 +2411,12 @@ public class BusinessModel extends Application {
     }
 
     public boolean hasCombinedStkChecked() {
-        int cSize = productHelper.getTaggedProducts().size();
+        ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(getContext());
+        int cSize = productTaggingHelper.getTaggedProducts().size();
         if (cSize == 0)
             return false;
         for (int j = 0; j < cSize; j++) {
-            ProductMasterBO product = productHelper
+            ProductMasterBO product = productTaggingHelper
                     .getTaggedProducts().get(j);
 
             if (product.getIsDistributed() == 1 || product.getIsListed() == 1
@@ -3012,7 +3014,7 @@ public class BusinessModel extends Application {
         //mTaggedProducts list only used in StockCheck screen. So updating only in mTaggedProducts
         ProductMasterBO product = null;
         if (menuCode.equals("MENU_STOCK") || menuCode.equals("MENU_COMBINE_STKCHK")) {
-            product = productHelper.getTaggedProductBOById(productid);
+            product = ProductTaggingHelper.getInstance(getContext()).getTaggedProductBOById(productid);
         } else if (menuCode.equals("MENU_STK_ORD") || menuCode.equals("MENU_ORDER") || menuCode.equals("MENU_CATALOG_ORDER")) {
             product = productHelper.getProductMasterBOById(productid);
         }
@@ -3058,7 +3060,7 @@ public class BusinessModel extends Application {
         ProductMasterBO product = null;
         StockCheckHelper stockCheckHelper = StockCheckHelper.getInstance(ctx);
         if (menuCode.equals("MENU_STOCK") || menuCode.equals("MENU_COMBINE_STKCHK")) {
-            product = productHelper.getTaggedProductBOById(productid);
+            product = ProductTaggingHelper.getInstance(getContext()).getTaggedProductBOById(productid);
         } else if (menuCode.equals("MENU_STK_ORD") || menuCode.equals("MENU_ORDER") || menuCode.equals("MENU_CATALOG_ORDER")) {
             product = productHelper.getProductMasterBOById(productid);
         }
@@ -6344,7 +6346,8 @@ public class BusinessModel extends Application {
 
     private void initializeUOMmapping(int type) {
         if (type == 0) {
-            for (ProductMasterBO bo : productHelper.getTaggedProducts()) {
+            ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(getContext());
+            for (ProductMasterBO bo : productTaggingHelper.getTaggedProducts()) {
                 bo.setOuterMapped(false);
                 bo.setCaseMapped(false);
                 bo.setPieceMapped(false);
@@ -6366,7 +6369,8 @@ public class BusinessModel extends Application {
 
     private void enableUOMForAllProducts(int type) {
         if (type == 0) {
-            for (ProductMasterBO bo : productHelper.getTaggedProducts()) {
+            ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(getContext());
+            for (ProductMasterBO bo : productTaggingHelper.getTaggedProducts()) {
                 bo.setOuterMapped(true);
                 bo.setCaseMapped(true);
                 bo.setPieceMapped(true);
@@ -6393,16 +6397,17 @@ public class BusinessModel extends Application {
         db.openDataBase();
 
         try {
+            ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(getContext());
 
             if (contentLevelId == pLevelId) {
                 if (type == 0) {
-                    if (productHelper.getTaggedProductBOById(productId) != null) {
-                        if (productHelper.getTaggedProductBOById(productId).getPcUomid() == uomId)
-                            productHelper.getTaggedProductBOById(productId).setPieceMapped(true);
-                        else if (productHelper.getTaggedProductBOById(productId).getCaseUomId() == uomId)
-                            productHelper.getTaggedProductBOById(productId).setCaseMapped(true);
-                        else if (productHelper.getTaggedProductBOById(productId).getOuUomid() == uomId)
-                            productHelper.getTaggedProductBOById(productId).setOuterMapped(true);
+                    if (productTaggingHelper.getTaggedProductBOById(productId) != null) {
+                        if (productTaggingHelper.getTaggedProductBOById(productId).getPcUomid() == uomId)
+                            productTaggingHelper.getTaggedProductBOById(productId).setPieceMapped(true);
+                        else if (productTaggingHelper.getTaggedProductBOById(productId).getCaseUomId() == uomId)
+                            productTaggingHelper.getTaggedProductBOById(productId).setCaseMapped(true);
+                        else if (productTaggingHelper.getTaggedProductBOById(productId).getOuUomid() == uomId)
+                            productTaggingHelper.getTaggedProductBOById(productId).setOuterMapped(true);
                     }
                 } else if (type == 1) {
                     if (productHelper.getProductMasterBOById(productId) != null) {
@@ -6447,13 +6452,13 @@ public class BusinessModel extends Application {
                 if (c.getCount() > 0) {
                     while (c.moveToNext()) {
                         if (type == 0) {
-                            if (productHelper.getTaggedProductBOById(c.getString(0)) != null) {
-                                if (productHelper.getTaggedProductBOById(c.getString(0)).getPcUomid() == uomId)
-                                    productHelper.getTaggedProductBOById(c.getString(0)).setPieceMapped(true);
-                                else if (productHelper.getTaggedProductBOById(c.getString(0)).getCaseUomId() == uomId)
-                                    productHelper.getTaggedProductBOById(c.getString(0)).setCaseMapped(true);
-                                else if (productHelper.getTaggedProductBOById(c.getString(0)).getOuUomid() == uomId)
-                                    productHelper.getTaggedProductBOById(c.getString(0)).setOuterMapped(true);
+                            if (productTaggingHelper.getTaggedProductBOById(c.getString(0)) != null) {
+                                if (productTaggingHelper.getTaggedProductBOById(c.getString(0)).getPcUomid() == uomId)
+                                    productTaggingHelper.getTaggedProductBOById(c.getString(0)).setPieceMapped(true);
+                                else if (productTaggingHelper.getTaggedProductBOById(c.getString(0)).getCaseUomId() == uomId)
+                                    productTaggingHelper.getTaggedProductBOById(c.getString(0)).setCaseMapped(true);
+                                else if (productTaggingHelper.getTaggedProductBOById(c.getString(0)).getOuUomid() == uomId)
+                                    productTaggingHelper.getTaggedProductBOById(c.getString(0)).setOuterMapped(true);
                             }
                         } else if (type == 1) {
                             if (productHelper.getProductMasterBOById(c.getString(0)) != null) {
@@ -6485,14 +6490,14 @@ public class BusinessModel extends Application {
 
             // updating competitor products UOM based on mapping with own products.
             if (type == 0) {
-                for (ProductMasterBO bo : productHelper.getTaggedProducts()) {
+                for (ProductMasterBO bo : productTaggingHelper.getTaggedProducts()) {
                     if (bo.getOwn() == 0) {
-                        if (productHelper.getTaggedProductBOById(bo.getOwnPID()) != null) {
-                            if (productHelper.getTaggedProductBOById(bo.getOwnPID()).isPieceMapped())
+                        if (productTaggingHelper.getTaggedProductBOById(bo.getOwnPID()) != null) {
+                            if (productTaggingHelper.getTaggedProductBOById(bo.getOwnPID()).isPieceMapped())
                                 bo.setPieceMapped(true);
-                            if (productHelper.getTaggedProductBOById(bo.getOwnPID()).isCaseMapped())
+                            if (productTaggingHelper.getTaggedProductBOById(bo.getOwnPID()).isCaseMapped())
                                 bo.setCaseMapped(true);
-                            if (productHelper.getTaggedProductBOById(bo.getOwnPID()).isOuterMapped())
+                            if (productTaggingHelper.getTaggedProductBOById(bo.getOwnPID()).isOuterMapped())
                                 bo.setOuterMapped(true);
                         }
                     }

@@ -7,6 +7,7 @@ import android.database.Cursor;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
@@ -105,7 +106,7 @@ public class NearExpiryTrackingHelper {
                     }
 
 
-                    setSKUTrackingDetails(pid, locationId,
+                    setSKUTrackingDetails(mContext,pid, locationId,
                             uomId, uomQty, date, isLocChanged,
                             isDateChanged, false);
                 }
@@ -218,7 +219,7 @@ public class NearExpiryTrackingHelper {
                         k = 0;
                     }*/
 
-                    setSKUTrackingDetails(pid, locationId,
+                    setSKUTrackingDetails(mContext,pid, locationId,
                             uomId, uomQty, date, isLocChanged,
                             isDateChanged, isTaggedProduct);
                 }
@@ -241,13 +242,13 @@ public class NearExpiryTrackingHelper {
      * @param uomId
      * @param uomQty
      */
-    private void setSKUTrackingDetails(String pid, int locationId,
+    private void setSKUTrackingDetails(Context context,String pid, int locationId,
                                        int uomId, String uomQty, String date,
                                        boolean isLocChanged, boolean isDateChanged, boolean isTaggedProduct) {
         ProductMasterBO productBO;
 
         if (isTaggedProduct) {
-            productBO = mBModel.productHelper.getTaggedProductBOById(pid);
+            productBO = ProductTaggingHelper.getInstance(context).getTaggedProductBOById(pid);
         } else {
             productBO = mBModel.productHelper.getProductMasterBOById(pid);
         }

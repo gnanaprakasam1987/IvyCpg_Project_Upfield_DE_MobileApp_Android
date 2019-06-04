@@ -41,9 +41,7 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
-import com.ivy.utils.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -87,10 +85,12 @@ public class ProductHelper {
     private ArrayList<LoyaltyBenifitsBO> ltyBenifitsList;
     private Vector<LoyaltyBO> loyaltyproductList = new Vector<LoyaltyBO>();
 
-    private ArrayList<NearExpiryDateBO> dateList = new ArrayList<NearExpiryDateBO>();
+    public ArrayList<NearExpiryDateBO> getNearExpiryDateList() {
+        return nearExpiryDateList;
+    }
 
-    private Vector<ProductMasterBO> mTaggedProducts = null;
-    private Map<String, ProductMasterBO> mTaggedProductById;
+    private ArrayList<NearExpiryDateBO> nearExpiryDateList = new ArrayList<NearExpiryDateBO>();
+
 
 
     private ArrayList<Integer> mIndicativeList;
@@ -117,8 +117,6 @@ public class ProductHelper {
     private Vector<CompetitorFilterLevelBO> mCompetitorSequenceValues;
     private Vector<ProductMasterBO> competitorProductMaster = new Vector<>();
 
-    private ArrayList<ProductTaggingBO> productTaggingList;
-    private ArrayList<Integer> taggedLocationIds;
 
     private ArrayList<ProductMasterBO> mIndicateOrderList = new ArrayList<ProductMasterBO>();
 
@@ -212,13 +210,9 @@ public class ProductHelper {
         this.mLoadedGlobalProductId = mLoadedGlobalProductId;
     }
 
-    public ArrayList<ProductTaggingBO> getProductTaggingList() {
-        return productTaggingList;
-    }
 
-    public void setProductTaggingList(ArrayList<ProductTaggingBO> productTaggingList) {
-        this.productTaggingList = productTaggingList;
-    }
+
+
 
     public HashMap<Integer, Integer> getmProductidOrderByEntryMap() {
         return mProductidOrderByEntryMap;
@@ -232,13 +226,10 @@ public class ProductHelper {
         this.mContext = context;
         this.bmodel = (BusinessModel) context;
         productMaster = new Vector<ProductMasterBO>();
-        mTaggedProducts = new Vector<ProductMasterBO>();
     }
 
     public void clearProductHelper() {
         productMaster = null;
-        mTaggedProducts = null;
-        mTaggedProductById = null;
         productMasterById = null;
         mSelectedGlobalProductId = 0;
         System.gc();
@@ -265,11 +256,7 @@ public class ProductHelper {
         return productMaster;
     }
 
-    public Vector<ProductMasterBO> getTaggedProducts() {
-        if (mTaggedProducts == null)
-            return new Vector<ProductMasterBO>();
-        return mTaggedProducts;
-    }
+
 
     public HashMap<Integer, Vector<LevelBO>> getFilterProductsByLevelId() {
         return filterProductsByLevelId;
@@ -470,7 +457,7 @@ public class ProductHelper {
         //mTaggedProducts list only used in StockCheck screen. So updating only in mTaggedProducts
         ProductMasterBO product = null;
 
-        product = getTaggedProductBOById(productid);
+        product = ProductTaggingHelper.getInstance(mContext).getTaggedProductBOById(productid);
 
         if (product != null) {
             if (product.getProductID().equals(productid)) {
@@ -595,7 +582,7 @@ public class ProductHelper {
     private void generateDateListForNearExpiry() {
 
         NearExpiryDateBO bo;
-        dateList.clear();
+        nearExpiryDateList.clear();
         SimpleDateFormat df = new SimpleDateFormat("dd/MMM/yyyy",
                 Locale.ENGLISH);
         Calendar c = Calendar.getInstance();
@@ -603,7 +590,7 @@ public class ProductHelper {
         String dateF = df.format(c.getTime());
         bo.setDate("");
         bo.setDateID(0);
-        dateList.add(bo);
+        nearExpiryDateList.add(bo);
 
         for (int i = 1; i <= 5; i++) {
             c.add(Calendar.MONTH, 1);
@@ -611,7 +598,7 @@ public class ProductHelper {
             bo = new NearExpiryDateBO();
             bo.setDate("");
             bo.setDateID(i);
-            dateList.add(bo);
+            nearExpiryDateList.add(bo);
         }
     }
 
@@ -1058,7 +1045,7 @@ public class ProductHelper {
 
                     for (int i = 0; i < locations.size(); i++) {
                         product.getLocations().get(i)
-                                .setNearexpiryDate(cloneDateList(dateList));
+                                .setNearexpiryDate(cloneDateList(nearExpiryDateList));
                     }
                     product.setIsNMustSell(c.getInt(c.getColumnIndex("IsNMustSell")));
                     product.setWeight(c.getFloat(c.getColumnIndex("weight")));
@@ -1167,51 +1154,52 @@ public class ProductHelper {
         String SMPproductIds = "";
         String nearExpiryTaggedProductIds = "";
 
+        ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(mContext);
         if (filter10) {
-            MSLproductIds = getTaggingDetails("MSL", mContentLevelId);
+            MSLproductIds = productTaggingHelper.getTaggingDetails(mContext,"MSL", mContentLevelId);
             stringBuilder.append("A.pid in(" + MSLproductIds + ") as IsMustSell,");
         } else {
             stringBuilder.append("0 as IsMustSell,");
         }
         if (filter16) {
-            NMSLproductIds = getTaggingDetails("NMSL", mContentLevelId);
+            NMSLproductIds = productTaggingHelper.getTaggingDetails(mContext,"NMSL", mContentLevelId);
             stringBuilder.append("A.pid in(" + NMSLproductIds + ") as IsNMustSell,");
 
         } else {
             stringBuilder.append("0 as IsNMustSell,");
         }
         if (filter11) {
-            FCBNDproductIds = getTaggingDetails("FCBND", mContentLevelId);
+            FCBNDproductIds = productTaggingHelper.getTaggingDetails(mContext,"FCBND", mContentLevelId);
             stringBuilder.append("A.pid in(" + FCBNDproductIds + ") as IsFocusBrand,");
         } else {
             stringBuilder.append("0 as IsFocusBrand,");
         }
         if (filter12) {
-            FCBND2productIds = getTaggingDetails("FCBND2", mContentLevelId);
+            FCBND2productIds = productTaggingHelper.getTaggingDetails(mContext,"FCBND2", mContentLevelId);
             stringBuilder.append("A.pid in(" + FCBND2productIds + ") as IsFocusBrand2,");
         } else {
             stringBuilder.append("0 as IsFocusBrand2,");
         }
         if (filter20) {
-            FCBND3productIds = getTaggingDetails("FCBND3", mContentLevelId);
+            FCBND3productIds = productTaggingHelper.getTaggingDetails(mContext,"FCBND3", mContentLevelId);
             stringBuilder.append("A.pid in(" + FCBND3productIds + ") as IsFocusBrand3,");
         } else {
             stringBuilder.append("0 as IsFocusBrand3,");
         }
         if (filter21) {
-            FCBND4productIds = getTaggingDetails("FCBND4", mContentLevelId);
+            FCBND4productIds = productTaggingHelper.getTaggingDetails(mContext,"FCBND4", mContentLevelId);
             stringBuilder.append("A.pid in(" + FCBND4productIds + ") as IsFocusBrand4,");
         } else {
             stringBuilder.append("0 as IsFocusBrand4,");
         }
         if (filter22) {
-            SMPproductIds = getTaggingDetails("SMP", mContentLevelId);
+            SMPproductIds = productTaggingHelper.getTaggingDetails(mContext,"SMP", mContentLevelId);
             stringBuilder.append("A.pid in(" + SMPproductIds + ") as IsSMP,");
         } else {
             stringBuilder.append("0 as IsSMP,");
         }
         if (filter19) {
-            nearExpiryTaggedProductIds = getTaggingDetails("MENU_NEAREXPIRY", mContentLevelId);
+            nearExpiryTaggedProductIds = productTaggingHelper.getTaggingDetails(mContext,"MENU_NEAREXPIRY", mContentLevelId);
             stringBuilder.append("A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry,");
         } else {
             stringBuilder.append("0 as isNearExpiry,");
@@ -1467,103 +1455,6 @@ public class ProductHelper {
 
     }
 
-    /**
-     * get tagged products and update the productBO.
-     *
-     * @param mMenuCode menu code
-     */
-    public void downloadTaggedProducts(String mMenuCode) {
-        try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
-            db.openDataBase();
-            int mContentLevel = getContentLevel(db, mMenuCode);
-            String productIds = getTaggingDetails(mMenuCode, mContentLevel);
-            List<String> mSKUId = new ArrayList<>();
-
-            mSKUId = Arrays.asList(productIds.split(","));
-
-            mTaggedProducts = new Vector<ProductMasterBO>();
-            mTaggedProductById = new HashMap<String, ProductMasterBO>();
-
-            if (productIds != null && !productIds.trim().equals("")) {
-                for (ProductMasterBO sku : getProductMaster()) {
-                    if (mSKUId.contains(sku.getProductID())) {
-                        mTaggedProducts.add(sku);
-                        mTaggedProductById.put(sku.getProductID(), sku);
-                    }
-                }
-            } else {
-                for (ProductMasterBO sku : getProductMaster()) {
-                    mTaggedProducts.add(sku);
-                    mTaggedProductById.put(sku.getProductID(), sku);
-                }
-            }
-            if(!db.isDbNullOrClosed())
-                db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("downloadTaggedProducts", e);
-        }
-
-    }
-
-
-    /**
-     * Method will return tagged products list as a string with comma separator.
-     *
-     * @param taggingType tagging type
-     * @return productId with comma separated string.
-     */
-    public String getTaggingDetails(String taggingType, int mContentLevelId) {
-        try {
-            ProductTaggingBO taggingBO;
-            productTaggingList = new ArrayList<>();
-
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
-            db.openDataBase();
-
-            String groupIds = getMappedGroupId(db, taggingType);
-            StringBuilder productIds = new StringBuilder();
-
-            Cursor c = db.selectSQL("SELECT PMM.pid,PCM.GroupID,FromNorm,ToNorm,Weightage FROM ProductTaggingCriteriaMapping PCM " +
-                    "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid " +
-                    "INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid and PGM.isOwn = 1 " +
-                    "INNER JOIN ProductMaster PMM ON PMM.Plid = "+ mContentLevelId +" and PMM.ParentHierarchy like '%/'||PGM.PID||'/%' " +
-                    "WHERE PCM.groupid IN(" + groupIds + ")");
-
-            if (c != null) {
-                while (c.moveToNext()) {
-                    if (!productIds.toString().equals(""))
-                        productIds.append(",");
-                    productIds.append(c.getInt(0));
-                    if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED || bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
-                        taggingBO = new ProductTaggingBO();
-                        taggingBO.setHeaderID(c.getString(1));
-                        taggingBO.setPid(c.getString(0));
-                        taggingBO.setFromNorm(c.getInt(2));
-                        taggingBO.setToNorm(c.getInt(3));
-                        taggingBO.setWeightage(c.getInt(4));
-                        productTaggingList.add(taggingBO);
-                    }
-
-                    if(taggingType.equalsIgnoreCase("PC")){
-                        // overriding price for price module
-                        float price=c.getFloat(3);
-                        if(price>0) {
-                            productMasterById.get(c.getString(0)).setSrp(price);
-                            productMasterById.get(c.getString(0)).setPriceMOP(String.valueOf(price));
-                        }
-                    }
-                }
-                c.close();
-            }
-            db.closeDB();
-            setProductTaggingList(productTaggingList);
-            return productIds.toString();
-        } catch (Exception e) {
-//            e.printStackTrace();
-            return "";
-        }
-    }
 
     /**
      * This method will check whether the product is an initiative product or
@@ -1656,11 +1547,7 @@ public class ProductHelper {
         return mLoadManagementBOByProductId.get(productId);
     }
 
-    public ProductMasterBO getTaggedProductBOById(String productId) {
-        if (mTaggedProductById == null)
-            return null;
-        return mTaggedProductById.get(productId);
-    }
+
 
     public void clearOrderTableForInitiative() {
         ProductMasterBO product;
@@ -1869,7 +1756,7 @@ public class ProductHelper {
 
         Vector<ProductMasterBO> productList;
         if (isTaggedProducts) {
-            productList = getTaggedProducts();
+            productList = ProductTaggingHelper.getInstance(context).getTaggedProducts();
         } else {
             productList = getProductMaster();
         }
@@ -4040,7 +3927,7 @@ public class ProductHelper {
                         product.setLocations(cloneInStoreLocationList(locations));
                         for (int i = 0; i < locations.size(); i++) {
                             product.getLocations().get(i)
-                                    .setNearexpiryDate(cloneDateList(dateList));
+                                    .setNearexpiryDate(cloneDateList(nearExpiryDateList));
                         }
                     /*bmodel.productHelper.getTaggedProducts().add(product);
                     mTaggedProductById.put(product.getProductID(), product);*/
@@ -5098,146 +4985,6 @@ public class ProductHelper {
     }
 
 
-    /**
-     * get competitor tagged products and update the productBO.
-     *
-     * @param mMenuCode menu code
-     */
-    public void downloadCompetitorTaggedProducts(String mMenuCode) {
-        try {
-
-            String productIds = getCompetitorTaggingDetails(mMenuCode);
-
-
-            if (mTaggedProducts == null) {
-                mTaggedProducts = new Vector<ProductMasterBO>();
-            }
-            if (mTaggedProductById == null) {
-                mTaggedProductById = new HashMap<String, ProductMasterBO>();
-            }
-
-            if (productIds != null && !productIds.trim().equals("")) {
-                for (ProductMasterBO sku : getCompetitorProductMaster()) {
-                    //if (mSKUId.contains(sku.getProductID())) {
-                    mTaggedProducts.add(sku);
-                    mTaggedProductById.put(sku.getProductID(), sku);
-
-                }
-            } else {
-                for (ProductMasterBO sku : getCompetitorProductMaster()) {
-                    mTaggedProducts.add(sku);
-                    mTaggedProductById.put(sku.getProductID(), sku);
-
-                }
-            }
-
-
-            Vector<ProductMasterBO> tagItems = getTaggedProducts();
-            if (tagItems != null)
-                for (ProductMasterBO tagBo : tagItems) {
-                    if (tagBo.getOwn() == 0 && getFilterColor("Filt23") != 0) {
-                        tagBo.setTextColor(getFilterColor("Filt23"));
-                    } else {
-                        if (tagBo.getOwn() == 0)
-                            tagBo.setTextColor(ContextCompat.getColor(mContext, R.color.list_item_primary_text_color));
-                    }
-                }
-        } catch (Exception e) {
-            Commons.printException("downloadTaggedProducts", e);
-        }
-
-    }
-
-    /* get All competitor tagged products irrespective of own product mapping */
-    private void getAlCompetitorTaggedProducts(int loopEnd) {
-        DBUtil db;
-        try {
-            db = new DBUtil(mContext, DataMembers.DB_NAME);
-            db.openDataBase();
-            String sql;
-            sql = "SELECT distinct A1.CPID, A1.CPName," +
-                    "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.CASE_TYPE) + " and ListType = 'PRODUCT_UOM')as duomid," +
-                    "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.OUTER_TYPE) + " and ListType = 'PRODUCT_UOM') as dOuomid," +
-                    "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.PIECE_TYPE) + " and ListType = 'PRODUCT_UOM') as piece_uomid," +
-                    "A1.CPCode,A" + loopEnd + ".CPID as parentId,ifnull(A1.Barcode,'') from CompetitorProductMaster A1";
-            for (int i = 2; i <= loopEnd; i++)
-                sql = sql + " INNER JOIN CompetitorProductMaster A" + i + " ON A" + i
-                        + ".CPID = A" + (i - 1) + ".CPTid";
-            Cursor cur = db
-                    .selectSQL(sql
-                            + " INNER JOIN ProductTaggingGroupMapping PTGM ON PTGM.isOwn = 0 AND PTGM.pid = A1.CPID");
-            if (cur != null) {
-
-                while (cur.moveToNext()) {
-                    ProductMasterBO product = new ProductMasterBO();
-                    product.setProductID(cur.getString(0));
-                    product.setProductName(cur.getString(1));
-                    product.setProductShortName(cur.getString(1));
-                    product.setParentid(0);
-                    product.setIsSaleable(1);
-                    product.setBarCode(cur.getString(7));
-                    product.setCasebarcode(cur.getString(7));
-                    product.setOuterbarcode(cur.getString(7));
-                    product.setOwn(0);
-                    product.setCaseUomId(cur.getInt(2));
-                    product.setOuUomid(cur.getInt(3));
-                    product.setPcUomid(cur.getInt(4));
-                    product.setProductCode(cur.getString(5));
-                    product.setOwnPID("0");
-                    product.setCompParentId(cur.getInt(cur.getColumnIndex("parentId")));
-
-                    product.setLocations(cloneInStoreLocationList(locations));
-                    for (int i = 0; i < locations.size(); i++) {
-                        product.getLocations().get(i)
-                                .setNearexpiryDate(cloneDateList(dateList));
-                    }
-
-                    competitorProductMaster.add(product);
-
-                }
-                cur.close();
-
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Method will return competitor tagged products list as a string with comma separator.
-     *
-     * @param taggingType tagging type
-     * @return productId with comma separated string.
-     */
-    public String getCompetitorTaggingDetails(String taggingType) {
-        try {
-
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
-
-            db.openDataBase();
-            String groupIds = getMappedGroupId(db, taggingType);
-            StringBuilder productIds = new StringBuilder();
-            Cursor c = db
-                    .selectSQL("SELECT distinct pid FROM ProductTaggingCriteriaMapping PCM " +
-                            " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid " +
-                            " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid and PGM.isOwn = 0" +
-                            " WHERE PCM.groupid IN(" + groupIds + ")");
-
-            if (c != null) {
-                while (c.moveToNext()) {
-                    if (!productIds.toString().equals(""))
-                        productIds.append(",");
-                    productIds.append(c.getInt(0));
-                }
-                c.close();
-            }
-            db.closeDB();
-
-            return productIds.toString();
-        } catch (Exception e) {
-            return "";
-        }
-    }
 
 
     public ArrayList<ConfigureBO> downloadOrderSummaryDialogFields(Context context) {
