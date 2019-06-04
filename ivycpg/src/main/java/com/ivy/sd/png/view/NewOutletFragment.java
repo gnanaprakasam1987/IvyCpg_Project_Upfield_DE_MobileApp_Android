@@ -5216,7 +5216,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
             ProductTaggingHelper.getInstance(getActivity()).downloadTaggedProducts(getActivity(),MENU_NEW_RETAILER);
             bmodel.productHelper.downloadCompetitorProducts("MENU_STK_ORD");
-            ProductTaggingHelper.getInstance(getActivity()).downloadCompetitorTaggedProducts(MENU_NEW_RETAILER);
+            ProductTaggingHelper.getInstance(getActivity()).downloadCompetitorTaggedProducts(getActivity(),MENU_NEW_RETAILER);
 
             /* Settign color **/
             bmodel.configurationMasterHelper.downloadFilterList();

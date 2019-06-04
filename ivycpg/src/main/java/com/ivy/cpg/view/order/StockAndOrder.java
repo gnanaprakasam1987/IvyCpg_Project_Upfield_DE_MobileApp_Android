@@ -4114,7 +4114,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private boolean checkTaggingDetails(ProductMasterBO productMasterBO) {
         try {
-            ArrayList<ProductTaggingBO> productTaggingList = bmodel.productHelper.getProductTaggingList();
+            ArrayList<ProductTaggingBO> productTaggingList = ProductTaggingHelper.getInstance(this).getProductTaggingList();
             for (ProductTaggingBO productTagging : productTaggingList) {
                 float totalQty = (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
                         + (productMasterBO.getOrderedPcsQty())
@@ -4133,7 +4133,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private void setTaggingDetails() {
         try {
-            ArrayList<ProductTaggingBO> productTaggingList = bmodel.productHelper.getProductTaggingList();
+            ArrayList<ProductTaggingBO> productTaggingList = ProductTaggingHelper.getInstance(this).getProductTaggingList();
             for (ProductTaggingBO productTagging : productTaggingList) {
                 for (ProductMasterBO productMasterBO : productList) {
                     if (productMasterBO.getProductID().equals(productTagging.getPid())) {

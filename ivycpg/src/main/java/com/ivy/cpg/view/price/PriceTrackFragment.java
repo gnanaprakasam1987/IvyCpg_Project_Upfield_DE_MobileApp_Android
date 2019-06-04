@@ -451,7 +451,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             if (businessModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 menu.findItem(R.id.menu_location_filter).setVisible(false);
             else {
-                if (businessModel.productHelper.getInStoreLocation().size() > 1
+                if (priceTrackingHelper.getLocationAdapter().getCount() > 1
                         || !priceTrackingHelper.SHOW_PRICE_LOCATION_FILTER)
                     menu.findItem(R.id.menu_location_filter).setVisible(false);
             }
@@ -541,7 +541,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                         , Toast.LENGTH_LONG).show();
             }
             return true;
-        } else if (i == R.id.menu_loc_filter) {
+        } else if (i == R.id.menu_location_filter) {
             showLocation();
             return true;
         }

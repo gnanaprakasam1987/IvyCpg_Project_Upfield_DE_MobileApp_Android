@@ -1667,7 +1667,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             if (businessModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 menu.findItem(R.id.menu_loc_filter).setVisible(false);
             else {
-                if (businessModel.productHelper.getInStoreLocation().size() > 1
+                if (stockCheckPresenter.getLocationAdapter().getCount() > 1
                         || !stockCheckHelper.SHOW_STOCK_LOCATION_FILTER)
                     menu.findItem(R.id.menu_loc_filter).setVisible(false);
             }

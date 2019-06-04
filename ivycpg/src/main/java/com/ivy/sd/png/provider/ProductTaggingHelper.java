@@ -25,10 +25,18 @@ public class ProductTaggingHelper {
     private static ProductTaggingHelper instance;
     private ArrayList<ProductTaggingBO> productTaggingList;
 
+    private ArrayList<Integer> taggedLocations;
     private Vector<ProductMasterBO> mTaggedProducts = null;
     private Map<String, ProductMasterBO> mTaggedProductById;
     private BusinessModel bmodel;
     private ProductHelper productHelper;
+
+    private static int TAGGING_TYPE_MODULE_WITH_STORELOCATION=1;
+    private static int TAGGING_TYPE_MODULE=2;
+    private static int TAGGING_TYPE_COMMON_WITH_STORELOCATION=3;
+    private static int TAGGING_TYPE_COMMON=4;
+
+
 
     public ProductTaggingHelper(Context context){
         mTaggedProducts = new Vector<>();
@@ -95,13 +103,20 @@ public class ProductTaggingHelper {
     }
 
 
+    public ArrayList<Integer> getTaggedLocations() {
+        if(taggedLocations==null)
+            taggedLocations=new ArrayList<>();
+        return taggedLocations;
+    }
+
+
     /**
      * Method will return tagged products list as a string with comma separator.
      *
-     * @param taggingType tagging type
+     * @param moduleCode tagging type
      * @return productId with comma separated string.
      */
-    public String getTaggingDetails(Context mContext,String taggingType, int mContentLevelId) {
+    public String getTaggingDetails(Context mContext,String moduleCode, int mContentLevelId) {
         try {
             ProductTaggingBO taggingBO;
             productTaggingList = new ArrayList<>();
@@ -109,10 +124,21 @@ public class ProductTaggingHelper {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
 
-            String groupIds = getMappedGroupId(mContext,db, taggingType);
+            int typeOfTagging=getTypeOfTagging(db,moduleCode);
+
+            boolean isLocationMappingIncluded=false;
+            String criteriaTable="ProductTaggingCriteriaMapping";
+            if(typeOfTagging==TAGGING_TYPE_MODULE_WITH_STORELOCATION||typeOfTagging==TAGGING_TYPE_COMMON_WITH_STORELOCATION) {
+                isLocationMappingIncluded = true;
+                criteriaTable="ProductTaggingCriteriaLocationMapping";
+            }
+
+            String groupIds = getMappedGroupId(mContext,db, moduleCode,typeOfTagging);
             StringBuilder productIds = new StringBuilder();
 
-            Cursor c = db.selectSQL("SELECT PMM.pid,PCM.GroupID,FromNorm,ToNorm,Weightage FROM ProductTaggingCriteriaMapping PCM " +
+            Cursor c = db.selectSQL("SELECT PMM.pid,PCM.GroupID,FromNorm,ToNorm,Weightage"+
+                    (isLocationMappingIncluded?",PCM.InStoreLocationId":"")+
+                    " FROM "+criteriaTable+" PCM " +
                     "INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid " +
                     "INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid and PGM.isOwn = 1 " +
                     "INNER JOIN ProductMaster PMM ON PMM.Plid = "+ mContentLevelId +" and PMM.ParentHierarchy like '%/'||PGM.PID||'/%' " +
@@ -133,7 +159,13 @@ public class ProductTaggingHelper {
                         productTaggingList.add(taggingBO);
                     }
 
-                    if(taggingType.equalsIgnoreCase("PC")){
+                    if(isLocationMappingIncluded){
+                        if(!taggedLocations.contains(c.getInt(5)))
+                            taggedLocations.add(c.getInt(5));
+                        productHelper.getProductMasterBOById(c.getString(0)).getTaggedLocations().add(c.getInt(5));
+                    }
+
+                    if(moduleCode.equalsIgnoreCase("PC")){
                         // overriding price for price module
                         float price=c.getFloat(3);
                         if(price>0) {
@@ -153,9 +185,50 @@ public class ProductTaggingHelper {
         }
     }
 
+    private int getTypeOfTagging(DBUtil db,String taggingType){
+        try {
+            StringBuilder priorityQuery = new StringBuilder();
+            Cursor priorityCursor;
+            boolean isModuleWiseLocationMapping = false, isModuleWiseMapping = false, isCommonLocationMapping = false;
+            priorityQuery.append("SELECT DISTINCT PCM.GroupID FROM ProductTaggingCriteriaLocationMapping PCM " +
+                    " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
+                    " WHERE PM.TaggingTypelovID = " +
+                    " (SELECT ListId FROM StandardListMaster WHERE ListCode = '" + taggingType + "' AND ListType = 'PRODUCT_TAGGING')");
+            priorityCursor = db.selectSQL(priorityQuery.toString());
+            if (priorityCursor.getCount() > 0) {
+                return TAGGING_TYPE_MODULE_WITH_STORELOCATION;
+            } else {
+
+                priorityQuery = new StringBuilder();
+                priorityQuery.append("SELECT DISTINCT PCM.GroupID FROM ProductTaggingCriteriaMapping PCM " +
+                        " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
+                        " WHERE PM.TaggingTypelovID = " +
+                        " (SELECT ListId FROM StandardListMaster WHERE ListCode = '" + taggingType + "' AND ListType = 'PRODUCT_TAGGING')");
+                priorityCursor = db.selectSQL(priorityQuery.toString());
+                if (priorityCursor.getCount() > 0) {
+                   return TAGGING_TYPE_MODULE;
+
+                } else {
+                    priorityQuery.append("SELECT DISTINCT PCM.GroupID FROM ProductTaggingCriteriaLocationMapping PCM " +
+                            " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
+                            " WHERE PM.TaggingTypelovID = " +
+                            " (SELECT ListId FROM StandardListMaster WHERE ListCode = 'COMMON' AND ListType = 'PRODUCT_TAGGING')");
+                    priorityCursor = db.selectSQL(priorityQuery.toString());
+                    if (priorityCursor.getCount() > 0) {
+                        return TAGGING_TYPE_COMMON_WITH_STORELOCATION;
+                    }
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+
+        return TAGGING_TYPE_COMMON;
+    }
     //new producttagging mapping
     //Mansoor
-    private String getMappedGroupId(Context mContext,DBUtil db, String taggingType) {
+    private String getMappedGroupId(Context mContext,DBUtil db, String moduleCode,int typeOfTagging) {
         StringBuilder groupIds = new StringBuilder();
         ArrayList<String> attrmappingsetId = new ArrayList<>();
         //taggedLocationIds=new ArrayList<>();
@@ -164,7 +237,7 @@ public class ProductTaggingHelper {
         String attrQuery = "Select distinct PTAM.Groupid from ProductTaggingAttributesMapping PTAM" +
                 " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PTAM.groupid" +
                 " inner join RetailerAttribute RA on RA.AttributeId = PTAM.RetailerAttibuteId and RA.RetailerId =" + StringUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()) +
-                " WHERE PM.TaggingTypelovID = " + "(SELECT ListId FROM StandardListMaster WHERE ListCode = '" + taggingType + "' AND ListType = 'PRODUCT_TAGGING')";
+                " WHERE PM.TaggingTypelovID = " + "(SELECT ListId FROM StandardListMaster WHERE ListCode = '" + moduleCode + "' AND ListType = 'PRODUCT_TAGGING')";
 
         Cursor c1 = db.selectSQL(attrQuery);
 
@@ -186,55 +259,22 @@ public class ProductTaggingHelper {
             }
         }
 
-        StringBuilder priorityQuery=new StringBuilder();
-        Cursor priorityCursor;
-        boolean isModuleWiseLocationMapping=false,isModuleWiseMapping=false,isCommonLocationMapping=false;
-        priorityQuery.append("SELECT DISTINCT PCM.GroupID FROM ProductTaggingCriteriaLocationMapping PCM " +
-                " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
-                " WHERE PM.TaggingTypelovID = " +
-                " (SELECT ListId FROM StandardListMaster WHERE ListCode = '" + taggingType + "' AND ListType = 'PRODUCT_TAGGING')");
-        priorityCursor=db.selectSQL(priorityQuery.toString());
-        if(priorityCursor.getCount()>0){
-            isModuleWiseLocationMapping=true;
-        }
-        else {
 
-            priorityQuery = new StringBuilder();
-            priorityQuery.append("SELECT DISTINCT PCM.GroupID FROM ProductTaggingCriteriaMapping PCM " +
-                    " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
-                    " WHERE PM.TaggingTypelovID = " +
-                    " (SELECT ListId FROM StandardListMaster WHERE ListCode = '" + taggingType + "' AND ListType = 'PRODUCT_TAGGING')");
-            priorityCursor = db.selectSQL(priorityQuery.toString());
-            if (priorityCursor.getCount() > 0) {
-                isModuleWiseMapping=true;
-
-            }
-            else {
-                priorityQuery.append("SELECT DISTINCT PCM.GroupID FROM ProductTaggingCriteriaLocationMapping PCM " +
-                        " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
-                        " WHERE PM.TaggingTypelovID = " +
-                        " (SELECT ListId FROM StandardListMaster WHERE ListCode = 'COMMON' AND ListType = 'PRODUCT_TAGGING')");
-                priorityCursor=db.selectSQL(priorityQuery.toString());
-                if(priorityCursor.getCount()>0){
-                    isCommonLocationMapping=true;
-                }
-            }
-        }
 
         String criteriaTableName="";
-        if(isModuleWiseLocationMapping){
+        if(typeOfTagging==TAGGING_TYPE_MODULE_WITH_STORELOCATION){
             criteriaTableName="ProductTaggingCriteriaLocationMapping";
         }
-        else if(isModuleWiseMapping){
+        else if(typeOfTagging==TAGGING_TYPE_MODULE){
             criteriaTableName="ProductTaggingCriteriaMapping";
         }
-        else if(isCommonLocationMapping){
+        else if(typeOfTagging==TAGGING_TYPE_COMMON_WITH_STORELOCATION){
             criteriaTableName="ProductTaggingCriteriaLocationMapping";
-            taggingType="COMMON";
+            moduleCode="ACCOUNT_ASSORTMENT";
         }
         else {
             criteriaTableName="ProductTaggingCriteriaMapping";
-            taggingType="COMMON";
+            moduleCode="ACCOUNT_ASSORTMENT";
         }
 
 
@@ -245,7 +285,7 @@ public class ProductTaggingHelper {
                 " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid" +
                 " Left Join ProductTaggingAttributesMapping PTAM on PTAM.groupid = PCM.GroupID " +
                 " WHERE PM.TaggingTypelovID = " +
-                " (SELECT ListId FROM StandardListMaster WHERE ListCode = '" + taggingType + "' AND ListType = 'PRODUCT_TAGGING')");
+                " (SELECT ListId FROM StandardListMaster WHERE ListCode = '" + moduleCode + "' AND ListType = 'PRODUCT_TAGGING')");
 
 
         if(accountGroupIds.toString().length()>0){
@@ -409,16 +449,17 @@ public class ProductTaggingHelper {
     /**
      * Method will return competitor tagged products list as a string with comma separator.
      *
-     * @param taggingType tagging type
+     * @param moduleCode tagging type
      * @return productId with comma separated string.
      */
-    public String getCompetitorTaggingDetails(Context mContext,String taggingType) {
+    public String getCompetitorTaggingDetails(Context mContext,String moduleCode) {
         try {
 
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
 
             db.openDataBase();
-            String groupIds = getMappedGroupId(mContext,db, taggingType);
+            int typeOfTagging=getTypeOfTagging(db,moduleCode);
+            String groupIds = getMappedGroupId(mContext,db, moduleCode,typeOfTagging);
             StringBuilder productIds = new StringBuilder();
             Cursor c = db
                     .selectSQL("SELECT distinct pid FROM ProductTaggingCriteriaMapping PCM " +

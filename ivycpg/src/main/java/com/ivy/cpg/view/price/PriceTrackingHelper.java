@@ -95,8 +95,16 @@ public class PriceTrackingHelper {
         //location
         mLocationAdapter = new ArrayAdapter<>(context,
                 android.R.layout.select_dialog_singlechoice);
+        ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(context);
         for (StandardListBO temp : bmodel.productHelper.getInStoreLocation())
-            mLocationAdapter.add(temp);
+        {
+            if(productTaggingHelper.getTaggedLocations().size()>0) {
+                if (productTaggingHelper.getTaggedLocations().contains(Integer.parseInt(temp.getListID())))
+                    mLocationAdapter.add(temp);
+            }else {
+                mLocationAdapter.add(temp);
+            }
+        }
         if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
             mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
         }

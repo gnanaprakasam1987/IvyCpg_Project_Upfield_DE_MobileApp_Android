@@ -135,7 +135,7 @@ public class FitScoreHelper {
             db.openDataBase();
             int mContentLevelId = bmodel.productHelper.getContentLevel(db, Module);
             ProductTaggingHelper.getInstance(mContext).getTaggingDetails(mContext,Module, mContentLevelId);
-            setWeightageList(bmodel.productHelper.getProductTaggingList());
+            setWeightageList(ProductTaggingHelper.getInstance(mContext).getProductTaggingList());
             if(!db.isDbNullOrClosed())
                 db.closeDB();
         }
