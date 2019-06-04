@@ -521,14 +521,20 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
     @Override
-    public boolean validate(String taskTitle, String taskView) {
+    public boolean validate(String taskTitle, String taskView,String dueDate) {
         if (taskTitle.equals("")) {
             ((TaskContract.TaskCreationView) getIvyView()).showTaskTitleError();
             return false;
-        } else if (taskView.equals("")) {
+        }
+        else if (dueDate == null) {
+            ((TaskContract.TaskCreationView) getIvyView()).showTaskDueDateError();
+            return false;
+        }
+        else if (taskView.equals("")) {
             ((TaskContract.TaskCreationView) getIvyView()).showTaskDescError();
             return false;
         }
+
         return true;
     }
 
