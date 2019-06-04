@@ -69,6 +69,7 @@ public class SurveyHelperNew {
     public String multiplePhotoCapture;
 
     private String SignaturePath = "";
+    private int accountGroupId;
 
     private SurveyHelperNew(Context context) {
         this.context = context;
@@ -120,6 +121,50 @@ public class SurveyHelperNew {
 
     private ArrayList<QuestionBO> getDependentQuestions() {
         return subQuestions;
+    }
+
+    /**
+     * To check whether the retailer mapped in account group for survey
+     * @return - true if account grouping enabled or else false
+     */
+    private boolean hasAccountGroup() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        db.openDataBase();
+        try {
+            Cursor c = db.selectSQL("select groupid from AccountGroupDetail where retailerid=" + bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
+            if (c != null) {
+                if (c.moveToNext()) {
+                    accountGroupId = c.getInt(0);
+                    return accountGroupId > 0;
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+            return false;
+        }
+        return false;
+    }
+
+    /**
+     * Retrieve survey id's mapped to the account group.
+     * @return - Group of survey id's concatenated with comma separator.
+     */
+    private String getAccountGroupSurveys() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        db.openDataBase();
+        StringBuilder surveyIds = new StringBuilder();
+        try {
+            Cursor c = db.selectSQL("select surveyid from SurveyCriteriaMapping where criteriaid=" + accountGroupId);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    surveyIds.append(c.getInt(0));
+                    surveyIds.append(",");
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return String.valueOf(surveyIds).substring(0, surveyIds.length()-1);
     }
 
 
@@ -427,7 +472,11 @@ public class SurveyHelperNew {
             sb.append(" AND SM.menuCode=");
             sb.append(QT(moduleCode));
             if (!fromHomeScreen) {
-                sb.append(" AND SM.surveyId in(" + getMappedSurveyIds() + ")");
+                if (hasAccountGroup())
+                    sb.append(" AND SM.surveyId in(" + getAccountGroupSurveys() + ")");
+                else
+                    sb.append(" AND SM.surveyId in(" + getMappedSurveyIds() + ")");
+
 
             } else {
                 if (moduleCode.equalsIgnoreCase("MENU_NEW_RET") && bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER)
