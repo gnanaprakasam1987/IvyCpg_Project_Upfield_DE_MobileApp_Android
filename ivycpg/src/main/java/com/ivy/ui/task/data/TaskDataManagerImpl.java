@@ -616,7 +616,8 @@ public class TaskDataManagerImpl implements TaskDataManager {
 
                     String query = "SELECT SUBSTR(TMD.TaskImageName," + subStrStartWith + ") as ImageName FROM TaskImageDetails TMD"
                             + " INNER JOIN TaskMaster TM ON TM.taskId = TMD.TaskId"
-                            + " WHERE TMD.Status!='D' AND TMD.TaskId = " + StringUtils.QT(taskId);
+                            + " WHERE (TMD.Status!='D' OR TMD.Status IS NULL) AND TMD.TaskId = " + StringUtils.QT(taskId);
+
 
                     ArrayList<TaskDataBO> taskImgList = new ArrayList<>();
                     Cursor c = mDbUtil
@@ -641,6 +642,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
             }
         });
     }
+
 
     @Override
     public Single<Boolean> deleteTaskData(String taskId, String taskOwner, int serverTask) {
@@ -675,10 +677,10 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             if (serverTask == 1 || isUploaded) {
 
                                 mDbUtil.updateSQL("UPDATE TaskMaster " +
-                                        "SET status='D' WHERE taskid=" + StringUtils.QT(taskId));
+                                        "SET status='D',Upload='N' WHERE taskid=" + StringUtils.QT(taskId));
 
                                 mDbUtil.updateSQL("UPDATE TaskImageDetails " +
-                                        "SET status='D' WHERE TaskId=" + StringUtils.QT(taskId));
+                                        "SET status='D',Upload='N' WHERE TaskId=" + StringUtils.QT(taskId));
                             } else {
                                 mDbUtil.deleteSQL("TaskMaster", "taskid=" + StringUtils.QT(taskId), false);
 
