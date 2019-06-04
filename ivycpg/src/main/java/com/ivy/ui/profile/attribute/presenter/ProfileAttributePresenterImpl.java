@@ -40,7 +40,7 @@ public class ProfileAttributePresenterImpl<V extends IProfileAttributeContract.I
     @Inject
     public ProfileAttributePresenterImpl(DataManager dataManager, SchedulerProvider schedulerProvider,
                                          CompositeDisposable compositeDisposable, ConfigurationMasterHelper configurationMasterHelper,
-                                         V view, IProfileDataManager profileDataManager,
+                                         V view,
                                          @Profile RetailerMasterBO retailerMasterBO, IProfileAttributeDataManager attributeDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
 
@@ -70,7 +70,11 @@ public class ProfileAttributePresenterImpl<V extends IProfileAttributeContract.I
                 .subscribeWith(new DisposableObserver<Boolean>() {
                     @Override
                     public void onNext(Boolean aBoolean) {
-                        getIvyView().displayAttributeSpinner();
+
+                        getIvyView().showChannelAttributeSpinner(getChannelAttributeList());
+
+                        getIvyView().showCommonAttributeSpinner(getCommonAttributeList());
+
                     }
 
                     @Override
@@ -106,5 +110,9 @@ public class ProfileAttributePresenterImpl<V extends IProfileAttributeContract.I
 
     public void setChildAttribute(HashMap<String, ArrayList<AttributeBO>> childAttribute) {
         this.childAttribute = childAttribute;
+    }
+
+    public ArrayList<AttributeBO> getAttributeChildLst(String parentId) {
+        return getChildAttribute().get(parentId) != null ? getChildAttribute().get(parentId) : new ArrayList<>();
     }
 }

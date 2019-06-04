@@ -2,9 +2,9 @@ package com.ivy.ui.profile.attribute.di;
 
 import com.ivy.core.di.scope.PerActivity;
 import com.ivy.ui.profile.attribute.IProfileAttributeContract;
+import com.ivy.ui.profile.attribute.data.IProfileAttributeDataManager;
+import com.ivy.ui.profile.attribute.data.ProfileAttributeDataManagerImpl;
 import com.ivy.ui.profile.attribute.presenter.ProfileAttributePresenterImpl;
-import com.ivy.ui.profile.data.IProfileDataManager;
-import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 import com.ivy.utils.rx.AppSchedulerProvider;
 import com.ivy.utils.rx.SchedulerProvider;
 
@@ -43,8 +43,8 @@ public class ProfileAttributeModule {
     }
 
     @Provides
-    IProfileDataManager provideProfileDataManager(ProfileDataManagerImpl profileDataManager){
-        return profileDataManager;
+    IProfileAttributeDataManager provideProfileDataManager(ProfileAttributeDataManagerImpl attributeDataManager){
+        return attributeDataManager;
     }
 
 }

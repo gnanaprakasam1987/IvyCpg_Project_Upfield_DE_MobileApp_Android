@@ -2410,7 +2410,7 @@ public class ProfileEditFragmentNew extends BaseFragment
                 public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
                     //SpinnerBO tempBo = (SpinnerBO) parent.getSelectedItem();
                     if (++subChannelSpinnerCount > 1) {
-                        addAttributeView(1);
+                        //addAttributeView(1);
                     }
 
                 }

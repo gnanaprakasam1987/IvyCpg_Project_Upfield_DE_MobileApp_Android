@@ -43,7 +43,7 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
     private TextView progressMsgTxt;
 
     public boolean isPreVisit = false;
-    private Context context;
+    public Context context;
 
     @Override
     public void onAttach(Context context) {

@@ -111,10 +111,11 @@ public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataMan
                 HashMap<String,ArrayList<AttributeBO>> mapValues = new HashMap<>();
 
                 String queryStr = "Select EAM.AttributeId as BaseAId,EAM.AttributeName as BaseName,EAM1.AttributeId,EAM1.AttributeName," +
-                        " EAM.ParentId,ifnull(RA.AttributeId,-1) as retailAttribute,ifnull(REA.AttributeId,-1) as retailEditAttribute from EntityAttributeMaster EAM " +
+                        " EAM.ParentId,ifnull(RA.AttributeId,-1) as retailAttribute,ifnull(REA.AttributeId,-1) as retailEditAttribute," +
+                        " EAM1.LevelId,ifnull(REA.status,'') as status  from EntityAttributeMaster EAM " +
                         " inner join EntityAttributeMaster as EAM1 on EAM.AttributeId = EAM1.ParentId " +
-                        " left join RetailerAttribute as RA on RA.AttributeId = EAM.AttributeId  and RA.RetailerId = "+ StringUtils.QT(retailerId) +
-                        " left join RetailerEditAttribute as REA on REA.AttributeId = EAM.AttributeId  and REA.RetailerId = "+ StringUtils.QT(retailerId)  +
+                        " left join RetailerAttribute as RA on RA.AttributeId = EAM1.AttributeId  and RA.RetailerId = "+ StringUtils.QT(retailerId) +
+                        " left join RetailerEditAttribute as REA on REA.AttributeId = EAM1.AttributeId  and REA.RetailerId = "+ StringUtils.QT(retailerId) +
                         " group by EAM1.AttributeId " +
                         " order by EAM1.Sequence,EAM.AttributeId ASC ";
 
@@ -127,12 +128,14 @@ public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataMan
                         AttributeBO attributeBO = new AttributeBO();
                         attributeBO.setAttributeId(c.getInt(2));
                         attributeBO.setAttributeName(c.getString(3));
+                        attributeBO.setLevelId(c.getInt(7));
+                        attributeBO.setStatus(c.getString(8));
+                        attributeBO.setParentId(c.getString(4));
+                        attributeBO.setAttributeParentId(c.getInt(0));
 
-                        if (c.getInt(5) > -1)
-                            attributeBO.setRetailerAttributeId(true);
 
-                        if (c.getInt(6) > -1)
-                            attributeBO.setRetailerEditAttributeId(true);
+                        attributeBO.setRetailerAttributeId(c.getInt(5) > -1);
+                        attributeBO.setRetailerEditAttributeId(c.getInt(6) > -1 && !attributeBO.getStatus().equalsIgnoreCase("D"));
 
                         if (mapValues.get(c.getString(0)) == null) {
                             ArrayList<AttributeBO> attributeBOS = new ArrayList<AttributeBO>(){{add(attributeBO);}};
@@ -142,6 +145,11 @@ public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataMan
                             ArrayList<AttributeBO> attributeBOVal = mapValues.get(c.getString(0));
                             attributeBOVal.add(attributeBO);
                         }
+
+                        if ((attributeBO.isRetailerAttributeId() && !attributeBO.getStatus().equalsIgnoreCase("D"))
+                                || (attributeBO.isRetailerEditAttributeId() && !attributeBO.getStatus().equalsIgnoreCase("D"))){
+                            updateAttributeSelection(mapValues,attributeBO);
+                        }
                     }
                 }
 
@@ -150,6 +158,30 @@ public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataMan
                 return mapValues;
             }
         });
+    }
+
+    private void updateAttributeSelection(HashMap<String,ArrayList<AttributeBO>> mapValues, AttributeBO attributeBO) {
+
+        if (mapValues.get(attributeBO.getParentId()) != null){
+
+            AttributeBO matchedAttributeBo = null;
+
+            for (AttributeBO bo : mapValues.get(attributeBO.getParentId())){
+                if (attributeBO.getAttributeParentId() == bo.getAttributeId()){
+                    bo.setRetailerAttributeId(attributeBO.isRetailerAttributeId());
+                    bo.setRetailerEditAttributeId(attributeBO.isRetailerEditAttributeId());
+
+                    matchedAttributeBo = bo;
+
+                    break;
+                }
+            }
+
+            if (matchedAttributeBo != null)
+                updateAttributeSelection(mapValues,matchedAttributeBo);
+
+        }
+
     }
 
     @Override

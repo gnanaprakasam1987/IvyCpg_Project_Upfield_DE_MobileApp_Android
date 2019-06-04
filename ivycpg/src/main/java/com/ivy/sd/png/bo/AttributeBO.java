@@ -137,6 +137,42 @@ public class AttributeBO {
     private boolean isRetailerEditAttributeId;
     private int channelId;
     private boolean isMandatory;
+    private int levelId;
+    private String status;
+    private String parentId;
+    private int attributeParentId;
+
+    public int getAttributeParentId() {
+        return attributeParentId;
+    }
+
+    public void setAttributeParentId(int attributeParentId) {
+        this.attributeParentId = attributeParentId;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public int getLevelId() {
+        return levelId;
+    }
+
+    public void setLevelId(int levelId) {
+        this.levelId = levelId;
+    }
 
     public boolean isRetailerAttributeId() {
         return isRetailerAttributeId;

@@ -169,8 +169,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             }
         }
 
-        boolean isAttributeExist = false;
-
         for (ConfigureBO configureBO : profileConfig) {    /*First level  looping for prepare condition */
 
             if ((configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.LATTITUDE) && configureBO.isFlag() == 1)
@@ -179,15 +177,10 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 lat = retailerMasterBO.getLatitude() + "";
                 longitude = retailerMasterBO.getLongitude() + "";
             }
-
-            if (configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.ATTRIBUTE) && configureBO.isFlag() == 1) {
-                isAttributeExist = true;
-                getAtrributeList();
-            }
         }
 
-        if (!isAttributeExist)
-            getProfileEditDetails();
+        getProfileEditDetails();
+
     }
 
     private void getProfileEditDetails() {
@@ -2812,7 +2805,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         downloadPriority(mNumber, mName);
                         break;
                     case ProfileConstant.ATTRIBUTE:
-                        getIvyView().createAttributeView(0);
+                        //getIvyView().createAttributeView(0);
                         break;
                     case ProfileConstant.GSTN:
                         prepareGSTN();

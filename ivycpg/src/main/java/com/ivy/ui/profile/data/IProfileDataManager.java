@@ -18,7 +18,7 @@ import java.util.Vector;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
-public interface IProfileDataManager {
+public interface IProfileDataManager  {
 
     Observable<ArrayList<NewOutletBO>> getContactTitle();
 
