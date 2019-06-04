@@ -49,6 +49,8 @@ public interface TaskContract {
         void showTaskDescError();
 
         void showTaskSaveAlertMsg();
+
+        void showTaskDueDateError();
     }
 
 
@@ -97,7 +99,7 @@ public interface TaskContract {
 
         String outDateFormat();
 
-        boolean validate(String taskTitle, String taskView);
+        boolean validate(String taskTitle, String taskView,String dueDate);
 
         void saveModuleCompletion(String menuCode);
 

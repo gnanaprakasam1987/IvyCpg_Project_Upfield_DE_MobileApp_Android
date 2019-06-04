@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/_10sdp"
+    android:background="@color/white">
+
+    <TextView
+        android:id="@+id/filter_text"
+        style="@style/HeadingStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:gravity="center_vertical"
+        android:minHeight="?attr/actionBarSize"
+        android:paddingBottom="@dimen/_10sdp"
+        android:paddingLeft="@dimen/_10sdp"
+        android:paddingTop="@dimen/_10sdp"
+        android:text="@string/filter_by"
+        android:textColor="@color/white" />
+
+    <ImageView
+        android:id="@+id/close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/filter_text"
+        android:layout_alignParentRight="true"
+        android:layout_alignTop="@+id/filter_text"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:paddingLeft="@dimen/_5sdp"
+        android:paddingRight="@dimen/_5sdp"
+        android:src="@drawable/ic_close_icon_white" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/filter_btn"
+        android:layout_below="@+id/filter_text"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/dynamic_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+
+        </LinearLayout>
+    </ScrollView>
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/clear_btn"
+        style="@style/ButtonNormal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_toLeftOf="@+id/filter_btn"
+        android:text="@string/clear" />
+
+    <android.support.v7.widget.AppCompatButton
+        android:id="@+id/filter_btn"
+        style="@style/ButtonNormal_Box_green"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:text="@string/filter" />
+
+</RelativeLayout>

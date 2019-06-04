@@ -945,7 +945,7 @@
     <string name="is_distributed">Is Distributed</string>
     <string name="pls_select_chequeno">Please Enter ChequeNo </string>
     <string name="average_lines">Average Lines</string>
-    <string name="add_plane">Add To Plan</string>
+    <string name="add_plan">Add To Plan</string>
     <string name="non_visit">No Visit</string>
     <string name="are_you_sure_you_want_to_logout"> Are you sure want to logout?</string>
     <string name="vaload_heder_text">Select quality for each batch</string>

@@ -38,7 +38,8 @@ public class PDFGenerator {
     private ArrayList<String> imageList;
     private PdfPCell pdfWordCell;
 
-    public PDFGenerator(String filePath, String fileName, String imagePath) {
+    public PDFGenerator(String filePath, String fileName, String imagePath, String distributorName, String distributorAddress,
+                                           String date, String sellerName, String retailerName) {
 
         this.filePath = filePath;
         this.fileName = fileName;
@@ -50,6 +51,43 @@ public class PDFGenerator {
         pdfWordCell.setHorizontalAlignment(Element.ALIGN_JUSTIFIED);
         pdfWordCell.setPadding(10f);
         setPdfWordCell(pdfWordCell);
+
+        Paragraph headerPara = addParagraph(ALIGNMENT_CENTER);
+
+        if (!isEmptyString(distributorName)) {
+            Phrase phrase = addPhrase(distributorName, FONT_BOLD);
+            phrase.add(NEW_LINE);
+            headerPara.add(phrase);
+        }
+
+        if (!isEmptyString(distributorAddress)) {
+            Phrase phrase = addPhrase(distributorAddress, FONT_BOLD);
+            phrase.add(NEW_LINE);
+            headerPara.add(phrase);
+        }
+
+        if (!isEmptyString(date)) {
+            Phrase phrase = addPhrase(date, FONT_BOLD);
+            phrase.add(NEW_LINE);
+            headerPara.add(phrase);
+        }
+
+        if (!isEmptyString(sellerName)) {
+            Phrase phrase = addPhrase(sellerName, FONT_BOLD);
+            phrase.add(NEW_LINE);
+            headerPara.add(phrase);
+        }
+
+        if (!isEmptyString(retailerName)) {
+            Phrase phrase = addPhrase(retailerName, FONT_BOLD);
+            phrase.add(NEW_LINE);
+            headerPara.add(phrase);
+        }
+
+        headerPara.add(NEW_LINE);
+        headerPara.add(NEW_LINE);
+        getPdfWordCell().addElement(headerPara);
+
 
     }
 
@@ -182,4 +220,10 @@ public class PDFGenerator {
         }
         return String.valueOf(space);
     }
+
+    public static boolean isEmptyString(String text) {
+        return (text == null || text.trim().equals("null") || text.trim()
+                .length() <= 0);
+    }
+
 }

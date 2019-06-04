@@ -7,6 +7,12 @@
     <color name="colorAccent">#83c341</color>
     <color name="textColorPrimary">#004360</color>
 
+    <color name="colorSecondary">#D8D8D8</color>
+    <color name="plan_text_color">#6E6E6E</color>
+    <color name="plan_view_secondary_text_color">#8b000000</color>
+
+    <color name="time_slot_border_color">#F0F7FF</color>
+
     <color name="colorBlueripple_pressed">#b4e5fe</color>
     <color name="colorBlueripple_selected">#81d4fd</color>
     <color name="colorBlueripple_focused">#4fc3fc</color>
@@ -33,7 +39,7 @@
 
     <!--List item Primary Text color-->
     <color name="list_item_primary_text_color">#252525</color>
-    
+
     <!--Caption Text color-->
     <color name="caption_text_color">#cc262626</color>
 
@@ -101,7 +107,6 @@
     <!--**************************************************************************************-->
 
 
-
     <color name="FullBlack">#000000</color>
     <color name="drop_down_black">#ec252323</color>
 
@@ -114,10 +119,6 @@
     <color name="white">#FFFFFF</color>
 
     <color name="toolbar_title">#fffefe</color>
-
-
-
-
 
 
     <!-- ************************** Common Modules ************************************-->
@@ -154,6 +155,13 @@
     <!-- ********************************Planning sub/ LoadManagement Module **************************-->
 
     <color name="startAndEndOfTheDayHeaderLayoutBg_blue">#DCEDFF</color>
+
+    <color name="transparent">#00000000</color>
+
+    <color name="complete_plan">#407ED321</color>
+    <color name="planed_plan">#404A90E2</color>
+    <color name="cancel_plan">#40FF0707</color>
+    <color name="pause_plan">#404A6BE2</color>
 
 
 </resources>
