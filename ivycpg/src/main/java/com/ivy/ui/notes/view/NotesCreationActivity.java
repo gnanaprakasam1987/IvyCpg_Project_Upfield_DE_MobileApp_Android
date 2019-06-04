@@ -130,6 +130,9 @@ public class NotesCreationActivity extends BaseActivity implements NotesContract
             showRetailerSelection();
             setUpRetailerAdapter();
             mPresenter.fetchRetailerNames();
+        }else{
+            if(notesBo!=null)
+                setNotesData();
         }
     }
 
