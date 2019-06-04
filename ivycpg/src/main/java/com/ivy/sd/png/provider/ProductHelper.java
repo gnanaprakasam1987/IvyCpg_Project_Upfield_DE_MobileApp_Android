@@ -41,6 +41,7 @@ import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
@@ -75,6 +76,10 @@ public class ProductHelper {
 
     private Map<String, Integer> oldBatchId;
     private Map<String, Double> oldBatchBasePrice;
+
+    public ArrayList<LocationBO> getStoreLocations() {
+        return locations;
+    }
 
     public ArrayList<LocationBO> locations;
     private Vector<StandardListBO> inStoreLocation = new Vector<>();
@@ -113,6 +118,7 @@ public class ProductHelper {
     private Vector<ProductMasterBO> competitorProductMaster = new Vector<>();
 
     private ArrayList<ProductTaggingBO> productTaggingList;
+    private ArrayList<Integer> taggedLocationIds;
 
     private ArrayList<ProductMasterBO> mIndicateOrderList = new ArrayList<ProductMasterBO>();
 
@@ -517,7 +523,7 @@ public class ProductHelper {
      * @param list list
      * @return clone list
      */
-    private static ArrayList<NearExpiryDateBO> cloneDateList(
+    public static ArrayList<NearExpiryDateBO> cloneDateList(
             ArrayList<NearExpiryDateBO> list) {
         ArrayList<NearExpiryDateBO> clone = new ArrayList<NearExpiryDateBO>(
                 list.size());
@@ -1967,7 +1973,7 @@ public class ProductHelper {
 
     }
 
-    private int getFilterColor(String filtername) {
+    public int getFilterColor(String filtername) {
 
         Vector<ConfigureBO> genfilter = bmodel.configurationMasterHelper
                 .getGenFilter();
@@ -3991,7 +3997,8 @@ public class ProductHelper {
                 loopEnd = mContentLevel - mFiltrtLevel + 1;
             }
             if (bmodel.configurationMasterHelper.SHOW_COMPETITOR_FILTER) {
-                getAlCompetitorTaggedProducts(loopEnd);
+                ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(mContext);
+                productTaggingHelper.getAlCompetitorTaggedProducts(mContext,loopEnd);
             } else {
 
                 Cursor cur = db
@@ -5510,68 +5517,7 @@ public class ProductHelper {
 
     }
 
-    //new producttagging mapping
-    //Mansoor
-    private String getMappedGroupId(DBUtil db, String taggingType) {
-        StringBuilder groupIds = new StringBuilder();
-        ArrayList<String> attrmappingsetId = new ArrayList<>();
-        String mappedGrpIds = "";
 
-        String attrQuery = "Select distinct PTAM.Groupid from ProductTaggingAttributesMapping PTAM" +
-                " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PTAM.groupid" +
-                " inner join RetailerAttribute RA on RA.AttributeId = PTAM.RetailerAttibuteId and RA.RetailerId =" + StringUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()) +
-                " WHERE PM.TaggingTypelovID = " + "(SELECT ListId FROM StandardListMaster WHERE ListCode = '" + taggingType + "' AND ListType = 'PRODUCT_TAGGING')";
-
-        Cursor c1 = db.selectSQL(attrQuery);
-
-        if (c1.getCount() > 0) {
-            while (c1.moveToNext()) {
-                attrmappingsetId.add("/" + c1.getInt(0) + "/");
-            }
-        }
-
-        Cursor c = db
-                .selectSQL("SELECT DISTINCT PCM.GroupID,PCM.RetailerId,PCM.LocationId,PCM.ChannelId,PCM.AccountId," +
-                        " PCM.DistributorId,PCM.UserId,PCM.ClassId,IFNULL(PTAM.groupid,0) FROM ProductTaggingCriteriaMapping PCM " +
-                        " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
-                        " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid" +
-                        " Left Join ProductTaggingAttributesMapping PTAM on PTAM.groupid = PCM.GroupID " +
-                        " WHERE PM.TaggingTypelovID = " +
-                        " (SELECT ListId FROM StandardListMaster WHERE ListCode = '" + taggingType + "' AND ListType = 'PRODUCT_TAGGING')" +
-                        " AND PCM.RetailerId IN(0," + bmodel.getRetailerMasterBO().getRetailerID() + ") " +
-                        " AND PCM.LocationId IN(0," + bmodel.channelMasterHelper.getLocationHierarchy(mContext) + "," + bmodel.getRetailerMasterBO().getLocationId() + ") " +
-                        " AND PCM.ChannelId IN(0," + bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(), mContext) + "," + bmodel.getRetailerMasterBO().getSubchannelid() + ") " +
-                        " AND PCM.AccountId IN(0," + bmodel.getRetailerMasterBO().getAccountid() + ") " +
-                        " AND PCM.DistributorId IN(0," + bmodel.getRetailerMasterBO().getDistributorId() + ") " +
-                        " AND PCM.UserId IN(0," + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ") " +
-                        " AND PCM.ClassId IN(0," + bmodel.getRetailerMasterBO().getClassid() + ") ");
-
-        if (c.getCount() > 0) {
-            while (c.moveToNext()) {
-                // only mapped through attribute
-                if (c.getInt(1) == 0 && c.getInt(2) == 0 && c.getInt(3) == 0
-                        && c.getInt(4) == 0 && c.getInt(5) == 0 && c.getInt(6) == 0 && c.getInt(7) == 0) {
-                    if (attrmappingsetId.contains("/" + c.getInt(0) + "/"))
-                        groupIds.append(c.getString(0));
-                } // only criteria mapped
-                else if (c.getInt(8) == 0) {
-                    groupIds.append(c.getString(0));
-                } // both criteria and attr mapped AND condition
-                else if (c.getInt(8) > 0 && attrmappingsetId.contains("/" + c.getInt(0) + "/")) {
-                    groupIds.append(c.getString(0));
-                }
-                if (groupIds.length() > 0)
-                    groupIds.append(",");
-            }
-            if (groupIds.toString().endsWith(","))
-                mappedGrpIds = groupIds.toString().substring(0, groupIds.length() - 1);
-            mappedGrpIds = mappedGrpIds.trim();
-        }
-
-        c.close();
-        return mappedGrpIds;
-
-    }
 
     public int getContentLevel(DBUtil db, String activityCode){
         int mContentLevelId = 0;
