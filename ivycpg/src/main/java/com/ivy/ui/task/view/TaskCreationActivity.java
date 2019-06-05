@@ -263,6 +263,11 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     }
 
     @Override
+    public void showTaskDueDateError() {
+        showMessage(R.string.select_due_date);
+    }
+
+    @Override
     public void updateImageListAdapter(ArrayList<TaskDataBO> imageList) {
         imgListRecyclerView.setAdapter(new TaskImgListAdapter(TaskCreationActivity.this, imageList, false, photoClickListener));
     }
@@ -344,7 +349,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         String taskDuedate = dueDateBtn.getText().toString().isEmpty() ? null
                 : dueDateBtn.getText().toString();
         int taskChannelId;
-        if (!taskPresenter.validate(taskTitle.getText().toString(), taskView.getText().toString()))
+        if (!taskPresenter.validate(taskTitle.getText().toString(), taskView.getText().toString(),taskDuedate))
             return;
 
         switch (mode) {

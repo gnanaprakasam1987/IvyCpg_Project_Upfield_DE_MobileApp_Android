@@ -251,18 +251,22 @@ public class NotesListFragment extends BaseFragment implements NotesContract.Not
             dateSplitArray = minMaxDateSplitArray[1].split("/");
             maxYear = SDUtil.convertToInt(dateSplitArray[0]);
             maxMonth = SDUtil.convertToInt(dateSplitArray[1]) - 1;
-
-            Calendar calendarMin = Calendar.getInstance();
-            calendarMin.set(Calendar.YEAR, minYear == 0 ? Calendar.YEAR : minYear);
-            calendarMin.set(Calendar.MONTH, minMonth);
-
-            Calendar calendarMax = Calendar.getInstance();
-            calendarMax.set(Calendar.YEAR, maxYear == 0 ? Calendar.YEAR : maxYear);
-            calendarMax.set(Calendar.MONTH, maxMonth);
-
-            fromDateBtn.setText(dateFormat.format(calendarMin.getTime()));
-            toDateBtn.setText(dateFormat.format(calendarMax.getTime()));
+        }else{
+            minYear = Calendar.getInstance().get(Calendar.YEAR);
+            maxYear = Calendar.getInstance().get(Calendar.YEAR);
         }
+
+        Calendar calendarMin = Calendar.getInstance();
+        calendarMin.set(Calendar.YEAR, minYear == 0 ? Calendar.getInstance().get(Calendar.YEAR): minYear);
+        calendarMin.set(Calendar.MONTH, minMonth);
+
+        Calendar calendarMax = Calendar.getInstance();
+        calendarMax.set(Calendar.YEAR, maxYear == 0 ? Calendar.getInstance().get(Calendar.YEAR) : maxYear);
+        calendarMax.set(Calendar.MONTH, maxMonth);
+
+
+        fromDateBtn.setText(dateFormat.format(calendarMin.getTime()));
+        toDateBtn.setText(dateFormat.format(calendarMax.getTime()));
     }
 
     @Override

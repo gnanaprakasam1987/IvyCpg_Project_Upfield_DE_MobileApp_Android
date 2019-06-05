@@ -10,6 +10,7 @@ import com.ivy.cpg.view.basedi.BaseModule;
 import com.ivy.cpg.view.basedi.DaggerBaseComponent;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.ui.notes.NoteConstant;
 
 import javax.inject.Inject;
 
@@ -50,6 +51,7 @@ public class NotesActivity extends BaseActivity implements BaseIvyView {
         }
     }
 
+
     @Override
     protected void getMessageFromAliens() {
 
@@ -57,6 +59,14 @@ public class NotesActivity extends BaseActivity implements BaseIvyView {
 
     @Override
     protected void setUpViews() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
+            setScreenTitle(getIntent().getExtras().getString(NoteConstant.SCREEN_TITLE, getString(R.string.note_label)));
+        }
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
     }
 }

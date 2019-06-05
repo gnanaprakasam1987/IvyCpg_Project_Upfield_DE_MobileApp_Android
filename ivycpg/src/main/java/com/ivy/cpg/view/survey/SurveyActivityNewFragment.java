@@ -1,24 +1,22 @@
 package com.ivy.cpg.view.survey;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -33,8 +31,6 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -67,26 +63,18 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.itextpdf.text.Chunk;
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Image;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.Phrase;
-import com.itextpdf.text.Rectangle;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.lib.pdf.PDFGenerator;
 import com.ivy.sd.camera.CameraActivity;
-import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.UserMasterBO;
+import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
@@ -95,7 +83,6 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
@@ -107,8 +94,6 @@ import com.ivy.utils.FileUtils;
 import com.ivy.utils.StringUtils;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -124,7 +109,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private int tabPos;
     private int tabCount;
     private String imageName = "";
-    ;
+
     private static final int CAMERA_REQUEST_CODE = 1;
     private static final int DRAG_AND_DROP = 2;
     private boolean isClicked = true;
@@ -163,10 +148,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     protected Boolean isMultiPhotoCaptureEnabled = false;
     private SurveyHelperNew surveyHelperNew;
     private LinearLayoutManager linearLayoutManager;
-    private String pdfName;
 
     private Context context;
     private boolean isPreVisit = false;
+    private EditText mBarcodeEditText;
 
     @Override
     public void onAttach(Context context) {
@@ -856,6 +841,12 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 case "DECIMAL":
                     showEditText(5, holder.answerLayout, holder.questionBO, holder.subQuestLayout);
                     break;
+                case "BARCODE":
+                    showBarcodeEditText(holder.answerLayout, holder.questionBO, holder.subQuestLayout, false);
+                    break;
+                case "BARCODE_EDIT":
+                    showBarcodeEditText(holder.answerLayout, holder.questionBO, holder.subQuestLayout, true);
+                    break;
                 default:
                     showEditText(0, holder.answerLayout, holder.questionBO, holder.subQuestLayout);
             }
@@ -957,6 +948,19 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     surveyPhcapture.getImageNames().clear();
                 }
                 isFromDragDrop = 1;
+            }
+        } else if (requestCode == IntentIntegrator.REQUEST_CODE) {
+            try {
+                IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+                if (result != null) {
+                    if (result.getContents() == null) {
+                        Toast.makeText(getActivity(), getResources().getString(R.string.cancelled), Toast.LENGTH_LONG).show();
+                    } else if (mBarcodeEditText != null){
+                        mBarcodeEditText.setText(result.getContents());
+                    }
+                }
+            } catch (Exception ex) {
+                Commons.printException(ex);
             }
         }
         isClicked = true;
@@ -1597,6 +1601,12 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                     case "DECIMAL":
                         showEditText(5, answerLayout, questBO, subQuestLayout);
                         break;
+                    case "BARCODE":
+                        showBarcodeEditText(answerLayout, questBO, subQuestLayout, false);
+                        break;
+                    case "BARCODE_EDIT":
+                        showBarcodeEditText(answerLayout, questBO, subQuestLayout, true);
+                        break;
                     default:
                         showEditText(0, answerLayout, questBO, subQuestLayout);
                         break;
@@ -1719,7 +1729,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             et.setFilters(new InputFilter[]{new InputFilter.LengthFilter(255)});
         }
         if (i == 1) {
-
+            setFocusChangeListener(et, mCurrentQuestionBO.getMinValue(), mCurrentQuestionBO.getMaxValue());//For Min/Max value validation
             if (mCurrentQuestionBO.getPrecision() == 0) {
                 et.setInputType(InputType.TYPE_CLASS_NUMBER);
             } else {
@@ -1877,6 +1887,7 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             });
         }
         if (i == 5) {
+            setFocusChangeListener(et, mCurrentQuestionBO.getMinValue(), mCurrentQuestionBO.getMaxValue());//For Min/Max value validation
             et.setInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
             et.setFilters(new InputFilter[]{new DecimalDigitsInputFilter()});
         }
@@ -1916,6 +1927,76 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
             }
         });
         answerLL.addView(et);
+    }
+
+    private void showBarcodeEditText(LinearLayout answerLL,
+                                     final QuestionBO mCurrentQuestionBO, final LinearLayout subQLL, boolean isEditable) {
+
+        answerLL.removeAllViews();
+        subQLL.removeAllViews();
+        RelativeLayout rootView = (RelativeLayout) ((Activity)context).getLayoutInflater().inflate(R.layout.survey_barcode_edittext, null);
+        EditText et = rootView.findViewById(R.id.et_sur_barcode);
+        ImageView img_barcode = rootView.findViewById(R.id.imageView_barcode_scan);
+
+        if (!mCurrentQuestionBO.getSelectedAnswer().isEmpty())
+            et.setText(mCurrentQuestionBO.getSelectedAnswer().get(0));
+        else
+            et.setText("");
+
+        et.setMinLines(1);
+        et.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.text_size_primary));
+        et.setMaxLines(1);
+
+        et.setPadding(15, 7, 7, 7);
+        et.setTextColor(Color.BLACK);
+
+        et.setFilters(new InputFilter[]{new InputFilter.LengthFilter(255)});
+        et.setFocusable(isEditable);
+        et.setClickable(true);
+
+        et.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence s, int start, int before,
+                                      int count) {
+                String s1 = s.toString().replaceAll("'", "''").trim();
+                mCurrentQuestionBO.getSelectedAnswerIDs().clear();
+                mCurrentQuestionBO.getSelectedAnswer().clear();
+
+                if (!"".equals(s1) && s1.length() > 0) {
+                    mCurrentQuestionBO.setSelectedAnswer(s1);
+                    mCurrentQuestionBO.setSelectedAnswerID(0);
+                }
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count,
+                                          int after) {
+            }
+
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        et.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView textView, int actionId, KeyEvent keyEvent) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    InputMethodManager imm = (InputMethodManager) textView.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(textView.getWindowToken(), 0);
+                    return true;
+                }
+                return false;
+            }
+        });
+
+            img_barcode.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mBarcodeEditText = et;
+                    scanBarCode();
+                }
+            });
+
+        answerLL.addView(rootView);
+
     }
 
     @Override
@@ -2549,13 +2630,16 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     private void textToPdf() {
         try {
             if (FileUtils.createFilePathAndFolder(getActivity())) {
-                pdfName = "/Survey_" + surveyBO.getSurveyID() + "_" + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_PLAIN) + ".pdf";
+                String pdfName = "/Survey_" + surveyBO.getSurveyID() + "_" + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL_PLAIN) + ".pdf";
                 boolean mIsFileAvailable = FileUtils.checkForNFilesInFolder(FileUtils.photoFolderPath, 1, pdfName);
 
                 if (mIsFileAvailable)
                     FileUtils.deleteFiles(FileUtils.photoFolderPath, pdfName);
 
-                PDFGenerator pdfGenerator = new PDFGenerator(FileUtils.photoFolderPath, pdfName, FileUtils.photoFolderPath);
+                PDFGenerator pdfGenerator = new PDFGenerator(FileUtils.photoFolderPath, pdfName, FileUtils.photoFolderPath, bmodel.getAppDataProvider().getUser().getDistributorName(),
+                        bmodel.getAppDataProvider().getUser().getDistributorAddress1(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), bmodel.getAppDataProvider().getUser().getUserName(),
+                        bmodel.getAppDataProvider().getRetailMaster().getRetailerName());
+
 
                 writeSurvey(pdfGenerator);
                 pdfGenerator.createPdf();
@@ -2628,4 +2712,45 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         }
 
     }
+
+    private void scanBarCode() {
+        {
+            ((IvyBaseActivityNoActionBar) getActivity()).checkAndRequestPermissionAtRunTime(2);
+            int permissionStatus = ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.CAMERA);
+            if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
+                IntentIntegrator integrator = new IntentIntegrator(getActivity()) {
+                    @Override
+                    protected void startActivityForResult(Intent intent, int code) {
+                        SurveyActivityNewFragment.this.startActivityForResult(intent, IntentIntegrator.REQUEST_CODE); // REQUEST_CODE override
+                    }
+                };
+                integrator.setBeepEnabled(false).initiateScan();
+            } else {
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.permission_enable_msg)
+                                + " " + getResources().getString(R.string.permission_camera)
+                        , Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }
+
+    private void setFocusChangeListener(EditText editText, int min, int max) {
+        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if(!hasFocus) {
+                    String val = ((EditText)v).getText().toString();
+                    if(!TextUtils.isEmpty(val)){
+                        if(Integer.valueOf(val) < min || Integer.valueOf(val) > max){
+                            ((EditText) v).setError(String.format(getResources().getString(R.string.input_char_validation_msg), min, max));
+                        }
+
+                    }
+                }
+            }
+        });
+    }
+
  }

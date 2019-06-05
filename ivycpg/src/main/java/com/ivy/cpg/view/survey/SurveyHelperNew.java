@@ -69,6 +69,7 @@ public class SurveyHelperNew {
     public String multiplePhotoCapture;
 
     private String SignaturePath = "";
+    private int accountGroupId;
 
     private SurveyHelperNew(Context context) {
         this.context = context;
@@ -120,6 +121,50 @@ public class SurveyHelperNew {
 
     private ArrayList<QuestionBO> getDependentQuestions() {
         return subQuestions;
+    }
+
+    /**
+     * To check whether the retailer mapped in account group for survey
+     * @return - true if account grouping enabled or else false
+     */
+    private boolean hasAccountGroup() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        db.openDataBase();
+        try {
+            Cursor c = db.selectSQL("select groupid from AccountGroupDetail where retailerid=" + bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
+            if (c != null) {
+                if (c.moveToNext()) {
+                    accountGroupId = c.getInt(0);
+                    return accountGroupId > 0;
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+            return false;
+        }
+        return false;
+    }
+
+    /**
+     * Retrieve survey id's mapped to the account group.
+     * @return - Group of survey id's concatenated with comma separator.
+     */
+    private String getAccountGroupSurveys() {
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        db.openDataBase();
+        StringBuilder surveyIds = new StringBuilder();
+        try {
+            Cursor c = db.selectSQL("select surveyid from SurveyCriteriaMapping where criteriaid=" + accountGroupId);
+            if (c != null) {
+                while (c.moveToNext()) {
+                    surveyIds.append(c.getInt(0));
+                    surveyIds.append(",");
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return String.valueOf(surveyIds).substring(0, surveyIds.length()-1);
     }
 
 
@@ -411,7 +456,7 @@ public class SurveyHelperNew {
             sb.append(" SMP.Weight,ifnull(SMP.GroupName,''), SMP.isScore, A.isPhotoReq, A.minPhoto,");
             sb.append(" A.maxPhoto,A.isBonus, IFNULL(OM.OptionId,0), OM.OptionText, OSM.Score,");
             sb.append(" CASE OSM.isExcluded WHEN '1' THEN 'true' ELSE 'false' END as isExcluded,");
-            sb.append(" IFNULL(OD.DQID,0),IFNULL(SLM.listname,'NO FREQ') as freq,SMP.maxScore,SM.IsSignatureRequired FROM SurveyCriteriaMapping SCM");
+            sb.append(" IFNULL(OD.DQID,0),IFNULL(SLM.listname,'NO FREQ') as freq,SMP.maxScore,SM.IsSignatureRequired,A.MinValue,A.MaxValue,SMP.DefaultOptionId FROM SurveyCriteriaMapping SCM");
             sb.append(" INNER JOIN StandardListMaster SL On SL.Listid=SCM.CriteriaType and SL.listtype='SURVEY_CRITERIA_TYPE'");
             sb.append(" INNER JOIN SurveyMapping SMP ON SMP.SurveyId = SCM.SurveyId");
             sb.append(" INNER JOIN SurveyMaster SM ON SM.SurveyId = SCM.SurveyId");
@@ -427,7 +472,11 @@ public class SurveyHelperNew {
             sb.append(" AND SM.menuCode=");
             sb.append(QT(moduleCode));
             if (!fromHomeScreen) {
-                sb.append(" AND SM.surveyId in(" + getMappedSurveyIds() + ")");
+                if (hasAccountGroup())
+                    sb.append(" AND SM.surveyId in(" + getAccountGroupSurveys() + ")");
+                else
+                    sb.append(" AND SM.surveyId in(" + getMappedSurveyIds() + ")");
+
 
             } else {
                 if (moduleCode.equalsIgnoreCase("MENU_NEW_RET") && bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER)
@@ -491,6 +540,9 @@ public class SurveyHelperNew {
                         questionBO.setIsBonus(c.getInt(15));
                         questionBO.setIsSubQuestion(0);
                         questionBO.setMaxScore(c.getDouble(c.getColumnIndex("MaxScore")));
+                        questionBO.setMinValue(c.getInt(c.getColumnIndex("MinValue")));
+                        questionBO.setMaxValue(c.getInt(c.getColumnIndex("MaxValue")));
+                        questionBO.setSelectedAnswerID(c.getInt(c.getColumnIndex("DefaultOptionId")));
                         if (questionBO.getBrandID() > 0)
                             questionBO.setParentHierarchy(getParentHiearchy(questionBO.getBrandID()));
 
@@ -589,6 +641,9 @@ public class SurveyHelperNew {
                             questionBO.setIsBonus(c.getInt(15));
                             questionBO.setIsSubQuestion(0);
                             questionBO.setMaxScore(c.getDouble(c.getColumnIndex("MaxScore")));
+                            questionBO.setMinValue(c.getInt(c.getColumnIndex("MinValue")));
+                            questionBO.setMaxValue(c.getInt(c.getColumnIndex("MaxValue")));
+                            questionBO.setSelectedAnswerID(c.getInt(c.getColumnIndex("DefaultOptionId")));
                             if (questionBO.getBrandID() > 0)
                                 questionBO.setParentHierarchy(getParentHiearchy(questionBO.getBrandID()));
 
@@ -1685,6 +1740,10 @@ public class SurveyHelperNew {
 //                qsize = sBO.getQuestions().size();
 //                mAllQuestions.addAll(sBO.getQuestions());
 
+                    //To clear default option id
+                    for (QuestionBO questionBO : sBO.getQuestions())
+                        questionBO.setSelectedAnswerIDs(new ArrayList<>());
+
                     boolean check = false;
                     String sql1 = "SELECT qid, answerid, Answer,score FROM AnswerDetail WHERE"
                             + " uid = " + QT(uid) + " and isSubQuest=0";
@@ -1897,6 +1956,9 @@ public class SurveyHelperNew {
                 String sql1 = "SELECT qid, answerid, Answer,surveyid,isSubQuest FROM NewRetailerSurveyResultDetail WHERE"
                         + " uid = " + QT(uid);
                 Cursor c = db.selectSQL(sql1);
+                //To clear default option id
+                for (QuestionBO questionBO : bo.getQuestions())
+                    questionBO.setSelectedAnswerIDs(new ArrayList<>());
                 if (c != null) {
 
                     while (c.moveToNext()) {
@@ -2114,6 +2176,10 @@ public class SurveyHelperNew {
             }
 
             if (!"0".equals(uid)) {
+
+                //To clear default option id
+                for (QuestionBO questionBO : sBO.getQuestions())
+                    questionBO.setSelectedAnswerIDs(new ArrayList<>());
 
                 boolean check = false;
                 String sql1 = "SELECT qid, answerid, Answer FROM AnswerDetail WHERE"

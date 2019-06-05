@@ -25,7 +25,7 @@ public class QuestionBO {
 
     private final ArrayList<AnswerBO> answersList = new ArrayList<>();
 
-    private final ArrayList<Integer> selectedAnswerIDs = new ArrayList<>();
+    private ArrayList<Integer> selectedAnswerIDs = new ArrayList<>();
     private final ArrayList<String> imageNames = new ArrayList<>();
     private final ArrayList<String> selectedAnswer = new ArrayList<>();
 
@@ -38,6 +38,8 @@ public class QuestionBO {
     private boolean image1Captured, image2Captured;
     private String tempImagePath;
     private String questionNo;
+    private int minValue;
+    private int maxValue;
 
     public String getQuestionNo() {
         return questionNo;
@@ -162,6 +164,10 @@ public class QuestionBO {
 
     public ArrayList<Integer> getSelectedAnswerIDs() {
         return selectedAnswerIDs;
+    }
+
+    public void setSelectedAnswerIDs(ArrayList<Integer> answerIDs) {
+        this.selectedAnswerIDs = answerIDs;
     }
 
     public void setSelectedAnswerID(int answerID) {
@@ -323,4 +329,21 @@ public class QuestionBO {
     public void setParentHierarchy(String parentHierarchy) {
         this.parentHierarchy = parentHierarchy;
     }
+
+    public int getMinValue() {
+        return minValue;
+    }
+
+    public void setMinValue(int minValue) {
+        this.minValue = minValue;
+    }
+
+    public int getMaxValue() {
+        return maxValue;
+    }
+
+    public void setMaxValue(int maxValue) {
+        this.maxValue = maxValue;
+    }
+
 }
