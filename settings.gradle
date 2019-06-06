@@ -1,1 +1,1 @@
-include ':ivycpg', ':ivylibrary'
+include ':ivycpg', ':ivylibrary', ':calendarlibrary'

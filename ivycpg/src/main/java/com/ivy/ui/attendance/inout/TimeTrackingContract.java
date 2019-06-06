@@ -28,6 +28,8 @@ public interface TimeTrackingContract {
 
         void uploadAttendance(String inOrOut);
 
+        void uploadAttendanceToServer();
+
     }
 
     @PerActivity

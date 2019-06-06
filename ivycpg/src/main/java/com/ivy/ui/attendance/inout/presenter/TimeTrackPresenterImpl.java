@@ -160,6 +160,8 @@ public class TimeTrackPresenterImpl<V extends TimeTrackingContract.TimeTrackingV
                     @Override
                     public void accept(Boolean isSaved) {
                         if (isSaved) {
+                            if(configurationMasterHelper.IS_ATTENDANCE_SYNCUPLOAD)
+                                getIvyView().uploadAttendanceToServer();
                             if (configurationMasterHelper.IS_IN_OUT_MANDATE) {
                                 checkIsLeaveToday();
                             }

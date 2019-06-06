@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/custom_info_bubble"
+    android:clickable="false"
+    android:focusable="false"
+    android:focusableInTouchMode="false"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:id="@+id/ll_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:orientation="vertical" >
+
+        <TextView
+            style="@style/TextViewListItemPrimary"
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:text=""
+            android:textSize="@dimen/_14sdp"
+            android:singleLine="true" />
+
+        <TextView
+            style="@style/TextViewStyleSmall"
+            android:id="@+id/snippet"
+            android:text=""
+            android:layout_width="wrap_content"
+            android:textSize="@dimen/_12sdp"
+            android:visibility="gone"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:id="@+id/start_visit_lty"
+        android:layout_gravity="center_horizontal"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:visibility="gone"
+        android:layout_marginTop="@dimen/_10sdp">
+
+        <TextView
+            android:id="@+id/btn_deviate"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/add_plan"
+            android:textColor="@color/white"
+            android:adjustViewBounds="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:textAllCaps="false"
+            android:focusableInTouchMode="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/_12sdp"
+            android:paddingLeft="@dimen/_5sdp"
+            android:paddingRight="@dimen/_5sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:background="@drawable/covered_bg_gradient" />
+
+
+        <TextView
+            android:id="@+id/btn_profile"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/profile"
+            android:textColor="@color/white"
+            android:adjustViewBounds="true"
+            android:clickable="true"
+            android:focusable="true"
+            android:textAllCaps="false"
+            android:focusableInTouchMode="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/_12sdp"
+            android:paddingLeft="@dimen/_10sdp"
+            android:paddingRight="@dimen/_10sdp"
+            android:paddingTop="@dimen/_5sdp"
+            android:paddingBottom="@dimen/_5sdp"
+            android:visibility="visible"
+            android:background="@drawable/covered_bg_gradient" />
+    </LinearLayout>
+
+</LinearLayout>

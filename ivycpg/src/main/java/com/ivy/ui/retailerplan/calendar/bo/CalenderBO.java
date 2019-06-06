@@ -1,8 +1,12 @@
-package com.ivy.sd.png.bo;
+package com.ivy.ui.retailerplan.calendar.bo;
 
 /**
  * Created by nagaganesh.n on 8/4/2016.
  */
+
+import com.ivy.sd.png.bo.BeatMasterBO;
+import com.ivy.sd.png.bo.RetailerMasterBO;
+import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +19,10 @@ public class CalenderBO {
     private List<RetailerMasterBO> retailerMasterBOArrayList = new ArrayList<RetailerMasterBO>();
     private List<BeatMasterBO> beatMasterBOArrayList =new ArrayList<>();
     private RetailerMasterBO retailerMasterBO;
+    private boolean isToday;
+    private boolean isSelected;
+    private String weekDate;
+    private List<DateWisePlanBo> planList = new ArrayList<>();
 
     public CalenderBO() {
 
@@ -74,5 +82,36 @@ public class CalenderBO {
         return this.retailerMasterBOArrayList.toString();
     }
 
+    public boolean isToday() {
+        return isToday;
+    }
+
+    public void setToday(boolean today) {
+        isToday = today;
+    }
+
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(boolean selected) {
+        isSelected = selected;
+    }
+
+    public String getWeekDate() {
+        return weekDate;
+    }
+
+    public void setWeekDate(String weekDate) {
+        this.weekDate = weekDate;
+    }
+
+    public List<DateWisePlanBo> getPlanList() {
+        return planList;
+    }
+
+    public void setPlanList(List<DateWisePlanBo> planList) {
+        this.planList = planList;
+    }
 }
 

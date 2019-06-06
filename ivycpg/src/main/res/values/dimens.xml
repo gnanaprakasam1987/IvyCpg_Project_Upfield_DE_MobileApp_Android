@@ -816,4 +816,7 @@
 
     <dimen name="asset_service_row_height">60dp</dimen>
 
+
+    <!--Calendar Planning-->
+    <dimen name="time_column_width">8dp</dimen>
 </resources>

@@ -217,6 +217,25 @@
     <string name="do_you_want_to_continue_same_trip_or_end_the_trip">Do you want to continue same trip or end?.</string>
     <string name="trip_not_started">Trip not started.</string>
 
+    <!--Calendar Planning-->
+    <string name="month">Month</string>
+    <string name="plus_more">\u2022+%d More</string>
+    <string name="plan_retailer_name">\u2022 %s </string>
+    <string name="visit_hours"> Visit Hour : %s - %s</string>
+    <string name="v_frequency">V.Frequency</string>
+    <string name="v_completed">V.Completed</string>
+    <string name="v_pending">V.Pending</string>
+    <string name="plan_not_available">Plan not Available</string>
+    <string name="not_allowed_to_add_plan">Not Allowed to add plan for Past date</string>
+    <string name="calendar_view">Calendar</string>
+    <string name="map_view">Map</string>
+    <string name="copy_plan">Copy Plan</string>
+    <string name="copy">Copy</string>
+    <string name="no_visits_copied">No. of Visit\'s Copied</string>
+    <string name="do_you_want_delete_plan_copy">Do you want to delete existing plan and copy selected plan? </string>
+    <string name="from_to_date">From and To date are same! </string>
+    <string name="from_to_week">From and To week are same!</string>
+
     <string name="enter_time_slot">Enter Time Slot</string>
     <string name="select_salutation">Select Salutation</string>
     <string name="primary_email_pref_already_given">Primary Email Pref Already Given</string>
@@ -273,6 +292,10 @@
     <string name="executed_date">Executed Date</string>
     <string name="do_you_want_to_delete_the_task">Do you want to delete the Task?</string>
 
+    <string name="last_visit_date">Last Visit Date</string>
+    <string name="task_due_date">Task Due Date</string>
+
+
     <string name="other">Other</string>
     <string name="advantage">Advantage</string>
     <string name="dis_advantage">Dis Advantage</string>
@@ -308,6 +331,7 @@
     <string name="enter_desc">Please enter description</string>
     <string name="retailer_selection_mandatory">Choose any one retailer</string>
 
+
     <string name="select_percentage">Select Percentage</string>
     <string name="signature_label">Signature</string>
     <string name="sign_mandatory">Signature is mandatory</string>
@@ -338,4 +362,6 @@
     <string name="updated_successfully">Updated Successfully.</string>
     <string name="do_u_want_to_update">Do you want to update?</string>
     <string name="service_provider">Service provider</string>
+    <string name="select_due_date">Select Due Date</string>
+    <string name="input_char_validation_msg">The value should be from the range %d to %d</string>
 </resources>

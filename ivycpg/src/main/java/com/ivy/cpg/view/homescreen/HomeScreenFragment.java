@@ -67,7 +67,6 @@ import com.ivy.cpg.view.login.TermsAndConditionsActivity;
 import com.ivy.cpg.view.mvp.MVPFragment;
 import com.ivy.cpg.view.nonfield.NonFieldHelper;
 import com.ivy.cpg.view.nonfield.NonFieldHomeFragment;
-import com.ivy.cpg.view.offlineplanning.OfflinePlanningActivity;
 import com.ivy.cpg.view.orderfullfillment.OrderFullfillmentRetailerSelection;
 import com.ivy.cpg.view.quickcall.QuickCallFragment;
 import com.ivy.cpg.view.reports.ReportMenuFragment;
@@ -106,6 +105,8 @@ import com.ivy.sd.png.view.NewoutletContainerFragment;
 import com.ivy.sd.png.view.PlanDeviationFragment;
 import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
+import com.ivy.ui.retailerplan.calendar.view.CalendarPlanFragment;
+import com.ivy.ui.retailer.viewretailers.view.map.RetailerMapFragment;
 import com.ivy.ui.notes.NoteConstant;
 import com.ivy.ui.notes.view.NotesListFragment;
 import com.ivy.ui.task.TaskConstant;
@@ -137,6 +138,7 @@ import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_JOINT_CALL;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_LEAVE_APR;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_LOAD_MANAGEMENT;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_LOAD_REQUEST;
+import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_MAP_PLAN;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_MVP;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_NEWRET_EDT;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_NEW_RETAILER;
@@ -1141,11 +1143,13 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             getResources().getString(R.string.leaveToday),
                             Toast.LENGTH_SHORT).show();
             } else {
-                Intent i = new Intent(getContext(), OfflinePlanningActivity.class);
+                /*Intent i = new Intent(getContext(), OfflinePlanningActivity.class);
                 i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 i.putExtra("screentitle", "" + "Call Planning");
                 startActivity(i);
-                getActivity().finish();
+                getActivity().finish();*/
+                switchFragment(MENU_OFLNE_PLAN, menuItem
+                        .getMenuName());
             }
 
         } else if (menuItem.getConfigCode().equals(MENU_JOINT_CALL)) {
@@ -1747,6 +1751,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         DenominationFragment denominationFragment = (DenominationFragment) fm.findFragmentByTag(MENU_DENOMINATION);
 
+        CalendarPlanFragment calendarPlanFragment = (CalendarPlanFragment) fm.findFragmentByTag(MENU_OFLNE_PLAN);
+
+        RetailerMapFragment retailerMapFragment = (RetailerMapFragment) fm.findFragmentByTag(MENU_MAP_PLAN);
+
         NotesListFragment notesListFragment = (NotesListFragment) fm.findFragmentByTag(MENU_NOTES_SW);
 
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
@@ -1873,6 +1881,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (notesListFragment != null && (fragmentName.equals(MENU_NOTES_SW))
                 && notesListFragment.isVisible()) {
             return;
+        } else if (calendarPlanFragment != null && (fragmentName.equals(MENU_OFLNE_PLAN))
+                && calendarPlanFragment.isVisible()) {
+            return;
+        } else if (retailerMapFragment != null && (fragmentName.equals(MENU_MAP_PLAN))
+                && retailerMapFragment.isVisible()) {
+            return;
         }
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
 
@@ -1956,6 +1970,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(denominationFragment);
         if (notesListFragment != null)
             ft.remove(notesListFragment);
+        if (calendarPlanFragment != null)
+            ft.remove(calendarPlanFragment);
+        if (retailerMapFragment != null)
+            ft.remove(retailerMapFragment);
 
         Bundle bndl;
         Fragment fragment;
@@ -2348,6 +2366,14 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_NOTES_SW);
+                break;
+            case MENU_OFLNE_PLAN:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                fragment = new CalendarPlanFragment();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_OFLNE_PLAN);
                 break;
         }
         ft.commitAllowingStateLoss();

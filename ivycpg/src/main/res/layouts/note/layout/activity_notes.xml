@@ -12,7 +12,7 @@
         layout="@layout/material_tool_bar" />
 
     <fragment
-        android:id="@+id/survey_fragment"
+        android:id="@+id/notes_fragment"
         android:name="com.ivy.ui.notes.view.NotesListFragment"
         android:layout_width="match_parent"
         android:layout_height="0dip"

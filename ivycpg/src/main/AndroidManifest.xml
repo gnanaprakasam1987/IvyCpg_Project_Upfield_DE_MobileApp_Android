@@ -44,6 +44,7 @@
     <uses-permission android:name="com.ivy.sd.png.asean.view.permission.MAPS_RECEIVE" /> <!-- Allows using PowerManager WakeLocks to keep processor from sleeping -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:name="com.ivy.sd.png.model.BusinessModel"
@@ -746,7 +747,7 @@
                 <action android:name="com.firebase.jobdispatcher.ACTION_EXECUTE" />
             </intent-filter>
         </service>
-        <!--
+        <!--REQUEST_INSTALL_PACKAGES
         Set custom default icon. This is used when no icon is set for
         incoming notification messages.
         -->
@@ -896,6 +897,10 @@
             android:screenOrientation="portrait"/>
         <activity android:name="com.ivy.ui.AssetServiceRequest.AssetServiceRequestViewActivity"
             android:screenOrientation="portrait"></activity>
+        <activity
+            android:name="com.ivy.ui.retailer.viewretailers.view.list.RetailerListActivity"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>

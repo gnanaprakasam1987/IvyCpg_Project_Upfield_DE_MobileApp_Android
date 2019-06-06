@@ -676,7 +676,7 @@ public class DataMembers {
     public static final String tbl_display_scheme_tracking_cols = "Tid,Date,UserId,DistributorId,RetailerId,SchemeId,SlabId,IsAvailable";
 
     public static final String tbl_date_wise_plan = "DatewisePlan";
-    public static final String tbl_date_wise_plan_cols = "PlanId,DistributorId,UserId,Date,EntityId,EntityType,Status,Sequence";
+    public static final String tbl_date_wise_plan_cols = "PlanId,DistributorId,UserId,Date,EntityId,EntityType,Status,Sequence,StartTime,EndTime,VisitStatus,PlanSource,planStatus";
 
     public static final String tbl_retailer_kpi_modified = "RetailerKPIModifiedDetail";
     public static final String tbl_retailer_kpi_modified_cols = "KPIId,KPITypeLovId,KPIParamLovId,Target";
@@ -1170,6 +1170,36 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_DenominationHeader, tbl_DenominationHeader_cols);
         uploadColumnWithOutRetailer.put(tbl_TripMaster, tbl_TripMaster_cols);
         uploadColumnWithOutRetailer.put(tbl_retailer_notes, tbl_retailer_notes_cols);
+
+        //---------Missed Tables added in Common Retailerwise Upload ---------------------------//
+
+
+        uploadColumnWithOutRetailer.put(tbl_AssetImgInfo, tbl_AssetImgInfo_Cols);
+
+        uploadColumnWithOutRetailer.put(tbl_attendancedetail, tbl_attendancedetail_cols);
+        uploadColumnWithOutRetailer.put(tbl_leavedetail, tbl_leavedetail_cols);
+        uploadColumnWithOutRetailer.put(tbl_delivery_header, tbl_delivery_header_cols);
+        uploadColumnWithOutRetailer.put(tbl_delivery_detail, tbl_delivery_detail_cols);
+        uploadColumnWithOutRetailer.put(tbl_activity_jointcall, tbl_activity_jointcall_cols);
+        uploadColumnWithOutRetailer.put(tbl_leaveapprovaldetails, tbl_leaveapprovaldetails_cols);
+
+        uploadColumnWithOutRetailer.put(tbl_expensedetails, tbl_expensedetails_cols);
+        uploadColumnWithOutRetailer.put(tbl_expenseheader, tbl_expenseheader_cols);
+        uploadColumnWithOutRetailer.put(tbl_expenseimagedetails, tbl_expenseimagedetails_cols);
+        uploadColumnWithOutRetailer.put(tbl_retailercontractrenewal, tbl_retailercontractrenewal_cols);
+        uploadColumnWithOutRetailer.put(tbl_newretailersurveyresultheader, tbl_newretailersurveyresultheader_cols);
+        uploadColumnWithOutRetailer.put(tbl_newretailersurveyresultdetail, tbl_newretailersurveyresultdetail_cols);
+        uploadColumnWithOutRetailer.put(tbl_retailerpriorityproducts, tbl_retailerpriorityproducts_cols);
+
+
+        uploadColumnWithOutRetailer.put(tbl_loyaltyredemptionheader, tbl_tbl_loyaltyredemptionheader_cols);
+        uploadColumnWithOutRetailer.put(tbl_loyaltyredemptiondetail, tbl_loyaltyredemptiondetail_cols);
+        uploadColumnWithOutRetailer.put(tbl_LoyaltyPoints, tbl_LoyaltyPoints_cols);
+        uploadColumnWithOutRetailer.put(tbl_jointcallacknowledgement, tbl_jointcallacknowledgement_upload_cols);
+
+        uploadColumnWithOutRetailer.put(tbl_RetailerScoreHeader, tbl_RetailerScoreHeader_cols);
+        uploadColumnWithOutRetailer.put(tbl_RetailerScoreDetail, tbl_RetailerScoreDetail_cols);
+        uploadColumnWithOutRetailer.put(tbl_SyncLogDetails, tbl_SyncLogDetails_cols);
     }
 
     public static final HashMap<String, String> uploadLocationTrackingColumn = new HashMap<>();
@@ -1192,6 +1222,8 @@ public class DataMembers {
     static {
         uploadAttendanceColumn.put(tbl_attendancedetail,
                 tbl_attendancedetail_cols);
+        uploadAttendanceColumn.put(tbl_AttendanceTimeDetails,
+                tbl_AttendanceTimeDetails_cols);
     }
 
     public static final HashMap<String, String> uploadSIHTable = new HashMap<>();
