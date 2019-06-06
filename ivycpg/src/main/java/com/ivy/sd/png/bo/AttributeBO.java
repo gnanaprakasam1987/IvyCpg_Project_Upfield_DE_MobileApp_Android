@@ -136,11 +136,27 @@ public class AttributeBO {
     private boolean isRetailerAttributeId;
     private boolean isRetailerEditAttributeId;
     private int channelId;
-    private boolean isMandatory;
+    private boolean isMandatory,isEditable,isMasterRecord;
     private int levelId;
     private String status;
     private String parentId;
     private int attributeParentId;
+
+    public boolean isMasterRecord() {
+        return isMasterRecord;
+    }
+
+    public void setMasterRecord(boolean masterRecord) {
+        isMasterRecord = masterRecord;
+    }
+
+    public boolean isEditable() {
+        return isEditable;
+    }
+
+    public void setEditable(boolean editable) {
+        isEditable = editable;
+    }
 
     public int getAttributeParentId() {
         return attributeParentId;

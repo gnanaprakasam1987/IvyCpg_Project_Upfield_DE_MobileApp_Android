@@ -5,6 +5,9 @@ import android.database.Cursor;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.AttributeBO;
+import com.ivy.sd.png.bo.NewOutletAttributeBO;
+import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -14,6 +17,10 @@ import java.util.concurrent.Callable;
 import javax.inject.Inject;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
+import io.reactivex.SingleSource;
+import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 
 public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataManager {
 
@@ -54,6 +61,7 @@ public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataMan
                         attributeBO.setAttributeId(c.getInt(0));
                         attributeBO.setAttributeName(c.getString(1));
                         attributeBO.setLevelCount(c.getInt(4));
+                        attributeBO.setEditable(c.getInt(5) > 0);
 
                         mapValues.add(attributeBO);
 
@@ -90,6 +98,7 @@ public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataMan
                         attributeBO.setLevelCount(c.getInt(4));
                         attributeBO.setChannelId(c.getInt(6));
                         attributeBO.setMandatory(c.getInt(7) > 0);
+                        attributeBO.setEditable(c.getInt(5) > 0);
 
                         mapValues.add(attributeBO);
 
@@ -146,9 +155,13 @@ public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataMan
                             attributeBOVal.add(attributeBO);
                         }
 
+                        if (attributeBO.isRetailerAttributeId())
+                            attributeBO.setMasterRecord(true);
+
+
                         if ((attributeBO.isRetailerAttributeId() && !attributeBO.getStatus().equalsIgnoreCase("D"))
-                                || (attributeBO.isRetailerEditAttributeId() && !attributeBO.getStatus().equalsIgnoreCase("D"))){
-                            updateAttributeSelection(mapValues,attributeBO);
+                                || (attributeBO.isRetailerEditAttributeId() && !attributeBO.getStatus().equalsIgnoreCase("D"))) {
+                            updateAttributeSelection(mapValues, attributeBO);
                         }
                     }
                 }
@@ -184,6 +197,114 @@ public class ProfileAttributeDataManagerImpl implements IProfileAttributeDataMan
 
     }
 
+    @Override
+    public Single<Boolean> saveRetailerAttribute(final int userId, final String retailerId,
+                                        final ArrayList<AttributeBO> selectedAttribList){
+
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+
+                initDb();
+
+                String currentDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
+                String tid = userId
+                        + "" + retailerId
+                        + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
+
+                Cursor headerCursor;
+                try {
+                    // delete Header if exist
+                    headerCursor = mDbUtil.selectSQL("SELECT Tid FROM RetailerEditHeader"
+                            + " WHERE RetailerId = "
+                            + retailerId
+                            + " AND Date = "
+                            + StringUtils.QT(currentDate)
+                            + " AND Upload = "
+                            + StringUtils.QT("N"));
+
+                    if (headerCursor.getCount() > 0) {
+                        headerCursor.moveToNext();
+                        tid = headerCursor.getString(0);
+                        headerCursor.close();
+                    }
+                } catch (Exception e) {
+                    Commons.printException(e);
+                }
+
+                updateRetailerMasterAttribute(tid,retailerId,selectedAttribList);
+
+                return true;
+            }
+        });
+    }
+
+    public void updateRetailerMasterAttribute(final String mTid, final String RetailerID,
+                                                         final ArrayList<AttributeBO> selectedAttribList) {
+
+        try {
+            mDbUtil.deleteSQL("RetailerEditAttribute", " tid =" + StringUtils.QT(mTid), false);
+
+            for (AttributeBO id : selectedAttribList) {
+                String Q = "insert into RetailerEditAttribute (tid,retailerid,attributeid,levelid,status,upload)" +
+                        "values (" + StringUtils.QT(mTid)
+                        + "," + RetailerID
+                        + "," + id.getAttributeId()
+                        + "," + id.getLevelId()
+                        + "," + StringUtils.QT(id.getStatus()) + ",'N')";
+                mDbUtil.executeQ(Q);
+            }
+
+            shutDownDb();
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+    }
+
+    /*public Single<Boolean> updateRetailerMasterAttribute(final String mTid, final String RetailerID,
+                                                         final ArrayList<AttributeBO> selectedAttribList) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                try {
+                    mDbUtil.deleteSQL("RetailerEditAttribute", " tid =" + StringUtils.QT(mTid), false);
+
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                return true;
+            }
+        }).flatMap(new Function<Boolean, SingleSource<? extends Boolean>>() {
+            @Override
+            public SingleSource<? extends Boolean> apply(Boolean aBoolean) throws Exception {
+
+                return Single.fromCallable(new Callable<Boolean>() {
+                    @Override
+                    public Boolean call() throws Exception {
+                        try {
+                            for (AttributeBO id : selectedAttribList) {
+                                String Q = "insert into RetailerEditAttribute (tid,retailerid,attributeid,levelid,status,upload)" +
+                                        "values (" + StringUtils.QT(mTid)
+                                        + "," + RetailerID
+                                        + "," + id.getAttributeId()
+                                        + "," + id.getLevelId()
+                                        + "," + StringUtils.QT(id.getStatus()) + ",'N')";
+                                mDbUtil.executeQ(Q);
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                        shutDownDb();
+
+                        return true;
+                    }
+                });
+            }
+        });
+    }
+*/
     @Override
     public void tearDown() {
         shutDownDb();

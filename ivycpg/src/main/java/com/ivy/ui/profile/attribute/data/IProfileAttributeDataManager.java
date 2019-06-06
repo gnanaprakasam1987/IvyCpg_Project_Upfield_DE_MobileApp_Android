@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import io.reactivex.Observable;
+import io.reactivex.Single;
 
 public interface IProfileAttributeDataManager extends AppDataManagerContract {
 
@@ -15,4 +16,7 @@ public interface IProfileAttributeDataManager extends AppDataManagerContract {
     Observable<ArrayList<AttributeBO>> prepareChannelAttributeList();
 
     Observable<HashMap<String,ArrayList<AttributeBO>>> prepareChildAttributeList(String retailerId);
+
+    Single<Boolean> saveRetailerAttribute(final int userId,final String RetailerID,
+                                                  final ArrayList<AttributeBO> selectedAttribList);
 }

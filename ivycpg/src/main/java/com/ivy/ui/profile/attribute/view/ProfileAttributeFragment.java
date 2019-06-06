@@ -1,6 +1,7 @@
 package com.ivy.ui.profile.attribute.view;
 
 import android.app.Activity;
+import android.util.SparseArray;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,9 +18,12 @@ import com.ivy.ui.profile.attribute.IProfileAttributeContract;
 import com.ivy.ui.profile.attribute.di.DaggerProfileAttributeComponent;
 import com.ivy.ui.profile.attribute.di.ProfileAttributeModule;
 import com.ivy.ui.profile.attribute.presenter.ProfileAttributePresenterImpl;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -31,6 +35,8 @@ public class ProfileAttributeFragment extends BaseFragment
     private HashMap<String,Spinner> attributeSpinner = new HashMap<>();
 
     private HashMap<String,AttributeBO> selectedSpinnerIds = new HashMap<>();
+
+    private int channelId = -1 ;
 
     @Inject
     ProfileAttributePresenterImpl<IProfileAttributeContract.IProfileAttributeView> profileAttributePresenter;
@@ -52,6 +58,13 @@ public class ProfileAttributeFragment extends BaseFragment
     @Override
     public void init(View view) {
         dynamicViewLayout = view.findViewById(R.id.dynamic_layout);
+
+        view.findViewById(R.id.profile_attrib_save).setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                saveAttribute();
+            }
+        });
     }
 
     @Override
@@ -64,21 +77,48 @@ public class ProfileAttributeFragment extends BaseFragment
         profileAttributePresenter.prepareAttributeList();
     }
 
-    private ArrayList<String> filteredAttributeIds = new ArrayList<>();
-    private void saveAttribute(){
-        if (!selectedSpinnerIds.isEmpty()) {
+    private HashMap<Integer,AttributeBO> filteredAttributeIds = new HashMap<>();
 
+    private void saveAttribute(){
+
+        ArrayList<AttributeBO> childMasterList = new ArrayList<>();
+
+        for (Map.Entry<String, ArrayList<AttributeBO>> childAttribList : profileAttributePresenter.getChildAttribute().entrySet()) {
+            for (AttributeBO childBos :childAttribList.getValue()){
+                if (childBos.isMasterRecord())
+                    childMasterList.add(childBos);
+            }
+        }
+
+        if (!selectedSpinnerIds.isEmpty()) {
             ArrayList<AttributeBO> ids = new ArrayList<>(selectedSpinnerIds.values());
 
             filteredAttributeIds.clear();
             for (AttributeBO bo : ids){
                 if (bo.isAttributeSelected()) {
-                    String[] spliArr = bo.getAttributeName().split("##");
-                    String[] spliArr1 = spliArr[1].split("__");
-                    filteredAttributeIds.add(spliArr1[0]);
+//                    String[] spliArr = bo.getAttributeName().split("##");
+//                    String[] spliArr1 = spliArr[1].split("__");
+
+                    if (profileAttributePresenter.getAttributeChildLst(bo.getAttributeId()+"").isEmpty()) {
+                        bo.setStatus("N");
+                        filteredAttributeIds.put(bo.getAttributeId(), bo);
+                    }
                 }
             }
         }
+
+        for (AttributeBO childMasterBo : childMasterList){
+            if (filteredAttributeIds.get(childMasterBo.getAttributeId()) == null){
+                childMasterBo.setStatus("D");
+                filteredAttributeIds.put(childMasterBo.getAttributeId(),childMasterBo);
+            }else
+                filteredAttributeIds.remove(childMasterBo.getAttributeId());
+        }
+
+        if (filteredAttributeIds.size() > 0)
+            profileAttributePresenter.saveAttribute(new ArrayList<>(filteredAttributeIds.values()));
+        else
+            showMessage("No Data To Save");
     }
 
     @Override
@@ -89,7 +129,16 @@ public class ProfileAttributeFragment extends BaseFragment
     @Override
     public void showChannelAttributeSpinner(ArrayList<AttributeBO> channelAttributeList) {
 
-        if (channelAttributeList.isEmpty())
+        ArrayList<AttributeBO> channelAttrbList = new ArrayList<>();
+
+        /*for (AttributeBO channelBo : channelAttributeList){
+            if (channelBo.getChannelId() == channelId)
+                channelAttrbList.add(channelBo);
+        }*/
+
+        channelAttrbList.addAll(channelAttributeList);
+
+        if (channelAttrbList.isEmpty())
             return;
 
         View view = getLayoutInflater().inflate(R.layout.task_report_recycle_header, null);
@@ -98,13 +147,14 @@ public class ProfileAttributeFragment extends BaseFragment
 
         dynamicViewLayout.addView(view);
 
-        showAttributeSpinner(channelAttributeList);
+        showAttributeSpinner(channelAttrbList);
 
         View seperatorView = getLayoutInflater().inflate(R.layout.seperator_line_layout, null);
 
         dynamicViewLayout.addView(seperatorView);
 
     }
+
 
     public void showAttributeSpinner(ArrayList<AttributeBO> attributeParentList) {
 
@@ -121,6 +171,9 @@ public class ProfileAttributeFragment extends BaseFragment
             attributeSpinner.setTag(attributeBO.getAttributeName()+"##"+attributeBO.getAttributeId()+"__"+1);
 
             setSpinnerAdapter(attributeSpinner,attributeChildList,false);
+
+            if (!attributeBO.isEditable())
+                attributeSpinner.setEnabled(false);
 
             attributeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
@@ -159,7 +212,7 @@ public class ProfileAttributeFragment extends BaseFragment
 
             if (attributeBO.getLevelCount() > 2){
                 for (int i = 2 ; i < attributeBO.getLevelCount(); i++){
-                    createChildSpinner(view,attributeBO.getAttributeName()+"##"+attributeBO.getAttributeId()+"__"+i);
+                    createChildSpinner(view,attributeBO.getAttributeName()+"##"+attributeBO.getAttributeId()+"__"+i,attributeBO.isEditable());
                 }
             }
 
@@ -169,7 +222,7 @@ public class ProfileAttributeFragment extends BaseFragment
 
     }
 
-    private void createChildSpinner(final View baseView, String tagName){
+    private void createChildSpinner(final View baseView, String tagName,boolean isEditable){
 
         View view = getLayoutInflater().inflate(R.layout.attribute_spinner_layout, null);
 
@@ -182,6 +235,9 @@ public class ProfileAttributeFragment extends BaseFragment
         setSpinnerAdapter(attributeSpinner,new ArrayList<>(),false);
 
         this.attributeSpinner.put(tagName,attributeSpinner);
+
+        if (!isEditable)
+            attributeSpinner.setEnabled(false);
 
         attributeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

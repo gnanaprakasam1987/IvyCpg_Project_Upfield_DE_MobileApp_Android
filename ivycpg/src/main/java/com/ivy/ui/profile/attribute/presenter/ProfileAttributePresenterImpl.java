@@ -14,6 +14,7 @@ import com.ivy.ui.profile.attribute.data.IProfileAttributeDataManager;
 import com.ivy.ui.profile.data.ChannelWiseAttributeList;
 import com.ivy.ui.profile.data.IProfileDataManager;
 import com.ivy.ui.profile.edit.di.Profile;
+import com.ivy.utils.StringUtils;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.functions.BiFunction;
+import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function3;
 import io.reactivex.functions.Function5;
 import io.reactivex.observers.DisposableObserver;
@@ -114,5 +116,22 @@ public class ProfileAttributePresenterImpl<V extends IProfileAttributeContract.I
 
     public ArrayList<AttributeBO> getAttributeChildLst(String parentId) {
         return getChildAttribute().get(parentId) != null ? getChildAttribute().get(parentId) : new ArrayList<>();
+    }
+
+    public void saveAttribute(ArrayList<AttributeBO> selectedAttributes){
+
+        getCompositeDisposable().add(
+                attributeDataManager.saveRetailerAttribute(getDataManager().getUser().getUserid()
+                        ,getDataManager().getRetailMaster().getRetailerID()
+                        , selectedAttributes)
+                .subscribeOn(getSchedulerProvider().io())
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<Boolean>() {
+                               @Override
+                               public void accept(Boolean response) throws Exception {
+                                    getIvyView().showMessage("Attribute Added");
+                               }
+                           }
+                ));
     }
 }
