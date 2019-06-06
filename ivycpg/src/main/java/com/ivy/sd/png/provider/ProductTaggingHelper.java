@@ -128,7 +128,8 @@ public class ProductTaggingHelper {
 
             boolean isLocationMappingIncluded=false;
             String criteriaTable="ProductTaggingCriteriaMapping";
-            if(typeOfTagging==TAGGING_TYPE_MODULE_WITH_STORELOCATION||typeOfTagging==TAGGING_TYPE_COMMON_WITH_STORELOCATION) {
+            if(typeOfTagging==TAGGING_TYPE_MODULE_WITH_STORELOCATION
+                    ||typeOfTagging==TAGGING_TYPE_COMMON_WITH_STORELOCATION) {
                 isLocationMappingIncluded = true;
                 criteriaTable="ProductTaggingCriteriaLocationMapping";
             }
