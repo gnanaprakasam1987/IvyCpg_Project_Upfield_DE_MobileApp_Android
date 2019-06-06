@@ -33,6 +33,7 @@ import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.Vector;
@@ -224,7 +225,7 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
             setScreenTitle(screenTitle);
         if (Pid != null) {
             if (!bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
-                mProductMasterBO = bmodel.productHelper.getTaggedProductBOById(Pid);
+                mProductMasterBO = ProductTaggingHelper.getInstance(this).getTaggedProductBOById(Pid);
             } else {
                 mProductMasterBO = bmodel.productHelper.getProductMasterBOById(Pid);
             }

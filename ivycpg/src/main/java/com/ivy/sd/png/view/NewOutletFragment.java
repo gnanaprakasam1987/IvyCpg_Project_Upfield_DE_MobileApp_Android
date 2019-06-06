@@ -95,6 +95,7 @@ import com.ivy.sd.png.commons.MaterialSpinner;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -5213,9 +5214,9 @@ public class NewOutletFragment extends IvyBaseFragment
         } else if (i == R.id.menu_oppr) {
             bmodel.configurationMasterHelper.downloadProductDetailsList();
 
-            bmodel.productHelper.downloadTaggedProducts(MENU_NEW_RETAILER);
+            ProductTaggingHelper.getInstance(getActivity()).downloadTaggedProducts(getActivity(),MENU_NEW_RETAILER);
             bmodel.productHelper.downloadCompetitorProducts("MENU_STK_ORD");
-            bmodel.productHelper.downloadCompetitorTaggedProducts(MENU_NEW_RETAILER);
+            ProductTaggingHelper.getInstance(getActivity()).downloadCompetitorTaggedProducts(getActivity(),MENU_NEW_RETAILER);
 
             /* Settign color **/
             bmodel.configurationMasterHelper.downloadFilterList();

@@ -13,6 +13,7 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.utils.AppUtils;
@@ -192,7 +193,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
 
     void getFilteredList(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId,
                          ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        Vector<ProductMasterBO> items = businessModel.productHelper.getTaggedProducts();
+        Vector<ProductMasterBO> items = ProductTaggingHelper.getInstance(context).getTaggedProducts();
         fiveFilter_productIDs = new ArrayList<>();
         brandButton = filtertext;
         this.filteredPid = mFilteredPid;
@@ -491,8 +492,18 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
         //location
         mLocationAdapter = new ArrayAdapter<>(context,
                 android.R.layout.select_dialog_singlechoice);
-        for (StandardListBO temp : businessModel.productHelper.getInStoreLocation())
-            mLocationAdapter.add(temp);
+        ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(context);
+        for (StandardListBO temp : businessModel.productHelper.getInStoreLocation()) {
+
+            if(productTaggingHelper.getTaggedLocations().size()>0) {
+                if (productTaggingHelper.getTaggedLocations().contains(Integer.parseInt(temp.getListID())))
+                    mLocationAdapter.add(temp);
+            }else {
+                mLocationAdapter.add(temp);
+            }
+        }
+
+
         if (businessModel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
             mSelectedLocationIndex = businessModel.productHelper.getmSelectedGLobalLocationIndex();
         }
@@ -515,7 +526,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
     }
 
     private Vector<ProductMasterBO> getTaggedProducts() {
-        return businessModel.productHelper.getTaggedProducts();
+        return ProductTaggingHelper.getInstance(context).getTaggedProducts();
     }
 
     public void updateBrandText() {
@@ -805,7 +816,7 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
         //  this.filtertext = filterText;
 
         ArrayList<ProductMasterBO> stockList = new ArrayList<>();
-        Vector<ProductMasterBO> items = businessModel.productHelper.getTaggedProducts();
+        Vector<ProductMasterBO> items = ProductTaggingHelper.getInstance(context).getTaggedProducts();
         if (parentIdList != null && !parentIdList.isEmpty()) {
             for (CompetitorFilterLevelBO mParentBO : parentIdList) {
                 for (ProductMasterBO sku : items) {

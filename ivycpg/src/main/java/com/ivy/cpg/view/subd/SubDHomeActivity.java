@@ -29,6 +29,7 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.utils.DateTimeUtils;
@@ -283,8 +284,7 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
 
                 StockCheckHelper.getInstance(SubDHomeActivity.this).loadStockCheckConfiguration(SubDHomeActivity.this,bmodel.retailerMasterBO.getSubchannelid());
 
-                bmodel.productHelper.downloadTaggedProducts(MENU_SUBD_STOCK);
-
+                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this,MENU_SUBD_STOCK);
                 // Download location to load in the filter.
                 bmodel.productHelper.downloadInStoreLocations();
 
@@ -294,10 +294,10 @@ public class SubDHomeActivity extends IvyBaseActivityNoActionBar {
                         bmodel.productHelper.downloadCompetitorFiveFilterLevels();
                     }
                     bmodel.productHelper.downloadCompetitorProducts(MENU_SUBD_STOCK);
-                    bmodel.productHelper.downloadCompetitorTaggedProducts(menu.getConfigCode());
+                    ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this,menu.getConfigCode());
                 }
 
-                if (bmodel.productHelper.getTaggedProducts().size() > 0) {
+                if (ProductTaggingHelper.getInstance(this).getTaggedProducts().size() > 0) {
 
 
                     if (bmodel.hasAlreadyStockChecked(bmodel.getRetailerMasterBO()

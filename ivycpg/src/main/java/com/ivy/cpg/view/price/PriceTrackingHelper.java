@@ -10,6 +10,7 @@ import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
@@ -94,8 +95,16 @@ public class PriceTrackingHelper {
         //location
         mLocationAdapter = new ArrayAdapter<>(context,
                 android.R.layout.select_dialog_singlechoice);
+        ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(context);
         for (StandardListBO temp : bmodel.productHelper.getInStoreLocation())
-            mLocationAdapter.add(temp);
+        {
+            if(productTaggingHelper.getTaggedLocations().size()>0) {
+                if (productTaggingHelper.getTaggedLocations().contains(Integer.parseInt(temp.getListID())))
+                    mLocationAdapter.add(temp);
+            }else {
+                mLocationAdapter.add(temp);
+            }
+        }
         if (bmodel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
             mSelectedLocationIndex = bmodel.productHelper.getmSelectedGLobalLocationIndex();
         }
@@ -192,7 +201,7 @@ public class PriceTrackingHelper {
         if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
             sku = bmodel.productHelper.getProductMasterBOById(pid);
         } else {
-            sku = bmodel.productHelper.getTaggedProductBOById(pid);
+            sku = ProductTaggingHelper.getInstance(context).getTaggedProductBOById(pid);
         }
         if (sku != null) {
             if (sku.getOwn() == own) {
@@ -233,7 +242,7 @@ public class PriceTrackingHelper {
         if (bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER) {
             productBO = bmodel.productHelper.getProductMasterBOById(pid);
         } else {
-            productBO = bmodel.productHelper.getTaggedProductBOById(pid);
+            productBO = ProductTaggingHelper.getInstance(context).getTaggedProductBOById(pid);
         }
         if (productBO != null) {
             if (productBO.getOwn() == own) {
@@ -508,7 +517,7 @@ public class PriceTrackingHelper {
 
     public void updateLastVisitPriceAndMRP() {
         //mTaggedProducts list only used in PriceCheck screen. So updating only in mTaggedProducts
-        for (ProductMasterBO productMasterBO : bmodel.productHelper.getTaggedProducts()) {
+        for (ProductMasterBO productMasterBO : ProductTaggingHelper.getInstance(context).getTaggedProducts()) {
             for (LocationBO locationBO : productMasterBO.getLocations()) {
 
                 locationBO.setPrice_pc(locationBO.getPrevPrice_pc());
@@ -555,7 +564,7 @@ public class PriceTrackingHelper {
 
     //to refresh price check object
     public void clearPriceCheck() {
-        Vector<ProductMasterBO> priceCheckDetails = bmodel.productHelper.getTaggedProducts();
+        Vector<ProductMasterBO> priceCheckDetails = ProductTaggingHelper.getInstance(context).getTaggedProducts();
         if (priceCheckDetails != null) {
             for (ProductMasterBO productMasterBO : priceCheckDetails) {
                 productMasterBO.setPrice_ca(0 + "");

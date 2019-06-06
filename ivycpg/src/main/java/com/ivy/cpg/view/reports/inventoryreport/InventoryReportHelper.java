@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
@@ -36,9 +37,9 @@ public class InventoryReportHelper {
 
             String focusBrandIds = "";
             if (type.equalsIgnoreCase("Filt11"))
-                focusBrandIds = bmodel.productHelper.getTaggingDetails("FCBND", mContentLevelId);
+                focusBrandIds = ProductTaggingHelper.getInstance(mContext).getTaggingDetails(mContext,"FCBND", mContentLevelId);
             else if (type.equals("Filt12"))
-                focusBrandIds = bmodel.productHelper.getTaggingDetails("FCBND2", mContentLevelId);
+                focusBrandIds = ProductTaggingHelper.getInstance(mContext).getTaggingDetails(mContext,"FCBND2", mContentLevelId);
 
             if(db.isDbNullOrClosed())
                 db.openDataBase();

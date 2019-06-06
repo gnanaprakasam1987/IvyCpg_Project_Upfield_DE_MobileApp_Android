@@ -78,6 +78,7 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
@@ -378,7 +379,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
             int mContentLevel = bmodel.productHelper.getContentLevel(bmodel.getContext(), "MENU_CATALOG_ORDER");
-            bmodel.productHelper.getTaggingDetails("MAX_ORD_VAL",mContentLevel); //MAX_ORD_VAL
+            ProductTaggingHelper.getInstance(this).getTaggingDetails(this,"MAX_ORD_VAL",mContentLevel); //MAX_ORD_VAL
         }
 
         search_txt.addTextChangedListener(new TextWatcher() {
@@ -1858,7 +1859,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     private boolean checkTaggingDetails(ProductMasterBO productMasterBO) {
         try {
-            ArrayList<ProductTaggingBO> productTaggingList = bmodel.productHelper.getProductTaggingList();
+            ArrayList<ProductTaggingBO> productTaggingList = ProductTaggingHelper.getInstance(this).getProductTaggingList();
             for (ProductTaggingBO productTagging : productTaggingList) {
                 float totalQty = (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
                         + (productMasterBO.getOrderedPcsQty())
@@ -1877,7 +1878,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     private void setTaggingDetails(ProductMasterBO productMasterBO) {
         try {
-            ArrayList<ProductTaggingBO> productTaggingList = bmodel.productHelper.getProductTaggingList();
+            ArrayList<ProductTaggingBO> productTaggingList = ProductTaggingHelper.getInstance(this).getProductTaggingList();
             for (ProductTaggingBO productTagging : productTaggingList) {
                 if (productMasterBO.getProductID().equals(productTagging.getPid())) {
                     productMasterBO.setAllocationQty(String.valueOf(productTagging.getToNorm()));
@@ -1890,7 +1891,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
     private void setTaggingDetails(Vector<ProductMasterBO> productList) {
         try {
-            ArrayList<ProductTaggingBO> productTaggingList = bmodel.productHelper.getProductTaggingList();
+            ArrayList<ProductTaggingBO> productTaggingList = ProductTaggingHelper.getInstance(this).getProductTaggingList();
             for (ProductTaggingBO productTagging : productTaggingList) {
                 for (ProductMasterBO productMasterBO : productList) {
                     if (productMasterBO.getProductID().equals(productTagging.getPid())) {

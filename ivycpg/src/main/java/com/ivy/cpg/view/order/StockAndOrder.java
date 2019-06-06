@@ -105,6 +105,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.model.ProductSearchCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.CommonDialog;
@@ -428,7 +429,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
             int mContentLevel = bmodel.productHelper.getContentLevel(bmodel.getContext(), "MENU_STK_ORD");
-            bmodel.productHelper.getTaggingDetails("MAX_ORD_VAL", mContentLevel); //MAX_ORD_VAL
+            ProductTaggingHelper.getInstance(this).getTaggingDetails(this,"MAX_ORD_VAL", mContentLevel); //MAX_ORD_VAL
         }
 
         String title;
@@ -4113,7 +4114,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private boolean checkTaggingDetails(ProductMasterBO productMasterBO) {
         try {
-            ArrayList<ProductTaggingBO> productTaggingList = bmodel.productHelper.getProductTaggingList();
+            ArrayList<ProductTaggingBO> productTaggingList = ProductTaggingHelper.getInstance(this).getProductTaggingList();
             for (ProductTaggingBO productTagging : productTaggingList) {
                 float totalQty = (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize())
                         + (productMasterBO.getOrderedPcsQty())
@@ -4132,7 +4133,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
     private void setTaggingDetails() {
         try {
-            ArrayList<ProductTaggingBO> productTaggingList = bmodel.productHelper.getProductTaggingList();
+            ArrayList<ProductTaggingBO> productTaggingList = ProductTaggingHelper.getInstance(this).getProductTaggingList();
             for (ProductTaggingBO productTagging : productTaggingList) {
                 for (ProductMasterBO productMasterBO : productList) {
                     if (productMasterBO.getProductID().equals(productTagging.getPid())) {
@@ -5315,8 +5316,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 totalQty += (product.getLocations().get(i).getShelfOuter() * product
                         .getOutersize());
 
-//            if (product.getLocations().get(i).getAvailability() > -1)
-//                totalQty += product.getLocations().get(i).getAvailability(); //Along with stock quantity this also gets added and showing wrong count
+//            if (product.getStoreLocations().get(i).getAvailability() > -1)
+//                totalQty += product.getStoreLocations().get(i).getAvailability(); //Along with stock quantity this also gets added and showing wrong count
 
             totalQty += product.getLocations().get(i).getWHPiece();
             totalQty += (product.getLocations().get(i).getWHCase() * product
