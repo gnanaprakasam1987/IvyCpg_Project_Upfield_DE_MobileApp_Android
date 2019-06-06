@@ -26,9 +26,9 @@ public class ProductTaggingHelper {
     private ArrayList<ProductTaggingBO> productTaggingList;
 
     private ArrayList<Integer> taggedLocations;
-    private Vector<ProductMasterBO> mTaggedProducts = null;
+    private Vector<ProductMasterBO> mTaggedProducts;
     private Map<String, ProductMasterBO> mTaggedProductById;
-    private BusinessModel bmodel;
+    private BusinessModel businessModel;
     private ProductHelper productHelper;
 
     private static int TAGGING_TYPE_MODULE_WITH_STORELOCATION=1;
@@ -40,7 +40,7 @@ public class ProductTaggingHelper {
 
     public ProductTaggingHelper(Context context){
         mTaggedProducts = new Vector<>();
-        bmodel=(BusinessModel)context.getApplicationContext();
+        businessModel =(BusinessModel)context.getApplicationContext();
         productHelper= ProductHelper.getInstance(context);
     }
 
@@ -54,7 +54,7 @@ public class ProductTaggingHelper {
 
     public Vector<ProductMasterBO> getTaggedProducts() {
         if (mTaggedProducts == null)
-            return new Vector<ProductMasterBO>();
+            return new Vector<>();
         return mTaggedProducts;
     }
     public ArrayList<ProductTaggingBO> getProductTaggingList() {
@@ -78,8 +78,8 @@ public class ProductTaggingHelper {
 
             mSKUId = Arrays.asList(productIds.split(","));
 
-            mTaggedProducts = new Vector<ProductMasterBO>();
-            mTaggedProductById = new HashMap<String, ProductMasterBO>();
+            mTaggedProducts = new Vector<>();
+            mTaggedProductById = new HashMap<>();
 
             if (productIds != null && !productIds.trim().equals("")) {
                 for (ProductMasterBO sku : productHelper.getProductMaster()) {
@@ -150,7 +150,7 @@ public class ProductTaggingHelper {
                     if (!productIds.toString().equals(""))
                         productIds.append(",");
                     productIds.append(c.getInt(0));
-                    if (bmodel.configurationMasterHelper.IS_FITSCORE_NEEDED || bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
+                    if (businessModel.configurationMasterHelper.IS_FITSCORE_NEEDED || businessModel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
                         taggingBO = new ProductTaggingBO();
                         taggingBO.setHeaderID(c.getString(1));
                         taggingBO.setPid(c.getString(0));
@@ -190,7 +190,7 @@ public class ProductTaggingHelper {
         try {
             StringBuilder priorityQuery = new StringBuilder();
             Cursor priorityCursor;
-            boolean isModuleWiseLocationMapping = false, isModuleWiseMapping = false, isCommonLocationMapping = false;
+
             priorityQuery.append("SELECT DISTINCT PCM.GroupID FROM ProductTaggingCriteriaLocationMapping PCM " +
                     " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
                     " WHERE PM.TaggingTypelovID = " +
@@ -237,7 +237,7 @@ public class ProductTaggingHelper {
 
         String attrQuery = "Select distinct PTAM.Groupid from ProductTaggingAttributesMapping PTAM" +
                 " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PTAM.groupid" +
-                " inner join RetailerAttribute RA on RA.AttributeId = PTAM.RetailerAttibuteId and RA.RetailerId =" + StringUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()) +
+                " inner join RetailerAttribute RA on RA.AttributeId = PTAM.RetailerAttibuteId and RA.RetailerId =" + StringUtils.QT(businessModel.getRetailerMasterBO().getRetailerID()) +
                 " WHERE PM.TaggingTypelovID = " + "(SELECT ListId FROM StandardListMaster WHERE ListCode = '" + moduleCode + "' AND ListType = 'PRODUCT_TAGGING')";
 
         Cursor c1 = db.selectSQL(attrQuery);
@@ -249,7 +249,7 @@ public class ProductTaggingHelper {
         }
 
         StringBuilder accountGroupIds=new StringBuilder();
-        String accountQuery="Select groupId from AccountGroupDetail where retailerId="+bmodel.getRetailerMasterBO().getRetailerID();
+        String accountQuery="Select groupId from AccountGroupDetail where retailerId="+ businessModel.getRetailerMasterBO().getRetailerID();
         Cursor accountCursor=db.selectSQL(accountQuery);
         if(accountCursor.getCount()>0){
             while (accountCursor.moveToNext()){
@@ -262,7 +262,7 @@ public class ProductTaggingHelper {
 
 
 
-        String criteriaTableName="";
+        String criteriaTableName;
         if(typeOfTagging==TAGGING_TYPE_MODULE_WITH_STORELOCATION){
             criteriaTableName="ProductTaggingCriteriaLocationMapping";
         }
@@ -290,13 +290,13 @@ public class ProductTaggingHelper {
 
 
         if(accountGroupIds.toString().length()>0){
-            query.append(" AND PCM.RetailerId IN(0," + bmodel.getRetailerMasterBO().getRetailerID() + ") " +
-                    " AND PCM.LocationId IN(0," + bmodel.channelMasterHelper.getLocationHierarchy(mContext) + "," + bmodel.getRetailerMasterBO().getLocationId() + ") " +
-                    " AND PCM.ChannelId IN(0," + bmodel.channelMasterHelper.getChannelHierarchy(bmodel.getRetailerMasterBO().getSubchannelid(), mContext) + "," + bmodel.getRetailerMasterBO().getSubchannelid() + ") " +
-                    " AND PCM.AccountId IN(0," + bmodel.getRetailerMasterBO().getAccountid() + ") " +
-                    " AND PCM.DistributorId IN(0," + bmodel.getRetailerMasterBO().getDistributorId() + ") " +
-                    " AND PCM.UserId IN(0," + bmodel.userMasterHelper.getUserMasterBO().getUserid() + ") " +
-                    " AND PCM.ClassId IN(0," + bmodel.getRetailerMasterBO().getClassid() + ") ");
+            query.append(" AND PCM.RetailerId IN(0," + businessModel.getRetailerMasterBO().getRetailerID() + ") " +
+                    " AND PCM.LocationId IN(0," + businessModel.channelMasterHelper.getLocationHierarchy(mContext) + "," + businessModel.getRetailerMasterBO().getLocationId() + ") " +
+                    " AND PCM.ChannelId IN(0," + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(), mContext) + "," + businessModel.getRetailerMasterBO().getSubchannelid() + ") " +
+                    " AND PCM.AccountId IN(0," + businessModel.getRetailerMasterBO().getAccountid() + ") " +
+                    " AND PCM.DistributorId IN(0," + businessModel.getRetailerMasterBO().getDistributorId() + ") " +
+                    " AND PCM.UserId IN(0," + businessModel.userMasterHelper.getUserMasterBO().getUserid() + ") " +
+                    " AND PCM.ClassId IN(0," + businessModel.getRetailerMasterBO().getClassid() + ") ");
         } else {
             query.append(" AND PCM.accountGroupId in("+accountGroupIds.toString()+")");
         }
@@ -335,7 +335,7 @@ public class ProductTaggingHelper {
     }
 
 
-    public void setProductTaggingList(ArrayList<ProductTaggingBO> productTaggingList) {
+    private void setProductTaggingList(ArrayList<ProductTaggingBO> productTaggingList) {
         this.productTaggingList = productTaggingList;
     }
 
@@ -354,10 +354,10 @@ public class ProductTaggingHelper {
 
 
             if (mTaggedProducts == null) {
-                mTaggedProducts = new Vector<ProductMasterBO>();
+                mTaggedProducts = new Vector<>();
             }
             if (mTaggedProductById == null) {
-                mTaggedProductById = new HashMap<String, ProductMasterBO>();
+                mTaggedProductById = new HashMap<>();
             }
 
             if (productIds != null && !productIds.trim().equals("")) {
@@ -400,9 +400,9 @@ public class ProductTaggingHelper {
             db.openDataBase();
             String sql;
             sql = "SELECT distinct A1.CPID, A1.CPName," +
-                    "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.CASE_TYPE) + " and ListType = 'PRODUCT_UOM')as duomid," +
-                    "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.OUTER_TYPE) + " and ListType = 'PRODUCT_UOM') as dOuomid," +
-                    "(SELECT ListId from StandardListMaster where ListCode = " + bmodel.QT(bmodel.synchronizationHelper.PIECE_TYPE) + " and ListType = 'PRODUCT_UOM') as piece_uomid," +
+                    "(SELECT ListId from StandardListMaster where ListCode = " + businessModel.QT(businessModel.synchronizationHelper.CASE_TYPE) + " and ListType = 'PRODUCT_UOM')as duomid," +
+                    "(SELECT ListId from StandardListMaster where ListCode = " + businessModel.QT(businessModel.synchronizationHelper.OUTER_TYPE) + " and ListType = 'PRODUCT_UOM') as dOuomid," +
+                    "(SELECT ListId from StandardListMaster where ListCode = " + businessModel.QT(businessModel.synchronizationHelper.PIECE_TYPE) + " and ListType = 'PRODUCT_UOM') as piece_uomid," +
                     "A1.CPCode,A" + loopEnd + ".CPID as parentId,ifnull(A1.Barcode,'') from CompetitorProductMaster A1";
             for (int i = 2; i <= loopEnd; i++)
                 sql = sql + " INNER JOIN CompetitorProductMaster A" + i + " ON A" + i
