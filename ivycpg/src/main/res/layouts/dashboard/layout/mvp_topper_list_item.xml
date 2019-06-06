@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/sub_activity_list_height"
+    android:paddingBottom="@dimen/_10sdp"
+    android:clickable="true">
+
+    <RelativeLayout
+        android:id="@+id/activity_icon1"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:layout_marginEnd="@dimen/activity_margin1"
+        android:layout_marginLeft="@dimen/activity_margin1"
+        android:layout_marginRight="@dimen/activity_margin1"
+        android:layout_marginStart="@dimen/activity_margin1">
+
+        <ImageView
+            android:id="@+id/badge"
+            android:layout_width="@dimen/_50sdp"
+            android:layout_height="@dimen/_50sdp"
+            android:src="@drawable/ic_badge"
+            android:adjustViewBounds="true"
+            android:tint="#F0E68C" />
+
+        <TextView
+            android:id="@+id/rank"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="25dp"
+            android:layout_alignBottom="@+id/badge"
+            android:layout_alignLeft="@+id/badge"
+            android:layout_alignRight="@+id/badge"
+            android:layout_alignTop="@+id/badge"
+            android:layout_marginBottom="1dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:gravity="center"
+            android:text="1"
+            android:textSize="@dimen/_15sdp" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/lnrDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_toRightOf="@id/activity_icon1"
+        android:orientation="vertical"
+        android:weightSum="2">
+
+        <TextView
+            android:id="@+id/activityName"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Anthony Santos" />
+
+        <TextView
+            android:id="@+id/subactivityName"
+            style="@style/TextViewListItemCaption"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:text="Venkata Murthy Stores" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/score"
+        style="@style/TextViewListItemPrimary"
+        android:layout_width="@dimen/_80sdp"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="@dimen/activity_margin1"
+        android:layout_marginRight="@dimen/activity_margin1"
+        android:gravity="center_vertical"
+        android:text="78%" />
+
+</RelativeLayout>

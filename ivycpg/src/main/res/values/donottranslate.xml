@@ -364,4 +364,8 @@
     <string name="service_provider">Service provider</string>
     <string name="select_due_date">Select Due Date</string>
     <string name="input_char_validation_msg">The value should be from the range %d to %d</string>
+    <string name="mvp_kpi_tab1_text">KPI Wise Ach. % Rank</string>
+    <string name="mvp_kpi_tab2_text">Top 5 peers</string>
+    <string name="kpi_label">KPI</string>
+    <string name="ach_label">Ach.</string>
 </resources>
