@@ -326,7 +326,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     @Override
     public void showTaskDueDateError() {
-
+        showMessage(R.string.select_due_date);
     }
 
     @Override
