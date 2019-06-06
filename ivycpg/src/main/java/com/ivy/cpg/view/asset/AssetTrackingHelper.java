@@ -2105,7 +2105,7 @@ public class AssetTrackingHelper {
         try {
 
             db.openDataBase();
-            db.deleteSQL("AssetServiceRequest", "retailerid=" + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()), false);
+            db.deleteSQL("AssetServiceRequestActivity", "retailerid=" + QT(mBusinessModel.getRetailerMasterBO().getRetailerID()), false);
         } catch (Exception e) {
             db.closeDB();
             e.printStackTrace();
@@ -2246,7 +2246,7 @@ public class AssetTrackingHelper {
             }
 
 
-            String query = "select   AAD.AssetId,AAD.serialNum,AAD.reasonid  from PosmMaster P  inner  join AssetServiceRequest AAD on P.PosmId=AAD.AssetId where retailerid=" +
+            String query = "select   AAD.AssetId,AAD.serialNum,AAD.reasonid  from PosmMaster P  inner  join AssetServiceRequestActivity AAD on P.PosmId=AAD.AssetId where retailerid=" +
                     QT(mBusinessModel.getRetailerMasterBO().getRetailerID());
 
             Cursor c2 = db.selectSQL(query);

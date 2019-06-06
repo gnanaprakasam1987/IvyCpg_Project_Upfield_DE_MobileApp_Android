@@ -4,6 +4,6 @@ public interface ImageAdapterListener {
 
     void onTakePhoto();
 
-    void deletePhoto(String fileName);
+    void deletePhoto(String fileName,int position);
 
 }

@@ -276,7 +276,7 @@ public class DataMembers {
     public static final String tbl_DTPMaster = "DTPMaster";
     public static final String tbl_retailerMaster = "RetailerMaster";
 
-    public static final String tbl_AssetService = "AssetServiceRequest";
+    public static final String tbl_AssetService = "AssetServiceRequestActivity";
     private static final String tbl_AssetService_cols = "Uid,date,AssetId,serialNum,reasonid,retailerid";
 
     public static final String tbl_AssetAddDelete = "AssetAddDelete";
@@ -292,7 +292,7 @@ public class DataMembers {
     public static final String tbl_SerializedAssetImageDetail_cols = "uid,AssetID,ImageName,serialNumber";
 
     public static final String tbl_SerializedAssetServiceRequest = "SerializedAssetServiceRequest";
-    public static final String tbl_SerializedAssetServiceRequest_cols = "Uid,date,AssetId,serialNumber,reasonid,retailerid";
+    public static final String tbl_SerializedAssetServiceRequest_cols = "Uid,date,AssetId,serialNumber,reasonid,retailerid,serviceProviderId,IssueDescription,ImagePath,Status,ExpectedResolutionDate";
 
     public static final String tbl_SerializedAssetTransfer = "SerializedAssetTransfer";
     private static final String tbl_SerializedAssetTransfer_cols = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId,rentPrice,toDate,VisitId,DeliveryDate,Qty";

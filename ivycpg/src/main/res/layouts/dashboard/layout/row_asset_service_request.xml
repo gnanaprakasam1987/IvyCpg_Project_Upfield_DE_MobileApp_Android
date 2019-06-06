@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.ivy.ui.task.view.SwipeRevealLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/swipe_layout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:dragEdge="right"
+    >
+
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal|end"
+            android:gravity="center"
+            android:orientation="horizontal"
+            tools:ignore="UselessParent"
+
+            >
+
+            <Button
+                android:id="@+id/edit_button"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="match_parent"
+                android:background="?attr/colorPrimaryDark"
+                android:drawableTop="@drawable/task_edit"
+                android:fontFamily="@font/roboto_medium"
+                android:gravity="center_vertical"
+                android:padding="@dimen/_14sdp"
+                android:textAlignment="center"
+                android:clickable="true"
+                android:text="@string/edit"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_secondary"
+                android:focusable="true" />
+
+
+            <Button
+                android:id="@+id/delete_button"
+                style="@style/Base.Widget.AppCompat.Button.Borderless"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:background="@color/sdkOrange"
+                android:drawableTop="@drawable/ic_delete_white_24dp"
+                android:fontFamily="@font/roboto_medium"
+                android:gravity="center_vertical"
+                android:padding="@dimen/_14sdp"
+                android:textAlignment="center"
+                android:clickable="true"
+                android:focusable="true"
+                android:text="@string/cancel"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_secondary" />
+
+
+
+        </LinearLayout>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_card"
+        android:clickable="true"
+        android:focusable="true"
+        >
+
+    <RelativeLayout
+        android:id="@+id/layout_row"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="@dimen/dimen_5dp"
+        android:layout_gravity="center_vertical">
+        <TextView
+            android:id="@+id/tv_asset_name"
+            style="@style/TextViewListItemPrimary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:gravity="start"
+            android:maxLines="1"
+            android:text="@string/asset_name"
+            />
+
+        <TextView
+            android:id="@+id/tv_serialNo"
+            style="@style/TextViewListItemSecondary"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:tag="asset_serialno"
+            android:text="@string/serial_no"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/tv_asset_name"
+            android:layout_marginBottom="@dimen/dimen_20dp"
+            />
+
+        <TextView
+            android:id="@+id/tv_createdby"
+            style="@style/TextViewListItemSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="@string/status"
+            android:layout_alignParentBottom="true"/>
+
+        <TextView
+            android:id="@+id/tv_status"
+            style="@style/TextViewListItemSecondary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="@string/status"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            />
+
+    </RelativeLayout>
+
+    </FrameLayout>
+</com.ivy.ui.task.view.SwipeRevealLayout>

@@ -14,6 +14,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 
+import com.bumptech.glide.request.target.BitmapImageViewTarget;
+
 import java.io.File;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
