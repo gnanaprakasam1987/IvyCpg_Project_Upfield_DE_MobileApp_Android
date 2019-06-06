@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.text.TextUtils;
 
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -14,6 +15,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
+import com.ivy.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -1198,7 +1200,7 @@ public class SurveyHelperNew {
                     // update joint call
                     bmodel.outletTimeStampHelper.updateJointCallDetailsByModuleWise(menuCode, uid, oldUid);
 
-                    String headerColumns = "uid, surveyid, date, retailerid,distributorID, ModuleID,SupervisiorId,achScore,tgtScore,menucode,AchBonusPoint,MaxBonusPoint,Remark,type,counterid,refid,userid,frequency,SignaturePath";
+                    String headerColumns = "uid, surveyid, date, retailerid,distributorID, ModuleID,SupervisiorId,achScore,tgtScore,menucode,AchBonusPoint,MaxBonusPoint,Remark,type,counterid,refid,userid,frequency,SignaturePath,tripUid";
 
                     mAllQuestions.addAll(sBO.getQuestions());
                     questionSize = mAllQuestions.size();
@@ -1333,7 +1335,16 @@ public class SurveyHelperNew {
                                         + "," + userid
                                         + "," + QT(sBO.getSurveyFreq())
                                         + "," + QT(getSignaturePath());
+
                                 qBO.setSignaturePath(getSignaturePath());
+
+                                if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
+                                    headerValues= headerValues+"," + StringUtils.QT(LoadManagementHelper.getInstance(context.getApplicationContext()).getTripId());
+                                }
+                                else {
+                                    headerValues= headerValues+",0";
+                                }
+
                                 db.insertSQL("AnswerHeader", headerColumns, headerValues);
                             }
 

@@ -73,6 +73,7 @@ import com.ivy.cpg.view.order.tax.TaxGstHelper;
 import com.ivy.cpg.view.order.tax.TaxHelper;
 import com.ivy.sd.png.util.StandardListMasterConstants;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.ui.AssetServiceRequest.AssetServiceReqFragment;
 
 import java.util.ArrayList;
 import java.util.Locale;
@@ -552,6 +553,14 @@ public class ReportActivity extends BaseActivity implements BaseIvyView,
         } else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_SYNC_REPORT)){
             SyncReportFragment syncReportFragment = new SyncReportFragment();
             transaction.replace(R.id.fragment_content, syncReportFragment);
+            commitFragment(transaction, config);
+        }
+        else if (config.getConfigCode().equals(StandardListMasterConstants.MENU_ASSET_SERVICE_REQ_RPT)){
+            AssetServiceReqFragment serviceReqFragment = new AssetServiceReqFragment();
+            Bundle bundle=new Bundle();
+            bundle.putBoolean("isFromReport",true);
+            serviceReqFragment.setArguments(bundle);
+            transaction.replace(R.id.fragment_content, serviceReqFragment);
             commitFragment(transaction, config);
         }
     }

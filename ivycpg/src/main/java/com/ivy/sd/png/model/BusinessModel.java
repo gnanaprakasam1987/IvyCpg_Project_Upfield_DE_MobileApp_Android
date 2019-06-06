@@ -4433,6 +4433,8 @@ public class BusinessModel extends Application {
                 mBucketName = mBucketDetails + "/" + "Task" + path;
             } else if (imageName.startsWith("SUR_SGN_")) {
                 mBucketName = mBucketDetails + "/" + "Survey" + path;
+            } else if (imageName.startsWith("ASR_")) {
+                mBucketName = mBucketDetails + "/" + "AssetServiceRequest" + path;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = mBucketDetails + "/" + "PhotoCapture" + path;
@@ -7711,6 +7713,8 @@ public class BusinessModel extends Application {
                 mBucketName = "Order" + path + imageName;
             } else if (imageName.startsWith("SUR_SGN_")) {
                 mBucketName = "Survey" + path + imageName;
+            }else if (imageName.startsWith("ASR_")) {
+                mBucketName = "AssetServiceRequest" + path+imageName;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = "PhotoCapture" + path + imageName;

@@ -266,6 +266,12 @@ public class ReportMenuFragment extends IvyBaseFragment {
                     showToast();
                 break;
 
+            case StandardListMasterConstants.MENU_ASSET_SERVICE_REQ_RPT:
+                if(reportHelper.hasAssetServiceRequest())
+                    gotoReportActivity(config);
+                else
+                    showToast();
+                break;
             default:
                 gotoReportActivity(config);
                 break;
