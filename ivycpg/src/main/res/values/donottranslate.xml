@@ -351,6 +351,7 @@
     <string name="enter_rental_price">Enter Retailer Price</string>
     <string name="choose_eff_to_date">Choose Eff To Date</string>
     <string name="rental_price_must_be_grater_than_zero">Rental Price must be grater than of %d</string>
+    <string name="select_due_date">Select Due Date</string>
     <string name="due_in_next_days">Due in next %1$d days</string>
     <string name="next_visit_date">Next Visit Date: </string>
     <string name="next_visit_date_count">%1$d days to go</string>

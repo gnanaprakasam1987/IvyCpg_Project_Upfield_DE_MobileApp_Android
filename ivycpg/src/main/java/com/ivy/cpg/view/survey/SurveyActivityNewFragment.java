@@ -2555,7 +2555,10 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                 if (mIsFileAvailable)
                     FileUtils.deleteFiles(FileUtils.photoFolderPath, pdfName);
 
-                PDFGenerator pdfGenerator = new PDFGenerator(FileUtils.photoFolderPath, pdfName, FileUtils.photoFolderPath);
+                PDFGenerator pdfGenerator = new PDFGenerator(FileUtils.photoFolderPath, pdfName, FileUtils.photoFolderPath, bmodel.getAppDataProvider().getUser().getDistributorName(),
+                        bmodel.getAppDataProvider().getUser().getDistributorAddress1(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), bmodel.getAppDataProvider().getUser().getUserName(),
+                        bmodel.getAppDataProvider().getRetailMaster().getRetailerName());
+
 
                 writeSurvey(pdfGenerator);
                 pdfGenerator.createPdf();
