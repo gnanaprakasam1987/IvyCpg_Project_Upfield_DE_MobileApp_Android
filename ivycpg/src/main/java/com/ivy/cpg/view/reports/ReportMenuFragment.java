@@ -133,7 +133,6 @@ public class ReportMenuFragment extends IvyBaseFragment {
             Vector<ConfigureBO> menuDB = bmodel.configurationMasterHelper
                     .downloadNewActivityMenu(StandardListMasterConstants.REPORT_MENU);
 
-            menuDB.add(0,new ConfigureBO(StandardListMasterConstants.MENU_ASSET_SERVICE_REQ_RPT,"Asset Service report","1",1,1,1));
 
             ListView listView = view.findViewById(R.id.listView1);
             listView.setCacheColorHint(0);
