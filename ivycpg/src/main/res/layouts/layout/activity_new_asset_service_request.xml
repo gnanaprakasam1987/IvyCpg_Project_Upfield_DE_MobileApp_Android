@@ -117,7 +117,8 @@
             android:layout_width="@dimen/dimen_0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_weight="6">
+            android:layout_weight="6"
+            android:paddingRight="@dimen/dimen_10dp">
             <TextView
                 android:id="@+id/label_issue_type"
                 style="@style/TextViewListItemSecondary"
@@ -126,8 +127,8 @@
                 android:text="@string/type"
                 />
             <android.support.v7.widget.AppCompatSpinner
-                style="@style/Base.Widget.AppCompat.Spinner.Underlined"
                 android:id="@+id/spinner_issue_type"
+                android:background="@drawable/edittext_bottom_border"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/spinner_height"
                 android:gravity="center"
@@ -225,10 +226,11 @@
             <LinearLayout
                 android:id="@+id/layout_footer"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/footer_height"
                 android:layout_alignParentBottom="true"
                 android:gravity="end|center_vertical"
-                android:padding="@dimen/dimen_5dp"
+                android:padding="@dimen/dimen_4dp"
+                android:background="?attr/customFooterBackgroundColor"
                 >
 
                 <Button

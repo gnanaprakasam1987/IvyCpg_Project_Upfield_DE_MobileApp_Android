@@ -423,7 +423,7 @@ public class FileUtils {
         return count;
     }
 
-    public String getFileNameFromUri(String uri){
+    public static String getFileNameFromUri(String uri){
         String mFileName = "file.bin";
 
         int index = uri.lastIndexOf('/');

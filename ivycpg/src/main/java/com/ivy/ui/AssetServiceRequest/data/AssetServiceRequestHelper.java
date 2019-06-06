@@ -12,7 +12,9 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -101,7 +103,7 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
                         assetBO.setReasonID(cursor.getInt(11));// Issue type id
                         assetBO.setServiceProvider(cursor.getString(5));
                         assetBO.setIssueDescription(cursor.getString(6));
-                        //assetBO.setImageName();
+                        assetBO.setImageName(FileUtils.getFileNameFromUri(cursor.getString(7)));
                         assetBO.setAssetServiceReqStatus(cursor.getString(8));
                         assetBO.setNewInstallDate(cursor.getString(9)); // Resolution date
                         assetBO.setServiceRequestedRetailer(cursor.getString(12));
@@ -250,6 +252,11 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
                 String id = appDataProvider.getUser().getUserid()
                         + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
+                String imagePath = "AssetServiceRequest/"
+                        + appDataProvider.getUser().getDownloadDate()
+                        .replace("/", "") + "/"
+                        + appDataProvider.getUser().getUserid() + "/" + assetBO.getImageName();
+
                 StringBuilder stringBuilder =new StringBuilder();
                 stringBuilder.append(id+",");
                 stringBuilder.append(assetBO.getAssetID()+",");
@@ -259,7 +266,7 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
                 stringBuilder.append(assetBO.getReasonID()+",");
                 stringBuilder.append(assetBO.getServiceProviderId()+",");
                 stringBuilder.append(StringUtils.QT(assetBO.getIssueDescription())+",");
-                stringBuilder.append(StringUtils.QT(assetBO.getImageName())+",");
+                stringBuilder.append(StringUtils.QT(imagePath)+",");
                 stringBuilder.append(StringUtils.QT(assetBO.getAssetServiceReqStatus())+",");
                 stringBuilder.append(StringUtils.QT(assetBO.getNewInstallDate())+",");
                 stringBuilder.append("'N'"+",");

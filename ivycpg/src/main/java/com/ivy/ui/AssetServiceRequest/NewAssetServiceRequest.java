@@ -196,9 +196,9 @@ public class NewAssetServiceRequest extends BaseActivity implements AssetService
 
         //
         ArrayAdapter<ReasonMaster> issueTypeAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item);
+                R.layout.spinner_bluetext_layout);
         issueTypeAdapter
-                .setDropDownViewResource(R.layout.spinner_new_retailer_text_list_item);
+                .setDropDownViewResource(R.layout.spinner_blacktext_list_item);
         issueTypeAdapter.add(new ReasonMaster("0",getResources().getString(R.string.select)));
         issueTypeAdapter.addAll(issueTypes);
         spinner_issue_type.setAdapter(issueTypeAdapter);
