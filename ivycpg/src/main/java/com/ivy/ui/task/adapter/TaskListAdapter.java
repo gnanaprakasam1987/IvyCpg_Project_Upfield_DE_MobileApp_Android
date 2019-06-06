@@ -98,7 +98,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
                 taskBo.getTaskDueDate(), "yyyy/MM/dd");
         if (daysCount > 0) {
             holder.dueDaysTv.setVisibility(View.VISIBLE);
-            holder.dueDaysTv.setText(String.format(mContext.getString(R.string.due_in_next_days), daysCount));
+            holder.dueDaysTv.setText(mContext.getString(R.string.over_due));
         } else {
             holder.dueDaysTv.setVisibility(View.GONE);
         }
@@ -132,25 +132,21 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             }
         });
 
-        holder.btnEditTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                taskClickListener.onTaskButtonClick(taskBo, TaskConstant.TASK_EDIT);
+        holder.btnEditTask.setOnClickListener(
+                v -> taskClickListener.onTaskButtonClick(taskBo, TaskConstant.TASK_EDIT));
+
+        holder.btnDeleteTask.setOnClickListener(v -> {
+            if (taskBo.getUsercreated().equals("0"))
+                Toast.makeText(mContext, mContext.getString(R.string.server_task_can_not_be_delete), Toast.LENGTH_SHORT).show();
+            else if (taskBo.isChecked())
+                Toast.makeText(mContext, mContext.getString(R.string.exec_task_not_allow_to_delete), Toast.LENGTH_SHORT).show();
+            else {
+                showDeleteAlert(holder.getAdapterPosition());
             }
         });
 
-        holder.btnDeleteTask.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (taskBo.getUsercreated().equals("0"))
-                    Toast.makeText(mContext, mContext.getString(R.string.server_task_can_not_be_delete), Toast.LENGTH_SHORT).show();
-                else if (taskBo.isChecked())
-                    Toast.makeText(mContext, mContext.getString(R.string.exec_task_not_allow_to_delete), Toast.LENGTH_SHORT).show();
-                else {
-                    showDeleteAlert(holder.getAdapterPosition());
-                }
-            }
-        });
+        holder.btnCloseTask.setOnClickListener(
+                v -> taskClickListener.showTaskNoReasonDialog(taskBo));
 
         if (taskBo.isUpload() && taskBo.getIsdone().equals("1")) {
             holder.taskCB.setEnabled(false);
@@ -207,6 +203,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         AppCompatImageButton btnAttachFile;
         Button btnEditTask;
         Button btnDeleteTask;
+        Button btnCloseTask;
         TextView taskDueDateTv;
 
         public TaskListViewHolder(View itemView) {
@@ -221,6 +218,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             btnAttachFile = itemView.findViewById(R.id.btn_attach_photo);
             btnDeleteTask = itemView.findViewById(R.id.delete_button);
             btnEditTask = itemView.findViewById(R.id.edit_button);
+            btnCloseTask = itemView.findViewById(R.id.close_button);
             taskDueDateTv = itemView.findViewById(R.id.task_due_date_tv);
             dueDaysTv = itemView.findViewById(R.id.due_days_Tv);
 

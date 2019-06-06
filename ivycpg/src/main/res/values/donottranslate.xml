@@ -356,11 +356,11 @@
     <string name="next_visit_date">Next Visit Date: </string>
     <string name="next_visit_date_count">%1$d days to go</string>
     <string name="pending_task">Pending Task</string>
-    <string name="parent">Parent User</string>
-    <string name="child">Child User</string>
-    <string name="link_user">Link User</string>
-    <string name="peer_user">Peer User</string>
-    <string name="choose_retailer">Retailer</string>
+    <string name="parent">Parent</string>
+    <string name="child">Child</string>
+    <string name="link_user">Link</string>
+    <string name="peer_user">Peer</string>
+    <string name="retailer_wise">Retailer Wise</string>
     <string name="over_due">Overdue</string>
     <string name="select_peer">Select Peer</string>
     <string name="select_child">Select child</string>

@@ -340,6 +340,11 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         hideBottomSheet();
     }
 
+    @Override
+    public void showTaskNoReasonDialog(TaskDataBO taskBo) {
+
+    }
+
     /**
      * Alert dialog for deleting image
      *

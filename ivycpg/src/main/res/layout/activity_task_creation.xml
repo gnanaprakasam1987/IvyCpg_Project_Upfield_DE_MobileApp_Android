@@ -21,7 +21,8 @@
         app:layout_constraintBottom_toTopOf="@+id/save_ll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/toolbar"
+        >
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -58,7 +59,6 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:paddingTop="@dimen/_8sdp"
-                android:paddingBottom="@dimen/_4sdp"
                 android:text="@string/due_date"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv" />
@@ -67,7 +67,7 @@
                 android:id="@+id/task_due_date_btn"
                 style="@style/datePickerButton"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/list_item_date_picker_height"
+                android:layout_height="@dimen/_35sdp"
                 android:gravity="center|start"
                 android:hint="@string/due_date"
                 android:maxLines="1"
@@ -81,7 +81,6 @@
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
                 android:paddingTop="@dimen/_8sdp"
-                android:paddingBottom="@dimen/_4sdp"
                 android:text="@string/category"
                 android:visibility="visible"
                 app:layout_constraintLeft_toRightOf="@+id/guideline1"
@@ -89,9 +88,9 @@
 
             <android.support.v7.widget.AppCompatSpinner
                 android:id="@+id/task_category_spinner"
-                android:drawableEnd="@drawable/ic_arrow_drop_down"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="@dimen/spinner_width"
-                android:layout_height="@dimen/list_item_date_picker_height"
+                android:layout_height="@dimen/_35sdp"
                 android:spinnerMode="dialog"
                 android:visibility="visible"
                 app:layout_constraintLeft_toRightOf="@+id/guideline1"
@@ -101,6 +100,7 @@
                 android:id="@+id/product_level_group"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:visibility="gone"
                 app:constraint_referenced_ids="task_category_tv,task_category_spinner" />
 
             <TextView
@@ -115,186 +115,124 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/task_due_date_btn" />
 
-            <RadioButton
-                android:id="@+id/seller_selection"
-                style="@style/TextViewNormal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/switch_option"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_height"
                 android:layout_gravity="center_vertical"
+                android:gravity="end|center"
+                android:textAlignment="textEnd"
+                app:layout_constraintRight_toLeftOf="@+id/auto_complete_txt_retailer"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/applicable_tv" />
+
+            <TextView
+                android:id="@+id/option_txt"
+                style="@style/TextViewNormal"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/spinner_height"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:textAlignment="textStart"
+                android:gravity="start|center"
                 android:text="@string/Seller"
-                android:checked="true"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/applicable_tv" />
-
-            <RadioButton
-                android:id="@+id/retailer_selection"
-                style="@style/TextViewNormal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:text="@string/choose_retailer"
-                app:layout_constraintLeft_toRightOf="@+id/guideline1"
-                app:layout_constraintTop_toBottomOf="@+id/applicable_tv" />
-
-
-            <RadioButton
-                android:id="@+id/retailer_wise"
-                style="@style/TextViewNormal"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/list_item_date_picker_height"
-                android:layout_gravity="center_vertical"
-                android:text="@string/Retailerwise"
                 app:layout_constraintRight_toLeftOf="@+id/guideline1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/seller_selection" />
+                app:layout_constraintLeft_toRightOf="@+id/switch_option"
+                app:layout_constraintTop_toBottomOf="@+id/applicable_tv" />
+
 
             <android.support.v7.widget.AppCompatAutoCompleteTextView
                 android:id="@+id/auto_complete_txt_retailer"
-                style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="@dimen/spinner_width"
-                android:layout_height="@dimen/list_item_date_picker_height"
-                android:gravity="top"
-                android:spinnerMode="dialog"
-                android:visibility="invisible"
+                android:layout_height="@dimen/spinner_height"
+                android:drawableEnd="@drawable/ic_arrow_drop_down"
                 android:ems="10"
+                android:gravity="top"
                 android:hint="@string/select"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLines="1"
-                app:layout_constraintLeft_toRightOf="@+id/guideline1"
-                app:layout_constraintTop_toBottomOf="@+id/retailer_selection" />
-
-
-            <android.support.constraint.Group
-                android:id="@+id/retailer_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:spinnerMode="dialog"
                 android:visibility="gone"
-                app:constraint_referenced_ids="retailer_wise,auto_complete_txt_retailer" />
+                app:layout_constraintLeft_toRightOf="@+id/guideline1"
+                app:layout_constraintTop_toBottomOf="@+id/applicable_tv" />
 
 
-            <RadioButton
-                android:id="@+id/self_user"
-                style="@style/TextViewNormal"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/list_item_date_picker_height"
-                android:layout_gravity="center_vertical"
-                android:checked="true"
-                android:text="@string/self"
-                app:layout_constraintRight_toLeftOf="@+id/guideline1"
+            <RadioGroup
+                android:id="@+id/radio_grp_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/guideline3"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/retailer_wise" />
+                app:layout_constraintTop_toBottomOf="@+id/switch_option">
 
 
-            <RadioButton
-                android:id="@+id/parent_user"
-                style="@style/TextViewNormal"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/list_item_date_picker_height"
-                android:layout_gravity="center_vertical"
-                android:text="@string/parent"
-                app:layout_constraintRight_toLeftOf="@+id/guideline1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/self_user" />
+                <RadioButton
+                    android:id="@+id/self_user"
+                    style="@style/TextViewNormal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:checked="true"
+                    android:padding="@dimen/_10sdp"
+                    android:text="@string/self" />
+
+                <RadioButton
+                    android:id="@+id/parent_user"
+                    style="@style/TextViewNormal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:padding="@dimen/_10sdp"
+                    android:text="@string/parent" />
+
+
+                <RadioButton
+                    android:id="@+id/child_user"
+                    style="@style/TextViewNormal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:padding="@dimen/_10sdp"
+                    android:text="@string/child" />
+
+
+                <RadioButton
+                    android:id="@+id/peer_user"
+                    style="@style/TextViewNormal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:padding="@dimen/_10sdp"
+                    android:text="@string/peer_user"
+                    />
+
+
+                <RadioButton
+                    android:id="@+id/link_user"
+                    style="@style/TextViewNormal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:padding="@dimen/_10sdp"
+                    android:text="@string/link_user"
+                    android:visibility="gone" />
+            </RadioGroup>
 
             <Spinner
                 android:id="@+id/spinner_seller"
                 style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="@dimen/spinner_width"
-                android:layout_height="@dimen/list_item_date_picker_height"
+                android:layout_height="@dimen/_35sdp"
                 android:layout_centerVertical="true"
                 android:gravity="center_vertical"
                 android:spinnerMode="dialog"
-                android:visibility="invisible"
-                app:layout_constraintLeft_toRightOf="@+id/guideline1"
-                app:layout_constraintTop_toBottomOf="@+id/self_user" />
-
-            <RadioButton
-                android:id="@+id/child_user"
-                style="@style/TextViewNormal"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/list_item_date_picker_height"
-                android:layout_gravity="center_vertical"
-                android:text="@string/child"
-                app:layout_constraintRight_toLeftOf="@+id/guideline1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/parent_user" />
-
-
-            <Spinner
-                android:id="@+id/spinner_child"
-                style="@style/Widget.AppCompat.Spinner.Underlined"
-                android:layout_width="@dimen/spinner_width"
-                android:layout_height="@dimen/list_item_date_picker_height"
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:spinnerMode="dialog"
-                android:visibility="invisible"
-                app:layout_constraintLeft_toRightOf="@+id/guideline1"
-                app:layout_constraintTop_toBottomOf="@+id/spinner_seller" />
-
-            <RadioButton
-                android:id="@+id/peer_user"
-                style="@style/TextViewNormal"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/list_item_date_picker_height"
-                android:layout_gravity="center_vertical"
-                android:text="@string/peer_user"
-                app:layout_constraintRight_toLeftOf="@+id/guideline1"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/child_user" />
-
-            <Spinner
-                android:id="@+id/spinner_peer"
-                style="@style/Widget.AppCompat.Spinner.Underlined"
-                android:layout_width="@dimen/spinner_width"
-                android:layout_height="@dimen/list_item_date_picker_height"
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:spinnerMode="dialog"
-                android:visibility="invisible"
-                app:layout_constraintLeft_toRightOf="@+id/guideline1"
-                app:layout_constraintTop_toBottomOf="@+id/spinner_child" />
-
-
-            <android.support.constraint.Group
-                android:id="@+id/peer_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:visibility="gone"
-                app:constraint_referenced_ids="peer_user,spinner_peer" />
-
-            <RadioButton
-                android:id="@+id/link_user"
-                style="@style/TextViewNormal"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/list_item_date_picker_height"
-                android:layout_gravity="center_vertical"
-                android:text="@string/link_user"
-                app:layout_constraintBottom_toTopOf="@+id/guideline2"
-                app:layout_constraintRight_toLeftOf="@+id/guideline1"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/peer_user" />
-
-            <Spinner
-                android:id="@+id/spinner_link"
-                style="@style/Widget.AppCompat.Spinner.Underlined"
-                android:layout_width="@dimen/spinner_width"
-                android:layout_height="@dimen/list_item_date_picker_height"
-                android:layout_centerVertical="true"
-                android:gravity="center_vertical"
-                android:spinnerMode="dialog"
-                android:visibility="invisible"
-                app:layout_constraintBottom_toTopOf="@+id/guideline2"
-                app:layout_constraintLeft_toRightOf="@+id/guideline1"
-                app:layout_constraintTop_toBottomOf="@+id/spinner_peer" />
-
-            <android.support.constraint.Group
-                android:id="@+id/link_group"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                app:constraint_referenced_ids="link_user,spinner_link" />
+                app:layout_constraintTop_toBottomOf="@+id/guideline3" />
 
 
             <android.support.constraint.Guideline
@@ -309,7 +247,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.50" />
+                app:layout_constraintGuide_percent="0.36" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.31" />
 
 
             <android.support.v7.widget.RecyclerView
@@ -341,7 +286,7 @@
             <EditText
                 android:id="@+id/taskView"
                 style="@style/EditTextNormal"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="@dimen/_150sdp"
                 android:layout_gravity="center"
                 android:layout_marginBottom="@dimen/list_margin"
@@ -354,6 +299,8 @@
                 android:maxLines="4"
                 android:paddingTop="@dimen/dimen_6dp"
                 android:paddingBottom="@dimen/_6sdp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/task_desc_tv"
                 tools:ignore="Autofill" />
 

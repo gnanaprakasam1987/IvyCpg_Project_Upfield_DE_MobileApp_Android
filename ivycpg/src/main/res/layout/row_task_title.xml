@@ -23,6 +23,24 @@
             tools:ignore="UselessParent">
 
             <Button
+                android:id="@+id/close_button"
+                style="?attr/buttonStyle_Configured"
+                android:layout_width="@dimen/_80sdp"
+                android:layout_height="match_parent"
+                android:background="@color/logout"
+                android:clickable="true"
+                android:drawableTop="@drawable/ic_close_icon_white"
+                android:focusable="true"
+                android:fontFamily="@font/roboto_medium"
+                android:gravity="center_vertical"
+                android:padding="@dimen/_14sdp"
+                android:text="@string/close"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_secondary" />
+
+            <Button
                 android:id="@+id/edit_button"
                 style="?attr/buttonStyle_Configured"
                 android:layout_width="@dimen/_80sdp"
@@ -38,7 +56,8 @@
                 android:textAlignment="center"
                 android:textAllCaps="true"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_secondary" />
+                android:textSize="@dimen/text_size_secondary"
+                tools:targetApi="m" />
 
 
             <Button

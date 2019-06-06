@@ -11,4 +11,6 @@ public interface TaskClickListener {
     void onAttachFile(TaskDataBO taskBO);
 
     void onSortItemClicked(int sortType, boolean orderByAsc);
+
+    void showTaskNoReasonDialog(TaskDataBO taskBo);
 }
