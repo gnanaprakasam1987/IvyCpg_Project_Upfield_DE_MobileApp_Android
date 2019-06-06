@@ -261,7 +261,7 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
                 stringBuilder.append(id+",");
                 stringBuilder.append(assetBO.getAssetID()+",");
                 stringBuilder.append(appDataProvider.getRetailMaster().getRetailerID()+",");
-                stringBuilder.append(StringUtils.QT(assetBO.getServiceDate())+",");
+                stringBuilder.append(StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))+",");
                 stringBuilder.append(StringUtils.QT(assetBO.getSerialNo())+",");
                 stringBuilder.append(assetBO.getReasonID()+",");
                 stringBuilder.append(assetBO.getServiceProviderId()+",");
