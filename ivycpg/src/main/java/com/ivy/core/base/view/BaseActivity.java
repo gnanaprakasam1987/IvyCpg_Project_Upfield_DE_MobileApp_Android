@@ -476,16 +476,19 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
 
     @Override
     public void setUpToolbar(String title) {
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getSupportActionBar().setElevation(0);
+        if (getSupportActionBar() != null) {
+
+            getSupportActionBar().setDisplayShowTitleEnabled(false);
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getSupportActionBar().setElevation(0);
+            }
+
+            if (title != null)
+                setScreenTitle(title);
+
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
         }
-
-        if (title != null)
-            setScreenTitle(title);
-
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     public void showDialog(String msg) {
