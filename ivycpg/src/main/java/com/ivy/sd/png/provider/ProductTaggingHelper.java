@@ -210,10 +210,11 @@ public class ProductTaggingHelper {
                    return TAGGING_TYPE_MODULE;
 
                 } else {
+                    priorityQuery = new StringBuilder();
                     priorityQuery.append("SELECT DISTINCT PCM.GroupID FROM ProductTaggingCriteriaLocationMapping PCM " +
                             " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
                             " WHERE PM.TaggingTypelovID = " +
-                            " (SELECT ListId FROM StandardListMaster WHERE ListCode = 'COMMON' AND ListType = 'PRODUCT_TAGGING')");
+                            " (SELECT ListId FROM StandardListMaster WHERE ListCode = 'ACCOUNT_ASSORTMENT' AND ListType = 'PRODUCT_TAGGING')");
                     priorityCursor = db.selectSQL(priorityQuery.toString());
                     if (priorityCursor.getCount() > 0) {
                         return TAGGING_TYPE_COMMON_WITH_STORELOCATION;
@@ -263,8 +264,10 @@ public class ProductTaggingHelper {
 
 
         String criteriaTableName;
+        boolean isInStoreLocation=false;
         if(typeOfTagging==TAGGING_TYPE_MODULE_WITH_STORELOCATION){
             criteriaTableName="ProductTaggingCriteriaLocationMapping";
+            isInStoreLocation=true;
         }
         else if(typeOfTagging==TAGGING_TYPE_MODULE){
             criteriaTableName="ProductTaggingCriteriaMapping";
@@ -272,6 +275,7 @@ public class ProductTaggingHelper {
         else if(typeOfTagging==TAGGING_TYPE_COMMON_WITH_STORELOCATION){
             criteriaTableName="ProductTaggingCriteriaLocationMapping";
             moduleCode="ACCOUNT_ASSORTMENT";
+            isInStoreLocation=true;
         }
         else {
             criteriaTableName="ProductTaggingCriteriaMapping";
@@ -281,7 +285,8 @@ public class ProductTaggingHelper {
 
         StringBuilder query=new StringBuilder();
         query.append("SELECT DISTINCT PCM.GroupID,PCM.RetailerId,PCM.LocationId,PCM.ChannelId,PCM.AccountId," +
-                " PCM.DistributorId,PCM.UserId,PCM.ClassId,IFNULL(PTAM.groupid,0),PCM.InStoreLocationId FROM "+criteriaTableName+" PCM " +
+                " PCM.DistributorId,PCM.UserId,PCM.ClassId,IFNULL(PTAM.groupid,0)"+
+                 " FROM "+criteriaTableName+" PCM " +
                 " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
                 " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid" +
                 " Left Join ProductTaggingAttributesMapping PTAM on PTAM.groupid = PCM.GroupID " +
@@ -290,6 +295,9 @@ public class ProductTaggingHelper {
 
 
         if(accountGroupIds.toString().length()>0){
+            query.append(" AND PCM.accountGroupId in("+accountGroupIds.toString()+")");
+
+        } else {
             query.append(" AND PCM.RetailerId IN(0," + businessModel.getRetailerMasterBO().getRetailerID() + ") " +
                     " AND PCM.LocationId IN(0," + businessModel.channelMasterHelper.getLocationHierarchy(mContext) + "," + businessModel.getRetailerMasterBO().getLocationId() + ") " +
                     " AND PCM.ChannelId IN(0," + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(), mContext) + "," + businessModel.getRetailerMasterBO().getSubchannelid() + ") " +
@@ -297,8 +305,6 @@ public class ProductTaggingHelper {
                     " AND PCM.DistributorId IN(0," + businessModel.getRetailerMasterBO().getDistributorId() + ") " +
                     " AND PCM.UserId IN(0," + businessModel.userMasterHelper.getUserMasterBO().getUserid() + ") " +
                     " AND PCM.ClassId IN(0," + businessModel.getRetailerMasterBO().getClassid() + ") ");
-        } else {
-            query.append(" AND PCM.accountGroupId in("+accountGroupIds.toString()+")");
         }
 
         Cursor c = db
