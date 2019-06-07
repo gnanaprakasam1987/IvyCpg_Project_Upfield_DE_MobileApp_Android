@@ -463,7 +463,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         menuDB = bmodel.configurationMasterHelper
                 .downloadNewActivityMenu(ConfigurationMasterHelper.MENU_ACTIVITY);
 
-       // menuDB.add(new ConfigureBO(MENU_ASSET_SERVICE_REQUEST,"Asset Service","1",1,1,1));
+        menuDB.add(new ConfigureBO(MENU_ASSET_SERVICE_REQUEST,"Asset Service","1",1,1,1));
         mInStoreMenu = bmodel.configurationMasterHelper
                 .downloadStoreCheckMenu(ConfigurationMasterHelper.MENU_STORECHECK);
 

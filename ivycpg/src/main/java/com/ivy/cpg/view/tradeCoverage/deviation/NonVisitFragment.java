@@ -570,17 +570,7 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
             updateBeatFilter();
         }
 
-        retailer = new ArrayList<>();
-        int siz = bmodel.getRetailerMaster().size();
-
-        for (int i = 0; i < siz; i++) {
-            retailer.add(bmodel.getRetailerMaster()
-                    .get(i));
-        }
-
-        mSchedule = new IconicAdapter(retailer);
-        listView.setAdapter(mSchedule);
-    }
+          }
 
     @Override
     public void onStart() {

@@ -241,6 +241,10 @@ public class NewAssetServiceRequest extends BaseActivity implements AssetService
             edittext_description.setText(currentAssetBO.getIssueDescription());
             edittext_serialNumber.setText(currentAssetBO.getSerialNo());
             button_resolution_date.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(currentAssetBO.getNewInstallDate(),ConfigurationMasterHelper.outDateFormat));
+
+            imageNameList.add(currentAssetBO.getImageName());
+            adapter.notifyDataSetChanged();
+
         }
 
     }
@@ -250,7 +254,7 @@ public class NewAssetServiceRequest extends BaseActivity implements AssetService
 
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            if(currentAssetBO.getImageName()!=null&&!currentAssetBO.getImageName().equals("")){
+            if(!isEditMode&&currentAssetBO.getImageName()!=null&&!currentAssetBO.getImageName().equals("")){
 
                 showBackButtonAlert();
             }

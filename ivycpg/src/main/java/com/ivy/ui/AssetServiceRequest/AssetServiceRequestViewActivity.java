@@ -82,7 +82,7 @@ public class AssetServiceRequestViewActivity extends BaseActivity implements Ass
         imageNameList=new ArrayList<>();
         imageNameList.add(assetBO.getImageName());
 
-        adapter=new GridImageViewAdapter(this,imageNameList,FileUtils.photoFolderPath+"/",this);
+        adapter=new GridImageViewAdapter(this,imageNameList,FileUtils.photoFolderPath+"/");
         recyclerView.setAdapter(adapter);
 
     }
