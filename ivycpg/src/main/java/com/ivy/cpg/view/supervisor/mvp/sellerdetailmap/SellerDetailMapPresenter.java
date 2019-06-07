@@ -34,7 +34,9 @@ import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -95,11 +97,15 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     private ArrayList<LatLng> valuesList = new ArrayList<>();
     private String basePath = "";
 
+    private BusinessModel businessModel;
+
     @Override
     public void setView(SellerDetailMapContractor.SellerDetailMapView sellerMapView, Context context) {
         this.sellerMapView = sellerMapView;
         this.context = context;
         basePath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH,"");
+
+        businessModel = (BusinessModel) context.getApplicationContext();
     }
 
     @Override
@@ -842,6 +848,17 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         } catch (Exception e) {
             Commons.printException("" + e);
         }
+    }
+
+    public void setRetailerMaster(RetailerBo retailerBO){
+
+        RetailerMasterBO retailerMaster = new RetailerMasterBO();
+        retailerMaster.setRetailerName(retailerBO.getRetailerName());
+        retailerMaster.setRetailerID(retailerBO.getRetailerId()+"");
+        retailerMaster.setLatitude(retailerBO.getLatitude());
+        retailerMaster.setLongitude(retailerBO.getLongitude());
+
+        businessModel.getAppDataProvider().setRetailerMaster(retailerMaster);
     }
 
     // Download Process Ends
