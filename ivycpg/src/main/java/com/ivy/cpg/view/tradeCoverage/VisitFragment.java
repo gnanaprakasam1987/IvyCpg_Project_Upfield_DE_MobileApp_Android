@@ -696,20 +696,20 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         try {
             retailer = new ArrayList<>();
 
-//            if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
-//                displayTodayRoute(null);
-//            } else {
-//
-//                if (mBrandAutoCompleteTV.getAdapter().getCount() > 0) {
-//
-//                    bmodel.beatMasterHealper.setTodayBeatMasterBO(((BeatMasterBO) mBrandAutoCompleteTV.getAdapter().getItem(bmodel.daySpinnerPositon)));
-//                    mBrandAutoCompleteTV.setText(((BeatMasterBO) mBrandAutoCompleteTV.getAdapter().getItem(bmodel.daySpinnerPositon)).getBeatDescription());
-//                    mBrandAutoCompleteTV.dismissDropDown();
-//                    loadData(((BeatMasterBO) mBrandAutoCompleteTV.getAdapter().getItem(bmodel.daySpinnerPositon)).getBeatId(), null);
-//                    //
-//                } else
+            if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
+                displayTodayRoute(null);
+            } else {
+
+                if (mBrandAutoCompleteTV.getAdapter().getCount() > 0) {
+
+                    bmodel.beatMasterHealper.setTodayBeatMasterBO(((BeatMasterBO) mBrandAutoCompleteTV.getAdapter().getItem(bmodel.daySpinnerPositon)));
+                    mBrandAutoCompleteTV.setText(((BeatMasterBO) mBrandAutoCompleteTV.getAdapter().getItem(bmodel.daySpinnerPositon)).getBeatDescription());
+                    mBrandAutoCompleteTV.dismissDropDown();
+                    loadData(((BeatMasterBO) mBrandAutoCompleteTV.getAdapter().getItem(bmodel.daySpinnerPositon)).getBeatId(), null);
+                    //
+                } else
                     loadData(0, null);
-//            }
+            }
 
         } catch (Exception e) {
             Commons.printException("" + e);
