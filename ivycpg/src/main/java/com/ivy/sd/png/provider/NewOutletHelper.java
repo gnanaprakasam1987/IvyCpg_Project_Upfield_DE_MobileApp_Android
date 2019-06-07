@@ -1642,7 +1642,7 @@ public class NewOutletHelper {
             if (bmodel.configurationMasterHelper.SHOW_NEW_OUTLET_OPPR) {
 
                 if (selectQuery("RetailerPotential", rid))
-                    db.deleteSQL("RetailerPotential", " RetailerId=" + bmodel.QT(rid), false);
+                    db.deleteSQL("RetailerPotential", " Rid=" + bmodel.QT(rid), false);
             }
 
             db.closeDB();
@@ -2454,7 +2454,7 @@ public class NewOutletHelper {
                         + "," + QT(DateTimeUtils.now(DateTimeUtils.TIME));
                 db.insertSQL("OrderHeaderRequest", column, value);
 
-                column = "OrderID, ProductID, Qty,uomid,Price,LineValue, Weight,uomcount,HsnCode";
+                column = "OrderID, ProductID, Qty,uomid,Price,LineValue, Weight,uomcount,HsnCode,RetailerID";
                 for (ProductMasterBO productMasterBO : getOrderedProductList()) {
                     if (productMasterBO.getOrderedPcsQty() > 0) {
                         value = uid
@@ -2465,7 +2465,8 @@ public class NewOutletHelper {
                                 + "," + productMasterBO.getOrderedPcsQty() * productMasterBO.getSrp()
                                 + "," + productMasterBO.getOrderedPcsQty() * productMasterBO.getWeight()
                                 + ",1"
-                                + "," + QT(productMasterBO.getHsnCode());
+                                + "," + QT(productMasterBO.getHsnCode())
+                                + "," + QT(getId());
                         db.insertSQL("OrderDetailRequest", column, value);
                     }
                     if (productMasterBO.getOrderedCaseQty() > 0) {
@@ -2477,7 +2478,8 @@ public class NewOutletHelper {
                                 + "," + productMasterBO.getOrderedCaseQty() * productMasterBO.getCsrp()
                                 + "," + (productMasterBO.getOrderedCaseQty() * productMasterBO.getCaseSize()) * productMasterBO.getWeight()
                                 + "," + productMasterBO.getCaseSize()
-                                + "," + QT(productMasterBO.getHsnCode());
+                                + "," + QT(productMasterBO.getHsnCode())
+                                + "," + QT(getId());
                         db.insertSQL("OrderDetailRequest", column, value);
                     }
                     if (productMasterBO.getOrderedOuterQty() > 0) {
@@ -2489,7 +2491,8 @@ public class NewOutletHelper {
                                 + "," + productMasterBO.getOrderedOuterQty() * productMasterBO.getOsrp()
                                 + "," + (productMasterBO.getOrderedOuterQty() * productMasterBO.getOutersize()) * productMasterBO.getWeight()
                                 + "," + productMasterBO.getOutersize()
-                                + "," + QT(productMasterBO.getHsnCode());
+                                + "," + QT(productMasterBO.getHsnCode())
+                                + "," + QT(getId());
                         db.insertSQL("OrderDetailRequest", column, value);
                     }
                 }
@@ -2518,7 +2521,7 @@ public class NewOutletHelper {
     }
 
     private void addContactAvail(DBUtil db, RetailerContactBo retailerContactBo){
-        String column = "CPAId,CPId,Day,StartTime,EndTime,isLocal,upload";
+        String column = "CPAId,CPId,Day,StartTime,EndTime,isLocal,upload,retailerID";
 
         for (RetailerContactAvailBo retailerContactAvailBo : retailerContactBo.getContactAvailList()) {
 
@@ -2528,7 +2531,8 @@ public class NewOutletHelper {
                     + "," + QT(retailerContactAvailBo.getFrom())
                     + "," + QT(retailerContactAvailBo.getTo())
                     + "," + QT("1")
-                    + "," + QT("N");
+                    + "," + QT("N")
+                    + "," + QT(getId());
 
             db.insertSQL("ContactAvailability", column, value);
         }
