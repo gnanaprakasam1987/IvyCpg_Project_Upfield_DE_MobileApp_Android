@@ -422,11 +422,11 @@ public class DigitalContentHelper {
                     + StringUtils.QT(startTime) + ","//startTime
                     + StringUtils.QT(endTime) + ","//EndTime
                     + StringUtils.QT(productID) + ","//Product Id
-                    + "'" + isFastForward + "'"
+                    + "'" + isFastForward + "'," + StringUtils.QT(mBModel.getAppDataProvider().getRetailMaster().getRetailerID());
             ;
-
+            String columns = "UId,StartTime,EndTime,PId,isFastForwarded,RetailerID";
             db.insertSQL(DataMembers.tbl_DigitalContent_Tracking_Detail,
-                    DataMembers.tbl_DigitalContent_Tracking_Detail_cols, content);
+                    columns, content);
 
             db.closeDB();
         } catch (Exception e) {

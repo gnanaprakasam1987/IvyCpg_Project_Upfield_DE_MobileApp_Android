@@ -276,7 +276,7 @@ public class DataMembers {
     public static final String tbl_DTPMaster = "DTPMaster";
     public static final String tbl_retailerMaster = "RetailerMaster";
 
-    public static final String tbl_AssetService = "AssetServiceRequestActivity";
+    public static final String tbl_AssetService = "AssetServiceRequest";
     private static final String tbl_AssetService_cols = "Uid,date,AssetId,serialNum,reasonid,retailerid";
 
     public static final String tbl_AssetAddDelete = "AssetAddDelete";
@@ -635,7 +635,7 @@ public class DataMembers {
     private static final String tbl_retailerAttributeupload_cols = "RetailerId,AttributeId,LevelId";
     private static final String tbl_retailerEditAttributeupload_cols = "Tid,RetailerId,AttributeId,LevelId,Status";
     private static final String tbl_OrderHeaderRequest_cols = "OrderID,OrderDate,RetailerID,DistributorId,OrderValue,LinesPerCall,TotalWeight,Remarks,OrderTime";
-    private static final String tbl_OrderDetailRequest_cols = "OrderID,ProductID,Qty,uomid,Price,LineValue,Weight,uomcount,HsnCode";
+    private static final String tbl_OrderDetailRequest_cols = "OrderID,ProductID,Qty,uomid,Price,LineValue,Weight,uomcount,HsnCode,RetailerID";
     private static final String tbl_RetailerPotential_cols = "rid,pid,volume,facing,display,IsOwn,Price";
 
     //Loyalty Points Uploaded Tables and fields
@@ -1073,14 +1073,13 @@ public class DataMembers {
         uploadColumnWithRetailer.put(tbl_retailerPotential, tbl_RetailerPotential_cols);
         uploadColumnWithRetailer.put(tbl_display_scheme_enrollment_header, tbl_display_scheme_enrollment_cols);
         uploadColumnWithRetailer.put(tbl_display_scheme_tracking_header, tbl_display_scheme_tracking_cols);
-        uploadColumnWithRetailer.put(tbl_date_wise_plan, tbl_date_wise_plan_cols);
+
 
         uploadColumnWithRetailer.put(tbl_contactAvailability, tbl_ContactAvailability_Cols);
         uploadColumnWithRetailer.put(tbl_ContactAvailabilityEdit, tbl_ContactAvailabilityEdit_Cols);
 
         uploadColumnWithRetailer.put(tbl_CollectionDueHeader, tbl_CollectionDueHeader_cols);
         uploadColumnWithRetailer.put(tbl_CollectionDueDetails, tbl_CollectionDueDetails_cols);
-        uploadColumnWithRetailer.put(tbl_DenominationDetails, tbl_DenominationDetails_cols);
 
         uploadColumnWithRetailer.put(tbl_SerializedAssetHeader, tbl_SerializedAssetHeader_cols);
         uploadColumnWithRetailer.put(tbl_SerializedAssetDetail, tbl_SerializedAssetDetail_cols);
@@ -1200,6 +1199,8 @@ public class DataMembers {
         uploadColumnWithOutRetailer.put(tbl_RetailerScoreHeader, tbl_RetailerScoreHeader_cols);
         uploadColumnWithOutRetailer.put(tbl_RetailerScoreDetail, tbl_RetailerScoreDetail_cols);
         uploadColumnWithOutRetailer.put(tbl_SyncLogDetails, tbl_SyncLogDetails_cols);
+
+        uploadColumnWithOutRetailer.put(tbl_date_wise_plan, tbl_date_wise_plan_cols);
     }
 
     public static final HashMap<String, String> uploadLocationTrackingColumn = new HashMap<>();

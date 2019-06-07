@@ -1306,8 +1306,8 @@ public class SurveyHelperNew {
                                     totalAchievedScore += score;
                                     String detailvalues = QT(uid) + "," + questionBO.getSurveyid()
                                             + "," + questionBO.getQuestionID() + ","
-                                            + score;
-                                    db.insertSQL("AnswerScoreDetail", "uid,surveyid,qid,score",
+                                            + score + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
+                                    db.insertSQL("AnswerScoreDetail", "uid,surveyid,qid,score,RetailerID",
                                             detailvalues);
                                 }
                             }
@@ -1509,8 +1509,8 @@ public class SurveyHelperNew {
                                         totalAchievedScore += score;
                                         String detailvalues = QT(uid) + "," + questionBO.getSurveyid()
                                                 + "," + questionBO.getQuestionID() + ","
-                                                + score;
-                                        db.insertSQL("AnswerScoreDetail", "uid,surveyid,qid,score",
+                                                + score + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
+                                        db.insertSQL("AnswerScoreDetail", "uid,surveyid,qid,score,retailerID",
                                                 detailvalues);
                                     }
                                 }

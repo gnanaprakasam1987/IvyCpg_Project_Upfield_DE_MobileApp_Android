@@ -1124,7 +1124,7 @@ public class ProfileHelper {
 
         String sql = "select ifnull(RC.contact_title,'') as contactTitle,ifNull(SM.ListName,'') as listName,RC.contact_title_lovid as contact_title_lovid,"
                 + " ifnull(RC.contactname,'') as cName,ifnull(RC.contactname_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,RC.CPID  as cpid,"
-                + " ifnull(RC.Email,'') as email,ifnull(RC.salutationLovId,'') as salutationId, ifnull(RC.IsEmailNotificationReq,0) as emailPref from RetailerContact RC "
+                + " ifnull(RC.Email,'') as email,ifnull(RC.salutationLovId,'') as salutationId, ifnull(RC.IsEmailNotificationReq,0) as emailPref,ifnull(RC.RetailerID,0) as retailerID from RetailerContact RC "
                 + " Left join StandardListMaster SM on SM.ListId= RC.contact_title_lovid "
                 + " Where RC.RetailerId =" + StringUtils.QT(retailerID);
 
@@ -1148,7 +1148,7 @@ public class ProfileHelper {
                             retailerContactBo.setCpId(c.getString(c.getColumnIndex("cpid")));
             retailerContactBo.setContactSalutationId(c.getString(c.getColumnIndex("salutationId")));
                 retailerContactBo.setIsEmailPrimary(c.getInt(c.getColumnIndex("emailPref")));
-
+                            retailerContactBo.setRetailerID(c.getString(c.getColumnIndex("retailerID")));
                 setContactAvailList(db,retailerContactBo,"ContactAvailability",false);                contactList.add(retailerContactBo);
                         }
                         c.close();
@@ -1157,7 +1157,7 @@ public class ProfileHelper {
 
         if (isEdit) {
             String retailerContactEditQuery = "select ifnull(RC.Contact_Title,'') as contactTitle, ifNull(SM.ListName,'') as listName, RC.Contact_Title_LovId as contact_title_lovid, ifnull(RC.ContactName,'') as cName,ifnull(RC.ContactName_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,Rc.CPId as cpid,Rc.Status as status ,"
-                    + " ifnull(RC.Email,'') as email,ifnull(RC.salutationLovId,'') as salutationId, ifnull(RC.IsEmailNotificationReq,0) as emailPref from RetailerContactEdit RC "
+                    + " ifnull(RC.Email,'') as email,ifnull(RC.salutationLovId,'') as salutationId, ifnull(RC.IsEmailNotificationReq,0) as emailPref,ifnull(RC.RetailerID,0) as retailerID from RetailerContactEdit RC "
                     + " Left join StandardListMaster SM on SM.ListId= RC.Contact_Title_LovId "
                     + " Where RC.RetailerId =" + StringUtils.QT(retailerID);
 
@@ -1181,7 +1181,7 @@ public class ProfileHelper {
                                 retailerContactBo.setCpId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("cpid")));
             retailerContactBo.setContactSalutationId(retailerContactEditCurson.getString(retailerContactEditCurson.getColumnIndex("salutationId")));
                     retailerContactBo.setIsEmailPrimary(retailerContactEditCurson.getInt(retailerContactEditCurson.getColumnIndex("emailPref")));
-
+                                retailerContactBo.setRetailerID(c.getString(c.getColumnIndex("retailerID")));
                     setContactAvailList(db,retailerContactBo,"ContactAvailabilityEdit",true);                    tempList.add(retailerContactBo);
                             }
                             retailerContactEditCurson.close();

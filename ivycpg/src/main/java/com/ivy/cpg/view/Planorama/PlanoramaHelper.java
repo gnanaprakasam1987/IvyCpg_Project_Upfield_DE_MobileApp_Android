@@ -105,13 +105,16 @@ public class PlanoramaHelper {
                     stringBuilder.toString());
 
 
-            String planoramaImageColumn = "uid,imageName";
+            String planoramaImageColumn = "uid,imageName,RetailerID";
             StringBuilder imageValues;
             for (String imageName : imageNameList) {
                 imageValues = new StringBuilder();
                 imageValues.append(id);
                 imageValues.append(",");
                 imageValues.append(StringUtils.QT(imageName));
+                imageValues.append(",");
+                imageValues.append(StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
+
 
                 db.insertSQL("PlanoramaImages",
                         planoramaImageColumn,

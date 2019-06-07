@@ -3,9 +3,14 @@
 <servers>
     <server
         name="rexqa-dev-ed"
-        url="https://rexqa-dev-ed.my.salesforce.com" />
+        url="https://rexqa-dev-ed.my.salesforce.com/" />
     <server
         name="Default Login"
         url="https://login.salesforce.com/" />
-
+    <server
+        name="DSD"
+        url="https://dsdqaprerelease-dev-ed.my.salesforce.com/" />
+    <server
+        name="Dev"
+        url="https://ivybasedev-dev-ed.my.salesforce.com/" />
 </servers>

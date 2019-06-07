@@ -127,7 +127,7 @@ public class DisplayAssetHelper {
                     + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             String headerColumns = "Uid,RetailerId,ridSF,visitId,Date,status,ownShare,competitorShare";
-            String detailColumns = "Uid,CompetitorId,DisplayAssetId,count,weightage,score";
+            String detailColumns = "Uid,CompetitorId,DisplayAssetId,count,weightage,score,RetailerID";
 
 
 
@@ -140,7 +140,8 @@ public class DisplayAssetHelper {
                             + companyBO.getCompetitorid() + ","
                             + StringUtils.QT(assetTrackingBO.getDisplayAssetId()) + "," + companyBO.getQuantity() + ","
                             + assetTrackingBO.getWeightage() + ","
-                            + (companyBO.getQuantity()*assetTrackingBO.getWeightage());
+                            + (companyBO.getQuantity()*assetTrackingBO.getWeightage()) + ","
+                            + StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID());
 
                     db.insertSQL(DataMembers.tbl_DisplayAssetTDetails, detailColumns,
                             detailValues);
