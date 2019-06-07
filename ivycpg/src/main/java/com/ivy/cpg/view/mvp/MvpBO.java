@@ -14,6 +14,9 @@ public class MvpBO {
     private String username;
     private String entitylevel;
     private HashMap<Integer,Integer> badgeList=new HashMap<>();
+    private String kpiId;
+    private String kpiName;
+    private String batchURL;
 
     public int getUserID() {
         return userID;
@@ -89,6 +92,30 @@ public class MvpBO {
 
     void setParentPosID(int parentPosID) {
         this.parentPosID = parentPosID;
+    }
+
+    public String getKpiId() {
+        return kpiId;
+    }
+
+    public void setKpiId(String kpiId) {
+        this.kpiId = kpiId;
+    }
+
+    public String getKpiName() {
+        return kpiName;
+    }
+
+    public void setKpiName(String kpiName) {
+        this.kpiName = kpiName;
+    }
+
+    public String getBatchURL() {
+        return batchURL;
+    }
+
+    public void setBatchURL(String batchURL) {
+        this.batchURL = batchURL;
     }
 }
 

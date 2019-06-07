@@ -21,6 +21,8 @@ public class MVPHelper {
     private List<MVPBadgeBO> mvpBadgeInfoList;
     private List<Integer> mvpUserIdList;
     private List<MVPBadgeBO> mMVPBadgeUrlList;
+    private List<MvpBO> mvpKPIList;
+    private List<MVPToppersBO> mvpToppersList;
 
     List<MvpBO> getMvpDataList() {
         return mvpDataList;
@@ -34,9 +36,19 @@ public class MVPHelper {
         return mvpBadgeInfoList;
     }
 
+    List<MvpBO> getMvpKPIList() { return mvpKPIList; }
+
+    public List<MVPToppersBO> getMvpToppersList() {
+        return mvpToppersList;
+    }
+
+    public void setMvpToppersList(List<MVPToppersBO> mvpToppersList) {
+        this.mvpToppersList = mvpToppersList;
+    }
+
     private MVPHelper(Context context) {
         this.mContext = context;
-        this.bmodel = (BusinessModel) context;
+        this.bmodel = (BusinessModel) context.getApplicationContext();
     }
 
     public static MVPHelper getInstance(Context context) {
@@ -222,4 +234,88 @@ public class MVPHelper {
         }
         return new ArrayList<>();
     }
+
+    /**
+     * To load KPI level achievement data
+     * @param userId - login user
+     */
+    public void loadMVPKPIData(int userId) {
+        try {
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+            db.createDataBase();
+            db.openDataBase();
+
+            mvpKPIList = new ArrayList<>();
+            String sql = "select totalscore,totalrank,mbm.imageurl,(select listname from standardlistmaster where listid=mvp.kpitypeid) as KpiName" +
+                    " from MVPReportKPIRanking mvp inner join mvpbadgemaster mbm on mvp.BadgeId = mbm.BadgeId where userid=" + userId;
+            Cursor c = db.selectSQL(sql);
+            MvpBO mvp;
+            if (c != null) {
+                while (c.moveToNext()) {
+                    mvp = new MvpBO();
+
+                    mvp.setTotalScore(c.getInt(0));
+                    mvp.setTotalRank(c.getInt(1));
+                    String[] splitPath = c.getString(2).split("/");
+                    String imagename = splitPath[splitPath.length - 1];
+                    mvp.setBatchURL(imagename);
+                    mvp.setKpiName(c.getString(3));
+
+                    mvpKPIList.add(mvp);
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+    }
+
+    /**
+     * To load Toppers Data in MVP Screen
+     */
+    public void loadMVPToppersData() {
+        try {
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+            db.createDataBase();
+            db.openDataBase();
+
+            mvpToppersList = new ArrayList<>();
+            String sql = "SELECT A.Name, ifnull(A.Score,0) as Score,B.ImageURL,A.Rank,ifnull(A.DistributorName,'') as Distributor," +
+                    "ifnull(A.LocationName,'') as Location from MVPToppers A left join MVPBadgeMaster B on A.BadgeID = B.BadgeID order by A.Rank";
+            Cursor c = db.selectSQL(sql);
+            MVPToppersBO mvp;
+            if (c != null) {
+                while (c.moveToNext()) {
+                    mvp = new MVPToppersBO();
+
+                    mvp.setName(c.getString(0));
+                    mvp.setScore(c.getInt(1));
+
+                    String imageUrl= c.getString(2);
+                    int index = imageUrl.lastIndexOf('/');
+                    String imageName = "";
+                    if (index >= 0) {
+                        imageName = imageUrl.substring(index + 1);
+                    }
+                    mvp.setBadge(imageName);
+                    mvp.setRank(c.getInt(3));
+                    mvp.setDistributorname(c.getString(4));
+                    mvp.setLocationname(c.getString(5));
+
+                    mvpToppersList.add(mvp);
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        setMvpToppersList(mvpToppersList);
+    }
 }
+

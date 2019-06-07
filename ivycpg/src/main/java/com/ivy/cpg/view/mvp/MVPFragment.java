@@ -4,13 +4,16 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -35,11 +38,10 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -121,7 +123,46 @@ public class MVPFragment extends IvyBaseFragment {
         userDesignation = view.findViewById(R.id.tv_designation);
         userDesignation.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.LIGHT));
 
+        TabLayout tabLayout = view.findViewById(R.id.tab_layout);
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                setCurrentTabFragment(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+            }
+        });
+
+        setCurrentTabFragment(0);
+
         return view;
+    }
+
+    private void setCurrentTabFragment(int tabPosition)
+    {
+        switch (tabPosition)
+        {
+            case 0 :
+                replaceFragment(new MVPKPIFragment());
+                break;
+            case 1 :
+                replaceFragment(new MVPToppersFragment());
+                break;
+        }
+    }
+
+    public void replaceFragment(Fragment fragment) {
+        FragmentManager fm = getActivity().getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        ft.replace(R.id.mvp_container, fragment);
+        ft.addToBackStack(null);
+        ft.commit();
     }
 
     @Override
@@ -219,43 +260,13 @@ public class MVPFragment extends IvyBaseFragment {
         }
     }
 
-    private Bitmap decodeFile(File f) {
-        try {
-            //Decode image size
-            BitmapFactory.Options o = new BitmapFactory.Options();
-            o.inJustDecodeBounds = true;
-            BitmapFactory.decodeStream(new FileInputStream(f), null, o);
-
-            //The new size we want to scale to
-            final int REQUIRED_SIZE = 70;
-
-            //Find the correct scale value. It should be the power of 2.
-            int width_tmp = o.outWidth;
-            int height_tmp = o.outHeight;
-            int scale = 1;
-            while (width_tmp / 2 >= REQUIRED_SIZE && height_tmp / 2 >= REQUIRED_SIZE) {
-                width_tmp /= 2;
-                height_tmp /= 2;
-                scale *= 2;
-            }
-
-            //Decode with inSampleSize
-            BitmapFactory.Options o2 = new BitmapFactory.Options();
-            o2.inSampleSize = scale;
-            return BitmapFactory.decodeStream(new FileInputStream(f), null, o2);
-        } catch (FileNotFoundException e) {
-            Commons.printException(e + "");
-        }
-        return null;
-    }
-
     private Bitmap getBitMapImage(String name) {
         File file = new File(
                 getActivity().getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
                         + bmodel.userMasterHelper.getUserMasterBO().getUserid()
                         + DataMembers.DIGITAL_CONTENT + "/"
                         + DataMembers.MVP + "/" + name);
-        return decodeFile(file);
+        return FileUtils.decodeFile(file);
     }
 
     private void getTeamViews() {
