@@ -544,6 +544,7 @@ public class SurveyHelperNew {
                         questionBO.setMaxScore(c.getDouble(c.getColumnIndex("MaxScore")));
                         questionBO.setMinValue(c.getInt(c.getColumnIndex("MinValue")));
                         questionBO.setMaxValue(c.getInt(c.getColumnIndex("MaxValue")));
+                        if (c.getInt(c.getColumnIndex("DefaultOptionId")) != 0)
                         questionBO.setSelectedAnswerID(c.getInt(c.getColumnIndex("DefaultOptionId")));
                         if (questionBO.getBrandID() > 0)
                             questionBO.setParentHierarchy(getParentHiearchy(questionBO.getBrandID()));
@@ -645,6 +646,7 @@ public class SurveyHelperNew {
                             questionBO.setMaxScore(c.getDouble(c.getColumnIndex("MaxScore")));
                             questionBO.setMinValue(c.getInt(c.getColumnIndex("MinValue")));
                             questionBO.setMaxValue(c.getInt(c.getColumnIndex("MaxValue")));
+                            if (c.getInt(c.getColumnIndex("DefaultOptionId")) != 0)
                             questionBO.setSelectedAnswerID(c.getInt(c.getColumnIndex("DefaultOptionId")));
                             if (questionBO.getBrandID() > 0)
                                 questionBO.setParentHierarchy(getParentHiearchy(questionBO.getBrandID()));
