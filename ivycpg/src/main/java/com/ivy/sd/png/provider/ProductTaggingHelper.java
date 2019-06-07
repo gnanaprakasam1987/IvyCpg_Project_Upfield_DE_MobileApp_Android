@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -73,7 +74,7 @@ public class ProductTaggingHelper {
 
             ProductHelper productHelper=ProductHelper.getInstance(mContext);
             int mContentLevel = productHelper.getContentLevel(db, mMenuCode);
-            String productIds = getTaggingDetails(mContext,mMenuCode, mContentLevel);
+            String productIds = getTaggedProductIds(mContext,mMenuCode, mContentLevel);
             List<String> mSKUId = new ArrayList<>();
 
             mSKUId = Arrays.asList(productIds.split(","));
@@ -84,6 +85,9 @@ public class ProductTaggingHelper {
             if (productIds != null && !productIds.trim().equals("")) {
                 for (ProductMasterBO sku : productHelper.getProductMaster()) {
                     if (mSKUId.contains(sku.getProductID())) {
+
+                        updateTaggedLocations(sku);
+
                         mTaggedProducts.add(sku);
                         mTaggedProductById.put(sku.getProductID(), sku);
                     }
@@ -102,6 +106,22 @@ public class ProductTaggingHelper {
 
     }
 
+    /**
+     * Updating only tagged locations
+     * @param productMasterBO
+     */
+    private void updateTaggedLocations(ProductMasterBO productMasterBO){
+        if(getTaggedLocations().size()>0) {
+            ArrayList<LocationBO> taggedLocations = new ArrayList<>();
+            for (LocationBO locationBO : productMasterBO.getLocations()) {
+                if (getTaggedLocations().contains(locationBO.getLocationId())) {
+                    taggedLocations.add(locationBO);
+                }
+            }
+            productMasterBO.setLocations(productHelper.cloneInStoreLocationList(taggedLocations));
+        }
+
+    }
 
     public ArrayList<Integer> getTaggedLocations() {
         if(taggedLocations==null)
@@ -116,7 +136,7 @@ public class ProductTaggingHelper {
      * @param moduleCode tagging type
      * @return productId with comma separated string.
      */
-    public String getTaggingDetails(Context mContext,String moduleCode, int mContentLevelId) {
+    public String getTaggedProductIds(Context mContext, String moduleCode, int mContentLevelId) {
         try {
             ProductTaggingBO taggingBO;
             productTaggingList = new ArrayList<>();
@@ -186,6 +206,16 @@ public class ProductTaggingHelper {
         }
     }
 
+    /**
+     * Returns the type of tagging based on the priority
+     * Priority 1 - Module wise with instore location
+     * Priority 2 - Module wise
+     * Priority 3 - Common mapping with instore location
+     * Priority 4 - Common mapping
+     * @param db
+     * @param taggingType
+     * @return
+     */
     private int getTypeOfTagging(DBUtil db,String taggingType){
         try {
             StringBuilder priorityQuery = new StringBuilder();
@@ -210,10 +240,11 @@ public class ProductTaggingHelper {
                    return TAGGING_TYPE_MODULE;
 
                 } else {
+                    priorityQuery = new StringBuilder();
                     priorityQuery.append("SELECT DISTINCT PCM.GroupID FROM ProductTaggingCriteriaLocationMapping PCM " +
                             " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
                             " WHERE PM.TaggingTypelovID = " +
-                            " (SELECT ListId FROM StandardListMaster WHERE ListCode = 'COMMON' AND ListType = 'PRODUCT_TAGGING')");
+                            " (SELECT ListId FROM StandardListMaster WHERE ListCode = 'ACCOUNT_ASSORTMENT' AND ListType = 'PRODUCT_TAGGING')");
                     priorityCursor = db.selectSQL(priorityQuery.toString());
                     if (priorityCursor.getCount() > 0) {
                         return TAGGING_TYPE_COMMON_WITH_STORELOCATION;
@@ -227,6 +258,8 @@ public class ProductTaggingHelper {
 
         return TAGGING_TYPE_COMMON;
     }
+
+
     //new producttagging mapping
     //Mansoor
     private String getMappedGroupId(Context mContext,DBUtil db, String moduleCode,int typeOfTagging) {
@@ -263,8 +296,10 @@ public class ProductTaggingHelper {
 
 
         String criteriaTableName;
+        boolean isInStoreLocation=false;
         if(typeOfTagging==TAGGING_TYPE_MODULE_WITH_STORELOCATION){
             criteriaTableName="ProductTaggingCriteriaLocationMapping";
+            isInStoreLocation=true;
         }
         else if(typeOfTagging==TAGGING_TYPE_MODULE){
             criteriaTableName="ProductTaggingCriteriaMapping";
@@ -272,6 +307,7 @@ public class ProductTaggingHelper {
         else if(typeOfTagging==TAGGING_TYPE_COMMON_WITH_STORELOCATION){
             criteriaTableName="ProductTaggingCriteriaLocationMapping";
             moduleCode="ACCOUNT_ASSORTMENT";
+            isInStoreLocation=true;
         }
         else {
             criteriaTableName="ProductTaggingCriteriaMapping";
@@ -281,7 +317,8 @@ public class ProductTaggingHelper {
 
         StringBuilder query=new StringBuilder();
         query.append("SELECT DISTINCT PCM.GroupID,PCM.RetailerId,PCM.LocationId,PCM.ChannelId,PCM.AccountId," +
-                " PCM.DistributorId,PCM.UserId,PCM.ClassId,IFNULL(PTAM.groupid,0),PCM.InStoreLocationId FROM "+criteriaTableName+" PCM " +
+                " PCM.DistributorId,PCM.UserId,PCM.ClassId,IFNULL(PTAM.groupid,0)"+
+                 " FROM "+criteriaTableName+" PCM " +
                 " INNER JOIN ProductTaggingMaster PM ON PM.groupid=PCM.groupid" +
                 " INNER JOIN ProductTaggingGroupMapping PGM ON PGM.groupid=PM.groupid" +
                 " Left Join ProductTaggingAttributesMapping PTAM on PTAM.groupid = PCM.GroupID " +
@@ -290,6 +327,9 @@ public class ProductTaggingHelper {
 
 
         if(accountGroupIds.toString().length()>0){
+            query.append(" AND PCM.accountGroupId in("+accountGroupIds.toString()+")");
+
+        } else {
             query.append(" AND PCM.RetailerId IN(0," + businessModel.getRetailerMasterBO().getRetailerID() + ") " +
                     " AND PCM.LocationId IN(0," + businessModel.channelMasterHelper.getLocationHierarchy(mContext) + "," + businessModel.getRetailerMasterBO().getLocationId() + ") " +
                     " AND PCM.ChannelId IN(0," + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(), mContext) + "," + businessModel.getRetailerMasterBO().getSubchannelid() + ") " +
@@ -297,8 +337,6 @@ public class ProductTaggingHelper {
                     " AND PCM.DistributorId IN(0," + businessModel.getRetailerMasterBO().getDistributorId() + ") " +
                     " AND PCM.UserId IN(0," + businessModel.userMasterHelper.getUserMasterBO().getUserid() + ") " +
                     " AND PCM.ClassId IN(0," + businessModel.getRetailerMasterBO().getClassid() + ") ");
-        } else {
-            query.append(" AND PCM.accountGroupId in("+accountGroupIds.toString()+")");
         }
 
         Cursor c = db

@@ -7,7 +7,6 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.Color;
 import android.preference.PreferenceManager;
-import android.support.v4.content.ContextCompat;
 import android.util.SparseArray;
 
 import com.ivy.core.data.app.AppDataProvider;
@@ -32,7 +31,6 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.StoreWiseDiscountBO;
@@ -1156,50 +1154,50 @@ public class ProductHelper {
 
         ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(mContext);
         if (filter10) {
-            MSLproductIds = productTaggingHelper.getTaggingDetails(mContext,"MSL", mContentLevelId);
+            MSLproductIds = productTaggingHelper.getTaggedProductIds(mContext,"MSL", mContentLevelId);
             stringBuilder.append("A.pid in(" + MSLproductIds + ") as IsMustSell,");
         } else {
             stringBuilder.append("0 as IsMustSell,");
         }
         if (filter16) {
-            NMSLproductIds = productTaggingHelper.getTaggingDetails(mContext,"NMSL", mContentLevelId);
+            NMSLproductIds = productTaggingHelper.getTaggedProductIds(mContext,"NMSL", mContentLevelId);
             stringBuilder.append("A.pid in(" + NMSLproductIds + ") as IsNMustSell,");
 
         } else {
             stringBuilder.append("0 as IsNMustSell,");
         }
         if (filter11) {
-            FCBNDproductIds = productTaggingHelper.getTaggingDetails(mContext,"FCBND", mContentLevelId);
+            FCBNDproductIds = productTaggingHelper.getTaggedProductIds(mContext,"FCBND", mContentLevelId);
             stringBuilder.append("A.pid in(" + FCBNDproductIds + ") as IsFocusBrand,");
         } else {
             stringBuilder.append("0 as IsFocusBrand,");
         }
         if (filter12) {
-            FCBND2productIds = productTaggingHelper.getTaggingDetails(mContext,"FCBND2", mContentLevelId);
+            FCBND2productIds = productTaggingHelper.getTaggedProductIds(mContext,"FCBND2", mContentLevelId);
             stringBuilder.append("A.pid in(" + FCBND2productIds + ") as IsFocusBrand2,");
         } else {
             stringBuilder.append("0 as IsFocusBrand2,");
         }
         if (filter20) {
-            FCBND3productIds = productTaggingHelper.getTaggingDetails(mContext,"FCBND3", mContentLevelId);
+            FCBND3productIds = productTaggingHelper.getTaggedProductIds(mContext,"FCBND3", mContentLevelId);
             stringBuilder.append("A.pid in(" + FCBND3productIds + ") as IsFocusBrand3,");
         } else {
             stringBuilder.append("0 as IsFocusBrand3,");
         }
         if (filter21) {
-            FCBND4productIds = productTaggingHelper.getTaggingDetails(mContext,"FCBND4", mContentLevelId);
+            FCBND4productIds = productTaggingHelper.getTaggedProductIds(mContext,"FCBND4", mContentLevelId);
             stringBuilder.append("A.pid in(" + FCBND4productIds + ") as IsFocusBrand4,");
         } else {
             stringBuilder.append("0 as IsFocusBrand4,");
         }
         if (filter22) {
-            SMPproductIds = productTaggingHelper.getTaggingDetails(mContext,"SMP", mContentLevelId);
+            SMPproductIds = productTaggingHelper.getTaggedProductIds(mContext,"SMP", mContentLevelId);
             stringBuilder.append("A.pid in(" + SMPproductIds + ") as IsSMP,");
         } else {
             stringBuilder.append("0 as IsSMP,");
         }
         if (filter19) {
-            nearExpiryTaggedProductIds = productTaggingHelper.getTaggingDetails(mContext,"MENU_NEAREXPIRY", mContentLevelId);
+            nearExpiryTaggedProductIds = productTaggingHelper.getTaggedProductIds(mContext,"MENU_NEAREXPIRY", mContentLevelId);
             stringBuilder.append("A.pid in(" + nearExpiryTaggedProductIds + ") as isNearExpiry,");
         } else {
             stringBuilder.append("0 as isNearExpiry,");

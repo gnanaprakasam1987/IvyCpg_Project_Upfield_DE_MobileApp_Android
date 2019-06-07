@@ -2533,7 +2533,7 @@ public class DashBoardHelper {
         db.createDataBase();
         db.openDataBase();
         int mContentLevel = bmodel.productHelper.getContentLevel(db, "MENU_DASHBOARD");
-        String productIds = ProductTaggingHelper.getInstance(mContext).getTaggingDetails(mContext,"MSL", mContentLevel);
+        String productIds = ProductTaggingHelper.getInstance(mContext).getTaggedProductIds(mContext,"MSL", mContentLevel);
         try {
             if(db.isDbNullOrClosed())
                 db.openDataBase();

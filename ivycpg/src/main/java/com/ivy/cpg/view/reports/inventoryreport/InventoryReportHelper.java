@@ -37,9 +37,9 @@ public class InventoryReportHelper {
 
             String focusBrandIds = "";
             if (type.equalsIgnoreCase("Filt11"))
-                focusBrandIds = ProductTaggingHelper.getInstance(mContext).getTaggingDetails(mContext,"FCBND", mContentLevelId);
+                focusBrandIds = ProductTaggingHelper.getInstance(mContext).getTaggedProductIds(mContext,"FCBND", mContentLevelId);
             else if (type.equals("Filt12"))
-                focusBrandIds = ProductTaggingHelper.getInstance(mContext).getTaggingDetails(mContext,"FCBND2", mContentLevelId);
+                focusBrandIds = ProductTaggingHelper.getInstance(mContext).getTaggedProductIds(mContext,"FCBND2", mContentLevelId);
 
             if(db.isDbNullOrClosed())
                 db.openDataBase();

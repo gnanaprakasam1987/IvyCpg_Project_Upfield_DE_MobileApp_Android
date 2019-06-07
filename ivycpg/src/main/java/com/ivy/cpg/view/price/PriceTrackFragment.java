@@ -451,9 +451,10 @@ public class PriceTrackFragment extends IvyBaseFragment implements
             if (businessModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 menu.findItem(R.id.menu_location_filter).setVisible(false);
             else {
-                if (priceTrackingHelper.getLocationAdapter().getCount() > 1
+                if (priceTrackingHelper.getLocationAdapter().getCount() < 2
                         || !priceTrackingHelper.SHOW_PRICE_LOCATION_FILTER)
                     menu.findItem(R.id.menu_location_filter).setVisible(false);
+                else menu.findItem(R.id.menu_location_filter).setVisible(true);
             }
 
             menu.findItem(R.id.menu_spl_filter).setVisible(false);
@@ -692,6 +693,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
 
         mDrawerLayout.closeDrawers();
+        updateProductsForCurrentLocation();
         MyAdapter adapter = new MyAdapter(mylist);
         lv.setAdapter(adapter);
 
@@ -901,6 +903,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
                 }
             }
         }
+        updateProductsForCurrentLocation();
         MyAdapter adapter = new MyAdapter(mylist);
         lv.setAdapter(adapter);
         if (mSelectedIdByLevelId != null && AppUtils.isMapEmpty(mSelectedIdByLevelId) == false) {
@@ -954,15 +957,29 @@ public class PriceTrackFragment extends IvyBaseFragment implements
         }
 
 
+        updateProductsForCurrentLocation();
         MyAdapter adapter = new MyAdapter(mylist);
         lv.setAdapter(adapter);
     }
 
     public void refreshList() {
+        updateProductsForCurrentLocation();
         MyAdapter adapter = new MyAdapter(mylist);
         lv.setAdapter(adapter);
     }
 
+    private void updateProductsForCurrentLocation(){
+        if(productTaggingHelper.getTaggedLocations().size()>0) {
+            ArrayList<ProductMasterBO> temp = new ArrayList<>();
+            for (ProductMasterBO productMasterBO : mylist) {
+                if (productMasterBO.getTaggedLocations().contains(priceTrackingHelper.getCurrentLocationId())) {
+                    temp.add(productMasterBO);
+                }
+            }
+            mylist.clear();
+            mylist.addAll(temp);
+        }
+    }
     private void loadReasons() {
         spinnerAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.spinner_bluetext_layout);
@@ -1884,6 +1901,7 @@ public class PriceTrackFragment extends IvyBaseFragment implements
 
     public void updateListFromFilter(ArrayList<ProductMasterBO> stockList) {
         this.mylist = stockList;
+        updateProductsForCurrentLocation();
         MyAdapter mSchedule = new MyAdapter(mylist);
         lv.setAdapter(mSchedule);
     }

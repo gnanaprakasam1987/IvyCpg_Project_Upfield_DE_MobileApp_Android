@@ -569,6 +569,17 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
         } else if (bmodel.configurationMasterHelper.SHOW_BEAT_ROUTE) {
             updateBeatFilter();
         }
+
+        retailer = new ArrayList<>();
+        int siz = bmodel.getRetailerMaster().size();
+
+        for (int i = 0; i < siz; i++) {
+            retailer.add(bmodel.getRetailerMaster()
+                    .get(i));
+        }
+
+        mSchedule = new IconicAdapter(retailer);
+        listView.setAdapter(mSchedule);
     }
 
     @Override

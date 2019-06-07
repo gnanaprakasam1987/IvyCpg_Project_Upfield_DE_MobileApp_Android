@@ -65,7 +65,6 @@ import com.ivy.cpg.view.order.scheme.SchemeApply;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.cpg.view.salesreturn.SalesReturnEntryActivity;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
-import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -379,7 +378,7 @@ public class CatalogOrder extends IvyBaseActivityNoActionBar implements CatalogO
 
         if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
             int mContentLevel = bmodel.productHelper.getContentLevel(bmodel.getContext(), "MENU_CATALOG_ORDER");
-            ProductTaggingHelper.getInstance(this).getTaggingDetails(this,"MAX_ORD_VAL",mContentLevel); //MAX_ORD_VAL
+            ProductTaggingHelper.getInstance(this).getTaggedProductIds(this,"MAX_ORD_VAL",mContentLevel); //MAX_ORD_VAL
         }
 
         search_txt.addTextChangedListener(new TextWatcher() {
