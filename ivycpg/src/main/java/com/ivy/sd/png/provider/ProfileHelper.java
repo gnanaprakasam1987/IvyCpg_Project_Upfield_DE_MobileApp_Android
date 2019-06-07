@@ -80,6 +80,52 @@ public class ProfileHelper {
         setmSalesCategoryList(new Vector<RetailerMasterBO>());
     }
 
+    public String getOrderHistoryUrl() {
+        String url = "";
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select URL from UrlDownloadMaster where MasterName = 'RPT_RETAILER_PERFORMANCE'");
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c != null) {
+                while (c.moveToNext()) {
+                    url = c.getString(0);
+                }
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+
+        return url;
+    }
+
+    public String getInvoiceHistoryUrl(String masterName) {
+        String url = "";
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            StringBuilder sb = new StringBuilder();
+            sb.append("select URL from UrlDownloadMaster where MasterName =" + StringUtils.QT(masterName));
+
+            Cursor c = db.selectSQL(sb.toString());
+            if (c != null) {
+                while (c.moveToNext()) {
+                    url = c.getString(0);
+                }
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+
+        return url;
+    }
+
     public float getP4AvgOrderValue() {
         float i = 0;
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);

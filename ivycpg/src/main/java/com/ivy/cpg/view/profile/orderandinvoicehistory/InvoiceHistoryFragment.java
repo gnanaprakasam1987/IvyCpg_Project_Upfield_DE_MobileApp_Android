@@ -1,6 +1,8 @@
 package com.ivy.cpg.view.profile.orderandinvoicehistory;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,14 +13,21 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OrderHistoryBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.view.OnSingleClickListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.Iterator;
 import java.util.Vector;
 
 /**
@@ -30,7 +39,6 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
     TextView mavgOrderValue, mavgOrderLines;
     RecyclerView invoiceHistoryList;
     TextView havgOrderLinesTxt, hOrderValueTxt;
-    private HistoryViewAdapter historyViewAdapter;
     private boolean _hasLoadedOnce = false;
 
     @Override
@@ -72,6 +80,14 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
             Commons.printException(e);
         }
 
+        if (bmodel.configurationMasterHelper.SHOW_INV_ONDEMAND) {
+            new OnDemandHistoryDowload().execute();
+        } else {
+            loadDataToViews();
+        }
+    }
+
+    private void loadDataToViews() {
         mavgOrderLines.setText(
                 bmodel.profilehelper.getP4AvgInvoiceLines() + "");
         mavgOrderValue.setText(
@@ -82,10 +98,93 @@ public class InvoiceHistoryFragment extends IvyBaseFragment {
         Vector<OrderHistoryBO> items = bmodel.profilehelper.getParentInvoiceHistory();
 
 
-        historyViewAdapter = new HistoryViewAdapter(items);
+        HistoryViewAdapter historyViewAdapter = new HistoryViewAdapter(items);
         invoiceHistoryList.setAdapter(historyViewAdapter);
         if (!(items.size() > 0))
             (view.findViewById(R.id.parentLayout)).setVisibility(View.GONE);
+    }
+
+    class OnDemandHistoryDowload extends AsyncTask<String, String, String> {
+        JSONObject jsonObject = null;
+        private ProgressDialog progressDialogue;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialogue = ProgressDialog.show(getActivity(),
+                    DataMembers.SD, getResources().getString(R.string.download_progress),
+                    true, false);
+            jsonObject = bmodel.synchronizationHelper.getCommonJsonObject();
+            try {
+                jsonObject.put("RetailerId", bmodel.getRetailerMasterBO().getRetailerID());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+            bmodel.synchronizationHelper.updateAuthenticateToken(false);
+            String response = bmodel.synchronizationHelper.sendPostMethod(bmodel.profilehelper.getInvoiceHistoryUrl("P4ORDERHISTORYMASTER"), jsonObject);
+            try {
+                JSONObject headerObject = new JSONObject(response);
+                Iterator itr = headerObject.keys();
+                while (itr.hasNext()) {
+                    String key = (String) itr.next();
+                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                        String errorCode = headerObject.getString(key);
+                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            bmodel.synchronizationHelper
+                                    .parseJSONAndInsert(headerObject, false);
+                        }
+                    }
+                }
+
+                response = bmodel.synchronizationHelper.sendPostMethod(bmodel.profilehelper.getInvoiceHistoryUrl("P4ORDERHISTORYDETAIL"), jsonObject);
+                headerObject = new JSONObject(response);
+                itr = headerObject.keys();
+                while (itr.hasNext()) {
+                    String key = (String) itr.next();
+                    if (key.equals(SynchronizationHelper.ERROR_CODE)) {
+                        String errorCode = headerObject.getString(key);
+                        if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            bmodel.synchronizationHelper
+                                    .parseJSONAndInsert(headerObject, false);
+                        }
+                        return errorCode;
+                    }
+                }
+            } catch (JSONException jsonExpection) {
+                Commons.print(jsonExpection.getMessage());
+            }
+            return "E01";
+        }
+
+        @Override
+        protected void onPostExecute(String errorCode) {
+            super.onPostExecute(errorCode);
+            progressDialogue.dismiss();
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (errorCode
+                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    loadDataToViews();
+
+                } else {
+                    String errorMessage = bmodel.synchronizationHelper
+                            .getErrormessageByErrorCode().get(errorCode);
+                    if (errorMessage != null) {
+                        bmodel.showAlert(errorMessage, 0);
+                    }
+                }
+            } else {
+                String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
+                if (errorMsg != null) {
+                    Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 
     @Override
