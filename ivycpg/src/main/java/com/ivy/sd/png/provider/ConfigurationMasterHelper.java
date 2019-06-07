@@ -621,6 +621,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_INV_HST_VOLUME;
     public boolean SHOW_INV_HST_MARGIN_PRICE;
     public boolean SHOW_INV_HST_MARGIN_PER;
+    public boolean SHOW_INV_ONDEMAND;
 
 
     public boolean IS_PRESENTATION_INORDER;
@@ -3758,6 +3759,7 @@ public class ConfigurationMasterHelper {
             SHOW_INV_HST_VOLUME = false;
             SHOW_INV_HST_MARGIN_PRICE = false;
             SHOW_INV_HST_MARGIN_PER = false;
+            SHOW_INV_ONDEMAND = false;
 
             SHOW_INVOICE_HISTORY_DETAIL = false;
 
@@ -3815,6 +3817,9 @@ public class ConfigurationMasterHelper {
                             break;
                         case "MGNPER":
                             SHOW_INV_HST_MARGIN_PER = true;
+                            break;
+                        case "ONDMD":
+                            SHOW_INV_ONDEMAND = true;
                             break;
 
                     }
