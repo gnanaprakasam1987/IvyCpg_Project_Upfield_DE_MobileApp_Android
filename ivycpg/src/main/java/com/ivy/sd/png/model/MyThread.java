@@ -175,7 +175,7 @@ public class MyThread extends Thread {
                 int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOAD, ctx.getApplicationContext());
                 // int bool = bmodel.uploadAtSOAP(frm.getHandler(), 0);
 
-                if (BuildConfig.FLAVOR.equalsIgnoreCase("aws"))
+                if (BuildConfig.FLAVOR.equalsIgnoreCase("aws")) {
                     if (bool == 1) {
 
                         handler.sendEmptyMessage(
@@ -189,6 +189,7 @@ public class MyThread extends Thread {
                         handler.sendEmptyMessage(
                                 DataMembers.NOTIFY_UPLOAD_ERROR);
                     }
+                }
             } else {
                 handler.sendEmptyMessage(
                         DataMembers.NOTIFY_CONNECTION_PROBLEM);
@@ -233,13 +234,20 @@ public class MyThread extends Thread {
                 UploadHelper mUploadHelper = UploadHelper.getInstance(ctx);
                 int bool = mUploadHelper.uploadUsingHttp(handler, DataMembers.SYNCUPLOADRETAILERWISE, ctx.getApplicationContext());
 
-                if (bool == 1) {
+                if (BuildConfig.FLAVOR.equalsIgnoreCase("aws")) {
+                    if (bool == 1) {
 
-                    handler.sendEmptyMessage(
-                            DataMembers.NOTIFY_UPLOADED);
-                } else {
-                    handler.sendEmptyMessage(
-                            DataMembers.NOTIFY_UPLOAD_ERROR);
+                        handler.sendEmptyMessage(
+                                DataMembers.NOTIFY_UPLOADED);
+                    } else if (bool == -1) {
+                        handler.sendEmptyMessage(
+                                DataMembers.NOTIFY_TOKENT_AUTHENTICATION_FAIL);
+
+
+                    } else {
+                        handler.sendEmptyMessage(
+                                DataMembers.NOTIFY_UPLOAD_ERROR);
+                    }
                 }
             } else {
                 handler.sendEmptyMessage(
