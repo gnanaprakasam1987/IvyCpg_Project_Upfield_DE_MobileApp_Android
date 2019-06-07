@@ -232,7 +232,7 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
                 db.openDataBase();
                 int mContentLevelId = mBusinessModel.productHelper.getContentLevel(db, "MENU_STK_ORD");
-                String productIds = ProductTaggingHelper.getInstance(mContext).getTaggingDetails(mContext,"FCBND", mContentLevelId);
+                String productIds = ProductTaggingHelper.getInstance(mContext).getTaggedProductIds(mContext,"FCBND", mContentLevelId);
 
                 ArrayList<OrderDetail> mylist = dayReportHelper
                         .downloadFBOrderDetailForDayReport(productIds);
@@ -250,7 +250,7 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
                 db.openDataBase();
                 int mContentLevelId = mBusinessModel.productHelper.getContentLevel(db, "MENU_STK_ORD");
-                String productIds =ProductTaggingHelper.getInstance(mContext).getTaggingDetails(mContext,"FCBND2", mContentLevelId);
+                String productIds =ProductTaggingHelper.getInstance(mContext).getTaggedProductIds(mContext,"FCBND2", mContentLevelId);
 
                 ArrayList<OrderDetail> mylist = dayReportHelper
                         .downloadFBOrderDetailForDayReport(productIds);

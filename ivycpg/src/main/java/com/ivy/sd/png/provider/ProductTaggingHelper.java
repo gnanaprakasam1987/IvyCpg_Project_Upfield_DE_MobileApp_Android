@@ -6,6 +6,7 @@ import android.support.v4.content.ContextCompat;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.ProductTaggingBO;
 import com.ivy.sd.png.model.BusinessModel;
@@ -73,7 +74,7 @@ public class ProductTaggingHelper {
 
             ProductHelper productHelper=ProductHelper.getInstance(mContext);
             int mContentLevel = productHelper.getContentLevel(db, mMenuCode);
-            String productIds = getTaggingDetails(mContext,mMenuCode, mContentLevel);
+            String productIds = getTaggedProductIds(mContext,mMenuCode, mContentLevel);
             List<String> mSKUId = new ArrayList<>();
 
             mSKUId = Arrays.asList(productIds.split(","));
@@ -84,6 +85,9 @@ public class ProductTaggingHelper {
             if (productIds != null && !productIds.trim().equals("")) {
                 for (ProductMasterBO sku : productHelper.getProductMaster()) {
                     if (mSKUId.contains(sku.getProductID())) {
+
+                        updateTaggedLocations(sku);
+
                         mTaggedProducts.add(sku);
                         mTaggedProductById.put(sku.getProductID(), sku);
                     }
@@ -102,6 +106,22 @@ public class ProductTaggingHelper {
 
     }
 
+    /**
+     * Updating only tagged locations
+     * @param productMasterBO
+     */
+    private void updateTaggedLocations(ProductMasterBO productMasterBO){
+        if(getTaggedLocations().size()>0) {
+            ArrayList<LocationBO> taggedLocations = new ArrayList<>();
+            for (LocationBO locationBO : productMasterBO.getLocations()) {
+                if (getTaggedLocations().contains(locationBO.getLocationId())) {
+                    taggedLocations.add(locationBO);
+                }
+            }
+            productMasterBO.setLocations(productHelper.cloneInStoreLocationList(taggedLocations));
+        }
+
+    }
 
     public ArrayList<Integer> getTaggedLocations() {
         if(taggedLocations==null)
@@ -116,7 +136,7 @@ public class ProductTaggingHelper {
      * @param moduleCode tagging type
      * @return productId with comma separated string.
      */
-    public String getTaggingDetails(Context mContext,String moduleCode, int mContentLevelId) {
+    public String getTaggedProductIds(Context mContext, String moduleCode, int mContentLevelId) {
         try {
             ProductTaggingBO taggingBO;
             productTaggingList = new ArrayList<>();
@@ -186,6 +206,16 @@ public class ProductTaggingHelper {
         }
     }
 
+    /**
+     * Returns the type of tagging based on the priority
+     * Priority 1 - Module wise with instore location
+     * Priority 2 - Module wise
+     * Priority 3 - Common mapping with instore location
+     * Priority 4 - Common mapping
+     * @param db
+     * @param taggingType
+     * @return
+     */
     private int getTypeOfTagging(DBUtil db,String taggingType){
         try {
             StringBuilder priorityQuery = new StringBuilder();
@@ -228,6 +258,8 @@ public class ProductTaggingHelper {
 
         return TAGGING_TYPE_COMMON;
     }
+
+
     //new producttagging mapping
     //Mansoor
     private String getMappedGroupId(Context mContext,DBUtil db, String moduleCode,int typeOfTagging) {

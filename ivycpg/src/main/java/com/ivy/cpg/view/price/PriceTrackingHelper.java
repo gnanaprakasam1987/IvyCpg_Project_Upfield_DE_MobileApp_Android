@@ -111,6 +111,10 @@ public class PriceTrackingHelper {
 
     }
 
+    public String getCurrentLocationId(){
+        return mLocationAdapter.getItem(mSelectedLocationIndex).getListID();
+    }
+
     public ArrayAdapter<StandardListBO> getLocationAdapter() {
         return mLocationAdapter;
     }

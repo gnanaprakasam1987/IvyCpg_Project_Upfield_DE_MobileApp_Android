@@ -525,6 +525,9 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
         return mLocationAdapter;
     }
 
+    public String getCurrentLocationId(){
+        return mLocationAdapter.getItem(mSelectedLocationIndex).getListID();
+    }
     private Vector<ProductMasterBO> getTaggedProducts() {
         return ProductTaggingHelper.getInstance(context).getTaggedProducts();
     }
