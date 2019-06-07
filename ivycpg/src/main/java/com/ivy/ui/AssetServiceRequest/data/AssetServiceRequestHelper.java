@@ -247,7 +247,7 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
             try {
                 initDb();
 
-                String columns="uid,AssetId,RetailerId,Date,SerialNumber,ReasonId,serviceProviderId,IssueDescription,ImagePath,approvalStatus,ExpectedResolutionDate,Upload,Status";
+                String columns="uid,AssetId,RetailerId,Date,SerialNumber,ReasonId,serviceProviderId,IssueDescription,ImagePath,approvalStatus,ExpectedResolutionDate,Upload,Status,createdBy";
 
                 String id = appDataProvider.getUser().getUserid()
                         + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
@@ -270,7 +270,8 @@ public class AssetServiceRequestHelper implements AssetServiceRequestDataManager
                 stringBuilder.append(StringUtils.QT(assetBO.getAssetServiceReqStatus())+",");
                 stringBuilder.append(StringUtils.QT(assetBO.getNewInstallDate())+",");
                 stringBuilder.append("'N'"+",");
-                stringBuilder.append("'I'");
+                stringBuilder.append("'I'"+",");
+                stringBuilder.append(StringUtils.QT(appDataProvider.getUser().getUserType()));
 
                 mDbUtil.insertSQL(DataMembers.tbl_SerializedAssetServiceRequest,columns,stringBuilder.toString());
 

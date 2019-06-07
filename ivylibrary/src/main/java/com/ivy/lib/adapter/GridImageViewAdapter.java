@@ -158,7 +158,9 @@ public class GridImageViewAdapter extends RecyclerView.Adapter<GridImageViewAdap
                 imageView.getLayoutParams().width = displaymetrics.widthPixels / 4;
                 fileNameTv.getLayoutParams().width = displaymetrics.widthPixels / 4;
             } else {
-                imageView.getLayoutParams().height = displaymetrics.heightPixels / 6;
+                imageView.getLayoutParams().height = displaymetrics.heightPixels / 4;
+                imageView.getLayoutParams().width = displaymetrics.widthPixels / 4;
+                fileNameTv.getLayoutParams().width = displaymetrics.widthPixels / 4;
             }
         }
     }
