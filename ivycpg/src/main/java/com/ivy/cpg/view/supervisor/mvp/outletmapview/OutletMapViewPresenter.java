@@ -26,7 +26,9 @@ import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
@@ -65,11 +67,14 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
     private HashMap<Integer, Integer> mSelectedIdByChannelId = new HashMap<>();
     private String basePath = "";
 
+    private BusinessModel businessModel;
+
     @Override
     public void setView(OutletMapViewContractor.OutletMapView outletMapView, Context context) {
         this.outletMapView = outletMapView;
         this.context = context;
         basePath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH,"");
+        businessModel = (BusinessModel) context.getApplicationContext();
     }
 
     @Override
@@ -606,6 +611,17 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
         }
 
         return sellerName;
+    }
+
+    public void setRetailerMaster(RetailerBo retailerBO){
+
+        RetailerMasterBO retailerMaster = new RetailerMasterBO();
+        retailerMaster.setRetailerName(retailerBO.getRetailerName());
+        retailerMaster.setRetailerID(retailerBO.getRetailerId()+"");
+        retailerMaster.setLatitude(retailerBO.getLatitude());
+        retailerMaster.setLongitude(retailerBO.getLongitude());
+
+        businessModel.getAppDataProvider().setRetailerMaster(retailerMaster);
     }
 
 }

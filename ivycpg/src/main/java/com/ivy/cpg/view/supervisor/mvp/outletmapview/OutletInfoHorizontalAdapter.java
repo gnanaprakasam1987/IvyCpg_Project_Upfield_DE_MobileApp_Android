@@ -2,6 +2,7 @@ package com.ivy.cpg.view.supervisor.mvp.outletmapview;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -13,10 +14,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.lib.DialogFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
 
@@ -114,6 +117,17 @@ public class OutletInfoHorizontalAdapter extends RecyclerView.Adapter<OutletInfo
             }
         });
 
+        holder.retailerName.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+
+                outletMapViewPresenter.setRetailerMaster(outletListBos.get(holder.getAdapterPosition()));
+
+                Intent i = new Intent(context, ProfileActivity.class);
+                i.putExtra("ViewOnly",true);
+                context.startActivity(i);
+            }
+        });
     }
 
     @Override

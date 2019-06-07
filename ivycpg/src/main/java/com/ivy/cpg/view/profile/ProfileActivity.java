@@ -169,7 +169,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
     private boolean fromHomeClick = false,
             visitClick = false, isFromPlanning = false,
             isFromPlanningSub = false ,
-            isShowVisitButton = false,isShowCancelVisit = false;
+            isShowVisitButton = false,isShowCancelVisit = false,isProfileViewOnly = false;
 
     private String retailerViewDate="";
 
@@ -281,7 +281,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
 
         initilizeViews();
 
-        if ("P".equals(bmodel.getAppDataProvider().getRetailMaster().getIsVisited()))
+        if (bmodel.getAppDataProvider().getRetailMaster() != null
+                && "P".equals(bmodel.getAppDataProvider().getRetailMaster().getIsVisited()))
             startVisitBtn.setText(getResources().getString(R.string.resume_visit));
 
         setCustomFont();
@@ -422,6 +423,8 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         isShowVisitButton = getIntent().getBooleanExtra("HideStartVisit", false);
         isShowCancelVisit = getIntent().getBooleanExtra("HideCancelVisit", false);
         retailerViewDate = getIntent().getStringExtra("RetailerViewDate");
+
+        isProfileViewOnly = getIntent().getBooleanExtra("ViewOnly",false);
 
 
         try {
@@ -675,7 +678,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                     if (fromHomeClick || non_visit) {
                         profileEditBtn.setVisibility(View.GONE);
                     } else {
-                        if (bmodel.configurationMasterHelper.SHOW_PROFILE_EDIT) {
+                        if (bmodel.configurationMasterHelper.SHOW_PROFILE_EDIT && !isProfileViewOnly) {
                             profileEditBtn.setVisibility(View.VISIBLE);
                         } else {
                             profileEditBtn.setVisibility(View.GONE);
@@ -805,7 +808,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             profileEditBtn.setVisibility(View.GONE);
             drawRouteBtn.setVisibility(View.GONE);
         } else {
-            if (bmodel.configurationMasterHelper.SHOW_PROFILE_EDIT) {
+            if (bmodel.configurationMasterHelper.SHOW_PROFILE_EDIT && !isProfileViewOnly) {
                 profileEditBtn.setVisibility(View.VISIBLE);
             } else {
                 profileEditBtn.setVisibility(View.GONE);
@@ -845,6 +848,11 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
         if (isFromRetailerMapScreen){
             linearLayout.setVisibility(View.GONE);
             findViewById(R.id.retailer_plan_layout).setVisibility(View.VISIBLE);
+        }
+
+        if (isProfileViewOnly) {
+            linearLayout.setVisibility(View.GONE);
+            profileEditBtn.setVisibility(View.GONE);
         }
 
         CoordinatorLayout.LayoutParams params = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
@@ -2316,7 +2324,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
             if (fromHomeClick || non_visit) {
                 finish();
             } else {
-                if (!visitClick && !isFromPlanning && !isFromPlanningSub && !isFromRetailerMapScreen) {
+                if (!visitClick && !isFromPlanning && !isFromPlanningSub && !isFromRetailerMapScreen && !isProfileViewOnly) {
                     startActivity(new Intent(ProfileActivity.this,
                             HomeScreenActivity.class).putExtra("menuCode", "MENU_VISIT"));
                 } else if (isFromPlanning) {

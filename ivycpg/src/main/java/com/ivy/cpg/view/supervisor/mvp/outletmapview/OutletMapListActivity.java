@@ -244,7 +244,9 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         int pagerPos = 0;
         int count = 0;
         for (RetailerBo detailsBo : outletListBos) {
-            if (detailsBo.getMarker().getSnippet().equalsIgnoreCase(marker.getSnippet())) {
+            if (detailsBo.getMarker() != null
+                    && marker.getSnippet() != null
+                    && detailsBo.getMarker().getSnippet().equalsIgnoreCase(marker.getSnippet())) {
                 pagerPos = count;
                 break;
             }
