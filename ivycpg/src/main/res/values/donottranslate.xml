@@ -368,4 +368,5 @@
     <string name="mvp_kpi_tab2_text">Top 5 peers</string>
     <string name="kpi_label">KPI</string>
     <string name="ach_label">Ach.</string>
+    <string name="do_u_want_close">Do you want to Close?</string>
 </resources>
