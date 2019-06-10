@@ -153,7 +153,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                 , mUserDataManager.fetchChildUsers(), mUserDataManager.fetchPeerUsers(),
                 mUserDataManager.fetchLinkUsers(retailerId),
                 mTaskDataManager.fetchAllRetailers()
-                , mTaskDataManager.fetchTaskCategories(94)
+                , mTaskDataManager.fetchTaskCategories(mConfigurationMasterHelper.TASK_PRODUCT_LEVEL_NO)
                 , mTaskDataManager.fetchTaskImageData(taskId, getUserID()),
                 new Function7<ArrayList<UserMasterBO>, ArrayList<UserMasterBO>, ArrayList<UserMasterBO>, HashMap<String, ArrayList<UserMasterBO>>, ArrayList<RetailerMasterBO>, ArrayList<TaskDataBO>, ArrayList<TaskDataBO>, Object>() {
                     @Override
