@@ -44,6 +44,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.ivy.core.base.presenter.BasePresenter;
@@ -53,6 +54,7 @@ import com.ivy.maplib.BaiduMapDialogue;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletAttributeBO;
@@ -71,6 +73,7 @@ import com.ivy.sd.png.view.MapDialogue;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.RetailerOTPDialog;
 import com.ivy.ui.profile.ProfileConstant;
+import com.ivy.ui.profile.attribute.view.ProfileAttributeFragment;
 import com.ivy.ui.profile.data.DatePickerFragment;
 import com.ivy.ui.profile.data.DatePreviewListener;
 import com.ivy.ui.profile.edit.IProfileEditContract;
@@ -2498,6 +2501,260 @@ public class ProfileEditFragmentNew extends BaseFragment
             }
         } catch (Exception ex) {
             Commons.printException("regex check", ex);
+        }
+    }
+
+    private LinearLayout dynamicViewLayout;
+    private HashMap<String,Spinner> attributeSpinner = new HashMap<>();
+    private HashMap<String,AttributeBO> selectedSpinnerIds = new HashMap<>();
+    private ArrayList<Integer> channelIds = new ArrayList<>();
+    private HashMap<Integer,AttributeBO> filteredAttributeIds = new HashMap<>();
+
+    public void showCommonAttributeSpinner(ArrayList<AttributeBO> commonAttributeList) {
+        showAttributeSpinner(commonAttributeList);
+    }
+
+    View channelAttributeview;
+    public void showChannelAttributeSpinner(ArrayList<AttributeBO> channelAttributeList) {
+
+        ArrayList<AttributeBO> channelAttrbList = new ArrayList<>();
+
+        if (!channelIds.isEmpty()) {
+            for (AttributeBO channelBo : channelAttributeList) {
+                if (channelIds.contains(channelBo.getChannelId()))
+                    channelAttrbList.add(channelBo);
+            }
+        }
+
+        if (channelAttrbList.isEmpty())
+            return;
+
+        channelAttributeview = getLayoutInflater().inflate(R.layout.task_report_recycle_header, null);
+
+        ((TextView)channelAttributeview.findViewById(R.id.tv_task_header)).setText("Channel Attribute");
+
+        getmRootLinearLayout().addView(channelAttributeview);
+
+        showAttributeSpinner(channelAttrbList);
+
+        View seperatorView = getLayoutInflater().inflate(R.layout.seperator_line_layout, null);
+
+        getmRootLinearLayout().addView(seperatorView);
+
+    }
+
+    public void showAttributeSpinner(ArrayList<AttributeBO> attributeParentList) {
+
+        for (AttributeBO attributeBO : attributeParentList){
+
+            ArrayList<AttributeBO> attributeChildList = new ArrayList<>(profileEditPresenter.getAttributeChildLst(attributeBO.getAttributeId()+""));
+
+            View view = getLayoutInflater().inflate(R.layout.attribute_spinner_layout, null);
+
+            ((TextView)view.findViewById(R.id.spinner_txt)).setText(attributeBO.getAttributeName());
+
+            Spinner attributeSpinner = view.findViewById(R.id.spinner_attribute);
+
+            attributeSpinner.setTag(attributeBO.getAttributeName()+"##"+attributeBO.getAttributeId()+"__"+1);
+
+            setSpinnerAdapter(attributeSpinner,attributeChildList,false);
+
+            if (!attributeBO.isEditable())
+                attributeSpinner.setEnabled(false);
+
+            attributeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (position != 0){
+
+                        AttributeBO attributeBO1 = (AttributeBO)parent.getSelectedItem();
+
+                        String[] splitTagName = parent.getTag().toString().split("__");
+                        updateAttributeArray(parent.getTag().toString(), attributeBO1);
+                        resetParentValues((Spinner) parent);
+
+                        ArrayList<AttributeBO> attributeChildList = profileEditPresenter.getAttributeChildLst(attributeBO1.getAttributeId()+"");
+
+                        if (attributeChildList == null || attributeChildList.isEmpty()){
+                            attributeChildList = new ArrayList<>();
+                        }
+
+                        Spinner childSpinner = ProfileEditFragmentNew.this.attributeSpinner.get(splitTagName[0]+"__"+2);
+
+                        if (childSpinner == null)
+                            return;
+
+                        setSpinnerAdapter(childSpinner,attributeChildList,true);
+                    }else {
+                        updateAttributeArray(parent.getTag().toString(), null);
+                        resetSpinnerAdapter((Spinner) parent);
+                    }
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+
+                }
+            });
+
+            if (attributeBO.getLevelCount() > 2){
+                for (int i = 2 ; i < attributeBO.getLevelCount(); i++){
+                    createChildSpinner(view,attributeBO.getAttributeName()+"##"+attributeBO.getAttributeId()+"__"+i,attributeBO.isEditable());
+                }
+            }
+
+            getmRootLinearLayout().addView(view);
+
+        }
+
+    }
+
+    private void createChildSpinner(final View baseView, String tagName,boolean isEditable){
+
+        View view = getLayoutInflater().inflate(R.layout.attribute_spinner_layout, null);
+
+        (view.findViewById(R.id.spinner_txt)).setVisibility(View.GONE);
+
+        Spinner attributeSpinner = view.findViewById(R.id.spinner_attribute);
+
+        attributeSpinner.setTag(tagName);
+
+        setSpinnerAdapter(attributeSpinner,new ArrayList<>(),false);
+
+        this.attributeSpinner.put(tagName,attributeSpinner);
+
+        if (!isEditable)
+            attributeSpinner.setEnabled(false);
+
+        attributeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (position != 0){
+
+                    AttributeBO attributeBO1 = (AttributeBO)parent.getSelectedItem();
+
+                    String[] splitTagName = parent.getTag().toString().split("__");
+                    updateAttributeArray(parent.getTag().toString(), attributeBO1);
+                    resetParentValues((Spinner) parent);
+
+                    ArrayList<AttributeBO> attributeChildList = profileEditPresenter.getAttributeChildLst(attributeBO1.getAttributeId()+"");
+
+                    if (attributeChildList == null || attributeChildList.isEmpty()){
+                        attributeChildList = new ArrayList<>();
+                    }
+
+                    String tagName = splitTagName[0]+"__"+(Integer.parseInt(splitTagName[1])+1);
+
+                    Spinner childSpinner = ProfileEditFragmentNew.this.attributeSpinner.get(tagName);
+
+                    if (childSpinner == null)
+                        return;
+
+                    setSpinnerAdapter(childSpinner,attributeChildList,true);
+                }else{
+                    updateAttributeArray(parent.getTag().toString(), null);
+                    resetSpinnerAdapter((Spinner) parent);
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        ((LinearLayout)baseView).addView(view);
+    }
+
+    private void resetSpinnerAdapter(Spinner spinner){
+        String[] splitTagName = spinner.getTag().toString().split("__");
+
+        String tagName = splitTagName[0]+"__"+(Integer.parseInt(splitTagName[1])+1);
+
+        Spinner childSpinner = attributeSpinner.get(tagName);
+
+        if (childSpinner != null) {
+            updateAttributeArray(tagName, null);
+            setSpinnerAdapter(childSpinner, new ArrayList<>(), true);
+        }
+    }
+
+    private void setSpinnerAdapter(Spinner attributeSpinner, ArrayList<AttributeBO> list,boolean isResetAdapter){
+        AttributeBO attributeBO = new AttributeBO(-1,"Select");
+
+        ArrayList<AttributeBO> spinnerList = new ArrayList<>();
+        spinnerList.add(attributeBO);
+        spinnerList.addAll(list);
+
+        ArrayAdapter<AttributeBO> attributeAdapter  = new ArrayAdapter<>(context,
+                android.R.layout.simple_spinner_item,
+                spinnerList);
+        attributeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+        attributeSpinner.setAdapter(attributeAdapter);
+
+        /*if (planFilterBo != null
+                && planFilterBo.getFilterAttributeIdMap() != null
+                && planFilterBo.getFilterAttributeIdMap().get(attributeSpinner.getTag().toString())!= null
+                && list != null && !list.isEmpty()) {
+
+            int pos =0;
+            AttributeBO attributeBO1 = planFilterBo.getFilterAttributeIdMap().get(attributeSpinner.getTag().toString());
+            for (AttributeBO aId : list) {
+
+                if (aId.getAttributeId() == attributeBO1.getAttributeId()) {
+                    attributeSpinner.setSelected(true);
+                    attributeSpinner.setSelection(pos+1);
+                    break;
+                }
+                pos++;
+            }
+        }*/
+
+        int pos =0;
+        for (AttributeBO attribute : list) {
+
+            if (attribute.isRetailerAttributeId() && !attribute.getStatus().equalsIgnoreCase("D")) {
+                attributeSpinner.setSelected(true);
+                attributeSpinner.setSelection(pos+1);
+                break;
+            }else if (attribute.isRetailerEditAttributeId() && !attribute.getStatus().equalsIgnoreCase("D")){
+                attributeSpinner.setSelected(true);
+                attributeSpinner.setSelection(pos+1);
+                break;
+            }
+
+            pos++;
+        }
+
+        if (isResetAdapter)
+            resetSpinnerAdapter(attributeSpinner);
+    }
+
+    private void resetParentValues(Spinner spinner){
+        String[] splitTagName = spinner.getTag().toString().split("__");
+
+        String tagName = splitTagName[0]+"__"+(Integer.parseInt(splitTagName[1])-1);
+
+        Spinner parentSpinner = attributeSpinner.get(tagName);
+
+        if (parentSpinner != null
+                && selectedSpinnerIds != null
+                && selectedSpinnerIds.get(tagName) != null) {
+            AttributeBO attributeBO = selectedSpinnerIds.get(tagName);
+            attributeBO.setAttributeSelected(false);
+
+            resetParentValues(parentSpinner);
+        }
+    }
+
+    private void updateAttributeArray(String attribute, AttributeBO attributeBOSelected){
+
+        if (selectedSpinnerIds.get(attribute) != null && attributeBOSelected == null){
+            selectedSpinnerIds.remove(attribute);
+        }else if (attributeBOSelected != null) {
+            attributeBOSelected.setAttributeSelected(true);
+
+            selectedSpinnerIds.put(attribute,attributeBOSelected);
         }
     }
 

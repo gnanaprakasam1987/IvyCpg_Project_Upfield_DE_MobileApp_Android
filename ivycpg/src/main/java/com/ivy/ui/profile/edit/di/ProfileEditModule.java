@@ -2,6 +2,9 @@ package com.ivy.ui.profile.edit.di;
 
 
 import com.ivy.core.di.scope.PerActivity;
+import com.ivy.ui.profile.attribute.data.IProfileAttributeDataManager;
+import com.ivy.ui.profile.attribute.data.ProfileAttributeDataManagerImpl;
+import com.ivy.ui.profile.attribute.presenter.ProfileAttributePresenterImpl;
 import com.ivy.ui.profile.data.IProfileDataManager;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 import com.ivy.ui.profile.edit.IProfileEditContract;
@@ -47,6 +50,11 @@ public class ProfileEditModule {
     @Provides
     IProfileDataManager provideProfileDataManager(ProfileDataManagerImpl profileDataManager){
         return profileDataManager;
+    }
+
+    @Provides
+    IProfileAttributeDataManager profileAttributeDataManager(ProfileAttributeDataManagerImpl profileAttributeDataManager){
+        return profileAttributeDataManager;
     }
 
 }

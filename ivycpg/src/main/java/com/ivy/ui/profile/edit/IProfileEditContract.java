@@ -5,6 +5,7 @@ package com.ivy.ui.profile.edit;
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
+import com.ivy.sd.png.bo.AttributeBO;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.NewOutletAttributeBO;
@@ -126,6 +127,10 @@ public interface IProfileEditContract {
 
         void checkRegex(String regex);
 
+        void showChannelAttributeSpinner(ArrayList<AttributeBO> channelAttributeBOS);
+
+        void showCommonAttributeSpinner(ArrayList<AttributeBO> commonAttributeBOS);
+
     }
 
     @PerActivity
@@ -205,6 +210,16 @@ public interface IProfileEditContract {
         void updateLatLong(String lat, String longitude);
 
         boolean checkRegex(int menuNumber, String typedText);
+
+        void prepareAttributeList();
+
+        ArrayList<AttributeBO> getAllCommonAttributeList();
+
+        ArrayList<AttributeBO> getAllChannelAttributeList();
+
+        HashMap<String, ArrayList<AttributeBO>> getChildAttribute();
+
+        ArrayList<AttributeBO> getAttributeChildLst(String parentId);
 
     }
 }

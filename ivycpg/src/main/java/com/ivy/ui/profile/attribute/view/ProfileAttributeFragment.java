@@ -1,7 +1,6 @@
 package com.ivy.ui.profile.attribute.view;
 
 import android.app.Activity;
-import android.util.SparseArray;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -9,7 +8,6 @@ import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.AttributeBO;
@@ -22,7 +20,6 @@ import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -31,12 +28,10 @@ public class ProfileAttributeFragment extends BaseFragment
         implements IProfileAttributeContract.IProfileAttributeView {
 
     private LinearLayout dynamicViewLayout;
-
     private HashMap<String,Spinner> attributeSpinner = new HashMap<>();
-
     private HashMap<String,AttributeBO> selectedSpinnerIds = new HashMap<>();
-
-    private int channelId = -1 ;
+    private ArrayList<Integer> channelIds = new ArrayList<>();
+    private HashMap<Integer,AttributeBO> filteredAttributeIds = new HashMap<>();
 
     @Inject
     ProfileAttributePresenterImpl<IProfileAttributeContract.IProfileAttributeView> profileAttributePresenter;
@@ -47,7 +42,7 @@ public class ProfileAttributeFragment extends BaseFragment
                 .ivyAppComponent(((BusinessModel) ((Activity)context).getApplication()).getComponent())
                 .profileAttributeModule(new ProfileAttributeModule(this))
                 .build().inject(this);
-        setBasePresenter((BasePresenter) profileAttributePresenter);
+        setBasePresenter(profileAttributePresenter);
     }
 
     @Override
@@ -77,8 +72,6 @@ public class ProfileAttributeFragment extends BaseFragment
         profileAttributePresenter.prepareAttributeList();
     }
 
-    private HashMap<Integer,AttributeBO> filteredAttributeIds = new HashMap<>();
-
     private void saveAttribute(){
 
         ArrayList<AttributeBO> childMasterList = new ArrayList<>();
@@ -96,9 +89,6 @@ public class ProfileAttributeFragment extends BaseFragment
             filteredAttributeIds.clear();
             for (AttributeBO bo : ids){
                 if (bo.isAttributeSelected()) {
-//                    String[] spliArr = bo.getAttributeName().split("##");
-//                    String[] spliArr1 = spliArr[1].split("__");
-
                     if (profileAttributePresenter.getAttributeChildLst(bo.getAttributeId()+"").isEmpty()) {
                         bo.setStatus("N");
                         filteredAttributeIds.put(bo.getAttributeId(), bo);
@@ -131,12 +121,12 @@ public class ProfileAttributeFragment extends BaseFragment
 
         ArrayList<AttributeBO> channelAttrbList = new ArrayList<>();
 
-        /*for (AttributeBO channelBo : channelAttributeList){
-            if (channelBo.getChannelId() == channelId)
-                channelAttrbList.add(channelBo);
-        }*/
-
-        channelAttrbList.addAll(channelAttributeList);
+        if (!channelIds.isEmpty()) {
+            for (AttributeBO channelBo : channelAttributeList) {
+                if (channelIds.contains(channelBo.getChannelId()))
+                    channelAttrbList.add(channelBo);
+            }
+        }
 
         if (channelAttrbList.isEmpty())
             return;
@@ -154,7 +144,6 @@ public class ProfileAttributeFragment extends BaseFragment
         dynamicViewLayout.addView(seperatorView);
 
     }
-
 
     public void showAttributeSpinner(ArrayList<AttributeBO> attributeParentList) {
 
