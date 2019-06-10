@@ -1,12 +1,14 @@
 package com.ivy.cpg.view.sync;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -21,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.ivy.cpg.view.sfdc.MyjsonarrayPostRequest;
+import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.lib.rest.JSONFormatter;
@@ -705,16 +708,28 @@ public class UploadHelper {
                     headers.put("Authorization", "OAuth " + access_token);
                     headers.put("Content_Type", "application/json");
                     if (businessModel.synchronizationHelper.isDayClosed()) {
-                        int varianceDwnDate = DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        /*int varianceDwnDate = DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(),
-                                "yyyy/MM/dd");
-                        if (varianceDwnDate == 0) {
+                                "yyyy/MM/dd");*/
+                       /* if (varianceDwnDate == 0) {
                             headers.put("MobileDate",
                                     Utils.getDate("yyyy/MM/dd HH:mm:ss"));
                         }
                         if (varianceDwnDate > 0) {
                             headers.put("MobileDate",
                                     businessModel.synchronizationHelper.getLastTransactedDate());
+                        }*/
+                        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(businessModel.getApplicationContext());
+                        String tripExtendedDate = sharedPreferences.getString("tripExtendedDate", "");
+                        if(!tripExtendedDate.equals("")){
+                            headers.put("MobileDate",DateTimeUtils.convertFromServerDateToRequestedFormat(tripExtendedDate,"yyyy/MM/dd HH:mm:ss"));
+                        }
+                        else {
+                            LoadManagementHelper loadManagementHelper=LoadManagementHelper.getInstance(mContext);
+                            String startedDate=loadManagementHelper.getTripStartedDate(mContext);
+
+                            String date=!startedDate.equals("")?DateTimeUtils.convertFromServerDateToRequestedFormat(startedDate,"yyyy/MM/dd HH:mm:ss"):Utils.getDate("yyyy/MM/dd HH:mm:ss");
+                            headers.put("MobileDate",date);
                         }
                     }
 

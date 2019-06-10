@@ -18,6 +18,7 @@ public class RetailerContactBo {
     private int isEmailPrimary;
     private String salutationTitle="";
     private String contactSalutationId="";
+    private String retailerID = "";
 
     private ArrayList<RetailerContactAvailBo> contactAvailList = new ArrayList<>();
 
@@ -125,5 +126,13 @@ public class RetailerContactBo {
 
     public void setCpId(String cpId) {
         this.cpId = cpId;
+    }
+
+    public String getRetailerID() {
+        return retailerID;
+    }
+
+    public void setRetailerID(String retailerID) {
+        this.retailerID = retailerID;
     }
 }

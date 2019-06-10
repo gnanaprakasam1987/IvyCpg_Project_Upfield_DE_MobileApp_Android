@@ -9,6 +9,7 @@ import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.FitScoreHelper;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
@@ -65,10 +66,12 @@ public class StockCheckHelper {
     public boolean SHOW_STOCK_LOCATION_FILTER;
     public boolean SHOW_COMB_STOCK_PRICE_TAG_AVAIL;
     public boolean SHOW_COMB_LOCATION_FILTER;
+    private ProductTaggingHelper productTaggingHelper;
 
 
     private StockCheckHelper(Context context) {
         this.bmodel = (BusinessModel) context.getApplicationContext();
+        productTaggingHelper=ProductTaggingHelper.getInstance(context);
     }
 
     public static StockCheckHelper getInstance(Context context) {
@@ -331,12 +334,11 @@ public class StockCheckHelper {
 
     public boolean hasStockCheck() {
 
-        int siz = bmodel.productHelper.getTaggedProducts().size();
+        int siz = productTaggingHelper.getTaggedProducts().size();
         if (siz == 0)
             return false;
         for (int i = 0; i < siz; ++i) {
-            ProductMasterBO product = bmodel.productHelper
-                    .getTaggedProducts().get(i);
+            ProductMasterBO product = productTaggingHelper.getTaggedProducts().get(i);
 
             int siz1 = product.getLocations().size();
             for (int j = 0; j < siz1; j++) {
@@ -358,7 +360,7 @@ public class StockCheckHelper {
     }
 
     boolean isReasonSelectedForAllProducts(boolean isCombinedStock) {
-        Vector<ProductMasterBO> productList = (isCombinedStock) ? bmodel.productHelper.getTaggedProducts() : bmodel.productHelper.getProductMaster();
+        Vector<ProductMasterBO> productList = (isCombinedStock) ? productTaggingHelper.getTaggedProducts() : bmodel.productHelper.getProductMaster();
         if (productList.size() == 0) return false;
         for (ProductMasterBO product : productList) {
             for (LocationBO location : product.getLocations()) {
@@ -494,8 +496,8 @@ public class StockCheckHelper {
 
                 }
             }
-            if (bmodel.productHelper.getTaggedProducts() != null) {
-                for (ProductMasterBO skubo : bmodel.productHelper.getTaggedProducts()) {
+            if (productTaggingHelper.getTaggedProducts() != null) {
+                for (ProductMasterBO skubo : productTaggingHelper.getTaggedProducts()) {
                     if (skubo.getOwn() == 0) {
                         for (int j = 0; j < skubo.getLocations().size(); j++) {
 
@@ -699,13 +701,13 @@ public class StockCheckHelper {
             if (isFromOrder)
                 siz = bmodel.productHelper.getProductMaster().size();
             else
-                siz = bmodel.productHelper.getTaggedProducts().size();
+                siz = productTaggingHelper.getTaggedProducts().size();
 
             for (int i = 0; i < siz; ++i) {
                 if (isFromOrder)
                     product = bmodel.productHelper.getProductMaster().elementAt(i);
                 else
-                    product = bmodel.productHelper.getTaggedProducts().elementAt(i);
+                    product = productTaggingHelper.getTaggedProducts().elementAt(i);
 
                 int dd = product.getIsDistributed();
                 int ld = product.getIsListed();

@@ -71,6 +71,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.CompetitorFilterInterface;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CompetitorFilterFragment;
@@ -570,7 +571,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
     }
 
     private Vector<ProductMasterBO> getTaggedProducts() {
-        return bmodel.productHelper.getTaggedProducts();
+        ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(getActivity());
+        return productTaggingHelper.getTaggedProducts();
     }
 
     /**
@@ -1711,7 +1713,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
 
     @Override
     public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        Vector<ProductMasterBO> items = bmodel.productHelper.getTaggedProducts();
+        ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(getActivity());
+        Vector<ProductMasterBO> items = productTaggingHelper.getTaggedProducts();
         fiveFilter_productIDs = new ArrayList<>();
         brandbutton = mFilterText;
         if (items == null) {
@@ -2041,7 +2044,8 @@ public class CombinedStockFragment extends IvyBaseFragment implements
             mylist.clear();
         }
 
-        Vector<ProductMasterBO> items = bmodel.productHelper.getTaggedProducts();
+        ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(getActivity());
+        Vector<ProductMasterBO> items = productTaggingHelper.getTaggedProducts();
         if (parentIdList != null && !parentIdList.isEmpty()) {
             for (CompetitorFilterLevelBO mParentBO : parentIdList) {
                 for (ProductMasterBO sku : items) {

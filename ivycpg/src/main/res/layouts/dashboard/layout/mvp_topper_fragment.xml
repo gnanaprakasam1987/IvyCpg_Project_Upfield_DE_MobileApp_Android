@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/scheme_title_grey"
+        android:orientation="horizontal"
+        android:padding="@dimen/list_item_inter_margin"
+        android:weightSum="10">
+
+        <TextView
+            style="@style/TextViewListTitle"
+            android:gravity="left"
+            android:layout_marginLeft="@dimen/_60sdp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="5"
+            android:text="Rank #"
+            android:textColor="@color/black_bg1" />
+
+        <TextView
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="2"
+            android:text=""
+            android:textColor="@color/black_bg1" />
+
+        <TextView
+            style="@style/TextViewListTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="Avg. %"
+            android:textColor="@color/black_bg1" />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rc_mvpkpi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>

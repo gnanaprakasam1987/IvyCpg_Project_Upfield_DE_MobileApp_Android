@@ -216,14 +216,14 @@ public class PlanoramaProductFragment extends IvyBaseFragment {
                                     holder.mReason.setEnabled(false);
                                     holder.mReason.setSelected(false);
                                     holder.mReason.setSelection(0);
-                                    holder.planoramaProductBO.getLocations()
+                                    holder.planoramaProductBO.getStoreLocations()
                                             .get(mSelectedLocationIndex)
                                             .setReasonId(0);
                                 } else {
                                     holder.mReason.setEnabled(true);
                                     holder.mReason.setSelected(true);
                                     holder.mReason.setSelection(getReasonIndex(holder.planoramaProductBO
-                                            .getLocations().get(mSelectedLocationIndex).getReasonId() + ""));
+                                            .getStoreLocations().get(mSelectedLocationIndex).getReasonId() + ""));
                                 }
 
                                 updateFooter();*/

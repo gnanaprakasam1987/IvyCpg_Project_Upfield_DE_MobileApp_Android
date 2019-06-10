@@ -150,7 +150,7 @@ public class CompetitorTrackingHelper {
             }
             // Competitor Tagging
             if (!competitorMaster.isEmpty()) {
-                String productIDs = bmodel.productHelper.getCompetitorTaggingDetails("COMPETITOR");
+                String productIDs =ProductTaggingHelper.getInstance(mContext).getCompetitorTaggingDetails(mContext,"COMPETITOR");
                 ArrayList<CompetitorBO> tempList = new ArrayList<>();
                 if (productIDs != null && !productIDs.trim().equals("")) {
                     for (CompetitorBO competitorBO : competitorMaster) {

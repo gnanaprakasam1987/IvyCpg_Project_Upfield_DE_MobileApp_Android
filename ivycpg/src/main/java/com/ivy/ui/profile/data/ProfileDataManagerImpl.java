@@ -1111,7 +1111,7 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
     }
 
     private void addContactAvail(DBUtil db, RetailerContactBo retailerContactBo,String retailerId,String Tid){
-        String column = "CPAId,CPId,Day,StartTime,EndTime,Tid,status,upload";
+        String column = "CPAId,CPId,Day,StartTime,EndTime,Tid,status,upload, RetailerID";
 
         for (RetailerContactAvailBo retailerContactAvailBo : retailerContactBo.getContactAvailList()) {
 
@@ -1122,7 +1122,8 @@ public class ProfileDataManagerImpl implements IProfileDataManager {
                     + "," + StringUtils.QT(retailerContactAvailBo.getTo())
                     + "," + StringUtils.QT(Tid)
                     + "," + StringUtils.QT(retailerContactAvailBo.getStatus())
-                    + "," + StringUtils.QT("N");
+                    + "," + StringUtils.QT("N")
+                    + "," + StringUtils.QT(retailerContactBo.getRetailerID());
 
             db.insertSQL("ContactAvailabilityEdit", column, value);
         }

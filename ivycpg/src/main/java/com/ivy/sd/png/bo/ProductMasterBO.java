@@ -82,6 +82,20 @@ public class ProductMasterBO {
     private int companyId = 0;
     private int DSIH;
 
+    public ArrayList<Integer> getTaggedLocations() {
+        if(taggedLocations==null)
+        {
+            taggedLocations=new ArrayList<>();
+        }
+        return taggedLocations;
+    }
+
+    public void setTaggedLocations(ArrayList<Integer> taggedLocations) {
+        this.taggedLocations = taggedLocations;
+    }
+
+    private ArrayList<Integer> taggedLocations;
+
     private boolean isSeparateBill;
 
     private String marginPrice;

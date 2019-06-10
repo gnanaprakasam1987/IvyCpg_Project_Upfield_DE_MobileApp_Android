@@ -83,6 +83,7 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.CompetitorFilterInterface;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.CompetitorFilterFragment;
@@ -492,8 +493,23 @@ public class StockCheckFragment extends IvyBaseFragment implements
         stockCheckPresenter.loadSearchedList(mEdt_searchProductName.getText().toString());
     }
 
-    private void refreshList(ArrayList<ProductMasterBO> stockList) {
-        this.stockList = stockList;
+    private void refreshList(ArrayList<ProductMasterBO> list) {
+        this.stockList = list;
+
+        ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(getActivity());
+
+            // Listing only products mapped to current location
+            if(productTaggingHelper.getTaggedLocations().size()>0) {
+                ArrayList<ProductMasterBO> temp = new ArrayList<>();
+                for (ProductMasterBO productMasterBO : stockList) {
+                    if (productMasterBO.getTaggedLocations().contains(stockCheckPresenter.getCurrentLocationId())) {
+                        temp.add(productMasterBO);
+                    }
+                }
+                stockList.clear();
+                stockList.addAll(temp);
+            }
+
         if (mSchedule == null) {
             mSchedule = new MyAdapter(stockList);
             listview.setAdapter(mSchedule);
@@ -1667,9 +1683,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
             if (businessModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 menu.findItem(R.id.menu_loc_filter).setVisible(false);
             else {
-                if (businessModel.productHelper.getInStoreLocation().size() > 1
+                if (stockCheckPresenter.getLocationAdapter().getCount() <2
                         || !stockCheckHelper.SHOW_STOCK_LOCATION_FILTER)
                     menu.findItem(R.id.menu_loc_filter).setVisible(false);
+                else menu.findItem(R.id.menu_loc_filter).setVisible(true);
             }
 
             menu.findItem(R.id.menu_sih_apply).setVisible(false);

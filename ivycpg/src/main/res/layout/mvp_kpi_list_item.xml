@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/list_item_inter_margin"
+    android:weightSum="10">
+
+    <TextView
+        android:id="@+id/tv_kpi"
+        style="@style/TextViewListTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="5"
+        android:text=""
+        android:layout_gravity="center_vertical"
+        android:textColor="@color/black_bg1" />
+
+    <ImageView
+        android:id="@+id/img_badge"
+        android:layout_width="0dp"
+        android:layout_height="@dimen/dimens_30dp"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"/>
+
+    <TextView
+        android:id="@+id/tv_achv"
+        style="@style/TextViewListTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text=""
+        android:layout_gravity="center_vertical"
+        android:textColor="@color/black_bg1" />
+
+    <TextView
+        android:id="@+id/tv_rank"
+        style="@style/TextViewListTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2"
+        android:text=""
+        android:layout_gravity="center_vertical"
+        android:textColor="@color/black_bg1" />
+
+</LinearLayout>

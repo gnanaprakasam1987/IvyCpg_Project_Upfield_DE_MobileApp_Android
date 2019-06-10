@@ -50,6 +50,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -83,6 +84,7 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
     private int mSelectedCompanyId = 0;
     private RecyclerView rvCompanyList;
     private CompanyAdapter companyAdapter;
+    private ProductTaggingHelper productTaggingHelper;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -90,6 +92,7 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
 
         view = inflater.inflate(R.layout.fragment_price_comp_tracking, container,
                 false);
+        productTaggingHelper=ProductTaggingHelper.getInstance(getActivity());
         mDrawerLayout = (DrawerLayout) view.findViewById(
                 R.id.drawer_layout);
         btnSave = (Button) view.findViewById(R.id.btn_save);
@@ -365,7 +368,7 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
 
     private void nextButtonClick() {
         try {
-            if (priceTrackingHelper.hasDataTosave(bmodel.productHelper.getTaggedProducts()))
+            if (priceTrackingHelper.hasDataTosave(productTaggingHelper.getTaggedProducts()))
                 new SaveAsyncTask().execute();
             else
                 Toast.makeText(getActivity(),
@@ -384,7 +387,7 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
         @Override
         protected Boolean doInBackground(Void... arg0) {
             try {
-                priceTrackingHelper.savePriceTransaction(getContext().getApplicationContext(), bmodel.productHelper.getTaggedProducts());
+                priceTrackingHelper.savePriceTransaction(getContext().getApplicationContext(), productTaggingHelper.getTaggedProducts());
                 bmodel.saveModuleCompletion(HomeScreenTwo.MENU_PRICE_COMP, true);
                 bmodel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                         .now(DateTimeUtils.TIME));
@@ -461,7 +464,7 @@ public class PriceTrackCompFragment extends IvyBaseFragment implements
         } else {
             rvCompanyList.setVisibility(View.GONE);
         }
-        Vector<ProductMasterBO> items = bmodel.productHelper.getTaggedProducts();
+        Vector<ProductMasterBO> items = productTaggingHelper.getTaggedProducts();
 
         if (items == null) {
             bmodel.showAlert(

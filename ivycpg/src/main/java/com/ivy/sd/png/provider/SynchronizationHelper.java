@@ -1121,7 +1121,8 @@ SynchronizationHelper {
                     "union select count(Tid) from RetailerLocationDeviation where upload='N'" +
                     "union select count(uid) from DisplayAssetTrackingHeader where upload='N'" +
                     "union select count(uid) from DisplayAssetTrackingDetails where upload='N'"+
-                    "union select count(RetailerId) from RetailerNotes where upload='N'";
+                    "union select count(RetailerId) from RetailerNotes where upload='N'" +
+                    "union select count(RetailerId) from SerializedAssetServiceRequest where upload='N'";
             Cursor c = db.selectSQL(sb);
             if (c != null) {
                 while (c.moveToNext()) {
@@ -5017,19 +5018,21 @@ SynchronizationHelper {
                 db.createDataBase();
                 db.openDataBase();
 
-                String query = "select transactionid from synclogdetails where synctype=";
+                String dgtType = "";
             if (SYNC_TYPE_DGT_DOWNLOAD.equals(syncType))
-                query = query + StringUtils.QT(SYNC_TYPE_DOWNLOAD);
+                dgtType = StringUtils.QT(SYNC_TYPE_DOWNLOAD);
             else if (SYNC_TYPE_DGT_UPLOAD.equals(syncType))
-                query = query + StringUtils.QT(SYNC_TYPE_UPLOAD);
+                dgtType = StringUtils.QT(SYNC_TYPE_UPLOAD);
 
-                Cursor cursor = db.selectSQL(query);
+            if (!StringUtils.isEmptyString(dgtType)) {
+                Cursor cursor = db.selectSQL("select transactionid from synclogdetails where synctype=" + dgtType);
                 if (cursor != null) {
                     if (cursor.moveToNext()) {
                         syncLogId = cursor.getString(0);
                     }
                     cursor.close();
                 }
+            }
 
                 if (SYNC_TYPE_DGT_DOWNLOAD.equals(syncType))
                 db.updateSQL("update SyncLogDetails set userid=" + StringUtils.QT(bmodel.getAppDataProvider().getUser().getUserid() + "")

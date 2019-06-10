@@ -39,6 +39,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.ui.AssetServiceRequest.AssetServiceRequestActivity;
+import com.ivy.ui.DisplayAsset.DisplayAssetActivity;
+import com.ivy.ui.DisplayAsset.DisplayAssetHelper;
 import com.ivy.cpg.view.Planorama.PlanoramaActivity;
 import com.ivy.cpg.view.asset.AssetTrackingActivity;
 import com.ivy.cpg.view.asset.AssetTrackingHelper;
@@ -123,6 +126,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.CompetitorTrackingHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.DownloadProductsAndPrice;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -205,6 +209,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     public static final String MENU_PLANORMA = "MENU_PLANORAMA";
     public static final String MENU_DISPLAY_ASSET = "MENU_DISPLAY_ASSET";
     public static final String MENU_RTR_NOTES = "MENU_NOTES";
+    public static final String MENU_ASSET_SERVICE_REQUEST = "MENU_ASSET_SERVICE";
 
     private final int INVOICE_CREDIT_BALANCE = 1;// Order Not Allowed when credit balance is 0
     private final int SALES_TYPES = 2;// show preVan seller dialog
@@ -458,6 +463,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
         menuDB = bmodel.configurationMasterHelper
                 .downloadNewActivityMenu(ConfigurationMasterHelper.MENU_ACTIVITY);
 
+        menuDB.add(new ConfigureBO(MENU_ASSET_SERVICE_REQUEST,"Asset Service","1",1,1,1));
         mInStoreMenu = bmodel.configurationMasterHelper
                 .downloadStoreCheckMenu(ConfigurationMasterHelper.MENU_STORECHECK);
 
@@ -2421,7 +2427,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
 
                 // Download Tagged products and update the product master obj
-                bmodel.productHelper.downloadTaggedProducts("PC");
+                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this,"PC");
 
                 // Load Price related configurations.
                 priceTrackingHelper.loadPriceCheckConfiguration(getApplicationContext(), bmodel.getRetailerMasterBO().getSubchannelid());
@@ -2431,7 +2437,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                         bmodel.productHelper.downloadCompetitorFiveFilterLevels();
                     }
                     bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE);
-                    bmodel.productHelper.downloadCompetitorTaggedProducts("PC");
+                    ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this,"PC");
                 }
 
                 priceTrackingHelper.clearPriceCheck();
@@ -2486,13 +2492,13 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
 
                 // Download Tagged products and update the product master obj
-                bmodel.productHelper.downloadTaggedProducts("PC");
+                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this,"PC");
 
                 // Load Price related configurations.
                 priceTrackingHelper.loadPriceCheckConfiguration(getApplicationContext(), bmodel.getRetailerMasterBO().getSubchannelid());
                 //its menu price comp
                 bmodel.productHelper.downloadCompetitorProducts(MENU_PRICE_COMP);
-                bmodel.productHelper.downloadCompetitorTaggedProducts("PC");
+                ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this,"PC");
 
                 priceTrackingHelper.clearPriceCheck();
                 priceTrackingHelper.loadPriceTransaction(getApplicationContext());
@@ -3359,6 +3365,33 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
 
                 }
             }
+        else if(menu.getConfigCode().equals(MENU_ASSET_SERVICE_REQUEST) && hasLink == 1){
+
+            if (isPreviousDone(menu)
+                    || bmodel.configurationMasterHelper.IS_JUMP) {
+
+                bmodel.outletTimeStampHelper.saveTimeStampModuleWise(
+                        DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                        DateTimeUtils.now(DateTimeUtils.TIME), menu.getConfigCode());
+
+                Intent i = new Intent(this,
+                        AssetServiceRequestActivity.class);
+                i.putExtra("menuName",menu.getMenuName());
+                i.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                startActivity(i);
+                finish();
+
+            }
+            else {
+                Toast.makeText(
+                        this,
+                        getResources().getString(
+                                R.string.please_complete_previous_activity),
+                        Toast.LENGTH_SHORT).show();
+                isCreated = false;
+
+                }
+            }
 
     }
 
@@ -3824,10 +3857,10 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
             // More than 15 characters not allowed in sync. So code shortened..
             if (menu.getConfigCode().equals(MENU_COMBINED_STOCK)) {
                 stockCheckHelper.loadCmbStkChkConfiguration(this, bmodel.retailerMasterBO.getSubchannelid());
-                bmodel.productHelper.downloadTaggedProducts("MENU_COMB_STK");
+                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this,"MENU_COMB_STK");
             } else {
                 stockCheckHelper.loadStockCheckConfiguration(this, bmodel.retailerMasterBO.getSubchannelid());
-                bmodel.productHelper.downloadTaggedProducts(MENU_STOCK);
+                ProductTaggingHelper.getInstance(this).downloadTaggedProducts(this,MENU_STOCK);
             }
 
             /** Download location to load in the filter. **/
@@ -3840,12 +3873,12 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
                 }
                 bmodel.productHelper.downloadCompetitorProducts(MENU_STOCK);
                 if (menu.getConfigCode().equals(MENU_COMBINED_STOCK))
-                    bmodel.productHelper.downloadCompetitorTaggedProducts("MENU_COMB_STK");
+                    ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this,"MENU_COMB_STK");
                 else
-                    bmodel.productHelper.downloadCompetitorTaggedProducts(menu.getConfigCode());
+                    ProductTaggingHelper.getInstance(this).downloadCompetitorTaggedProducts(this,menu.getConfigCode());
             }
 
-            if (bmodel.productHelper.getTaggedProducts().size() > 0) {
+            if (ProductTaggingHelper.getInstance(this).getTaggedProducts().size() > 0) {
                 if (stockCheckHelper.SHOW_STOCK_AVGDAYS && menu.getConfigCode().equals(MENU_COMBINED_STOCK))
                     bmodel.productHelper.loadRetailerWiseInventoryFlexQty();
 
