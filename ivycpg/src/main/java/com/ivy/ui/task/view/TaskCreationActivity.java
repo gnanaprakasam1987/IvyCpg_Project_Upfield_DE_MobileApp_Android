@@ -75,7 +75,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     private TaskDataBO taskBo;
     private String screenTitle = "";
     private String mode = TaskConstant.SELLER_WISE;
-    private int mSelectedSpinnerPos = 0;
+    private int mSelectedSpinnerPos = 0, retSelectedPos = 0;
     private String imageName = "";
     private static String folderPath;
     private static final int CAMERA_REQUEST_CODE = 1;
@@ -198,35 +198,27 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         setUpToolBar();
         setUpRecyclerView();
         setUpRetailerSelection();
-        setUpAdapter();
         TaskConstant.TASK_SERVER_IMG_PATH = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
                 + taskPresenter.getUserID()
                 + DataMembers.DIGITAL_CONTENT + "/"
                 + DataMembers.TASK_DIGITAL_CONTENT;
 
         //allow only create task only for retailer if not from seller Task
-        taskPresenter.fetchData(taskPresenter.getRetailerID());
+        setUpAdapter();
+        setUpCategoryAdapter();
+        taskPresenter.fetchData(taskPresenter.getRetailerID(), taskBo == null ? "0" : taskBo.getTaskId());
 
         if (isRetailerWiseTask)
             mode = TaskConstant.RETAILER_WISE;
         else
             mode = TaskConstant.SELLER_WISE;
 
-
-        setUpCategoryAdapter();
-        taskPresenter.fetchTaskCategory();
-
-
-        if (screenMode == 1)
-            taskPresenter.fetchTaskImageList(taskBo.getTaskId());
-        else
-            taskPresenter.addNewImage("");
     }
 
     @Override
     public void setTaskRetailerListData(ArrayList<RetailerMasterBO> retailerList) {
         retailerMasterArrayAdapter.clear();
-        retailerMasterArrayAdapter.add(new RetailerMasterBO(0, getString(R.string.all_retailer)));
+        retailerMasterArrayAdapter.add(new RetailerMasterBO(0, getString(R.string.select_retailer)));
         retailerMasterArrayAdapter.addAll(retailerList);
         retailerMasterArrayAdapter.notifyDataSetChanged();
         retSelectionAutoCompTxt.setAdapter(retailerMasterArrayAdapter);
@@ -292,7 +284,10 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     private void setUpLinkUserAdapter(String retailerId) {
         linkUserMasterArrayAdapter.clear();
         linkUserMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_link)));
-        linkUserMasterArrayAdapter.addAll(linkUserListHashMap.get(retailerId));
+
+        if (linkUserListHashMap.get(retailerId) != null)
+            linkUserMasterArrayAdapter.addAll(linkUserListHashMap.get(retailerId));
+
         linkUserMasterArrayAdapter.notifyDataSetChanged();
     }
 
@@ -330,8 +325,13 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     }
 
     @Override
-    public void showLinkUserError() {
+    public void showSpinnerSelectionError() {
+        showMessage(getString(R.string.plain_select) + " " + getTaskMode());
+    }
 
+    @Override
+    public void showRetSelectionError() {
+        showMessage(getString(R.string.select_retailer));
     }
 
     @Override
@@ -366,12 +366,14 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         spinnerSelection.setVisibility(View.GONE);
 
         if (switchBtn.isChecked()) {
+            mode = TaskConstant.RETAILER_WISE;
             optionTextView.setText(getString(R.string.retailer_wise));
             retSelectionAutoCompTxt.setVisibility(View.VISIBLE);
             linkUserRb.setVisibility(View.VISIBLE);
             handleProductLevelVisibility(View.VISIBLE);
             peerUserRb.setVisibility(View.GONE);
         } else {
+            mode = getTaskMode();
             retSelectionAutoCompTxt.setVisibility(View.GONE);
             optionTextView.setText(getString(R.string.Seller));
             peerUserRb.setVisibility(View.VISIBLE);
@@ -387,21 +389,21 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             case R.id.self_user:
                 updateOptionUnSelectedTxtColor();
                 selfUserRb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
-                mode = "seller";
+                mode = TaskConstant.SELLER_WISE;
                 spinnerSelection.setVisibility(View.GONE);
                 break;
 
             case R.id.parent_user:
                 updateOptionUnSelectedTxtColor();
                 parenUserRBtn.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
-                mode = "parent";
+                mode = TaskConstant.PARENT_WISE;
                 setUpSpinnerData(0);
                 break;
 
             case R.id.child_user:
                 updateOptionUnSelectedTxtColor();
                 childUserRb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
-                mode = "child";
+                mode = TaskConstant.CHILD_WISE;
                 setUpSpinnerData(1);
                 break;
 
@@ -409,7 +411,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             case R.id.peer_user:
                 updateOptionUnSelectedTxtColor();
                 peerUserRb.setTextColor(ContextCompat.getColor(this, R.color.colorAccent));
-                mode = "peer";
+                mode = TaskConstant.PEERT_WISE;
                 setUpSpinnerData(2);
                 break;
 
@@ -435,7 +437,6 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     @OnItemSelected(R.id.spinner_seller)
     public void onUserSpinnerSelected(Spinner spinner, int position) {
-        ((TextView) spinner.getSelectedView().findViewById(android.R.id.text1)).setGravity(Gravity.START);
         mSelectedSpinnerPos = position;
     }
 
@@ -455,50 +456,66 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     }
 
     @Override
+    public void updateLabelNames(HashMap<String, String> labelMap) {
+        if (labelMap.containsKey(TaskConstant.TASK_TITLE_LABEL))
+            ((TextView) findViewById(R.id.task_title_tv)).setText(labelMap.get(TaskConstant.TASK_TITLE_LABEL));
+
+        if (labelMap.containsKey(TaskConstant.TASK_DUE_DATE_LABEL))
+            ((TextView) findViewById(R.id.task_due_date_tv)).setText(labelMap.get(TaskConstant.TASK_DUE_DATE_LABEL));
+
+        if (labelMap.containsKey(TaskConstant.TASK_CREATED_BY_LABEL))
+            productLevelTV.setText(labelMap.get(TaskConstant.TASK_CREATED_BY_LABEL));
+
+        if (labelMap.containsKey(TaskConstant.TASK_APPLICABLE_FOR_LABEL))
+            ((TextView) findViewById(R.id.applicable_tv)).setText(TaskConstant.TASK_APPLICABLE_FOR_LABEL);
+
+        if (labelMap.containsKey(TaskConstant.TASK_PHOTO_CAPTURE_LABEL))
+            ((TextView) findViewById(R.id.photo_capture_tv)).setText(TaskConstant.TASK_PHOTO_CAPTURE_LABEL);
+
+        if (labelMap.containsKey(TaskConstant.TASK_DESCRIPTION_LABEL))
+            ((TextView) findViewById(R.id.task_desc_tv)).setText(TaskConstant.TASK_DESCRIPTION_LABEL);
+    }
+
+    @Override
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
-        updatedList.add(0, new TaskDataBO());
-        taskPresenter.getTaskImgList().addAll(updatedList);
-        imgListRecyclerView.setAdapter(new TaskImgListAdapter(TaskCreationActivity.this, updatedList, false, photoClickListener));
-        updateFieldsInEditMode(taskBo);
+        if (screenMode == 1) {
+            updatedList.add(0, new TaskDataBO());
+            taskPresenter.getTaskImgList().addAll(updatedList);
+            imgListRecyclerView.setAdapter(new TaskImgListAdapter(TaskCreationActivity.this, updatedList, false, photoClickListener));
+            updateFieldsInEditMode(taskBo);
+        } else {
+            taskPresenter.addNewImage("");
+        }
     }
 
     @OnClick(R.id.saveTask)
     public void onSaveClickBtn() {
+        int taskAssignId = 0, linkUserId = 0, retSelectionId = -1;
         String taskDetailDesc = AppUtils.validateInput(taskView.getText().toString());
         String taskTitleDec = AppUtils.validateInput(taskTitle.getText().toString());
         String taskDuedate = dueDateBtn.getText().toString().isEmpty() ? null
                 : dueDateBtn.getText().toString();
-        int taskAssignId = 0, linkUserId = 0;
-        if (!taskPresenter.validate(taskTitle.getText().toString(), taskView.getText().toString(), taskDuedate))
+
+        if (!isRetailerWiseTask
+                && retSelectionAutoCompTxt.getText().toString()
+                .equalsIgnoreCase(getString(R.string.select_retailer)))
+            retSelectionId = 0;
+
+        taskAssignId = mSelectedSpinnerPos == 0 ? -1 : mSelectedSpinnerPos;
+
+        if (!taskPresenter.validate(taskTitle.getText().toString(), taskView.getText().toString(), taskDuedate, retSelectionId, taskAssignId))
             return;
 
-        switch (mode) {
-            case TaskConstant.SELLER_WISE:
-                taskAssignId = taskPresenter.getUserID();
-                break;
+        if (!switchOption.isChecked()) {
+            taskAssignId = getSelectedUserId();
+        } else {
+            mode = TaskConstant.RETAILER_WISE;
+            if (!isRetailerWiseTask)
+                taskAssignId = SDUtil.convertToInt(retailerMasterArrayAdapter.getItem(retSelectedPos).getRetailerID());
+            else
+                taskAssignId = taskPresenter.getRetailerID();
 
-            case TaskConstant.PARENT_WISE:
-                taskAssignId = parentUserMasterArrayAdapter.getItem(mSelectedSpinnerPos).getUserid();
-                break;
-
-
-            case TaskConstant.CHILD_WISE:
-                taskAssignId = childUserMasterArrayAdapter.getItem(mSelectedSpinnerPos).getUserid();
-                break;
-
-            case TaskConstant.RETAILER_WISE:
-                if (!isRetailerWiseTask)
-                    taskAssignId = SDUtil.convertToInt(retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getRetailerID());
-                else
-                    taskAssignId = taskPresenter.getRetailerID();
-
-                if (!linkUserMasterArrayAdapter.isEmpty())
-                    linkUserId = linkUserMasterArrayAdapter.getItem(mSelectedSpinnerPos).getUserid();
-                break;
-
-            case TaskConstant.PEERT_WISE:
-                taskAssignId = peerUserMasterArrayAdapter.getItem(mSelectedSpinnerPos).getUserid();
-                break;
+            linkUserId = getSelectedUserId();
         }
 
         if (screenMode == 0)
@@ -509,7 +526,22 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         taskBo.setTaskDueDate(taskDuedate);
         taskBo.setTaskCategoryID(mSelectedCategoryID);
 
-        taskPresenter.onSaveButtonClick(taskAssignId, taskBo, linkUserId);
+        taskPresenter.onSaveButtonClick(taskAssignId, taskBo, linkUserId, retSelectionId);
+    }
+
+    private int getSelectedUserId() {
+
+        if (selfUserRb.isChecked())
+            return taskPresenter.getUserID();
+        else if (parenUserRBtn.isChecked())
+            return parentUserMasterArrayAdapter.getItem(mSelectedSpinnerPos).getUserid();
+        else if (childUserRb.isChecked())
+            return childUserMasterArrayAdapter.getItem(mSelectedSpinnerPos).getUserid();
+        else if (peerUserRb.isChecked())
+            return peerUserMasterArrayAdapter.getItem(mSelectedSpinnerPos).getUserid();
+        else
+            return linkUserMasterArrayAdapter.getItem(mSelectedSpinnerPos).getUserid();
+
     }
 
     private void setUpToolBar() {
@@ -552,7 +584,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         retSelectionAutoCompTxt.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
+                retSelectedPos = position;
                 if (!retailerMasterArrayAdapter.getItem(position).getRetailerID().equals("0")) {
                     setUpLinkUserAdapter(retailerMasterArrayAdapter.getItem(position).getRetailerID());
                 }

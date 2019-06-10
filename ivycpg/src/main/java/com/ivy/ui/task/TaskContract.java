@@ -3,6 +3,7 @@ package com.ivy.ui.task;
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.view.BaseIvyView;
 import com.ivy.core.di.scope.PerActivity;
+import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.ui.task.model.TaskDataBO;
@@ -15,10 +16,10 @@ public interface TaskContract {
 
     interface TaskView extends BaseIvyView {
 
+        void updateLabelNames(HashMap<String, String> labelMap);
 
         void updateListData(ArrayList<TaskDataBO> updatedList);
 
-        void updateImageListAdapter(ArrayList<TaskDataBO> imageList);
 
         void showImageUpdateMsg();
 
@@ -30,6 +31,8 @@ public interface TaskContract {
     interface TaskListView extends TaskView {
 
         void showTaskUpdateMsg();
+
+        void showTaskReasonUpdateMsg();
     }
 
     interface TaskCreationView extends TaskView {
@@ -56,7 +59,11 @@ public interface TaskContract {
 
         void showTaskDueDateError();
 
-        void showLinkUserError();
+        void updateImageListAdapter(ArrayList<TaskDataBO> imageList);
+
+        void showSpinnerSelectionError();
+
+        void showRetSelectionError();
     }
 
     interface TaskUnplannedView extends TaskView {
@@ -70,21 +77,21 @@ public interface TaskContract {
 
         void fetchTaskCreationConfig();
 
-        void fetchData(int retailerId);
+        void fetchLabels();
 
-        void fetchTaskCategory();
+        void fetchData(int retailerId, String taskId);
 
         void fetchTaskImageList(String taskId);
 
         void fetchCompletedTask(String retailerID);
 
-        void updateTaskList(int userCreatedTask, String retailerID, boolean isRetailerWise, boolean isSurveywise);
+        void updateTaskList(int userCreatedTask, String retailerID, boolean isRetailerWise, boolean isSurveywise, boolean isDelegate);
 
         void addNewImage(String imageName);
 
-        void onSaveButtonClick(int channelId, TaskDataBO taskObj, int linkUserId);
+        void onSaveButtonClick(int channelId, TaskDataBO taskObj, int linkUserId, int retailerId);
 
-        void updateTaskExecution(String retailerID, TaskDataBO taskDataBO);
+        void updateTaskExecution(String retailerID, TaskDataBO taskDataBO, int reasonId);
 
         void updateTaskExecutionImg(String imageName, String taskID, boolean isFrmDetailSrc);
 
@@ -104,20 +111,20 @@ public interface TaskContract {
 
         boolean isNewTask();
 
-        boolean isMoveNextActivity();
-
         boolean isNoTaskReason();
 
         boolean isShowProdLevel();
 
         String outDateFormat();
 
-        boolean validate(String taskTitle, String taskView, String dueDate);
+        boolean validate(String taskTitle, String taskView, String dueDate, int retSelectionId, int spinnerSelectionId);
 
         void saveModuleCompletion(String menuCode);
 
         boolean isNPPhotoReasonAvailable(String retailerID, String moduleName);
 
         void fetchUnPlannedTask();
+
+        ArrayList<ReasonMaster> fetchNotCompletedTaskReasons();
     }
 }

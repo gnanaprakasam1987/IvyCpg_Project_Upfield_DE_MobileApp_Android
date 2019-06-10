@@ -7,7 +7,6 @@ import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -52,26 +51,31 @@ public class TaskDataManagerImpl implements TaskDataManager {
 
 
     @Override
-    public Observable<ArrayList<TaskDataBO>> fetchTaskData(String retailerId, int userCreatedTask) {
+    public Observable<ArrayList<TaskDataBO>> fetchTaskData(String retailerId, int userCreatedTask, boolean isDelegate) {
         return Observable.fromCallable(() -> {
             try {
                 initDb();
 
-                String userCreated = "";
+                String userCreated = " and B.usercreated =" + (userCreatedTask != 0 ? 1 : 0) + " and (TD.ReasonId=0 OR TD.ReasonId IS NULL)";
+                String userIdCondition = "=" + appDataProvider.getUser().getUserid();
 
-                if (userCreatedTask != 0)
-                    userCreated = " and B.usercreated =" + (userCreatedTask == 2 ? 1 : 0);
+                if (isDelegate) {
+                    userIdCondition = "!=" + appDataProvider.getUser().getUserid();
+                }
+
 
                 ArrayList<TaskDataBO> taskDataBOS = new ArrayList<>();
                 String query = "select distinct A.taskid,B.taskcode,B.taskDesc,A.retailerId,A.upload,"
                         + "(CASE WHEN ifnull(TD.TaskId,0) >0 THEN 1 ELSE 0 END) as isDone,"
                         + "B.usercreated , B.taskowner , B.date, A.upload,A.channelid,A.userid,"
-                        + "IFNULL(B.DueDate,''),B.CategoryId,IFNULL(PL.PName,''),B.IsServerTask,SUBSTR(TD.ImageName,18) as eveImage"
+                        + "IFNULL(B.DueDate,''),B.CategoryId,IFNULL(PL.PName,''),"
+                        + "B.IsServerTask,SUBSTR(TD.ImageName,18) as eveImage,IFNULL(UM.Relationship,'') as userType"
                         + " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid"
                         + " left join TaskExecutionDetails TD on TD.TaskId=A.taskid and TD.RetailerId = " + retailerId
                         + " left join ProductMaster PL on PL.PID=B.CategoryId"
                         + " left join RetailerMaster RM on RM.RetailerID=A.retailerId"
-                        + " where (B.Status!='D' OR B.Status IS NULL) and A.retailerId=" + retailerId
+                        + " left join UserMaster UM on UM.userid=A.userid"
+                        + " where (B.Status!='D' OR B.Status IS NULL) and A.retailerId=" + retailerId + " and A.UserId" + userIdCondition
                         + " and A.TaskId not in (Select taskid from TaskHistory where RetailerId =" + retailerId + ")"
                         + userCreated;
 
@@ -103,9 +107,11 @@ public class TaskDataManagerImpl implements TaskDataManager {
 
                         if (taskmasterbo.getRid() != 0
                                 || taskmasterbo.getChannelId() != 0)
-                            taskmasterbo.setMode("retailer");
+                            taskmasterbo.setMode(TaskConstant.LINK_WISE);
+                        else if (c.getString(17).isEmpty())
+                            taskmasterbo.setMode(TaskConstant.SELLER_WISE);
                         else
-                            taskmasterbo.setMode("seller");
+                            taskmasterbo.setMode(c.getString(17).toLowerCase());
 
                         taskDataBOS.add(taskmasterbo);
                     }
@@ -138,7 +144,9 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             + " inner join TaskHistory TH on TH.TaskId=A.taskid and TH.RetailerId = " + retailerId
                             + " left join ProductMaster PL on PL.PID=B.CategoryId"
                             + " left join RetailerMaster RM on RM.RetailerID=A.retailerId"
-                            + " where A.retailerId=" + retailerId;
+                            + " left join TaskExecutionDetails TD on TD.TaskId=A.taskid"
+                            + " where A.retailerId=" + retailerId
+                            + " or TD.ReasonId!=0";
 
                     Cursor c = mDbUtil
                             .selectSQL(query);
@@ -269,7 +277,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
      * @return
      */
     @Override
-    public Single<Boolean> updateTaskExecutionData(TaskDataBO taskDataBO, String retailerId) {
+    public Single<Boolean> updateTaskExecutionData(TaskDataBO taskDataBO, String retailerId, int reasonId) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
@@ -298,24 +306,25 @@ public class TaskDataManagerImpl implements TaskDataManager {
                                     + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
 
 
-                        String columns = "TaskId,RetailerId,Date,UId,Upload,ImageName";
+                        String columns = "TaskId,RetailerId,Date,UId,Upload,ImageName,ReasonId";
                         String values;
                         String taskEvdImage = taskDataBO.getTaskEvidenceImg() == null ? null : StringUtils.QT(taskDataBO.getTaskEvidenceImg());
 
                         try {
-                            if (taskDataBO.isChecked()) {
+                            if (taskDataBO.isChecked()
+                                    || reasonId != 0) {
                                 values = StringUtils.QT(taskDataBO.getTaskId()) + ","
                                         + StringUtils.QT(retailerId) + ","
                                         + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                                         + uID + ",'N'" + ","
-                                        + taskEvdImage;
+                                        + taskEvdImage + ","
+                                        + reasonId;
                                 mDbUtil.insertSQL("TaskExecutionDetails", columns, values);
-                                //bmodel.saveModuleCompletion("MENU_TASK");
                             } else {
 
                                 Cursor c = mDbUtil.selectSQL("Select * from TaskExecutionDetails");
                                 if (c.getCount() == 0) {
-                                    //bmodel.deleteModuleCompletion("MENU_TASK");
+
                                     c.close();
                                 }
                             }
@@ -371,7 +380,8 @@ public class TaskDataManagerImpl implements TaskDataManager {
      * @return
      */
     @Override
-    public Single<Boolean> addAndUpdateTask(int selectedId, TaskDataBO taskObj, String mode, ArrayList<TaskDataBO> taskImgList, int linkUserId) {
+    public Single<Boolean> addAndUpdateTask(int selectedId, TaskDataBO taskObj, String mode,
+                                            ArrayList<TaskDataBO> taskImgList, int linkUserId) {
 
         //remove Quotes
         String title = StringUtils.removeQuotes(taskObj.getTasktitle());
@@ -457,7 +467,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                                     .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
                             value_new = finalTid + "," + imgId + "," + StringUtils.QT(folderName + imgBO.getTaskImg())
-                                    + "," + "'N'" + "," + finalStatus;
+                                    + "," + "'N'" + "," + "'I'";
 
                             mDbUtil.insertSQL("TaskImageDetails", columns_new, value_new);
                         }
@@ -483,21 +493,11 @@ public class TaskDataManagerImpl implements TaskDataManager {
                         try {
                             String columns = "taskid,retailerid,usercreated,upload,date,uid,userid,channelid";
                             String values;
-                            if (mode.equals("retailer")) {
-                                if (selectedId == -2) {
-                                    String[] chrid = getRetailerIdlist();
-                                    for (String aChrid : chrid) {
+                            if (mode.equals(TaskConstant.RETAILER_WISE)) {
 
-                                        values = finalTid + "," + aChrid + "," + "1" + ","
-                                                + "'N'," + date + "," + uID + "," + linkUserId + "," + "0";
-                                        mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
-                                                columns, values);
-                                    }
-                                } else {
-                                    values = finalTid + "," + selectedId + "," + "1" + "," + "'N'," + date + "," + uID + "," + linkUserId + "," + "0";
-                                    mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
-                                            columns, values);
-                                }
+                                values = finalTid + "," + selectedId + "," + "1" + "," + "'N'," + date + "," + uID + "," + linkUserId + "," + "0";
+                                mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,
+                                        columns, values);
                             } else {
 
                                 values = finalTid + "," + 0 + "," + "1" + "," + "'N'," + date + "," + uID + "," + selectedId + "," + "0";
@@ -589,7 +589,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
     }
 
     @Override
-    public Observable<ArrayList<TaskDataBO>> fetTaskImgData(String taskId, int userIdLength) {
+    public Observable<ArrayList<TaskDataBO>> fetchTaskImageData(String taskId, int userIdLength) {
         return Observable.fromCallable(new Callable<ArrayList<TaskDataBO>>() {
             @Override
             public ArrayList<TaskDataBO> call() throws Exception {
@@ -820,25 +820,6 @@ public class TaskDataManagerImpl implements TaskDataManager {
         });
     }
 
-
-    private String[] getRetailerIdlist() {
-        ArrayList<String> RId = new ArrayList<>();
-        int siz = appDataProvider.getRetailerMasters().size();
-        for (int ii = 0; ii < siz; ii++) {
-            if (((appDataProvider.getRetailerMasters().get(ii).getIsToday() == 1))
-                    || appDataProvider.getRetailerMasters().get(ii).getIsDeviated()
-                    .equals("Y")) {
-                RId.add(appDataProvider.getRetailerMasters().get(ii).getRetailerID());
-            }
-        }
-
-        String data[] = new String[RId.size()];
-        for (int i = 0; i < RId.size(); i++) {
-            data[i] = RId.get(i);
-        }
-        return data;
-
-    }
 
     @Override
     public void tearDown() {

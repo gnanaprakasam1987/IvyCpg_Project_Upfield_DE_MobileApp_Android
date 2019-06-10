@@ -19,6 +19,8 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseFragment;
@@ -39,14 +41,17 @@ import com.ivy.ui.task.di.TaskModule;
 import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FileUtils;
+import com.ivy.utils.view.Dialogs.ReasonCaptureDialog;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 import javax.inject.Inject;
 
-public class TaskFragment extends BaseFragment implements TaskContract.TaskListView, TabLayout.OnTabSelectedListener, TaskClickListener {
+public class TaskFragment extends BaseFragment implements TaskContract.TaskListView, TabLayout.OnTabSelectedListener, TaskClickListener, ReasonCaptureDialog.OnButtonClickListener {
 
     private TabLayout tabLayout;
     private RecyclerView recyclerView;
@@ -63,8 +68,11 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     private TaskConstant.SOURCE source;
     private TaskViewListener taskViewListener;
     private FloatingActionButton taskCreationFAB;
-
+    private int taskListLastSelectedPos = -1;
+    private ReasonCaptureDialog reasonCaptureDialog;
+    private ArrayList<TaskDataBO> taskList = new ArrayList<>();
     private Context context;
+    private TaskListAdapter taskListAdapter;
 
     @Inject
     TaskContract.TaskPresenter<TaskContract.TaskView> taskPresenter;
@@ -212,14 +220,14 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
                         }
                         break;
                     case BottomSheetBehavior.STATE_DRAGGING:
-                        taskCreationFAB.animate().scaleX(0).scaleY(0).setDuration(300).start();
+                        taskCreationFAB.animate().scaleX(0).scaleY(0).setDuration(400).start();
                         break;
                     case BottomSheetBehavior.STATE_EXPANDED:
-                        taskCreationFAB.animate().scaleX(0).scaleY(0).setDuration(300).start();
+                        taskCreationFAB.animate().scaleX(0).scaleY(0).setDuration(400).start();
                         break;
                     case BottomSheetBehavior.STATE_HIDDEN:
                         taskBgView.setVisibility(View.GONE);
-                        taskCreationFAB.animate().scaleX(1).scaleY(1).setDuration(300).start();
+                        taskCreationFAB.animate().scaleX(1).scaleY(1).setDuration(400).start();
                         break;
                     case BottomSheetBehavior.STATE_SETTLING:
                         break;
@@ -251,9 +259,9 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     public void onTaskExecutedClick(TaskDataBO taskDataBO) {
         if (source == TaskConstant.SOURCE.RETAILER) {
             taskPresenter.updateModuleTime();
-            taskPresenter.updateTaskExecution(taskPresenter.getRetailerID() + "", taskDataBO);
+            taskPresenter.updateTaskExecution(taskPresenter.getRetailerID() + "", taskDataBO, 0);
         } else {
-            taskPresenter.updateTaskExecution(0 + "", taskDataBO);
+            taskPresenter.updateTaskExecution(0 + "", taskDataBO, 0);
         }
     }
 
@@ -341,8 +349,26 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     }
 
     @Override
-    public void showTaskNoReasonDialog(TaskDataBO taskBo) {
+    public void showTaskNoReasonDialog(int taskListLastSelectedPos) {
+        this.taskListLastSelectedPos = taskListLastSelectedPos;
+        if (!taskPresenter.fetchNotCompletedTaskReasons().isEmpty()) {
+            if (reasonCaptureDialog == null)
+                reasonCaptureDialog = new ReasonCaptureDialog.ReasonCaptureDialogBuilder(getActivity(), taskPresenter.fetchNotCompletedTaskReasons())
+                        .setDialogTitles(getString(R.string.would_you_like_add_reason_to_close_task), getString(R.string.select_reason))
+                        .setOnButtonClickListener(this)
+                        .buildDialog();
 
+            reasonCaptureDialog.show();
+            WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+            Window window = reasonCaptureDialog.getWindow();
+            lp.copyFrom(window != null ? window.getAttributes() : null);
+            lp.width = DeviceUtils.getDisplayMetrics(context).widthPixels - 100;
+            // lp.height = (DeviceUtils.getDisplayMetrics(context).heightPixels / 2);//WindowManager.LayoutParams.WRAP_CONTENT;
+            if (window != null) {
+                window.setAttributes(lp);
+            }
+        } else
+            showMessage(getString(R.string.data_not_mapped));
     }
 
     /**
@@ -412,15 +438,17 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
         if (taskPresenter.isShowServerTaskOnly()) {
             getView().findViewById(R.id.tv_execution).setVisibility(View.VISIBLE);
-            taskPresenter.updateTaskList(TaskConstant.SERVER_TASK, mSelectedRetailerID, (source == TaskConstant.SOURCE.RETAILER), isChannelWise);
-        } else if (tab.getPosition() == 3) {
+            taskPresenter.updateTaskList(TaskConstant.SERVER_TASK, mSelectedRetailerID, (source == TaskConstant.SOURCE.RETAILER), isChannelWise, false);
+        } else if (tab.getPosition() == 2) {
             getView().findViewById(R.id.tv_execution).setVisibility(View.GONE);
             taskPresenter.fetchCompletedTask(mSelectedRetailerID);
+        } else if (tab.getPosition() == 3) {
+            getView().findViewById(R.id.tv_execution).setVisibility(View.VISIBLE);
+            taskPresenter.updateTaskList(tab.getPosition(), mSelectedRetailerID, (source == TaskConstant.SOURCE.RETAILER), isChannelWise, true);
         } else {
             getView().findViewById(R.id.tv_execution).setVisibility(View.VISIBLE);
-            taskPresenter.updateTaskList(tab.getPosition(), mSelectedRetailerID, (source == TaskConstant.SOURCE.RETAILER), isChannelWise);
+            taskPresenter.updateTaskList(tab.getPosition(), mSelectedRetailerID, (source == TaskConstant.SOURCE.RETAILER), isChannelWise, false);
         }
-
     }
 
     @Override
@@ -435,17 +463,19 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
 
     @Override
-    public void updateListData(ArrayList<TaskDataBO> updatedList) {
+    public void updateLabelNames(HashMap<String, String> labelMap) {
 
-        recyclerView.setAdapter(new TaskListAdapter(getActivity(), updatedList, taskPresenter.outDateFormat(), this, source, (source == TaskConstant.SOURCE.RETAILER), tabLayout.getSelectedTabPosition(), isPreVisit));
-
-        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
-            hideBottomSheet();
     }
 
     @Override
-    public void updateImageListAdapter(ArrayList<TaskDataBO> imageList) {
+    public void updateListData(ArrayList<TaskDataBO> updatedList) {
+        taskList.clear();
+        taskList.addAll(updatedList);
+        taskListAdapter = new TaskListAdapter(getActivity(), taskList, taskPresenter.outDateFormat(), this, source, taskPresenter.isShowProdLevel(), tabLayout.getSelectedTabPosition(), isPreVisit);
+        recyclerView.setAdapter(taskListAdapter);
 
+        if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
+            hideBottomSheet();
     }
 
     @Override
@@ -581,10 +611,27 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         showMessage(R.string.task_updated_successfully);
     }
 
+    @Override
+    public void showTaskReasonUpdateMsg() {
+        showMessage(getString(R.string.task_reason_updated_successfully));
+        taskList.remove(taskListLastSelectedPos);
+        taskListAdapter.notifyItemRemoved(taskListLastSelectedPos);
+        taskListAdapter.notifyItemRangeChanged(taskListLastSelectedPos, taskList.size());
+        reasonCaptureDialog.dismiss();
+    }
 
     public void setTaskViewListener(TaskViewListener listener) {
         this.taskViewListener = listener;
     }
 
 
+    @Override
+    public void addReason(int selectedResId) {
+        taskPresenter.updateTaskExecution(mSelectedRetailerID, taskList.get(taskListLastSelectedPos), selectedResId);
+    }
+
+    @Override
+    public void onDismiss() {
+        reasonCaptureDialog.dismiss();
+    }
 }

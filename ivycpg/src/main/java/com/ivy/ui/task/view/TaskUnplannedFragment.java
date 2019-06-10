@@ -106,12 +106,12 @@ public class TaskUnplannedFragment extends BaseFragment implements TaskContract.
     }
 
     @Override
-    public void updateListData(ArrayList<TaskDataBO> updatedList) {
+    public void updateLabelNames(HashMap<String, String> labelMap) {
 
     }
 
     @Override
-    public void updateImageListAdapter(ArrayList<TaskDataBO> imageList) {
+    public void updateListData(ArrayList<TaskDataBO> updatedList) {
 
     }
 

@@ -739,9 +739,8 @@ public class LoginHelper {
         int taskCount = 0;
         try {
             db.openDataBase();
-            businessModel.configurationMasterHelper.IS_TASK_DUDE_DATE_COUNT = 4;
             String dueDate = DateTimeUtils.getRequestedDateByGetType(businessModel.configurationMasterHelper.IS_TASK_DUDE_DATE_COUNT, Calendar.DATE);
-            String query = "select distinct count(A.taskid)"
+            String query = "select distinct A.taskid"
                     + " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid"
                     + " left join RetailerMaster RM on RM.RetailerID=A.retailerId"
                     + " left join (Select Date,EntityId From DatewisePlan Where (status != 'D' OR status IS NULL) and EntityType = 'RETAILER' ) as DWP on A.retailerID=DWP.EntityId"
@@ -752,7 +751,7 @@ public class LoginHelper {
 
             if (c.getCount() > 0) {
                 if (c.moveToFirst()) {
-                    taskCount = c.getInt(0);
+                    taskCount = c.getCount();
                 }
             }
         } catch (Exception e) {

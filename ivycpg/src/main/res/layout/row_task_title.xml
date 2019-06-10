@@ -99,9 +99,10 @@
             app:ribbonStrokeWidth="0dp"
             app:ribbonGravity="right"
             android:layout_gravity="end"
-            android:gravity="center|end"
-            android:paddingStart="@dimen/_4sdp"
-            android:paddingEnd="@dimen/_4sdp"
+            android:textAlignment="textStart"
+            android:gravity="center|start"
+            android:paddingStart="@dimen/_3sdp"
+            android:paddingEnd="@dimen/_3sdp"
             />
 
         <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"

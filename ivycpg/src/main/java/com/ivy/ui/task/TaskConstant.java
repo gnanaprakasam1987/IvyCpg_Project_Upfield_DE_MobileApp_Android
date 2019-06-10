@@ -55,7 +55,7 @@ public class TaskConstant {
 
     public static final String RETAILER_WISE = "retailer";
 
-    public static final String PEERT_WISE="peer";
+    public static final String PEERT_WISE = "peer";
 
     public static final String LINK_WISE = "link";
 
@@ -75,6 +75,21 @@ public class TaskConstant {
 
     public static final String TASK_DATE_FORMAT = "dd-MM-yyyy";
 
+    public static final String TASK_NOT_COMPLETE_REASON = "NCTR";
+
+    public static final String TASK_TITLE_LABEL = "task_title";
+
+    public static final String TASK_DUE_DATE_LABEL = "task_due_date";
+
+    public static final String TASK_APPLICABLE_FOR_LABEL = "task_applicable_for";
+
+    public static final String TASK_PHOTO_CAPTURE_LABEL = "task_photo_capture";
+
+    public static final String TASK_DESCRIPTION_LABEL = "task_description";
+
+    public static final String TASK_CREATED_BY_LABEL = "task_created_by";
+
+    public static final String TASK_EVIDENCE_LABEL = "task_evidence";
 
     public static enum SOURCE {
         HOME_SCREEN(0),

@@ -12,5 +12,5 @@ public interface TaskClickListener {
 
     void onSortItemClicked(int sortType, boolean orderByAsc);
 
-    void showTaskNoReasonDialog(TaskDataBO taskBo);
+    void showTaskNoReasonDialog(int taskListLastSelectedPos);
 }

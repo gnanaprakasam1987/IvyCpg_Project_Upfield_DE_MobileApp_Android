@@ -1304,10 +1304,10 @@
 
 
     <string-array name="task_tab_header">
-        <item>All</item>
         <item>Assigned</item>
         <item>My Task</item>
         <item>Completed</item>
+        <item>Delegate</item>
     </string-array>
 
     <string-array name="days_in_week">

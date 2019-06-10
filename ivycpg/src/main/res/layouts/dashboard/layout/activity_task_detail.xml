@@ -20,8 +20,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/_20sdp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/_20sdp">
 
             <RelativeLayout
                 android:id="@+id/first_layout"
@@ -66,7 +66,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tsk_title_divider"
                     android:layout_marginEnd="@dimen/_10sdp"
-                    android:layout_marginRight="@dimen/_10sdp"
                     android:adjustViewBounds="true"
                     android:padding="@dimen/dimen_10dp"
                     android:text="@string/category" />
@@ -78,7 +77,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/task_category_tv"
                     android:layout_marginEnd="@dimen/_10sdp"
-                    android:layout_marginRight="@dimen/_10sdp"
                     android:adjustViewBounds="true"
                     android:paddingStart="@dimen/dimen_10dp"
                     android:paddingLeft="@dimen/dimen_10dp"
@@ -93,7 +91,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tsk_title_divider"
                     android:layout_toEndOf="@+id/task_category_tv"
-                    android:layout_toRightOf="@+id/task_category_tv"
                     android:adjustViewBounds="true"
                     android:padding="@dimen/dimen_10dp"
                     android:text="@string/due_date" />
@@ -105,7 +102,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/task_due_date_tv"
                     android:layout_toEndOf="@+id/task_category_tv"
-                    android:layout_toRightOf="@+id/task_category_tv"
                     android:adjustViewBounds="true"
                     android:paddingStart="@dimen/dimen_10dp"
                     android:paddingLeft="@dimen/dimen_10dp"
@@ -122,7 +118,6 @@
                     android:labelFor="@+id/evidence_img_recycler_view" />
 
 
-
                 <TextView
                     android:id="@+id/task_created_by_tv"
                     style="@style/TextViewNormalHighlight"
@@ -130,7 +125,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tsk_category_divider"
                     android:layout_marginEnd="@dimen/_10sdp"
-                    android:layout_marginRight="@dimen/_10sdp"
                     android:adjustViewBounds="true"
                     android:padding="@dimen/dimen_10dp"
                     android:text="@string/created_by" />
@@ -142,7 +136,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/task_created_by_tv"
                     android:layout_marginEnd="@dimen/_10sdp"
-                    android:layout_marginRight="@dimen/_10sdp"
                     android:adjustViewBounds="true"
                     android:paddingStart="@dimen/dimen_10dp"
                     android:paddingLeft="@dimen/dimen_10dp"
@@ -158,7 +151,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tsk_category_divider"
                     android:layout_toEndOf="@+id/task_created_by_tv"
-                    android:layout_toRightOf="@+id/task_created_by_tv"
                     android:adjustViewBounds="true"
                     android:padding="@dimen/dimen_10dp"
                     android:text="@string/date_label" />
@@ -170,7 +162,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/task_created_date_tv"
                     android:layout_toEndOf="@+id/task_created_by_tv"
-                    android:layout_toRightOf="@+id/task_created_by_tv"
                     android:adjustViewBounds="true"
                     android:paddingStart="@dimen/dimen_10dp"
                     android:paddingLeft="@dimen/dimen_10dp"
@@ -187,7 +178,6 @@
                     android:labelFor="@+id/evidence_img_recycler_view" />
 
             </RelativeLayout>
-
 
 
             <RelativeLayout
@@ -242,9 +232,8 @@
                     android:layout_width="@dimen/spinner_width"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/_10sdp"
-                    android:layout_marginRight="@dimen/_10sdp"
-                    android:paddingBottom="@dimen/dimen_10dp"
                     android:adjustViewBounds="true"
+                    android:paddingBottom="@dimen/dimen_10dp"
                     android:text="@string/photo" />
 
                 <android.support.v7.widget.RecyclerView
@@ -252,8 +241,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/task_img_tv"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true" />
+                    android:layout_alignParentStart="true" />
             </RelativeLayout>
 
             <View
@@ -278,7 +266,6 @@
                     android:layout_width="@dimen/spinner_width"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/_10sdp"
-                    android:layout_marginRight="@dimen/_10sdp"
                     android:adjustViewBounds="true"
                     android:paddingBottom="@dimen/dimen_10dp"
                     android:text="@string/task_evidence" />
@@ -290,7 +277,6 @@
                     android:layout_below="@+id/evidence_img_tv"
                     android:layout_marginTop="@dimen/_8sdp"
                     android:layout_marginEnd="@dimen/_20sdp"
-                    android:layout_marginRight="@dimen/_20sdp"
                     android:background="@drawable/box_corner_blue"
                     android:clickable="true"
                     android:contentDescription="@string/add_img_content_description"
@@ -306,7 +292,6 @@
                     android:layout_below="@+id/evidence_img_tv"
                     android:layout_marginTop="@dimen/_8sdp"
                     android:layout_toEndOf="@+id/task_evidence_image_bt"
-                    android:layout_toRightOf="@+id/task_evidence_image_bt"
                     android:background="@drawable/plano_image_frame"
                     android:clickable="true"
                     android:contentDescription="@string/add_img_content_description"

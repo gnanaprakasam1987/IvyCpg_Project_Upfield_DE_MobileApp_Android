@@ -13,7 +13,7 @@ import io.reactivex.Single;
 
 public interface TaskDataManager extends AppDataManagerContract {
 
-    Observable<ArrayList<TaskDataBO>> fetchTaskData(String retailerId, int userCreatedTask);
+    Observable<ArrayList<TaskDataBO>> fetchTaskData(String retailerId, int userCreatedTask, boolean isDelegate);
 
     Observable<ArrayList<TaskDataBO>> fetchCompletedTask(String retailerId);
 
@@ -21,7 +21,7 @@ public interface TaskDataManager extends AppDataManagerContract {
 
     Single<Integer> fetchTaskCount();
 
-    Single<Boolean> updateTaskExecutionData(TaskDataBO taskDataBO, String retailerId);
+    Single<Boolean> updateTaskExecutionData(TaskDataBO taskDataBO, String retailerId, int reasonId);
 
     Single<Boolean> updateTaskExecutionImage(String imageName, String taskId);
 
@@ -31,7 +31,7 @@ public interface TaskDataManager extends AppDataManagerContract {
 
     Observable<ArrayList<TaskDataBO>> fetchTaskCategories(int prodLevelId);
 
-    Observable<ArrayList<TaskDataBO>> fetTaskImgData(String taskId, int userIdLength);
+    Observable<ArrayList<TaskDataBO>> fetchTaskImageData(String taskId, int userIdLength);
 
     Single<Boolean> deleteTaskData(String taskId, String taskOwner, int serverTask);
 

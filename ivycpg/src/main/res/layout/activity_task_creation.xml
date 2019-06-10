@@ -21,8 +21,7 @@
         app:layout_constraintBottom_toTopOf="@+id/save_ll"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar"
-        >
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
@@ -46,10 +45,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start|center"
+                android:hint="@string/title"
+                android:importantForAutofill="no"
+                android:inputType="textShortMessage"
                 android:maxLength="50"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/task_title_tv" />
+                app:layout_constraintTop_toBottomOf="@+id/task_title_tv"
+                tools:ignore="UnusedAttribute" />
 
 
             <TextView
@@ -118,7 +121,7 @@
             <android.support.v7.widget.SwitchCompat
                 android:id="@+id/switch_option"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/spinner_height"
+                android:layout_height="@dimen/_35sdp"
                 android:layout_gravity="center_vertical"
                 android:gravity="end|center"
                 android:textAlignment="textEnd"
@@ -130,28 +133,27 @@
                 android:id="@+id/option_txt"
                 style="@style/TextViewNormal"
                 android:layout_width="0dp"
-                android:layout_height="@dimen/spinner_height"
+                android:layout_height="@dimen/_35sdp"
                 android:layout_marginStart="@dimen/_5sdp"
-                android:textAlignment="textStart"
                 android:gravity="start|center"
                 android:text="@string/Seller"
-                app:layout_constraintRight_toLeftOf="@+id/guideline1"
+                android:textAlignment="textStart"
                 app:layout_constraintLeft_toRightOf="@+id/switch_option"
+                app:layout_constraintRight_toLeftOf="@+id/guideline1"
                 app:layout_constraintTop_toBottomOf="@+id/applicable_tv" />
 
 
             <android.support.v7.widget.AppCompatAutoCompleteTextView
                 android:id="@+id/auto_complete_txt_retailer"
                 android:layout_width="@dimen/spinner_width"
-                android:layout_height="@dimen/spinner_height"
+                android:layout_height="@dimen/_35sdp"
                 android:drawableEnd="@drawable/ic_arrow_drop_down"
                 android:ems="10"
                 android:gravity="top"
-                android:hint="@string/select"
+                android:hint="@string/plain_select"
                 android:imeOptions="actionDone"
                 android:inputType="text"
                 android:maxLines="1"
-                android:spinnerMode="dialog"
                 android:visibility="gone"
                 app:layout_constraintLeft_toRightOf="@+id/guideline1"
                 app:layout_constraintTop_toBottomOf="@+id/applicable_tv" />
@@ -161,7 +163,6 @@
                 android:id="@+id/radio_grp_btn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:orientation="horizontal"
                 app:layout_constraintBottom_toTopOf="@+id/guideline3"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -206,8 +207,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:padding="@dimen/_10sdp"
-                    android:text="@string/peer_user"
-                    />
+                    android:text="@string/peer_user" />
 
 
                 <RadioButton
@@ -227,6 +227,7 @@
                 android:layout_width="@dimen/spinner_width"
                 android:layout_height="@dimen/_35sdp"
                 android:layout_centerVertical="true"
+                android:stateListAnimator="@android:anim/bounce_interpolator"
                 android:gravity="center_vertical"
                 android:spinnerMode="dialog"
                 android:visibility="gone"
@@ -257,28 +258,42 @@
                 app:layout_constraintGuide_percent="0.31" />
 
 
+            <TextView
+                android:id="@+id/photo_capture_tv"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center|start"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_4sdp"
+                android:text="@string/photo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/guideline2" />
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/task_img_recycler_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:paddingTop="@dimen/_8sdp"
-                android:paddingBottom="@dimen/_4sdp"
                 app:layout_constraintBottom_toTopOf="@+id/task_desc_tv"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/guideline2" />
+                app:layout_constraintTop_toBottomOf="@+id/photo_capture_tv" />
 
 
             <TextView
                 android:id="@+id/task_desc_tv"
                 style="@style/TextViewNormalHighlight"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
+                android:gravity="start|center"
                 android:paddingTop="@dimen/_8sdp"
                 android:paddingBottom="@dimen/_4sdp"
                 android:text="@string/description"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/task_img_recycler_view" />
 
@@ -297,8 +312,7 @@
                 android:inputType="textMultiLine"
                 android:maxLength="250"
                 android:maxLines="4"
-                android:paddingTop="@dimen/dimen_6dp"
-                android:paddingBottom="@dimen/_6sdp"
+                android:padding="@dimen/dimen_6dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/task_desc_tv"

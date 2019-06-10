@@ -366,4 +366,7 @@
     <string name="select_peer">Select Peer</string>
     <string name="select_child">Select child</string>
     <string name="select_link">Select Link</string>
+    <string name="would_you_like_add_reason_to_close_task">Would you like to close this task?</string>
+    <string name="task_reason_updated_successfully">Reason updated successfully…</string>
+    <string name="select_retailer">Select Retails</string>
 </resources>

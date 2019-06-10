@@ -35,6 +35,7 @@ import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.inject.Inject;
 
@@ -142,13 +143,13 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     @Override
     protected void setUpViews() {
         setUnBinder(ButterKnife.bind(this));
-        overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+        overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         setUpToolBar(getString(R.string.task_detail));
         TaskConstant.TASK_SERVER_IMG_PATH = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
                 + taskPresenter.getUserID()
                 + DataMembers.DIGITAL_CONTENT + "/"
                 + DataMembers.TASK_DIGITAL_CONTENT;
-        if (tabSelection == 3)
+        if (tabSelection == 2)
             hideViews();
 
         setUpRecyclerView();
@@ -198,11 +199,36 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     }
 
     @Override
+    public void updateLabelNames(HashMap<String, String> labelMap) {
+
+        if (labelMap.containsKey(TaskConstant.TASK_TITLE_LABEL))
+            ((TextView) findViewById(R.id.task_title_tv)).setText(labelMap.get(TaskConstant.TASK_TITLE_LABEL));
+
+        if (labelMap.containsKey(TaskConstant.TASK_DUE_DATE_LABEL))
+            ((TextView) findViewById(R.id.task_due_date_tv)).setText(labelMap.get(TaskConstant.TASK_DUE_DATE_LABEL));
+
+        if (labelMap.containsKey(TaskConstant.TASK_CREATED_BY_LABEL))
+            tskProdLevelTitle.setText(labelMap.get(TaskConstant.TASK_CREATED_BY_LABEL));
+
+        if (labelMap.containsKey(TaskConstant.TASK_CREATED_BY_LABEL))
+            ((TextView) findViewById(R.id.task_created_by_tv)).setText(labelMap.get(TaskConstant.TASK_CREATED_BY_LABEL));
+
+        if (labelMap.containsKey(TaskConstant.TASK_DESCRIPTION_LABEL))
+            ((TextView) findViewById(R.id.task_desc_tv)).setText(TaskConstant.TASK_DESCRIPTION_LABEL);
+
+        if (labelMap.containsKey(TaskConstant.TASK_PHOTO_CAPTURE_LABEL))
+            ((TextView) findViewById(R.id.task_img_tv)).setText(TaskConstant.TASK_PHOTO_CAPTURE_LABEL);
+
+        if (labelMap.containsKey(TaskConstant.TASK_EVIDENCE_LABEL))
+            ((TextView) findViewById(R.id.evidence_img_tv)).setText(TaskConstant.TASK_EVIDENCE_LABEL);
+    }
+
+    @Override
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
         taskTitleTv.setText(detailBo.getTasktitle());
         taskProductLevelTv.setText(detailBo.getTaskCategoryDsc());
 
-        if (tabSelection == 3)
+        if (tabSelection == 2)
             taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(detailBo.getTaskExecDate(), taskPresenter.outDateFormat()));
         else
             taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(detailBo.getTaskDueDate(), taskPresenter.outDateFormat()));
@@ -213,11 +239,6 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
                 (detailBo.getCreatedDate(), taskPresenter.outDateFormat()));
         taskDescTv.setText(detailBo.getTaskDesc());
         setImageIntoView();
-
-    }
-
-    @Override
-    public void updateImageListAdapter(ArrayList<TaskDataBO> imageList) {
 
     }
 
@@ -294,8 +315,8 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
             Intent intent = new Intent(TaskDetailActivity.this,
                     TaskActivity.class);
-            if (getIntent().getBooleanExtra("PreVisit",false))
-                intent.putExtra("PreVisit",true);
+            if (getIntent().getBooleanExtra("PreVisit", false))
+                intent.putExtra("PreVisit", true);
 
             startActivity(intent.putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask)
                     .putExtra(TaskConstant.SCREEN_TITLE, screenTitle)

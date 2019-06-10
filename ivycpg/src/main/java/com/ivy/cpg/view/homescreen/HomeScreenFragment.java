@@ -2635,9 +2635,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             else
                 holder.menuIcon.setImageResource(menuIcons.get(MENU_PLANNING));
 
-            if (holder.config.getConfigCode().equalsIgnoreCase(MENU_TASK_NEW)) {
+            if (holder.config.getConfigCode().equalsIgnoreCase(MENU_TASK_NEW)
+                    && taskDueDateCount > 0) {
                 holder.badgeViewTv.setVisibility(View.VISIBLE);
-                // holder.badgeViewTv.setText(String.valueOf(taskDueDateCount));
             } else {
                 holder.badgeViewTv.setVisibility(View.GONE);
             }

@@ -40,18 +40,18 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
     private String outDateFormat;
     private TaskClickListener taskClickListener;
     private TaskConstant.SOURCE source;
-    private Boolean isRetailerWiseTask;
+    private Boolean isShowProdLevel;
     private int mTabPosition;
     private final ViewBinderHelper binderHelper = new ViewBinderHelper();
     private boolean isPreVisit = false;
 
-    public TaskListAdapter(Context mContext, ArrayList<TaskDataBO> taskDatas, String outDateFormat, TaskClickListener taskClickListener, TaskConstant.SOURCE source, boolean isRetailerWiseTask, int mTabPosition, boolean isPreVisit) {
+    public TaskListAdapter(Context mContext, ArrayList<TaskDataBO> taskDatas, String outDateFormat, TaskClickListener taskClickListener, TaskConstant.SOURCE source, boolean isShowProdLevel, int mTabPosition, boolean isPreVisit) {
         this.taskDatas = taskDatas;
         this.mContext = mContext;
         this.outDateFormat = outDateFormat;
         this.taskClickListener = taskClickListener;
         this.source = source;
-        this.isRetailerWiseTask = isRetailerWiseTask;
+        this.isShowProdLevel = isShowProdLevel;
         this.mTabPosition = mTabPosition;
 
         this.isPreVisit = isPreVisit;
@@ -79,7 +79,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         // put an unique string id as value, can be any string which uniquely define the data
         binderHelper.bind(holder.swipeLayout, taskBo.getTaskId());
 
-        if (mTabPosition == 3
+        if (mTabPosition == 2
                 || taskBo.isChecked()
                 || (taskBo.isUpload() && taskBo.getIsdone().equals("1")))
             binderHelper.lockSwipe(taskBo.getTaskId());
@@ -87,16 +87,16 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
 
         holder.taskTitle.setText(taskBo.getTasktitle());
         holder.taskProductLevel.setText(taskBo.getTaskCategoryDsc());
-        if (mTabPosition == 3)
+        if (mTabPosition == 2)
             holder.taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
                     (taskBo.getTaskExecDate(), outDateFormat));
         else
             holder.taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
                     (taskBo.getTaskDueDate(), outDateFormat));
 
-        int daysCount = DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                taskBo.getTaskDueDate(), "yyyy/MM/dd");
-        if (daysCount > 0) {
+        int daysCount = DateTimeUtils.getDateCount(taskBo.getTaskDueDate(),
+                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd");
+        if (daysCount >= 1) {
             holder.dueDaysTv.setVisibility(View.VISIBLE);
             holder.dueDaysTv.setText(mContext.getString(R.string.over_due));
         } else {
@@ -146,7 +146,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         });
 
         holder.btnCloseTask.setOnClickListener(
-                v -> taskClickListener.showTaskNoReasonDialog(taskBo));
+                v -> taskClickListener.showTaskNoReasonDialog(holder.getAdapterPosition()));
 
         if (taskBo.isUpload() && taskBo.getIsdone().equals("1")) {
             holder.taskCB.setEnabled(false);
@@ -227,10 +227,11 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
                 layoutCB.setVisibility(View.GONE);
             }
 
-            if (!isRetailerWiseTask)
+            if (!isShowProdLevel
+                    && (source == TaskConstant.SOURCE.RETAILER))
                 taskProductLevel.setVisibility(View.GONE);
 
-            if (mTabPosition == 3) {
+            if (mTabPosition == 2) {
                 btnAttachFile.setVisibility(View.GONE);
                 taskCB.setVisibility(View.GONE);
             }
