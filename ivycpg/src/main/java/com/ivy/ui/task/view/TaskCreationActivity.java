@@ -182,6 +182,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         //allow only create task only for retailer if not from seller Task
         if (isRetailerWiseTask) {
             handleViewVisibility(View.GONE);
+            handleVisibility(View.VISIBLE);
         } else {
             setUpAdapter();
             taskPresenter.fetchData();
@@ -365,7 +366,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 break;
             case TaskConstant.RETAILER_WISE:
                 if (!isRetailerWiseTask)
-                    taskChannelId = retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getRetailerId();
+                    taskChannelId = Integer.valueOf(retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getRetailerID()) ;
                 else
                     taskChannelId = taskPresenter.getRetailerID();
                 break;
