@@ -1,6 +1,8 @@
 package com.ivy.cpg.locationservice.realtime;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -9,6 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.support.annotation.NonNull;
@@ -95,11 +98,23 @@ public class RealTimeLocationService extends Service {
 //     Create the persistent notification
     private void buildNotification() {
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this,"")
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "LocationChannel")
                 .setContentTitle(getString(R.string.app_name))
                 .setContentText(getString(R.string.notification_text))
                 .setOngoing(true)
                 .setSmallIcon(R.drawable.ic_location_tracking);
+
+        if (notificationManager != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("LocationChannel",
+                    "IvyCpg Data Channel",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            notificationManager.createNotificationChannel(channel);
+
+        }
+
         startForeground(REALTIME_NOTIFICATION_ID, builder.build());
     }
 
@@ -107,7 +122,7 @@ public class RealTimeLocationService extends Service {
         LocationRequest request = new LocationRequest();
         request.setInterval(5000);
         request.setFastestInterval(2500);
-        request.setSmallestDisplacement(10);
+        request.setSmallestDisplacement(5);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         client = LocationServices.getFusedLocationProviderClient(this);
