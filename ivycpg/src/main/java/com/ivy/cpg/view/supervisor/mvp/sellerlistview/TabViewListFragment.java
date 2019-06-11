@@ -28,8 +28,6 @@ public class TabViewListFragment extends IvyBaseFragment{
     private ArrayList<SellerBo> sellerListBos = new ArrayList<>();
     private boolean showStatus;
 
-    private Animation slide_down, slide_up;
-    private LinearLayout bottomLayout;
     private String selectedDate;
 
     private FloatingActionButton sortView;
@@ -93,7 +91,6 @@ public class TabViewListFragment extends IvyBaseFragment{
 
         recyclerView = view.findViewById(R.id.seller_list);
 
-        bottomLayout = view.findViewById(R.id.bottom_layout);
         sortRadioGroup = view.findViewById(R.id.sort_radio_group);
 
         bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.bottomSheetLayout));
@@ -124,34 +121,6 @@ public class TabViewListFragment extends IvyBaseFragment{
 
         bottomSheetBehavior.setHideable(true);
         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-
-        slide_down = AnimationUtils.loadAnimation(getContext(),
-                R.anim.out_to_bottom);
-        slide_up = AnimationUtils.loadAnimation(getContext(),
-                R.anim.bottom_layout_slideup);
-        recyclerView.addOnScrollListener(new HideShowScrollListener() {
-            @Override
-            public void onHide() {
-                if (bottomLayout.getVisibility() == View.VISIBLE) {
-                    bottomLayout.startAnimation(slide_down);
-                    bottomLayout.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onShow() {
-                if (bottomLayout.getVisibility() == View.GONE) {
-                    bottomLayout.setVisibility(View.VISIBLE);
-                    bottomLayout.startAnimation(slide_up);
-                }
-            }
-
-            @Override
-            public void onScrolled() {
-                // To load more data
-            }
-
-        });
 
         sortView.setOnClickListener(new View.OnClickListener() {
             @Override

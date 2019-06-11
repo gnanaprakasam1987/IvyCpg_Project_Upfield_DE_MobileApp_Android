@@ -4877,8 +4877,8 @@ SynchronizationHelper {
                                                        String appendurl) {
 
         StringBuilder url = new StringBuilder();
-//        url.append(DataMembers.SERVER_URL);
-        url.append("http://192.168.2.92/api");
+        url.append(DataMembers.SERVER_URL);
+//        url.append("http://192.168.2.92/api");
         url.append(appendurl);
 
         try {
