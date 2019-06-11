@@ -113,7 +113,7 @@ public class AddPlanDataManagerImpl implements AddPlanDataManager {
 
                 try {
                     mDbUtil.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
-                            + " SET Status = 'D'"
+                            + " SET Status = 'D', VisitStatus = 'CANCELLED' "
                             + " where PlanId = " + dateWisePlanBo.getPlanId());
                     shutDownDb();
                 } catch (Exception e) {

@@ -5,9 +5,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,8 +55,21 @@ public class TimeSlotPickFragment extends DialogFragment {
 
     }
 
-    public TimeSlotPickFragment(boolean isShowDay,boolean isShowStart, boolean isShowEnd,
-                                String dayTxt, String startTxt, String endTxt, String title,RetailerContactAvailBo availBo){
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(getActivity()!=null && getDialog()!=null){
+            DisplayMetrics displayMetrics = new DisplayMetrics();
+            getActivity().getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+            int height = WindowManager.LayoutParams.WRAP_CONTENT;
+            int width = displayMetrics.widthPixels;
+            getDialog().getWindow().setLayout(width, height);
+        }
+
+    }
+
+    public TimeSlotPickFragment(boolean isShowDay, boolean isShowStart, boolean isShowEnd,
+                                String dayTxt, String startTxt, String endTxt, String title, RetailerContactAvailBo availBo){
         this.isShowDay = isShowDay;
         this.isShowStart = isShowStart;
         this.isShowEnd  = isShowEnd;

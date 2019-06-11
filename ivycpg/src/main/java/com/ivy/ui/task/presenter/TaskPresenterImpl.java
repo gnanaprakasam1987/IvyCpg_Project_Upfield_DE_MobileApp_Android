@@ -26,7 +26,6 @@ import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.data.TaskDataManager;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
-import com.ivy.utils.StringUtils;
 import com.ivy.utils.rx.SchedulerProvider;
 
 import java.io.File;
@@ -98,7 +97,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
         getIvyView().showLoading();
 
         getCompositeDisposable().add(Observable.zip(mUserDataManager.fetchAllUsers(),
-                mChannelDataManager.fetchChannels(), mTaskDataManager.fetchRetailers()
+                mChannelDataManager.fetchChannels(), mTaskDataManager.fetchAllRetailers()
                 , (Function3<ArrayList<UserMasterBO>, ArrayList<ChannelBO>, ArrayList<RetailerMasterBO>, Object>) (userMasterBOS, channelBOS, retailerMasterBOS) -> {
                     mUserListBos.clear();
                     for (UserMasterBO userBo : userMasterBOS) {
