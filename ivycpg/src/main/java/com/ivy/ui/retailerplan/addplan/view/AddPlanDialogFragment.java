@@ -398,7 +398,6 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
         Window window = comReasonDialog.getWindow();
         lp.copyFrom(window != null ? window.getAttributes() : null);
         lp.width = DeviceUtils.getDisplayMetrics(context).widthPixels - 100;
-        lp.height = (DeviceUtils.getDisplayMetrics(context).heightPixels / 2);//WindowManager.LayoutParams.WRAP_CONTENT;
         if (window != null) {
             window.setAttributes(lp);
         }
@@ -508,7 +507,9 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
         saveElementGroup.setVisibility(View.GONE);
 
-        if (dateWisePlanBo != null && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)) {
+        if (dateWisePlanBo != null
+                && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)
+                && (retailerMasterBO != null && !"Y".equals(retailerMasterBO.getIsVisited()) )) {
 
             visitElementGroup.setVisibility(View.VISIBLE);
 
@@ -544,9 +545,20 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
         }else {
             visitElementGroup.setVisibility(View.GONE);
-            if (DateTimeUtils.getDateCount(selectedDate,DateTimeUtils.now(DATE_GLOBAL),"yyyy/MM/dd") <= 0)
-                addPlan.setVisibility(View.VISIBLE);
             editPlan.setVisibility(View.GONE);
+
+            if (DateTimeUtils.getDateCount(selectedDate,DateTimeUtils.now(DATE_GLOBAL),"yyyy/MM/dd") <= 0){
+                    if (
+                            (dateWisePlanBo != null && (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(COMPLETED)
+                        || dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)
+                        || dateWisePlanBo.getVisitStatus().equalsIgnoreCase("CANCELLED"))
+                            )
+                        || (retailerMasterBO != null && "Y".equals(retailerMasterBO.getIsVisited()) )){
+
+                        addPlan.setVisibility(View.GONE);
+                    }else
+                        addPlan.setVisibility(View.VISIBLE);
+            }
         }
 
     }

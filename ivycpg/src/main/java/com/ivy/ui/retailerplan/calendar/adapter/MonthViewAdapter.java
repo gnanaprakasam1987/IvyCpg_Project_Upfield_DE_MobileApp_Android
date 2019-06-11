@@ -2,6 +2,7 @@ package com.ivy.ui.retailerplan.calendar.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,12 +12,12 @@ import android.widget.TextView;
 import com.ivy.calendarlibrary.monthview.MonthView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.SDUtil;
-import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 import com.ivy.ui.retailerplan.calendar.bo.CalenderBO;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -32,6 +33,7 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
     private int dayInWeekCount;
     private ArrayList<CalenderBO> mCalenderAllList;
     private List<String> weekNoList;
+    private HashMap<Integer, CalenderBO> calBO;
 
     public MonthViewAdapter(Context context, int dayInWeekCount, ArrayList<CalenderBO> mCalenderAllList, ArrayList<String> mAllowedDates, CalendarClickListner calendarClickListner, List<String> weekNoList) {
         mContext = context;
@@ -40,7 +42,9 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
         this.mCalenderAllList = mCalenderAllList;
         this.mAllowedDates = mAllowedDates;
         this.weekNoList = weekNoList;
+        calBO = new HashMap<>();
         populateMonth();
+        setHasStableIds(true);
     }
 
     private void populateMonth() {
@@ -73,15 +77,14 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
         int count = 1;
         for (int i = 0; i < mItems.size(); i++) {
             if (i % 8 == 0 && count <= rows) {
-                mItems.add(i, "" + weekNoList.get(count-1));
-                mItems1.add(i, "" + weekNoList.get(count-1));
+                mItems.add(i, "" + weekNoList.get(count - 1));
+                mItems1.add(i, "" + weekNoList.get(count - 1));
                 count++;
             }
         }
 
         mItems.subList(cellCount, mItems.size()).clear();
         mItems1.subList(cellCount, mItems1.size()).clear();
-
 
     }
 
@@ -119,16 +122,12 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
             if (mItems.get(position).equals("No")) {
                 holder.TVDate.setText("");
                 holder.TvRetailer.setVisibility(View.GONE);
-                holder.isDataPresent = false;
             } else {
                 holder.TVDate.setText(mItems.get(position));
-                holder.isDataPresent = true;
                 if (mItems2.contains(mItems1.get(position))) {
                     holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.FullBlack));
-                    holder.isValid = true;
                 } else {
                     holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.light_gray));
-                    holder.isValid = false;
                 }
                 if (Objects.requireNonNull(DateTimeUtils.convertStringToDateObject(mItems1.get(position), "yyyy/MM/dd")).before(new Date())) {
                     holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.FullBlack));
@@ -136,21 +135,24 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
             }
 
             int[] date = {};
-            if (!mItems1.get(position).equals("No")) {
+            if (!mItems1.get(position).equals("No") && !mItems.get(position).equals("No")) {
                 date = getDateNew(mItems1.get(position));
+            } else {
+                date = null;
             }
+
             if (date != null && date.length > 0) {
 
                 for (int i = 0; i < mCalenderAllList.size(); i++) {
                     if ((mCalenderAllList.get(i).getDate() + "").equals(mItems.get(position)) && (mCalenderAllList.get(i).getCal_date() + "").equals(mItems1.get(position))) {
-                        holder.calBO = mCalenderAllList.get(i);
+                        calBO.put(position, mCalenderAllList.get(i));
                     }
                 }
 
-                if (holder.calBO.isToday()) {
+                if (calBO.get(position).isToday()) {
                     holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.white));
                     holder.TVDate.setBackground(mContext.getResources().getDrawable(R.drawable.circle_blue_bg));
-                } else if (holder.calBO.isSelected()) {
+                } else if (calBO.get(position).isSelected()) {
                     holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.FullBlack));
                     holder.TVDate.setBackground(mContext.getResources().getDrawable(R.drawable.circle_calendar_select));
                 } else {
@@ -158,50 +160,48 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
                     holder.TVDate.setBackgroundColor(mContext.getResources().getColor(R.color.transparent));
                 }
 
-
-                if (holder.calBO.getPlanList().size() > 0) {
-                    holder.TvRetailer.setText(mContext.getResources().getString(R.string.plan_retailer_name, holder.calBO.getPlanList().get(0).getName()));
-                    if (holder.calBO.getPlanList().size() > 1)
-                        holder.TvExtras.setText(mContext.getResources().getString(R.string.plus_more, holder.calBO.getPlanList().size() - 1));
-
+                if (calBO.get(position).getPlanList().size() > 0) {
+                    holder.TvRetailer.setText(mContext.getResources().getString(R.string.plan_retailer_name, calBO.get(position).getPlanList().get(0).getName()));
+                    if (calBO.get(position).getPlanList().size() > 1)
+                        holder.TvExtras.setText(mContext.getResources().getString(R.string.plus_more, calBO.get(position).getPlanList().size() - 1));
                 }
+
+            } else {
+                holder.TVDate.setTextColor(mContext.getResources().getColor(R.color.FullBlack));
+                holder.TVDate.setBackgroundColor(mContext.getResources().getColor(R.color.transparent));
+                holder.TvExtras.setVisibility(View.GONE);
+                holder.TvRetailer.setVisibility(View.GONE);
             }
 
             holder.llDate.setOnClickListener(v -> {
-                if (holder.calBO != null) {
-                    refreshGrid(holder.calBO.getCal_date());
-                    calendarClickListner.onDateNoSelected(holder.calBO.getCal_date(), holder.calBO.getPlanList());
+                if (calBO.get(position) != null) {
+                    refreshGrid(calBO.get(position).getCal_date());
+                    calendarClickListner.onDateNoSelected(calBO.get(position).getCal_date(), calBO.get(position).getPlanList());
                 }
 
             });
 
             holder.lltext.setOnClickListener(v -> {
-                if (holder.calBO != null) {
-                    refreshGrid(holder.calBO.getCal_date());
-                    calendarClickListner.onADayRetailerSelected(holder.calBO.getCal_date());
+                if (calBO.get(position) != null) {
+                    refreshGrid(calBO.get(position).getCal_date());
+                    calendarClickListner.onADayRetailerSelected(calBO.get(position).getCal_date());
                 }
 
             });
         }
-
     }
 
     class MonthViewHolder extends RecyclerView.ViewHolder {
-        CalenderBO calBO;
         TextView TVDate, TvRetailer, TvExtras;
-        Boolean isValid = false;
-        Boolean isDataPresent = false;
         LinearLayout llDate, lltext;
 
         MonthViewHolder(View itemView) {
             super(itemView);
-
             TVDate = itemView.findViewById(R.id.tv_date);
             TvRetailer = itemView.findViewById(R.id.tv_retailers);
             TvExtras = itemView.findViewById(R.id.tv_extras);
             llDate = itemView.findViewById(R.id.llDate);
             lltext = itemView.findViewById(R.id.lltext);
-
         }
     }
 
@@ -210,7 +210,6 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
 
         WeekViewHolder(View itemView) {
             super(itemView);
-
             TvWeekNo = itemView.findViewById(R.id.tv_weekno);
         }
     }
@@ -253,13 +252,12 @@ public class MonthViewAdapter extends MonthView.Adapter<RecyclerView.ViewHolder>
     }
 
     private void refreshGrid(String dateSelected) {
-
         for (CalenderBO calenderBO : mCalenderAllList)
             calenderBO.setSelected(false);
         for (CalenderBO calenderBO : mCalenderAllList)
             if (dateSelected.equalsIgnoreCase(calenderBO.getCal_date()))
                 calenderBO.setSelected(true);
-
         notifyDataSetChanged();
     }
+
 }

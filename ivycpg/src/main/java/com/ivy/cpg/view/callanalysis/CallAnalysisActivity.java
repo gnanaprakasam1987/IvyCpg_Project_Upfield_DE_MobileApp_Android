@@ -17,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -56,6 +57,7 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
+import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SBDHelper;
@@ -2149,13 +2151,16 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
         ArrayList<ConfigureBO> moduleList = new ArrayList<>();
         boolean isStoreCheckMenu = false;
         SimpleDateFormat format = new SimpleDateFormat("yyyy/mm/dd HH:mm:ss");
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String language = sharedPrefs.getString("languagePref", ApplicationConfigs.LANGUAGE);
         try {
             DBUtil db = new DBUtil(CallAnalysisActivity.this, DataMembers.DB_NAME);
             db.openDataBase();
 
             Cursor c = db.selectSQL("select OD.TimeIn,OD.TimeOut,ifnull(hm.MName,'') from "
                     + DataMembers.tbl_outlet_time_stamp_detail
-                    + " OD Left join HhtMenuMaster hm on hm.HHTCode = OD.ModuleCode"
+                    + " OD Left join HhtMenuMaster hm on hm.HHTCode = OD.ModuleCode and lang="
+                    + StringUtils.QT(language)
                     + " where retailerid=" + StringUtils.QT(bmodel.getRetailerMasterBO().getRetailerID())
                     + " AND ModuleCode != 'MENU_CALL_ANLYS'");
 
@@ -2206,8 +2211,11 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                 if (config.getConfigCode().equals(ConfigurationMasterHelper.MENU_STORECHECK))
                     isStoreCheckMenu = true;
                 if (config.getHasLink() == 1 && !config.isDone()
-                        && !config.getConfigCode().equals(MENU_CALL_ANLYS))
-                    moduleList.add(config);
+                        && !config.getConfigCode().equals(MENU_CALL_ANLYS)) {
+                    if(!myMap.keySet().contains(config.getMenuName())){
+                        moduleList.add(config);
+                    }
+                }
 
             }
 

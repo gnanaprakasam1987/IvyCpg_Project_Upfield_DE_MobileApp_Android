@@ -106,24 +106,25 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
         }
         sih_detail.setText(sihDetail.toString());
 
-        SchemeDetailsMasterHelper schemeHelper=SchemeDetailsMasterHelper.getInstance(getApplicationContext());
-        if (schemeHelper.getSchemeList().size() > 0) {
+        SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
+        if (schemeHelper.getSchemeList() != null)
+            if (schemeHelper.getSchemeList().size() > 0) {
 
-            bmodel.productHelper.setSchemes(schemeHelper.getSchemeList());
-            bmodel.productHelper.setPdname(bmodel.selectedPdt.getProductShortName());
-            bmodel.productHelper.setProdId(bmodel.selectedPdt.getProductID());
-            bmodel.productHelper.setProductObj(bmodel.selectedPdt);
-            bmodel.productHelper.setFlag(1);
-            bmodel.productHelper.setTotalScreenSize(mTotalScreenWidth);
+                bmodel.productHelper.setSchemes(schemeHelper.getSchemeList());
+                bmodel.productHelper.setPdname(bmodel.selectedPdt.getProductShortName());
+                bmodel.productHelper.setProdId(bmodel.selectedPdt.getProductID());
+                bmodel.productHelper.setProductObj(bmodel.selectedPdt);
+                bmodel.productHelper.setFlag(1);
+                bmodel.productHelper.setTotalScreenSize(mTotalScreenWidth);
 
-            SchemeDetailsFragment fragment = new SchemeDetailsFragment();
-            Bundle bundle =new Bundle();
-            bundle.putString("productId",bmodel.selectedPdt.getProductID());
-            fragment.setArguments(bundle);
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.add(R.id.frame, fragment);
-            transaction.commit();
-        }
+                SchemeDetailsFragment fragment = new SchemeDetailsFragment();
+                Bundle bundle = new Bundle();
+                bundle.putString("productId", bmodel.selectedPdt.getProductID());
+                fragment.setArguments(bundle);
+                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                transaction.add(R.id.frame, fragment);
+                transaction.commit();
+            }
 
     }
 
@@ -155,8 +156,8 @@ public class ProductDetailsCatalogActivity extends IvyBaseActivityNoActionBar {/
      */
     public String getImageFilePath(final String fileName) {
         File file = new File(bmodel.synchronizationHelper.getStorageDir(getResources().getString(R.string.app_name))
-                        + "/"
-                        + DataMembers.CATALOG);
+                + "/"
+                + DataMembers.CATALOG);
 
         File[] files = file.listFiles(new FileFilter() {
 

@@ -1702,8 +1702,8 @@ public class AssetTrackingHelper {
 
 
                                 if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    assetDetailValues.append("," + (assetBo.getAvailQty() > 0 || assetBo.getExecutorQty() > 0 ? productWeightAge : "0"));
-                                    if (assetBo.getAvailQty() > 0 || assetBo.getExecutorQty() > 0)
+                                    assetDetailValues.append("," + (assetBo.getExecutorQty() > 0 ? productWeightAge : "0"));
+                                    if (assetBo.getExecutorQty() > 0)
                                         sum = sum + productWeightAge;
                                 }
 
