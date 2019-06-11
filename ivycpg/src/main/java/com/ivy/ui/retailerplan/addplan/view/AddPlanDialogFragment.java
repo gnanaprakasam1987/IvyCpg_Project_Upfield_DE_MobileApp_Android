@@ -54,6 +54,7 @@ import butterknife.OnClick;
 
 import com.ivy.cpg.view.profile.CommonReasonDialog;
 
+import static com.ivy.ui.retailer.RetailerConstants.APPROVED;
 import static com.ivy.ui.retailer.RetailerConstants.COMPLETED;
 import static com.ivy.ui.retailer.RetailerConstants.PLANNED;
 import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
@@ -314,18 +315,19 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
             i.putExtra("HideCancelVisit", true);
         }else if (dateCount < 0){
             i.putExtra("HideStartVisit", true);
-            if (dateWisePlanBo != null && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED))
+            if (dateWisePlanBo != null && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED) && dateWisePlanBo.getPlanStatus().equalsIgnoreCase(APPROVED))
                 i.putExtra("HideCancelVisit", false);
             else
                 i.putExtra("HideCancelVisit", true);
         }else{
             if (dateWisePlanBo != null) {
-                if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED) || dateWisePlanBo.getVisitStatus().equalsIgnoreCase(COMPLETED) )
+                if ((dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED) && dateWisePlanBo.getPlanStatus().equalsIgnoreCase(APPROVED))
+                        || dateWisePlanBo.getVisitStatus().equalsIgnoreCase(COMPLETED) )
                     i.putExtra("HideStartVisit", false);
                 else
                     i.putExtra("HideStartVisit", true);
 
-                if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED))
+                if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED) && dateWisePlanBo.getPlanStatus().equalsIgnoreCase(APPROVED))
                     i.putExtra("HideCancelVisit", false);
                 else
                     i.putExtra("HideCancelVisit", true);
