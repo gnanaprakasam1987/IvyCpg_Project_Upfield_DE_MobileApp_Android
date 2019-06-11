@@ -243,7 +243,6 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
 
 
-
         if (isFromPlanning || !bmodel.configurationMasterHelper.IS_MAP)
             switchBtnLty.setVisibility(View.GONE);
         else
@@ -257,6 +256,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         });
 
         if (bmodel.configurationMasterHelper.SUBD_RETAILER_SELECTION)
+            fab.setVisibility(View.GONE);
+        else if (bmodel.configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
             fab.setVisibility(View.GONE);
         else if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES
                 || bmodel.configurationMasterHelper.IS_NEARBY
@@ -1806,16 +1807,13 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     holder.imgLine2.setVisibility(View.GONE);
                 }
 
-            }
-            else {
-                String address=(holder.retailerObjectHolder.getAddress1()!=null?(holder.retailerObjectHolder.getAddress1()):"")
-                        +(holder.retailerObjectHolder.getAddress2()!=null&&!holder.retailerObjectHolder.getAddress2().equals("")?(","+holder.retailerObjectHolder.getAddress2()):"")
-                        + (holder.retailerObjectHolder.getAddress3()!=null&&!holder.retailerObjectHolder.getAddress3().equals("")?(","+holder.retailerObjectHolder.getAddress3()):"");
+            } else {
+                String address = (holder.retailerObjectHolder.getAddress1() != null ? (holder.retailerObjectHolder.getAddress1()) : "")
+                        + (holder.retailerObjectHolder.getAddress2() != null && !holder.retailerObjectHolder.getAddress2().equals("") ? ("," + holder.retailerObjectHolder.getAddress2()) : "")
+                        + (holder.retailerObjectHolder.getAddress3() != null && !holder.retailerObjectHolder.getAddress3().equals("") ? ("," + holder.retailerObjectHolder.getAddress3()) : "");
 
                 holder.outletAddress.setText(address);
             }
-
-
 
 
             if (holder.retailerObjectHolder.getIsDeviated() != null
@@ -2191,8 +2189,7 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                     ll_iv_asset_mapped = itemView.findViewById(R.id.ll_iv_asset_mapped);
                     ll_iv_cooler = itemView.findViewById(R.id.ll_iv_cooler);
                     ll_iv_loyality = itemView.findViewById(R.id.ll_iv_loyality);
-                }
-                else {
+                } else {
 
                     outletAddress = itemView.findViewById(R.id.outletAddress);
 

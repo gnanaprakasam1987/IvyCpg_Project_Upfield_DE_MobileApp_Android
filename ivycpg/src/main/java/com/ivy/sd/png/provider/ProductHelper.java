@@ -83,12 +83,11 @@ public class ProductHelper {
     private ArrayList<LoyaltyBenifitsBO> ltyBenifitsList;
     private Vector<LoyaltyBO> loyaltyproductList = new Vector<LoyaltyBO>();
 
-    public ArrayList<NearExpiryDateBO> getNearExpiryDateList() {
+    ArrayList<NearExpiryDateBO> getNearExpiryDateList() {
         return nearExpiryDateList;
     }
 
     private ArrayList<NearExpiryDateBO> nearExpiryDateList = new ArrayList<NearExpiryDateBO>();
-
 
 
     private ArrayList<Integer> mIndicativeList;
@@ -508,7 +507,7 @@ public class ProductHelper {
      * @param list list
      * @return clone list
      */
-    public static ArrayList<NearExpiryDateBO> cloneDateList(
+    static ArrayList<NearExpiryDateBO> cloneDateList(
             ArrayList<NearExpiryDateBO> list) {
         ArrayList<NearExpiryDateBO> clone = new ArrayList<NearExpiryDateBO>(
                 list.size());
@@ -528,7 +527,7 @@ public class ProductHelper {
      * @param list list
      * @return clone list
      */
-    public static ArrayList<LocationBO> cloneInStoreLocationList(
+    static ArrayList<LocationBO> cloneInStoreLocationList(
             ArrayList<LocationBO> list) {
         ArrayList<LocationBO> clone = new ArrayList<LocationBO>(list.size());
         for (LocationBO item : list)
@@ -694,9 +693,7 @@ public class ProductHelper {
         Vector<CompetitorFilterLevelBO> mFilterLevel;
 
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-        );
-
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
 
         String query = "SELECT DISTINCT CPM1.CPID,CPM1.CPName FROM CompetitorProductMaster CPM1";
@@ -740,8 +737,7 @@ public class ProductHelper {
         query = query + " WHERE CPM1.PLid = " + mParentLevelId
                 + " Order By CPM" + filterGap + ".RowId,CPM1.RowId";
 
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-        );
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
 
         db.openDataBase();
 
@@ -772,8 +768,8 @@ public class ProductHelper {
     public Vector<LevelBO> downloadFilterLevel(String moduleName) {
         Vector<LevelBO> filterLevel = new Vector<>();
         try {
-            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
-            );
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+
             db.openDataBase();
 
             Cursor listCursor = db
@@ -788,7 +784,6 @@ public class ProductHelper {
 
             LevelBO mLevelBO;
             while (listCursor.moveToNext()) {
-
                 mLevelBO = new LevelBO();
                 mLevelBO.setProductID(listCursor.getInt(0));
                 mLevelBO.setLevelName(listCursor.getString(1));

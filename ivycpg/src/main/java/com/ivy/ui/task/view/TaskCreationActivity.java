@@ -1,5 +1,6 @@
 package com.ivy.ui.task.view;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -12,6 +13,7 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -329,6 +331,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     @OnClick(R.id.task_due_date_btn)
     public void onDueDateClick() {
+        hideKeyboard();
         DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
         newFragment.show(getSupportFragmentManager(), TAG_DATE_PICKER_TO);
     }
@@ -640,5 +643,4 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         }
         return -1;
     }
-
 }

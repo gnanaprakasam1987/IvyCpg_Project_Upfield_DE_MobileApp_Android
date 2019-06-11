@@ -175,13 +175,13 @@ public class RetailerPresenterImpl<V extends RetailerContract.RetailerView>
         for (RetailerMasterBO retailerMasterBO : this.visibleRetailerList) {
 
             if (planFilterBo != null && !filter.isEmpty() && planFilterBo.getRetailerIds().contains(retailerMasterBO.getRetailerID())
-                    && retailerMasterBO.getRetailerName().contains(filter)) {
+                    && retailerMasterBO.getRetailerName().toLowerCase().contains(filter)) {
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
                 filteredRetailerList.add(retailerMasterBO);
             } else if (planFilterBo != null && filter.isEmpty() && retailerIds.contains(retailerMasterBO.getRetailerID())) {
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
                 filteredRetailerList.add(retailerMasterBO);
-            } else if (planFilterBo == null && !filter.isEmpty() && retailerMasterBO.getRetailerName().contains(filter)) {
+            } else if (planFilterBo == null && !filter.isEmpty() && retailerMasterBO.getRetailerName().toLowerCase().contains(filter)) {
                 getIvyView().populateTodayPlannedRetailers(retailerMasterBO);
                 filteredRetailerList.add(retailerMasterBO);
             } else if (planFilterBo == null && filter.isEmpty()) {
