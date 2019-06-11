@@ -73,7 +73,7 @@
             android:layout_marginStart="@dimen/_8sdp"
             android:layout_marginLeft="@dimen/_8sdp"
             android:textColor="@color/white"
-            android:visibility="visible"
+            android:visibility="gone"
             android:textSize="@dimen/text_size_secondary"
             app:layout_constraintBottom_toBottomOf="@+id/tv_profile"
             app:layout_constraintTop_toTopOf="@+id/tv_profile"

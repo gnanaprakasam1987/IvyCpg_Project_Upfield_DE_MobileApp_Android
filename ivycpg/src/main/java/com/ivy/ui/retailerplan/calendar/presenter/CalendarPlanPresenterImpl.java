@@ -57,7 +57,7 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
     private HashMap<String, DateWisePlanBo> selectedDateRetailerPlanMap;
     private AddPlanDataManager addPlanDataManager;
     private com.ivy.core.data.retailer.RetailerDataManager coreRetailerDataManager;
-    private int startMonthDiff,endMonthDiff;
+    private int startMonthDiff, endMonthDiff;
     private List<PeriodBo> periodList = new ArrayList<>();
     private List<PeriodBo> weekList = new ArrayList<>();
     private List<String> dateList = new ArrayList<>();
@@ -129,11 +129,12 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
                         if (retailerMasterBO != null) {
                             WeekViewEvent event = new WeekViewEvent(dateWisePlanBo.getPlanId(), dateWisePlanBo.getName(), retailerMasterBO.getAddress1(), startTime, endTime);
 
-                            if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(COMPLETED) || "Y".equals(retailerMasterBO.getIsVisited()))
+                            if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(COMPLETED))
+                                event.setColor(getIvyView().getColorCode(1));
+                            else if ("Y".equals(retailerMasterBO.getIsVisited()) && retailerMasterBO.getIsToday() == 1)
                                 event.setColor(getIvyView().getColorCode(1));
                             else if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED))
                                 event.setColor(getIvyView().getColorCode(2));
-
                             if (dateWisePlanBo.getCancelReasonId() > 0)
                                 event.setColor(getIvyView().getColorCode(3));
                             else if ("P".equals(retailerMasterBO.getIsVisited()))
@@ -893,9 +894,14 @@ public class CalendarPlanPresenterImpl<V extends CalendarPlanContract.CalendarPl
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startdate);
 
-        while (calendar.getTime().before(enddate)) {
+        Calendar startDayOfWeek = Calendar.getInstance();
+        startDayOfWeek.setTime(startdate);
+
+        while (calendar.getTime().before(enddate) || startDayOfWeek.getTime().before(enddate)) {
             weekNoList.add(getWeekNo(DateTimeUtils.convertDateObjectToRequestedFormat(calendar.getTime(), generalPattern)));
             calendar.add(Calendar.DATE, 7);
+            startDayOfWeek = (Calendar) calendar.clone();
+            startDayOfWeek.set(Calendar.DAY_OF_WEEK, mStartDay.getFirstDayOfWeek());
 
         }
         return weekNoList;

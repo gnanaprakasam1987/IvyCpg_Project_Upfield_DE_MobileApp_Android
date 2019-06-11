@@ -1308,6 +1308,16 @@
         <item>KENDİME AİT</item>
         <item>Tamamlanan</item>
     </string-array>
+
+    <string-array name="task_sort_list">
+        <item>Görev(A—Z)</item>
+        <item>Görev(Z—A)</item>
+        <item>Kategori(A—Z)</item>
+        <item>Kategori(Z—A)</item>
+        <item>Bitiş Tarihi(old—new)</item>
+        <item>Bitiş Tarihi(new—old)</item>
+    </string-array>
+
     <string-array name="days_in_week">
         <item>Paz</item>
         <item>Pts</item>

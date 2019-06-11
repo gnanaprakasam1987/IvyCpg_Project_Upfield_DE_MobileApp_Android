@@ -2,9 +2,6 @@
 
 <servers>
     <server
-        name="rexqa-dev-ed"
-        url="https://rexqa-dev-ed.my.salesforce.com/" />
-    <server
         name="Default Login"
         url="https://login.salesforce.com/" />
     <server
@@ -13,4 +10,7 @@
     <server
         name="Dev"
         url="https://ivybasedev-dev-ed.my.salesforce.com/" />
+    <server
+        name="rexqa-dev-ed"
+        url="https://rexqa-dev-ed.my.salesforce.com" />
 </servers>
