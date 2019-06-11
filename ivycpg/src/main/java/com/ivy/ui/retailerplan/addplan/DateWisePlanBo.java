@@ -3,7 +3,7 @@ package com.ivy.ui.retailerplan.addplan;
 public class DateWisePlanBo {
 
     private int PlanId, DistributorId, UserId, EntityId, Sequence,cancelReasonId;
-    private String EntityType, Status, Date="",Name,startTime="",endTime="",visitStatus;
+    private String EntityType, Status, Date="",Name,startTime="",endTime="",visitStatus,planStatus ="";
     private boolean isServerData;
 
     private String operationType;
@@ -126,5 +126,13 @@ public class DateWisePlanBo {
 
     public void setVisitStatus(String visitStatus) {
         this.visitStatus = visitStatus;
+    }
+
+    public String getPlanStatus() {
+        return planStatus;
+    }
+
+    public void setPlanStatus(String planStatus) {
+        this.planStatus = planStatus;
     }
 }
