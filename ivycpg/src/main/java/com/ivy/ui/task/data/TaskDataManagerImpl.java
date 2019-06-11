@@ -547,7 +547,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
 
                         temp = new RetailerMasterBO();
                         temp.setRetailerID(retBo.getRetailerID());
-                        temp.setTretailerName(retBo.getRetailerName());
+                        temp.setRetailerName(retBo.getRetailerName());
                         retailerMaster.add(temp);
                     }
                     return retailerMaster;
