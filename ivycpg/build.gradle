@@ -350,5 +350,7 @@ dependencies {
     // Microsoft Azure Storage
     implementation 'com.microsoft.azure.android:azure-storage-android:0.8.0@aar'
 
+    implementation 'com.stepstone.stepper:material-stepper:4.3.1'
+
 }
 apply plugin: 'com.google.gms.google-services'
