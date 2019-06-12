@@ -41,6 +41,7 @@ import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.FilterFiveFragment;
@@ -207,8 +208,15 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         mBModel = (BusinessModel) getActivity().getApplicationContext();
         mBModel.setContext(getActivity());
 
-        for (StandardListBO temp : mBModel.productHelper.getInStoreLocation())
-            mLocationAdapter.add(temp);
+        ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(context);
+        for (StandardListBO temp : mBModel.productHelper.getInStoreLocation()) {
+            if(productTaggingHelper.getTaggedLocations().size()>0) {
+                if (productTaggingHelper.getTaggedLocations().contains(Integer.parseInt(temp.getListID())))
+                    mLocationAdapter.add(temp);
+            }else {
+                mLocationAdapter.add(temp);
+            }
+        }
         if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION) {
             mNearExpiryHelper.mSelectedLocationIndex = mBModel.productHelper.getmSelectedGLobalLocationIndex();
             mNearExpiryHelper.mSelectedLocationName = " -"
@@ -222,6 +230,10 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
 
         mDrawerLayout.closeDrawer(GravityCompat.END);
 
+    }
+
+    private String getCurrentLocationId(){
+        return mLocationAdapter.getItem(mNearExpiryHelper.mSelectedLocationIndex).getListID();
     }
 
     @Override
@@ -258,8 +270,9 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
             if (mBModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 menu.findItem(R.id.menu_location_filter).setVisible(false);
             else {
-                if (mBModel.productHelper.getInStoreLocation().size() > 1)
-                    menu.findItem(R.id.menu_location_filter).setVisible(false);
+                if (mLocationAdapter.getCount() > 1)
+                    menu.findItem(R.id.menu_location_filter).setVisible(true);
+                else menu.findItem(R.id.menu_location_filter).setVisible(false);
             }
             menu.findItem(R.id.menu_spl_filter).setVisible(false);
 
@@ -294,7 +307,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         if (i == android.R.id.home) {
             onBackButonClick();
             return true;
-        } else if (i == R.id.menu_location_filter && mBModel.productHelper.getInStoreLocation().size() > 1) {
+        } else if (i == R.id.menu_location_filter && mLocationAdapter.getCount() > 1) {
             showLocationFilterAlert();
             return true;
         } else if (i == R.id.menu_next) {
@@ -728,6 +741,7 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                         .setText(strFilterTxt);
             }
 
+            updateProductsForCurrentLocation();
             // set the new list to listview
             mSchedule = new MyAdapter(myList);
             lvwplist.setAdapter(mSchedule);
@@ -737,6 +751,20 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
         }
     }
 
+    private void updateProductsForCurrentLocation(){
+        ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(getActivity());
+        // Listing only products mapped to current location
+        if(productTaggingHelper.getTaggedLocations().size()>0) {
+            ArrayList<ProductMasterBO> temp = new ArrayList<>();
+            for (ProductMasterBO productMasterBO : myList) {
+                if (productMasterBO.getTaggedLocations().contains(getCurrentLocationId())) {
+                    temp.add(productMasterBO);
+                }
+            }
+            myList.clear();
+            myList.addAll(temp);
+        }
+    }
     private void updatebrandtext(int productId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts) {
         try {
             Vector<ProductMasterBO> items = mBModel.productHelper
@@ -801,6 +829,8 @@ public class NearExpiryTrackingFragment extends IvyBaseFragment implements
                 }
             }
             this.mSelectedIdByLevelId = mSelectedIdByLevelId;
+
+            updateProductsForCurrentLocation();
             // set the new list to listview
             mSchedule = new MyAdapter(myList);
             lvwplist.setAdapter(mSchedule);

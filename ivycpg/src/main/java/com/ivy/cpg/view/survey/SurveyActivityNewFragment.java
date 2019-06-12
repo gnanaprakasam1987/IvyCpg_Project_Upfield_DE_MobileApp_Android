@@ -2582,8 +2582,9 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
      * To capture signature for the survey.
      */
     private void captureSignature() {
-        if (hasSignature()) {
-            String imagename = "SUR_SGN_" + bmodel.getAppDataProvider().getRetailMaster().getRetailerID() + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS) + ".jpg";
+        SurveyBO surveyBO = hasSignature();
+        if (surveyBO != null) {
+            String imagename = "SUR_SGN_" + bmodel.getAppDataProvider().getUser().getUserid() + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS) + ".jpg";
             String serverPath = "Survey/"
                     + bmodel.getAppDataProvider().getUser().getDownloadDate()
                     .replace("/", "") + "/"
@@ -2616,12 +2617,12 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
      *
      * @return true or false
      */
-    private boolean hasSignature() {
+    private SurveyBO hasSignature() {
         for (SurveyBO sBO : surveyHelperNew.getSurvey()) {
             if (sBO.isSignatureRequired())
-                return true;
+                return sBO;
         }
-        return false;
+        return null;
     }
 
     /**
@@ -2674,15 +2675,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
 
                 int answerSize = question.getSelectedAnswerIDs().size();
                 for (int j = 0; j < answerSize; j++) {
-                    if ("TEXT".equals(question.getQuestionType())
-                            || "FREE_TEXT".equals(question.getQuestionType())
-                            || "NUM".equals(question.getQuestionType())
-                            || "PERC".equals(question.getQuestionType())
-                            || "EMAIL".equals(question.getQuestionType())
-                            || "DATE".equals(question.getQuestionType())
-                            || "PH_NO".equals(question.getQuestionType())
-                            || "DECIMAL".equals(question.getQuestionType())
-                            && !question.getSelectedAnswer().isEmpty()) {
                         String answerStr = PDFGenerator.addSpace(String.valueOf(qNo).length()) + question
                                 .getSelectedAnswer().get(j);
                         Phrase answerPhrase = pdfGenerator.addPhrase(answerStr, PDFGenerator.FONT_BOLD_SMALL);
@@ -2699,8 +2691,6 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
                             }
                             pdfGenerator.addImagesToPdf();
                         }
-                        break;
-                    }
                 }
                 qNo++;
             }

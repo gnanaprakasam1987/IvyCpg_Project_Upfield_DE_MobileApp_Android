@@ -569,7 +569,8 @@ public class NonVisitFragment extends IvyBaseFragment implements BrandDialogInte
         } else if (bmodel.configurationMasterHelper.SHOW_BEAT_ROUTE) {
             updateBeatFilter();
         }
-    }
+
+          }
 
     @Override
     public void onStart() {

@@ -98,7 +98,7 @@ public class GridImageViewAdapter extends RecyclerView.Adapter<GridImageViewAdap
         holder.deleteImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageAdapterListener.deletePhoto(imageList.get(holder.getAdapterPosition()));
+                imageAdapterListener.deletePhoto(imageList.get(holder.getAdapterPosition()-1),holder.getAdapterPosition()-1);
             }
         });
 
@@ -154,11 +154,13 @@ public class GridImageViewAdapter extends RecyclerView.Adapter<GridImageViewAdap
             ((AppCompatActivity) mContext).getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 
             if (imageAdapterListener != null) {
-                imageView.getLayoutParams().height = displaymetrics.heightPixels / 6;
-                imageView.getLayoutParams().width = displaymetrics.widthPixels / 3;
-                fileNameTv.getLayoutParams().width = displaymetrics.widthPixels / 3;
+                imageView.getLayoutParams().height = displaymetrics.heightPixels / 4;
+                imageView.getLayoutParams().width = displaymetrics.widthPixels / 4;
+                fileNameTv.getLayoutParams().width = displaymetrics.widthPixels / 4;
             } else {
-                imageView.getLayoutParams().height = displaymetrics.heightPixels / 6;
+                imageView.getLayoutParams().height = displaymetrics.heightPixels / 4;
+                imageView.getLayoutParams().width = displaymetrics.widthPixels / 4;
+                fileNameTv.getLayoutParams().width = displaymetrics.widthPixels / 4;
             }
         }
     }

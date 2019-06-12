@@ -119,11 +119,11 @@ public class NoCollectionReasonActivity extends IvyBaseActivityNoActionBar {
                     }
 
 
-                    columns = "InvoiceNo,ReasonId,uid";
+                    columns = "InvoiceNo,ReasonId,uid, RetailerID";
 
                     values = bmodel.QT(invoiceHeaderBO.getInvoiceNo()) + "," +
                             bmodel.QT(invoiceHeaderBO.getNoCollectionReasonId()) + "," +
-                            uid;
+                            uid + "," + bmodel.QT(invoiceHeaderBO.getRetailerId());
 
                     db.insertSQL("CollectionDueDetails", columns, values);
 

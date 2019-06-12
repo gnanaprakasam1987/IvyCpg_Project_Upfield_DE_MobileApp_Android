@@ -16,6 +16,7 @@ import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.StandardListMasterConstants;
@@ -2532,7 +2533,7 @@ public class DashBoardHelper {
         db.createDataBase();
         db.openDataBase();
         int mContentLevel = bmodel.productHelper.getContentLevel(db, "MENU_DASHBOARD");
-        String productIds = bmodel.productHelper.getTaggingDetails("MSL", mContentLevel);
+        String productIds = ProductTaggingHelper.getInstance(mContext).getTaggedProductIds(mContext,"MSL", mContentLevel);
         try {
             if(db.isDbNullOrClosed())
                 db.openDataBase();

@@ -839,7 +839,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
             initDb();
             List<String> retailerIds = new ArrayList<>();
             Cursor c = mDbUtil.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND VisitStatus = 'PLANNED' " +
-                    "and Date = " + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+                    "and Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+
             if (c != null
                     && c.getCount() > 0) {
                 while (c.moveToNext()) {

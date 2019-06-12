@@ -54,6 +54,7 @@ import butterknife.OnClick;
 
 import com.ivy.cpg.view.profile.CommonReasonDialog;
 
+import static com.ivy.ui.retailer.RetailerConstants.APPROVED;
 import static com.ivy.ui.retailer.RetailerConstants.COMPLETED;
 import static com.ivy.ui.retailer.RetailerConstants.PLANNED;
 import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
@@ -314,18 +315,19 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
             i.putExtra("HideCancelVisit", true);
         }else if (dateCount < 0){
             i.putExtra("HideStartVisit", true);
-            if (dateWisePlanBo != null && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED))
+            if (dateWisePlanBo != null && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED) && dateWisePlanBo.getPlanStatus().equalsIgnoreCase(APPROVED))
                 i.putExtra("HideCancelVisit", false);
             else
                 i.putExtra("HideCancelVisit", true);
         }else{
             if (dateWisePlanBo != null) {
-                if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED) || dateWisePlanBo.getVisitStatus().equalsIgnoreCase(COMPLETED) )
+                if ((dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED) && dateWisePlanBo.getPlanStatus().equalsIgnoreCase(APPROVED))
+                        || dateWisePlanBo.getVisitStatus().equalsIgnoreCase(COMPLETED) )
                     i.putExtra("HideStartVisit", false);
                 else
                     i.putExtra("HideStartVisit", true);
 
-                if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED))
+                if (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED) && dateWisePlanBo.getPlanStatus().equalsIgnoreCase(APPROVED))
                     i.putExtra("HideCancelVisit", false);
                 else
                     i.putExtra("HideCancelVisit", true);
@@ -398,7 +400,6 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
         Window window = comReasonDialog.getWindow();
         lp.copyFrom(window != null ? window.getAttributes() : null);
         lp.width = DeviceUtils.getDisplayMetrics(context).widthPixels - 100;
-        lp.height = (DeviceUtils.getDisplayMetrics(context).heightPixels / 2);//WindowManager.LayoutParams.WRAP_CONTENT;
         if (window != null) {
             window.setAttributes(lp);
         }
@@ -508,7 +509,9 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
         saveElementGroup.setVisibility(View.GONE);
 
-        if (dateWisePlanBo != null && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)) {
+        if (dateWisePlanBo != null
+                && dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)
+                && (retailerMasterBO != null && !"Y".equals(retailerMasterBO.getIsVisited()) )) {
 
             visitElementGroup.setVisibility(View.VISIBLE);
 
@@ -544,9 +547,20 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
         }else {
             visitElementGroup.setVisibility(View.GONE);
-            if (DateTimeUtils.getDateCount(selectedDate,DateTimeUtils.now(DATE_GLOBAL),"yyyy/MM/dd") <= 0)
-                addPlan.setVisibility(View.VISIBLE);
             editPlan.setVisibility(View.GONE);
+
+            if (DateTimeUtils.getDateCount(selectedDate,DateTimeUtils.now(DATE_GLOBAL),"yyyy/MM/dd") <= 0){
+                    if (
+                            (dateWisePlanBo != null && (dateWisePlanBo.getVisitStatus().equalsIgnoreCase(COMPLETED)
+                        || dateWisePlanBo.getVisitStatus().equalsIgnoreCase(PLANNED)
+                        || dateWisePlanBo.getVisitStatus().equalsIgnoreCase("CANCELLED"))
+                            )
+                        || (retailerMasterBO != null && "Y".equals(retailerMasterBO.getIsVisited()) )){
+
+                        addPlan.setVisibility(View.GONE);
+                    }else
+                        addPlan.setVisibility(View.VISIBLE);
+            }
         }
 
     }

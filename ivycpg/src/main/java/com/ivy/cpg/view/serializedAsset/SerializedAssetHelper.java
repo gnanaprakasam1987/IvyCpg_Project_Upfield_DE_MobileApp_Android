@@ -873,8 +873,8 @@ public class SerializedAssetHelper {
                     assetHeaderValues.toString());
 
 
-            String AssetDetailColumns = "uid,AssetID,isAvailable,ReasonID,SerialNumber,conditionId,NFCNumber,installdate,lastServicedate";
-            String AssetImageInfoColumns = "uid,AssetID,ImageName,serialNumber,imgName";
+            String AssetDetailColumns = "uid,AssetID,isAvailable,ReasonID,SerialNumber,conditionId,NFCNumber,installdate,lastServicedate,RetailerID";
+            String AssetImageInfoColumns = "uid,AssetID,ImageName,serialNumber,imgName,RetailerID";
 
 
             for (SerializedAssetBO assetBo : mAssetTrackingList) {
@@ -924,6 +924,8 @@ public class SerializedAssetHelper {
                                             assetBo.getServiceDate(),
                                             ConfigurationMasterHelper.outDateFormat)))
                                     : ""));
+                    assetDetailValues.append(",");
+                    assetDetailValues.append(StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
 
 
                     db.insertSQL(DataMembers.tbl_SerializedAssetDetail,
@@ -942,6 +944,8 @@ public class SerializedAssetHelper {
                             assetImgInofValues.append(StringUtils.QT(assetBo.getNFCTagId()));
                             assetImgInofValues.append(",");
                             assetImgInofValues.append(StringUtils.QT(assetBo.getImgName()));
+                            assetDetailValues.append(",");
+                            assetDetailValues.append(StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
 
                             db.insertSQL(DataMembers.tbl_SerializedAssetImageDetail,
                                     AssetImageInfoColumns,
@@ -1000,7 +1004,7 @@ public class SerializedAssetHelper {
                     + "'I'" + ","
                     + StringUtils.QT(assets.getReasonId()) + ","
                     + StringUtils.QT(assets.getRemarks()) + ","
-                    + mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID() + ","
+                    + StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()) + ","
                     + "0" + ","
                     + "'WH_RTR'" + ","
                     + 0 + ","
@@ -1015,11 +1019,12 @@ public class SerializedAssetHelper {
             mUniqueSerialNo.put(assets.getSNO(), assets.getSNO());
 
             if (assets.getImageName() != null && assets.getImageName().length() > 0) {
-                String assetImageColumns = "Uid,ImageName,ImgName";
+                String assetImageColumns = "Uid,ImageName,ImgName,RetailerID";
 
                 String values = id + ","
                         + StringUtils.QT(assets.getImageName()) + ","
-                        + StringUtils.QT(assets.getImgName());
+                        + StringUtils.QT(assets.getImgName()) + ","
+                        + StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID());
 
                 db.insertSQL(DataMembers.tbl_SerializedAssetTransferImages, assetImageColumns,
                         values);

@@ -207,7 +207,6 @@ public class OutletPagerDialogFragment extends DialogFragment {
             private RecyclerView retailerVisitedRVP;
             private View visitedStatusView;
             private ImageView retailImage, noImage;
-            private LinearLayout orderValueContainer;
 
             public MyViewHolder(View view) {
                 super(view);
@@ -221,7 +220,6 @@ public class OutletPagerDialogFragment extends DialogFragment {
                 retailerVisitedRVP = view.findViewById(R.id.visited_retailer_items);
                 retailImage = view.findViewById(R.id.outlet_image);
                 noImage = view.findViewById(R.id.outlet_no_image);
-                orderValueContainer = view.findViewById(R.id.container_orderValue);
 
 
                 ((TextView)view.findViewById(R.id.tv_intime_txt)).setTypeface(FontUtils.getFontRoboto(context,FontUtils.FontType.REGULAR));
@@ -252,7 +250,6 @@ public class OutletPagerDialogFragment extends DialogFragment {
         @SuppressLint("SetTextI18n")
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
-            holder.orderValueContainer.setVisibility(View.GONE);
             holder.tvStoreName.setText(visitedRetailers.get(position).getRetailerName());
             holder.tvOrderValue.setText(String.valueOf(visitedRetailers.get(position).getTotalOrderValue()));
             holder.tvStoreAddress.setText(visitedRetailers.get(position).getAddress());

@@ -496,6 +496,33 @@ public class LoadManagementHelper {
         return false;
     }
 
+    public String getTripStartedDate(Context context){
+
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        try {
+            db.openDataBase();
+            db.createDataBase();
+            Cursor c = db.selectSQL("select startDate from TripMaster where userId="+bmodel.userMasterHelper.getUserMasterBO().getUserid());
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    if (c.moveToNext()) {
+
+                        String startDate=c.getString(0);
+                            return startDate;
+                    }
+                }
+            }
+            c.close();
+        } catch (Exception e) {
+            Commons.printException(e);
+        } finally {
+            db.closeDB();
+        }
+
+        return "";
+    }
+
+
     public String getTripId(){
 
         String tripId="";
@@ -695,7 +722,7 @@ public class LoadManagementHelper {
             c.close();
 
 
-        int difference=DateTimeUtils.getDateCount(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),tripStartDate,"yyyy/MM/dd");
+        int difference=DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),tripStartDate,"yyyy/MM/dd");
 
         if(difference>0)
             return false;
@@ -785,6 +812,21 @@ public class LoadManagementHelper {
         }
 
 
+
+        return true;
+    }
+
+    public boolean isDownloadedDateValid(){
+
+        try {
+            int difference = DateTimeUtils.getDateCount(bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd");
+            if (difference > 0) {
+                return false;
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
 
         return true;
     }

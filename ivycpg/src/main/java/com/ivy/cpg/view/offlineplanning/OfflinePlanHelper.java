@@ -128,9 +128,12 @@ public class OfflinePlanHelper {
                     + StringUtils.QT("") + ","
                     + StringUtils.QT("")
                     + StringUtils.QT("") + ","
-                    + StringUtils.QT("");
+                    + StringUtils.QT("") + ","
+                    + StringUtils.QT("") + ","
+                    + offlineDateWisePlanBO.getEntityId(); //Added for RetailerID COlumn for RetailerWise Upload.
 
-            db.insertSQL(DataMembers.tbl_date_wise_plan, DataMembers.tbl_date_wise_plan_cols, values);
+            String columns = "PlanId,DistributorId,UserId,Date,EntityId,EntityType,Status,Sequence,StartTime,EndTime,VisitStatus,PlanSource,planStatus,RetailerID";
+            db.insertSQL(DataMembers.tbl_date_wise_plan, columns, values);
 
             db.closeDB();
         } catch (Exception e) {

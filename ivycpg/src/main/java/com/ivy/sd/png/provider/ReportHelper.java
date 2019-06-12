@@ -2047,4 +2047,26 @@ public class ReportHelper {
         return false;
     }
 
+    public boolean hasAssetServiceRequest() {
+        try {
+
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+            Cursor c = db
+                    .selectSQL("SELECT count(assetId) from SerializedAssetServiceRequest");
+            if (c != null) {
+                if (c.moveToNext()) {
+                    if (c.getInt(0) > 0)
+                        return true;
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return false;
+    }
+
 }

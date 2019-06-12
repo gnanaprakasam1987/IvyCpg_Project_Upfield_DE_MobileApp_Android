@@ -125,6 +125,7 @@ import com.ivy.sd.png.provider.OrderAndInvoiceHelper;
 import com.ivy.sd.png.provider.OutletTimeStampHelper;
 import com.ivy.sd.png.provider.PrintHelper;
 import com.ivy.sd.png.provider.ProductHelper;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.provider.ProfileHelper;
 import com.ivy.sd.png.provider.ReasonHelper;
 import com.ivy.sd.png.provider.RemarksHelper;
@@ -150,6 +151,7 @@ import com.ivy.ui.activation.view.ActivationActivity;
 import com.ivy.ui.dashboard.data.SellerDashboardDataManagerImpl;
 import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
+import com.ivy.ui.retailer.RetailerConstants;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
@@ -300,7 +302,7 @@ public class BusinessModel extends Application {
 
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID = new HashMap<String, ArrayList<UserMasterBO>>();
     private boolean isDoubleEdit_temp;
-    private HashMap<String, String> digitalContentURLS,digitalContentSFDCURLS;
+    private HashMap<String, String> digitalContentURLS, digitalContentSFDCURLS;
     private Handler handler;
     private Message mMessage;
     private File folder;
@@ -1600,7 +1602,7 @@ public class BusinessModel extends Application {
                     retailer.setIsCollectionView("N");
 
                     //set global gps distance for retailer from the config:GPSDISTANCE
-                    if (retailer.getGpsDistance() <=0 && configurationMasterHelper.GLOBAL_GPS_DISTANCE > 0)
+                    if (retailer.getGpsDistance() <= 0 && configurationMasterHelper.GLOBAL_GPS_DISTANCE > 0)
                         retailer.setGpsDistance(configurationMasterHelper.GLOBAL_GPS_DISTANCE);
 
                     updateRetailerPriceGRP(retailer, db);
@@ -1620,7 +1622,7 @@ public class BusinessModel extends Application {
 
                     mRetailerBOByRetailerid.put(retailer.getRetailerID(), retailer);
 
-                    if(configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
+                    if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
                         updateIsToday(db);
 
 
@@ -1755,8 +1757,8 @@ public class BusinessModel extends Application {
 
     private void updateIsToday(DBUtil db) {
         List<String> retailerIds = new ArrayList<>();
-        Cursor c = db.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND VisitStatus = 'PLANNED' " +
-                "and Date = " + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+        Cursor c = db.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND VisitStatus = 'PLANNED' or 'COMPLETED' " +
+                "and Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         if (c != null
                 && c.getCount() > 0) {
             while (c.moveToNext()) {
@@ -1766,7 +1768,7 @@ public class BusinessModel extends Application {
             c.close();
         }
         if (retailerIds.size() > 0)
-            for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
+            for (RetailerMasterBO retailerMasterBO : getRetailerMaster()) {
                 retailerMasterBO.setIsToday(0);
                 if (retailerIds.contains(retailerMasterBO.getRetailerID())) {
                     retailerMasterBO.setIsToday(1);
@@ -2042,7 +2044,7 @@ public class BusinessModel extends Application {
     }
 
     public void updateSurveyScoreHistoryRetailerWise() {
-        DBUtil db = null;
+        DBUtil db;
         try {
 
             db = new DBUtil(ctx, DataMembers.DB_NAME);
@@ -2470,11 +2472,12 @@ public class BusinessModel extends Application {
     }
 
     public boolean hasCombinedStkChecked() {
-        int cSize = productHelper.getTaggedProducts().size();
+        ProductTaggingHelper productTaggingHelper = ProductTaggingHelper.getInstance(getContext());
+        int cSize = productTaggingHelper.getTaggedProducts().size();
         if (cSize == 0)
             return false;
         for (int j = 0; j < cSize; j++) {
-            ProductMasterBO product = productHelper
+            ProductMasterBO product = productTaggingHelper
                     .getTaggedProducts().get(j);
 
             if (product.getIsDistributed() == 1 || product.getIsListed() == 1
@@ -2707,15 +2710,15 @@ public class BusinessModel extends Application {
     }
 
 
-    public void saveCancelVistreason(String reasonId,String date) {
+    public void saveCancelVistreason(String reasonId, String date) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
             );
             db.createDataBase();
             db.openDataBase();
 
-            String query = "Update DatewisePlan set cancelReasonId="+StringUtils.QT(reasonId)+",VisitStatus = 'CANCELLED' , Status = 'D' "
-                    +" where EntityId="+StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())+" and Date="+StringUtils.QT(date);
+            String query = "Update DatewisePlan set cancelReasonId=" + StringUtils.QT(reasonId) + ",VisitStatus = 'CANCELLED' , Status = 'D' "
+                    + " where EntityId=" + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID()) + " and Date=" + StringUtils.QT(date);
 
             db.updateSQL(query);
 
@@ -3091,7 +3094,7 @@ public class BusinessModel extends Application {
         //mTaggedProducts list only used in StockCheck screen. So updating only in mTaggedProducts
         ProductMasterBO product = null;
         if (menuCode.equals("MENU_STOCK") || menuCode.equals("MENU_COMBINE_STKCHK")) {
-            product = productHelper.getTaggedProductBOById(productid);
+            product = ProductTaggingHelper.getInstance(getContext()).getTaggedProductBOById(productid);
         } else if (menuCode.equals("MENU_STK_ORD") || menuCode.equals("MENU_ORDER") || menuCode.equals("MENU_CATALOG_ORDER")) {
             product = productHelper.getProductMasterBOById(productid);
         }
@@ -3137,7 +3140,7 @@ public class BusinessModel extends Application {
         ProductMasterBO product = null;
         StockCheckHelper stockCheckHelper = StockCheckHelper.getInstance(ctx);
         if (menuCode.equals("MENU_STOCK") || menuCode.equals("MENU_COMBINE_STKCHK")) {
-            product = productHelper.getTaggedProductBOById(productid);
+            product = ProductTaggingHelper.getInstance(getContext()).getTaggedProductBOById(productid);
         } else if (menuCode.equals("MENU_STK_ORD") || menuCode.equals("MENU_ORDER") || menuCode.equals("MENU_CATALOG_ORDER")) {
             product = productHelper.getProductMasterBOById(productid);
         }
@@ -3533,17 +3536,14 @@ public class BusinessModel extends Application {
                     .selectSQL("SELECT Rfield FROM HHTModuleMaster where hhtCode = 'CLOUD_STORAGE' and flag = 1 and ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
-                    if(c.getInt(0)==0){
-                        isAmazonCloud=true;
-                    }
-                    else if(c.getInt(0)==1){
-                        isSFDCCloud=true;
-                    }
-                    else if(c.getInt(0)==2){
-                        isAzureCloud=true;
-                    }
-                    else {
-                        isAmazonCloud=true;
+                    if (c.getInt(0) == 0) {
+                        isAmazonCloud = true;
+                    } else if (c.getInt(0) == 1) {
+                        isSFDCCloud = true;
+                    } else if (c.getInt(0) == 2) {
+                        isAzureCloud = true;
+                    } else {
+                        isAmazonCloud = true;
                     }
                 }
                 c.close();
@@ -3626,21 +3626,21 @@ public class BusinessModel extends Application {
             if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
                 c = db
                         .selectSQL("SELECT DISTINCT ImagePath,imageId FROM LastVisitPlanogramImages");
-                int count=0;
+                int count = 0;
                 if (c != null) {
                     while (c.moveToNext()) {
 
-                        count+=100;
-                            DigitalContentModel digitalContentBO = new DigitalContentModel();
+                        count += 100;
+                        DigitalContentModel digitalContentBO = new DigitalContentModel();
 
-                            String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
-                            digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES * 2));// approx  2 mb
-                            digitalContentBO.setImageID(c.getInt(1));
-                            digitalContentBO.setImgUrl(downloadUrl);
-                            digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);
-                            digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+                        String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                        digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES * 2));// approx  2 mb
+                        digitalContentBO.setImageID(c.getInt(1));
+                        digitalContentBO.setImgUrl(downloadUrl);
+                        digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);
+                        digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
 
-                            digitalContentLargeFileURLS.put(digitalContentBO.getImageID()+count, digitalContentBO);
+                        digitalContentLargeFileURLS.put(digitalContentBO.getImageID() + count, digitalContentBO);
 
 
                     }
@@ -3652,10 +3652,9 @@ public class BusinessModel extends Application {
             if (c != null) {
                 while (c.moveToNext()) {
 
-                    if(c.getString(4).equalsIgnoreCase("SFDC")){// SFDC type
-                        getDigitalContentSFDCURLS().put(c.getString(0) + "%" + c.getString(3) ,DataMembers.DIGITALCONTENT);
-                    }
-                    else {
+                    if (c.getString(4).equalsIgnoreCase("SFDC")) {// SFDC type
+                        getDigitalContentSFDCURLS().put(c.getString(0) + "%" + c.getString(3), DataMembers.DIGITALCONTENT);
+                    } else {
                         if (configurationMasterHelper.DIGITAL_CONTENT_SIZE != -1 &&
                                 configurationMasterHelper.DIGITAL_CONTENT_SIZE < c.getLong(1)) {
                             DigitalContentModel digitalContentBO = new DigitalContentModel();
@@ -4065,12 +4064,15 @@ public class BusinessModel extends Application {
      */
     public void updateIsVisitedFlag(String flag) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
-            );
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.openDataBase();
             db.updateSQL("Update RetailerBeatMapping set isVisited=" + QT(flag) + " where RetailerID ="
                     + getRetailerMasterBO().getRetailerID()
                     + " AND BeatID=" + getRetailerMasterBO().getBeatID());
+
+            if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
+                db.updateSQL("Update DatewisePlan set VisitStatus=" + StringUtils.QT(RetailerConstants.COMPLETED) +
+                        " where EntityId=" + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID()) + " and Date=" + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
             db.closeDB();
 
@@ -4431,6 +4433,8 @@ public class BusinessModel extends Application {
                 mBucketName = mBucketDetails + "/" + "Task" + path;
             } else if (imageName.startsWith("SUR_SGN_")) {
                 mBucketName = mBucketDetails + "/" + "Survey" + path;
+            } else if (imageName.startsWith("ASR_")) {
+                mBucketName = mBucketDetails + "/" + "AssetServiceRequest" + path;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = mBucketDetails + "/" + "PhotoCapture" + path;
@@ -4915,7 +4919,7 @@ public class BusinessModel extends Application {
     /**
      * @param folderPath
      * @param fnamesStarts
-     * @See {@link FileUtils#deleteFiles(String,String)}
+     * @See {@link FileUtils#deleteFiles(String, String)}
      * @deprecated
      */
     public void deleteFiles(String folderPath, String fnamesStarts) {
@@ -5676,7 +5680,7 @@ public class BusinessModel extends Application {
 
     /**
      * @See {@link RetailerDataManagerImpl#fetchRetailers()}
-     * @deprecated Handled inside the fetchRetailers() method itself
+     * @deprecated Handled inside the fetchAllRetailers() method itself
      */
     public void setWeeknoFoNewRetailer() {
         for (RetailerMasterBO retailer : getRetailerMaster()) {
@@ -6422,7 +6426,8 @@ public class BusinessModel extends Application {
 
     private void initializeUOMmapping(int type) {
         if (type == 0) {
-            for (ProductMasterBO bo : productHelper.getTaggedProducts()) {
+            ProductTaggingHelper productTaggingHelper = ProductTaggingHelper.getInstance(getContext());
+            for (ProductMasterBO bo : productTaggingHelper.getTaggedProducts()) {
                 bo.setOuterMapped(false);
                 bo.setCaseMapped(false);
                 bo.setPieceMapped(false);
@@ -6444,7 +6449,8 @@ public class BusinessModel extends Application {
 
     private void enableUOMForAllProducts(int type) {
         if (type == 0) {
-            for (ProductMasterBO bo : productHelper.getTaggedProducts()) {
+            ProductTaggingHelper productTaggingHelper = ProductTaggingHelper.getInstance(getContext());
+            for (ProductMasterBO bo : productTaggingHelper.getTaggedProducts()) {
                 bo.setOuterMapped(true);
                 bo.setCaseMapped(true);
                 bo.setPieceMapped(true);
@@ -6471,16 +6477,17 @@ public class BusinessModel extends Application {
         db.openDataBase();
 
         try {
+            ProductTaggingHelper productTaggingHelper = ProductTaggingHelper.getInstance(getContext());
 
             if (contentLevelId == pLevelId) {
                 if (type == 0) {
-                    if (productHelper.getTaggedProductBOById(productId) != null) {
-                        if (productHelper.getTaggedProductBOById(productId).getPcUomid() == uomId)
-                            productHelper.getTaggedProductBOById(productId).setPieceMapped(true);
-                        else if (productHelper.getTaggedProductBOById(productId).getCaseUomId() == uomId)
-                            productHelper.getTaggedProductBOById(productId).setCaseMapped(true);
-                        else if (productHelper.getTaggedProductBOById(productId).getOuUomid() == uomId)
-                            productHelper.getTaggedProductBOById(productId).setOuterMapped(true);
+                    if (productTaggingHelper.getTaggedProductBOById(productId) != null) {
+                        if (productTaggingHelper.getTaggedProductBOById(productId).getPcUomid() == uomId)
+                            productTaggingHelper.getTaggedProductBOById(productId).setPieceMapped(true);
+                        else if (productTaggingHelper.getTaggedProductBOById(productId).getCaseUomId() == uomId)
+                            productTaggingHelper.getTaggedProductBOById(productId).setCaseMapped(true);
+                        else if (productTaggingHelper.getTaggedProductBOById(productId).getOuUomid() == uomId)
+                            productTaggingHelper.getTaggedProductBOById(productId).setOuterMapped(true);
                     }
                 } else if (type == 1) {
                     if (productHelper.getProductMasterBOById(productId) != null) {
@@ -6525,13 +6532,13 @@ public class BusinessModel extends Application {
                 if (c.getCount() > 0) {
                     while (c.moveToNext()) {
                         if (type == 0) {
-                            if (productHelper.getTaggedProductBOById(c.getString(0)) != null) {
-                                if (productHelper.getTaggedProductBOById(c.getString(0)).getPcUomid() == uomId)
-                                    productHelper.getTaggedProductBOById(c.getString(0)).setPieceMapped(true);
-                                else if (productHelper.getTaggedProductBOById(c.getString(0)).getCaseUomId() == uomId)
-                                    productHelper.getTaggedProductBOById(c.getString(0)).setCaseMapped(true);
-                                else if (productHelper.getTaggedProductBOById(c.getString(0)).getOuUomid() == uomId)
-                                    productHelper.getTaggedProductBOById(c.getString(0)).setOuterMapped(true);
+                            if (productTaggingHelper.getTaggedProductBOById(c.getString(0)) != null) {
+                                if (productTaggingHelper.getTaggedProductBOById(c.getString(0)).getPcUomid() == uomId)
+                                    productTaggingHelper.getTaggedProductBOById(c.getString(0)).setPieceMapped(true);
+                                else if (productTaggingHelper.getTaggedProductBOById(c.getString(0)).getCaseUomId() == uomId)
+                                    productTaggingHelper.getTaggedProductBOById(c.getString(0)).setCaseMapped(true);
+                                else if (productTaggingHelper.getTaggedProductBOById(c.getString(0)).getOuUomid() == uomId)
+                                    productTaggingHelper.getTaggedProductBOById(c.getString(0)).setOuterMapped(true);
                             }
                         } else if (type == 1) {
                             if (productHelper.getProductMasterBOById(c.getString(0)) != null) {
@@ -6563,14 +6570,14 @@ public class BusinessModel extends Application {
 
             // updating competitor products UOM based on mapping with own products.
             if (type == 0) {
-                for (ProductMasterBO bo : productHelper.getTaggedProducts()) {
+                for (ProductMasterBO bo : productTaggingHelper.getTaggedProducts()) {
                     if (bo.getOwn() == 0) {
-                        if (productHelper.getTaggedProductBOById(bo.getOwnPID()) != null) {
-                            if (productHelper.getTaggedProductBOById(bo.getOwnPID()).isPieceMapped())
+                        if (productTaggingHelper.getTaggedProductBOById(bo.getOwnPID()) != null) {
+                            if (productTaggingHelper.getTaggedProductBOById(bo.getOwnPID()).isPieceMapped())
                                 bo.setPieceMapped(true);
-                            if (productHelper.getTaggedProductBOById(bo.getOwnPID()).isCaseMapped())
+                            if (productTaggingHelper.getTaggedProductBOById(bo.getOwnPID()).isCaseMapped())
                                 bo.setCaseMapped(true);
-                            if (productHelper.getTaggedProductBOById(bo.getOwnPID()).isOuterMapped())
+                            if (productTaggingHelper.getTaggedProductBOById(bo.getOwnPID()).isOuterMapped())
                                 bo.setOuterMapped(true);
                         }
                     }
@@ -7706,6 +7713,8 @@ public class BusinessModel extends Application {
                 mBucketName = "Order" + path + imageName;
             } else if (imageName.startsWith("SUR_SGN_")) {
                 mBucketName = "Survey" + path + imageName;
+            } else if (imageName.startsWith("ASR_")) {
+                mBucketName = "AssetServiceRequest" + path + imageName;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = "PhotoCapture" + path + imageName;

@@ -17,6 +17,7 @@ import com.ivy.sd.png.bo.OrderDetail;
 import com.ivy.sd.png.bo.SubDepotBo;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
@@ -231,8 +232,7 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
                 db.openDataBase();
                 int mContentLevelId = mBusinessModel.productHelper.getContentLevel(db, "MENU_STK_ORD");
-                String productIds = mBusinessModel.productHelper
-                        .getTaggingDetails("FCBND", mContentLevelId);
+                String productIds = ProductTaggingHelper.getInstance(mContext).getTaggedProductIds(mContext,"FCBND", mContentLevelId);
 
                 ArrayList<OrderDetail> mylist = dayReportHelper
                         .downloadFBOrderDetailForDayReport(productIds);
@@ -250,8 +250,7 @@ public class DayReportPresenterImpl implements DayReportPresenter {
                 DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
                 db.openDataBase();
                 int mContentLevelId = mBusinessModel.productHelper.getContentLevel(db, "MENU_STK_ORD");
-                String productIds = mBusinessModel.productHelper
-                        .getTaggingDetails("FCBND2", mContentLevelId);
+                String productIds =ProductTaggingHelper.getInstance(mContext).getTaggedProductIds(mContext,"FCBND2", mContentLevelId);
 
                 ArrayList<OrderDetail> mylist = dayReportHelper
                         .downloadFBOrderDetailForDayReport(productIds);

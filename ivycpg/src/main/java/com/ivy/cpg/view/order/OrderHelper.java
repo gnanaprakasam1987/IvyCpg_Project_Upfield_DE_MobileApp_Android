@@ -410,7 +410,8 @@ public class OrderHelper {
                 }
 
                 if(businessModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT&&product.getFoc()>0){
-                    db.insertSQL(DataMembers.tbl_OrderFreeIssues, DataMembers.tbl_OrderFreeIssues_cols,
+                    String Columns = "Uid,productId,uomId,qty,conversionQty,reasonId,price,taxPrice,totalValue,batchId,RetailerID";
+                    db.insertSQL(DataMembers.tbl_OrderFreeIssues, Columns,
                             getOrderFreeIssues(product,uid,false).toString());
                 }
 
@@ -1247,7 +1248,8 @@ public class OrderHelper {
         double totalValue= productBo.getFoc()*productBo.getSrp();
         sb.append(totalValue);
 
-        sb.append(",0");
+        sb.append(",0,");
+        sb.append(StringUtils.QT(businessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
 
         return sb;
     }
@@ -2156,7 +2158,8 @@ public class OrderHelper {
                 }
 
                 if(businessModel.configurationMasterHelper.SHOW_NON_SALABLE_PRODUCT&&product.getFoc()>0){
-                    db.insertSQL(DataMembers.tbl_InvoiceFreeIssues, DataMembers.tbl_InvoiceFreeIssues_cols,
+                    String Columns = "Uid,productId,uomId,qty,conversionQty,reasonId,price,taxPrice,totalValue,batchId, RetailerID";
+                    db.insertSQL(DataMembers.tbl_InvoiceFreeIssues, Columns,
                             getOrderFreeIssues(product,invoiceId,true).toString());
                 }
             }

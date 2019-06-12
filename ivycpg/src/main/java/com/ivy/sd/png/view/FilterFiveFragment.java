@@ -29,6 +29,7 @@ import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.Commons;
 
 import java.util.ArrayList;
@@ -733,7 +734,7 @@ public class FilterFiveFragment<E> extends Fragment {
     private void loadTagProductFilters(int levelId) {
         Vector<LevelBO> taggedProductFilter = new Vector<>();
         for (LevelBO levelBO : filterProductsByLevelId.get(levelId)) {
-            for (ProductMasterBO productMasterBO : bmodel.productHelper.getTaggedProducts()) {
+            for (ProductMasterBO productMasterBO : ProductTaggingHelper.getInstance(getActivity()).getTaggedProducts()) {
                 List<String> hierarchy = Arrays.asList(productMasterBO.getParentHierarchy().split("/"));
                 if (hierarchy.contains(String.valueOf(levelBO.getProductID()))) {
                     taggedProductFilter.add(levelBO);

@@ -73,6 +73,7 @@ import com.ivy.sd.png.model.BrandDialogInterface;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.DateTimeUtils;
@@ -2577,7 +2578,7 @@ public class OpportunityNewOutlet extends IvyBaseActivityNoActionBar implements 
     }
 
     private Vector<ProductMasterBO> getTaggedProducts() {
-        return bmodel.productHelper.getTaggedProducts();
+        return ProductTaggingHelper.getInstance(this).getTaggedProducts();
     }
 
     private boolean hasData() {

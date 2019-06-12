@@ -88,6 +88,7 @@ import com.ivy.cpg.view.van.stockproposal.StockProposalFragment;
 import com.ivy.cpg.view.webview.WebViewActivity;
 import com.ivy.maplib.PlanningMapFragment;
 import com.ivy.sd.camera.CameraActivity;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -307,6 +308,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
             }
         });
+
+        TextView txtLogOut = (TextView)view.findViewById(R.id.txtLogOut);
+        if (!BuildConfig.FLAVOR.equalsIgnoreCase("aws"))
+            txtLogOut.setText(getResources().getString(R.string.close));
 
         LinearLayout ll_logout = view.findViewById(R.id.ll_logout);
         ll_logout.setOnClickListener(new OnClickListener() {
@@ -594,7 +599,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case 0:
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                         .setTitle(
-                                getResources().getString(R.string.do_u_want_logout))
+                                BuildConfig.FLAVOR.equalsIgnoreCase("aws") ? getResources().getString(R.string.do_u_want_logout) :
+                        getResources().getString(R.string.do_u_want_close))
                         .setCancelable(false)
                         .setPositiveButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {
@@ -752,7 +758,13 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             Toast.LENGTH_SHORT).show();
             } else if (bmodel.configurationMasterHelper.IS_ENABLE_TRIP && !LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isValidTrip()) {
                 showDialog(2);
-            } else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
+            }
+            else if(!LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isDownloadedDateValid()){
+                Toast.makeText(getActivity(),
+                        getResources().getString(R.string.next_day_coverage),
+                        Toast.LENGTH_SHORT).show();
+            }
+            else if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE
                     && isInandOutModuleEnabled
                     && AttendanceHelper.getInstance(getContext()).isSellerWorking(getContext())) {
                 Toast.makeText(getActivity(),
@@ -1125,6 +1137,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();
 
+            } else if (bmodel.configurationMasterHelper.IS_ENABLE_TRIP && !LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isValidTrip()) {
+                showDialog(2);
             } else if (isLeave_today) {
                 if (bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled)
                     Toast.makeText(getActivity(),

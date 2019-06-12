@@ -39,6 +39,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.cpg.view.supervisor.chat.StartChatActivity;
 import com.ivy.cpg.view.supervisor.mvp.FilterScreenFragment;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
@@ -50,6 +51,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -629,18 +631,33 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
                 @Override
                 public void onClick(View view) {
 
-                    double angle = 130.0;
-                    double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.outlet_map_info_x);
-                    double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.outlet_map_info_y));
-                    outletListBos.get(holder.getAdapterPosition()).getMarker().setInfoWindowAnchor((float) x, (float) y);
+                    if (outletListBos.get(holder.getAdapterPosition()).getMarker() != null) {
 
-                    mMap.animateCamera(CameraUpdateFactory.newLatLng(outletListBos.get(holder.getAdapterPosition()).getMarker().getPosition()));
-                    outletListBos.get(holder.getAdapterPosition()).getMarker().showInfoWindow();
+                        double angle = 130.0;
+                        double x = Math.sin(-angle * Math.PI / 180) * 0.5 + getResources().getDimension(R.dimen.outlet_map_info_x);
+                        double y = -(Math.cos(-angle * Math.PI / 180) * 0.5 - getResources().getDimension(R.dimen.outlet_map_info_y));
+                        outletListBos.get(holder.getAdapterPosition()).getMarker().setInfoWindowAnchor((float) x, (float) y);
+
+                        mMap.animateCamera(CameraUpdateFactory.newLatLng(outletListBos.get(holder.getAdapterPosition()).getMarker().getPosition()));
+                        outletListBos.get(holder.getAdapterPosition()).getMarker().showInfoWindow();
+                    }
 
 
                     if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
                         bottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
 
+                }
+            });
+
+            holder.tvStoreName.setOnClickListener(new OnSingleClickListener() {
+                @Override
+                public void onSingleClick(View v) {
+
+                    sellerMapViewPresenter.setRetailerMaster(outletListBos.get(holder.getAdapterPosition()));
+
+                    Intent i = new Intent(SellerDetailMapActivity.this, ProfileActivity.class);
+                    i.putExtra("ViewOnly",true);
+                    startActivity(i);
                 }
             });
 
