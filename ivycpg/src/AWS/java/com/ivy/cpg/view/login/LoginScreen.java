@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ivy.apptutoriallibrary.AppTutorialPlugin;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.ApkDownloaderThread;
@@ -81,6 +82,12 @@ public class LoginScreen extends LoginBaseActivity
                 finish();
         }
 
+        AppTutorialPlugin.getInstance().setContext(this);
+        AppTutorialPlugin.getInstance().setRawRes(R.raw.tutorial);
+
+        AppTutorialPlugin.getInstance().setShouldInitOnShake(true);
+        AppTutorialPlugin.getInstance().init();
+        AppTutorialPlugin.getInstance().setCurrentScreen("login");
 
         //progressDialog = null;
 
@@ -143,6 +150,8 @@ public class LoginScreen extends LoginBaseActivity
         businessModel = (BusinessModel) getApplicationContext();
         businessModel.setContext(this);
         loginPresenter.reloadActivity();
+        AppTutorialPlugin.getInstance().onResume();
+
     }
 
     private void updateImageViews() {
