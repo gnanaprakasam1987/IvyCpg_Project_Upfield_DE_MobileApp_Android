@@ -26,6 +26,7 @@
         android:layout_marginTop="@dimen/profile_history_20dp"
         android:text="@string/save"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="true"
+        android:visibility="gone"/>
 
 </RelativeLayout>

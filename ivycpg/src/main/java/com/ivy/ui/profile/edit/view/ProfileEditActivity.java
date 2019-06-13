@@ -14,6 +14,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.NearByRetailerDialog;
 import com.ivy.sd.png.view.NewoutletContainerFragment;
+import com.ivy.ui.profile.view.ProfileBaseFragment;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
@@ -76,7 +77,7 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
             @Override
             public void onNext(ArrayList<RetailerContactBo> contactList) {
                 bmodel.newOutletHelper.setRetailerContactList(contactList);
-                Fragment fragment = new NewoutletContainerFragment();
+                Fragment fragment = new ProfileBaseFragment();
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("isEdit",true);
                 bundle.putString("retailerId", bmodel.getAppDataProvider().getRetailMaster().getRetailerID());

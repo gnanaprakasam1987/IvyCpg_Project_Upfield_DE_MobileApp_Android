@@ -1319,4 +1319,37 @@ public class ProfileHelper {
             }
         });
     }
+
+    public int isConfigAvail(String menu,String config){
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+        try {
+
+            SharedPreferences sharedPrefs = PreferenceManager
+                    .getDefaultSharedPreferences(mContext);
+            String locale = sharedPrefs.getString("languagePref",
+                    ApplicationConfigs.LANGUAGE);
+            db.openDataBase();
+
+            String query = "select RField from "
+                    + DataMembers.tbl_HhtMenuMaster
+                    + " where flag=1 and HHTCode = " +StringUtils.QT(config)
+                    + " and MenuType= "+StringUtils.QT(menu)+" and lang=" + StringUtils.QT(locale);
+
+            Cursor c = db.selectSQL(query);
+            if (c != null && c.getCount() > 0 && c.moveToNext()) {
+
+                int val = c.getInt(0);
+                c.close();
+
+                return val;
+            }
+            else
+                return -1;
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+            db.closeDB();
+            return -1;
+        }
+    }
 }

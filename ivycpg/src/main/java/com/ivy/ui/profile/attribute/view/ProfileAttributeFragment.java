@@ -1,6 +1,8 @@
 package com.ivy.ui.profile.attribute.view;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -17,6 +19,9 @@ import com.ivy.ui.profile.attribute.di.DaggerProfileAttributeComponent;
 import com.ivy.ui.profile.attribute.di.ProfileAttributeModule;
 import com.ivy.ui.profile.attribute.presenter.ProfileAttributePresenterImpl;
 import com.ivy.utils.view.OnSingleClickListener;
+import com.stepstone.stepper.BlockingStep;
+import com.stepstone.stepper.StepperLayout;
+import com.stepstone.stepper.VerificationError;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,7 +30,7 @@ import java.util.Map;
 import javax.inject.Inject;
 
 public class ProfileAttributeFragment extends BaseFragment
-        implements IProfileAttributeContract.IProfileAttributeView {
+        implements IProfileAttributeContract.IProfileAttributeView,BlockingStep {
 
     private LinearLayout dynamicViewLayout;
     private HashMap<String,Spinner> attributeSpinner = new HashMap<>();
@@ -360,4 +365,34 @@ public class ProfileAttributeFragment extends BaseFragment
         }
     }
 
+    @Override
+    public void onNextClicked(StepperLayout.OnNextClickedCallback callback) {
+        callback.goToNextStep();
+    }
+
+    @Override
+    public void onCompleteClicked(StepperLayout.OnCompleteClickedCallback callback) {
+        callback.complete();
+    }
+
+    @Override
+    public void onBackClicked(StepperLayout.OnBackClickedCallback callback) {
+        callback.goToPrevStep();
+    }
+
+    @Nullable
+    @Override
+    public VerificationError verifyStep() {
+        return null;
+    }
+
+    @Override
+    public void onSelected() {
+
+    }
+
+    @Override
+    public void onError(@NonNull VerificationError error) {
+
+    }
 }

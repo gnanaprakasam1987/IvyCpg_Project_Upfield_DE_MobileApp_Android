@@ -141,8 +141,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                                    @Profile SubChannelMasterHelper subChannelMasterHelper,
                                    @Profile RetailerHelper retailerHelper,
                                    @Profile NewOutletHelper newOutletHelper,
-                                   @Profile Vector<RetailerMasterBO> RetailerMasterList,
-                                   IProfileAttributeDataManager attributeDataManager) {
+                                   @Profile Vector<RetailerMasterBO> RetailerMasterList) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
         this.mProfileDataManager = profileDataManager;
         this.configurationMasterHelper = configurationMasterHelper;
@@ -153,7 +152,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         this.subChannelMasterHelper = subChannelMasterHelper;
         this.RetailerMasterList = RetailerMasterList;
         this.newOutletHelper = newOutletHelper;
-        this.attributeDataManager = attributeDataManager;
     }
 
 
@@ -181,8 +179,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
             }
         }
 
-        boolean isAttributeExist = false;
-
         for (ConfigureBO configureBO : profileConfig) {    /*First level  looping for prepare condition */
 
             if ((configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.LATTITUDE) && configureBO.isFlag() == 1)
@@ -192,14 +188,9 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                 longitude = retailerMasterBO.getLongitude() + "";
             }
 
-            if (configureBO.getConfigCode().equalsIgnoreCase(ProfileConstant.ATTRIBUTE) && configureBO.isFlag() == 1) {
-                isAttributeExist = true;
-                prepareAttributeList();
-            }
         }
 
-        if (!isAttributeExist)
-            getProfileEditDetails();
+        getProfileEditDetails();
 
     }
 
@@ -2026,7 +2017,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
         return selectedPrioProducts;
     }
 
-    private boolean doValidateProdileEdit() {
+    public boolean doValidateProdileEdit() {
         validate = true;
         for (int i = 0; i < profileConfig.size(); i++) {
 
@@ -2825,9 +2816,7 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
                         downloadPriority(mNumber, mName);
                         break;
                     case ProfileConstant.ATTRIBUTE:
-                        //getIvyView().createAttributeView(0);
-                        getIvyView().showChannelAttributeSpinner(getAllChannelAttributeList());
-                        getIvyView().showCommonAttributeSpinner(getAllCommonAttributeList());
+//                        getIvyView().createAttributeView(0);
                         break;
                     case ProfileConstant.GSTN:
                         prepareGSTN();
@@ -3454,105 +3443,6 @@ public class ProfileEditPresenterImp<V extends IProfileEditContract.ProfileEditV
     public boolean checkRegex(int menuNumber, String typedText) {
         return StringUtils.validRegex(profileConfig.get(menuNumber).getRegex(), typedText);
     }
-
-    private IProfileAttributeDataManager attributeDataManager;
-
-    private ArrayList<AttributeBO> commonAttributeList = new ArrayList<>();
-    private ArrayList<AttributeBO> channelAttributeList = new ArrayList<>();
-    private HashMap<String, ArrayList<AttributeBO>> childAttribute = new HashMap<>();
-
-    @Override
-    public void prepareAttributeList() {
-
-        getCompositeDisposable().add(Observable.zip(attributeDataManager.prepareCommonAttributeList(),
-                attributeDataManager.prepareChannelAttributeList(),
-                attributeDataManager.prepareChildAttributeList(retailerMasterBO.getRetailerID()),
-                new Function3<ArrayList<AttributeBO>, ArrayList<AttributeBO>, HashMap<String, ArrayList<AttributeBO>>, Boolean>() {
-                    @Override
-                    public Boolean apply(ArrayList<AttributeBO> commonAttrList,
-                                         ArrayList<AttributeBO> channelAttrList,
-                                         HashMap<String, ArrayList<AttributeBO>> childAttrList) throws Exception {
-
-                        setCommonAttributeList(commonAttrList);
-                        setChannelAttributeList(channelAttrList);
-                        setChildAttribute(childAttrList);
-
-                        return true;
-                    }
-                }).subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribeWith(new DisposableObserver<Boolean>() {
-                    @Override
-                    public void onNext(Boolean aBoolean) {
-
-                        getProfileEditDetails();
-
-//                        getIvyView().showChannelAttributeSpinner(getAllChannelAttributeList());
-//
-//                        getIvyView().showCommonAttributeSpinner(getAllCommonAttributeList());
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                    }
-
-                    @Override
-                    public void onComplete() {
-                    }
-                }));
-
-    }
-
-    @Override
-    public ArrayList<AttributeBO> getAllCommonAttributeList() {
-        return commonAttributeList;
-    }
-
-    public void setCommonAttributeList(ArrayList<AttributeBO> commonAttributeList) {
-        this.commonAttributeList = commonAttributeList;
-    }
-
-    @Override
-    public ArrayList<AttributeBO> getAllChannelAttributeList() {
-        return channelAttributeList;
-    }
-
-    public void setChannelAttributeList(ArrayList<AttributeBO> channelAttributeList) {
-        this.channelAttributeList = channelAttributeList;
-    }
-
-    @Override
-    public HashMap<String, ArrayList<AttributeBO>> getChildAttribute() {
-        return childAttribute;
-    }
-
-    public void setChildAttribute(HashMap<String, ArrayList<AttributeBO>> childAttribute) {
-        this.childAttribute = childAttribute;
-    }
-
-    @Override
-    public ArrayList<AttributeBO> getAttributeChildLst(String parentId) {
-        return getChildAttribute().get(parentId) != null ? getChildAttribute().get(parentId) : new ArrayList<>();
-    }
-
-    public void saveAttribute(ArrayList<AttributeBO> selectedAttributes){
-
-        getCompositeDisposable().add(
-                attributeDataManager.saveRetailerAttribute(getDataManager().getUser().getUserid()
-                        ,getDataManager().getRetailMaster().getRetailerID()
-                        , selectedAttributes)
-                        .subscribeOn(getSchedulerProvider().io())
-                        .observeOn(getSchedulerProvider().ui())
-                        .subscribe(new Consumer<Boolean>() {
-                                       @Override
-                                       public void accept(Boolean response) throws Exception {
-                                           getIvyView().showMessage("Attribute Added");
-                                       }
-                                   }
-                        ));
-    }
-
 
 }
 

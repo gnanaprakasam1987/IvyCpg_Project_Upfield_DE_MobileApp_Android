@@ -127,10 +127,6 @@ public interface IProfileEditContract {
 
         void checkRegex(String regex);
 
-        void showChannelAttributeSpinner(ArrayList<AttributeBO> channelAttributeBOS);
-
-        void showCommonAttributeSpinner(ArrayList<AttributeBO> commonAttributeBOS);
-
     }
 
     @PerActivity
@@ -211,15 +207,7 @@ public interface IProfileEditContract {
 
         boolean checkRegex(int menuNumber, String typedText);
 
-        void prepareAttributeList();
-
-        ArrayList<AttributeBO> getAllCommonAttributeList();
-
-        ArrayList<AttributeBO> getAllChannelAttributeList();
-
-        HashMap<String, ArrayList<AttributeBO>> getChildAttribute();
-
-        ArrayList<AttributeBO> getAttributeChildLst(String parentId);
+        boolean doValidateProdileEdit();
 
     }
 }
