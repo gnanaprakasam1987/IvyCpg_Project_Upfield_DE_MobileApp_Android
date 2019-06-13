@@ -63,6 +63,9 @@ public class ProfileBaseFragment extends IvyBaseFragment implements StepperLayou
         StepperLayout mStepperLayout;
 
         mStepperLayout = view.findViewById(R.id.stepperLayout);
+
+        mStepperLayout.setOffscreenPageLimit(3);
+
         mStepperLayout.setAdapter(new ProfileStepperAdapter(
                 ((FragmentActivity)context).getSupportFragmentManager(),
                 context,retailerId,isShowAttribute,
