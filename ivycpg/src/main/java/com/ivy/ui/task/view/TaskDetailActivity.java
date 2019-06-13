@@ -10,8 +10,12 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -32,7 +36,9 @@ import com.ivy.ui.task.di.TaskModule;
 import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.FileUtils;
+import com.ivy.utils.view.Dialogs.ReasonCaptureDialog;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -43,7 +49,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class TaskDetailActivity extends BaseActivity implements TaskContract.TaskView {
+public class TaskDetailActivity extends BaseActivity implements TaskContract.TaskListView, ReasonCaptureDialog.OnButtonClickListener {
     private static final int CAMERA_REQUEST_CODE = 1;
 
     @BindView(R.id.toolbar)
@@ -91,14 +97,22 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     @BindView(R.id.evidence_img_rl)
     RelativeLayout evidenceRL;
 
+    @BindView(R.id.footer_ll)
+    LinearLayout footerLayout;
 
-    private TaskDataBO detailBo;
+    @BindView(R.id.task_execute_btn)
+    Button btnTaskExecute;
+
+
+    private TaskDataBO taskDetailBo;
     private boolean isRetailerWiseTask;
     private int tabSelection;
     private String imageName = "";
     private String menuCode;
     private String screenTitle;
     private boolean fromTaskNotification;
+    private TaskConstant.SOURCE source;
+    private ReasonCaptureDialog reasonCaptureDialog;
     @Inject
     TaskContract.TaskPresenter<TaskContract.TaskView> taskPresenter;
 
@@ -133,10 +147,19 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         if (getIntent().getExtras() != null) {
             isRetailerWiseTask = getIntent().getBooleanExtra(TaskConstant.RETAILER_WISE_TASK, false);
             tabSelection = getIntent().getIntExtra(TaskConstant.TAB_SELECTION, 0);
-            detailBo = getIntent().getExtras().getParcelable(TaskConstant.TASK_OBJECT);
+            taskDetailBo = getIntent().getExtras().getParcelable(TaskConstant.TASK_OBJECT);
             menuCode = getIntent().getExtras().getString(TaskConstant.MENU_CODE, "MENU_TASK");
             screenTitle = getIntent().getExtras().getString(TaskConstant.SCREEN_TITLE, getString(R.string.task_creation));
             fromTaskNotification = getIntent().getExtras().getBoolean(TaskConstant.TASK_NOTIFICATION_SRC, false);
+
+            if (getIntent().getExtras().containsKey(TaskConstant.FROM_HOME_SCREEN))
+                source = TaskConstant.SOURCE.HOME_SCREEN;
+
+            if (getIntent().getExtras().containsKey(TaskConstant.RETAILER_WISE_TASK))
+                source = TaskConstant.SOURCE.RETAILER;
+
+            if (getIntent().getExtras().containsKey(TaskConstant.FROM_PROFILE_SCREEN))
+                source = TaskConstant.SOURCE.PROFILE_SCREEN;
         }
     }
 
@@ -149,11 +172,19 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
                 + taskPresenter.getUserID()
                 + DataMembers.DIGITAL_CONTENT + "/"
                 + DataMembers.TASK_DIGITAL_CONTENT;
+
         if (tabSelection == 2)
             hideViews();
 
         setUpRecyclerView();
-        taskPresenter.fetchTaskImageList(detailBo.getTaskId());
+
+        if (taskDetailBo.isChecked())
+            btnTaskExecute.setText(getString(R.string.mark_as_un_executed));
+        else
+            btnTaskExecute.setText(getString(R.string.mark_as_executed));
+
+        taskPresenter.fetchTaskImageList(taskDetailBo.getTaskId());
+        taskPresenter.fetchReasonFromStdListMasterByListCode();
     }
 
 
@@ -178,8 +209,11 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     }
 
     private void hideViews() {
-        taskDueDateLabel.setText(getString(R.string.executed_date));
-        evidenceRL.setVisibility(View.GONE);
+        if (!fromTaskNotification) {
+            taskDueDateLabel.setText(getString(R.string.executed_date));
+            evidenceRL.setVisibility(View.GONE);
+        }
+        footerLayout.setVisibility(View.GONE);
     }
 
     private void setUpRecyclerView() {
@@ -192,10 +226,25 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
     @OnClick(R.id.task_evidence_image_bt)
     public void addPhotoClick() {
-        if (detailBo.isChecked())
+        if (taskDetailBo.isChecked())
             prepareTaskPhotoCapture();
         else
             showMessage(getString(R.string.task_exec_mandatory));
+    }
+
+    @OnClick(R.id.task_execute_btn)
+    public void onTaskExecution() {
+        if (taskDetailBo.isChecked())
+            taskDetailBo.setChecked(false);
+        else
+            taskDetailBo.setChecked(true);
+
+        if (source == TaskConstant.SOURCE.RETAILER) {
+            taskPresenter.updateModuleTime();
+            taskPresenter.updateTaskExecution(taskPresenter.getRetailerID() + "", taskDetailBo, 0);
+        } else {
+            taskPresenter.updateTaskExecution(0 + "", taskDetailBo, 0);
+        }
     }
 
     @Override
@@ -225,19 +274,19 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
     @Override
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
-        taskTitleTv.setText(detailBo.getTasktitle());
-        taskProductLevelTv.setText(detailBo.getTaskCategoryDsc());
+        taskTitleTv.setText(taskDetailBo.getTasktitle());
+        taskProductLevelTv.setText(taskDetailBo.getTaskCategoryDsc());
 
         if (tabSelection == 2)
-            taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(detailBo.getTaskExecDate(), taskPresenter.outDateFormat()));
+            taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(taskDetailBo.getTaskExecDate(), taskPresenter.outDateFormat()));
         else
-            taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(detailBo.getTaskDueDate(), taskPresenter.outDateFormat()));
+            taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(taskDetailBo.getTaskDueDate(), taskPresenter.outDateFormat()));
 
         taskImgRecyclerView.setAdapter(new TaskImgListAdapter(this, updatedList, true, null));
-        createdByValueTv.setText(detailBo.getTaskOwner());
+        createdByValueTv.setText(taskDetailBo.getTaskOwner());
         createdDateValueTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
-                (detailBo.getCreatedDate(), taskPresenter.outDateFormat()));
-        taskDescTv.setText(detailBo.getTaskDesc());
+                (taskDetailBo.getCreatedDate(), taskPresenter.outDateFormat()));
+        taskDescTv.setText(taskDetailBo.getTaskDesc());
         setImageIntoView();
 
     }
@@ -245,13 +294,13 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     @Override
     public void showImageUpdateMsg() {
         showMessage(R.string.image_saved);
-        detailBo.setTaskEvidenceImg(imageName);
+        taskDetailBo.setTaskEvidenceImg(imageName);
         setImageIntoView();
     }
 
     @Override
     public void onDeleteSuccess() {
-        showAlert("", getString(R.string.deleted_sucessfully), () -> backNavigation());
+        showAlert("", getString(R.string.deleted_sucessfully), () -> backNavigation(TaskConstant.TASK_UPDATED_SUCCESS_CODE));
     }
 
     @Override
@@ -267,9 +316,11 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
-        if (fromTaskNotification) {
+        if (fromTaskNotification || tabSelection == 2 || taskDetailBo.isChecked()) {
             menu.findItem(R.id.menu_edit_note).setVisible(false);
             menu.findItem(R.id.menu_delete_note).setVisible(false);
+        } else {
+            menu.findItem(R.id.menu_close).setVisible(true);
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -279,12 +330,8 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            if (!fromTaskNotification) {
-                backNavigation();
-            } else {
-                finish();
-                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
-            }
+            finish();
+            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
             return true;
         } else if (id == R.id.menu_edit_note) {
             navigateToTaskCreation();
@@ -292,35 +339,58 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         } else if (id == R.id.menu_delete_note) {
             showDeleteAlert();
             return true;
+        } else if (id == R.id.menu_close) {
+            if (!taskPresenter.fetchNotCompletedTaskReasons().isEmpty())
+                showReasonDialog();
+            else
+                showMessage(getString(R.string.data_not_mapped));
         }
 
         return false;
+    }
+
+
+    private void showReasonDialog() {
+        if (reasonCaptureDialog == null)
+            reasonCaptureDialog = new ReasonCaptureDialog.ReasonCaptureDialogBuilder(this, taskPresenter.fetchNotCompletedTaskReasons())
+                    .setDialogTitles(getString(R.string.would_you_like_add_reason_to_close_task), getString(R.string.select_reason))
+                    .setOnButtonClickListener(this)
+                    .buildDialog();
+
+        reasonCaptureDialog.show();
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        Window window = reasonCaptureDialog.getWindow();
+        lp.copyFrom(window != null ? window.getAttributes() : null);
+        lp.width = DeviceUtils.getDisplayMetrics(this).widthPixels - 100;
+        // lp.height = (DeviceUtils.getDisplayMetrics(context).heightPixels / 2);//WindowManager.LayoutParams.WRAP_CONTENT;
+        if (window != null) {
+            window.setAttributes(lp);
+        }
     }
 
     private void navigateToTaskCreation() {
         Intent i = new Intent(TaskDetailActivity.this, TaskCreationActivity.class);
         i.putExtra(TaskConstant.MENU_CODE, menuCode);
         i.putExtra(TaskConstant.SCREEN_TITLE, screenTitle);
-        i.putExtra(TaskConstant.TASK_SCREEN_MODE, 1);
+        i.putExtra(TaskConstant.TASK_SCREEN_MODE, TaskConstant.EDIT_MODE_FROM_TASK_DETAIL_SRC);
         i.putExtra(TaskConstant.TASK_DETAIL_SRC, true);
-        i.putExtra(TaskConstant.TASK_OBJECT, detailBo);
-        startActivity(i);
+        i.putExtra(TaskConstant.TASK_OBJECT, taskDetailBo);
+        startActivityForResult(i, TaskConstant.TASK_CREATED_SUCCESS_CODE);
     }
 
-    private void backNavigation() {
+    private void backNavigation(int resultCode) {
         if (!isRetailerWiseTask)
-            startActivity(new Intent(TaskDetailActivity.this,
-                    HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
+            setResult(resultCode, new Intent(TaskDetailActivity.this,
+                    HomeScreenActivity.class).putExtra(TaskConstant.TASK_EXECUTE_RESPONSE, taskDetailBo.isChecked()));
         else {
 
             Intent intent = new Intent(TaskDetailActivity.this,
                     TaskActivity.class);
-            if (getIntent().getBooleanExtra("PreVisit", false))
-                intent.putExtra("PreVisit", true);
+            if (getIntent().getBooleanExtra(TaskConstant.TASK_PRE_VISIT, false))
+                intent.putExtra(TaskConstant.TASK_PRE_VISIT, true);
 
-            startActivity(intent.putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask)
-                    .putExtra(TaskConstant.SCREEN_TITLE, screenTitle)
-                    .putExtra(TaskConstant.MENU_CODE, menuCode));
+            setResult(resultCode, intent.putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask)
+                    .putExtra(TaskConstant.TASK_EXECUTE_RESPONSE, taskDetailBo.isChecked()));
         }
 
         finish();
@@ -329,7 +399,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
     private void showDeleteAlert() {
         showAlert("", getString(R.string.do_you_want_to_delete_the_note),
-                () -> taskPresenter.deleteTask(detailBo.getTaskId(), detailBo.getTaskOwner(), detailBo.getServerTask()),
+                () -> taskPresenter.deleteTask(taskDetailBo.getTaskId(), taskDetailBo.getTaskOwner(), taskDetailBo.getServerTask()),
                 () -> {
                 });
     }
@@ -340,19 +410,23 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == CAMERA_REQUEST_CODE) {
             if (resultCode == 1) {
-                taskPresenter.updateTaskExecutionImg(imageName, detailBo.getTaskId(), true);
+                taskPresenter.updateTaskExecutionImg(imageName, taskDetailBo.getTaskId(), true);
             }
+        } else if (requestCode == TaskConstant.TASK_CREATED_SUCCESS_CODE
+                && resultCode == 3) {
+            backNavigation(TaskConstant.TASK_CREATED_SUCCESS_CODE);
+            finish();
         }
     }
 
     private void setImageIntoView() {
-        if (detailBo.getTaskEvidenceImg() == null
-                || detailBo.getTaskEvidenceImg().isEmpty()) {
+        if (taskDetailBo.getTaskEvidenceImg() == null
+                || taskDetailBo.getTaskEvidenceImg().isEmpty()) {
             evidenceImgView.setVisibility(View.GONE);
         } else {
-            detailBo.setTaskEvidenceImg(detailBo.getTaskEvidenceImg());
+            taskDetailBo.setTaskEvidenceImg(taskDetailBo.getTaskEvidenceImg());
             evidenceImgView.setVisibility(View.VISIBLE);
-            String path = TaskConstant.TASK_SERVER_IMG_PATH + "/" + detailBo.getTaskEvidenceImg();
+            String path = TaskConstant.TASK_SERVER_IMG_PATH + "/" + taskDetailBo.getTaskEvidenceImg();
             if (FileUtils.isFileExisting(path)) {
                 Uri uri = FileUtils
                         .getUriFromFile(getApplicationContext(), path);
@@ -375,7 +449,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
                 + "_" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS)
                 + ".jpg";
 
-        String mFirstNameStarts = detailBo.getTaskEvidenceImg();
+        String mFirstNameStarts = taskDetailBo.getTaskEvidenceImg();
 
         boolean mIsFileAvailable = FileUtils.checkForNFilesInFolder(FileUtils.photoFolderPath, 1, mFirstNameStarts);
         boolean copyFileAvailable = FileUtils.checkForNFilesInFolder(TaskConstant.TASK_SERVER_IMG_PATH, 1, mFirstNameStarts);
@@ -410,4 +484,31 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
                 CAMERA_REQUEST_CODE);
     }
 
+    @Override
+    public void showTaskUpdateMsg() {
+        showMessage(R.string.task_updated_successfully);
+        backNavigation(0);
+    }
+
+    @Override
+    public void showTaskReasonUpdateMsg() {
+        showMessage(getString(R.string.task_reason_updated_successfully));
+        reasonCaptureDialog.dismiss();
+        backNavigation(TaskConstant.TASK_UPDATED_SUCCESS_CODE);
+    }
+
+    @Override
+    public void showDataNotMappedMsg() {
+
+    }
+
+    @Override
+    public void addReason(int selectedResId) {
+        taskPresenter.updateTaskExecution(String.valueOf(taskDetailBo.getRid()), taskDetailBo, selectedResId);
+    }
+
+    @Override
+    public void onDismiss() {
+        reasonCaptureDialog.dismiss();
+    }
 }

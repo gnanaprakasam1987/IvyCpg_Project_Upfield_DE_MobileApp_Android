@@ -14,14 +14,14 @@
         android:id="@+id/scroll_footer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/footer"
+        android:layout_above="@id/footer_ll"
         android:layout_below="@id/toolbar">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/_20sdp">
+            android:padding="@dimen/_10sdp">
 
             <RelativeLayout
                 android:id="@+id/first_layout"
@@ -312,4 +312,23 @@
         </RelativeLayout>
     </ScrollView>
 
+    <LinearLayout
+        android:id="@+id/footer_ll"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/footer_height"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom"
+        android:background="?attr/customFooterBackgroundColor"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="@dimen/_3sdp">
+
+        <Button
+            android:id="@+id/task_execute_btn"
+            style="?attr/roundedCustomButtonNormal"
+            android:layout_gravity="center|end"
+            android:text="@string/mark_as_executed"
+            android:textAllCaps="false" />
+
+    </LinearLayout>
 </RelativeLayout>

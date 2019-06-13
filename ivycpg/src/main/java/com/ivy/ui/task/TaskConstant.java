@@ -41,11 +41,11 @@ public class TaskConstant {
 
     public static final String PHOTO_CAPTURE_DIALOG_TAG = "ReasonDialogFragment";
 
-    public static final int FINISH_REQUEST = 2;
-
     public static final int TASK_DETAIL = 0;
 
     public static final int TASK_EDIT = 1;
+
+    public static final int TASK_DELETE = 2;
 
     public static final String SELLER_WISE = "seller";
 
@@ -90,6 +90,22 @@ public class TaskConstant {
     public static final String TASK_CREATED_BY_LABEL = "task_created_by";
 
     public static final String TASK_EVIDENCE_LABEL = "task_evidence";
+
+    public static final int CAMERA_REQUEST_CODE = 1;
+
+    public static final int TASK_UPDATED_SUCCESS_CODE = 2;
+
+    public static final int TASK_CREATED_SUCCESS_CODE = 3;
+
+    public static final int NEW_TASK_CREATION = 0;
+
+    public static final int EDIT_MODE_FROM_TASK_FRAGMENT_SRC = 1;
+
+    public static final int EDIT_MODE_FROM_TASK_DETAIL_SRC = 2;
+
+    public static final String TASK_PRE_VISIT = "PreVisit";
+
+    public static final String TASK_EXECUTE_RESPONSE = "ExeResponse";
 
     public static enum SOURCE {
         HOME_SCREEN(0),

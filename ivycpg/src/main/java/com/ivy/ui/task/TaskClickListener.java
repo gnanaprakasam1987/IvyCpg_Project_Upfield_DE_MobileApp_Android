@@ -6,7 +6,7 @@ public interface TaskClickListener {
 
     void onTaskExecutedClick(TaskDataBO taskDataBO);
 
-    void onTaskButtonClick(TaskDataBO taskBO, int isType);
+    void onTaskButtonClick(TaskDataBO taskBO, int actionMode,int selectedListPos);
 
     void onAttachFile(TaskDataBO taskBO);
 

@@ -71,7 +71,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     private int mSelectedCategoryID = 0;
     private boolean isRetailerWiseTask = false;
     private String menuCode;
-    private int screenMode = 0;// 0 - Creation 1 - Edit
+    private int screenMode = 0;
     private TaskDataBO taskBo;
     private String screenTitle = "";
     private String mode = TaskConstant.SELLER_WISE;
@@ -185,7 +185,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         if (getIntent().getExtras() != null) {
             isRetailerWiseTask = getIntent().getExtras().getBoolean(TaskConstant.RETAILER_WISE_TASK, false);
             screenTitle = getIntent().getExtras().getString(TaskConstant.SCREEN_TITLE, getString(R.string.task_creation));
-            screenMode = getIntent().getExtras().getInt(TaskConstant.TASK_SCREEN_MODE, 0);
+            screenMode = getIntent().getExtras().getInt(TaskConstant.TASK_SCREEN_MODE, TaskConstant.NEW_TASK_CREATION);
             taskBo = getIntent().getExtras().getParcelable(TaskConstant.TASK_OBJECT);
             menuCode = getIntent().getExtras().getString(TaskConstant.MENU_CODE, "MENU_TASK");
         }
@@ -197,22 +197,34 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         setUpToolBar();
         setUpRecyclerView();
-        setUpRetailerSelection();
-        TaskConstant.TASK_SERVER_IMG_PATH = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
-                + taskPresenter.getUserID()
-                + DataMembers.DIGITAL_CONTENT + "/"
-                + DataMembers.TASK_DIGITAL_CONTENT;
-
-        //allow only create task only for retailer if not from seller Task
-        setUpAdapter();
-        setUpCategoryAdapter();
-        taskPresenter.fetchData(taskPresenter.getRetailerID(), taskBo == null ? "0" : taskBo.getTaskId());
+        setImagePath();
+        taskCreationDownloadMethods();
 
         if (isRetailerWiseTask)
             mode = TaskConstant.RETAILER_WISE;
         else
             mode = TaskConstant.SELLER_WISE;
+    }
 
+
+    private void taskCreationDownloadMethods() {
+        taskPresenter.fetchLabels();
+
+        setUpRetailerSelection();
+        setUpAdapter();
+        taskPresenter.fetchTaskCreationData(taskPresenter.getRetailerID(), taskBo == null ? "0" : taskBo.getTaskId());
+
+        if (taskPresenter.isShowProdLevel()) {
+            setUpCategoryAdapter();
+            taskPresenter.fetchTaskCategory();
+        }
+    }
+
+    private void setImagePath() {
+        TaskConstant.TASK_SERVER_IMG_PATH = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "/"
+                + taskPresenter.getUserID()
+                + DataMembers.DIGITAL_CONTENT + "/"
+                + DataMembers.TASK_DIGITAL_CONTENT;
     }
 
     @Override
@@ -305,17 +317,15 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @Override
     public void showTaskSaveAlertMsg() {
         showAlert("", getString(R.string.saved_successfully), () -> {
-            if (!isRetailerWiseTask)
-                startActivity(new Intent(TaskCreationActivity.this,
-                        HomeScreenActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        .putExtra(TaskConstant.MENU_CODE, menuCode));
-            else
-                startActivity(new Intent(TaskCreationActivity.this,
-                        TaskActivity.class).setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                        .putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask)
-                        .putExtra(TaskConstant.SCREEN_TITLE, screenTitle));
-            finish();
-            overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+
+            if (screenMode == TaskConstant.EDIT_MODE_FROM_TASK_DETAIL_SRC) {
+                setResult(TaskConstant.TASK_CREATED_SUCCESS_CODE,
+                        new Intent(TaskCreationActivity.this,
+                                TaskDetailActivity.class));
+                finish();
+                overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            } else
+                backNavigation(TaskConstant.TASK_CREATED_SUCCESS_CODE);
         });
     }
 
@@ -351,7 +361,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     @Override
     public void showErrorMsg() {
-
+        showMessage(getString(R.string.something_went_wrong));
     }
 
     TaskImgListAdapter.PhotoClickListener photoClickListener = this::prepareTaskPhotoCapture;
@@ -478,9 +488,10 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     @Override
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
-        if (screenMode == 1) {
+        if (screenMode == TaskConstant.EDIT_MODE_FROM_TASK_DETAIL_SRC
+                || screenMode == TaskConstant.EDIT_MODE_FROM_TASK_FRAGMENT_SRC) {
             updatedList.add(0, new TaskDataBO());
-            taskPresenter.getTaskImgList().addAll(updatedList);
+            taskPresenter.getTaskImgList();
             imgListRecyclerView.setAdapter(new TaskImgListAdapter(TaskCreationActivity.this, updatedList, false, photoClickListener));
             updateFieldsInEditMode(taskBo);
         } else {
@@ -518,7 +529,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             linkUserId = getSelectedUserId();
         }
 
-        if (screenMode == 0)
+        if (screenMode == TaskConstant.NEW_TASK_CREATION)
             taskBo = new TaskDataBO();
 
         taskBo.setTasktitle(taskTitleDec);
@@ -526,7 +537,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         taskBo.setTaskDueDate(taskDuedate);
         taskBo.setTaskCategoryID(mSelectedCategoryID);
 
-        taskPresenter.onSaveButtonClick(taskAssignId, taskBo, linkUserId, retSelectionId);
+        taskPresenter.onSaveTask(taskAssignId, taskBo, linkUserId, retSelectionId);
     }
 
     private int getSelectedUserId() {
@@ -666,17 +677,18 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 CAMERA_REQUEST_CODE);
     }
 
-    private void backNavigation() {
+    private void backNavigation(int resultCode) {
 
-        if (!isRetailerWiseTask)
-            startActivity(new Intent(TaskCreationActivity.this,
-                    HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
-        else
-            startActivity(new Intent(TaskCreationActivity.this,
-                    TaskActivity.class).putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask)
-                    .putExtra(TaskConstant.SCREEN_TITLE, screenTitle));
+        if (resultCode != -1) {
 
-
+            if (!isRetailerWiseTask)
+                setResult(resultCode, new Intent(TaskCreationActivity.this,
+                        HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
+            else
+                setResult(resultCode, new Intent(TaskCreationActivity.this,
+                        TaskActivity.class).putExtra(TaskConstant.RETAILER_WISE_TASK, isRetailerWiseTask)
+                        .putExtra(TaskConstant.SCREEN_TITLE, screenTitle));
+        }
         finish();
         overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
     }
@@ -725,7 +737,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                     FileUtils.deleteFiles(folderPath, imageName);
             }
 
-            backNavigation();
+            backNavigation(-1);
         }, () -> {
 
         });
@@ -734,7 +746,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     private void updateFieldsInEditMode(@NotNull TaskDataBO taskDataObj) {
         taskTitle.setText(taskDataObj.getTasktitle());
         if (isRetailerWiseTask)
-            categorySpinner.setSelection(getAdapterPosition(taskCategoryArrayAdapter.getCount(), TaskConstant.PRODUCT_LEVEL_WISE));
+            categorySpinner.setSelection(getAdapterPosition(TaskConstant.PRODUCT_LEVEL_WISE));
 
         dueDateBtn.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
                 taskDataObj.getTaskDueDate(), taskPresenter.outDateFormat()));
@@ -748,30 +760,30 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             case TaskConstant.PARENT_WISE:
                 parenUserRBtn.setChecked(true);
                 setUpSpinnerData(0);
-                spinnerSelection.setSelection(getAdapterPosition(parentUserMasterArrayAdapter.getCount(), taskBo.getMode()));
+                spinnerSelection.setSelection(getAdapterPosition(taskBo.getMode()));
                 break;
 
             case TaskConstant.CHILD_WISE:
                 childUserRb.setChecked(true);
                 setUpSpinnerData(1);
-                spinnerSelection.setSelection(getAdapterPosition(childUserMasterArrayAdapter.getCount(), taskBo.getMode()));
+                spinnerSelection.setSelection(getAdapterPosition(taskBo.getMode()));
                 break;
 
             case TaskConstant.PEERT_WISE:
                 peerUserRb.setVisibility(View.VISIBLE);
                 peerUserRb.setChecked(true);
                 setUpSpinnerData(2);
-                spinnerSelection.setSelection(getAdapterPosition(peerUserMasterArrayAdapter.getCount(), taskBo.getMode()));
+                spinnerSelection.setSelection(getAdapterPosition(taskBo.getMode()));
                 break;
 
             case TaskConstant.RETAILER_WISE:
                 switchOption.setChecked(true);
                 switchOption.setText(getString(R.string.retailer_wise));
-                retSelectionAutoCompTxt.setText(retailerMasterArrayAdapter.getItem(getAdapterPosition(retailerMasterArrayAdapter.getCount(), taskBo.getMode())).getRetailerName());
+                retSelectionAutoCompTxt.setText(retailerMasterArrayAdapter.getItem(getAdapterPosition(taskBo.getMode())).getRetailerName());
                 linkUserRb.setVisibility(View.VISIBLE);
                 linkUserRb.setChecked(true);
                 setUpSpinnerData(3);
-                spinnerSelection.setSelection(getAdapterPosition(linkUserMasterArrayAdapter.getCount(), TaskConstant.LINK_WISE));
+                spinnerSelection.setSelection(getAdapterPosition(TaskConstant.LINK_WISE));
                 break;
 
         }
@@ -779,33 +791,41 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     }
 
-    private int getAdapterPosition(int length, String mode) {
-        for (int i = 0; i < length; i++) {
-            switch (mode) {
-                case TaskConstant.PARENT_WISE:
-                    if (parentUserMasterArrayAdapter.getItem(i).getUserid() == taskBo.getUserId())
-                        return i;
-                    break;
-                case TaskConstant.CHILD_WISE:
-                    if (childUserMasterArrayAdapter.getItem(i).getUserid() == taskBo.getUserId())
-                        return i;
-                    break;
-                case TaskConstant.PEERT_WISE:
-                    if (peerUserMasterArrayAdapter.getItem(i).getUserid() == taskBo.getUserId())
-                        return i;
-                    break;
-                case TaskConstant.RETAILER_WISE:
-                    if (SDUtil.convertToInt(retailerMasterArrayAdapter.getItem(i).getRetailerID()) == taskBo.getRid())
-                        return i;
-                    break;
-                case TaskConstant.LINK_WISE:
-                    if (linkUserMasterArrayAdapter.getItem(i).getUserid() == taskBo.getUserId())
-                        return i;
-                    break;
-                default:
-                    if (taskCategoryArrayAdapter.getItem(i).getTaskCategoryID() == taskBo.getTaskCategoryID())
-                        return i;
-                    break;
+    private int getAdapterPosition(String mode) {
+        ArrayAdapter dummyArrayAdapter;
+
+        switch (mode) {
+            case TaskConstant.PARENT_WISE:
+                dummyArrayAdapter = parentUserMasterArrayAdapter;
+                break;
+            case TaskConstant.CHILD_WISE:
+                dummyArrayAdapter = childUserMasterArrayAdapter;
+                break;
+            case TaskConstant.PEERT_WISE:
+                dummyArrayAdapter = childUserMasterArrayAdapter;
+                break;
+            case TaskConstant.RETAILER_WISE:
+                dummyArrayAdapter = retailerMasterArrayAdapter;
+                break;
+            case TaskConstant.LINK_WISE:
+                dummyArrayAdapter = linkUserMasterArrayAdapter;
+                break;
+            default:
+                dummyArrayAdapter = taskCategoryArrayAdapter;
+                break;
+        }
+
+        for (int i = 0; i < dummyArrayAdapter.getCount(); i++) {
+
+            if (mode.equalsIgnoreCase(TaskConstant.RETAILER_WISE)) {
+                if (SDUtil.convertToInt(((RetailerMasterBO) dummyArrayAdapter.getItem(i)).getRetailerID()) == taskBo.getRid())
+                    return i;
+            } else if (mode.equalsIgnoreCase(TaskConstant.PRODUCT_LEVEL_WISE)) {
+                if (((TaskDataBO) dummyArrayAdapter.getItem(i)).getTaskCategoryID() == taskBo.getTaskCategoryID())
+                    return i;
+            } else {
+                if (((UserMasterBO) dummyArrayAdapter.getItem(i)).getUserid() == taskBo.getUserId())
+                    return i;
             }
         }
         return -1;
@@ -834,7 +854,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                     && capturedImgList.size() > 1)
                 backButtonAlertDialog();
             else
-                backNavigation();
+                backNavigation(-1);
 
 
             return true;

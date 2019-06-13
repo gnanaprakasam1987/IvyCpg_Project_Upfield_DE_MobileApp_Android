@@ -120,6 +120,7 @@
 
 
             <LinearLayout
+                android:id="@+id/task_header_ll"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"

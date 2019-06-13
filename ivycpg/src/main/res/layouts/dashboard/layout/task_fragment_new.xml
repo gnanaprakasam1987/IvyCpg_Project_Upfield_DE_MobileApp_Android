@@ -25,7 +25,7 @@
             app:tabTextColor="@color/white" />
 
         <LinearLayout
-            android:id="@+id/ListHeader"
+            android:id="@+id/list_header_ll"
             android:layout_width="match_parent"
             android:layout_height="@dimen/list_header_height"
             android:layout_below="@+id/tabs"
@@ -63,10 +63,19 @@
             android:id="@+id/task_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ListHeader"
+            android:layout_below="@+id/list_header_ll"
             android:clipToPadding="false"
             android:orientation="horizontal"
             android:overScrollMode="never" />
+
+        <TextView
+            android:id="@+id/no_data_tv"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:text="@string/data_not_mapped"/>
 
     </RelativeLayout>
 

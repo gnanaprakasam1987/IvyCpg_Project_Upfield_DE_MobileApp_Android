@@ -104,6 +104,10 @@ public class TaskDataManagerImpl implements TaskDataManager {
                         taskmasterbo.setTaskCategoryDsc(c.getString(14));
                         taskmasterbo.setServerTask(c.getInt(15));
                         taskmasterbo.setTaskEvidenceImg(c.getString(16));
+                        if (taskmasterbo.getIsdone().equals("1"))
+                            taskmasterbo.setChecked(true);
+                        else
+                            taskmasterbo.setChecked(false);
 
                         if (taskmasterbo.getRid() != 0
                                 || taskmasterbo.getChannelId() != 0)
@@ -380,8 +384,8 @@ public class TaskDataManagerImpl implements TaskDataManager {
      * @return
      */
     @Override
-    public Single<Boolean> addAndUpdateTask(int selectedId, TaskDataBO taskObj, String mode,
-                                            ArrayList<TaskDataBO> taskImgList, int linkUserId) {
+    public Single<Boolean> saveTask(int selectedId, TaskDataBO taskObj, String mode,
+                                    ArrayList<TaskDataBO> taskImgList, int linkUserId) {
 
         //remove Quotes
         String title = StringUtils.removeQuotes(taskObj.getTasktitle());

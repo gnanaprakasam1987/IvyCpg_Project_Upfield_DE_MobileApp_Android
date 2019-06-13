@@ -1,11 +1,8 @@
 package com.ivy.ui.task.adapter;
 
 import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.res.ColorStateList;
-import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.os.Build;
 import android.support.annotation.NonNull;
@@ -28,7 +25,6 @@ import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.ui.task.view.SwipeRevealLayout;
 import com.ivy.ui.task.view.ViewBinderHelper;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
@@ -116,10 +112,10 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
 
         });
 
-        holder.layoutrow.setOnClickListener(new View.OnClickListener() {
+        holder.layoutRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                taskClickListener.onTaskButtonClick(taskBo, TaskConstant.TASK_DETAIL);
+                taskClickListener.onTaskButtonClick(taskBo, TaskConstant.TASK_DETAIL, holder.getAdapterPosition());
             }
         });
 
@@ -133,7 +129,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         });
 
         holder.btnEditTask.setOnClickListener(
-                v -> taskClickListener.onTaskButtonClick(taskBo, TaskConstant.TASK_EDIT));
+                v -> taskClickListener.onTaskButtonClick(taskBo, TaskConstant.TASK_EDIT, holder.getAdapterPosition()));
 
         holder.btnDeleteTask.setOnClickListener(v -> {
             if (taskBo.getUsercreated().equals("0"))
@@ -141,31 +137,24 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             else if (taskBo.isChecked())
                 Toast.makeText(mContext, mContext.getString(R.string.exec_task_not_allow_to_delete), Toast.LENGTH_SHORT).show();
             else {
-                showDeleteAlert(holder.getAdapterPosition());
+                taskClickListener.onTaskButtonClick(taskBo, TaskConstant.TASK_DELETE, holder.getAdapterPosition());
             }
         });
 
         holder.btnCloseTask.setOnClickListener(
                 v -> taskClickListener.showTaskNoReasonDialog(holder.getAdapterPosition()));
 
-        if (taskBo.isUpload() && taskBo.getIsdone().equals("1")) {
+        if (!isPreVisit)
+            holder.taskCB.setEnabled(true);
+        else
             holder.taskCB.setEnabled(false);
-            holder.taskTitle.setPaintFlags(holder.taskTitle.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-            holder.taskProductLevel.setPaintFlags(holder.taskProductLevel.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-        } else {
-            if (!isPreVisit)
-                holder.taskCB.setEnabled(true);
-            holder.taskTitle.setPaintFlags(holder.taskTitle.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-            holder.taskProductLevel.setPaintFlags(holder.taskProductLevel.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-        }
 
-        if (taskBo.getIsdone().equals("1") && !taskBo.isUpload()) {
+        if (taskBo.isChecked()) {
             holder.taskCB.setChecked(true);
-            taskBo.setChecked(true);
         } else {
             holder.taskCB.setChecked(false);
-            taskBo.setChecked(false);
         }
+
 
         if (taskBo.getTaskEvidenceImg() != null
                 && !taskBo.getTaskEvidenceImg().isEmpty()) {
@@ -199,7 +188,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         TextView taskProductLevel;
         RibbonView dueDaysTv;
         LinearLayout layoutCB;
-        LinearLayout layoutrow;
+        LinearLayout layoutRow;
         AppCompatImageButton btnAttachFile;
         Button btnEditTask;
         Button btnDeleteTask;
@@ -214,7 +203,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             taskTitle = itemView.findViewById(R.id.task_title_tv);
             taskProductLevel = itemView.findViewById(R.id.task_category_tv);
             layoutCB = itemView.findViewById(R.id.layoutCB);
-            layoutrow = itemView.findViewById(R.id.layoutBorder);
+            layoutRow = itemView.findViewById(R.id.task_header_ll);
             btnAttachFile = itemView.findViewById(R.id.btn_attach_photo);
             btnDeleteTask = itemView.findViewById(R.id.delete_button);
             btnEditTask = itemView.findViewById(R.id.edit_button);
@@ -228,7 +217,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             }
 
             if (!isShowProdLevel
-                    && (source == TaskConstant.SOURCE.RETAILER))
+                    || (source == TaskConstant.SOURCE.HOME_SCREEN))
                 taskProductLevel.setVisibility(View.GONE);
 
             if (mTabPosition == 2) {
@@ -237,37 +226,5 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
             }
 
         }
-    }
-
-    private void showDeleteAlert(int position) {
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(
-                mContext);
-        builder.setTitle("");
-        builder.setMessage(mContext.getString(
-                R.string.do_you_want_to_delete_the_task));
-
-        builder.setPositiveButton(mContext.getString(R.string.ok),
-                new android.content.DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        taskClickListener.onTaskButtonClick(taskDatas.get(position), 2);
-                        taskDatas.remove(position);
-                        notifyItemRemoved(position);
-                        notifyItemRangeChanged(position, taskDatas.size());
-                        dialog.dismiss();
-
-
-                    }
-                });
-
-        builder.setNegativeButton(mContext.getString(R.string.cancel),
-                new android.content.DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
-
-        builder.setCancelable(false);
-        AppUtils.applyAlertDialogTheme(mContext, builder);
     }
 }

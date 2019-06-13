@@ -26,7 +26,8 @@
         <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/_20sdp">
+            android:padding="@dimen/_10sdp"
+            >
 
             <TextView
                 android:id="@+id/task_title_tv"
@@ -227,9 +228,9 @@
                 android:layout_width="@dimen/spinner_width"
                 android:layout_height="@dimen/_35sdp"
                 android:layout_centerVertical="true"
-                android:stateListAnimator="@android:anim/bounce_interpolator"
                 android:gravity="center_vertical"
                 android:spinnerMode="dialog"
+                android:stateListAnimator="@android:anim/bounce_interpolator"
                 android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

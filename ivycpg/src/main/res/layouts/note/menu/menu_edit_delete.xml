@@ -16,4 +16,13 @@
         android:title="@string/delete"
         ivydist:showAsAction="ifRoom"
         />
+
+    <item
+        android:id="@+id/menu_close"
+        android:orderInCategory="98"
+        android:icon="@drawable/ic_close_black_white_24dp"
+        android:title="@string/delete"
+        ivydist:showAsAction="ifRoom"
+        android:visible="false"
+        />
 </menu>

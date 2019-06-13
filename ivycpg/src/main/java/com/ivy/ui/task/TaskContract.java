@@ -33,6 +33,8 @@ public interface TaskContract {
         void showTaskUpdateMsg();
 
         void showTaskReasonUpdateMsg();
+
+        void showDataNotMappedMsg();
     }
 
     interface TaskCreationView extends TaskView {
@@ -79,17 +81,21 @@ public interface TaskContract {
 
         void fetchLabels();
 
-        void fetchData(int retailerId, String taskId);
+        void fetchTaskCreationData(int retailerId, String taskId);
+
+        void fetchTaskCategory();
 
         void fetchTaskImageList(String taskId);
 
         void fetchCompletedTask(String retailerID);
 
-        void updateTaskList(int userCreatedTask, String retailerID, boolean isRetailerWise, boolean isSurveywise, boolean isDelegate);
+        void fetchReasonFromStdListMasterByListCode();
+
+        void getTaskListData(int userCreatedTask, String retailerID, boolean isRetailerWise, boolean isSurveywise, boolean isDelegate);
 
         void addNewImage(String imageName);
 
-        void onSaveButtonClick(int channelId, TaskDataBO taskObj, int linkUserId, int retailerId);
+        void onSaveTask(int channelId, TaskDataBO taskObj, int linkUserId, int retailerId);
 
         void updateTaskExecution(String retailerID, TaskDataBO taskDataBO, int reasonId);
 
@@ -104,6 +110,8 @@ public interface TaskContract {
         int getUserID();
 
         int getRetailerID();
+
+        RetailerMasterBO getRetailerMasterBo(String retailerId);
 
         void orderBySortList(int sortType, boolean orderBy);
 
