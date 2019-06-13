@@ -1308,6 +1308,16 @@
         <item>ที่เสร็จสมบูรณ์</item>
         <item>ตัวแทน</item>
     </string-array>
+
+    <string-array name="task_sort_list">
+        <item>Task(A—Z)</item>
+        <item>Task(Z—A)</item>
+        <item>ຫມວດ(A—Z)</item>
+        <item>ຫມວດ(Z—A)</item>
+        <item>Due Date(old—new)</item>
+        <item>Due Date(new—old)</item>
+    </string-array>
+
     <string-array name="days_in_week">
         <item>Sun</item>
         <item>Mon</item>

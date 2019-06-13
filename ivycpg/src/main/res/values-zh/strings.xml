@@ -1307,6 +1307,17 @@
         <item>Completed</item>
         <item>Delegate</item>
     </string-array>
+
+    <string-array name="task_sort_list">
+        <item>Task(A—Z)</item>
+        <item>Task(Z—A)</item>
+        <item>类别(A—Z)</item>
+        <item>类别(Z—A)</item>
+        <item>到期日(old—new)</item>
+        <item>到期日(new—old)</item>
+    </string-array>
+
+
     <string-array name="days_in_week">
         <item>Sun</item>
         <item>Mon</item>

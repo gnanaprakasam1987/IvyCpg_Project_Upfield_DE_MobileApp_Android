@@ -1307,6 +1307,16 @@
         <item>Completed</item>
         <item>Delegate</item>
     </string-array>
+
+    <string-array name="task_sort_list">
+        <item>Tugas(A—Z)</item>
+        <item>Tugas(Z—A)</item>
+        <item>Kategori(A—Z)</item>
+        <item>Kategori(Z—A)</item>
+        <item>Tanggal Jatuh Tempo(old—new)</item>
+        <item>Tanggal Jatuh Tempo(new—old)</item>
+    </string-array>
+
     <string-array name="days_in_week">
         <item>Sun</item>
         <item>Mon</item>

@@ -1333,6 +1333,17 @@
         <item>Completed</item>
         <item>Delegate</item>
     </string-array>
+
+    <string-array name="task_sort_list">
+        <item>المهمة(A—Z)</item>
+        <item>المهمة(Z—A)</item>
+        <item>التصنيف(A—Z)</item>
+        <item>التصنيف(Z—A)</item>
+        <item>تاريخ الاستحقاق(old—new)</item>
+        <item>تاريخ الاستحقاق(new—old)</item>
+    </string-array>
+
+
     <string-array name="days_in_week">
         <item>Sun</item>
         <item>Mon</item>

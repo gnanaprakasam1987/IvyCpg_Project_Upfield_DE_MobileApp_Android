@@ -88,6 +88,7 @@ import com.ivy.cpg.view.van.stockproposal.StockProposalFragment;
 import com.ivy.cpg.view.webview.WebViewActivity;
 import com.ivy.maplib.PlanningMapFragment;
 import com.ivy.sd.camera.CameraActivity;
+import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ChannelBO;
 import com.ivy.sd.png.bo.ConfigureBO;
@@ -312,6 +313,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
             }
         });
+
+        TextView txtLogOut = (TextView)view.findViewById(R.id.txtLogOut);
+        if (!BuildConfig.FLAVOR.equalsIgnoreCase("aws"))
+            txtLogOut.setText(getResources().getString(R.string.close));
 
         LinearLayout ll_logout = view.findViewById(R.id.ll_logout);
         ll_logout.setOnClickListener(new OnClickListener() {
@@ -603,7 +608,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             case 0:
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity())
                         .setTitle(
-                                getResources().getString(R.string.do_u_want_logout))
+                                BuildConfig.FLAVOR.equalsIgnoreCase("aws") ? getResources().getString(R.string.do_u_want_logout) :
+                        getResources().getString(R.string.do_u_want_close))
                         .setCancelable(false)
                         .setPositiveButton(getResources().getString(R.string.ok),
                                 new DialogInterface.OnClickListener() {

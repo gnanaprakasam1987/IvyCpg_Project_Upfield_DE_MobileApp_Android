@@ -1439,7 +1439,7 @@ SynchronizationHelper {
                 }
 
                 if (insert == VOLLEY_DOWNLOAD_INSERT) {
-                    bmodel.synchronizationHelper.insertSyncHeader(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SYNC_TYPE_DOWNLOAD,
+                    bmodel.synchronizationHelper.insertSyncHeader(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SYNC_TYPE_DGT_DOWNLOAD,
                             0, SYNC_STATUS_COMPLETED, mDownloadUrlList.size());
                 }
 
@@ -4877,8 +4877,8 @@ SynchronizationHelper {
                                                        String appendurl) {
 
         StringBuilder url = new StringBuilder();
-//        url.append(DataMembers.SERVER_URL);
-        url.append("http://192.168.2.92/api");
+        url.append(DataMembers.SERVER_URL);
+//        url.append("http://192.168.2.92/api");
         url.append(appendurl);
 
         try {

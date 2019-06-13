@@ -1310,6 +1310,15 @@
         <item>Delegate</item>
     </string-array>
 
+    <string-array name="task_sort_list">
+        <item>Task(A—Z)</item>
+        <item>Task(Z—A)</item>
+        <item>Category(A—Z)</item>
+        <item>Category(Z—A)</item>
+        <item>Due Date(old—new)</item>
+        <item>Due Date(new—old)</item>
+    </string-array>
+
     <string-array name="days_in_week">
         <item>Sun</item>
         <item>Mon</item>

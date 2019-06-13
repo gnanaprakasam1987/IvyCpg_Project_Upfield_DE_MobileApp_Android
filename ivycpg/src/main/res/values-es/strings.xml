@@ -730,7 +730,7 @@
     <string name="text_mdate">Fecha faltante</string>
     <string name="menu_not_available">Menú(s) no disponible(s)</string>
     <string name="download_url_empty">La URL de descarga está vacía</string>
-    <string name="out_of">De %1$d" maestros descargados</string>
+    <string name="out_of">De "%1$d" maestros descargados</string>
     <string name="still_you_can">Aún puede tomar "%1$d" más fotos. ¿Desea continuar?</string>
     <string name="table_downloaded">Tabla "%1$d" descargada</string>
     <string name="error">Error</string>
@@ -1308,6 +1308,16 @@
         <item>Completed</item>
         <item>Delegate</item>
     </string-array>
+
+    <string-array name="task_sort_list">
+        <item>Tareas(A—Z)</item>
+        <item>Tareas(Z—A)</item>
+        <item>Categoría(A—Z)</item>
+        <item>Categoría(Z—A)</item>
+        <item>Fecha de Vencimiento(old—new)</item>
+        <item>Fecha de Vencimiento(new—old)</item>
+    </string-array>
+
     <string-array name="days_in_week">
         <item>Sun</item>
         <item>Mon</item>

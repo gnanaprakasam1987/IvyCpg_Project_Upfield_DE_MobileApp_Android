@@ -36,9 +36,9 @@ static def fetchRevisionNumber() {
 }
 
 def majorVersion = 2
-def minorVersion = 140
+def minorVersion = 141
 def patchVersion = 0
-def verCode = 1390
+def verCode = 1400
 def revNumber = fetchRevisionNumber()
 
 android {
@@ -52,7 +52,7 @@ android {
         versionCode "$minorVersion$patchVersion".toInteger()
         versionName "${majorVersion}.${minorVersion}.${patchVersion}.${revNumber}"
         multiDexEnabled true
-        resConfigs "en", "in", "lo", "th", "vi", "tr", "ar", "es"
+        resConfigs "en", "in", "lo", "th", "vi", "tr", "ar", "es","fr"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "BASE_URL", "\"${BASE_CPG_DEV_URL}\"")
         buildConfigField("String", "TEST_USER_NAME", "\"${TEST_USER_NAME}\"")

@@ -3,6 +3,7 @@ package com.ivy.cpg.locationservice.realtime;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -55,12 +56,24 @@ public class RealTimeLocationTracking {
         }
 
         //starts the service
-        if(context.startService(intent) != null) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            //starts the service
+            if(context.startForegroundService(intent) != null) {
 
-            //update the status as true if user Started work
-            updateWorkStatus(context, true);
+                //update the status as true if user Started work
+                updateWorkStatus(context, true);
 
-            return STATUS_SUCCESS;
+                return STATUS_SUCCESS;
+            }
+        }else{
+            //starts the service
+            if(context.startService(intent) != null) {
+
+                //update the status as true if user Started work
+                updateWorkStatus(context, true);
+
+                return STATUS_SUCCESS;
+            }
         }
 
         return STATUS_SERVICE_ERROR;
