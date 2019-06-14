@@ -146,7 +146,10 @@ public class TaskExpandableListAdapter extends BaseExpandableListAdapter {
         holder.taskNameTv.setText(retNameStr);
         holder.taskTitleTv.setText(taskChildBo.getTasktitle());
 
-        holder.taskDueDateTv.setText(String.format(mContext.getString(R.string.due_in_next_days), taskChildBo.getNoOfDueDays()));
+        if (taskChildBo.getNoOfDueDays() == 0)
+            holder.taskDueDateTv.setText(mContext.getString(R.string.due_today));
+        else
+            holder.taskDueDateTv.setText(String.format(mContext.getString(R.string.due_in_next_days), taskChildBo.getNoOfDueDays()));
 
         row.setOnClickListener(v -> onClickListener.navigateDetailSrc(taskChildBo));
 

@@ -85,16 +85,6 @@ public class TaskUnplannedFragment extends BaseFragment implements TaskContract.
     @Override
     protected void setUpViews() {
         setUpToolbar(getString(R.string.pending_task));
-        taskPresenter.fetchUnPlannedTask();
-
-        taskExpandableListView.setOnGroupClickListener(new ExpandableListView.OnGroupClickListener() {
-            @Override
-            public boolean onGroupClick(ExpandableListView expandableListView, View view, int i, long l) {
-
-
-                return false;
-            }
-        });
 
         taskExpandableListView.setOnGroupClickListener((parent, v, groupPosition, l) -> {
             parent.smoothScrollToPosition(groupPosition);
@@ -115,6 +105,7 @@ public class TaskUnplannedFragment extends BaseFragment implements TaskContract.
     public void onResume() {
         super.onResume();
         setHasOptionsMenu(true);
+        taskPresenter.fetchUnPlannedTask();
     }
 
     @Override
@@ -181,7 +172,7 @@ public class TaskUnplannedFragment extends BaseFragment implements TaskContract.
         RetailerMasterBO retailerBo = taskPresenter.getRetailerMasterBo(retBo.getRetailerId());
         if (retailerBo != null) {
             AddPlanDialogFragment addPlanDialogFragment = new AddPlanDialogFragment(null, retailerBo,
-                    null, null);
+                    null, new ArrayList<>());
             addPlanDialogFragment.show(((FragmentActivity) mContext).getSupportFragmentManager(),
                     "add_plan_fragment");
         } else {

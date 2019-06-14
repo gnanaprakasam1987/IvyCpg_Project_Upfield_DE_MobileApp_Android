@@ -739,13 +739,13 @@ public class LoginHelper {
         int taskCount = 0;
         try {
             db.openDataBase();
-            String dueDate = DateTimeUtils.getRequestedDateByGetType(businessModel.configurationMasterHelper.IS_TASK_DUDE_DATE_COUNT, Calendar.DATE);
-            String query = "select distinct A.taskid"
-                    + " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid"
-                    + " left join RetailerMaster RM on RM.RetailerID=A.retailerId"
-                    + " left join (Select Date,EntityId From DatewisePlan Where (status != 'D' OR status IS NULL) and EntityType = 'RETAILER' ) as DWP on A.retailerID=DWP.EntityId"
-                    + " where (B.Status!='D' OR B.Status IS NULL) and DWP.date>" + StringUtils.QT(dueDate) + " and A.retailerId!=0"
-                    + " and A.TaskId not in (Select taskid from TaskHistory where RetailerId = A.retailerId)";
+            String maxDueDate = DateTimeUtils.getRequestedDateByGetType(businessModel.configurationMasterHelper.IS_TASK_DUDE_DATE_COUNT, Calendar.DATE);
+            String query = "select distinct A.taskid" +
+                    " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid " +
+                    " left join DatewisePlan DWP on DWP.Date = B.DueDate" +
+                    " and DWP.EntityId = A.retailerID and DWP.Status!='D' and DWP.EntityType = 'RETAILER'" +
+                    " where B.DueDate<=" + StringUtils.QT(maxDueDate) + " and DWP.Date IS NULL and (B.Status!='D' OR B.Status IS NULL)" +
+                    " and A.retailerId!=0 and A.TaskId not in (Select taskid from TaskHistory where RetailerId = A.retailerId)";
 
             Cursor c = db.selectSQL(query);
 

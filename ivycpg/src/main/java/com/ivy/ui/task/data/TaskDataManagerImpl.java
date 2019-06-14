@@ -728,17 +728,18 @@ public class TaskDataManagerImpl implements TaskDataManager {
                 HashMap<String, ArrayList<TaskDataBO>> unplannedTaskList = new HashMap<>();
                 ArrayList<TaskDataBO> taskList = new ArrayList<>();
                 initDb();
-                String dueDate = DateTimeUtils.getRequestedDateByGetType(toDateCount, Calendar.DATE);
+                String maxDueDate = DateTimeUtils.getRequestedDateByGetType(toDateCount, Calendar.DATE);
 
-                String query = "select distinct A.taskid,B.taskcode,B.taskDesc,A.retailerId,"
-                        + "IFNULL(B.DueDate,'') as DueDate,DWP.Date,"
-                        + "B.Date,B.CategoryId,IFNULL(PL.PName,''),B.taskowner"
-                        + " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid"
-                        + " left join ProductMaster PL on PL.PID=B.CategoryId"
-                        + " left join RetailerMaster RM on RM.RetailerID=A.retailerId"
-                        + " left join (Select Date,EntityId From DatewisePlan Where (status != 'D' OR status IS NULL) and EntityType = 'RETAILER') as DWP on A.retailerID=DWP.EntityId"
-                        + " where (B.Status!='D' OR B.Status IS NULL) and DWP.date>" + StringUtils.QT(dueDate) + " and A.retailerId!=0"
-                        + " and A.TaskId not in (Select taskid from TaskHistory where RetailerId = A.retailerId)";
+                String query = "select distinct A.taskid,B.taskcode,B.taskDesc,A.retailerId," +
+                        "IFNULL(B.DueDate,'') as DueDate," +
+                        "B.Date,B.CategoryId,IFNULL(PL.PName,''),B.taskowner" +
+                        " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid" +
+                        " left join ProductMaster PL on PL.PID=B.CategoryId" +
+                        " left join RetailerMaster RM on RM.RetailerID=A.retailerId" +
+                        " left join DatewisePlan DWP on DWP.Date = B.DueDate" +
+                        " and DWP.EntityId = A.retailerID and DWP.Status!='D' and DWP.EntityType = 'RETAILER'" +
+                        " where B.DueDate<=" + StringUtils.QT(maxDueDate) + " and DWP.Date IS NULL and (B.Status!='D' OR B.Status IS NULL)" +
+                        " and A.retailerId!=0 and A.TaskId not in (Select taskid from TaskHistory where RetailerId = A.retailerId)";
 
                 Cursor c = mDbUtil.selectSQL(query);
                 if (c != null) {
@@ -750,10 +751,9 @@ public class TaskDataManagerImpl implements TaskDataManager {
                         taskBo.setTaskDesc(c.getString(2));
                         taskBo.setRid(c.getInt(3));
                         taskBo.setTaskDueDate(c.getString(4));
-                        taskBo.setLastVisitDate(c.getString(5));
-                        taskBo.setCreatedDate(c.getString(6));
-                        taskBo.setTaskCategoryDsc(c.getString(7));
-                        taskBo.setTaskOwner(c.getString(8));
+                        taskBo.setCreatedDate(c.getString(5));
+                        taskBo.setTaskCategoryDsc(c.getString(6));
+                        taskBo.setTaskOwner(c.getString(7));
 
                         int daysCount = DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 taskBo.getTaskDueDate(), "yyyy/MM/dd");
@@ -784,18 +784,18 @@ public class TaskDataManagerImpl implements TaskDataManager {
     @Override
     public Observable<ArrayList<TaskRetailerBo>> fetchUnPlannedRetailers(int toDateCount) {
         return Observable.fromCallable(() -> {
-
             try {
                 ArrayList<TaskRetailerBo> retailerList = new ArrayList<>();
                 initDb();
-                String dueDate = DateTimeUtils.getRequestedDateByGetType(toDateCount, Calendar.DATE);
-                String query = "select distinct RM.retailerId,RM.retailerName,DWP.Date,RA.Address1,RA.Address2,RA.Address3"
-                        + " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid"
-                        + " left join RetailerMaster RM on A.RetailerID=RM.retailerId"
-                        + " left join RetailerAddress RA on A.RetailerID = RA.retailerID"
-                        + " left join (Select Date,EntityId From DatewisePlan Where (status != 'D' OR status IS NULL) and EntityType = 'RETAILER') as DWP on A.retailerID=DWP.EntityId"
-                        + " where (B.Status!='D' OR B.Status IS NULL) and DWP.date>" + StringUtils.QT(dueDate) + " and A.retailerId!=0"
-                        + " and A.TaskId not in (Select taskid from TaskHistory where RetailerId = A.retailerId)";
+                String maxDueDate = DateTimeUtils.getRequestedDateByGetType(toDateCount, Calendar.DATE);
+                String query = "select distinct RM.retailerId,RM.retailerName,DWP.Date,RA.Address1,RA.Address2,RA.Address3" +
+                        " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid" +
+                        " left join RetailerMaster RM on A.RetailerID=RM.retailerId" +
+                        " left join RetailerAddress RA on A.RetailerID = RA.retailerID and RA.IsPrimary=1" +
+                        " left join DatewisePlan DWP on DWP.Date = B.DueDate" +
+                        " and DWP.EntityId = A.retailerID and DWP.Status!='D' and DWP.EntityType = 'RETAILER'" +
+                        " where B.DueDate<=" + StringUtils.QT(maxDueDate) + " and DWP.Date IS NULL and (B.Status!='D' OR B.Status IS NULL)" +
+                        " and A.retailerId!=0 and A.TaskId not in (Select taskid from TaskHistory where RetailerId = A.retailerId)";
 
                 Cursor c = mDbUtil.selectSQL(query);
                 if (c != null) {
@@ -806,9 +806,11 @@ public class TaskDataManagerImpl implements TaskDataManager {
                         retailerBo.setLastVisitDate(c.getString(2));
                         retailerBo.setRetAddress(c.getString(3) + "," + c.getString(4) + "," + c.getString(5));
 
-                        int daysCount = DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                                retailerBo.getLastVisitDate(), "yyyy/MM/dd");
-                        retailerBo.setNextVisitDaysCount(daysCount);
+                        if (c.getString(2) != null) {
+                            int daysCount = DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
+                                    retailerBo.getLastVisitDate(), "yyyy/MM/dd");
+                            retailerBo.setNextVisitDaysCount(daysCount);
+                        }
 
                         retailerList.add(retailerBo);
                     }

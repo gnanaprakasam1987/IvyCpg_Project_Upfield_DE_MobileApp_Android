@@ -66,7 +66,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     ArrayList<TaskDataBO> taskPreparedList;
     ArrayList<String> deletedImageList;
     ArrayList<TaskRetailerBo> taskRetailerListBo;
-    HashMap<String, ArrayList<TaskDataBO>> taskistHashMap;
+    HashMap<String, ArrayList<TaskDataBO>> taskListHashMap;
     ArrayList<ReasonMaster> taskNonCompleteReasonList;
 
     private int TASK_PRODUCT_LEVEL_NO;
@@ -454,8 +454,10 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     @Override
     public RetailerMasterBO getRetailerMasterBo(String retailerId) {
         for (RetailerMasterBO retBo : appDataProvider.getRetailerMasters()) {
-            if (retBo.getRetailerID().equals(retailerId))
+            if (retBo.getRetailerID().equals(retailerId)) {
+                appDataProvider.setRetailerMaster(retBo);
                 return retBo;
+            }
         }
         return null;
     }
@@ -554,7 +556,8 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     @Override
     public void fetchUnPlannedTask() {
         getIvyView().showLoading();
-
+        taskRetailerListBo = new ArrayList<>();
+        taskListHashMap = new HashMap<>();
         getCompositeDisposable().add(Observable.zip(mTaskDataManager.fetchUnPlannedRetailers(mConfigurationMasterHelper.IS_TASK_DUDE_DATE_COUNT),
                 mTaskDataManager.fetchUnPlanedTaskData(mConfigurationMasterHelper.IS_TASK_DUDE_DATE_COUNT)
                 , new BiFunction<ArrayList<TaskRetailerBo>, HashMap<String, ArrayList<TaskDataBO>>, Boolean>() {
@@ -564,19 +567,30 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                         taskRetailerListBo.clear();
                         taskRetailerListBo.addAll(retailerMasterBOArrayList);
 
-                        taskistHashMap.clear();
-                        taskistHashMap.putAll(taskRetailerList);
+                        taskListHashMap.clear();
+                        taskListHashMap.putAll(taskRetailerList);
 
                         return true;
                     }
                 }).subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<Boolean>() {
+                .subscribeWith(new DisposableObserver<Boolean>() {
                     @Override
-                    public void accept(Boolean aBoolean) throws Exception {
-                        ((TaskContract.TaskUnplannedView) getIvyView()).updateUnplannedTaskList(taskRetailerListBo, taskistHashMap);
+                    public void onNext(Boolean isFlag) {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+                        ((TaskContract.TaskUnplannedView) getIvyView()).updateUnplannedTaskList(taskRetailerListBo, taskListHashMap);
                         getIvyView().hideLoading();
                     }
+
 
                 }));
     }
