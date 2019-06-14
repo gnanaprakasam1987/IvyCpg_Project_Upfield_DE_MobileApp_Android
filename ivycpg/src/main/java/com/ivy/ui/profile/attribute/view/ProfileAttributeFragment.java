@@ -287,6 +287,7 @@ public class ProfileAttributeFragment extends BaseFragment
     }
 
     private void setSpinnerAdapter(Spinner attributeSpinner, ArrayList<AttributeBO> list,boolean isResetAdapter){
+
         AttributeBO attributeBO = new AttributeBO(-1,"Select");
 
         ArrayList<AttributeBO> spinnerList = new ArrayList<>();
@@ -298,24 +299,6 @@ public class ProfileAttributeFragment extends BaseFragment
                 spinnerList);
         attributeAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
         attributeSpinner.setAdapter(attributeAdapter);
-
-        /*if (planFilterBo != null
-                && planFilterBo.getFilterAttributeIdMap() != null
-                && planFilterBo.getFilterAttributeIdMap().get(attributeSpinner.getTag().toString())!= null
-                && list != null && !list.isEmpty()) {
-
-            int pos =0;
-            AttributeBO attributeBO1 = planFilterBo.getFilterAttributeIdMap().get(attributeSpinner.getTag().toString());
-            for (AttributeBO aId : list) {
-
-                if (aId.getAttributeId() == attributeBO1.getAttributeId()) {
-                    attributeSpinner.setSelected(true);
-                    attributeSpinner.setSelection(pos+1);
-                    break;
-                }
-                pos++;
-            }
-        }*/
 
         int pos =0;
         for (AttributeBO attribute : list) {

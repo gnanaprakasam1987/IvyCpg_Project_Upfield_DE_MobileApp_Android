@@ -2518,7 +2518,8 @@ public class ProfileEditFragmentNew extends BaseFragment
 
     @Override
     public void onCompleteClicked(StepperLayout.OnCompleteClickedCallback callback) {
-        callback.complete();
+        if (profileEditPresenter.doValidateProdileEdit())
+            callback.complete();
     }
 
     @Override
