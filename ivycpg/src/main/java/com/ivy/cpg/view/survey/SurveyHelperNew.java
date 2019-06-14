@@ -1030,9 +1030,9 @@ public class SurveyHelperNew {
                             subQBO.setIsMandatoryQuestNotAnswered(false);
                             if (subQBO.getIsMandatory() == 1) {
                                 if (subQBO.getIsMandatory() == 1
-                                        && (subQBO.getSelectedAnswer().isEmpty() || qus.getSelectedAnswer().contains(context.getResources().
+                                        && (subQBO.getSelectedAnswer().isEmpty() || subQBO.getSelectedAnswer().contains(context.getResources().
                                         getString(R.string.plain_select)))
-                                        && (subQBO.getSelectedAnswerIDs().isEmpty() || qus.getSelectedAnswerIDs().contains(-1))) {
+                                        && (subQBO.getSelectedAnswerIDs().isEmpty() || subQBO.getSelectedAnswerIDs().contains(-1))) {
                                     subQBO.setIsMandatoryQuestNotAnswered(true);
                                     returnFlag = false;
 
