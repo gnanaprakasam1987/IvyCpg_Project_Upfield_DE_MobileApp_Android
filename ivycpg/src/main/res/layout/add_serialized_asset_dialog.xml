@@ -22,6 +22,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginLeft="@dimen/_10sdp"
+        android:padding="@dimen/_5sdp"
         android:tag="asset_type"
         android:text="@string/type" />
 
@@ -50,6 +51,7 @@
         android:layout_alignLeft="@+id/spinner_model"
         android:layout_toEndOf="@+id/label_asset_type"
         android:layout_toRightOf="@+id/label_asset_type"
+        android:padding="@dimen/_5sdp"
         android:tag="asset_model"
         android:text="@string/model" />
 
@@ -79,6 +81,7 @@
         android:layout_alignParentLeft="true"
         android:layout_marginStart="@dimen/_10sdp"
         android:layout_marginLeft="@dimen/_10sdp"
+        android:padding="@dimen/_5sdp"
         android:tag="asset_vendor"
         android:text="@string/vendor" />
 
@@ -106,6 +109,7 @@
         android:layout_alignLeft="@+id/spinner_model"
         android:layout_toEndOf="@+id/label_asset_vendor"
         android:layout_toRightOf="@+id/label_asset_vendor"
+        android:padding="@dimen/_5sdp"
         android:tag="asset_capacity"
         android:text="@string/capacity" />
 
@@ -151,6 +155,7 @@
             android:layout_alignParentTop="true"
             android:layout_gravity="center_vertical"
             android:gravity="center"
+            android:padding="@dimen/_5sdp"
             android:tag="choose_asset_name"
             android:text="@string/addasset" />
 
