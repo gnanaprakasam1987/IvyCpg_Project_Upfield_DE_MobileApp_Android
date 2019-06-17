@@ -24,10 +24,12 @@ import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
@@ -440,5 +442,39 @@ public class FileUtils {
         }
         return mFileName;
     }
+
+    public void CreateAppTutorialTextFile(String json){
+
+    }
+
+    public static String readFile(Context context,String fileName, String folder,String filePath) {
+
+        String path;
+        if(filePath.equals(""))
+         path = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES) + "/" + folder + "/";
+        else path=filePath+"/"+ folder + "/";
+
+        File file = new File(path + fileName);
+        StringBuilder sb = new StringBuilder();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader(file));
+
+
+            String st;
+            while ((st = br.readLine()) != null) {
+                sb.append(st);
+                sb.append("\n");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+       return sb.toString();
+
+    }
+
 
 }

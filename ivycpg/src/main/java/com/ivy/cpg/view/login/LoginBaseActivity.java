@@ -21,6 +21,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.ivy.apptutoriallibrary.AppTutorialPlugin;
 import com.ivy.cpg.view.attendance.AttendanceActivity;
 import com.ivy.cpg.view.sync.UploadHelper;
 import com.ivy.cpg.view.sync.catalogdownload.CatalogImageDownloadProvider;
@@ -38,7 +39,10 @@ import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.DistributorSelectionActivity;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.view.PasswordLockDialogFragment;
+import com.ivy.utils.FileUtils;
 import com.microsoft.azure.storage.blob.CloudBlobContainer;
+
+import org.json.JSONArray;
 
 import java.io.File;
 import java.util.HashMap;
@@ -88,6 +92,8 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
         super.onResume();
         businessModel = (BusinessModel) getApplicationContext();
         businessModel.setContext(this);
+
+
 
     }
 
@@ -154,6 +160,7 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
 
         LoginHelper loginHelper = LoginHelper.getInstance(this);
         loginHelper.downloadTermsAndConditions(this);
+
 
         if (businessModel.configurationMasterHelper.IS_SHOW_TERMS_COND && !loginHelper.isTermsAccepted()) {
             Intent intent = new Intent(this, TermsAndConditionsActivity.class);
@@ -504,14 +511,22 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
                     dismissCurrentProgressDialog();
 
                     FileDownloadProvider.getInstance(businessModel).callFileDownload(getApplicationContext());
-
                     if (businessModel.configurationMasterHelper.IS_CATALOG_IMG_DOWNLOAD)
                         CatalogImageDownloadProvider.getInstance(businessModel).callCatalogImageDownload();
 
-                    finishActivity();
-                    loginPresenter.checkLogin();
+                    String appTutorialAPi = businessModel.synchronizationHelper.downloadAppTutorialURL();
+                    if(!appTutorialAPi.equals("")){
+                        new DownloadAppTutorial().execute();
+                    }
+                    else {
+                        finishActivity();
+                        loginPresenter.checkLogin();
+                    }
+
 
                     break;
+
+
 
                 /*
                  * Handling MESSAGE_ENCOUNTERED_ERROR_APK: 1. Check the obj field of the
@@ -659,5 +674,59 @@ public abstract class LoginBaseActivity extends IvyBaseActivityNoActionBar imple
             finish();
         }
     }
+
+    class DownloadAppTutorial extends AsyncTask<Integer, Integer, Integer> {
+
+
+        protected void onPreExecute() {
+            showProgressDialog(getResources().getString(R.string.downloading_app_tutorial));
+        }
+
+        @Override
+        protected Integer doInBackground(Integer... params) {
+            try {
+                businessModel.synchronizationHelper.updateAuthenticateToken(false);
+                if (businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    String appTutorialAPi = businessModel.synchronizationHelper.downloadAppTutorialURL();
+                    if (!appTutorialAPi.equals("")) {
+                       String tutorialJSON= businessModel.synchronizationHelper.downLoadAppTutorial(LoginBaseActivity.this);
+                       businessModel.writeToFile(tutorialJSON,DataMembers.APP_TUTORIAL,"/"+DataMembers.APP_TUTORIAL , getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS)+"");
+
+                            String data = FileUtils.readFile(LoginBaseActivity.this, DataMembers.APP_TUTORIAL + ".txt", DataMembers.APP_TUTORIAL, getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "");
+                            JSONArray jsonArray = new JSONArray(data);
+                            AppTutorialPlugin.getInstance().setAppTutorialJsonArray(jsonArray);
+
+                    }
+
+                }
+                else {
+                    return -1;
+                }
+
+            } catch (Exception e) {
+                Commons.printException("" + e);
+                return -1;
+            }
+            return 0;
+        }
+
+        protected void onProgressUpdate(Integer... progress) {
+
+        }
+
+        @Override
+        protected void onPostExecute(Integer status) {
+            super.onPostExecute(status);
+            dismissAlertDialog();
+            if(status==-1){
+                Toast.makeText(LoginBaseActivity.this, getResources().getString(R.string.error_in_downloading_tutorial), Toast.LENGTH_SHORT).show();
+            }
+
+            finishActivity();
+            loginPresenter.checkLogin();
+
+        }
+    }
+
 
 }
