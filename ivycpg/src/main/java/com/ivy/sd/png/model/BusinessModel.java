@@ -152,6 +152,7 @@ import com.ivy.ui.activation.view.ActivationActivity;
 import com.ivy.ui.dashboard.data.SellerDashboardDataManagerImpl;
 import com.ivy.ui.photocapture.view.PhotoCaptureActivity;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
+import com.ivy.ui.retailer.RetailerConstants;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
@@ -302,7 +303,7 @@ public class BusinessModel extends Application {
 
     private HashMap<String, ArrayList<UserMasterBO>> mUserByRetailerID = new HashMap<String, ArrayList<UserMasterBO>>();
     private boolean isDoubleEdit_temp;
-    private HashMap<String, String> digitalContentURLS,digitalContentSFDCURLS;
+    private HashMap<String, String> digitalContentURLS, digitalContentSFDCURLS;
     private Handler handler;
     private Message mMessage;
     private File folder;
@@ -1606,7 +1607,7 @@ public class BusinessModel extends Application {
                     retailer.setIsCollectionView("N");
 
                     //set global gps distance for retailer from the config:GPSDISTANCE
-                    if (retailer.getGpsDistance() <=0 && configurationMasterHelper.GLOBAL_GPS_DISTANCE > 0)
+                    if (retailer.getGpsDistance() <= 0 && configurationMasterHelper.GLOBAL_GPS_DISTANCE > 0)
                         retailer.setGpsDistance(configurationMasterHelper.GLOBAL_GPS_DISTANCE);
 
                     updateRetailerPriceGRP(retailer, db);
@@ -1626,7 +1627,7 @@ public class BusinessModel extends Application {
 
                     mRetailerBOByRetailerid.put(retailer.getRetailerID(), retailer);
 
-                    if(configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
+                    if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
                         updateIsToday(db);
 
 
@@ -1761,8 +1762,8 @@ public class BusinessModel extends Application {
 
     private void updateIsToday(DBUtil db) {
         List<String> retailerIds = new ArrayList<>();
-        Cursor c = db.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND VisitStatus = 'PLANNED' " +
-                "and Date = " + DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+        Cursor c = db.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND VisitStatus = 'PLANNED' or 'COMPLETED' " +
+                "and Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         if (c != null
                 && c.getCount() > 0) {
             while (c.moveToNext()) {
@@ -1772,7 +1773,7 @@ public class BusinessModel extends Application {
             c.close();
         }
         if (retailerIds.size() > 0)
-            for (RetailerMasterBO retailerMasterBO : appDataProvider.getRetailerMasters()) {
+            for (RetailerMasterBO retailerMasterBO : getRetailerMaster()) {
                 retailerMasterBO.setIsToday(0);
                 if (retailerIds.contains(retailerMasterBO.getRetailerID())) {
                     retailerMasterBO.setIsToday(1);
@@ -2048,7 +2049,7 @@ public class BusinessModel extends Application {
     }
 
     public void updateSurveyScoreHistoryRetailerWise() {
-        DBUtil db = null;
+        DBUtil db;
         try {
 
             db = new DBUtil(ctx, DataMembers.DB_NAME);
@@ -2476,7 +2477,7 @@ public class BusinessModel extends Application {
     }
 
     public boolean hasCombinedStkChecked() {
-        ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(getContext());
+        ProductTaggingHelper productTaggingHelper = ProductTaggingHelper.getInstance(getContext());
         int cSize = productTaggingHelper.getTaggedProducts().size();
         if (cSize == 0)
             return false;
@@ -2714,15 +2715,15 @@ public class BusinessModel extends Application {
     }
 
 
-    public void saveCancelVistreason(String reasonId,String date) {
+    public void saveCancelVistreason(String reasonId, String date) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
             );
             db.createDataBase();
             db.openDataBase();
 
-            String query = "Update DatewisePlan set cancelReasonId="+StringUtils.QT(reasonId)+",VisitStatus = 'CANCELLED' , Status = 'D' "
-                    +" where EntityId="+StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID())+" and Date="+StringUtils.QT(date);
+            String query = "Update DatewisePlan set cancelReasonId=" + StringUtils.QT(reasonId) + ",VisitStatus = 'CANCELLED' , Status = 'D' "
+                    + " where EntityId=" + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID()) + " and Date=" + StringUtils.QT(date);
 
             db.updateSQL(query);
 
@@ -3540,17 +3541,14 @@ public class BusinessModel extends Application {
                     .selectSQL("SELECT Rfield FROM HHTModuleMaster where hhtCode = 'CLOUD_STORAGE' and flag = 1 and ForSwitchSeller = 0");
             if (c != null) {
                 while (c.moveToNext()) {
-                    if(c.getInt(0)==0){
-                        isAmazonCloud=true;
-                    }
-                    else if(c.getInt(0)==1){
-                        isSFDCCloud=true;
-                    }
-                    else if(c.getInt(0)==2){
-                        isAzureCloud=true;
-                    }
-                    else {
-                        isAmazonCloud=true;
+                    if (c.getInt(0) == 0) {
+                        isAmazonCloud = true;
+                    } else if (c.getInt(0) == 1) {
+                        isSFDCCloud = true;
+                    } else if (c.getInt(0) == 2) {
+                        isAzureCloud = true;
+                    } else {
+                        isAmazonCloud = true;
                     }
                 }
                 c.close();
@@ -3633,21 +3631,21 @@ public class BusinessModel extends Application {
             if (configurationMasterHelper.IS_PLANOGRAM_RETAIN_LAST_VISIT_TRAN) {
                 c = db
                         .selectSQL("SELECT DISTINCT ImagePath,imageId FROM LastVisitPlanogramImages");
-                int count=0;
+                int count = 0;
                 if (c != null) {
                     while (c.moveToNext()) {
 
-                        count+=100;
-                            DigitalContentModel digitalContentBO = new DigitalContentModel();
+                        count += 100;
+                        DigitalContentModel digitalContentBO = new DigitalContentModel();
 
-                            String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
-                            digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES * 2));// approx  2 mb
-                            digitalContentBO.setImageID(c.getInt(1));
-                            digitalContentBO.setImgUrl(downloadUrl);
-                            digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);
-                            digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
+                        String downloadUrl = DataMembers.IMG_DOWN_URL + "" + c.getString(0);
+                        digitalContentBO.setFileSize(String.valueOf(FileDownloadProvider.MB_IN_BYTES * 2));// approx  2 mb
+                        digitalContentBO.setImageID(c.getInt(1));
+                        digitalContentBO.setImgUrl(downloadUrl);
+                        digitalContentBO.setContentFrom(DataMembers.PLANOGRAM);
+                        digitalContentBO.setUserId(userMasterHelper.getUserMasterBO().getUserid());
 
-                            digitalContentLargeFileURLS.put(digitalContentBO.getImageID()+count, digitalContentBO);
+                        digitalContentLargeFileURLS.put(digitalContentBO.getImageID() + count, digitalContentBO);
 
 
                     }
@@ -3659,10 +3657,9 @@ public class BusinessModel extends Application {
             if (c != null) {
                 while (c.moveToNext()) {
 
-                    if(c.getString(4).equalsIgnoreCase("SFDC")){// SFDC type
-                        getDigitalContentSFDCURLS().put(c.getString(0) + "%" + c.getString(3) ,DataMembers.DIGITALCONTENT);
-                    }
-                    else {
+                    if (c.getString(4).equalsIgnoreCase("SFDC")) {// SFDC type
+                        getDigitalContentSFDCURLS().put(c.getString(0) + "%" + c.getString(3), DataMembers.DIGITALCONTENT);
+                    } else {
                         if (configurationMasterHelper.DIGITAL_CONTENT_SIZE != -1 &&
                                 configurationMasterHelper.DIGITAL_CONTENT_SIZE < c.getLong(1)) {
                             DigitalContentModel digitalContentBO = new DigitalContentModel();
@@ -4072,12 +4069,15 @@ public class BusinessModel extends Application {
      */
     public void updateIsVisitedFlag(String flag) {
         try {
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
-            );
+            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.openDataBase();
             db.updateSQL("Update RetailerBeatMapping set isVisited=" + QT(flag) + " where RetailerID ="
                     + getRetailerMasterBO().getRetailerID()
                     + " AND BeatID=" + getRetailerMasterBO().getBeatID());
+
+            if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
+                db.updateSQL("Update DatewisePlan set VisitStatus=" + StringUtils.QT(RetailerConstants.COMPLETED) +
+                        " where EntityId=" + StringUtils.QT(getAppDataProvider().getRetailMaster().getRetailerID()) + " and Date=" + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
             db.closeDB();
 
@@ -4924,7 +4924,7 @@ public class BusinessModel extends Application {
     /**
      * @param folderPath
      * @param fnamesStarts
-     * @See {@link FileUtils#deleteFiles(String,String)}
+     * @See {@link FileUtils#deleteFiles(String, String)}
      * @deprecated
      */
     public void deleteFiles(String folderPath, String fnamesStarts) {
@@ -5685,7 +5685,7 @@ public class BusinessModel extends Application {
 
     /**
      * @See {@link RetailerDataManagerImpl#fetchRetailers()}
-     * @deprecated Handled inside the fetchRetailers() method itself
+     * @deprecated Handled inside the fetchAllRetailers() method itself
      */
     public void setWeeknoFoNewRetailer() {
         for (RetailerMasterBO retailer : getRetailerMaster()) {
@@ -6431,7 +6431,7 @@ public class BusinessModel extends Application {
 
     private void initializeUOMmapping(int type) {
         if (type == 0) {
-            ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(getContext());
+            ProductTaggingHelper productTaggingHelper = ProductTaggingHelper.getInstance(getContext());
             for (ProductMasterBO bo : productTaggingHelper.getTaggedProducts()) {
                 bo.setOuterMapped(false);
                 bo.setCaseMapped(false);
@@ -6454,7 +6454,7 @@ public class BusinessModel extends Application {
 
     private void enableUOMForAllProducts(int type) {
         if (type == 0) {
-            ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(getContext());
+            ProductTaggingHelper productTaggingHelper = ProductTaggingHelper.getInstance(getContext());
             for (ProductMasterBO bo : productTaggingHelper.getTaggedProducts()) {
                 bo.setOuterMapped(true);
                 bo.setCaseMapped(true);
@@ -6482,7 +6482,7 @@ public class BusinessModel extends Application {
         db.openDataBase();
 
         try {
-            ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(getContext());
+            ProductTaggingHelper productTaggingHelper = ProductTaggingHelper.getInstance(getContext());
 
             if (contentLevelId == pLevelId) {
                 if (type == 0) {
@@ -7724,8 +7724,8 @@ public class BusinessModel extends Application {
                 mBucketName = "Order" + path + imageName;
             } else if (imageName.startsWith("SUR_SGN_")) {
                 mBucketName = "Survey" + path + imageName;
-            }else if (imageName.startsWith("ASR_")) {
-                mBucketName = "AssetServiceRequest" + path+imageName;
+            } else if (imageName.startsWith("ASR_")) {
+                mBucketName = "AssetServiceRequest" + path + imageName;
             } else {
                 if (configurationMasterHelper.IS_PHOTO_CAPTURE_IMG_PATH_CHANGE) {
                     mBucketName = "PhotoCapture" + path + imageName;

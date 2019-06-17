@@ -454,7 +454,7 @@ public class AssetTrackingHelper {
             sb.append("select Distinct P.PosmId,P.Posmdesc,SBD.SerialNO,SBD.Target,SBD.Productid,SLM.listname,SLM.listid,SBD.NfcTagId,SBD.StoreLocId,SDM.listname as locname,PM.ParentHierarchy as ParentHierarchy, ");
             sb.append("SBDM.InstallDate,SBDM.LastServiceDate from PosmMaster P  ");
             sb.append("inner join POSMCriteriaMapping SBD on P.PosmID=SBD.posmid ");
-            sb.append("left join SbdMerchandisingMaster SBDM on SBDM.SBDID=P.PosmId ");
+            sb.append("left join SbdMerchandisingMaster SBDM on SBDM.Value=P.PosmId ");
             sb.append("left join Standardlistmaster SLM on SLM.listid=SBD.PosmGroupLovId and SLM.ListType='POSM_GROUP_TYPE' ");
             sb.append("left join Standardlistmaster SDM on SDM.listid=SBD.StoreLocId and SDM.ListType='PL' ");
             sb.append("left join ProductMaster PM on PM.PID=SBD.Productid ");
@@ -1702,8 +1702,8 @@ public class AssetTrackingHelper {
 
 
                                 if (mBusinessModel.configurationMasterHelper.IS_FITSCORE_NEEDED) {
-                                    assetDetailValues.append("," + (assetBo.getAvailQty() > 0 || assetBo.getExecutorQty() > 0 ? productWeightAge : "0"));
-                                    if (assetBo.getAvailQty() > 0 || assetBo.getExecutorQty() > 0)
+                                    assetDetailValues.append("," + (assetBo.getExecutorQty() > 0 ? productWeightAge : "0"));
+                                    if (assetBo.getExecutorQty() > 0)
                                         sum = sum + productWeightAge;
                                 }
 

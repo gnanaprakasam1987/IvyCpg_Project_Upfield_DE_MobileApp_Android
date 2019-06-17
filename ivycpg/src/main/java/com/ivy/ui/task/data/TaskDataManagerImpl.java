@@ -294,7 +294,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             uID = StringUtils.QT(appDataProvider.getRetailMaster().getRetailerID()
                                     + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
 
-
+                        String taskEvdImage = taskDataBO.getTaskEvidenceImg() == null ? null : StringUtils.QT(taskDataBO.getTaskEvidenceImg());
                         String columns = "TaskId,RetailerId,Date,UId,Upload,ImageName";
                         String values;
 
@@ -304,7 +304,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                                         + StringUtils.QT(retailerId) + ","
                                         + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                                         + uID + ",'N'" + ","
-                                        + taskDataBO.getTaskEvidenceImg() == null ? null : StringUtils.QT(taskDataBO.getTaskEvidenceImg());
+                                        + taskEvdImage;
                                 mDbUtil.insertSQL("TaskExecutionDetails", columns, values);
                                 //bmodel.saveModuleCompletion("MENU_TASK");
                             } else {
@@ -536,23 +536,19 @@ public class TaskDataManagerImpl implements TaskDataManager {
      * @return ArrayList
      */
     @Override
-    public Observable<ArrayList<RetailerMasterBO>> fetchRetailers() {
+    public Observable<ArrayList<RetailerMasterBO>> fetchAllRetailers() {
         return Observable.fromCallable(new Callable<ArrayList<RetailerMasterBO>>() {
             @Override
             public ArrayList<RetailerMasterBO> call() throws Exception {
                 try {
                     RetailerMasterBO temp;
                     ArrayList<RetailerMasterBO> retailerMaster = new ArrayList<>();
-                    int siz = appDataProvider.getRetailerMasters().size();
-                    for (int ii = 0; ii < siz; ii++) {
-                        if (((appDataProvider
-                                .getRetailerMasters().get(ii).getIsToday() == 1)) || appDataProvider.getRetailerMasters().get(ii).getIsDeviated()
-                                .equals("Y")) {
-                            temp = new RetailerMasterBO();
-                            temp.setTretailerId(SDUtil.convertToInt(appDataProvider.getRetailerMasters().get(ii).getRetailerID()));
-                            temp.setTretailerName(appDataProvider.getRetailerMasters().get(ii).getRetailerName());
-                            retailerMaster.add(temp);
-                        }
+                    for (RetailerMasterBO retBo : appDataProvider.getRetailerMasters()) {
+
+                        temp = new RetailerMasterBO();
+                        temp.setRetailerID(retBo.getRetailerID());
+                        temp.setRetailerName(retBo.getRetailerName());
+                        retailerMaster.add(temp);
                     }
                     return retailerMaster;
                 } catch (Exception e) {

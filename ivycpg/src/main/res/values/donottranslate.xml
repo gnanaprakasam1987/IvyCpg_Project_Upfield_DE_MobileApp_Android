@@ -278,14 +278,6 @@
     <string name="server_task_can_not_be_delete">Server task can not be deleted</string>
     <string name="photo_captured_successfully">Photo Captured Successfully</string>
 
-    <string-array name="task_sort_list">
-        <item>Task(A—Z)</item>
-        <item>Task(Z—A)</item>
-        <item>Category(A—Z)</item>
-        <item>Category(Z—A)</item>
-        <item>Due Date(old—new)</item>
-        <item>Due Date(new—old)</item>
-    </string-array>
     <string name="task_exec_mandatory">Need to execute the task</string>
     <string name="exec_task_not_allow_to_edit">Executed task not allow to edit</string>
     <string name="exec_task_not_allow_to_delete">Executed task not allow to delete</string>
@@ -368,6 +360,7 @@
     <string name="mvp_kpi_tab2_text">Top 5 peers</string>
     <string name="kpi_label">KPI</string>
     <string name="ach_label">Ach.</string>
+    <string name="do_u_want_close">Do you want to Close?</string>
     <string name="downloading_app_tutorial">Downloading App Tutorial</string>
     <string name="error_in_downloading_tutorial">Error in Downloading Tutorial</string>
 </resources>

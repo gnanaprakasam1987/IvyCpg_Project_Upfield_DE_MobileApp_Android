@@ -513,7 +513,7 @@ public class UploadHelper {
                 } else {
                     syncStatus = SynchronizationHelper.SYNC_STATUS_FAILED;
                 }
-                businessModel.synchronizationHelper.insertSyncHeader(initTime, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SynchronizationHelper.SYNC_TYPE_UPLOAD,
+                businessModel.synchronizationHelper.insertSyncHeader(initTime, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SynchronizationHelper.SYNC_TYPE_DGT_UPLOAD,
                         0, syncStatus,  1);
             }else {
                 final JSONObject finalJsonObjData = jsonObjData;
@@ -668,7 +668,7 @@ public class UploadHelper {
                                 } else {
                                     syncStatus = SYNC_STATUS_FAILED;
                                 }
-                                businessModel.synchronizationHelper.insertSyncHeader(initTime, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SynchronizationHelper.SYNC_TYPE_UPLOAD,
+                                businessModel.synchronizationHelper.insertSyncHeader(initTime, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SynchronizationHelper.SYNC_TYPE_DGT_UPLOAD,
                                         0, syncStatus,  1);
 
                                 if (responseMsg == 1) {
@@ -698,7 +698,7 @@ public class UploadHelper {
                     System.gc();
                     handler.sendEmptyMessage(
                             DataMembers.NOTIFY_UPLOAD_ERROR);
-                    businessModel.synchronizationHelper.insertSyncHeader(initTime, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SynchronizationHelper.SYNC_TYPE_UPLOAD,
+                    businessModel.synchronizationHelper.insertSyncHeader(initTime, DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), SynchronizationHelper.SYNC_TYPE_DGT_UPLOAD,
                             0, SYNC_STATUS_FAILED,  1);
                 }
             }) {
