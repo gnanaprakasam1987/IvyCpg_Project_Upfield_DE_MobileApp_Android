@@ -108,7 +108,7 @@ public class SaveVanUnloadAsyncTask extends AsyncTask<Integer, Integer, Boolean>
                 businessModel.mCommonPrintHelper.xmlRead("van", false, null, null, null, null,mVanUnLoadModuleHelper.getReasonList());
 
                 businessModel.writeToFile(String.valueOf(businessModel.mCommonPrintHelper.getInvoiceData()),
-                        StandardListMasterConstants.PRINT_FILE_UNLOAD + mVanUnLoadModuleHelper.getTransactionId(), "/" + DataMembers.PRINT_FILE_PATH);
+                        StandardListMasterConstants.PRINT_FILE_UNLOAD + mVanUnLoadModuleHelper.getTransactionId(), "/" + DataMembers.PRINT_FILE_PATH, "");
 
                 Intent intent = new Intent(((VanUnloadActivity) mContext),
                         CommonPrintPreviewActivity.class);

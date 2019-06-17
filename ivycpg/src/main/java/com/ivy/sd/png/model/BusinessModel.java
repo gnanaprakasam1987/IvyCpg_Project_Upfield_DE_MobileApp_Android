@@ -48,6 +48,8 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.gson.JsonArray;
+import com.ivy.apptutoriallibrary.AppTutorialPlugin;
 import com.ivy.core.CodeCleanUpUtil;
 import com.ivy.core.IvyConstants;
 import com.ivy.core.data.app.AppDataProvider;
@@ -84,7 +86,6 @@ import com.ivy.cpg.view.sync.AWSConnectionHelper;
 import com.ivy.cpg.view.sync.AzureConnectionHelper;
 import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
 import com.ivy.cpg.view.sync.largefiledownload.FileDownloadProvider;
-import com.ivy.cpg.view.van.odameter.OdameterHelper;
 import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -688,6 +689,10 @@ public class BusinessModel extends Application {
             codeCleanUpUtil = CodeCleanUpUtil.getInstance(this, appDataProvider);
 
             initializeChatSdk();
+
+            AppTutorialPlugin.getInstance().setContext(this);
+            AppTutorialPlugin.getInstance().setShouldInitOnShake(true);
+            AppTutorialPlugin.getInstance().init();
 
         } catch (Exception ex) {
             Commons.printException(ex);
@@ -6837,8 +6842,14 @@ public class BusinessModel extends Application {
         db.closeDB();
     }
 
-    public void writeToFile(String data, String filename, String foldername) {
-        String path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
+    public void writeToFile(String data, String filename, String foldername, String filePath) {
+        String path;
+        if(filePath.equals("")){
+            path=getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
+        }
+        else {
+            path=filePath+ foldername;
+        }
 
         File folder = new File(path);
         if (!folder.exists()) {

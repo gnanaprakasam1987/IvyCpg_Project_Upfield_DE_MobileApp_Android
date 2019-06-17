@@ -140,6 +140,7 @@ SynchronizationHelper {
     public static final int LAST_VISIT_TRAN_DOWNLOAD_INSERT = 19;
     public static final int MOBILE_EMAIL_VERIFICATION = 20;
     public static final int WAREHOUSE_STOCK_DOWNLOAD = 21;
+    public static final int APP_TUTORIAL_DOWNLOAD = 22;
 
     public static final String AUTHENTICATION_SUCCESS_CODE = "0";
     public static final String UPDATE_TABLE_SUCCESS_CODE = "-1";
@@ -2251,6 +2252,7 @@ SynchronizationHelper {
                 TAG_JSON_OBJ);
     }
 
+
     public HashMap<String, JSONObject> getmJsonObjectResponseByTableName() {
         return mJsonObjectResponseByTableName;
     }
@@ -3414,6 +3416,31 @@ SynchronizationHelper {
         return downloadUrl;
     }
 
+    public String downloadAppTutorialURL() {
+        mJsonObjectResponseByTableName = new HashMap<>();
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        String downloadUrl = "";
+        try {
+            db.openDataBase();
+            db.createDataBase();
+            Cursor c = db.selectSQL("select url from urldownloadmaster where typecode='HHT_TUTORIAL'");
+            if (c != null) {
+                if (c.getCount() > 0) {
+                    while (c.moveToNext()) {
+                        downloadUrl = c.getString(0);
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+
+        return downloadUrl;
+    }
+
     public void downloadWareHouseStock(String wareHouseWebApi) {
 
         try {
@@ -3432,6 +3459,8 @@ SynchronizationHelper {
         }
 
     }
+
+   
 
     public void downloadRetailerByLocFromServer(int id, boolean islocwise) {
 
@@ -5154,4 +5183,56 @@ SynchronizationHelper {
         }
         return false;
     }
+
+    public String downLoadAppTutorial(Context context) {
+        String tutorialJson = "";
+        try {
+            DBUtil db = new DBUtil(context.getApplicationContext(), DataMembers.DB_NAME
+            );
+            db.createDataBase();
+            db.openDataBase();
+
+
+
+           // JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
+
+            JSONObject json = new JSONObject();
+            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+                    .getUserid());
+            json.put("VersionCode", bmodel.getApplicationVersionNumber());
+
+            json.put("MobileDateTime",
+                    Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+
+            StringBuilder url = new StringBuilder();
+
+            url.append(DataMembers.SERVER_URL);
+            String appendurl = bmodel.synchronizationHelper.getUploadUrl("HHT_TUTORIAL");
+            url.append(appendurl);
+
+            MyHttpConnectionNew http = new MyHttpConnectionNew();
+            http.create(MyHttpConnectionNew.POST, url.toString(), null);
+            http.setParamsJsonObject(json);
+            http.addHeader(SECURITY_HEADER, mSecurityKey);
+
+            http.connectMe();
+
+            Vector<String> responseVector = http.getResult();
+
+
+
+            if (responseVector.size() > 0) {
+
+                for (String s : responseVector) {
+                    tutorialJson=s;
+
+                }
+            }
+        } catch (SQLException | JSONException e) {
+            Commons.printException("" + e);
+        }
+
+        return tutorialJson;
+    }
+    
 }

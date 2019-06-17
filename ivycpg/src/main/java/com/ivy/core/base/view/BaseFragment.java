@@ -19,6 +19,7 @@ import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.apptutoriallibrary.AppTutorialPlugin;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -417,4 +418,10 @@ public abstract class BaseFragment extends Fragment implements BaseIvyView {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        AppTutorialPlugin.getInstance().onResume();
+
+    }
 }

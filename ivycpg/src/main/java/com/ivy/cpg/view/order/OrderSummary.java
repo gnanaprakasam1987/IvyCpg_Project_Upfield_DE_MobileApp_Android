@@ -3108,7 +3108,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
         }
         bModel.writeToFile(String.valueOf(bModel.mCommonPrintHelper.getInvoiceData()),
-                StandardListMasterConstants.PRINT_FILE_ORDER + orderId, "/" + DataMembers.IVYDIST_PATH + "/");
+                StandardListMasterConstants.PRINT_FILE_ORDER + orderId, "/" + DataMembers.IVYDIST_PATH + "/", "");
 
     }
 
@@ -3154,7 +3154,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
             bModel.mCommonPrintHelper.xmlRead("order", false, orderList, null, signatureName, null, null);
             if (bModel.configurationMasterHelper.IS_PRINT_FILE_SAVE) {
                 bModel.writeToFile(String.valueOf(bModel.mCommonPrintHelper.getInvoiceData()),
-                        StandardListMasterConstants.PRINT_FILE_ORDER + bModel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH);
+                        StandardListMasterConstants.PRINT_FILE_ORDER + bModel.invoiceNumber, "/" + DataMembers.IVYDIST_PATH, "");
 
                 i = new Intent(OrderSummary.this,
                         CommonPrintPreviewActivity.class);
@@ -3243,7 +3243,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
 
             bModel.writeToFile(String.valueOf(bModel.mCommonPrintHelper.getInvoiceData()),
-                    StandardListMasterConstants.PRINT_FILE_INVOICE + bModel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH);
+                    StandardListMasterConstants.PRINT_FILE_INVOICE + bModel.invoiceNumber, "/" + DataMembers.PRINT_FILE_PATH, "");
 
             Intent i = new Intent(OrderSummary.this,
                     CommonPrintPreviewActivity.class);

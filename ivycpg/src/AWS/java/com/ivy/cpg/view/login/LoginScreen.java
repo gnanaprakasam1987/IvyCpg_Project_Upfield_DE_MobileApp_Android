@@ -43,7 +43,10 @@ import com.ivy.cpg.view.login.password.ResetPasswordDialog;
 import com.ivy.cpg.view.settings.UserSettingsActivity;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
+
+import org.json.JSONArray;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -82,12 +85,9 @@ public class LoginScreen extends LoginBaseActivity
                 finish();
         }
 
-        AppTutorialPlugin.getInstance().setContext(this);
-        AppTutorialPlugin.getInstance().setRawRes(R.raw.tutorial);
 
-        AppTutorialPlugin.getInstance().setShouldInitOnShake(true);
-        AppTutorialPlugin.getInstance().init();
         AppTutorialPlugin.getInstance().setCurrentScreen("login");
+
 
         //progressDialog = null;
 
@@ -150,7 +150,16 @@ public class LoginScreen extends LoginBaseActivity
         businessModel = (BusinessModel) getApplicationContext();
         businessModel.setContext(this);
         loginPresenter.reloadActivity();
-        AppTutorialPlugin.getInstance().onResume();
+
+        try {
+            String data = FileUtils.readFile(this, DataMembers.APP_TUTORIAL + ".txt", DataMembers.APP_TUTORIAL, getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "");
+            JSONArray jsonArray = new JSONArray(data);
+            AppTutorialPlugin.getInstance().setAppTutorialJsonArray(jsonArray);
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+
 
     }
 

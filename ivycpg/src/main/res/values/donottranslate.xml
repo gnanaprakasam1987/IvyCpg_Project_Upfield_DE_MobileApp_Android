@@ -368,4 +368,6 @@
     <string name="mvp_kpi_tab2_text">Top 5 peers</string>
     <string name="kpi_label">KPI</string>
     <string name="ach_label">Ach.</string>
+    <string name="downloading_app_tutorial">Downloading App Tutorial</string>
+    <string name="error_in_downloading_tutorial">Error in Downloading Tutorial</string>
 </resources>

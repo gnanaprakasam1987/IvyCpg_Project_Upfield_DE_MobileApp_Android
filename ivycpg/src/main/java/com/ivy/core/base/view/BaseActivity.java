@@ -45,6 +45,7 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.ivy.apptutoriallibrary.AppTutorialPlugin;
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.sd.png.asean.view.R;
@@ -731,6 +732,13 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
             titleDivider.setBackgroundColor(typearr.getColor(R.styleable.MyTextView_primarycolor, 0));
 
         return dialog;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        AppTutorialPlugin.getInstance().onResume();
+
     }
 }
 
