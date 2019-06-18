@@ -43,6 +43,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.HideShowScrollListener;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
 
@@ -165,6 +166,17 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
                 int idx = sortRadioGroup.indexOfChild(radioButton);
 
                 sellerPerformancePresenter.sortList(idx,sellerPerformanceList);
+            }
+        });
+
+        transparentView.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
+                    bottomSheetBehavior.setHideable(true);
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                    transparentView.setVisibility(View.GONE);
+                }
             }
         });
 
