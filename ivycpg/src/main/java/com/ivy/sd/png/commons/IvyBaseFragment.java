@@ -16,6 +16,7 @@ import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.apptutoriallibrary.AppTutorialPlugin;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
@@ -177,4 +178,11 @@ public class IvyBaseFragment extends Fragment implements ApplicationConfigs {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        AppTutorialPlugin.getInstance().onResume();
+        AppTutorialPlugin.getInstance().setParentView(getView());
+
+    }
 }

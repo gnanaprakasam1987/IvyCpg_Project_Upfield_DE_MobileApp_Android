@@ -555,6 +555,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                             || configureBO.getConfigCode().equalsIgnoreCase(MENU_DIGITIAL_SELLER)) {
                         gotoNextActivity(configureBO);
                         break;
+                    } //Mansoor -  IVYCPG-4099
+                    else if(bmodel.configurationMasterHelper.IS_IN_OUT_MANDATE && isInandOutModuleEnabled &&
+                            configureBO.getConfigCode().equalsIgnoreCase(MENU_IN_OUT)){
+                        gotoNextActivity(configureBO);
+                        break;
                     }
                 }
             }

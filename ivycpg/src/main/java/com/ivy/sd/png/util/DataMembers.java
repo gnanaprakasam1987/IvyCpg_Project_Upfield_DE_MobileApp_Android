@@ -63,6 +63,8 @@ public class DataMembers {
     public static final String TASK_DIGITAL_CONTENT = "TDC";
     public static final String SERIALIZED_ASSET_DIG_CONTENT = "SADC";
 
+    public static final String APP_TUTORIAL = "AppTutorial";
+
     public static final int NOTIFY_WEB_UPLOAD_SUCCESS = 32;
     public static final int NOTIFY_WEB_UPLOAD_ERROR = 33;
     public static final int ATTENDANCE_UPLOAD = 101;

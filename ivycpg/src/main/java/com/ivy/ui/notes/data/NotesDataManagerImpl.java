@@ -78,7 +78,7 @@ public class NotesDataManagerImpl implements NotesDataManager {
 
                 String fetchQuery = "SELECT RN.RetailerId,RN.Date,RN.Time,RN.Title," +
                         "RN.Description,RN.UserName,IFNULL(RM.RetailerName,'') as RetailerName" +
-                        ",RN.userId,RN.NoteId,IFNULL(RN.ModifiedDateTime,'') as ModifiedDate,IFNULL(RN.ModifiedBy,'') as ModifiedBy,RN.Status,IFNULL(RN.Tid,'0') as Tid,RN.Upload" +
+                        ",RN.userId,IFNULL(RN.NoteId,''),IFNULL(RN.ModifiedDateTime,'') as ModifiedDate,IFNULL(RN.ModifiedBy,'') as ModifiedBy,RN.Status,IFNULL(RN.Tid,'0') as Tid,RN.Upload" +
                         " FROM RetailerNotes RN" +
                         " LEFT JOIN" +
                         " RetailerMaster RM ON RN.RetailerId = RM.RetailerId" +

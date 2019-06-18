@@ -36,7 +36,7 @@ static def fetchRevisionNumber() {
 }
 
 def majorVersion = 2
-def minorVersion = 140
+def minorVersion = 142
 def patchVersion = 0
 def verCode = 1400
 def revNumber = fetchRevisionNumber()
@@ -349,6 +349,11 @@ dependencies {
 
     // Microsoft Azure Storage
     implementation 'com.microsoft.azure.android:azure-storage-android:0.8.0@aar'
+
+    implementation 'com.ivy.apptutoriallibrary:apptutoriallibrary:1.0.2'
+    implementation "com.airbnb.android:lottie:2.7.0"
+    implementation 'org.jsoup:jsoup:1.11.3'
+
 
     implementation 'com.stepstone.stepper:material-stepper:4.3.1'
 

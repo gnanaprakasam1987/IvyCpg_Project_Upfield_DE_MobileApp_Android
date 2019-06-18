@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.ivy.apptutoriallibrary.AppTutorialPlugin;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.ApkDownloaderThread;
@@ -42,7 +43,10 @@ import com.ivy.cpg.view.login.password.ResetPasswordDialog;
 import com.ivy.cpg.view.settings.UserSettingsActivity;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
+
+import org.json.JSONArray;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -80,6 +84,9 @@ public class LoginScreen extends LoginBaseActivity
                     DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd") < 0))
                 finish();
         }
+
+
+        AppTutorialPlugin.getInstance().setCurrentScreen("login");
 
 
         //progressDialog = null;
@@ -143,6 +150,17 @@ public class LoginScreen extends LoginBaseActivity
         businessModel = (BusinessModel) getApplicationContext();
         businessModel.setContext(this);
         loginPresenter.reloadActivity();
+
+        try {
+            String data = FileUtils.readFile(this, DataMembers.APP_TUTORIAL + ".txt", DataMembers.APP_TUTORIAL, getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS) + "");
+            JSONArray jsonArray = new JSONArray(data);
+            AppTutorialPlugin.getInstance().setAppTutorialJsonArray(jsonArray);
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+
+
     }
 
     private void updateImageViews() {

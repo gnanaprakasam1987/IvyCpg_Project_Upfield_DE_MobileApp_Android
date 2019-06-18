@@ -52,6 +52,7 @@ import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferType;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.ivy.apptutoriallibrary.AppTutorialPlugin;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.cpg.view.login.LoginHelper;
@@ -662,6 +663,8 @@ public class SynchronizationFragment extends IvyBaseFragment
         }
 
         updateLastTransactionTimeInView();
+
+        AppTutorialPlugin.getInstance().setCurrentScreen("Synchronization");
     }
 
 

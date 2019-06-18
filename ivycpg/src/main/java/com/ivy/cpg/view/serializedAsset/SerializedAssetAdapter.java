@@ -504,16 +504,12 @@ public class SerializedAssetAdapter extends BaseAdapter {
 
         holder.mInstallDate
                 .setText((holder.assetBO.getInstallDate() == null) ? DateTimeUtils
-                        .convertFromServerDateToRequestedFormat(
-                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                                outPutDateFormat) : holder.assetBO
-                        .getInstallDate());
+                        .convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat) :DateTimeUtils
+                        .convertFromServerDateToRequestedFormat(holder.assetBO.getInstallDate(), outPutDateFormat));
         holder.mServiceDate
                 .setText((holder.assetBO.getServiceDate() == null) ? DateTimeUtils
-                        .convertFromServerDateToRequestedFormat(
-                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                                outPutDateFormat) : holder.assetBO
-                        .getServiceDate());
+                        .convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), outPutDateFormat) :DateTimeUtils
+                        .convertFromServerDateToRequestedFormat(holder.assetBO.getServiceDate(), outPutDateFormat));
 
         if (holder.assetBO.getAvailQty() > 0) {
 
