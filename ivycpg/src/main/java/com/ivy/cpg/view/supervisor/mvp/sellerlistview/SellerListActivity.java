@@ -31,6 +31,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.FontUtils;
+import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -213,6 +214,17 @@ public class SellerListActivity extends IvyBaseActivityNoActionBar {
                 sortList(idx,sellersList);
                 sortList(idx,sellersInMarketList);
                 sortList(idx,sellersAbsentList);
+            }
+        });
+
+        transparentView.setOnClickListener(new OnSingleClickListener() {
+            @Override
+            public void onSingleClick(View v) {
+                if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED){
+                    bottomSheetBehavior.setHideable(true);
+                    bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                    transparentView.setVisibility(View.GONE);
+                }
             }
         });
     }
