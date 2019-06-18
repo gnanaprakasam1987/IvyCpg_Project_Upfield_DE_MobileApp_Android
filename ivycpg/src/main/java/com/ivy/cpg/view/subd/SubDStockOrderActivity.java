@@ -2453,7 +2453,7 @@ public class SubDStockOrderActivity extends IvyBaseActivityNoActionBar implement
         SchemeDetailsMasterHelper schemeHelper = SchemeDetailsMasterHelper.getInstance(getApplicationContext());
 
         if (bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_SRP) {
-            bmodel.productHelper.taxHelper.removeTaxFromPrice();
+            bmodel.productHelper.taxHelper.removeTaxFromPrice(false);
         }
 
         if (bmodel.configurationMasterHelper.SHOW_BATCH_ALLOCATION && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {

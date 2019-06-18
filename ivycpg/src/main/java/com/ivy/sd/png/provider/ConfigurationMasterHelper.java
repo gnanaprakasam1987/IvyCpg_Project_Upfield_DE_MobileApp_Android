@@ -89,6 +89,10 @@ public class ConfigurationMasterHelper {
     public static final String CODE_VANLOAD_STOCK_PRINT = "STKPRO21";
     // version 90
     public static final String CODE_LOCAITON_WISE_TAX_APPLIED = "TAX02";
+
+    public static final String CODE_REMOVE_TAX_ON_PRICE_FOR_ALL_PRODUCTS = "TAX03";
+    public boolean IS_REMOVE_TAX_ON_PRICE_FOR_ALL_PRODUCTS = false;
+
     private static final String MENU_CALL_ANALYSIS = "MENU_CALL_ANLYS";
     private static final String MENU_LOAD_MANAGEMENT = "MENU_LOAD_MANAGEMENT";
     private static final String MENU_HOME = "HOME_MENU";
@@ -2472,6 +2476,8 @@ public class ConfigurationMasterHelper {
         this.IS_LOCATION_WISE_TAX_APPLIED = hashMapHHTModuleConfig.get(CODE_LOCAITON_WISE_TAX_APPLIED) != null ? hashMapHHTModuleConfig.get(CODE_LOCAITON_WISE_TAX_APPLIED) : false;
         if (this.IS_LOCATION_WISE_TAX_APPLIED)
             this.STRING_LOCATION_WISE_TAX_APPLIED = loadLocationWiseTaxApplied();
+
+        this.IS_REMOVE_TAX_ON_PRICE_FOR_ALL_PRODUCTS = hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_PRICE_FOR_ALL_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_PRICE_FOR_ALL_PRODUCTS) : false;
 
         this.IS_RETAILER_PHOTO_NEEDED = hashMapHHTModuleConfig.get(CODE_RETAILER_PHOTO) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_PHOTO) : false;
         if (this.IS_RETAILER_PHOTO_NEEDED && hashMapHHTModuleOrder.get(CODE_RETAILER_PHOTO) > 1)
