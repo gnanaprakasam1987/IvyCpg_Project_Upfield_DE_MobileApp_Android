@@ -223,7 +223,9 @@ public class LoginHelper {
 
                             if (isRealTimeConfigAvail(mContext) || isSupervisorMenuAvail(mContext)) {
                                 final String domainName = getDomainName(mContext);
-                                final String loginName = businessModel.userMasterHelper.getUserMasterBO().getLoginName();
+                                String loginName = businessModel.userMasterHelper.getUserMasterBO().getLoginName();
+
+                                loginName = loginName.replace(" ","_");
 
                                 final String email = loginName + "@" + domainName + ".com";
 
