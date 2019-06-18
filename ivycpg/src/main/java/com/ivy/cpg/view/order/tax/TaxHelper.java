@@ -805,15 +805,15 @@ public class TaxHelper implements TaxInterface {
 
 
     @Override
-    public void removeTaxFromPrice() {
+    public void removeTaxFromPrice(boolean isAllProducts) {
         try {
             for (ProductMasterBO productMasterBO : mBusinessModel.productHelper.getProductMaster()) {
 
                 productMasterBO.setOriginalSrp(productMasterBO.getSrp());
 
-                if (productMasterBO.getOrderedCaseQty() > 0
+                if (isAllProducts||(productMasterBO.getOrderedCaseQty() > 0
                         || productMasterBO.getOrderedPcsQty() > 0
-                        || productMasterBO.getOrderedOuterQty() > 0) {
+                        || productMasterBO.getOrderedOuterQty() > 0)) {
                     if (productMasterBO.getSrp() > 0) {
 
                         float srpWithoutTax = SDUtil.truncateDecimal(productMasterBO.getSrp() - getTaxAmountInPrice(productMasterBO.getProductID()), 2).floatValue();
