@@ -321,6 +321,7 @@
         android:background="?attr/customFooterBackgroundColor"
         android:gravity="center"
         android:orientation="vertical"
+        android:visibility="gone"
         android:padding="@dimen/_3sdp">
 
         <Button

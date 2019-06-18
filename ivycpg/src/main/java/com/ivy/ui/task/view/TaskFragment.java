@@ -376,7 +376,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
     @Override
     public void onSortItemClicked(int sortType, boolean orderByAsc) {
-        taskPresenter.orderBySortList(sortType, orderByAsc);
+        taskPresenter.orderBySortList(taskList, sortType, orderByAsc);
         lastSelectedPos = sortType;
         hideBottomSheet();
     }

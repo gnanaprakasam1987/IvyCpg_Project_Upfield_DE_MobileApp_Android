@@ -379,17 +379,16 @@ public class TaskDataManagerImpl implements TaskDataManager {
      *
      * @param selectedId
      * @param taskObj
-     * @param mode
      * @param taskImgList
      * @return
      */
     @Override
-    public Single<Boolean> saveTask(int selectedId, TaskDataBO taskObj, String mode,
+    public Single<Boolean> saveTask(int selectedId, TaskDataBO taskObj,
                                     ArrayList<TaskDataBO> taskImgList, int linkUserId) {
 
         //remove Quotes
-        String title = StringUtils.removeQuotes(taskObj.getTasktitle());
-        String name = StringUtils.removeQuotes(taskObj.getTaskDesc());
+        String title = DatabaseUtils.sqlEscapeString(taskObj.getTasktitle());
+        String name = DatabaseUtils.sqlEscapeString(taskObj.getTaskDesc());
 
 
         String taskOwner = StringUtils.QT("self");
@@ -445,7 +444,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                     // Insert Task into TaskMaster
                     columns_new = "taskid,taskcode,taskdesc,upload ,taskowner,date,usercreated,DueDate,CategoryId,EndDate,Status,IsServerTask";
 
-                    value_new = finalTid + "," + StringUtils.QT(title) + "," + StringUtils.QT(name) + ","
+                    value_new = finalTid + "," + title + "," + name + ","
                             + "'N'," + finalTaskOwner + ", " + date + ",1,"
                             + DatabaseUtils.sqlEscapeString(DateTimeUtils
                             .convertToServerDateFormat(
@@ -497,7 +496,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                         try {
                             String columns = "taskid,retailerid,usercreated,upload,date,uid,userid,channelid";
                             String values;
-                            if (mode.equals(TaskConstant.RETAILER_WISE)) {
+                            if (taskObj.getMode().equals(TaskConstant.RETAILER_WISE)) {
 
                                 values = finalTid + "," + selectedId + "," + "1" + "," + "'N'," + date + "," + uID + "," + linkUserId + "," + "0";
                                 mDbUtil.insertSQL(DataMembers.tbl_TaskConfigurationMaster,

@@ -103,6 +103,12 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     @BindView(R.id.task_execute_btn)
     Button btnTaskExecute;
 
+    @BindView(R.id.task_img_rl)
+    RelativeLayout photoRL;
+
+    @BindView(R.id.tsk_img_divider)
+    View imageDivider;
+
 
     private TaskDataBO taskDetailBo;
     private boolean isRetailerWiseTask;
@@ -176,6 +182,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         if (tabSelection == 2)
             hideViews();
 
+
         setUpRecyclerView();
 
         if (taskDetailBo.isChecked())
@@ -213,7 +220,6 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
             taskDueDateLabel.setText(getString(R.string.executed_date));
             evidenceRL.setVisibility(View.GONE);
         }
-        footerLayout.setVisibility(View.GONE);
     }
 
     private void setUpRecyclerView() {
@@ -222,6 +228,10 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         taskImgRecyclerView.setHasFixedSize(true);
         taskImgRecyclerView.setNestedScrollingEnabled(false);
         taskImgRecyclerView.setLayoutManager(layoutManager1);
+
+        if (tabSelection != 2
+                && !fromTaskNotification)
+            footerLayout.setVisibility(View.VISIBLE);
     }
 
     @OnClick(R.id.task_evidence_image_bt)
@@ -274,6 +284,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
 
     @Override
     public void updateListData(ArrayList<TaskDataBO> updatedList) {
+
         taskTitleTv.setText(taskDetailBo.getTasktitle());
         taskProductLevelTv.setText(taskDetailBo.getTaskCategoryDsc());
 
@@ -282,7 +293,13 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         else
             taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(taskDetailBo.getTaskDueDate(), taskPresenter.outDateFormat()));
 
-        taskImgRecyclerView.setAdapter(new TaskImgListAdapter(this, updatedList, true, null));
+        if (!updatedList.isEmpty())
+            taskImgRecyclerView.setAdapter(new TaskImgListAdapter(this, updatedList, true, null));
+        else {
+            photoRL.setVisibility(View.GONE);
+            imageDivider.setVisibility(View.GONE);
+        }
+
         createdByValueTv.setText(taskDetailBo.getTaskOwner());
         createdDateValueTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
                 (taskDetailBo.getCreatedDate(), taskPresenter.outDateFormat()));

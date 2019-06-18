@@ -41,7 +41,6 @@ import com.ivy.ui.task.adapter.TaskImgListAdapter;
 import com.ivy.ui.task.di.DaggerTaskComponent;
 import com.ivy.ui.task.di.TaskModule;
 import com.ivy.ui.task.model.TaskDataBO;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 
@@ -502,8 +501,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @OnClick(R.id.saveTask)
     public void onSaveClickBtn() {
         int taskAssignId = 0, linkUserId = 0, retSelectionId = -1;
-        String taskDetailDesc = AppUtils.validateInput(taskView.getText().toString());
-        String taskTitleDec = AppUtils.validateInput(taskTitle.getText().toString());
+        String taskDetailDesc = taskView.getText().toString();
+        String taskTitleDec = taskTitle.getText().toString();
         String taskDuedate = dueDateBtn.getText().toString().isEmpty() ? null
                 : dueDateBtn.getText().toString();
 
@@ -536,6 +535,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         taskBo.setTaskDesc(taskDetailDesc);
         taskBo.setTaskDueDate(taskDuedate);
         taskBo.setTaskCategoryID(mSelectedCategoryID);
+        taskBo.setMode(mode);
 
         taskPresenter.onSaveTask(taskAssignId, taskBo, linkUserId, retSelectionId);
     }

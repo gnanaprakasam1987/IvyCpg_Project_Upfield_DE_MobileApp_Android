@@ -333,12 +333,13 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
 
                     @Override
                     public void onComplete() {
-                        if (!taskPreparedList.isEmpty())
+                        if (!taskPreparedList.isEmpty()) {
                             getIvyView().updateListData(taskPreparedList);
-                        else
+                            getIvyView().hideLoading();
+                        } else {
+                            getIvyView().hideLoading();
                             ((TaskContract.TaskListView) getIvyView()).showDataNotMappedMsg();
-
-                        getIvyView().hideLoading();
+                        }
                     }
                 }));
     }
@@ -384,12 +385,14 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     public void onSaveTask(int channelId, TaskDataBO taskObj, int linkUserId, int retailerId) {
         getIvyView().showLoading();
         getCompositeDisposable().add(mTaskDataManager.saveTask(channelId
-                , taskObj, ((TaskContract.TaskCreationView) getIvyView()).getTaskMode(), getTaskImgList(), linkUserId).subscribeOn(getSchedulerProvider().io())
+                , taskObj, getTaskImgList(), linkUserId).subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(isAdded -> {
                     getIvyView().hideLoading();
                     if (isAdded) {
                         ((TaskContract.TaskCreationView) getIvyView()).showTaskSaveAlertMsg();
+                    } else {
+                        getIvyView().showErrorMsg();
                     }
                 }));
     }
@@ -464,9 +467,9 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
 
 
     @Override
-    public void orderBySortList(int sortType, boolean orderBy) {
+    public void orderBySortList(ArrayList<TaskDataBO> taskList, int sortType, boolean orderBy) {
         if (orderBy) {
-            Collections.sort(taskPreparedList, (fstr, sstr) -> {
+            Collections.sort(taskList, (fstr, sstr) -> {
                 if (sortType == TaskConstant.TASK_TITLE_ASC)
                     return fstr.getTasktitle().compareToIgnoreCase(sstr.getTasktitle());
                 else if (sortType == TaskConstant.PRODUCT_LEVEL_ASC)
@@ -476,7 +479,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
             });
 
         } else {
-            Collections.sort(taskPreparedList, (fstr, sstr) -> {
+            Collections.sort(taskList, (fstr, sstr) -> {
                 if (sortType == TaskConstant.TASK_TITLE_DESC)
                     return sstr.getTasktitle().compareToIgnoreCase(fstr.getTasktitle());
                 else if (sortType == TaskConstant.PRODUCT_LEVEL_DESC)
@@ -485,7 +488,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                     return sstr.getTaskDueDate().compareToIgnoreCase(fstr.getTaskDueDate());
             });
         }
-        getIvyView().updateListData(taskPreparedList);
+        getIvyView().updateListData(taskList);
     }
 
     @Override

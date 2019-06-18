@@ -113,7 +113,7 @@ public interface TaskContract {
 
         RetailerMasterBO getRetailerMasterBo(String retailerId);
 
-        void orderBySortList(int sortType, boolean orderBy);
+        void orderBySortList(ArrayList<TaskDataBO> taskList, int sortType, boolean orderBy);
 
         boolean isShowServerTaskOnly();
 
