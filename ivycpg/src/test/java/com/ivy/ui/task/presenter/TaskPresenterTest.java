@@ -12,6 +12,7 @@ import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.TaskContract;
@@ -20,6 +21,7 @@ import com.ivy.ui.task.data.TaskDataManager;
 import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.ui.task.model.TaskRetailerBo;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.FileUtils;
 import com.ivy.utils.rx.TestSchedulerProvider;
 
 import org.junit.After;
@@ -608,6 +610,20 @@ public class TaskPresenterTest {
 
     @Test
     public void updateTaskImageSuccess() {
+        TaskTestDataFactory.userMasterBO.setUserid(123);
+        given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
+        assertEquals(taskPresenter.getUserID(), 123);
+
+        TaskConstant.TASK_SERVER_IMG_PATH = "Download/"
+                + taskPresenter.getUserID()
+                + DataMembers.DIGITAL_CONTENT + "/"
+                + DataMembers.TASK_DIGITAL_CONTENT;
+
+        FileUtils.photoFolderPath = "Download/"
+                + taskPresenter.getUserID()
+                + DataMembers.DIGITAL_CONTENT + "/"
+                + DataMembers.TASK_DIGITAL_CONTENT;
+
         given(mockTaskDataManager.updateTaskExecutionImage("image Name1", "1235"))
                 .willReturn(Single.fromCallable(new Callable<Boolean>() {
                     @Override
@@ -736,7 +752,7 @@ public class TaskPresenterTest {
     }
 
     @Test
-    public void testDeleteNonApprovalTaskSuccess(){
+    public void testDeleteNonApprovalTaskSuccess() {
 
         given(mockTaskDataManager.getDeletedImageList("123"))
                 .willReturn(Observable.fromCallable(new Callable<ArrayList<String>>() {
@@ -746,14 +762,14 @@ public class TaskPresenterTest {
                     }
                 }));
 
-        given(mockTaskDataManager.deleteTaskData("123","self",0))
+        given(mockTaskDataManager.deleteTaskData("123", "self", 0))
                 .willReturn(Single.fromCallable(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
                         return true;
                     }
                 }));
-        taskPresenter.deleteTask("123","self",0);
+        taskPresenter.deleteTask("123", "self", 0);
         testScheduler.triggerActions();
         then(parentView).should().showLoading();
         then(parentView).should().hideLoading();
@@ -763,7 +779,7 @@ public class TaskPresenterTest {
 
 
     @Test
-    public void testDeleteNonApprovalTaskFailed(){
+    public void testDeleteNonApprovalTaskFailed() {
         given(mockTaskDataManager.getDeletedImageList(null))
                 .willReturn(Observable.fromCallable(new Callable<ArrayList<String>>() {
                     @Override
@@ -772,14 +788,14 @@ public class TaskPresenterTest {
                     }
                 }));
 
-        given(mockTaskDataManager.deleteTaskData(null,"",0))
+        given(mockTaskDataManager.deleteTaskData(null, "", 0))
                 .willReturn(Single.fromCallable(new Callable<Boolean>() {
                     @Override
                     public Boolean call() throws Exception {
                         return false;
                     }
                 }));
-        taskPresenter.deleteTask(null,"",0);
+        taskPresenter.deleteTask(null, "", 0);
         testScheduler.triggerActions();
         then(parentView).should().showLoading();
         then(parentView).should().hideLoading();
@@ -788,7 +804,7 @@ public class TaskPresenterTest {
     }
 
     @Test
-    public void testSortByTaskTitle(){
+    public void testSortByTaskTitle() {
 
         ArrayList<TaskDataBO> mockTaskListData = TaskTestDataFactory.getCompletedTask();
         String mockChannelIds = TaskTestDataFactory.getChannelIdList();
@@ -798,7 +814,7 @@ public class TaskPresenterTest {
         assertEquals(taskPresenter.getUserID(), 123);
 
 
-        taskPresenter.orderBySortList(mockTaskListData,TaskConstant.TASK_TITLE_ASC,true);
+        taskPresenter.orderBySortList(mockTaskListData, TaskConstant.TASK_TITLE_ASC, true);
         testScheduler.triggerActions();
         Collections.sort(mockTaskListData, (fstr, sstr) -> fstr.getTasktitle().compareToIgnoreCase(sstr.getTasktitle()));
         then(parentView).should().updateListData(mockTaskListData);
@@ -807,7 +823,7 @@ public class TaskPresenterTest {
 
 
     @Test
-    public void testSortByTaskTitleDesc(){
+    public void testSortByTaskTitleDesc() {
 
         ArrayList<TaskDataBO> mockTaskListData = TaskTestDataFactory.getCompletedTask();
         String mockChannelIds = TaskTestDataFactory.getChannelIdList();
@@ -817,7 +833,7 @@ public class TaskPresenterTest {
         assertEquals(taskPresenter.getUserID(), 123);
 
 
-        taskPresenter.orderBySortList(mockTaskListData,TaskConstant.TASK_TITLE_DESC,false);
+        taskPresenter.orderBySortList(mockTaskListData, TaskConstant.TASK_TITLE_DESC, false);
         testScheduler.triggerActions();
         Collections.sort(mockTaskListData, (sstr, fstr) -> sstr.getTasktitle().compareToIgnoreCase(fstr.getTasktitle()));
         then(parentView).should().updateListData(mockTaskListData);
@@ -825,9 +841,8 @@ public class TaskPresenterTest {
     }
 
 
-
     @Test
-    public void testSortByProdLevelAsc(){
+    public void testSortByProdLevelAsc() {
 
         ArrayList<TaskDataBO> mockTaskListData = TaskTestDataFactory.getCompletedTask();
         String mockChannelIds = TaskTestDataFactory.getChannelIdList();
@@ -837,7 +852,7 @@ public class TaskPresenterTest {
         assertEquals(taskPresenter.getUserID(), 123);
 
 
-        taskPresenter.orderBySortList(mockTaskListData,TaskConstant.PRODUCT_LEVEL_ASC,true);
+        taskPresenter.orderBySortList(mockTaskListData, TaskConstant.PRODUCT_LEVEL_ASC, true);
         testScheduler.triggerActions();
         Collections.sort(mockTaskListData, (fstr, sstr) -> fstr.getTaskCategoryDsc().compareToIgnoreCase(sstr.getTaskCategoryDsc()));
         then(parentView).should().updateListData(mockTaskListData);
@@ -846,7 +861,7 @@ public class TaskPresenterTest {
 
 
     @Test
-    public void testSortByProdLevelDesc(){
+    public void testSortByProdLevelDesc() {
 
         ArrayList<TaskDataBO> mockTaskListData = TaskTestDataFactory.getCompletedTask();
         String mockChannelIds = TaskTestDataFactory.getChannelIdList();
@@ -855,7 +870,7 @@ public class TaskPresenterTest {
         given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
-        taskPresenter.orderBySortList(mockTaskListData,TaskConstant.PRODUCT_LEVEL_DESC,false);
+        taskPresenter.orderBySortList(mockTaskListData, TaskConstant.PRODUCT_LEVEL_DESC, false);
         testScheduler.triggerActions();
         Collections.sort(mockTaskListData, (sstr, fstr) -> sstr.getTaskCategoryDsc().compareToIgnoreCase(fstr.getTaskCategoryDsc()));
         then(parentView).should().updateListData(mockTaskListData);
@@ -864,7 +879,7 @@ public class TaskPresenterTest {
 
 
     @Test
-    public void testSortByDueDateAsc(){
+    public void testSortByDueDateAsc() {
 
         ArrayList<TaskDataBO> mockTaskListData = TaskTestDataFactory.getCompletedTask();
         String mockChannelIds = TaskTestDataFactory.getChannelIdList();
@@ -873,7 +888,7 @@ public class TaskPresenterTest {
         given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
-        taskPresenter.orderBySortList(mockTaskListData,4,true);
+        taskPresenter.orderBySortList(mockTaskListData, 4, true);
         testScheduler.triggerActions();
         Collections.sort(mockTaskListData, (fstr, sstr) -> fstr.getTaskDueDate().compareToIgnoreCase(sstr.getTaskDueDate()));
         then(parentView).should().updateListData(mockTaskListData);
@@ -881,7 +896,7 @@ public class TaskPresenterTest {
     }
 
     @Test
-    public void testSortByDueDateDesc(){
+    public void testSortByDueDateDesc() {
 
         ArrayList<TaskDataBO> mockTaskListData = TaskTestDataFactory.getCompletedTask();
         String mockChannelIds = TaskTestDataFactory.getChannelIdList();
@@ -890,7 +905,7 @@ public class TaskPresenterTest {
         given(mockAppDataProvider.getUser()).willReturn(TaskTestDataFactory.userMasterBO);
         assertEquals(taskPresenter.getUserID(), 123);
 
-        taskPresenter.orderBySortList(mockTaskListData,5,false);
+        taskPresenter.orderBySortList(mockTaskListData, 5, false);
         testScheduler.triggerActions();
         Collections.sort(mockTaskListData, (sstr, fstr) -> sstr.getTaskDueDate().compareToIgnoreCase(fstr.getTaskDueDate()));
         then(parentView).should().updateListData(mockTaskListData);
