@@ -677,7 +677,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
             if (sellerBoDocumentSnapshot != null) {
 
-                System.out.println("setLocationValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
+//                System.out.println("setLocationValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
                 LatLng destLatLng = new LatLng(sellerBoDocumentSnapshot.getLatitude(), sellerBoDocumentSnapshot.getLongitude());
 
