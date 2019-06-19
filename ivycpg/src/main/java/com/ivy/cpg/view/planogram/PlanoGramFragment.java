@@ -629,6 +629,9 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                mDrawerLayout.closeDrawers();
+            else
             onBackButonClick();
             return true;
         } else if (i == R.id.menu_next) {
@@ -1031,9 +1034,15 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             holder.rdPartial.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.productName.setText(holder.planoObj.getProductName());
 
-            if ("0".equals(holder.planoObj.getAdherence())||"-1".equals(holder.planoObj.getAdherence())) {
+            if ("0".equals(holder.planoObj.getAdherence())) {
                 holder.layout_reason.setVisibility(View.VISIBLE);
-            } else {
+                holder.adherence_reason.setVisibility(View.VISIBLE);
+                holder.spinner_percentage.setVisibility(View.GONE);
+            } else if("-1".equals(holder.planoObj.getAdherence())) {
+                holder.layout_reason.setVisibility(View.VISIBLE);
+                holder.adherence_reason.setVisibility(View.GONE);
+                holder.spinner_percentage.setVisibility(View.VISIBLE);
+            }else {
                 holder.layout_reason.setVisibility(View.GONE);
             }
             holder.setImageFromServer();
