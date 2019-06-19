@@ -1582,7 +1582,7 @@ SynchronizationHelper {
                 Commons.print("AuthFailureError 7");
                 insertSyncApiDetails(url,
                         start_time
-                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), error.toString());
+                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), error.toString(), "");
             }
         }
 
@@ -1613,7 +1613,7 @@ SynchronizationHelper {
                 }
                 insertSyncApiDetails(url,
                         start_time
-                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), volleyError.toString());
+                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), volleyError.toString(), "");
                 return super.parseNetworkError(volleyError);
             }
 
@@ -1673,6 +1673,9 @@ SynchronizationHelper {
                                         Commons.print("Table name& value " + tableName + ", " + value);
                                         mJsonObjectResponseByTableName.put(tableName, value);
                                         tableList.add(tableName);
+                                        insertSyncApiDetails(url,
+                                                start_time
+                                                , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "", tableName);
                                         break;
                                     } else if (innerKey.equals(ERROR_CODE)) {
                                         if (value != null) {
@@ -1691,6 +1694,9 @@ SynchronizationHelper {
                                                     mJsonObjectResponseByTableName.put(tableName, value);
                                                     tableList.add(tableName);
                                                     value = null;
+                                                    insertSyncApiDetails(url,
+                                                            start_time
+                                                            , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "", tableName);
                                                 }
                                             }
                                         }
@@ -1715,6 +1721,9 @@ SynchronizationHelper {
                                 tableList.add(tableName);
                                 i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
                                 context.startService(i);
+                                insertSyncApiDetails(url,
+                                        start_time
+                                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "", tableName);
                                 break;
                             } else if (key.equals(ERROR_CODE)) {
                                 String errorCode = json.getString(key);
@@ -1740,6 +1749,9 @@ SynchronizationHelper {
                                         tableList.add(tableName);
                                         i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
                                         context.startService(i);
+                                        insertSyncApiDetails(url,
+                                                start_time
+                                                , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "", tableName);
                                         break;
                                     }
                                 }
@@ -1756,9 +1768,6 @@ SynchronizationHelper {
 
 
                     }
-                    insertSyncApiDetails(url,
-                            start_time
-                            , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "");
                     if ((totalListCount == mDownloadUrlCount) && which == VOLLEY_DOWNLOAD_INSERT) {
                         updateSyncLogDetails(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), syncStatus);
                     }
@@ -1834,7 +1843,7 @@ SynchronizationHelper {
                 }
                 insertSyncApiDetails(url,
                         start_time
-                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), error.toString());
+                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), error.toString(), "");
                 if ((totalListCount == mDownloadUrlCount) && which == VOLLEY_DOWNLOAD_INSERT) {
                     updateSyncLogDetails(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), syncStatus);
                 }
@@ -2011,7 +2020,7 @@ SynchronizationHelper {
             public void onErrorResponse(VolleyError error) {
                 insertSyncApiDetails(url,
                         start_time
-                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), error.toString());
+                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), error.toString(), "");
                 Commons.printException("Volley Error", error);
             }
         }
@@ -2038,7 +2047,7 @@ SynchronizationHelper {
             protected VolleyError parseNetworkError(VolleyError volleyError) {
                 insertSyncApiDetails(url,
                         start_time
-                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), volleyError.toString());
+                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), volleyError.toString(), "");
                 return super.parseNetworkError(volleyError);
             }
 
@@ -2091,6 +2100,9 @@ SynchronizationHelper {
 
                                         mJsonObjectResponseByTableName.put(tableName, value);
                                         tableList.add(tableName);
+                                        insertSyncApiDetails(url,
+                                                start_time
+                                                , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "", tableName);
                                         break;
                                     } else if (innerKey.equals(ERROR_CODE)) {
                                         if (value != null) {
@@ -2109,6 +2121,9 @@ SynchronizationHelper {
                                                     mJsonObjectResponseByTableName.put(tableName, value);
                                                     tableList.add(tableName);
                                                     value = null;
+                                                    insertSyncApiDetails(url,
+                                                            start_time
+                                                            , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "", tableName);
                                                 }
                                             }
                                         }
@@ -2134,6 +2149,9 @@ SynchronizationHelper {
                                     tableList.add(tableName);
                                     i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
                                     context.startService(i);
+                                    insertSyncApiDetails(url,
+                                            start_time
+                                            , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "", tableName);
                                     break label;
 
                                 case ERROR_CODE:
@@ -2160,6 +2178,9 @@ SynchronizationHelper {
                                             tableList.add(tableName);
                                             i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
                                             context.startService(i);
+                                            insertSyncApiDetails(url,
+                                                    start_time
+                                                    , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "", tableName);
                                             break label;
                                         }
                                     }
@@ -2174,9 +2195,6 @@ SynchronizationHelper {
                             }
                         }
                     }
-                    insertSyncApiDetails(url,
-                            start_time
-                            , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "");
                     if ((totalListCount == mDownloadUrlCount) && which == VOLLEY_DOWNLOAD_INSERT) {
                         updateSyncLogDetails(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), syncStatus);
                     }
@@ -2233,7 +2251,7 @@ SynchronizationHelper {
                 }
                 insertSyncApiDetails(url,
                         start_time
-                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), error.toString());
+                        , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), error.toString(), "");
                 if ((totalListCount == mDownloadUrlCount) && which == VOLLEY_DOWNLOAD_INSERT) {
                     updateSyncLogDetails(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), syncStatus);
                 }
@@ -5096,7 +5114,7 @@ SynchronizationHelper {
      * @param endTime   - Api finished time
      * @param errorInfo - Error message while hitting the api
      */
-    private void insertSyncApiDetails(String apiName, String startTime, String endTime, String errorInfo) {
+    private void insertSyncApiDetails(String apiName, String startTime, String endTime, String errorInfo, String tableName) {
 
         try {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
@@ -5105,12 +5123,13 @@ SynchronizationHelper {
 
             String status = StringUtils.isEmptyString(errorInfo) ? "Success" : "Failure";
 
-            String columns = "Tid,apiname,starttime,endtime,errorinfo,status";
+            String columns = "Tid,apiname,starttime,endtime,errorinfo,status,tablename";
 
             String values = StringUtils.QT(syncLogId) + "," + StringUtils.QT(apiName)
                     + "," + StringUtils.QT(startTime)
                     + "," + StringUtils.QT(endTime)
-                    + "," + StringUtils.QT(errorInfo) + "," + StringUtils.QT(status);
+                    + "," + StringUtils.QT(errorInfo) + "," + StringUtils.QT(status)
+                    + "," + StringUtils.QT(tableName);
             db.insertSQL("SyncDownloadApiStatus", columns,
                     values);
             db.closeDB();

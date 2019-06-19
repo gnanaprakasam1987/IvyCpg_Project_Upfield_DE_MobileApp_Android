@@ -537,4 +537,48 @@ public class DateTimeUtils {
                 && (thenMonth == time.month)
                 && (thenMonthDay == time.monthDay);
     }
+
+    private static SimpleDateFormat getDateFormat(int format) {
+        switch (format) {
+            case TIME:
+                return new SimpleDateFormat("HH:mm:ss", Locale.ENGLISH);
+            case DATE:
+                return new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
+            case DATE_TIME:
+                return new SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.ENGLISH);
+            case DATE_TIME_NEW:
+                return new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.ENGLISH);
+            case DATE_GLOBAL:
+                return new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
+            case DATE_TIME_ID_MILLIS:
+                return new SimpleDateFormat("MMddyyyyHHmmssSSS", Locale.ENGLISH);
+            case GMT_DATE_TIME:
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.ENGLISH);
+                sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+                return sdf;
+            case DATE_GLOBAL_PLAIN:
+                return new SimpleDateFormat("yyyyMMdd", Locale.ENGLISH);
+            case DATE_GLOBAL_HYPHEN:
+                return new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+            case DATE_DOB_FORMAT_PLAIN:
+                return new SimpleDateFormat("MMddyyyy", Locale.ENGLISH);
+            case TIME_HOUR_MINS:
+                return new SimpleDateFormat("HH", Locale.ENGLISH);
+            default:
+                return new SimpleDateFormat("MMddyyyyHHmmss", Locale.ENGLISH);
+        }
+    }
+
+    public static long getSeconds(String time1, String time2, int format) {
+        try {
+            SimpleDateFormat sdf = getDateFormat(format);
+            Date date1 = sdf.parse(time1);
+            Date date2 = sdf.parse(time2);
+            long difference = date2.getTime() - date1.getTime();
+            return (difference / 1000);
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return 0;
+    }
 }

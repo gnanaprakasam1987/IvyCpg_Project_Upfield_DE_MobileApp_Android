@@ -57,7 +57,7 @@ import com.ivy.cpg.view.reports.sfreport.SalesFundamentalGapReportFragment;
 import com.ivy.cpg.view.reports.slaesvolumereport.SalesVolumeReportFragment;
 import com.ivy.cpg.view.reports.slaesvolumereport.SalesVolumeReportHelper;
 import com.ivy.cpg.view.reports.soho.SalesReturnReportFragmentSOHO;
-import com.ivy.cpg.view.reports.syncreport.SyncReportFragment;
+import com.ivy.ui.reports.syncreport.view.SyncReportFragment;
 import com.ivy.cpg.view.reports.taskexcutionreport.TaskExecutionReportFragment;
 import com.ivy.cpg.view.reports.taskreport.TaskReportFragment;
 import com.ivy.cpg.view.reports.userlogreport.LogReportFragment;
