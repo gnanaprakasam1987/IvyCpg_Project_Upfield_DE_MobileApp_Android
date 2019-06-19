@@ -168,10 +168,10 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                             selectedSeller.setAchievedCoverage(c.getInt(1));
                     }
                     else if(c.getString(3).equals("SV")) {
-                        selectedSeller.setTargetValue(c.getInt(0));
+                        selectedSeller.setTargetValue(c.getLong(0));
 
                         if (isMTD)
-                            selectedSeller.setAchievedValue(c.getInt(1));
+                            selectedSeller.setAchievedValue(c.getLong(1));
                     }
                     else if(c.getString(3).equals("LPC")) {
                         selectedSeller.setTargetLines(c.getInt(0));
