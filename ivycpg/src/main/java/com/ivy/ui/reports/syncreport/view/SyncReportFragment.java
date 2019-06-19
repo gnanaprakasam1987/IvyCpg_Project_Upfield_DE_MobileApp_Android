@@ -1,4 +1,4 @@
-package com.ivy.cpg.view.reports.syncreport;
+package com.ivy.ui.reports.syncreport.view;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -7,11 +7,8 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -26,13 +23,15 @@ import com.ivy.sd.png.model.BusinessModel;
 public class SyncReportFragment extends IvyBaseFragment {
 
     private BusinessModel bmodel;
-    private String[] title = {"Upload","Download"};
+    private String[] title = new String[2];
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
+        title[0] = getResources().getString(R.string.download);
+        title[1] = getResources().getString(R.string.upload);
     }
 
     @Override
@@ -60,33 +59,7 @@ public class SyncReportFragment extends IvyBaseFragment {
         ViewPager viewPager = view.findViewById(R.id.viewPager);
         TabLayout tabLayout = view.findViewById(R.id.tab_layout);
 
-        tabLayout.setupWithViewPager(viewPager);//setting tab over viewpager
-       /* final TabLayout tabLayout = view.findViewById(R.id.tabs);
-
-        TextView tabOne = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
-        tabOne.setText("Upload");
-        tabLayout.addTab(tabLayout.newTab().setCustomView(tabOne));
-
-        TextView tabTwo = (TextView) LayoutInflater.from(getActivity()).inflate(R.layout.custom_tab, null);
-        tabTwo.setText("Download");
-        tabLayout.addTab(tabLayout.newTab().setCustomView(tabTwo));
-
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        });*/
+        tabLayout.setupWithViewPager(viewPager);
 
         PagerAdapter adapter = new PagerAdapter
                 (getChildFragmentManager(), tabLayout.getTabCount());
@@ -122,10 +95,10 @@ public class SyncReportFragment extends IvyBaseFragment {
 
         @Override
         public Fragment getItem(int position) {
-            if(position == 0)
-                return new SyncUploadFragment();
+            if (position == 0)
+                return new SyncReportDownloadFragment();
             else
-                return new SyncUploadFragment();
+                return new SyncReportUploadFragment();
 
         }
 
@@ -146,7 +119,7 @@ public class SyncReportFragment extends IvyBaseFragment {
         bmodel = (BusinessModel) getActivity().getApplicationContext();
         bmodel.setContext(getActivity());
 
-        if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
+        if (bmodel.getAppDataProvider().getUser().getUserid() == 0) {
             Toast.makeText(getActivity(),
                     getResources().getString(R.string.sessionout_loginagain),
                     Toast.LENGTH_SHORT).show();

@@ -27,14 +27,14 @@
             android:id="@+id/retailer_wise_tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Upload" />
+            android:text="@string/download" />
 
         <android.support.design.widget.TabItem
             style="@style/AppTabLayout"
             android:id="@+id/user_wise_tab"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Download"/>
+            android:text="@string/upload"/>
 
     </android.support.design.widget.TabLayout>
 
