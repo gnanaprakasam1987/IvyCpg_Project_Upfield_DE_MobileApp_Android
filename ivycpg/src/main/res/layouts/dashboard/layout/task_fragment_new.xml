@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    >
 
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
@@ -11,40 +13,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/footer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="?attr/customFooterBackgroundColor"
-            android:minHeight="@dimen/footer_height"
-            android:orientation="vertical"
-            android:visibility="gone">
-
-            <Button
-                android:id="@+id/btn_close"
-                style="?attr/roundedCustomButtonSmall"
-                android:layout_gravity="end"
-                android:layout_margin="@dimen/target_top_margin"
-                android:gravity="center"
-                android:text="@string/close"
-                android:textAllCaps="false" />
-
-        </LinearLayout>
-
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
-            style="@style/AppTabLayout"
+            style="?attr/tablayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_gravity="center_horizontal"
             app:tabGravity="fill"
-            app:tabIndicatorHeight="4dp"
-            app:tabMode="fixed" />
+            app:tabMode="fixed"
+            app:tabTextColor="@color/white" />
 
         <LinearLayout
-            android:id="@+id/ListHeader"
+            android:id="@+id/list_header_ll"
             android:layout_width="match_parent"
             android:layout_height="@dimen/list_header_height"
             android:layout_below="@+id/tabs"
@@ -82,13 +63,22 @@
             android:id="@+id/task_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/footer"
-            android:layout_below="@+id/ListHeader"
+            android:layout_below="@+id/list_header_ll"
             android:clipToPadding="false"
             android:orientation="horizontal"
             android:overScrollMode="never" />
 
+        <TextView
+            android:id="@+id/no_data_tv"
+            style="@style/TextViewCaptionNormal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:text="@string/data_not_mapped"/>
+
     </RelativeLayout>
+
 
     <View
         android:id="@+id/task_bg_view"
@@ -100,5 +90,21 @@
         android:visibility="gone" />
 
     <include layout="@layout/sort_by_bottom_sheet" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_create_task"
+        style="?attr/fabButtonStyle_Configured"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="@dimen/floating_btn_elevation"
+        android:src="@drawable/task_add"
+        android:visibility="visible"
+        app:backgroundTint="?attr/accentcolor"
+        app:borderWidth="0dp"
+        app:useCompatPadding="true"
+        app:layout_anchor="@+id/bottomSheetLayout"
+        app:layout_anchorGravity="top|end"
+        tools:ignore="UnusedAttribute" />
+
 </android.support.design.widget.CoordinatorLayout>
 

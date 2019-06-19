@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.ivy.cpg.view.task.TaskHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.cpg.view.task.TaskDataBO;
+import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;

@@ -220,7 +220,7 @@ public class UserMasterHelper {
             if (bmodel.configurationMasterHelper.userLevel != null && bmodel.configurationMasterHelper.userLevel.length() > 0)
                 sb.append("userLevel in (" + bmodel.configurationMasterHelper.userLevel + ")");
             else
-                sb.append("relationship !='CHILD'");
+                sb.append("relationship ='PARENT'");
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {

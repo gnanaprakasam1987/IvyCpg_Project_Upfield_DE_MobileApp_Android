@@ -30,6 +30,7 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
 import java.io.File;
@@ -733,5 +734,33 @@ public class LoginHelper {
 
     private void setTermsAccepted(boolean termsAccepted) {
         isTermsAccepted = termsAccepted;
+    }
+
+    public int getNearByDueDataTaskAvail(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+        int taskCount = 0;
+        try {
+            db.openDataBase();
+            String maxDueDate = DateTimeUtils.getRequestedDateByGetType(businessModel.configurationMasterHelper.IS_TASK_DUDE_DATE_COUNT, Calendar.DATE);
+            String query = "select distinct A.taskid" +
+                    " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid " +
+                    " left join DatewisePlan DWP on DWP.Date = B.DueDate" +
+                    " and DWP.EntityId = A.retailerID and DWP.Status!='D' and DWP.EntityType = 'RETAILER'" +
+                    " where B.DueDate<=" + StringUtils.QT(maxDueDate) + " and DWP.Date IS NULL and (B.Status!='D' OR B.Status IS NULL)" +
+                    " and A.retailerId!=0 and A.TaskId not in (Select taskid from TaskHistory where RetailerId = A.retailerId)";
+
+            Cursor c = db.selectSQL(query);
+
+            if (c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    taskCount = c.getCount();
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+        return taskCount;
     }
 }
