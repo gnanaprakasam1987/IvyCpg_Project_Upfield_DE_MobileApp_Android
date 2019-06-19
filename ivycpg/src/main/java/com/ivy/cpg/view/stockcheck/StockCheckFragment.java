@@ -26,6 +26,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -105,7 +106,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
         BrandDialogInterface, OnClickListener, OnEditorActionListener,
         CompetitorFilterInterface, FiveLevelFilterCallBack, StockCheckContractor.StockCheckView {
 
-
     private static final String BRAND = "Brand";
     private String append = "";
 
@@ -173,7 +173,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         stockCheckPresenter.isLoadBothSalable(businessModel.configurationMasterHelper.SHOW_SALABLE_AND_NON_SALABLE_SKU);
 
         try {
-            isFromChild = ((Activity)context).getIntent().getBooleanExtra("isFromChild", false);
+            isFromChild = ((Activity) context).getIntent().getBooleanExtra("isFromChild", false);
 
             if (businessModel.configurationMasterHelper.SHOW_SPL_FILTER) {
 
@@ -221,7 +221,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         setHasOptionsMenu(true);
 
         DisplayMetrics dm = new DisplayMetrics();
-        ((Activity)context).getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
+        ((Activity) context).getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
         mTotalScreenWidth = dm.widthPixels;
     }
 
@@ -496,19 +496,19 @@ public class StockCheckFragment extends IvyBaseFragment implements
     private void refreshList(ArrayList<ProductMasterBO> list) {
         this.stockList = list;
 
-        ProductTaggingHelper productTaggingHelper=ProductTaggingHelper.getInstance(getActivity());
+        ProductTaggingHelper productTaggingHelper = ProductTaggingHelper.getInstance(getActivity());
 
-            // Listing only products mapped to current location
-            if(productTaggingHelper.getTaggedLocations().size()>0) {
-                ArrayList<ProductMasterBO> temp = new ArrayList<>();
-                for (ProductMasterBO productMasterBO : stockList) {
-                    if (productMasterBO.getTaggedLocations().contains(stockCheckPresenter.getCurrentLocationId())) {
-                        temp.add(productMasterBO);
-                    }
+        // Listing only products mapped to current location
+        if (productTaggingHelper.getTaggedLocations().size() > 0) {
+            ArrayList<ProductMasterBO> temp = new ArrayList<>();
+            for (ProductMasterBO productMasterBO : stockList) {
+                if (productMasterBO.getTaggedLocations().contains(stockCheckPresenter.getCurrentLocationId())) {
+                    temp.add(productMasterBO);
                 }
-                stockList.clear();
-                stockList.addAll(temp);
             }
+            stockList.clear();
+            stockList.addAll(temp);
+        }
 
         if (mSchedule == null) {
             mSchedule = new MyAdapter(stockList);
@@ -577,7 +577,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 final ProductMasterBO product = items.get(position);
 
                 if (row == null) {
-                    LayoutInflater inflater = ((Activity)context).getLayoutInflater();
+                    LayoutInflater inflater = ((Activity) context).getLayoutInflater();
                     row = inflater.inflate(
                             R.layout.activity_stock_check_listview, parent,
                             false);
@@ -681,6 +681,13 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         holder.shelfouter.setVisibility(View.GONE);
 
                     }
+
+                    if (businessModel.configurationMasterHelper.IS_STK_DIGIT) {
+                        holder.shelfCaseQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(businessModel.configurationMasterHelper.STK_DIGIT)});
+                        holder.shelfPcsQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(businessModel.configurationMasterHelper.STK_DIGIT)});
+                        holder.shelfouter.setFilters(new InputFilter[]{new InputFilter.LengthFilter(businessModel.configurationMasterHelper.STK_DIGIT)});
+                    }
+
 
                     if (!businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE)
                         holder.productCode.setVisibility(View.GONE);
@@ -1358,7 +1365,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                         getActivity(), schemeList,
                                         holder.pname, holder.productId,
                                         holder.productObj, 1, 0);
-                                FragmentManager fm = ((FragmentActivity)context).getSupportFragmentManager();
+                                FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();
                                 sc.show(fm, "");
                             }
                             return true;
@@ -1612,7 +1619,6 @@ public class StockCheckFragment extends IvyBaseFragment implements
         private TextView barcode;
         private EditText shelfPcsQty;
         private EditText shelfCaseQty;
-
         private EditText shelfouter;
         private EditText facingQty;
 
@@ -1683,7 +1689,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             if (businessModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 menu.findItem(R.id.menu_loc_filter).setVisible(false);
             else {
-                if (stockCheckPresenter.getLocationAdapter().getCount() <2
+                if (stockCheckPresenter.getLocationAdapter().getCount() < 2
                         || !stockCheckHelper.SHOW_STOCK_LOCATION_FILTER)
                     menu.findItem(R.id.menu_loc_filter).setVisible(false);
                 else menu.findItem(R.id.menu_loc_filter).setVisible(true);
@@ -1751,7 +1757,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
             return true;
         } else if (i == R.id.menu_spl_filter) {
             generalFilterClickedFragment();
-            ((FragmentActivity)context).supportInvalidateOptionsMenu();
+            ((FragmentActivity) context).supportInvalidateOptionsMenu();
             return true;
         } else if (i == R.id.menu_remarks) {
             onNoteButtonClick();
@@ -1799,10 +1805,10 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
 
                         if (isPreVisit)
-                            intent.putExtra("PreVisit",true);
+                            intent.putExtra("PreVisit", true);
 
                         startActivity(intent);
-                        ((Activity)context).finish();
+                        ((Activity) context).finish();
                     }
                 }
             });
@@ -1810,11 +1816,11 @@ public class StockCheckFragment extends IvyBaseFragment implements
             args.putString("modulename", "MENU_STOCK");
             dialog.setCancelable(false);
             dialog.setArguments(args);
-            dialog.show(((FragmentActivity)context).getSupportFragmentManager(), "ReasonDialogFragment");
+            dialog.show(((FragmentActivity) context).getSupportFragmentManager(), "ReasonDialogFragment");
             return true;
         } else if (i == R.id.menu_competitor_filter) {
             competitorFilterClickedFragment();
-            ((FragmentActivity)context).supportInvalidateOptionsMenu();
+            ((FragmentActivity) context).supportInvalidateOptionsMenu();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -1872,7 +1878,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
     }
 
     private void onNoteButtonClick() {
-        FragmentTransaction ft = ((FragmentActivity)context)
+        FragmentTransaction ft = ((FragmentActivity) context)
                 .getSupportFragmentManager().beginTransaction();
         RemarksDialog dialog = new RemarksDialog("MENU_CLOSING");
         dialog.setCancelable(false);
@@ -2357,7 +2363,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         intent.putExtra("CurrentActivityCode", extras.getString("CurrentActivityCode", ""));
 
                         if (isPreVisit)
-                            intent.putExtra("PreVisit",true);
+                            intent.putExtra("PreVisit", true);
                     }
 
                     startActivity(intent);
@@ -2370,7 +2376,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
                     Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
                     if (isPreVisit)
-                        intent.putExtra("PreVisit",true);
+                        intent.putExtra("PreVisit", true);
                     startActivity(intent);
                     getActivity().finish();
 
@@ -2392,7 +2398,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     }
 
                     if (isPreVisit)
-                        intent.putExtra("PreVisit",true);
+                        intent.putExtra("PreVisit", true);
 
                     startActivity(intent);
                     getActivity().finish();
@@ -2458,16 +2464,16 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
 
                 if (isPreVisit)
-                    intent.putExtra("PreVisit",true);
+                    intent.putExtra("PreVisit", true);
 
                 if (isFromChild)
                     startActivity(intent.putExtra("isStoreMenu", true));
                 else
                     startActivity(intent);
 
-                ((Activity)context).finish();
+                ((Activity) context).finish();
             }
-            ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+            ((Activity) context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
         }
     }
 
@@ -2480,15 +2486,15 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 Intent intent = new Intent(getActivity(), HomeScreenTwo.class);
 
                 if (isPreVisit)
-                    intent.putExtra("PreVisit",true);
+                    intent.putExtra("PreVisit", true);
 
                 if (isFromChild)
                     startActivity(intent.putExtra("isStoreMenu", true));
                 else
                     startActivity(intent);
 
-                ((Activity)context).finish();
-                ((Activity)context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
+                ((Activity) context).finish();
+                ((Activity) context).overridePendingTransition(R.anim.trans_right_in, R.anim.trans_right_out);
 
             }
         }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {

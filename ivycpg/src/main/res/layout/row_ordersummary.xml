@@ -75,60 +75,6 @@
                 android:orientation="horizontal">
 
                 <LinearLayout
-                    android:id="@+id/llShelfPiece"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/card_margin"
-
-                    android:layout_marginRight="@dimen/card_margin"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
-
-                    <TextView
-                        android:id="@+id/shelfPcsTitle"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:maxLines="1"
-                        android:paddingEnd="5dp"
-                        android:paddingRight="5dp"
-                        android:tag="sp"
-                        android:text="@string/sp" />
-
-                    <TextView
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="@dimen/card_margin"
-                        android:layout_marginRight="@dimen/card_margin"
-                        android:text=":" />
-
-                    <TextView
-                        android:id="@+id/sp_quantity"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginEnd="@dimen/card_margin"
-                        android:layout_marginRight="@dimen/card_margin"
-                        android:maxLines="1"
-                        android:paddingEnd="5dp"
-                        android:paddingRight="5dp"
-                        android:text="@string/zero" />
-
-                    <TextView
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="@dimen/dimens_4dp"
-                        android:layout_marginBottom="@dimen/dimens_4dp"
-                        android:background="@color/gray_text" />
-
-                </LinearLayout>
-
-
-                <LinearLayout
                     android:id="@+id/llShelfCase"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -211,6 +157,58 @@
 
                     <TextView
                         android:id="@+id/sho_quantity"
+                        style="@style/TextViewListItemCaption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/card_margin"
+                        android:layout_marginRight="@dimen/card_margin"
+                        android:maxLines="1"
+                        android:paddingEnd="5dp"
+                        android:paddingRight="5dp"
+                        android:text="@string/zero" />
+
+                    <TextView
+                        android:layout_width="1dp"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/dimens_4dp"
+                        android:layout_marginBottom="@dimen/dimens_4dp"
+                        android:background="@color/gray_text" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/llShelfPiece"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/card_margin"
+                    android:layout_marginRight="@dimen/card_margin"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/shelfPcsTitle"
+                        style="@style/TextViewListItemCaption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:maxLines="1"
+                        android:paddingEnd="5dp"
+                        android:paddingRight="5dp"
+                        android:tag="sp"
+                        android:text="@string/sp" />
+
+                    <TextView
+                        style="@style/TextViewListItemCaption"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginEnd="@dimen/card_margin"
+                        android:layout_marginRight="@dimen/card_margin"
+                        android:text=":" />
+
+                    <TextView
+                        android:id="@+id/sp_quantity"
                         style="@style/TextViewListItemCaption"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

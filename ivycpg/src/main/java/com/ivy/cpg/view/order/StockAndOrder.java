@@ -2045,6 +2045,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 (row.findViewById(R.id.llShelfCase)).setVisibility(View.GONE);
             else {
                 try {
+
+                    if (bmodel.configurationMasterHelper.IS_STK_DIGIT)
+                        holder.shelfCaseQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
+
                     ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.shelfCaseTitle).getTag()) != null)
@@ -2063,6 +2067,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 (row.findViewById(R.id.llShelfPc)).setVisibility(View.GONE);
             else {
                 try {
+                    if (bmodel.configurationMasterHelper.IS_STK_DIGIT)
+                        holder.shelfPcsQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
+
                     ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.shelfPcsTitle).getTag()) != null)
@@ -2081,6 +2088,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 (row.findViewById(R.id.llShelfOuter)).setVisibility(View.GONE);
             else {
                 try {
+                    if (bmodel.configurationMasterHelper.IS_STK_DIGIT)
+                        holder.shelfouter.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
+
                     ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.shelfOuterTitle).getTag()) != null)

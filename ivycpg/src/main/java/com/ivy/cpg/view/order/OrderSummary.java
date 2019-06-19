@@ -2260,7 +2260,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     }
                     if (stockCheckHelper.SHOW_SHELF_OUTER) {
-                        (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
+                        (row.findViewById(R.id.llShelfOuter)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this, FontUtils.FontType.MEDIUM));
                         holder.shelfOuterQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this, FontUtils.FontType.MEDIUM));
                         try {
@@ -2618,7 +2618,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     }
                     if (stockCheckHelper.SHOW_SHELF_OUTER) {
-                        (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
+                        (row.findViewById(R.id.llShelfOuter)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this, FontUtils.FontType.LIGHT));
                         holder.shelfOuterQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this, FontUtils.FontType.MEDIUM));
                         try {

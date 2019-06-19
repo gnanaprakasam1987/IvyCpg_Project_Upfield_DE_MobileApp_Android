@@ -9,6 +9,7 @@ import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.MenuItem;
@@ -543,6 +544,13 @@ public class CombinedStockDetailActivity extends IvyBaseActivityNoActionBar {
                 etPricePiece.setEnabled(true);
                 etMrpPricePiece.setEnabled(true);
             }
+
+            if (bmodel.configurationMasterHelper.IS_STK_DIGIT) {
+                etShelfPiece.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
+                etShelfOuter.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
+                etShelfCase.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
+            }
+
 
             //Disable while all the UOM is not available
             if ((mProductMasterBO.getOuUomid() == 0 || !mProductMasterBO.isOuterMapped())
