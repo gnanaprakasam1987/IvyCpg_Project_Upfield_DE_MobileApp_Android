@@ -20,7 +20,8 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="@dimen/_10sdp">
 
             <RelativeLayout
                 android:id="@+id/first_layout"
@@ -34,7 +35,6 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:adjustViewBounds="true"
-                    android:padding="@dimen/dimen_10dp"
                     android:text="@string/title" />
 
                 <TextView
@@ -44,16 +44,14 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/note_title_label_tv"
                     android:adjustViewBounds="true"
-                    android:paddingStart="@dimen/dimen_10dp"
-                    android:paddingLeft="@dimen/dimen_10dp"
-                    android:paddingRight="@dimen/dimen_10dp"
-                    android:paddingBottom="@dimen/dimen_10dp"
                     android:text="@string/plan_task" />
 
                 <View
                     android:id="@+id/note_title_divider"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/activity_divider_height"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
                     android:layout_below="@+id/note_title__value_tv"
                     android:background="@color/divider_view_color"
                     android:labelFor="@+id/evidence_img_recycler_view" />
@@ -66,7 +64,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/note_title_divider"
                     android:adjustViewBounds="true"
-                    android:padding="@dimen/dimen_10dp"
                     android:text="@string/description" />
 
                 <TextView
@@ -76,16 +73,14 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/note_desc_label_tv"
                     android:adjustViewBounds="true"
-                    android:paddingStart="@dimen/dimen_10dp"
-                    android:paddingLeft="@dimen/dimen_10dp"
-                    android:paddingRight="@dimen/dimen_10dp"
-                    android:paddingBottom="@dimen/dimen_10dp"
                     android:text="@string/description" />
 
                 <View
                     android:id="@+id/tsk_createdby_divider"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/activity_divider_height"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
                     android:layout_below="@+id/note_desc_value_tv"
                     android:background="@color/divider_view_color"
                     android:labelFor="@+id/evidence_img_recycler_view" />
@@ -109,7 +104,6 @@
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:adjustViewBounds="true"
-                    android:padding="@dimen/dimen_10dp"
                     android:text="@string/created_by" />
 
                 <TextView
@@ -121,10 +115,6 @@
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:adjustViewBounds="true"
-                    android:paddingStart="@dimen/dimen_10dp"
-                    android:paddingLeft="@dimen/dimen_10dp"
-                    android:paddingRight="@dimen/dimen_10dp"
-                    android:paddingBottom="@dimen/dimen_10dp"
                     android:text="@string/category" />
 
                 <TextView
@@ -135,7 +125,6 @@
                     android:layout_toEndOf="@+id/created_by_tv"
                     android:layout_toRightOf="@+id/created_by_tv"
                     android:adjustViewBounds="true"
-                    android:padding="@dimen/dimen_10dp"
                     android:text="@string/created_date" />
 
                 <TextView
@@ -149,9 +138,6 @@
                     android:layout_toEndOf="@+id/created_by_value_tv"
                     android:layout_toRightOf="@+id/created_by_value_tv"
                     android:adjustViewBounds="true"
-                    android:paddingStart="@dimen/dimen_10dp"
-                    android:paddingLeft="@dimen/dimen_10dp"
-                    android:paddingRight="@dimen/dimen_10dp"
                     android:paddingBottom="10dp"
                     android:text="@string/date_label" />
 
@@ -159,6 +145,8 @@
                     android:id="@+id/tsk_category_divider"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/activity_divider_height"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_10sdp"
                     android:layout_below="@+id/created_date_value_tv"
                     android:background="@color/divider_view_color"
                     android:labelFor="@+id/evidence_img_recycler_view" />
@@ -173,7 +161,6 @@
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:adjustViewBounds="true"
-                    android:padding="@dimen/dimen_10dp"
                     android:text="@string/modified_by" />
 
                 <TextView
@@ -185,10 +172,6 @@
                     android:layout_marginEnd="@dimen/_10sdp"
                     android:layout_marginRight="@dimen/_10sdp"
                     android:adjustViewBounds="true"
-                    android:paddingStart="@dimen/dimen_10dp"
-                    android:paddingLeft="@dimen/dimen_10dp"
-                    android:paddingRight="@dimen/dimen_10dp"
-                    android:paddingBottom="@dimen/dimen_10dp"
                     android:text="@string/dummy_txt" />
 
 
@@ -201,7 +184,6 @@
                     android:layout_toEndOf="@+id/modified_by_tv"
                     android:layout_toRightOf="@+id/modified_by_tv"
                     android:adjustViewBounds="true"
-                    android:padding="@dimen/dimen_10dp"
                     android:text="@string/modified_date" />
 
                 <TextView
@@ -213,10 +195,6 @@
                     android:layout_toEndOf="@+id/modified_by_tv"
                     android:layout_toRightOf="@+id/modified_by_tv"
                     android:adjustViewBounds="true"
-                    android:paddingStart="@dimen/dimen_10dp"
-                    android:paddingLeft="@dimen/dimen_10dp"
-                    android:paddingRight="@dimen/dimen_10dp"
-                    android:paddingBottom="10dp"
                     android:text="@string/dummy_txt" />
 
 
@@ -226,6 +204,8 @@
                 android:id="@+id/modified_divider"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/activity_divider_height"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:layout_marginBottom="@dimen/_10sdp"
                 android:layout_below="@+id/rl_description"
                 android:background="@color/divider_view_color"
                 android:labelFor="@+id/evidence_img_recycler_view" />

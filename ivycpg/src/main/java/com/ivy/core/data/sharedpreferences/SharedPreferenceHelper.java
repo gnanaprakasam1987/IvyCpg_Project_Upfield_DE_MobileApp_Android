@@ -18,4 +18,8 @@ public interface SharedPreferenceHelper {
 
     public void setPreferredLanguage(String language);
 
+    boolean getTaskNotificationFlag();
+
+    void setTaskNotificationFlag(boolean taskNotificationFlag);
+
 }

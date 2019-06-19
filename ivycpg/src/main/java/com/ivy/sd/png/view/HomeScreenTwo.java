@@ -167,7 +167,7 @@ public class HomeScreenTwo extends IvyBaseActivityNoActionBar implements Supplie
     private static final String MENU_LCALL = "MENU_LCALL";
     private static final String MENU_SALES_RET = "MENU_SALES_RET";
     private static final String MENU_SURVEY = "MENU_SURVEY";
-    private static final String MENU_TASK = "MENU_TASK";
+    public static final String MENU_TASK = "MENU_TASK";
     public static final String MENU_PHOTO = "MENU_PHOTO";
     public static final String MENU_ASSET = "MENU_ASSET";
     private static final String MENU_STORECHECK = "MENU_STORECHECK";

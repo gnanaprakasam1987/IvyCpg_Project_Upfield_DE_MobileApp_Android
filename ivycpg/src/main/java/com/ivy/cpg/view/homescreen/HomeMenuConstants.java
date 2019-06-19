@@ -45,6 +45,7 @@ public class HomeMenuConstants {
     public static final String MENU_WEB_VIEW_PLAN = "MENU_WVW_PLAN_REQ";
     public static final String MENU_NEWRET_EDT = "MENU_NEWRET_EDT";
     public static final String MENU_TASK_NEW = "MENU_TASK_NEW";
+    public static final String MENU_RTR_TASK_PENDING = "MENU_RTR_TASK_PENDING";
     public static final String MENU_PLANE_MAP = "MENU_PLANE_MAP";
     public static final String MENU_BACKUP_SELLER = "MENU_BACKUP_SELLER";
     public static final String MENU_SUPERVISOR_REALTIME = "MENU_SUPERVISOR_REALTIME";
@@ -60,6 +61,7 @@ public class HomeMenuConstants {
     public static final String MENU_Q_CALL = "MENU_QUICK_CALL";
     public static final String MENU_NOTES_SW = "MENU_NOTES_SW";
     public static final String MENU_MAP_PLAN = "MENU_MAP_PLAN";
+    public static final String TASK_NOTIFICATION = "taskNotificationFlag";
 
 
 
@@ -92,6 +94,7 @@ public class HomeMenuConstants {
         put(MENU_EXPENSE, R.drawable.ic_expense_icon);
         put(MENU_NEWRET_EDT, R.drawable.ic_new_retailer_icon);
         put(MENU_TASK_NEW, R.drawable.task);
+        put(MENU_RTR_TASK_PENDING, R.drawable.task);
         put(MENU_SURVEY_SW, R.drawable.ic_survey_icon);
         put(MENU_SURVEY01_SW, R.drawable.ic_survey_icon);
         put(MENU_SURVEY_BA_CS, R.drawable.ic_survey_icon);
