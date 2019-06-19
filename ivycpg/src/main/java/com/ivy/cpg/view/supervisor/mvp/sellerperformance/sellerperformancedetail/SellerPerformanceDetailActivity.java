@@ -28,6 +28,7 @@ import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.lib.DialogFragment;
+import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.util.Commons;
@@ -261,7 +262,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
     public void updateSellerTabViewInfo(SellerBo sellerBo) {
         coverageTargetTv.setText(String.valueOf(sellerBo.getTargetCoverage()));
         linesTargetTv.setText(String.valueOf(sellerBo.getTargetLines()));
-        valueTargetTv.setText(String.valueOf(sellerBo.getTargetValue()));
+        valueTargetTv.setText(Utils.formatAsTwoDecimal((double) sellerBo.getTargetValue()));
 
         int covered,lines;
         double orderValue;
@@ -277,7 +278,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         }
 
         coverageActualtv.setText(String.valueOf(covered));
-        valueActualTv.setText(String.valueOf(orderValue));
+        valueActualTv.setText(Utils.formatAsTwoDecimal(orderValue));
         linesActualTv.setText(String.valueOf(lines));
 
         if (sellerBo.getTargetCoverage() != 0) {
