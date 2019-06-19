@@ -140,17 +140,22 @@ public class TaskDataManagerImpl implements TaskDataManager {
                 try {
                     initDb();
 
-                    String query = "select distinct A.taskid,B.taskcode,B.taskDesc,A.retailerId,"
-                            + "(CASE WHEN ifnull(TH.TaskId,0) >0 THEN 1 ELSE 0 END) as isDone,"
-                            + "B.usercreated , B.taskowner , B.date, A.upload,A.channelid,A.userid,"
-                            + "IFNULL(B.DueDate,''),B.CategoryId,IFNULL(PL.PName,''),TH.ExecutionDate"
-                            + " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid"
-                            + " inner join TaskHistory TH on TH.TaskId=A.taskid and TH.RetailerId = " + retailerId
-                            + " left join ProductMaster PL on PL.PID=B.CategoryId"
-                            + " left join RetailerMaster RM on RM.RetailerID=A.retailerId"
-                            + " left join TaskExecutionDetails TD on TD.TaskId=A.taskid"
-                            + " where A.retailerId=" + retailerId
-                            + " or TD.ReasonId!=0";
+                    String query = "select distinct B.taskid,B.taskcode,B.taskDesc,TH.retailerId,(CASE WHEN ifnull(TH.TaskId,0) >0 THEN 1 ELSE 0 END)" +
+                            "as isDone,B.usercreated , B.taskowner , B.date,A.channelid,A.userid,IFNULL(B.DueDate,''),B.CategoryId,IFNULL(PL.PName,''),TH.ExecutionDate" +
+                            " from TaskMaster B" +
+                            " inner join TaskHistory TH on TH.TaskId=B.taskid and TH.RetailerId =" + retailerId +
+                            " left join ProductMaster PL on PL.PID=B.CategoryId " +
+                            " left join RetailerMaster RM on RM.RetailerID=TH.retailerId " +
+                            " left join TaskConfigurationMaster A on A.taskId = B.taskId" +
+
+                            " UNION ALL " +
+
+                            " select distinct B.taskid,B.taskcode,B.taskDesc,TD.retailerId,(CASE WHEN ifnull(TD.TaskId,0) >0 THEN 1 ELSE 0 END)" +
+                            "as isDone,B.usercreated , B.taskowner , B.date,A.channelid,A.userid,IFNULL(B.DueDate,''),B.CategoryId,IFNULL(PL.PName,''),TD.Date" +
+                            " from TaskMaster B inner join TaskExecutionDetails TD on TD.TaskId=A.taskid and  A.retailerId=" + retailerId +
+                            " left join TaskConfigurationMaster A on A.taskId = B.taskId" +
+                            " left join ProductMaster PL on PL.PID=B.CategoryId" +
+                            " left join RetailerMaster RM on RM.RetailerID=TD.retailerId  where TD.ReasonId!=0";
 
                     Cursor c = mDbUtil
                             .selectSQL(query);
@@ -161,18 +166,18 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             taskmasterbo.setTasktitle(c.getString(1));
                             taskmasterbo.setTaskDesc(c.getString(2));
                             taskmasterbo.setRid(c.getInt(3));
-                            taskmasterbo.setUpload(c.getString(4));
-                            taskmasterbo.setIsdone(c.getString(5));
-                            taskmasterbo.setUsercreated(c.getString(6));
-                            taskmasterbo.setTaskOwner(c.getString(7));
-                            taskmasterbo.setCreatedDate(c.getString(8));
 
-                            taskmasterbo.setChannelId(c.getInt(9));
-                            taskmasterbo.setUserId(c.getInt(10));
-                            taskmasterbo.setTaskDueDate(c.getString(11));
-                            taskmasterbo.setTaskCategoryID(c.getInt(12));
-                            taskmasterbo.setTaskCategoryDsc(c.getString(13));
-                            taskmasterbo.setTaskExecDate(c.getString(14));
+                            taskmasterbo.setIsdone(c.getString(4));
+                            taskmasterbo.setUsercreated(c.getString(5));
+                            taskmasterbo.setTaskOwner(c.getString(6));
+                            taskmasterbo.setCreatedDate(c.getString(7));
+
+                            taskmasterbo.setChannelId(c.getInt(8));
+                            taskmasterbo.setUserId(c.getInt(9));
+                            taskmasterbo.setTaskDueDate(c.getString(10));
+                            taskmasterbo.setTaskCategoryID(c.getInt(11));
+                            taskmasterbo.setTaskCategoryDsc(c.getString(12));
+                            taskmasterbo.setTaskExecDate(c.getString(13));
 
                             if (taskmasterbo.getUserId() != 0 || taskmasterbo.getUsercreated().equals("0"))
                                 taskmasterbo.setMode("seller");

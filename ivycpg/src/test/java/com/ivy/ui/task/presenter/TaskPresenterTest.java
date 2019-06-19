@@ -28,12 +28,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.concurrent.Callable;
 
 import io.reactivex.Observable;
@@ -179,6 +183,8 @@ public class TaskPresenterTest {
 
         taskPresenter.fetchTaskCreationData(0, "1");
         testScheduler.triggerActions();
+
+
         then(parentView).should().showLoading();
         then((TaskContract.TaskCreationView) parentView).should().setParentUserListData(parentList);
 
@@ -197,6 +203,7 @@ public class TaskPresenterTest {
 
     @Test
     public void fetchTaskCategorySuccess() {
+
         mockConfigurationHelper.TASK_PRODUCT_LEVEL_NO = 4;
         ArrayList<TaskDataBO> mockProList = TaskTestDataFactory.getProductList();
         given(mockTaskDataManager.fetchTaskCategories(mockConfigurationHelper.TASK_PRODUCT_LEVEL_NO)).willReturn(Observable.fromCallable(new Callable<ArrayList<TaskDataBO>>() {
@@ -205,12 +212,14 @@ public class TaskPresenterTest {
                 return mockProList;
             }
         }));
-
+  //Pre Condition
         taskPresenter.fetchTaskCategory();
         testScheduler.triggerActions();
-        parentView.showLoading();
-        then((TaskContract.TaskCreationView) parentView).should().setTaskCategoryListData(mockProList);
-        parentView.hideLoading();
+  // Post Condition
+        InOrder inOrder = Mockito.inOrder(parentView);
+        then(parentView).should(inOrder).showLoading();
+        then((TaskContract.TaskCreationView) parentView).should(inOrder).setTaskCategoryListData(mockProList);
+        then(parentView).should(inOrder).hideLoading();
 
 
     }
@@ -228,6 +237,7 @@ public class TaskPresenterTest {
 
         taskPresenter.fetchTaskCategory();
         testScheduler.triggerActions();
+
         parentView.showLoading();
         parentView.hideLoading();
     }
@@ -248,6 +258,7 @@ public class TaskPresenterTest {
 
         taskPresenter.fetchTaskImageList("1");
         testScheduler.triggerActions();
+
         parentView.showLoading();
         parentView.updateListData(mockImgList);
         parentView.hideLoading();
@@ -269,6 +280,7 @@ public class TaskPresenterTest {
 
         taskPresenter.fetchTaskImageList(null);
         testScheduler.triggerActions();
+
         parentView.showLoading();
         parentView.hideLoading();
     }
@@ -283,8 +295,11 @@ public class TaskPresenterTest {
             }
         }));
 
+        //Pre Condition
         taskPresenter.fetchCompletedTask("1");
         testScheduler.triggerActions();
+
+        //Post condition
         then(parentView).should().showLoading();
         then(parentView).should().updateListData(mockTaskCompList);
         then(parentView).should().hideLoading();
@@ -376,12 +391,10 @@ public class TaskPresenterTest {
                 }));
         taskPresenter.getTaskListData(1, "0", false, false, false);
         testScheduler.triggerActions();
+
         then(parentView).should().showLoading();
         then(parentView).should().updateListData(mockTaskListData);
         then(parentView).should().hideLoading();
-        // then((TaskContract.TaskListView) parentView).should().showDataNotMappedMsg();
-
-
     }
 
 
@@ -421,6 +434,7 @@ public class TaskPresenterTest {
                 }));
         taskPresenter.getTaskListData(1, "0", false, false, false);
         testScheduler.triggerActions();
+
         then(parentView).should().showLoading();
         then(parentView).should().hideLoading();
         then((TaskContract.TaskListView) parentView).should().showDataNotMappedMsg();
@@ -464,6 +478,7 @@ public class TaskPresenterTest {
                 }));
         taskPresenter.getTaskListData(1, "1", true, false, false);
         testScheduler.triggerActions();
+
         then(parentView).should().showLoading();
         then(parentView).should().updateListData(mockTaskListData);
         then(parentView).should().hideLoading();
@@ -505,6 +520,7 @@ public class TaskPresenterTest {
                 }));
         taskPresenter.getTaskListData(1, "1", true, true, false);
         testScheduler.triggerActions();
+
         then(parentView).should().showLoading();
         then(parentView).should().updateListData(mockTaskListData);
         then(parentView).should().hideLoading();
@@ -530,6 +546,7 @@ public class TaskPresenterTest {
 
         taskPresenter.onSaveTask(12, mockBo, 0, 0);
         testScheduler.triggerActions();
+
         then(parentView).should().showLoading();
         then(parentView).should().hideLoading();
         then((TaskContract.TaskCreationView) parentView).should().showTaskSaveAlertMsg();
@@ -557,6 +574,7 @@ public class TaskPresenterTest {
 
         taskPresenter.onSaveTask(12, mockBo, 0, 0);
         testScheduler.triggerActions();
+
         then(parentView).should().showLoading();
         then(parentView).should().hideLoading();
         then(parentView).should().showErrorMsg();
@@ -583,6 +601,7 @@ public class TaskPresenterTest {
                 }));
         taskPresenter.updateTaskExecution("0", mockBo, 0);
         testScheduler.triggerActions();
+
         then((TaskContract.TaskListView) parentView).should().showTaskUpdateMsg();
     }
 
@@ -605,6 +624,7 @@ public class TaskPresenterTest {
                 }));
         taskPresenter.updateTaskExecution("0", mockBo, 12);
         testScheduler.triggerActions();
+
         then((TaskContract.TaskListView) parentView).should().showTaskReasonUpdateMsg();
     }
 
@@ -717,6 +737,7 @@ public class TaskPresenterTest {
 
         taskPresenter.isNPPhotoReasonAvailable("1", "MENU_TASK");
         testScheduler.triggerActions();
+
         then(parentView).shouldHaveZeroInteractions();
     }
 
@@ -744,6 +765,7 @@ public class TaskPresenterTest {
 
         taskPresenter.fetchUnPlannedTask();
         testScheduler.triggerActions();
+
         then(parentView).should().showLoading();
         then(((TaskContract.TaskUnplannedView) parentView)).should().updateUnplannedTaskList(mockRetTaskList, mockHashList);
         then(parentView).should().hideLoading();
@@ -771,6 +793,7 @@ public class TaskPresenterTest {
                 }));
         taskPresenter.deleteTask("123", "self", 0);
         testScheduler.triggerActions();
+
         then(parentView).should().showLoading();
         then(parentView).should().hideLoading();
         then(parentView).should().onDeleteSuccess();
@@ -797,6 +820,7 @@ public class TaskPresenterTest {
                 }));
         taskPresenter.deleteTask(null, "", 0);
         testScheduler.triggerActions();
+
         then(parentView).should().showLoading();
         then(parentView).should().hideLoading();
         then(parentView).should().showErrorMsg();
@@ -854,6 +878,7 @@ public class TaskPresenterTest {
 
         taskPresenter.orderBySortList(mockTaskListData, TaskConstant.PRODUCT_LEVEL_ASC, true);
         testScheduler.triggerActions();
+
         Collections.sort(mockTaskListData, (fstr, sstr) -> fstr.getTaskCategoryDsc().compareToIgnoreCase(sstr.getTaskCategoryDsc()));
         then(parentView).should().updateListData(mockTaskListData);
 
@@ -872,6 +897,7 @@ public class TaskPresenterTest {
 
         taskPresenter.orderBySortList(mockTaskListData, TaskConstant.PRODUCT_LEVEL_DESC, false);
         testScheduler.triggerActions();
+
         Collections.sort(mockTaskListData, (sstr, fstr) -> sstr.getTaskCategoryDsc().compareToIgnoreCase(fstr.getTaskCategoryDsc()));
         then(parentView).should().updateListData(mockTaskListData);
 
@@ -890,6 +916,7 @@ public class TaskPresenterTest {
 
         taskPresenter.orderBySortList(mockTaskListData, 4, true);
         testScheduler.triggerActions();
+
         Collections.sort(mockTaskListData, (fstr, sstr) -> fstr.getTaskDueDate().compareToIgnoreCase(sstr.getTaskDueDate()));
         then(parentView).should().updateListData(mockTaskListData);
 
@@ -907,6 +934,7 @@ public class TaskPresenterTest {
 
         taskPresenter.orderBySortList(mockTaskListData, 5, false);
         testScheduler.triggerActions();
+
         Collections.sort(mockTaskListData, (sstr, fstr) -> sstr.getTaskDueDate().compareToIgnoreCase(fstr.getTaskDueDate()));
         then(parentView).should().updateListData(mockTaskListData);
 
