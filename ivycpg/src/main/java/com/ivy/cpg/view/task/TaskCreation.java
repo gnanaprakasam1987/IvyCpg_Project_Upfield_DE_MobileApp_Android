@@ -217,7 +217,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
             ArrayAdapter<RetailerMasterBO> retailerAdapter = new ArrayAdapter<>(this,
                     R.layout.spinner_bluetext_layout,
                     bmodel.channelMasterHelper.getRetailerMaster());
-            retailerAdapter.insert(new RetailerMasterBO(0, getResources().getString(R.string.all_retailer)), 0);
+            retailerAdapter.insert(new RetailerMasterBO("0", getResources().getString(R.string.all_retailer)), 0);
             retailerAdapter
                     .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
             retailerSpinner.setAdapter(retailerAdapter);
@@ -226,10 +226,10 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
                                            int position, long id) {
                     ((TextView) view.findViewById(android.R.id.text1)).setGravity(Gravity.START);
                     RetailerMasterBO reBo = (RetailerMasterBO) parent.getSelectedItem();
-                    if (reBo.getTretailerName().equalsIgnoreCase(getResources().getString(R.string.all_retailer))) {
+                    if (reBo.getRetailerName().equalsIgnoreCase(getResources().getString(R.string.all_retailer))) {
                         retailerid = -2;
                     } else {
-                        retailerid = reBo.getRetailerId();
+                        retailerid = SDUtil.convertToInt(reBo.getRetailerID());
                     }
                 }
 

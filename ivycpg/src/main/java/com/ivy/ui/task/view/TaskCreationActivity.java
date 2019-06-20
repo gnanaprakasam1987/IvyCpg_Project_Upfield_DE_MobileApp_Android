@@ -199,10 +199,15 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         setImagePath();
         taskCreationDownloadMethods();
 
-        if (isRetailerWiseTask)
+        if (isRetailerWiseTask) {
             mode = TaskConstant.RETAILER_WISE;
-        else
+            switchOption.setVisibility(View.GONE);
+            optionTextView.setVisibility(View.GONE);
+            retSelectionAutoCompTxt.setVisibility(View.GONE);
+            peerUserRb.setVisibility(View.GONE);
+        } else {
             mode = TaskConstant.SELLER_WISE;
+        }
     }
 
 
@@ -229,7 +234,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @Override
     public void setTaskRetailerListData(ArrayList<RetailerMasterBO> retailerList) {
         retailerMasterArrayAdapter.clear();
-        retailerMasterArrayAdapter.add(new RetailerMasterBO(0, getString(R.string.select_retailer)));
+        retailerMasterArrayAdapter.add(new RetailerMasterBO("0", getString(R.string.select_retailer)));
         retailerMasterArrayAdapter.addAll(retailerList);
         retailerMasterArrayAdapter.notifyDataSetChanged();
         retSelectionAutoCompTxt.setAdapter(retailerMasterArrayAdapter);
@@ -288,7 +293,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             linkUserListHashMap.clear();
             linkUserListHashMap.putAll(linkUserListMap);
         } else {
-            linkUserRb.setVisibility(View.GONE);
+            handleLinkUserVisibility(View.GONE);
         }
     }
 
@@ -375,20 +380,30 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         spinnerSelection.setVisibility(View.GONE);
 
         if (switchBtn.isChecked()) {
-            mode = TaskConstant.RETAILER_WISE;
-            optionTextView.setText(getString(R.string.retailer_wise));
-            retSelectionAutoCompTxt.setVisibility(View.VISIBLE);
-            linkUserRb.setVisibility(View.VISIBLE);
-            handleProductLevelVisibility(View.VISIBLE);
-            peerUserRb.setVisibility(View.GONE);
+            switchRetailerWise();
         } else {
-            mode = getTaskMode();
-            retSelectionAutoCompTxt.setVisibility(View.GONE);
-            optionTextView.setText(getString(R.string.Seller));
-            peerUserRb.setVisibility(View.VISIBLE);
-            linkUserRb.setVisibility(View.GONE);
-            handleProductLevelVisibility(View.GONE);
+            switchSellerWise();
         }
+    }
+
+    private void switchSellerWise() {
+        mode = getTaskMode();
+        retSelectionAutoCompTxt.setVisibility(View.GONE);
+        optionTextView.setText(getString(R.string.Seller));
+        peerUserRb.setVisibility(View.VISIBLE);
+        handleLinkUserVisibility(View.GONE);
+        handleProductLevelVisibility(View.GONE);
+    }
+
+    private void switchRetailerWise() {
+        mode = TaskConstant.RETAILER_WISE;
+        optionTextView.setText(getString(R.string.retailer_wise));
+        retSelectionAutoCompTxt.setVisibility(View.VISIBLE);
+        if (!linkUserMasterArrayAdapter.isEmpty())
+            handleLinkUserVisibility(View.VISIBLE);
+
+        handleProductLevelVisibility(View.VISIBLE);
+        peerUserRb.setVisibility(View.GONE);
     }
 
     @OnClick({R.id.self_user, R.id.parent_user, R.id.child_user, R.id.peer_user, R.id.link_user})
@@ -516,7 +531,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         if (!taskPresenter.validate(taskTitle.getText().toString(), taskView.getText().toString(), taskDuedate, retSelectionId, taskAssignId))
             return;
 
-        if (!switchOption.isChecked()) {
+        if (!switchOption.isChecked()
+                && switchOption.getVisibility() == View.VISIBLE) {
             taskAssignId = getSelectedUserId();
         } else {
             mode = TaskConstant.RETAILER_WISE;
@@ -651,6 +667,10 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         }
     }
 
+    private void handleLinkUserVisibility(int visibility) {
+        linkUserRb.setVisibility(visibility);
+    }
+
     private void setUpCategoryAdapter() {
         taskCategoryArrayAdapter = new ArrayAdapter<>(this,
                 R.layout.spinner_blacktext_layout);
@@ -780,10 +800,13 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 switchOption.setChecked(true);
                 switchOption.setText(getString(R.string.retailer_wise));
                 retSelectionAutoCompTxt.setText(retailerMasterArrayAdapter.getItem(getAdapterPosition(taskBo.getMode())).getRetailerName());
-                linkUserRb.setVisibility(View.VISIBLE);
-                linkUserRb.setChecked(true);
-                setUpSpinnerData(3);
-                spinnerSelection.setSelection(getAdapterPosition(TaskConstant.LINK_WISE));
+
+                if (!linkUserMasterArrayAdapter.isEmpty()) {
+                    handleLinkUserVisibility(View.VISIBLE);
+                    linkUserRb.setChecked(true);
+                    setUpSpinnerData(3);
+                    spinnerSelection.setSelection(getAdapterPosition(TaskConstant.LINK_WISE));
+                }
                 break;
 
         }

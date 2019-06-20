@@ -42,9 +42,9 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     public int accountid;
     int distributorId;
     int distParentId;
-    private String RetailerID = "0", movRetailerId = "0";
+    private String retailerID = "0", movRetailerId = "0";
     private String RetailerCode = "";
-    private String RetailerName, movRetailerName;
+    private String retailerName, movRetailerName;
     private String Addressid = "0";
     private String Cp1id = "0";
     private String Cp2id = "0";
@@ -126,7 +126,7 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private float osAmt;
     private int billsCount;
     private String isOrderMerch;
-    private String isDeviated="";
+    private String isDeviated = "";
     private String isNew;
     private String isDigitalContent;
     private String isReviewPlan;
@@ -164,8 +164,6 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     private int indicateFlag;
     private boolean isHangingOrder;
     private int sbdDistAchieved;
-    private int tretailerId;
-    private String tretailerName;
     private int taxTypeId;
     private int locationId;
     private int PlannedVisitCount;
@@ -319,9 +317,9 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
 
     }
 
-    public RetailerMasterBO(int retailerid, String tretailername) {
-        this.tretailerId = retailerid;
-        this.tretailerName = tretailername;
+    public RetailerMasterBO(String retailerid, String tretailername) {
+        this.retailerID = retailerid;
+        this.retailerName = tretailername;
     }
 
     public double getCredit_balance() {
@@ -397,25 +395,10 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
         RField4 = rField4;
     }
 
-    public int getRetailerId() {
-        return tretailerId;
-    }
-
-    public void setTretailerId(int tretailerId) {
-        this.tretailerId = tretailerId;
-    }
 
     @Override
     public String toString() {
-        return tretailerName;
-    }
-
-    public String getTretailerName() {
-        return tretailerName;
-    }
-
-    public void setTretailerName(String tretailerName) {
-        this.tretailerName = tretailerName;
+        return retailerName;
     }
 
     public int getSbdDistAchieved() {
@@ -579,19 +562,19 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     }
 
     public String getRetailerID() {
-        return RetailerID;
+        return retailerID;
     }
 
     public void setRetailerID(String retailerID) {
-        RetailerID = retailerID;
+        this.retailerID = retailerID;
     }
 
     public String getRetailerName() {
-        return RetailerName;
+        return retailerName;
     }
 
     public void setRetailerName(String retailerName) {
-        RetailerName = retailerName;
+        this.retailerName = retailerName;
     }
 
     public String getAddress1() {
@@ -1051,8 +1034,8 @@ public class RetailerMasterBO implements Comparable<RetailerMasterBO> {
     }
 
     public SupplierMasterBO getSupplierBO() {
-        if(supplierBO==null)
-            supplierBO=new SupplierMasterBO();
+        if (supplierBO == null)
+            supplierBO = new SupplierMasterBO();
         return supplierBO;
     }
 
