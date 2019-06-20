@@ -526,18 +526,17 @@ public class CollectionFragmentNew extends IvyBaseFragment
             holder.tvInvDate.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
                     holder.invoiceHeaderBO.getInvoiceDate(),
                     ConfigurationMasterHelper.outDateFormat));
-//            final int count = DateUtil.getDateCount(holder.invoiceHeaderBO.getInvoiceDate(),
-//                    SDUtil.now(SDUtil.DATE_GLOBAL), "yyyy/MM/dd");
+
             if (bmodel.configurationMasterHelper.COMPUTE_DUE_DAYS) {
                 int count = 0;
                 if (bmodel.retailerMasterBO.getCreditDays() != 0) {
                     if (holder.invoiceHeaderBO.getDueDate() != null)
-                        count = DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                                holder.invoiceHeaderBO.getDueDate(), "yyyy/MM/dd");
+                        count = DateTimeUtils.getDateCount(holder.invoiceHeaderBO.getDueDate(),
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd");
                 } else {
                     if (holder.invoiceHeaderBO.getInvoiceDate() != null)
-                        count = DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
-                                holder.invoiceHeaderBO.getInvoiceDate(), "yyyy/MM/dd");
+                        count = DateTimeUtils.getDateCount(holder.invoiceHeaderBO.getInvoiceDate(),
+                                DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd");
                 }
                 if (count < 0)
                     count = 0;

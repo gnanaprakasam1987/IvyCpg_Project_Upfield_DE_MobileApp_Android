@@ -928,7 +928,7 @@ public class BusinessModel extends Application {
             StringBuffer sb = new StringBuffer();
 
             sb.append("SELECT distinct Inv.InvoiceNo, Inv.InvoiceDate, Round(invNetamount,2) as Inv_amt,");
-            sb.append(" Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt,");
+            sb.append(" Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+IFNULL(Inv.paidAmount,0),2) as RcvdAmt,");
             sb.append(" Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os,");
             sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue),inv.DocRefNo,inv.DueDays,inv.DueDate,payment.Date");
             sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
@@ -1627,9 +1627,6 @@ public class BusinessModel extends Application {
 
                     mRetailerBOByRetailerid.put(retailer.getRetailerID(), retailer);
 
-                    if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
-                        updateIsToday(db);
-
 
                 }
                 c.close();
@@ -1643,10 +1640,11 @@ public class BusinessModel extends Application {
                 mRetailerHelper.updatePlannedDatesInRetailerObj(db);
                 mRetailerHelper.getPlannedRetailerFromDate();
 
-            } else {
-
+            } else if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
+                updateIsToday(db);
+            else
                 getPlannedRetailer();
-            }
+
 
             if (configurationMasterHelper.SHOW_MISSED_RETAILER) {
                 mRetailerHelper.downloadMissedRetailer(db);
@@ -1762,8 +1760,10 @@ public class BusinessModel extends Application {
 
     private void updateIsToday(DBUtil db) {
         List<String> retailerIds = new ArrayList<>();
-        Cursor c = db.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND VisitStatus = 'PLANNED' or 'COMPLETED' " +
-                "and Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+
+        Cursor c = db.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
+                "AND Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+
         if (c != null
                 && c.getCount() > 0) {
             while (c.moveToNext()) {
@@ -6844,11 +6844,10 @@ public class BusinessModel extends Application {
 
     public void writeToFile(String data, String filename, String foldername, String filePath) {
         String path;
-        if(filePath.equals("")){
-            path=getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
-        }
-        else {
-            path=filePath+ foldername;
+        if (filePath.equals("")) {
+            path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
+        } else {
+            path = filePath + foldername;
         }
 
         File folder = new File(path);

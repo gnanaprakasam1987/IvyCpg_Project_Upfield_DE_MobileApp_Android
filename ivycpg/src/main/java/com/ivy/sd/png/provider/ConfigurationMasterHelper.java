@@ -549,6 +549,10 @@ public class ConfigurationMasterHelper {
     public boolean IS_ORD_DIGIT;
     public int ORD_DIGIT;
 
+    private static final String CODE_STK_DIGIT = "ORDB80";
+    public boolean IS_STK_DIGIT;
+    public int STK_DIGIT;
+
     private static final String CODE_SWITCH_WITH_OUT_TGT_SELLER_DASHBOARD = "DASH15";
     public boolean IS_SWITCH_WITH_OUT_TGT;
     public String SELLER_KPI_CODES;
@@ -4638,6 +4642,17 @@ public class ConfigurationMasterHelper {
                 if (c.moveToFirst()) {
                     ORD_DIGIT = (c.getInt(0) <= 5) ? 5 : c.getInt(0);
                     IS_ORD_DIGIT = true;
+                }
+                c.close();
+            }
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_STK_DIGIT) + " and Flag=1 and  ForSwitchSeller = 0 ";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    STK_DIGIT = (c.getInt(0) <= 5) ? 5 : c.getInt(0);
+                    IS_STK_DIGIT = true;
                 }
                 c.close();
             }
