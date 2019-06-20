@@ -26,7 +26,7 @@ public class InventoryReportHelper {
         this.bmodel=bmodel;
     }
 
-    public ArrayList<InventoryBO_Proj> downloadInventoryReport(int retailerId, String type) {
+    public ArrayList<InventoryBO_Proj> downloadInventoryReport(String retailerId, String type) {
         ArrayList<InventoryBO_Proj> lst = new ArrayList<>();
         try {
             bmodel.setRetailerMasterBO(bmodel.getRetailerBoByRetailerID().get(retailerId + ""));

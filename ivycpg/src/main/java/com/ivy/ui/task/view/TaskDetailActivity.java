@@ -392,6 +392,7 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         i.putExtra(TaskConstant.TASK_SCREEN_MODE, TaskConstant.EDIT_MODE_FROM_TASK_DETAIL_SRC);
         i.putExtra(TaskConstant.TASK_DETAIL_SRC, true);
         i.putExtra(TaskConstant.TASK_OBJECT, taskDetailBo);
+        i.putExtra(TaskConstant.RETAILER_WISE_TASK,isRetailerWiseTask);
         startActivityForResult(i, TaskConstant.TASK_CREATED_SUCCESS_CODE);
     }
 

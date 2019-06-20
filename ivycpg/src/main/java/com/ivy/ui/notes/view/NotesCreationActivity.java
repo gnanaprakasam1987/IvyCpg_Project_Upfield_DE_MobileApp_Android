@@ -18,7 +18,6 @@ import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
@@ -36,7 +35,6 @@ import java.util.Objects;
 import javax.inject.Inject;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnItemSelected;
 
@@ -130,8 +128,8 @@ public class NotesCreationActivity extends BaseActivity implements NotesContract
             showRetailerSelection();
             setUpRetailerAdapter();
             mPresenter.fetchRetailerNames();
-        }else{
-            if(notesBo!=null)
+        } else {
+            if (notesBo != null)
                 setNotesData();
         }
     }
@@ -163,8 +161,8 @@ public class NotesCreationActivity extends BaseActivity implements NotesContract
     private int getSelectedRetailerPosition(int retailerCount) {
         int i = 0;
         while (i < retailerCount) {
-            if (Objects.requireNonNull(retailerMasterArrayAdapter.getItem(i)).getRetailerId()
-                    == SDUtil.convertToInt(notesBo.getRetailerId()))
+            if (Objects.requireNonNull(retailerMasterArrayAdapter.getItem(i)).getRetailerID()
+                    .equals(notesBo.getRetailerId()))
                 return i;
             i++;
         }
@@ -190,7 +188,7 @@ public class NotesCreationActivity extends BaseActivity implements NotesContract
 
         if (retailerMasterArrayAdapter != null
                 && retailerMasterArrayAdapter.getCount() > 0)
-            selectedRid = String.valueOf(Objects.requireNonNull(retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos)).getRetailerId());
+            selectedRid = retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getRetailerID();
         else
             selectedRid = mPresenter.getRetailerID();
 
@@ -270,7 +268,7 @@ public class NotesCreationActivity extends BaseActivity implements NotesContract
     @Override
     public void setRetailerListData(ArrayList<RetailerMasterBO> retailerList) {
         retailerMasterArrayAdapter.clear();
-        retailerMasterArrayAdapter.add(new RetailerMasterBO(0, getString(R.string.plain_select)));
+        retailerMasterArrayAdapter.add(new RetailerMasterBO("0", getString(R.string.plain_select)));
         retailerMasterArrayAdapter.addAll(retailerList);
         retailerMasterArrayAdapter.notifyDataSetChanged();
         retailerSpinner.setAdapter(retailerMasterArrayAdapter);

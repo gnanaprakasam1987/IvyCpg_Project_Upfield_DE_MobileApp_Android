@@ -124,8 +124,8 @@ public class ChannelMasterHelper {
                         .getRetailerMaster().get(ii).getIsToday() == 1)) || (bmodel.getRetailerMaster().get(ii).getIsDeviated() != null && bmodel.getRetailerMaster().get(ii).getIsDeviated()
                         .equals("Y"))) {
                     temp = new RetailerMasterBO();
-                    temp.setTretailerId(SDUtil.convertToInt(bmodel.getRetailerMaster().get(ii).getRetailerID()));
-                    temp.setTretailerName(bmodel.getRetailerMaster().get(ii).getRetailerName());
+                    temp.setRetailerID(bmodel.getRetailerMaster().get(ii).getRetailerID());
+                    temp.setRetailerName(bmodel.getRetailerMaster().get(ii).getRetailerName());
                     retailerMaster.add(temp);
                 }
             }
