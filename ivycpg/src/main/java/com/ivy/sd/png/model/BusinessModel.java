@@ -1634,11 +1634,11 @@ public class BusinessModel extends Application {
             if (configurationMasterHelper.SHOW_DATE_ROUTE) {
                 mRetailerHelper.updatePlannedDatesInRetailerObj(db);
                 mRetailerHelper.getPlannedRetailerFromDate();
-
-            } else {
-
-                getPlannedRetailer();
             }
+            else if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
+                updateIsToday(db);
+            else
+                getPlannedRetailer();
 
             if (configurationMasterHelper.SHOW_MISSED_RETAILER) {
                 mRetailerHelper.downloadMissedRetailer(db);
@@ -1678,8 +1678,6 @@ public class BusinessModel extends Application {
 
             mRetailerHelper.downloadRetailerTarget("SV", db);
 
-            if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
-                updateIsToday(db);
 
             db.closeDB();
 
@@ -1757,8 +1755,8 @@ public class BusinessModel extends Application {
 
     private void updateIsToday(DBUtil db) {
         List<String> retailerIds = new ArrayList<>();
-        Cursor c = db.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED' " +
-                "and Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+        Cursor c = db.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
+                "AND Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         if (c != null
                 && c.getCount() > 0) {
             while (c.moveToNext()) {
