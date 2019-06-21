@@ -4,19 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-    android:layout_weight="1"
     android:gravity="center"
     android:orientation="horizontal">
 
     <LinearLayout
         android:layout_width="@dimen/dimens_180dp"
-        android:layout_height="@dimen/dimens_180dp"
+        android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_weight="1"
         android:background="@android:color/transparent"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/dimens_6dp">
+        android:padding="@dimen/dimens_20dp">
 
         <TextView
             android:id="@+id/tv_menu_name"
@@ -46,6 +45,17 @@
             android:textIsSelectable="false"
             android:textSize="@dimen/font_small"
             android:visibility="visible" />
+
+        <ImageView
+            android:id="@+id/img_values"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:scaleType="fitCenter"
+            android:padding="@dimen/margin_5px"
+            android:visibility="gone"
+            android:src="@drawable/no_image_available"/>
 
     </LinearLayout>
 

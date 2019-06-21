@@ -38,6 +38,7 @@ public class StockCheckHelper {
     public boolean SHOW_SHELF_OUTER;
     public boolean SHOW_STOCK_TOTAL;
     public boolean SHOW_STOCK_FC;
+    public boolean SHOW_IS_DISTRIBUTED;
     public boolean CHANGE_AVAL_FLOW;
     public boolean SHOW_STOCK_AVGDAYS;
 
@@ -91,6 +92,7 @@ public class StockCheckHelper {
         SHOW_SHELF_OUTER = false;
         SHOW_STOCK_TOTAL = false;
         SHOW_STOCK_FC = false;
+        SHOW_IS_DISTRIBUTED = false;
         CHANGE_AVAL_FLOW = false;
         SHOW_STOCK_AVGDAYS = false;
         SHOW_STOCK_BARCODE = false;
@@ -148,6 +150,9 @@ public class StockCheckHelper {
                         break;
                     case "FC":
                         SHOW_STOCK_FC = true;
+                        break;
+                    case "ISDIST":
+                        SHOW_IS_DISTRIBUTED = true;
                         break;
                     case "CB01":
                         CHANGE_AVAL_FLOW = true;
