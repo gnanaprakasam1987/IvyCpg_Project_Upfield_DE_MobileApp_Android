@@ -16,6 +16,7 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,10 +28,12 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.CompoundButtonCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.PopupWindowCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
@@ -62,6 +65,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -104,6 +108,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.model.ProductSearchCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
@@ -1172,13 +1177,14 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             holder.productId = holder.productObj.getProductID();
 
 
-            try {
-                holder.psname.setTextColor(product.getTextColor());
+           /* try {
+            //    holder.psname.setTextColor(product.getTextColor());
             } catch (Exception e) {
                 Commons.printException(e);
                 holder.psname.setTextColor(ContextCompat.getColor(getApplicationContext(),
                         android.R.color.black));
-            }
+            }*/
+
             holder.psname.setText(holder.productObj.getProductShortName());
             holder.pname = holder.productObj.getProductName();
             holder.tvbarcode.setText(holder.productObj.getBarCode());
@@ -1610,7 +1616,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
 
 
-                try {
+               /* try {
                     if (holder.productObj.isPromo()) {
                         holder.slant_view_bg.setVisibility(View.VISIBLE);
                         holder.slant_view_bg.setBackgroundColor(Color.RED);
@@ -1619,7 +1625,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 } catch (Exception e) {
                     Commons.printException(e);
-                }
+                }*/
 
                 //set order Qty based on UOM wise
 
@@ -1780,6 +1786,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
 
+            addProductTagColorView(holder.layout_product_tag_color,holder.productObj);
+
 
             return row;
         }
@@ -1830,6 +1838,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private EditText uom_qty;
         private Button tv_uo_names;
         private SlantView slant_view_bg;
+
+        private LinearLayout layout_product_tag_color;
 
 
     }
@@ -1933,6 +1943,38 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             //slant view
             holder.slant_view_bg = row.findViewById(R.id.slant_view_bg);
+
+            holder.layout_product_tag_color=row.findViewById(R.id.layout_product_tag_color);
+            holder.layout_product_tag_color.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                   /* PopupMenu popupMenu = new PopupMenu(StockAndOrder.this, holder.layout_product_tag_color);
+                    popupMenu.inflate(R.menu.menu_edit_delete);
+                    popupMenu.show();*/
+
+                    PopupWindow popupWindowCompat=new PopupWindow(StockAndOrder.this);
+                    LayoutInflater inflater=getLayoutInflater();
+                    View parentView=inflater.inflate(R.layout.layout_product_tag_colors,null);
+                    popupWindowCompat.setContentView(parentView);
+                   // popupWindowCompat.showAtLocation(holder.layout_product_tag_color,Gravity.BOTTOM,0,holder.layout_product_tag_color.getBottom());
+                    popupWindowCompat.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+                    popupWindowCompat.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+                    // Closes the popup window when touch outside of it - when looses focus
+                    popupWindowCompat.setOutsideTouchable(true);
+                    popupWindowCompat.setFocusable(true);
+
+                    /*view = new ImageView(this);
+                    view.setImageDrawable(getResources().getDrawable(R.drawable.dot_circle_green));
+                    LinearLayout.LayoutParams layoutParams_parent = new LinearLayout.LayoutParams(getPixelsFromDp(this, 10), getPixelsFromDp(this, 10));//ViewGroup.LayoutParams.WRAP_CONTENT);
+                    view.setLayoutParams(layoutParams_parent);
+                    view.setColorFilter(productMasterBO.getProductTagColorList().get(tagCode));*/
+
+                    // Show anchored to button
+                    popupWindowCompat.showAsDropDown(holder.layout_product_tag_color);
+                }
+            });
+
+
 
             holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
@@ -6139,4 +6181,46 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             rvFilterList.setAdapter(filterAdapter);
         }
     }
+
+    private void addProductTagColorView(LinearLayout linearLayout,ProductMasterBO productMasterBO){
+
+        try {
+            if(linearLayout!=null)
+                linearLayout.removeAllViews();
+
+            if (productMasterBO.getProductTagColorList() != null) {
+
+                //LinearLayout layout_row;
+                ImageView view;
+                for (String tagCode : productMasterBO.getProductTagColorList().keySet()) {
+
+                    view = new ImageView(this);
+                    view.setImageDrawable(getResources().getDrawable(R.drawable.dot_circle_green));
+                    LinearLayout.LayoutParams layoutParams_parent = new LinearLayout.LayoutParams(getPixelsFromDp(this, 10), getPixelsFromDp(this, 10));//ViewGroup.LayoutParams.WRAP_CONTENT);
+                    view.setLayoutParams(layoutParams_parent);
+                    view.setColorFilter(productMasterBO.getProductTagColorList().get(tagCode));
+                    //layout_row.addView(view);
+
+               /* TextView textView = new TextView(this);
+                LinearLayout.LayoutParams layoutParams_text = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                view.setLayoutParams(layoutParams_text);
+                textView.setText(productHelper.getSpecialFilterName(tagCode));
+                layout_row.addView(textView);*/
+
+                    linearLayout.addView(view);
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+
+
+    }
+
+    private int getPixelsFromDp(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
+    }
+
 }
