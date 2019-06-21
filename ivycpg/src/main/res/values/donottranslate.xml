@@ -381,4 +381,5 @@
     <string name="mark_as_executed">Mark as execute</string>
     <string name="mark_as_un_executed">Mark as un executed</string>
     <string name="due_today">Due today</string>
+    <string name="compliance_pt">PT</string>
 </resources>

@@ -10,9 +10,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
+import android.graphics.PorterDuff;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -25,6 +27,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -57,6 +63,7 @@ import android.widget.HorizontalScrollView;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -104,7 +111,7 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 
 public class StockCheckFragment extends IvyBaseFragment implements
         BrandDialogInterface, OnClickListener, OnEditorActionListener,
-        CompetitorFilterInterface, FiveLevelFilterCallBack, StockCheckContractor.StockCheckView {
+        CompetitorFilterInterface, FiveLevelFilterCallBack, StockCheckContractor.StockCheckView, StockCheckClickListener {
 
     private static final String BRAND = "Brand";
     private String append = "";
@@ -148,6 +155,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
     private int mTotalScreenWidth = 0;
 
     private Context context;
+    BottomSheetBehavior bottomSheetBehavior;
+    private View transparentView;
+    private int lastSelectedPos = -1;
 
     @Override
     public void onAttach(Context context) {
@@ -347,6 +357,63 @@ public class StockCheckFragment extends IvyBaseFragment implements
             tvAudit.setVisibility(View.VISIBLE);
 
         }
+        bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.bottomSheetLayout));
+        bottomSheetBehavior.setHideable(false);
+        transparentView = view.findViewById(R.id.transparen_view);
+
+        bottomSheetBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            @Override
+            public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                switch (newState) {
+                    case BottomSheetBehavior.STATE_COLLAPSED:
+//                        if (recyclerView.getVisibility() == View.VISIBLE) {
+//                            hideBottomSheet();
+//                        }
+                        break;
+                    case BottomSheetBehavior.STATE_DRAGGING:
+                        break;
+                    case BottomSheetBehavior.STATE_EXPANDED:
+                        break;
+                    case BottomSheetBehavior.STATE_HIDDEN:
+                        transparentView.setVisibility(View.GONE);
+                        break;
+                    case BottomSheetBehavior.STATE_SETTLING:
+                        break;
+                }
+            }
+
+            @Override
+            public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+            }
+        });
+
+        RecyclerView bottomRecyclerView = view.findViewById(R.id.sort_recycler_view);
+        bottomRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        bottomRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        bottomRecyclerView.setHasFixedSize(false);
+        bottomRecyclerView.setNestedScrollingEnabled(false);
+        bottomRecyclerView.addItemDecoration(new DividerItemDecoration(getActivity(), DividerItemDecoration.VERTICAL));
+        bottomRecyclerView.setAdapter(new BottomSortListAdapterStockCheck(getActivity(), getResources().getStringArray(R.array.stockcheck_sort_list), this, lastSelectedPos));
+
+//        sortRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(RadioGroup group, int checkedId) {
+//                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+//                transparentView.setVisibility(View.GONE);
+//
+//
+//                int radioButtonID = sortRadioGroup.getCheckedRadioButtonId();
+//                View radioButton = sortRadioGroup.findViewById(radioButtonID);
+//                int idx = sortRadioGroup.indexOfChild(radioButton);
+//
+//                stockCheckPresenter.sortList(idx,stockList,Integer.parseInt(stockCheckPresenter.getCurrentLocationId()));
+//            }
+//        });
+    }
+
+    private void hideBottomSheet() {
+        bottomSheetBehavior.setHideable(true);
+        bottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
     }
 
     private ActionBar getActionBar() {
@@ -454,6 +521,21 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                 .setText(businessModel.labelsMasterHelper
                                         .applyLabels(view.findViewById(
                                                 R.id.stock_price_tag).getTag()));
+                } catch (Exception e) {
+                    Commons.printException(e + "");
+                }
+            }
+
+            if (!stockCheckHelper.SHOW_IS_DISTRIBUTED) {
+                view.findViewById(R.id.et_isDistributed).setVisibility(View.GONE);
+            } else {
+                try {
+                    if (businessModel.labelsMasterHelper.applyLabels(view.findViewById(
+                            R.id.et_isDistributed).getTag()) != null)
+                        ((TextView) view.findViewById(R.id.et_isDistributed))
+                                .setText(businessModel.labelsMasterHelper
+                                        .applyLabels(view.findViewById(
+                                                R.id.et_isDistributed).getTag()));
                 } catch (Exception e) {
                     Commons.printException(e + "");
                 }
@@ -609,6 +691,11 @@ public class StockCheckFragment extends IvyBaseFragment implements
                     holder.barcode = row
                             .findViewById(R.id.stock_and_order_listview_productbarcode);
 
+                    holder.lastVisit = row.findViewById(R.id.lnrLastVisit);
+                    holder.lastVisit1 = row.findViewById(R.id.lnrLastVisit1);
+                    holder.lastVisit2 = row.findViewById(R.id.lnrLastVisit2);
+                    holder.lastVisit3 = row.findViewById(R.id.lnrLastVisit3);
+                    holder.isDistributed = row.findViewById(R.id.stock_check_listview_isDistributed);
 
                     holder.ll_stkCB = row
                             .findViewById(R.id.ll_stock_and_order_listview_cb);
@@ -644,8 +731,18 @@ public class StockCheckFragment extends IvyBaseFragment implements
 
                     if (businessModel.configurationMasterHelper.IS_SHOW_PSQ) {
                         holder.psq.setVisibility(View.VISIBLE);
+                        if(businessModel.configurationMasterHelper.SHOW_LASTVISIT_GRAPH) {
+                            holder.lastVisit.setVisibility(View.VISIBLE);
+                            holder.lastVisit1.setVisibility(View.VISIBLE);
+                            holder.lastVisit2.setVisibility(View.VISIBLE);
+                            holder.lastVisit3.setVisibility(View.VISIBLE);
+                        }
                     } else {
                         holder.psq.setVisibility(View.GONE);
+                        holder.lastVisit.setVisibility(View.GONE);
+                        holder.lastVisit1.setVisibility(View.GONE);
+                        holder.lastVisit2.setVisibility(View.GONE);
+                        holder.lastVisit3.setVisibility(View.GONE);
                     }
                     if (businessModel.configurationMasterHelper.IS_SHOW_PPQ) {
                         holder.ppq.setVisibility(View.VISIBLE);
@@ -653,6 +750,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         holder.ppq.setVisibility(View.GONE);
                     }
 
+                    if (!stockCheckHelper.SHOW_IS_DISTRIBUTED)
+                        holder.isDistributed.setVisibility(View.GONE);
                     if (!stockCheckHelper.SHOW_STOCK_FC)
                         holder.facingQty.setVisibility(View.GONE);
                     if (!stockCheckHelper.SHOW_STOCK_SC)
@@ -870,6 +969,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     }
                                 }
                             }
+                            String available = holder.productObj.getLocations()
+                                    .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() + "";
+                            holder.productObj.setAvailable(SDUtil.convertToInt(available));
 
                             updateFooter();
 
@@ -945,14 +1047,14 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                                     .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(1);
                                             CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent)));
                                             holder.imageButton_availability.setChecked(true);
-
                                         } else if (sp_qty == 0) {
                                             holder.productObj.getLocations()
                                                     .get(stockCheckPresenter.mSelectedLocationIndex).setAvailability(0);
                                             CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.RED)));
                                             holder.imageButton_availability.setChecked(true);
                                         }
-
+                                        holder.productObj.setAvailable(holder.productObj.getLocations()
+                                                .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability());
                                     } else {
                                         holder.productObj.getLocations()
                                                 .get(stockCheckPresenter.mSelectedLocationIndex)
@@ -967,6 +1069,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.checkbox_default_color)));
                                             holder.imageButton_availability.setChecked(false);
                                         }
+                                        holder.productObj.setAvailable(holder.productObj.getLocations()
+                                                .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability());
                                     }
 
                                     int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
@@ -1039,7 +1143,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.RED)));
                                             holder.imageButton_availability.setChecked(true);
                                         }
-
+                                        holder.productObj.setAvailable(holder.productObj.getLocations()
+                                                .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability());
 
                                     } else {
                                         holder.productObj.getLocations()
@@ -1055,6 +1160,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                             CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.checkbox_default_color)));
                                             holder.imageButton_availability.setChecked(false);
                                         }
+
+                                        holder.productObj.setAvailable(holder.productObj.getLocations()
+                                                .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability());
                                     }
 
                                     int totValue = stockCheckPresenter.getProductTotalValue(holder.productObj);
@@ -1137,7 +1245,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.RED)));
                                     holder.imageButton_availability.setChecked(true);
                                 }
-
+                                holder.productObj.setAvailable(holder.productObj.getLocations()
+                                        .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability());
 
                             } else {
                                 holder.productObj.getLocations()
@@ -1152,7 +1261,8 @@ public class StockCheckFragment extends IvyBaseFragment implements
                                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.checkbox_default_color)));
                                     holder.imageButton_availability.setChecked(false);
                                 }
-
+                                holder.productObj.setAvailable(holder.productObj.getLocations()
+                                        .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability());
 
                             }
 
@@ -1472,10 +1582,19 @@ public class StockCheckFragment extends IvyBaseFragment implements
                 String strPPQ = getResources().getString(R.string.ppq) + ": "
                         + holder.productObj.getRetailerWiseProductWiseP4Qty() + " ";
                 holder.ppq.setText(strPPQ);
-                String strPSQ = getResources().getString(R.string.psq) + ": "
-                        + holder.productObj.getRetailerWiseP4StockQty();
+
+                String strPSQ = getResources().getString(R.string.psq) + ": ";
+                if(!businessModel.configurationMasterHelper.SHOW_LASTVISIT_GRAPH) {
+                    strPSQ = strPSQ + holder.productObj.getRetailerWiseP4StockQty();
+                }
                 holder.psq.setText(strPSQ);
 
+                setColorFilter(holder.lastVisit, holder.productObj.getLastVisitColor());
+                setColorFilter(holder.lastVisit1, holder.productObj.getLastVisit1Color());
+                setColorFilter(holder.lastVisit2, holder.productObj.getLastVisit2Color());
+                setColorFilter(holder.lastVisit3, holder.productObj.getLastVisit3Color());
+
+                holder.isDistributed.setText(holder.productObj.getIsDistributed() + "");
 
                 if (holder.productObj.getLocations()
                         .get(stockCheckPresenter.mSelectedLocationIndex).getAvailability() == 1) {
@@ -1607,6 +1726,11 @@ public class StockCheckFragment extends IvyBaseFragment implements
         }
     }
 
+    private void setColorFilter(TextView txtView, int visitColor){
+        txtView.getBackground().setColorFilter(ContextCompat.getColor(context, visitColor != 0 ? visitColor :
+                android.R.color.darker_gray), PorterDuff.Mode.SRC_IN);
+    }
+
     public class ViewHolder {
 
         private String productId;
@@ -1633,6 +1757,7 @@ public class StockCheckFragment extends IvyBaseFragment implements
         AppCompatCheckBox imageButton_availability;
         private RelativeLayout rl_priceTagCB;
         AppCompatCheckBox chkPriceTagAvail;
+        private TextView lastVisit,lastVisit1,lastVisit2,lastVisit3,isDistributed ;
     }
 
 
@@ -1738,6 +1863,9 @@ public class StockCheckFragment extends IvyBaseFragment implements
             menu.findItem(R.id.menu_reason).setVisible(businessModel.configurationMasterHelper.floating_np_reason_photo);
             if (drawerOpen)
                 menu.clear();
+
+            menu.findItem(R.id.menu_sort).setVisible(businessModel.configurationMasterHelper.IS_SHOW_SORT_STKCHK);
+
         } catch (Exception e) {
             Commons.printException(e + "");
         }
@@ -1822,6 +1950,13 @@ public class StockCheckFragment extends IvyBaseFragment implements
             competitorFilterClickedFragment();
             ((FragmentActivity) context).supportInvalidateOptionsMenu();
             return true;
+        } else if(i == R.id.menu_sort){
+            if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
+                hideBottomSheet();
+            } else {
+                transparentView.setVisibility(View.VISIBLE);
+                bottomSheetBehavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+            }
         }
         return super.onOptionsItemSelected(item);
     }
@@ -2507,4 +2642,15 @@ public class StockCheckFragment extends IvyBaseFragment implements
         dialog.setCancelable(false);
     }
 
+    @Override
+    public void notifyListChange() {
+        mSchedule.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onSortItemClicked(int sortType) {
+        stockCheckPresenter.sortList(sortType,stockList);
+        lastSelectedPos = sortType;
+        hideBottomSheet();
+    }
 }

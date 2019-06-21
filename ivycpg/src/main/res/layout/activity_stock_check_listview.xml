@@ -87,18 +87,56 @@
                 android:text="@string/ou"
                 android:visibility="visible" />
 
-
-            <TextView
-                android:id="@+id/stock_and_order_listview_psq"
-                style="@style/TextViewListItemSecondaryHighlight"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:gravity="center"
                 android:layout_below="@+id/stock_and_order_listview_productname"
-                android:layout_toEndOf="@+id/stock_and_order_listview_ppq"
-                android:layout_toRightOf="@+id/stock_and_order_listview_ppq"
-                android:maxLines="1"
-                android:text="@string/psq"
-                android:visibility="visible" />
+                android:layout_marginEnd="@dimen/dimen_2dp"
+                android:layout_marginRight="@dimen/dimen_2dp"
+                android:layout_toEndOf="@id/stock_and_order_listview_ppq"
+                android:layout_toRightOf="@id/stock_and_order_listview_ppq"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/stock_and_order_listview_psq"
+                    style="@style/TextViewListItemSecondaryHighlight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:maxLines="1"
+                    android:layout_marginRight="5dp"
+                    android:text="@string/psq"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/lnrLastVisit"
+                    android:background="@drawable/dot_circle_green"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_margin="2dp" />
+
+                <TextView
+                    android:id="@+id/lnrLastVisit1"
+                    android:background="@drawable/dot_circle_green"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_margin="2dp" />
+
+                <TextView
+                    android:id="@+id/lnrLastVisit2"
+                    android:background="@drawable/dot_circle_green"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_margin="2dp" />
+
+                <TextView
+                    android:id="@+id/lnrLastVisit3"
+                    android:background="@drawable/dot_circle_green"
+                    android:layout_width="10dp"
+                    android:layout_height="10dp"
+                    android:layout_margin="2dp" />
+
+            </LinearLayout>
         </RelativeLayout>
 
         <LinearLayout
@@ -167,6 +205,16 @@
             android:text="@string/zero" />
 
         <TextView
+            android:id="@+id/stock_check_listview_isDistributed"
+            style="@style/TextViewListItemValues"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="@string/zero" />
+
+        <TextView
             android:id="@+id/stock_check_listview_total"
             style="@style/TextViewListItemValues"
             android:layout_width="0dp"
@@ -198,8 +246,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:layout_marginStart="@dimen/dimens_6dp"
                 android:layout_marginLeft="@dimen/dimens_6dp"
+                android:layout_marginStart="@dimen/dimens_6dp"
                 android:text="@string/reason" />
 
             <Spinner
