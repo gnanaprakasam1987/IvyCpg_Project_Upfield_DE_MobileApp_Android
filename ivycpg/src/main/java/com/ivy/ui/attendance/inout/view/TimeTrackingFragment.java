@@ -330,6 +330,8 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
 
     class UploadAttendance extends AsyncTask<Void, Void, Integer> {
         protected void onPreExecute() {
+            if(mContext!=null)
+                showLoading(mContext.getResources().getString(R.string.uploading_data));
         }
 
         @Override
@@ -340,10 +342,13 @@ public class TimeTrackingFragment extends BaseFragment implements TimeTrackingCo
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
-            if (result == 1) {
-                showAlert("", getResources().getString(R.string.successfully_uploaded));
-            } else if (result == 2 ) {
-                showAlert("", getResources().getString(R.string.upload_failed_please_try_again));
+            hideLoading();
+            if(mContext!=null) {
+                if (result == 1) {
+                    showAlert("", mContext.getResources().getString(R.string.successfully_uploaded));
+                } else if (result == 2) {
+                    showAlert("", mContext.getResources().getString(R.string.upload_failed_please_try_again));
+                }
             }
         }
     }
