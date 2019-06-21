@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ExpandableListView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/list_exp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent"
+    android:cacheColorHint="@null"
+    android:divider="@color/grey_odd"
+    android:dividerHeight="1dp"
+    android:fitsSystemWindows="true"
+    android:groupIndicator="@null">
+
+</ExpandableListView>

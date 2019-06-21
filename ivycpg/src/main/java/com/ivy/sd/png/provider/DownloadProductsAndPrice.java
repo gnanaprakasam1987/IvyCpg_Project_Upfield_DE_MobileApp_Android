@@ -123,6 +123,9 @@ public class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolea
 
                 bmodel.reasonHelper.downloadReasons();
 
+                if(bmodel.configurationMasterHelper.IS_REMOVE_TAX_ON_PRICE_FOR_ALL_PRODUCTS)
+                    bmodel.productHelper.taxHelper.removeTaxFromPrice(true);
+
             }
         } catch (Exception e) {
             Commons.printException(e);

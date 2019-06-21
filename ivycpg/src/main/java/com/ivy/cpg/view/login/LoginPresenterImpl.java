@@ -332,7 +332,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
     @Override
     public void onLoginClick() {
         if (syncDone) {
-            if (ApplicationConfigs.checkUTCTime && businessModel.isOnline()) {
+            if (ApplicationConfigs.checkUTCTime && businessModel.isOnline() && !isSFDC) {
                 new DownloadUTCTime().execute();
             } else {
                 proceedToLocalLogin();

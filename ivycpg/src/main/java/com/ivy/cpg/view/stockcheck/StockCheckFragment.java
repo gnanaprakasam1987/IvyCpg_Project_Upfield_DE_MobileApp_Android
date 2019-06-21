@@ -26,6 +26,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatCheckBox;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
@@ -679,7 +680,12 @@ public class StockCheckFragment extends IvyBaseFragment implements
                         holder.shelfCaseQty.setVisibility(View.GONE);
                         holder.shelfPcsQty.setVisibility(View.GONE);
                         holder.shelfouter.setVisibility(View.GONE);
+                    }
 
+                    if (businessModel.configurationMasterHelper.IS_STK_DIGIT) {
+                        holder.shelfCaseQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(businessModel.configurationMasterHelper.STK_DIGIT)});
+                        holder.shelfPcsQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(businessModel.configurationMasterHelper.STK_DIGIT)});
+                        holder.shelfouter.setFilters(new InputFilter[]{new InputFilter.LengthFilter(businessModel.configurationMasterHelper.STK_DIGIT)});
                     }
 
                     if (!businessModel.configurationMasterHelper.IS_SHOW_SKU_CODE)

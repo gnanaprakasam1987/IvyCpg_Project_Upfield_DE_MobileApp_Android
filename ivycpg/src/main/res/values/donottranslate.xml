@@ -363,4 +363,7 @@
     <string name="do_u_want_close">Do you want to Close?</string>
     <string name="downloading_app_tutorial">Downloading App Tutorial</string>
     <string name="error_in_downloading_tutorial">Error in Downloading Tutorial</string>
+    <string name="upload">Upload</string>
+    <string name="records">Record\'s</string>
+    <string name="seconds">Second\'s</string>
 </resources>

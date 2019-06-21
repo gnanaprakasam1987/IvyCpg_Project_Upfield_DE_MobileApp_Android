@@ -924,8 +924,49 @@ public class TaxGstHelper implements TaxInterface {
 
 
     @Override
-    public void removeTaxFromPrice() {
+    public void removeTaxFromPrice(boolean isAllProducts) {
 
+        try {
+            for (ProductMasterBO productMasterBO : mBusinessModel.productHelper.getProductMaster()) {
+
+                productMasterBO.setOriginalSrp(productMasterBO.getSrp());
+
+                if (isAllProducts||(productMasterBO.getOrderedCaseQty() > 0
+                        || productMasterBO.getOrderedPcsQty() > 0
+                        || productMasterBO.getOrderedOuterQty() > 0)) {
+                if (productMasterBO.getSrp() > 0) {
+
+                    float srpWithoutTax = SDUtil.truncateDecimal(productMasterBO.getSrp() - getTaxAmountInPrice(productMasterBO.getProductID()), 2).floatValue();
+
+                    if (srpWithoutTax > 0)
+                        productMasterBO.setSrp(srpWithoutTax);
+                    else productMasterBO.setSrp(0);
+
+                }
+            }
+
+             }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+
+    }
+
+    private float getTaxAmountInPrice(String productId) {
+        float taxAmount = 0;
+        try {
+            ProductMasterBO bo = mBusinessModel.productHelper.getProductMasterBOById(productId);
+            if (mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(productId) != null) {
+                for (TaxBO taxBO : mBusinessModel.productHelper.taxHelper.getmTaxListByProductId().get(productId)) {
+                    if (taxBO.getParentType().equals("0")) {
+                        taxAmount += SDUtil.truncateDecimal(bo.getSrp() * (taxBO.getTaxRate() / 100), 2).floatValue();
+                    }
+                }
+            }
+        } catch (Exception ex) {
+            Commons.printException(ex);
+        }
+        return taxAmount;
     }
 
     @Override

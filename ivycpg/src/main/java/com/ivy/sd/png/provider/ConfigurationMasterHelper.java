@@ -89,6 +89,10 @@ public class ConfigurationMasterHelper {
     public static final String CODE_VANLOAD_STOCK_PRINT = "STKPRO21";
     // version 90
     public static final String CODE_LOCAITON_WISE_TAX_APPLIED = "TAX02";
+
+    public static final String CODE_REMOVE_TAX_ON_PRICE_FOR_ALL_PRODUCTS = "TAX03";
+    public boolean IS_REMOVE_TAX_ON_PRICE_FOR_ALL_PRODUCTS = false;
+
     private static final String MENU_CALL_ANALYSIS = "MENU_CALL_ANLYS";
     private static final String MENU_LOAD_MANAGEMENT = "MENU_LOAD_MANAGEMENT";
     private static final String MENU_HOME = "HOME_MENU";
@@ -544,6 +548,10 @@ public class ConfigurationMasterHelper {
     private static final String CODE_ORD_DIGIT = "ORDB74";
     public boolean IS_ORD_DIGIT;
     public int ORD_DIGIT;
+
+    private static final String CODE_STK_DIGIT = "ORDB80";
+    public boolean IS_STK_DIGIT;
+    public int STK_DIGIT;
 
     private static final String CODE_SWITCH_WITH_OUT_TGT_SELLER_DASHBOARD = "DASH15";
     public boolean IS_SWITCH_WITH_OUT_TGT;
@@ -2472,6 +2480,8 @@ public class ConfigurationMasterHelper {
         this.IS_LOCATION_WISE_TAX_APPLIED = hashMapHHTModuleConfig.get(CODE_LOCAITON_WISE_TAX_APPLIED) != null ? hashMapHHTModuleConfig.get(CODE_LOCAITON_WISE_TAX_APPLIED) : false;
         if (this.IS_LOCATION_WISE_TAX_APPLIED)
             this.STRING_LOCATION_WISE_TAX_APPLIED = loadLocationWiseTaxApplied();
+
+        this.IS_REMOVE_TAX_ON_PRICE_FOR_ALL_PRODUCTS = hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_PRICE_FOR_ALL_PRODUCTS) != null ? hashMapHHTModuleConfig.get(CODE_REMOVE_TAX_ON_PRICE_FOR_ALL_PRODUCTS) : false;
 
         this.IS_RETAILER_PHOTO_NEEDED = hashMapHHTModuleConfig.get(CODE_RETAILER_PHOTO) != null ? hashMapHHTModuleConfig.get(CODE_RETAILER_PHOTO) : false;
         if (this.IS_RETAILER_PHOTO_NEEDED && hashMapHHTModuleOrder.get(CODE_RETAILER_PHOTO) > 1)
@@ -4632,6 +4642,17 @@ public class ConfigurationMasterHelper {
                 if (c.moveToFirst()) {
                     ORD_DIGIT = (c.getInt(0) <= 5) ? 5 : c.getInt(0);
                     IS_ORD_DIGIT = true;
+                }
+                c.close();
+            }
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_STK_DIGIT) + " and Flag=1 and  ForSwitchSeller = 0 ";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    STK_DIGIT = (c.getInt(0) <= 5) ? 5 : c.getInt(0);
+                    IS_STK_DIGIT = true;
                 }
                 c.close();
             }

@@ -139,13 +139,13 @@
                 style="@style/TextViewListItemCaption"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:tag="item_exp_facing"
+                android:tag="price_tag"
                 android:text="@string/compliance"
                 app:layout_constraintEnd_toStartOf="@+id/tv_reason"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/tv_availability"
                 app:layout_constraintTop_toBottomOf="@+id/chk_availability"
-                app:layout_constraintTop_toTopOf="@+id/tv_is_listed" />
+                app:layout_constraintTop_toTopOf="@+id/tv_availability" />
 
             <android.support.v7.widget.AppCompatCheckBox
                 style="?attr/checkbox_style"

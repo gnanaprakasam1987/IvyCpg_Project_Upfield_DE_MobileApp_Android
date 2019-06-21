@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/tv_api"
+        style="@style/TextViewListItemValuesHighLight"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimens_8dp"
+        app:layout_constraintBottom_toBottomOf="@+id/tv_timetaken"
+        app:layout_constraintEnd_toStartOf="@+id/tv_timetaken"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintHorizontal_weight="8"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/img_exp"
+        android:layout_width="@dimen/dimens_30dp"
+        android:layout_height="@dimen/dimens_30dp"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/dimens_6dp"
+        android:layout_marginRight="@dimen/dimens_6dp"
+        android:background="@drawable/badge_circle"
+        android:src="@drawable/ic_arrow_drop_down"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/tv_timetaken"
+        style="@style/TextViewListItemSecondary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:padding="@dimen/dimens_8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_weight="2"
+        app:layout_constraintStart_toEndOf="@+id/tv_api"
+        app:layout_constraintTop_toBottomOf="@+id/img_exp" />
+</android.support.constraint.ConstraintLayout>
