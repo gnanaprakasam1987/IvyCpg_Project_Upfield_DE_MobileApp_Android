@@ -3,7 +3,7 @@ package com.ivy.cpg.view.supervisor;
 public class SupervisorModuleConstants {
 
     public static final String FIREBASE_EMAIL= "FIREBASE_EMAIL";
-    public static final String FIREBASE_PASSWORD ="9941782090";
+    public static final String FIREBASE_PASSWORD ="IvyCPGProductFirebasePass";
     public static final String FIREBASE_ROOT_PATH="FIREBASE_ROOT_PATH";
 
     public static final String REALTIME_LOCATION_PATH ="movement_tracking";
