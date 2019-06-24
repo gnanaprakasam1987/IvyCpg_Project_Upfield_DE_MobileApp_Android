@@ -1,6 +1,7 @@
 package com.ivy.cpg.view.order.productdetails;
 
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -12,20 +13,31 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.EncodeHintType;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Vector;
+
+import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 
 /**
  * Created by nagaganesh.n on 4/26/2017
@@ -96,8 +108,18 @@ public class ProductDetailsFragment extends IvyBaseFragment {
      */
     private void loadProdDetails() {
 
+        // For 7" tablet
+        boolean is7InchTablet = this.getResources().getConfiguration()
+                .isLayoutSizeAtLeast(SCREENLAYOUT_SIZE_LARGE);
+
+        RecyclerView.LayoutManager mLayoutManager = null;
         ProdDetailRecyclerAdapter adapter = new ProdDetailRecyclerAdapter();
-        RecyclerView.LayoutManager mLayoutManager = new GridLayoutManager(getActivity(), 4);
+        if (!is7InchTablet) {
+            mLayoutManager = new GridLayoutManager(getActivity(), 3);
+        } else {
+            mLayoutManager = new GridLayoutManager(getActivity(), 4);
+        }
+
         productRecycView.setLayoutManager(mLayoutManager);
         productRecycView.setItemAnimator(new DefaultItemAnimator());
         productRecycView.setAdapter(adapter);
@@ -114,6 +136,7 @@ public class ProductDetailsFragment extends IvyBaseFragment {
 
             private TextView menuTV;
             private TextView valueTV;
+            private ImageView valueImg;
             private LinearLayout parentLayout;
             private ConfigureBO configureBO;
 
@@ -124,6 +147,7 @@ public class ProductDetailsFragment extends IvyBaseFragment {
                         .findViewById(R.id.tv_menu_name);
                 valueTV = view
                         .findViewById(R.id.tv_values);
+                valueImg = view.findViewById(R.id.img_values);
                 parentLayout = view
                         .findViewById(R.id.parentLayout);
 
@@ -151,6 +175,22 @@ public class ProductDetailsFragment extends IvyBaseFragment {
             if(!StringUtils.isEmptyString(setValue(holder.configureBO, productObj))){
                 holder.valueTV.setText(setValue(holder.configureBO, productObj));
             }
+            if (holder.configureBO.getConfigCode().equalsIgnoreCase("PRODET08")){
+                holder.valueTV.setVisibility(View.GONE);
+                holder.valueImg.setVisibility(View.VISIBLE);
+                // barcode image
+                Bitmap bitmap = null;
+                try {
+                    bitmap = AppUtils.encodeAsBitmap(setValue(holder.configureBO, productObj), BarcodeFormat.CODE_128, 600, 300);
+                    holder.valueImg.setImageBitmap(bitmap);
+                } catch (WriterException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                holder.valueTV.setVisibility(View.VISIBLE);
+                holder.valueImg.setVisibility(View.GONE);
+            }
+
             if (holder.configureBO.getConfigCode().equalsIgnoreCase("PRODET14"))
                 showSkuMixtureView();
 
@@ -289,4 +329,6 @@ public class ProductDetailsFragment extends IvyBaseFragment {
             }
         }
     }
+
+
 }

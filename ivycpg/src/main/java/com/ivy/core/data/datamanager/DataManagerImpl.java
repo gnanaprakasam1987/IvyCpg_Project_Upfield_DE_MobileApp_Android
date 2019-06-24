@@ -9,7 +9,6 @@ import com.ivy.core.data.sharedpreferences.SharedPreferenceHelper;
 import com.ivy.core.di.scope.ApplicationContext;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.ConfigureBO;
-import com.ivy.sd.png.bo.IndicativeBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
@@ -84,6 +83,16 @@ public class DataManagerImpl implements DataManager {
     }
 
     @Override
+    public boolean getTaskNotificationFlag() {
+        return mSharedPreferenceHelper.getTaskNotificationFlag();
+    }
+
+    @Override
+    public void setTaskNotificationFlag(boolean taskNotificationFlag) {
+        mSharedPreferenceHelper.setTaskNotificationFlag(taskNotificationFlag);
+    }
+
+    @Override
     public Single<String> getThemeColor() {
         return appDataManager.getThemeColor();
     }
@@ -115,7 +124,7 @@ public class DataManagerImpl implements DataManager {
 
     @Override
     public void setInTime(String inTime, boolean isFromBModel) {
-        appDataProvider.setInTime(inTime,isFromBModel);
+        appDataProvider.setInTime(inTime, isFromBModel);
     }
 
     @Override
@@ -130,7 +139,7 @@ public class DataManagerImpl implements DataManager {
 
     @Override
     public void setUniqueId(String uniqueId, boolean isFromBModel) {
-        appDataProvider.setUniqueId(uniqueId,isFromBModel);
+        appDataProvider.setUniqueId(uniqueId, isFromBModel);
     }
 
     @Override
@@ -185,7 +194,7 @@ public class DataManagerImpl implements DataManager {
 
     @Override
     public void setGlobalLocationIndex(int locationId, boolean isFromBModel) {
-        appDataProvider.setGlobalLocationIndex(locationId,isFromBModel);
+        appDataProvider.setGlobalLocationIndex(locationId, isFromBModel);
     }
 
     @Override
@@ -200,7 +209,7 @@ public class DataManagerImpl implements DataManager {
 
     @Override
     public void setTodayBeatMaster(BeatMasterBO beatMaster, boolean isFromBModel) {
-        appDataProvider.setTodayBeatMaster(beatMaster,isFromBModel);
+        appDataProvider.setTodayBeatMaster(beatMaster, isFromBModel);
     }
 
     @Override
@@ -215,7 +224,7 @@ public class DataManagerImpl implements DataManager {
 
     @Override
     public void setRetailerMasters(ArrayList<RetailerMasterBO> retailerMasters, boolean isFromBModel) {
-        appDataProvider.setRetailerMasters(retailerMasters,isFromBModel);
+        appDataProvider.setRetailerMasters(retailerMasters, isFromBModel);
     }
 
     @Override
@@ -241,7 +250,7 @@ public class DataManagerImpl implements DataManager {
 
     @Override
     public void setPausedRetailer(RetailerMasterBO retailerMasterBO) {
-          appDataProvider.setPausedRetailer(retailerMasterBO);
+        appDataProvider.setPausedRetailer(retailerMasterBO);
     }
 
     @Override

@@ -1639,8 +1639,8 @@ public class BusinessModel extends Application {
             if (configurationMasterHelper.SHOW_DATE_ROUTE) {
                 mRetailerHelper.updatePlannedDatesInRetailerObj(db);
                 mRetailerHelper.getPlannedRetailerFromDate();
-
-            } else if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
+            }
+            else if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
                 updateIsToday(db);
             else
                 getPlannedRetailer();
@@ -1683,6 +1683,7 @@ public class BusinessModel extends Application {
             }
 
             mRetailerHelper.downloadRetailerTarget("SV", db);
+
 
             db.closeDB();
 
@@ -1763,7 +1764,6 @@ public class BusinessModel extends Application {
 
         Cursor c = db.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
                 "AND Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
-
         if (c != null
                 && c.getCount() > 0) {
             while (c.moveToNext()) {
@@ -3751,7 +3751,7 @@ public class BusinessModel extends Application {
                 c.close();
             }
 
-            c = db.selectSQL("SELECT DISTINCT ImageName FROM SerializedAssetMaster");
+            c = db.selectSQL("SELECT DISTINCT ImageName FROM SerializedAssetImageDetails");
             if (c != null) {
                 while ((c.moveToNext())) {
                     getDigitalContentURLS().put(

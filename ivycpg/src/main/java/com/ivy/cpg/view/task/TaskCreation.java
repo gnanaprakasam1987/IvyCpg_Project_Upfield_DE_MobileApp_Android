@@ -110,10 +110,10 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
         save.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
 
 
-        RadioGroup rb = findViewById(R.id.rg_selection);
+        //RadioGroup rb = findViewById(R.id.rg_selection);
         final RadioButton seller_rb = findViewById(R.id.seller);
         final RadioButton channelwise_rb = findViewById(R.id.Channelwise);
-        final RadioButton retailerwise_rb = findViewById(R.id.Retailerwise);
+        final RadioButton retailerwise_rb = findViewById(R.id.retailer_selection);
         seller_rb.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         TypedArray typearr = this.getTheme().obtainStyledAttributes(R.styleable.MyTextView);
         final int color = typearr.getColor(R.styleable.MyTextView_accentcolor, 0);
@@ -121,7 +121,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
         seller_rb.setTextColor(color);
         channelwise_rb.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
         retailerwise_rb.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.LIGHT));
-        rb.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+       /* rb.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 if (checkedId == R.id.seller) {
                     seller_rb.setTextColor(color);
@@ -155,11 +155,11 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
                     taskHelper.mode = "retailer";
                 }
             }
-        });
+        });*/
 
         //allow only create task only for retailer if not from seller Task
         if (!fromHomeScreen) {
-            rb.setVisibility(View.GONE);
+           // rb.setVisibility(View.GONE);
            // (this.findViewById(R.id.task_spinner_layouts)).setVisibility(View.GONE);
             applicable_tv.setVisibility(View.GONE);
             taskHelper.mode = "retailer";
@@ -217,7 +217,7 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
             ArrayAdapter<RetailerMasterBO> retailerAdapter = new ArrayAdapter<>(this,
                     R.layout.spinner_bluetext_layout,
                     bmodel.channelMasterHelper.getRetailerMaster());
-            retailerAdapter.insert(new RetailerMasterBO(0, getResources().getString(R.string.all_retailer)), 0);
+            retailerAdapter.insert(new RetailerMasterBO("0", getResources().getString(R.string.all_retailer)), 0);
             retailerAdapter
                     .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
             retailerSpinner.setAdapter(retailerAdapter);
@@ -226,10 +226,10 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
                                            int position, long id) {
                     ((TextView) view.findViewById(android.R.id.text1)).setGravity(Gravity.START);
                     RetailerMasterBO reBo = (RetailerMasterBO) parent.getSelectedItem();
-                    if (reBo.getTretailerName().equalsIgnoreCase(getResources().getString(R.string.all_retailer))) {
+                    if (reBo.getRetailerName().equalsIgnoreCase(getResources().getString(R.string.all_retailer))) {
                         retailerid = -2;
                     } else {
-                        retailerid = reBo.getRetailerId();
+                        retailerid = SDUtil.convertToInt(reBo.getRetailerID());
                     }
                 }
 

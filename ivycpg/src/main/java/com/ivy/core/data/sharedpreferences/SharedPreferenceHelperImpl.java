@@ -18,6 +18,7 @@ public class SharedPreferenceHelperImpl implements SharedPreferenceHelper {
     private static final String APPLICATION_NAME = "application";
     private static final String ACTIVATION_KEY = "activationKey";
     private static final String LANGUAGE_PREF = "languagePref";
+    private static final String TASK_NOTIFICATION = "taskNotificationFlag";
 
 
     private SharedPreferences defaultPreferences;
@@ -65,6 +66,16 @@ public class SharedPreferenceHelperImpl implements SharedPreferenceHelper {
     @Override
     public void setPreferredLanguage(String language) {
         defaultPreferences.edit().putString(LANGUAGE_PREF, language).apply();
+    }
+
+    @Override
+    public boolean getTaskNotificationFlag() {
+        return defaultPreferences.getBoolean(TASK_NOTIFICATION, false);
+    }
+
+    @Override
+    public void setTaskNotificationFlag(boolean taskNotificationFlag) {
+        defaultPreferences.edit().putBoolean(TASK_NOTIFICATION, taskNotificationFlag).apply();
     }
 
 

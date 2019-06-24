@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 public class ProductHelper {
 
@@ -365,6 +366,25 @@ public class ProductHelper {
 
                     String stockQty = hashMap1.get(p.getProductID());
                     p.setRetailerWiseP4StockQty(stockQty != null ? stockQty : "0,0,0,0");
+
+                    if(stockQty != null){
+                        String[] splitQty = stockQty.split(",");
+                        if (splitQty.length >= 4) {
+                            p.setLastVisitColor(splitQty[0].equals("") ? android.R.color.darker_gray :
+                                    (Pattern.compile("[1-9]").matcher(splitQty[0]).find() ? android.R.color.holo_green_dark :
+                                            android.R.color.holo_red_dark));
+                            p.setLastVisit1Color(splitQty[1].equals("") ? android.R.color.darker_gray :
+                                    (Pattern.compile("[1-9]").matcher(splitQty[1]).find() ? android.R.color.holo_green_dark :
+                                    android.R.color.holo_red_dark));
+                            p.setLastVisit2Color(splitQty[2].equals("") ? android.R.color.darker_gray :
+                                    (Pattern.compile("[1-9]").matcher(splitQty[2]).find() ? android.R.color.holo_green_dark :
+                                    android.R.color.holo_red_dark));
+                            p.setLastVisit3Color(splitQty[3].equals("") ? android.R.color.darker_gray :
+                                    (Pattern.compile("[1-9]").matcher(splitQty[3]).find() ? android.R.color.holo_green_dark :
+                                    android.R.color.holo_red_dark));
+
+                        }
+                    }
 
                     p.setOos(oosMap.get(p.getProductID()) == null || oosMap.get(p.getProductID()) == 0 ? -2 : oosMap.get(p.getProductID()));
                 }

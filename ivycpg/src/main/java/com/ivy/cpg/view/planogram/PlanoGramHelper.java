@@ -303,7 +303,7 @@ public class PlanoGramHelper {
                         + " BETWEEN P.startdate AND P.enddate";
             } else {
                 query = "SELECT ifnull(PM.Pid,0) ,MP.MappingId as PlanogramID, P.PLDesc, PI.ImgName,0,0, PM.PName,PI.ImgId,PM.ParentHierarchy"
-                        + " FROM PlanogramMapping MP ON MP.PId = PM.Pid"
+                        + " FROM PlanogramMapping MP "
                         + " INNER JOIN PlanogramMaster P ON P.HId = MP.HId"
                         + " INNER JOIN PlanogramImageInfo PI on PI.ImgId=MP.ImageId"
                         + " INNER JOIN ProductMaster PM ON PM.PID=MP.PID"

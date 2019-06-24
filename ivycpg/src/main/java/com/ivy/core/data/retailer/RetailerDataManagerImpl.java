@@ -370,9 +370,6 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
                                     }
 
-                                    if(configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
-                                        updateIsToday();
-
                                 } catch (Exception ignored) {
 
                                 }

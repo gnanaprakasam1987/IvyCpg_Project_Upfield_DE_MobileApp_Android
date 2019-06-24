@@ -17,6 +17,7 @@ import com.ivy.cpg.view.reports.promotion.RetailerNamesBO;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 
 import java.util.ArrayList;
@@ -76,8 +77,8 @@ public class AssetTrackingReportFragment extends IvyBaseFragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
                 System.out.println("Executing SpnBeat");
-                retailerID = ((RetailerMasterBO) parent
-                        .getItemAtPosition(position)).getRetailerId();
+                retailerID = SDUtil.convertToInt(((RetailerMasterBO) parent
+                        .getItemAtPosition(position)).getRetailerID());
                 loadData(brandID, retailerID);
             }
 
@@ -166,11 +167,11 @@ public class AssetTrackingReportFragment extends IvyBaseFragment {
         //Load asset Retailer List
         ArrayAdapter<RetailerMasterBO> brandAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.call_analysis_spinner_layout);
-        brandAdapter.add(new RetailerMasterBO(0, getResources().getString(
+        brandAdapter.add(new RetailerMasterBO("0", getResources().getString(
                 R.string.select)));
         for (int i = 0; i < assetRetailerList.size(); i++) {
             brandAdapter
-                    .add(new RetailerMasterBO(assetRetailerList.get(i).getRetailerId(),
+                    .add(new RetailerMasterBO(String.valueOf(assetRetailerList.get(i).getRetailerId()),
                             assetRetailerList.get(i).getRetailerName()));
         }
         brandAdapter

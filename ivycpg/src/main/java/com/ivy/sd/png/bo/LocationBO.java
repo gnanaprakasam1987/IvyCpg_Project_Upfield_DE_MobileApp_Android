@@ -1,11 +1,13 @@
 package com.ivy.sd.png.bo;
 
 
+import android.support.annotation.NonNull;
+
 import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
 
 import java.util.ArrayList;
 
-public class LocationBO {
+public class LocationBO implements Comparable {
 
     int audit = 2;
     private int locationId;
@@ -487,4 +489,10 @@ public class LocationBO {
     }
 
 
+    @Override
+    public int compareTo(@NonNull Object o) {
+        int compareAvailability=((LocationBO)o).getAvailability();
+        /* For Ascending order*/
+        return this.availability - compareAvailability;
+    }
 }

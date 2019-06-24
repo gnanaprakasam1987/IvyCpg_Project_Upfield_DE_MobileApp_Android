@@ -366,4 +366,26 @@
     <string name="upload">Upload</string>
     <string name="records">Record\'s</string>
     <string name="seconds">Second\'s</string>
+    <string name="do_u_want_close">Do you want to Close?</string>
+    <string name="due_in_next_days">Due in next %1$d days</string>
+    <string name="next_visit_date">Next Visit Date: </string>
+    <string name="next_visit_date_count">%1$d days to go</string>
+    <string name="pending_task">Pending Task</string>
+    <string name="parent">Parent</string>
+    <string name="child">Child</string>
+    <string name="link_user">Link</string>
+    <string name="peer_user">Peer</string>
+    <string name="retailer_wise">Retailer Wise</string>
+    <string name="over_due">Overdue</string>
+    <string name="select_peer">Select Peer</string>
+    <string name="select_child">Select child</string>
+    <string name="select_link">Select Link</string>
+    <string name="would_you_like_add_reason_to_close_task">Would you like to close this task?</string>
+    <string name="task_reason_updated_successfully">Reason updated successfully…</string>
+    <string name="select_retailer">Select Retails</string>
+    <string name="visit_date">Visit Date Selection</string>
+    <string name="mark_as_executed">Mark as execute</string>
+    <string name="mark_as_un_executed">Mark as un executed</string>
+    <string name="due_today">Due today</string>
+    <string name="compliance_pt">PT</string>
 </resources>

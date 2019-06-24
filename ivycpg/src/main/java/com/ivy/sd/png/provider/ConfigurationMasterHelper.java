@@ -677,6 +677,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_STOCK_RSN;// available reason
     public boolean SHOW_STOCK_CB;// available checkbox
     public boolean CHANGE_AVAL_FLOW;// check box tristate flow
+    public boolean SHOW_LASTVISIT_GRAPH;
 
     public boolean SHOW_DISCOUNT_ACTIVITY;// FUN03
     public boolean SHOW_REPLACED_QTY_PC;
@@ -1585,6 +1586,9 @@ public class ConfigurationMasterHelper {
     public boolean IS_SHOW_TASK_PRODUCT_LEVEL;
     public int TASK_PRODUCT_LEVEL_NO;
 
+    private static final String CODE_TASK_DUDE_DATE_COUNT = "TASK02";
+    public int IS_TASK_DUDE_DATE_COUNT;
+
     private static final String CODE_SHOW_RETAILER_LAST_VISIT = "RTRS33";
     public boolean IS_SHOW_RETAILER_LAST_VISIT;
     public boolean IS_SHOW_RETAILER_LAST_VISITEDBY;
@@ -1595,6 +1599,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_DISABLE_CALL_ANALAYSIS_TIMER = "FUN82";
     public boolean IS_DISABLE_CALL_ANALYSIS_TIMER = true;
+
+    private static final String CODE_SHOW_SORT_STKCHK = "FUN85";
+    public boolean IS_SHOW_SORT_STKCHK = true;
 
     private static final String CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER = "NOTE01";
     public boolean IS_ENABLE_EDIT_OPTION_FOR_OTHER_USER;
@@ -2794,6 +2801,10 @@ public class ConfigurationMasterHelper {
             TASK_PRODUCT_LEVEL_NO = hashMapHHTModuleOrder.get(CODE_SHOW_TASK_PRODUCT_LEVEL);
         }
 
+        if (hashMapHHTModuleConfig.get(CODE_TASK_DUDE_DATE_COUNT) != null) {
+            IS_TASK_DUDE_DATE_COUNT = hashMapHHTModuleOrder.get(CODE_TASK_DUDE_DATE_COUNT);
+        }
+
         this.IS_SHOW_RETAILER_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LAST_VISIT) : false;
         this.IS_SHOW_RETAILER_LAST_VISITEDBY = isShowLastVisitedBy();
 
@@ -2811,6 +2822,7 @@ public class ConfigurationMasterHelper {
         this.GLOBAL_GPS_DISTANCE = hashMapHHTModuleOrder.get(CODE_ENABLE_GLOBAL_GPS_DISTANCE) != null ? hashMapHHTModuleOrder.get(CODE_ENABLE_GLOBAL_GPS_DISTANCE) : 0;
         this.IS_SURVEY_PDF_SHARE = hashMapHHTModuleConfig.get(CODE_SURVEY_PDF_SHARE) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_PDF_SHARE) : false;
         this.IS_PRE_VISIT = hashMapHHTModuleConfig.get(CODE_PRE_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_PRE_VISIT) : false;
+        this.IS_SHOW_SORT_STKCHK = hashMapHHTModuleConfig.get(CODE_SHOW_SORT_STKCHK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SORT_STKCHK) : false;
     }
 
     private boolean isInOutModule() {
@@ -4071,6 +4083,8 @@ public class ConfigurationMasterHelper {
             IS_SWITCH_WITH_OUT_SKU_WISE_TGT = false;
             SELLER_SKU_WISE_KPI_CODES = "";
 
+            SHOW_LASTVISIT_GRAPH = false;
+
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
             );
@@ -4680,6 +4694,19 @@ public class ConfigurationMasterHelper {
                         && c.getString(0).length() > 0) {
                     IS_SWITCH_WITH_OUT_SKU_WISE_TGT = true;
                     SELLER_SKU_WISE_KPI_CODES = c.getString(0);
+                }
+                c.close();
+            }
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_PSQ) + " and  ForSwitchSeller = 0 ";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    int value = c.getInt(0);
+                    if (value == 1) {
+                        SHOW_LASTVISIT_GRAPH = true;
+                    }
                 }
                 c.close();
             }

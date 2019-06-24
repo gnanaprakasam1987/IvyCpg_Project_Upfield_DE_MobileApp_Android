@@ -1,244 +1,340 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/root"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/white">
+    android:layout_height="match_parent">
 
     <include
         android:id="@+id/toolbar"
-        layout="@layout/material_tool_bar" />
+        layout="@layout/material_tool_bar"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <ScrollView
         android:id="@+id/scroll_footer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_above="@+id/save_ll"
-        android:layout_below="@id/toolbar">
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toTopOf="@+id/save_ll"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar">
 
-        <RelativeLayout
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="@dimen/dimen_10dp">
+            android:padding="@dimen/_10sdp"
+            >
 
-            <RelativeLayout
-                android:id="@+id/first_layout"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/task_title_tv"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:padding="@dimen/dimen_2dp">
+                android:adjustViewBounds="true"
+                android:text="@string/plan_task"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/task_title_tv"
-                    style="@style/TextViewNormalHighlight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:adjustViewBounds="true"
-                    android:padding="@dimen/_8sdp"
-                    android:text="@string/plan_task" />
-
-                <EditText
-                    android:id="@+id/tv"
-                    style="@style/EditTextNormal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/task_title_tv"
-                    android:layout_gravity="start|center"
-                    android:maxLength="25" />
-
-
-                <TextView
-                    android:id="@+id/task_due_date_tv"
-                    style="@style/TextViewNormalHighlight"
-                    android:layout_width="@dimen/spinner_width"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv"
-                    android:adjustViewBounds="true"
-                    android:padding="@dimen/_8sdp"
-                    android:text="@string/due_date" />
-
-                <Button
-                    android:id="@+id/task_due_date_btn"
-                    style="@style/datePickerButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/_38sdp"
-                    android:layout_below="@+id/task_due_date_tv"
-                    android:layout_marginStart="@dimen/_8sdp"
-                    android:layout_marginLeft="@dimen/_8sdp"
-                    android:gravity="center|start"
-                    android:maxLines="1"
-                    android:hint="@string/due_date" />
-
-                <TextView
-                    android:id="@+id/task_category_tv"
-                    style="@style/TextViewNormalHighlight"
-                    android:layout_width="@dimen/spinner_width"
-                    android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv"
-                    android:layout_marginEnd="@dimen/_10sdp"
-                    android:layout_marginRight="@dimen/_10sdp"
-                    android:layout_toEndOf="@+id/task_due_date_tv"
-                    android:layout_toRightOf="@+id/task_due_date_tv"
-                    android:adjustViewBounds="true"
-                    android:padding="@dimen/_8sdp"
-                    android:text="@string/category"
-                    android:visibility="gone" />
-
-                <android.support.v7.widget.AppCompatSpinner
-                    android:id="@+id/task_category_spinner"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
-                    android:layout_width="@dimen/spinner_width"
-                    android:layout_height="@dimen/spinner_layout_height"
-                    android:layout_below="@+id/task_category_tv"
-                    android:layout_alignStart="@+id/task_category_tv"
-                    android:layout_alignLeft="@+id/task_category_tv"
-                    android:layout_marginEnd="@dimen/_10sdp"
-                    android:layout_marginRight="@dimen/_10sdp"
-                    android:layout_toEndOf="@+id/task_due_date_btn"
-                    android:layout_toRightOf="@+id/task_due_date_btn"
-                    android:spinnerMode="dialog"
-                    android:visibility="gone" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/spinner_rl"
-                android:layout_width="match_parent"
+            <EditText
+                android:id="@+id/tv"
+                style="@style/EditTextNormal"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/first_layout"
-                android:gravity="center_vertical|start"
-                android:layout_marginTop="@dimen/_8sdp"
-                android:orientation="vertical">
+                android:layout_gravity="start|center"
+                android:hint="@string/title"
+                android:importantForAutofill="no"
+                android:inputType="textShortMessage"
+                android:maxLength="50"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/task_title_tv"
+                tools:ignore="UnusedAttribute" />
 
-                <TextView
-                    android:id="@+id/applicable_tv"
-                    style="@style/TextViewNormalHighlight"
+
+            <TextView
+                android:id="@+id/task_due_date_tv"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:paddingTop="@dimen/_8sdp"
+                android:text="@string/due_date"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv" />
+
+            <Button
+                android:id="@+id/task_due_date_btn"
+                style="@style/datePickerButton"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/_35sdp"
+                android:gravity="center|start"
+                android:hint="@string/due_date"
+                android:maxLines="1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/task_due_date_tv" />
+
+            <TextView
+                android:id="@+id/task_category_tv"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="@dimen/spinner_width"
+                android:layout_height="wrap_content"
+                android:adjustViewBounds="true"
+                android:paddingTop="@dimen/_8sdp"
+                android:text="@string/category"
+                android:visibility="visible"
+                app:layout_constraintLeft_toRightOf="@+id/guideline1"
+                app:layout_constraintTop_toBottomOf="@+id/tv" />
+
+            <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/task_category_spinner"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:layout_width="@dimen/spinner_width"
+                android:layout_height="@dimen/_35sdp"
+                android:spinnerMode="dialog"
+                android:visibility="visible"
+                app:layout_constraintLeft_toRightOf="@+id/guideline1"
+                app:layout_constraintTop_toBottomOf="@+id/task_category_tv" />
+
+            <android.support.constraint.Group
+                android:id="@+id/product_level_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="task_category_tv,task_category_spinner" />
+
+            <TextView
+                android:id="@+id/applicable_tv"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_4sdp"
+                android:text="@string/applyto"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/task_due_date_btn" />
+
+            <android.support.v7.widget.SwitchCompat
+                android:id="@+id/switch_option"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_gravity="center_vertical"
+                android:gravity="end|center"
+                android:textAlignment="textEnd"
+                app:layout_constraintRight_toLeftOf="@+id/auto_complete_txt_retailer"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/applicable_tv" />
+
+            <TextView
+                android:id="@+id/option_txt"
+                style="@style/TextViewNormal"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_marginStart="@dimen/_5sdp"
+                android:gravity="start|center"
+                android:text="@string/Seller"
+                android:textAlignment="textStart"
+                app:layout_constraintLeft_toRightOf="@+id/switch_option"
+                app:layout_constraintRight_toLeftOf="@+id/guideline1"
+                app:layout_constraintTop_toBottomOf="@+id/applicable_tv" />
+
+
+            <android.support.v7.widget.AppCompatAutoCompleteTextView
+                android:id="@+id/auto_complete_txt_retailer"
+                android:layout_width="@dimen/spinner_width"
+                android:layout_height="@dimen/_35sdp"
+                android:drawableEnd="@drawable/ic_arrow_drop_down"
+                android:ems="10"
+                android:gravity="top"
+                android:hint="@string/plain_select"
+                android:imeOptions="actionDone"
+                android:inputType="text"
+                android:maxLines="1"
+                android:visibility="gone"
+                app:layout_constraintLeft_toRightOf="@+id/guideline1"
+                app:layout_constraintTop_toBottomOf="@+id/applicable_tv" />
+
+
+            <RadioGroup
+                android:id="@+id/radio_grp_btn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/guideline3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/option_txt">
+
+
+                <RadioButton
+                    android:id="@+id/self_user"
+                    style="@style/TextViewNormal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentStart="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentTop="true"
-                    android:gravity="center"
-                    android:padding="@dimen/_8sdp"
-                    android:text="@string/applyto" />
+                    android:layout_gravity="center_vertical"
+                    android:checked="true"
+                    android:padding="@dimen/_10sdp"
+                    android:text="@string/self" />
 
-                <RadioGroup
-                    android:id="@+id/rg_selection"
+                <RadioButton
+                    android:id="@+id/parent_user"
+                    style="@style/TextViewNormal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/applicable_tv"
-                    android:layout_margin="5dp"
-                    android:orientation="vertical">
-
-                    <RadioButton
-                        android:id="@+id/seller"
-                        style="@style/TextViewNormal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:checked="true"
-                        android:text="@string/Seller" />
-
-                    <RadioButton
-                        android:id="@+id/Channelwise"
-                        style="@style/TextViewNormal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/Channelwise" />
-
-                    <RadioButton
-                        android:id="@+id/Retailerwise"
-                        style="@style/TextViewNormal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="@string/Retailerwise" />
-                </RadioGroup>
+                    android:layout_gravity="center_vertical"
+                    android:padding="@dimen/_10sdp"
+                    android:text="@string/parent" />
 
 
-                <Spinner
-                    android:id="@+id/spinner_seller"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
-                    android:layout_width="@dimen/spinner_width"
-                    android:layout_height="@dimen/spinner_layout_height"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/_20sdp"
-                    android:layout_marginLeft="@dimen/_20sdp"
-                    android:layout_toEndOf="@+id/rg_selection"
-                    android:layout_toRightOf="@+id/rg_selection"
-                    android:gravity="center_vertical"
-                    android:spinnerMode="dialog" />
-            </RelativeLayout>
+                <RadioButton
+                    android:id="@+id/child_user"
+                    style="@style/TextViewNormal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:padding="@dimen/_10sdp"
+                    android:text="@string/child" />
+
+
+                <RadioButton
+                    android:id="@+id/peer_user"
+                    style="@style/TextViewNormal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:padding="@dimen/_10sdp"
+                    android:text="@string/peer_user" />
+
+
+                <RadioButton
+                    android:id="@+id/link_user"
+                    style="@style/TextViewNormal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:padding="@dimen/_10sdp"
+                    android:text="@string/link_user"
+                    android:visibility="gone" />
+            </RadioGroup>
+
+            <Spinner
+                android:id="@+id/spinner_seller"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:layout_width="@dimen/spinner_width"
+                android:layout_height="@dimen/_35sdp"
+                android:layout_centerVertical="true"
+                android:gravity="center_vertical"
+                android:spinnerMode="dialog"
+                android:stateListAnimator="@android:anim/bounce_interpolator"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/guideline3" />
+
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_percent="0.45" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.36" />
+
+            <android.support.constraint.Guideline
+                android:id="@+id/guideline3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_percent="0.31" />
+
+
+            <TextView
+                android:id="@+id/photo_capture_tv"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center|start"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_4sdp"
+                android:text="@string/photo"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/guideline2" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/task_img_recycler_view"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/spinner_rl"
                 android:layout_alignParentStart="true"
-                android:layout_alignParentLeft="true"
-                android:padding="@dimen/_8sdp" />
+                android:paddingTop="@dimen/_8sdp"
+                app:layout_constraintBottom_toTopOf="@+id/task_desc_tv"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/photo_capture_tv" />
 
 
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/task_desc_tv"
+                style="@style/TextViewNormalHighlight"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/task_img_recycler_view"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:layout_marginTop="@dimen/_8sdp"
-               >
+                android:adjustViewBounds="true"
+                android:gravity="start|center"
+                android:paddingTop="@dimen/_8sdp"
+                android:paddingBottom="@dimen/_4sdp"
+                android:text="@string/description"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/task_img_recycler_view" />
 
-                <TextView
-                    android:id="@+id/task_desc_tv"
-                    style="@style/TextViewNormalHighlight"
-                    android:layout_width="@dimen/spinner_width"
-                    android:layout_height="wrap_content"
-                    android:adjustViewBounds="true"
-                    android:padding="@dimen/_8sdp"
-                    android:text="@string/description" />
 
-                <EditText
-                    android:id="@+id/taskView"
-                    style="@style/EditTextNormal"
-                    android:layout_width="match_parent"
-                    android:layout_height="100dp"
-                    android:layout_below="@+id/task_desc_tv"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/dimens_4dp"
-                    android:layout_marginStart="@dimen/list_margin"
-                    android:layout_marginLeft="@dimen/list_margin"
-                    android:layout_marginBottom="@dimen/list_margin"
-                    android:background="@drawable/feedback_edit_selector"
-                    android:cursorVisible="true"
-                    android:gravity="start|top"
-                    android:hint="@string/enter_task_description"
-                    android:inputType="textMultiLine"
-                    android:maxLength="250"
-                    android:maxLines="4"
-                    android:padding="@dimen/dimen_6dp"
-                    tools:ignore="Autofill" />
-            </RelativeLayout>
+            <EditText
+                android:id="@+id/taskView"
+                style="@style/EditTextNormal"
+                android:layout_width="0dp"
+                android:layout_height="@dimen/_150sdp"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/list_margin"
+                android:background="@drawable/feedback_edit_selector"
+                android:cursorVisible="true"
+                android:gravity="start|top"
+                android:hint="@string/enter_task_description"
+                android:inputType="textMultiLine"
+                android:maxLength="250"
+                android:maxLines="4"
+                android:padding="@dimen/dimen_6dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/task_desc_tv"
+                tools:ignore="Autofill" />
 
-        </RelativeLayout>
+        </android.support.constraint.ConstraintLayout>
     </ScrollView>
 
 
     <LinearLayout
         android:id="@+id/save_ll"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/footer_height"
-        android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:background="?attr/customFooterBackgroundColor"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="@dimen/_3sdp">
-
+        android:padding="@dimen/_3sdp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
         <Button
             android:id="@+id/saveTask"
@@ -248,5 +344,4 @@
             android:textAllCaps="false" />
 
     </LinearLayout>
-
-</RelativeLayout>
+</android.support.constraint.ConstraintLayout>

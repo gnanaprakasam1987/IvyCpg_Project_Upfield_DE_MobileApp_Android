@@ -39,6 +39,7 @@ public class UserMasterBO {
     private boolean isBackup;
     private String userlevelId;
     private String userPositionId;
+    private String RetailerID;
 
     public UserMasterBO() {
 
@@ -237,7 +238,6 @@ public class UserMasterBO {
     }
 
 
-
     public String getDownloadDate() {
         return downloadDate;
     }
@@ -357,5 +357,13 @@ public class UserMasterBO {
 
     public void setUserPositionId(String userPositionId) {
         this.userPositionId = userPositionId;
+    }
+
+    public String getRetailerID() {
+        return RetailerID;
+    }
+
+    public void setRetailerID(String retailerID) {
+        RetailerID = retailerID;
     }
 }

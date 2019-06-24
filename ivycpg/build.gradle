@@ -42,7 +42,7 @@ def verCode = 1400
 def revNumber = fetchRevisionNumber()
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     buildToolsVersion '28.0.3'
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
@@ -261,12 +261,12 @@ dependencies {
     implementation files('libs/javax.mail-1.4.7.jar')
 
     // Support Library
-    implementation 'com.android.support:appcompat-v7:26.1.0'
-    implementation 'com.android.support:cardview-v7:26.1.0'
-    implementation 'com.android.support:palette-v7:26.1.0'
-    implementation 'com.android.support:design:26.1.0'
-    implementation 'com.android.support:recyclerview-v7:26.1.0'
-    implementation 'com.android.support.constraint:constraint-layout:1.1.2'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:cardview-v7:28.0.0'
+    implementation 'com.android.support:palette-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:recyclerview-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'com.android.support:multidex:1.0.3'
 
     //Google Play service and maps
@@ -303,7 +303,7 @@ dependencies {
     // Dragger
     implementation 'com.google.dagger:dagger:2.13'
     annotationProcessor "com.google.dagger:dagger-compiler:2.13"
-    implementation 'com.android.support:support-annotations:27.1.1'
+    implementation 'com.android.support:support-annotations:28.0.0'
 
     // Leak Canary
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.4'
