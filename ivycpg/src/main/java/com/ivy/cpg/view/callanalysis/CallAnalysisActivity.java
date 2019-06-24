@@ -1445,6 +1445,8 @@ public class CallAnalysisActivity extends IvyBaseActivityNoActionBar
                     Toast.LENGTH_SHORT).show();
         } else if (!mFeedBackId.equals("0") || hasActivityDone()) {
             bmodel.updateIsVisitedFlag("Y");
+        }else if(bmodel.configurationMasterHelper.IS_SHOW_PAUSE_CALL_ANALYSIS){
+            bmodel.updateIsVisitedFlag("N");
         }
 
 
