@@ -163,6 +163,8 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
            // (this.findViewById(R.id.task_spinner_layouts)).setVisibility(View.GONE);
             applicable_tv.setVisibility(View.GONE);
             taskHelper.mode = "retailer";
+        }else {
+            taskHelper.mode = "seller";
         }
 
         ArrayAdapter<ChannelBO> channelAdapter = new ArrayAdapter<>(this,
@@ -248,6 +250,11 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
                 userMasterBO.setUserName("Self");
                 break;
             }
+
+        if (sellerUserList.size() == 2 && sellerUserList.get(1).getUserName().equals("Self"))
+            sellerSpinner.setVisibility(View.GONE);
+        channelSpinner.setVisibility(View.GONE);
+        retailerSpinner.setVisibility(View.GONE);
 
         ArrayAdapter<UserMasterBO> sellerAdapter = new ArrayAdapter<>(this,
                 R.layout.spinner_bluetext_layout, sellerUserList);
@@ -376,7 +383,12 @@ public class TaskCreation extends IvyBaseActivityNoActionBar implements OnClickL
             taskTitleDec = "";
             taskDetailDesc = "";
             taskChannelId = 0;
-            taskHelper.mode = "seller";
+
+            if (fromHomeScreen)
+                taskHelper.mode = "seller";
+            else
+                taskHelper.mode = "retailer";
+
             Toast.makeText(TaskCreation.this,
                     getResources().getString(R.string.new_task_saved),
                     Toast.LENGTH_SHORT).show();
