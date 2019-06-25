@@ -25,14 +25,13 @@ import java.util.Map;
 import java.util.Objects;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_APPLICATION_ID;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_PASSWORD;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOCATION_PATH;
 
 public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
-
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     /**
      * Firebase Authentication Method
@@ -44,6 +43,11 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
 
     @Override
     public void validateLoginAndUpdate(final Context context, final String pathNode, final LocationDetailBO locationDetailBO, final String from){
+
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
+        if (appId.equals(""))
+            return;
+
         if(FirebaseAuth.getInstance().getCurrentUser() == null) {
 
             String email = AppUtils.getSharedPreferences(context).getString(FIREBASE_EMAIL, "");
@@ -116,6 +120,9 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
      */
     @Override
     public void updateAttendanceIn(final Context context, String pathNode) {
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
+        if (appId.equals(""))
+            return;
 
         String rootPath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH, "");
 
@@ -149,6 +156,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
                 attendanceObj.put(ids, true);
         }
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(rootPath)
                 .document(ATTENDANCE_PATH)
                 .collection(DateTimeUtils.now(DateTimeUtils.DATE_DOB_FORMAT_PLAIN))
@@ -178,6 +186,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
         attendanceObj.put("outTime", System.currentTimeMillis());
         attendanceObj.put("status", "Day Closed");
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(rootPath)
                 .document(ATTENDANCE_PATH)
                 .collection(DateTimeUtils.now(DateTimeUtils.DATE_DOB_FORMAT_PLAIN))
@@ -189,6 +198,10 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
      * Insert or update Location data and attendance data in Firebase Node
      */
     private void updateFirebaseData(Context context, LocationDetailBO locationDetailBO) {
+
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
+        if (appId.equals(""))
+            return;
 
         String rootPath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH, "");
 
@@ -223,6 +236,7 @@ public class FireBaseRealtimeLocationUpload implements RealTimeLocation {
             if (!ids.isEmpty())
                 locationObj.put(ids,true);
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         db.collection(rootPath)
                 .document(REALTIME_LOCATION_PATH)
                 .collection(DateTimeUtils.now(DateTimeUtils.DATE_DOB_FORMAT_PLAIN))

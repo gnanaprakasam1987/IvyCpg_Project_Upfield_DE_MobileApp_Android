@@ -56,8 +56,6 @@ public class RealTimeLocationService extends Service {
     private PendingIntent mPendingIntent;
     private ActivityRecognitionClient mActivityRecognitionClient;
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private ListenerRegistration listenerRegistration;
 
     private long supervisorLastUpdate ;
     private final long timeDiff = 1000 * 60 * 30;
@@ -122,7 +120,7 @@ public class RealTimeLocationService extends Service {
         LocationRequest request = new LocationRequest();
         request.setInterval(5000);
         request.setFastestInterval(2500);
-        request.setSmallestDisplacement(5);
+        request.setSmallestDisplacement(10);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         client = LocationServices.getFusedLocationProviderClient(this);
@@ -149,7 +147,7 @@ public class RealTimeLocationService extends Service {
                     //Notifies if Mock Location is enabled
                     boolean isMockLocationEnabled = LocationServiceHelper.getInstance().notifyMockLocationStatus(getApplicationContext(),location);
 
-                    if(isBetterLocation(location,previousBestLocation)) {
+                   // if(isBetterLocation(location,previousBestLocation)) {
                         LocationDetailBO locationDetailBO = new LocationDetailBO();
                         locationDetailBO.setLatitude(String.valueOf(location.getLatitude()));
                         locationDetailBO.setLongitude(String.valueOf(location.getLongitude()));
@@ -182,7 +180,7 @@ public class RealTimeLocationService extends Service {
 //                            }
 //
 //                        }
-                    }
+                    //}
                 }
             }
         };
@@ -194,7 +192,7 @@ public class RealTimeLocationService extends Service {
         }
     }
 
-    private boolean isBetterLocation(Location location, Location currentBestLocation) {
+    private boolean isBetterLocationOld(Location location, Location currentBestLocation) {
         if (currentBestLocation == null) {
             // A new location is always better than no location
             previousBestLocation = location;
@@ -279,7 +277,8 @@ public class RealTimeLocationService extends Service {
     }
 
     private void listenSupervisorState(){
-        listenerRegistration = db.collection("SupervisorState")
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        ListenerRegistration listenerRegistration = db.collection("SupervisorState")
                 .document("State")
                 .addSnapshotListener(new EventListener<DocumentSnapshot>() {
                     @Override
@@ -312,5 +311,57 @@ public class RealTimeLocationService extends Service {
 
         //listenerRegistration.remove();
         removeActivityUpdatesButtonHandler();
+    }
+
+    private static final int TOO_OLD_LOCATION_DELTA = 1000 * 60 * 2;
+
+    private boolean isBetterLocation(Location location, Location currentBestLocation) {
+        if (currentBestLocation == null) {
+            // A new location is always better than no location
+            return true;
+        }
+
+        // Check whether the new location fix is newer or older
+        long timeDelta = location.getTime() - currentBestLocation.getTime();
+        boolean isSignificantlyNewer = timeDelta > TOO_OLD_LOCATION_DELTA;
+        boolean isSignificantlyOlder = timeDelta < -TOO_OLD_LOCATION_DELTA;
+        boolean isNewer = timeDelta > 0;
+
+        // If it's been more than two minutes since the current location, use the new location
+        // because the user has likely moved
+        if (isSignificantlyNewer) {
+            return true;
+            // If the new location is more than two minutes older, it must be worse
+        } else if (isSignificantlyOlder) {
+            return false;
+        }
+
+        // Check whether the new location fix is more or less accurate
+        int accuracyDelta = (int) (location.getAccuracy() - currentBestLocation.getAccuracy());
+        boolean isLessAccurate = accuracyDelta > 0;
+        boolean isMoreAccurate = accuracyDelta < 0;
+        boolean isSignificantlyLessAccurate = accuracyDelta > 200;
+
+        // Check if the old and new location are from the same provider
+        boolean isFromSameProvider = isSameProvider(location.getProvider(),
+                currentBestLocation.getProvider());
+
+        // Determine location quality using a combination of timeliness and accuracy
+        if (isMoreAccurate) {
+            return true;
+        } else if (isNewer && !isLessAccurate) {
+            return true;
+        } else if (isNewer && !isSignificantlyLessAccurate && isFromSameProvider) {
+            return true;
+        }
+        return false;
+    }
+
+    /** Checks whether two providers are the same */
+    private boolean isSameProvider(String provider1, String provider2) {
+        if (provider1 == null) {
+            return provider2 == null;
+        }
+        return provider1.equals(provider2);
     }
 }

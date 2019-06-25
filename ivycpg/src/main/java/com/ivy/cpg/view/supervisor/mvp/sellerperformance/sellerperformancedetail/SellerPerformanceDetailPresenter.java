@@ -55,6 +55,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.DETAIL_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_APPLICATION_ID;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_PATH;
 
@@ -63,7 +64,6 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     private Context context;
     private SellerPerformanceDetailContractor.SellerPerformanceDetailView sellerPerformanceView;
     private SellerBo selectedSeller;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ListenerRegistration registration ;
     private int CHART_DAYS = 0;
     private final int CHART_DAYS_COUNT = 4;
@@ -235,9 +235,12 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     @Override
     public void setSellerActivityListener(final int userId, final String date) {
 
-        if (basePath.equals(""))
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
+
+        if (appId.equals("") || basePath.equals(""))
             return;
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference queryRef = db
                 .collection(basePath)
                 .document(TIME_STAMP_PATH)
@@ -275,9 +278,12 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     @Override
     public void setSellerActivityDetailListener(int userId,String date) {
 
-        if (basePath.equals(""))
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
+
+        if (appId.equals("") || basePath.equals(""))
             return;
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference queryRef = db
                 .collection(basePath)
                 .document(TIME_STAMP_PATH)
@@ -306,9 +312,11 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     @Override
     public void prepareChartData(final int userId,final String date){
 
-        if (basePath.equals(""))
-            return;
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
 
+        if (appId.equals("") ||basePath.equals(""))
+            return;
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference queryRef = db
                 .collection(basePath)
                 .document(TIME_STAMP_PATH)
@@ -365,7 +373,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
         try {
             RetailerBo documentSnapshotBo = documentSnapshot.toObject((RetailerBo.class));
 
-            System.out.println("setSellerDetailValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
+            //System.out.println("setSellerDetailValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
             if (documentSnapshotBo != null) {
 
@@ -672,7 +680,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
             String downloadurl = getDownloadUrl(masterName);
 
             Commons.print("downloadUrl "+downloadurl);
-            System.out.println("json = " + json);
+            Commons.print("json = " + json);
 
             Vector<String> responseVector = getKPIMasterResponse(json, downloadurl);
 

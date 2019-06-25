@@ -496,7 +496,7 @@ public class DataMembers {
     public static final String tbl_credit_note = "CreditNote";
     public static final String tbl_credit_note_cols = "id,refno,amount,retailerid,date,creditnotetype,isused,Appliedamount,Actualamount";
 
-    private static final String tbl_location_tracking = "LocationTracking";
+    public static final String tbl_location_tracking = "LocationTracking";
     private static final String tbl_location_tracking_cols = "Tid,Date,Latitude,Longtitude,Accuracy,Activity,Battery,LocationProvider,IsLocationEnabled";
 
     public static final String tbl_PriceHeader = "PriceCheckHeader";
