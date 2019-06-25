@@ -19,6 +19,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
+import java.util.concurrent.TimeUnit;
 
 import static com.ivy.sd.png.provider.ConfigurationMasterHelper.outDateFormat;
 
@@ -38,6 +39,7 @@ public class DateTimeUtils {
     public static final String defaultDateFormat = "MM/dd/yyyy";
     private static final String serverDateFormat = "yyyy/MM/dd";
     public static int DATE_TIME_ID = 3;
+    private static final String FORMAT = "%02d:%02d:%02d";
 
     @StringDef({DateFormats.SERVER_DATE_FORMAT})
     @Retention(RetentionPolicy.SOURCE)
@@ -557,4 +559,36 @@ public class DateTimeUtils {
                 && (thenMonth == time.month)
                 && (thenMonthDay == time.monthDay);
     }
+    /**
+     *
+     * @param startTime
+     * @param endTime
+     * @param dateFormat
+     * @return Total Time Spent
+     */
+    public static String getTimeSpend(String startTime, String endTime, String dateFormat) {
+
+        if (startTime == null)
+            return "00:00:00";
+
+        SimpleDateFormat sdf1 = new SimpleDateFormat(dateFormat, Locale.ENGLISH);
+        try {
+            Date date1 = sdf1.parse(startTime);
+            Date date2 = sdf1.parse(endTime);
+
+            long durationInMillis = date2.getTime() - date1.getTime();
+
+            return String.format(FORMAT,
+                    TimeUnit.MILLISECONDS.toHours(durationInMillis),
+                    TimeUnit.MILLISECONDS.toMinutes(durationInMillis) -
+                            TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(durationInMillis)),
+                    TimeUnit.MILLISECONDS.toSeconds(durationInMillis) -
+                            TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(durationInMillis)));
+
+        } catch (ParseException e) {
+            Commons.printException(e);
+        }
+        return "00:00:00";
+    }
+
 }

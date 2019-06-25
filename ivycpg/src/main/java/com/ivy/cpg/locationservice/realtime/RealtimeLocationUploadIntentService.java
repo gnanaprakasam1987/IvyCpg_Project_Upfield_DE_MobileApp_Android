@@ -8,6 +8,7 @@ import com.ivy.cpg.locationservice.LocationDetailBO;
 import com.ivy.cpg.locationservice.LocationServiceHelper;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.NetworkUtils;
 
 
@@ -31,8 +32,8 @@ public class RealtimeLocationUploadIntentService extends IntentService{
                     if(userMasterBO != null) {
                         LocationServiceHelper.getInstance().saveUserRealtimeLocation(context, location, userMasterBO );
                         if (NetworkUtils.isNetworkConnected(context)
-                                && LocationServiceHelper.getInstance().isUserLocationAvailable(context,"MovementTrackingHistory")) {
-                            LocationServiceHelper.getInstance().uploadRealTimeLocation(context);
+                                && LocationServiceHelper.getInstance().isUserLocationAvailable(context, DataMembers.tbl_movement_tracking_history)) {
+                            LocationServiceHelper.getInstance().uploadLocationTrackingAws(context,userMasterBO,"UPLDUSRMOVEMENT",true);
                         }
                     }
                 }

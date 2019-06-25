@@ -1350,14 +1350,14 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_TOTAL_QTY_ORDER;
     private static final String CODE_SHOW_QTY_ORDER = "ORDB65";
 
-    public boolean SHOW_STORE_VISITED_COUNT;
-    private static final String CODE_SHOW_STORE_VISITED = "FUN55";
 
 
     //cpg132-task 13
     public boolean SHOW_TOTAL_ACHIEVED_VOLUME;
     public boolean SHOW_TOTAL_ACHIEVED_VOLUME_WGT;
-    private static final String CODE_TOTAL_ACHIEVEDVOLUME = "FUN70";
+    public boolean SHOW_TOTAL_TIME_SPEND;
+    public boolean SHOW_STORE_VISITED_COUNT;
+    private static final String CODE_TOTAL_ACHIEVEDVOLUME = "RTRS34";
 
     public static final String CODE_TAX_MODEL = "TAX_MODEL";
     public boolean IS_GST;
@@ -2572,13 +2572,17 @@ public class ConfigurationMasterHelper {
 
         this.SHOW_TOTAL_VALUE_ORDER = hashMapHHTModuleConfig.get(CODE_SHOW_VALUE_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_VALUE_ORDER) : false;
         this.SHOW_TOTAL_QTY_ORDER = hashMapHHTModuleConfig.get(CODE_SHOW_QTY_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_QTY_ORDER) : false;
-        this.SHOW_STORE_VISITED_COUNT = hashMapHHTModuleConfig.get(CODE_SHOW_STORE_VISITED) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STORE_VISITED) : false;
 
         this.SHOW_TOTAL_ACHIEVED_VOLUME = hashMapHHTModuleConfig.get(CODE_TOTAL_ACHIEVEDVOLUME) != null ? hashMapHHTModuleConfig.get(CODE_TOTAL_ACHIEVEDVOLUME) : false;
 
-        if (hashMapHHTModuleOrder.get(CODE_TOTAL_ACHIEVEDVOLUME) != null)
+        if (hashMapHHTModuleOrder.get(CODE_TOTAL_ACHIEVEDVOLUME) != null) {
             if (hashMapHHTModuleOrder.get(CODE_TOTAL_ACHIEVEDVOLUME) == 1)
                 this.SHOW_TOTAL_ACHIEVED_VOLUME_WGT = true;
+            else if (hashMapHHTModuleOrder.get(CODE_TOTAL_ACHIEVEDVOLUME) == 2)
+                this.SHOW_TOTAL_TIME_SPEND = true;
+            else if (hashMapHHTModuleOrder.get(CODE_TOTAL_ACHIEVEDVOLUME) == 3)
+                this.SHOW_STORE_VISITED_COUNT = true;
+        }
 
         this.IS_PROFILE_IMAGE = hashMapHHTModuleConfig.get(CODE_PROFILE_IMAGE) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_IMAGE) : false;
 

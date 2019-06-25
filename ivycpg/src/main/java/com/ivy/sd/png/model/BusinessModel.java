@@ -48,6 +48,8 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.ivy.core.CodeCleanUpUtil;
 import com.ivy.core.IvyConstants;
 import com.ivy.core.data.app.AppDataProvider;
@@ -186,6 +188,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Vector;
 
 import javax.inject.Inject;
@@ -196,6 +199,11 @@ import co.chatsdk.firebase.FirebaseNetworkAdapter;
 import co.chatsdk.firebase.file_storage.FirebaseFileStorageModule;
 import co.chatsdk.firebase.push.FirebasePushModule;
 
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_API_KEY;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_APPLICATION_ID;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_DATABSE_URL;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_PROJECT_ID;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_STORAGE_BUCKET;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 
 public class BusinessModel extends Application {
@@ -688,6 +696,7 @@ public class BusinessModel extends Application {
 
             codeCleanUpUtil = CodeCleanUpUtil.getInstance(this, appDataProvider);
 
+            initializeFirebase();
             initializeChatSdk();
 
         } catch (Exception ex) {
@@ -722,7 +731,7 @@ public class BusinessModel extends Application {
                 Configuration.Builder builder = new Configuration.Builder(context);
 
                 builder.firebaseRootPath(rootPath);
-                builder.firebaseStorageURL(BuildConfig.FB_STORAGE_URL); // /files/new_folder_cpg/chat_img
+                builder.firebaseStorageURL(Objects.requireNonNull(FirebaseApp.getInstance()).getOptions().getStorageBucket()); // /files/new_folder_cpg/chat_img
                 //builder.firebaseCloudMessagingServerKey(BuildConfig.FB_SERVER_KEY);
                 builder.googleMaps(getResources().getString(R.string.google_maps_api_key));
                 builder.locationMessagesEnabled(true);
@@ -746,6 +755,33 @@ public class BusinessModel extends Application {
 
         } catch (Exception e) {
             Commons.printException(e);
+        }
+    }
+
+    public FirebaseApp initializeFirebase(){
+
+        String appId = AppUtils.getSharedPreferences(this).getString(FB_APPLICATION_ID, "");
+        String apiKey = AppUtils.getSharedPreferences(this).getString(FB_API_KEY, "");
+        String dbUrl = AppUtils.getSharedPreferences(this).getString(FB_DATABSE_URL, "");
+        String storageBucket = AppUtils.getSharedPreferences(this).getString(FB_STORAGE_BUCKET, "");
+        String proId = AppUtils.getSharedPreferences(this).getString(FB_PROJECT_ID, "");
+
+        if (!appId.isEmpty() && FirebaseApp.getApps(this).isEmpty()) {
+
+            Commons.print("No Firebase Instance Found");
+
+            FirebaseOptions.Builder builder = new FirebaseOptions.Builder()
+                    .setApplicationId(appId)
+                    .setApiKey(apiKey)
+                    .setDatabaseUrl(dbUrl)
+                    .setStorageBucket(storageBucket)
+                    .setProjectId(proId);
+
+            return FirebaseApp.initializeApp(this, builder.build());
+
+        }else {
+            Commons.print("Firebase Instance Already Created");
+            return null;
         }
     }
 
@@ -5585,7 +5621,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             String columns = "Message, Imageurl, TimeStamp, Type";
 
-            values = QT(msg) + "," + url + QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME)) + QT(type);
+            values = QT(msg) + "," +  (url)+ "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME))+ "," + QT(type);
 
             db.insertSQL("Notification", columns, values);
 

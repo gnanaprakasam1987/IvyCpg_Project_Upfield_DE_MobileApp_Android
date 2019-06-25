@@ -19,6 +19,7 @@ import com.ivy.utils.AppUtils;
 
 import java.util.LinkedHashMap;
 
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_APPLICATION_ID;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL;
 
 public class SupervisorActivityHelper {
@@ -37,6 +38,10 @@ public class SupervisorActivityHelper {
     }
 
     public void loginToFirebase(Context context) {
+
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
+        if (appId.equals(""))
+            return;
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             String email = AppUtils.getSharedPreferences(context).getString(FIREBASE_EMAIL,"");
@@ -160,6 +165,28 @@ public class SupervisorActivityHelper {
 
         return isChatConfigAvail;
 
+    }
+
+    public String getDownloadUrl(Context context,String masterName){
+        DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+        String downloadurl = "";
+        try {
+            db.openDataBase();
+            db.createDataBase();
+            String sb = "select url from urldownloadmaster where " +
+                    "mastername='"+masterName+"' and typecode='SYNMAS'";
+
+            Cursor c = db.selectSQL(sb);
+            if (c != null) {
+                if (c.getCount() > 0 && c.moveToNext()) {
+                    downloadurl = c.getString(0);
+                }
+            }
+        }catch (Exception e){
+            Commons.printException(e);
+        }
+
+        return downloadurl;
     }
 
 }

@@ -97,8 +97,6 @@ android {
         debug {
             resValue "string", "google_maps_api_key", "AIzaSyBQucltx5i10fqfxaFQNpRb6igGsnmdk0Q"
             buildConfigField("boolean", "ACTIVATION", "false");
-            buildConfigField("String", "FB_SERVER_KEY", "\"AAAASx-_Lzw:APA91bGwZeB4zok8eNIGcdbz5T_gYYKnwSEGke3cuzDC0-7vsTMS1nkCDXg3upWOAxCO45AVgPWJXO_i2aSpVGPdwKue1LESJu3M8XC7DxGRf09aSMOlDeUxUGo1Y0MQUP1BHsv2Ughc\"")
-            buildConfigField("String", "FB_STORAGE_URL", "\"gs://testapp-a2b92.appspot.com\"")
 
             // Disable fabric build ID generation for debug builds
             ext.enableCrashlytics = false
@@ -111,8 +109,6 @@ android {
             resValue "string", "google_maps_api_key", "${googleapikey}"
             buildConfigField("boolean", "ACTIVATION", "true")
 
-            buildConfigField("String", "FB_SERVER_KEY", "\"AAAASx-_Lzw:APA91bGwZeB4zok8eNIGcdbz5T_gYYKnwSEGke3cuzDC0-7vsTMS1nkCDXg3upWOAxCO45AVgPWJXO_i2aSpVGPdwKue1LESJu3M8XC7DxGRf09aSMOlDeUxUGo1Y0MQUP1BHsv2Ughc\"")
-            buildConfigField("String", "FB_STORAGE_URL", "\"gs://ivycpg-1138.appspot.com\"")
 
             minifyEnabled true
             shrinkResources true
@@ -123,8 +119,6 @@ android {
             resValue "string", "google_maps_api_key", keystoreProperties['mapKey']
             buildConfigField("boolean", "ACTIVATION", "true")
 
-            buildConfigField("String", "FB_SERVER_KEY", "\"AAAASx-_Lzw:APA91bGwZeB4zok8eNIGcdbz5T_gYYKnwSEGke3cuzDC0-7vsTMS1nkCDXg3upWOAxCO45AVgPWJXO_i2aSpVGPdwKue1LESJu3M8XC7DxGRf09aSMOlDeUxUGo1Y0MQUP1BHsv2Ughc\"")
-            buildConfigField("String", "FB_STORAGE_URL", "\"gs://ivycpg-1138.appspot.com\"")
 
             minifyEnabled true
             shrinkResources true
@@ -270,16 +264,16 @@ dependencies {
     implementation 'com.android.support:multidex:1.0.3'
 
     //Google Play service and maps
-    implementation 'com.google.android.gms:play-services-maps:15.0.1'
-    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation 'com.google.android.gms:play-services-maps:16.1.0'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
     implementation 'com.google.maps.android:android-maps-utils:0.4.4'
 
     // Firebase Library
     implementation 'com.firebase:firebase-jobdispatcher:0.8.5'
-    implementation 'com.google.firebase:firebase-messaging:17.3.0'
-    implementation 'com.google.firebase:firebase-database:15.0.1'
-    implementation 'com.google.firebase:firebase-auth:15.1.0'
-    implementation 'com.google.firebase:firebase-firestore:17.0.2'
+    implementation 'com.google.firebase:firebase-messaging:18.0.0'
+    implementation 'com.google.firebase:firebase-database:17.0.0'
+    implementation 'com.google.firebase:firebase-auth:17.0.0'
+    implementation 'com.google.firebase:firebase-firestore:19.0.2'
 
     // Image processing
     implementation 'com.github.bumptech.glide:glide:3.7.0'
@@ -351,4 +345,3 @@ dependencies {
     implementation 'com.microsoft.azure.android:azure-storage-android:0.8.0@aar'
 
 }
-apply plugin: 'com.google.gms.google-services'
