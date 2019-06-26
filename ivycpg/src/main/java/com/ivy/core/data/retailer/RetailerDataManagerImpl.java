@@ -420,13 +420,16 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
             public ArrayList<RetailerMasterBO> call() throws Exception {
                 initDb();
                 List<String> retailerIds = new ArrayList<>();
-                Cursor c = mDbUtil.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
+                List<String> vistedRetailerIds = new ArrayList<>();
+                Cursor c = mDbUtil.selectSQL("select EntityId,VisitStatus From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
                         "AND Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
                 if (c != null
                         && c.getCount() > 0) {
                     while (c.moveToNext()) {
                         retailerIds.add(c.getString(0));
+                        if (c.getString(1).equals("COMPLETED"))
+                            vistedRetailerIds.add(c.getString(0));
                     }
 
                     c.close();
@@ -435,8 +438,11 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 if (retailerIds.size() > 0)
                     for (RetailerMasterBO retailerMasterBO : retailerMasterBOS) {
                         retailerMasterBO.setIsToday(0);
+                        retailerMasterBO.setIsVisited("N");
                         if (retailerIds.contains(retailerMasterBO.getRetailerID())) {
                             retailerMasterBO.setIsToday(1);
+                            if (vistedRetailerIds.contains(retailerMasterBO.getRetailerID()))
+                                retailerMasterBO.setIsVisited("Y");
                         }
                     }
                 return retailerMasterBOS;

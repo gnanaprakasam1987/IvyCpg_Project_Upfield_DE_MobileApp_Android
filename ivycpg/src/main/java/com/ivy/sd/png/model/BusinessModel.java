@@ -1797,13 +1797,15 @@ public class BusinessModel extends Application {
 
     private void updateIsToday(DBUtil db) {
         List<String> retailerIds = new ArrayList<>();
-
-        Cursor c = db.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
+        List<String> vistedRetailerIds = new ArrayList<>();
+        Cursor c = db.selectSQL("select EntityId,VisitStatus From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
                 "AND Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         if (c != null
                 && c.getCount() > 0) {
             while (c.moveToNext()) {
                 retailerIds.add(c.getString(0));
+                if (c.getString(1).equals("COMPLETED"))
+                    vistedRetailerIds.add(c.getString(0));
             }
 
             c.close();
@@ -1811,8 +1813,11 @@ public class BusinessModel extends Application {
         if (retailerIds.size() > 0)
             for (RetailerMasterBO retailerMasterBO : getRetailerMaster()) {
                 retailerMasterBO.setIsToday(0);
+                retailerMasterBO.setIsVisited("N");
                 if (retailerIds.contains(retailerMasterBO.getRetailerID())) {
                     retailerMasterBO.setIsToday(1);
+                    if (vistedRetailerIds.contains(retailerMasterBO.getRetailerID()))
+                        retailerMasterBO.setIsVisited("Y");
                 }
             }
     }
