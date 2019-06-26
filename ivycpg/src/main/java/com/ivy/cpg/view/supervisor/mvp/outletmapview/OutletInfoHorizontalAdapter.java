@@ -17,6 +17,7 @@ import android.widget.Toast;
 import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.lib.DialogFragment;
+import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.view.OnSingleClickListener;
@@ -76,7 +77,7 @@ public class OutletInfoHorizontalAdapter extends RecyclerView.Adapter<OutletInfo
         holder.userName.setText(outletListBos.get(position).getUserName());
         holder.retailerName.setText(outletListBos.get(position).getRetailerName());
         holder.retailerAddress.setText(outletListBos.get(position).getAddress());
-        holder.totalOrderValue.setText(outletListBos.get(position).getTotalOrderValue()+"");
+        holder.totalOrderValue.setText(Utils.formatAsTwoDecimal(outletListBos.get(position).getTotalOrderValue()));
 
 
         int drawableId ;
