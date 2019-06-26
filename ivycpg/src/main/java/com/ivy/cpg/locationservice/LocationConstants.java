@@ -16,6 +16,11 @@ public class LocationConstants {
     public static final int MOCK_NOTIFICATION_ID = 1113; // Mock Location notification id
     public static final int GPS_NOTIFICATION_ID = 1111; // GPS Notification Id
 
+    public static final long LOCATION_INTERVAL = 60*1000;
+    public static final long LOCATION_MAX_WAIT_TIME = 60*60*1000;
+    public static final int LOCATION_DISPLACEMENT = 5;
+
+
 
     public static final String IN_VEHICLE = "IN VEHICLE";
     public static final String ON_BICYCLE = "ON BICYCLE";

@@ -42,6 +42,9 @@ import com.ivy.sd.png.util.Commons;
 import java.util.Date;
 import java.util.Map;
 
+import static com.ivy.cpg.locationservice.LocationConstants.LOCATION_DISPLACEMENT;
+import static com.ivy.cpg.locationservice.LocationConstants.LOCATION_INTERVAL;
+import static com.ivy.cpg.locationservice.LocationConstants.LOCATION_MAX_WAIT_TIME;
 import static com.ivy.cpg.locationservice.LocationConstants.REALTIME_NOTIFICATION_ID;
 
 public class RealTimeLocationService extends Service {
@@ -118,9 +121,10 @@ public class RealTimeLocationService extends Service {
 
     private void requestLocationUpdates() {
         LocationRequest request = new LocationRequest();
-        request.setInterval(5000);
-        request.setFastestInterval(2500);
-        request.setSmallestDisplacement(10);
+        request.setInterval(LOCATION_INTERVAL);
+//        request.setFastestInterval(2500);
+//        request.setMaxWaitTime(LOCATION_MAX_WAIT_TIME);
+        request.setSmallestDisplacement(LOCATION_DISPLACEMENT);
         request.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
         client = LocationServices.getFusedLocationProviderClient(this);
