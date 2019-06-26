@@ -758,7 +758,7 @@ public class BusinessModel extends Application {
         }
     }
 
-    public FirebaseApp initializeFirebase(){
+    public FirebaseApp initializeFirebase() {
 
         String appId = AppUtils.getSharedPreferences(this).getString(FB_APPLICATION_ID, "");
         String apiKey = AppUtils.getSharedPreferences(this).getString(FB_API_KEY, "");
@@ -779,7 +779,7 @@ public class BusinessModel extends Application {
 
             return FirebaseApp.initializeApp(this, builder.build());
 
-        }else {
+        } else {
             Commons.print("Firebase Instance Already Created");
             return null;
         }
@@ -1670,8 +1670,7 @@ public class BusinessModel extends Application {
             if (configurationMasterHelper.SHOW_DATE_ROUTE) {
                 mRetailerHelper.updatePlannedDatesInRetailerObj(db);
                 mRetailerHelper.getPlannedRetailerFromDate();
-            }
-            else if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
+            } else if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
                 updateIsToday(db);
             else
                 getPlannedRetailer();
@@ -1791,12 +1790,15 @@ public class BusinessModel extends Application {
 
     private void updateIsToday(DBUtil db) {
         List<String> retailerIds = new ArrayList<>();
-        Cursor c = db.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
+        List<String> vistedRetailerIds = new ArrayList<>();
+        Cursor c = db.selectSQL("select EntityId,VisitStatus From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
                 "AND Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         if (c != null
                 && c.getCount() > 0) {
             while (c.moveToNext()) {
                 retailerIds.add(c.getString(0));
+                if (c.getString(1).equals("COMPLETED"))
+                    vistedRetailerIds.add(c.getString(0));
             }
 
             c.close();
@@ -1804,8 +1806,11 @@ public class BusinessModel extends Application {
         if (retailerIds.size() > 0)
             for (RetailerMasterBO retailerMasterBO : getRetailerMaster()) {
                 retailerMasterBO.setIsToday(0);
+                retailerMasterBO.setIsVisited("N");
                 if (retailerIds.contains(retailerMasterBO.getRetailerID())) {
                     retailerMasterBO.setIsToday(1);
+                    if (vistedRetailerIds.contains(retailerMasterBO.getRetailerID()))
+                        retailerMasterBO.setIsVisited("Y");
                 }
             }
     }
@@ -5621,7 +5626,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             String columns = "Message, Imageurl, TimeStamp, Type";
 
-            values = QT(msg) + "," +  (url)+ "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME))+ "," + QT(type);
+            values = QT(msg) + "," + (url) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME)) + "," + QT(type);
 
             db.insertSQL("Notification", columns, values);
 
