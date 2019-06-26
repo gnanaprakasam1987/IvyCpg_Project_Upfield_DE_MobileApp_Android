@@ -145,7 +145,6 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
                     totalSellerCount = totalSellerCount + 1;
 
-                    totalOutletCount = totalOutletCount + sellerBo.getTarget();
                 }
                 c.close();
             }
@@ -156,9 +155,41 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                 db.closeDB();
         }
 
+        totalOutletCount  = getTotalOutletCount(date);
+
         sellerMapHomeView.displayTotalSellerCount(totalSellerCount);
         sellerMapHomeView.updateSellerAttendance(totalSellerCount,0);
         sellerMapHomeView.displayTotalOutletCount(totalOutletCount);
+    }
+
+    private int getTotalOutletCount(String date) {
+
+        int retailerCount = 0;
+
+        DBUtil db = null;
+        try {
+
+            db = new DBUtil(context, DataMembers.DB_NAME);
+            db.createDataBase();
+            db.openDataBase();
+
+            String queryStr = "select count(DISTINCT retailerId) from SupRetailerMaster where date = '" + date + "'";
+            Cursor c = db.selectSQL(queryStr);
+
+            if (c != null) {
+                if (c.getCount() > 0 && c.moveToNext()) {
+                    retailerCount = c.getInt(0);
+                }
+                c.close();
+            }
+
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+            if (db != null)
+                db.closeDB();
+        }
+        return retailerCount;
     }
 
     @Override
