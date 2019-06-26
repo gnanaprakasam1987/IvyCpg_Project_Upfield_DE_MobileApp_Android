@@ -39,6 +39,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
 import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
+import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -69,6 +70,7 @@ import java.util.Vector;
 import javax.annotation.Nullable;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.DETAIL_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_APPLICATION_ID;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
@@ -79,6 +81,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
     private LinkedHashMap<Integer,SellerBo> sellerInfoHasMap = new LinkedHashMap<>();
     private HashSet<Integer> sellerIdHashSet = new HashSet<>();
+    private HashSet<Integer> retailerIdHashSet = new HashSet<>();
     private SellerMapHomeContract.SellerMapHomeView sellerMapHomeView;
     private Context context;
     private ListenerRegistration registration ;
@@ -114,6 +117,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         sellerCountFirestore = 0;
         isZoomed = false;
         totalOutletCount = 0;
+        retailerIdHashSet.clear();
 
         DBUtil db = null;
         try {
@@ -155,41 +159,18 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                 db.closeDB();
         }
 
-        totalOutletCount  = getTotalOutletCount(date);
+        totalOutletCount  = getTotalOutletCount();
 
         sellerMapHomeView.displayTotalSellerCount(totalSellerCount);
         sellerMapHomeView.updateSellerAttendance(totalSellerCount,0);
         sellerMapHomeView.displayTotalOutletCount(totalOutletCount);
     }
 
-    private int getTotalOutletCount(String date) {
+    private int getTotalOutletCount() {
 
-        int retailerCount = 0;
+        retailerIdHashSet.addAll(SupervisorActivityHelper.getInstance().getRetailerMasterHashmap().keySet());
 
-        DBUtil db = null;
-        try {
-
-            db = new DBUtil(context, DataMembers.DB_NAME);
-            db.createDataBase();
-            db.openDataBase();
-
-            String queryStr = "select count(DISTINCT retailerId) from SupRetailerMaster where date = '" + date + "'";
-            Cursor c = db.selectSQL(queryStr);
-
-            if (c != null) {
-                if (c.getCount() > 0 && c.moveToNext()) {
-                    retailerCount = c.getInt(0);
-                }
-                c.close();
-            }
-
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException(e);
-            if (db != null)
-                db.closeDB();
-        }
-        return retailerCount;
+        return retailerIdHashSet.size();
     }
 
     @Override
@@ -320,10 +301,42 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                                         setValues(snapshot.getDocument());
                                         break;
                                 }
+
+                                computeDeviateOutletCount(snapshot);
                             }
                         }
                     }
                 });
+    }
+
+    private void computeDeviateOutletCount(DocumentChange snapshot){
+
+        try {
+            snapshot.getDocument()
+                    .getReference().collection(DETAIL_PATH)
+                    .whereEqualTo("isDeviated", true)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                            if (task.getResult() != null) {
+
+                                for (DocumentChange documentChange : task.getResult().getDocumentChanges()) {
+
+                                    RetailerBo documentRetailerBo = documentChange.getDocument().toObject((RetailerBo.class));
+
+                                    retailerIdHashSet.add(documentRetailerBo.getRetailerId());
+                                }
+                            }
+
+                            totalOutletCount = retailerIdHashSet.size();
+                            sellerMapHomeView.displayTotalOutletCount(totalOutletCount);
+                        }
+                    });
+        }catch (Exception e){
+            Commons.printException(e);
+        }
     }
 
     @Override
