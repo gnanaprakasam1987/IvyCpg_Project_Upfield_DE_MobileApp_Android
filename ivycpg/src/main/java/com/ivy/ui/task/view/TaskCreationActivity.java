@@ -1,6 +1,5 @@
 package com.ivy.ui.task.view;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,7 +16,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -71,6 +69,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
     private int mSelectedCategoryID = 0;
     private boolean isRetailerWiseTask = false;
+    private boolean isFromHomeSrc;
     private String menuCode;
     private int screenMode = 0;
     private TaskDataBO taskBo;
@@ -184,6 +183,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     @Override
     protected void getMessageFromAliens() {
         if (getIntent().getExtras() != null) {
+            isFromHomeSrc = getIntent().getExtras().getBoolean(TaskConstant.FROM_HOME_SCREEN, false);
             isRetailerWiseTask = getIntent().getExtras().getBoolean(TaskConstant.RETAILER_WISE_TASK, false);
             screenTitle = getIntent().getExtras().getString(TaskConstant.SCREEN_TITLE, getString(R.string.task_creation));
             screenMode = getIntent().getExtras().getInt(TaskConstant.TASK_SCREEN_MODE, TaskConstant.NEW_TASK_CREATION);
@@ -207,7 +207,6 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             optionTextView.setVisibility(View.GONE);
             retSelectionAutoCompTxt.setVisibility(View.GONE);
             peerUserRb.setVisibility(View.GONE);
-            handleVisibility(View.VISIBLE);
         } else {
             mode = TaskConstant.SELLER_WISE;
         }
@@ -547,38 +546,30 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
             linkUserId = getSelectedUserId();
 
-        switch (mode) {
-            case TaskConstant.SELLER_WISE:
-                if (mSelectedSpinnerPos == 0)
-                    taskChannelId = taskPresenter.getUserID();
-                else
-                    taskChannelId = userMasterArrayAdapter.getItem(mSelectedSpinnerPos).getUserid();
+            if (!switchOption.isChecked()
+                    && switchOption.getVisibility() == View.VISIBLE) {
+                taskAssignId = getSelectedUserId();
+            } else {
+                mode = TaskConstant.RETAILER_WISE;
+                if (isFromHomeSrc) {
+                    taskAssignId = (taskBo != null && retSelectedPos == 0) ? taskBo.getRid() : SDUtil.convertToInt(retailerMasterArrayAdapter.getItem(retSelectedPos).getRetailerID());
+                } else
+                    taskAssignId = taskPresenter.getRetailerID();
 
-                break;
-            case TaskConstant.RETAILER_WISE:
-                if (!isRetailerWiseTask)
-                    taskChannelId = Integer.valueOf(retailerMasterArrayAdapter.getItem(mSelectedSpinnerPos).getRetailerID()) ;
-                else
-                    taskChannelId = taskPresenter.getRetailerID();
-                break;
-            default:
-                if (mSelectedSpinnerPos == 0)
-                    taskChannelId = -1;
-                else
-                    taskChannelId = channelArrayAdapter.getItem(mSelectedSpinnerPos).getChannelId();
-                break;
+                linkUserId = getSelectedUserId();
+            }
+
+            if (screenMode == TaskConstant.NEW_TASK_CREATION)
+                taskBo = new TaskDataBO();
+
+            taskBo.setTasktitle(taskTitleDec);
+            taskBo.setTaskDesc(taskDetailDesc);
+            taskBo.setTaskDueDate(taskDuedate);
+            taskBo.setTaskCategoryID(mSelectedCategoryID);
+            taskBo.setMode(mode);
+
+            taskPresenter.onSaveTask(taskAssignId, taskBo, linkUserId, retSelectionId);
         }
-
-        if (screenMode == TaskConstant.NEW_TASK_CREATION)
-            taskBo = new TaskDataBO();
-
-        taskBo.setTasktitle(taskTitleDec);
-        taskBo.setTaskDesc(taskDetailDesc);
-        taskBo.setTaskDueDate(taskDuedate);
-        taskBo.setTaskCategoryID(mSelectedCategoryID);
-        taskBo.setMode(mode);
-
-        taskPresenter.onSaveTask(taskAssignId, taskBo, linkUserId, retSelectionId);
     }
 
     private int getSelectedUserId() {
