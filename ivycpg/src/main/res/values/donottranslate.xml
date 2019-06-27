@@ -366,7 +366,6 @@
     <string name="upload">Upload</string>
     <string name="records">Record\'s</string>
     <string name="seconds">Second\'s</string>
-    <string name="do_u_want_close">Do you want to Close?</string>
     <string name="due_in_next_days">Due in next %1$d days</string>
     <string name="next_visit_date">Next Visit Date: </string>
     <string name="next_visit_date_count">%1$d days to go</string>
