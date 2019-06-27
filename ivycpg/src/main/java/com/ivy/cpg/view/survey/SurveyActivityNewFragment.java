@@ -239,11 +239,11 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
         try {
             if (extras != null) {
                 mSurveyType = extras.getInt("SurveyType", 0);
-                mMenuCode = extras.getString("menucode", "");
+                mMenuCode = extras.getString("menuCode", "");
                 screenMode = extras.getInt("screenMode", 0);
             } else {
                 mSurveyType = ((Activity)context).getIntent().getExtras().getInt("SurveyType", 0);
-                mMenuCode = ((Activity)context).getIntent().getExtras().getString("menucode", "");
+                mMenuCode = ((Activity)context).getIntent().getExtras().getString("menuCode", "");
                 screenMode = ((Activity)context).getIntent().getExtras().getInt("screenMode", 0);
             }
         } catch (Exception e) {
