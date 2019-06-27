@@ -436,10 +436,8 @@ public class LocationServiceHelper {
 
             JSONObject jsonObjData;
 
-            Set<String> keys = DataMembers.uploadLocationTrackingColumn
-                    .keySet();
-
-            String tableName = "";
+            Set<String> keys;
+            String tableName ="";
 
             if (isRealTime)
                 tableName = DataMembers.tbl_movement_tracking_history;
@@ -450,7 +448,7 @@ public class LocationServiceHelper {
 
             JSONArray jsonArray = prepareDataForLocationTrackingUploadJSON(
                     db, tableName,
-                    DataMembers.uploadLocationTrackingColumn.get(tableName));
+                    isRealTime?DataMembers.uploadMovementTrackingHistoryColumn.get(tableName):DataMembers.uploadLocationTrackingColumn.get(tableName));
 
             if (jsonArray.length() > 0)
                 jsonObjData.put(tableName, jsonArray);
@@ -486,7 +484,8 @@ public class LocationServiceHelper {
                 Commons.printException(e);
             }
 
-            String url = synchronizationHelper.getUploadUrl("UPLDTRAN");
+            String url = synchronizationHelper.getUploadUrl(uploadName);
+
             Vector<String> responseVector = synchronizationHelper
                     .getUploadResponse(jsonFormatter.getDataInJson(),
                             jsonObjData.toString(), url);
