@@ -9,7 +9,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -21,6 +25,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -30,9 +35,11 @@ import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.CommonDialog;
+import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
+import com.ivy.ui.task.FilterViewListener;
 import com.ivy.ui.task.TaskClickListener;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.TaskContract;
@@ -41,6 +48,7 @@ import com.ivy.ui.task.adapter.BottomSortListAdapter;
 import com.ivy.ui.task.adapter.TaskListAdapter;
 import com.ivy.ui.task.di.DaggerTaskComponent;
 import com.ivy.ui.task.di.TaskModule;
+import com.ivy.ui.task.model.FilterBo;
 import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
@@ -54,8 +62,10 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-public class TaskFragment extends BaseFragment implements TaskContract.TaskListView, TabLayout.OnTabSelectedListener, TaskClickListener, ReasonCaptureDialog.OnButtonClickListener {
+public class TaskFragment extends BaseFragment implements TaskContract.TaskListView, TabLayout.OnTabSelectedListener, TaskClickListener, ReasonCaptureDialog.OnButtonClickListener, FilterViewListener {
 
+    private DrawerLayout drawerLayout;
+    private FrameLayout drawer;
     private TabLayout tabLayout;
     private RecyclerView recyclerView;
     private TextView noDataTv;
@@ -70,6 +80,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     private String mSelectedTaskId = "0";
     private String menuCode;
     private TaskConstant.SOURCE source;
+    private boolean isFromHomeSrc = false;
     private TaskViewListener taskViewListener;
     private FloatingActionButton taskCreationFAB;
     private int taskListLastSelectedPos = -1;
@@ -77,6 +88,11 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     private ArrayList<TaskDataBO> taskList = new ArrayList<>();
     private Context context;
     private TaskListAdapter taskListAdapter;
+    private ActionBar actionBar;
+    private HashMap<String, ArrayList<Object>> selectedFilterIds;
+    private HashMap<String, ArrayList<FilterBo>> filterHashMapList;
+    private ArrayList<String> menuList;
+    private boolean isFilterEnabled;
 
     @Inject
     TaskContract.TaskPresenter<TaskContract.TaskView> taskPresenter;
@@ -105,6 +121,8 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
     @Override
     public void init(View view) {
+        drawerLayout = view.findViewById(R.id.drawer_layout);
+        drawer = view.findViewById(R.id.right_drawer);
         taskCreationFAB = view.findViewById(R.id.fab_create_task);
         taskBgView = view.findViewById(R.id.task_bg_view);
         tabLayout = view.findViewById(R.id.tabs);
@@ -132,8 +150,10 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
             bundle = Objects.requireNonNull(getActivity()).getIntent().getExtras();
 
         if (bundle != null) {
-            if (bundle.containsKey(TaskConstant.FROM_HOME_SCREEN))
+            if (bundle.containsKey(TaskConstant.FROM_HOME_SCREEN)) {
                 source = TaskConstant.SOURCE.HOME_SCREEN;
+                isFromHomeSrc = true;
+            }
 
             if (bundle.containsKey(TaskConstant.RETAILER_WISE_TASK))
                 source = TaskConstant.SOURCE.RETAILER;
@@ -163,9 +183,13 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         if (TaskConstant.SOURCE.PROFILE_SCREEN != source)
             setUpActionBar();
 
+        setUpDrawerView();
+
         if (TaskConstant.SOURCE.RETAILER == source) {
             mSelectedRetailerID = String.valueOf(taskPresenter.getRetailerID());
         }
+
+        taskPresenter.fetchFilterList(isFromHomeSrc);
 
         addTabs();
         if (!taskPresenter.isNewTask())
@@ -194,7 +218,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     @Override
     public void onResume() {
         super.onResume();
-        getActivity().invalidateOptionsMenu();
+
     }
 
     // Add tabs to Tablayout
@@ -204,8 +228,9 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
                 R.array.task_tab_header);
 
         if (taskPresenter.isShowServerTaskOnly()) {
-            reason = new String[1];
+            reason = new String[2];
             reason[0] = getString(R.string.all);
+            reason[1] = getString(R.string.assigned);
         }
 
         for (String tab_name : reason) {
@@ -213,6 +238,41 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         }
     }
 
+    private void setUpDrawerView() {
+
+        int width = getResources().getDisplayMetrics().widthPixels;
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        //  params.width = width;
+        drawer.setLayoutParams(params);
+
+        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.START);
+        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow,
+                GravityCompat.END);
+        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
+        ActionBarDrawerToggle mDrawerToggle = new ActionBarDrawerToggle(getActivity(),
+                drawerLayout,
+                R.string.ok,
+                R.string.close
+        ) {
+            public void onDrawerClosed(View view) {
+                if (drawerLayout != null)
+                    setScreenTitle(screenTitle);
+
+                getActivity().supportInvalidateOptionsMenu();
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                if (actionBar != null)
+                    setScreenTitle(getResources().getString(R.string.filter));
+
+                getActivity().supportInvalidateOptionsMenu();
+            }
+        };
+
+        drawerLayout.addDrawerListener(mDrawerToggle);
+    }
 
     private void setUpBottomSheet(View view) {
         RecyclerView bottomRecyclerView = view.findViewById(R.id.sort_recycler_view);
@@ -266,10 +326,8 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     public void onTaskExecutedClick(TaskDataBO taskDataBO) {
         if (source == TaskConstant.SOURCE.RETAILER) {
             taskPresenter.updateModuleTime();
-            taskPresenter.updateTaskExecution(taskPresenter.getRetailerID() + "", taskDataBO, 0);
-        } else {
-            taskPresenter.updateTaskExecution(0 + "", taskDataBO, 0);
         }
+        taskPresenter.updateTaskExecution(taskDataBO, 0);
     }
 
     @Override
@@ -322,8 +380,14 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
         i.putExtra(TaskConstant.MENU_CODE, menuCode);
         i.putExtra(TaskConstant.SCREEN_TITLE, screenTitle);
+        i.putExtra(TaskConstant.FROM_HOME_SCREEN, isFromHomeSrc);
         i.putExtra(TaskConstant.TAB_SELECTION, tabLayout.getSelectedTabPosition());
-        i.putExtra(TaskConstant.RETAILER_WISE_TASK, (source == TaskConstant.SOURCE.RETAILER));
+
+        if (taskBO.getRid() != 0)
+            i.putExtra(TaskConstant.RETAILER_WISE_TASK, true);
+        else
+            i.putExtra(TaskConstant.RETAILER_WISE_TASK, (source == TaskConstant.SOURCE.RETAILER));
+
         i.putExtra(TaskConstant.TASK_OBJECT, taskBO);
         if (isPreVisit)
             i.putExtra(TaskConstant.TASK_PRE_VISIT, true);
@@ -335,11 +399,16 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         Intent i = new Intent(getActivity(), TaskCreationActivity.class);
         i.putExtra(TaskConstant.MENU_CODE, menuCode);
         i.putExtra(TaskConstant.SCREEN_TITLE, screenTitle);
+        i.putExtra(TaskConstant.FROM_HOME_SCREEN, isFromHomeSrc);
         i.putExtra(TaskConstant.TASK_SCREEN_MODE, TaskConstant.EDIT_MODE_FROM_TASK_FRAGMENT_SRC);
         if (isPreVisit)
             i.putExtra(TaskConstant.TASK_PRE_VISIT, true);
 
-        i.putExtra(TaskConstant.RETAILER_WISE_TASK, (source == TaskConstant.SOURCE.RETAILER));
+        if (taskBO.getRid() != 0)
+            i.putExtra(TaskConstant.RETAILER_WISE_TASK, true);
+        else
+            i.putExtra(TaskConstant.RETAILER_WISE_TASK, (source == TaskConstant.SOURCE.RETAILER));
+
         i.putExtra(TaskConstant.TASK_OBJECT, taskBO);
         startActivityForResult(i, TaskConstant.TASK_CREATED_SUCCESS_CODE);
     }
@@ -386,7 +455,8 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         this.taskListLastSelectedPos = taskListLastSelectedPos;
         if (!taskPresenter.fetchNotCompletedTaskReasons().isEmpty()) {
             if (reasonCaptureDialog == null)
-                reasonCaptureDialog = new ReasonCaptureDialog.ReasonCaptureDialogBuilder(getActivity(), taskPresenter.fetchNotCompletedTaskReasons())
+                reasonCaptureDialog = new ReasonCaptureDialog
+                        .ReasonCaptureDialogBuilder(getActivity(), taskPresenter.fetchNotCompletedTaskReasons())
                         .setDialogTitles(getString(R.string.would_you_like_add_reason_to_close_task), getString(R.string.select_reason))
                         .setOnButtonClickListener(this)
                         .buildDialog();
@@ -396,7 +466,6 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
             Window window = reasonCaptureDialog.getWindow();
             lp.copyFrom(window != null ? window.getAttributes() : null);
             lp.width = DeviceUtils.getDisplayMetrics(context).widthPixels - 100;
-            // lp.height = (DeviceUtils.getDisplayMetrics(context).heightPixels / 2);//WindowManager.LayoutParams.WRAP_CONTENT;
             if (window != null) {
                 window.setAttributes(lp);
             }
@@ -450,7 +519,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
 
     private void setUpActionBar() {
-        ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
+        actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setDisplayShowTitleEnabled(false);
@@ -469,13 +538,18 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
             hideBottomSheet();
         lastSelectedPos = -1;
 
+        if (isFromHomeSrc)
+            updateOptionMenus(tab.getPosition());
+        else
+            getActivity().invalidateOptionsMenu();
+
         if (taskPresenter.isShowServerTaskOnly()) {
             getView().findViewById(R.id.tv_execution).setVisibility(View.VISIBLE);
-            getTaskListItem(TaskConstant.SERVER_TASK, false);
-        } else if (tab.getPosition() == 2) {
+            getTaskListItem(tab.getPosition(), false);
+        } else if (tab.getPosition() == 3) {
             getView().findViewById(R.id.tv_execution).setVisibility(View.GONE);
             taskPresenter.fetchCompletedTask(mSelectedRetailerID);
-        } else if (tab.getPosition() == 3) {
+        } else if (tab.getPosition() == 4) {
             getView().findViewById(R.id.tv_execution).setVisibility(View.VISIBLE);
             getTaskListItem(tab.getPosition(), true);
         } else {
@@ -495,13 +569,32 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     }
 
 
+    private void updateOptionMenus(int tabPos) {
+
+        if (tabPos == 0
+                && !isFilterEnabled) {
+            isFilterEnabled = true;
+            getActivity().invalidateOptionsMenu();
+        } else {
+            if (isFilterEnabled) {
+                isFilterEnabled = false;
+                getActivity().invalidateOptionsMenu();
+            }
+        }
+    }
+
+
     @Override
     public void updateLabelNames(HashMap<String, String> labelMap) {
 
     }
 
     public void getTaskListItem(int tapPos, boolean isDelegate) {
-        taskPresenter.getTaskListData(tapPos, mSelectedRetailerID, (source == TaskConstant.SOURCE.RETAILER), isChannelWise, isDelegate);
+        int userCreated = tapPos == 1 ? 0 : 1;
+        if (taskPresenter.isShowServerTaskOnly())
+            userCreated = 0;
+
+        taskPresenter.getTaskListData(tapPos, userCreated, mSelectedRetailerID, isFromHomeSrc, isChannelWise, isDelegate);
     }
 
     @Override
@@ -511,7 +604,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
         taskList.clear();
         taskList.addAll(updatedList);
-        taskListAdapter = new TaskListAdapter(getActivity(), taskList, taskPresenter.outDateFormat(), this, source, taskPresenter.isShowProdLevel(), tabLayout.getSelectedTabPosition(), isPreVisit);
+        taskListAdapter = new TaskListAdapter(getActivity(), taskList, taskPresenter.outDateFormat(), this, source, taskPresenter.isShowProdLevel(), tabLayout.getSelectedTabPosition(), isPreVisit,isFromHomeSrc);
         recyclerView.setAdapter(taskListAdapter);
 
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
@@ -542,14 +635,27 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
     @Override
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
+        boolean drawerOpen = false;
+
+        if (drawerLayout != null) {
+            drawerOpen = drawerLayout.isDrawerOpen(GravityCompat.END);
+        }
+
         menu.findItem(R.id.menu_notification).setVisible(true);
         menu.findItem(R.id.menu_save).setVisible(false);
         menu.findItem(R.id.menu_sort).setVisible(true);
         menu.findItem(R.id.menu_new_task).setVisible(false);
+        if (isFromHomeSrc)
+            menu.findItem(R.id.menu_filter).setVisible(isFilterEnabled);
+        else
+            menu.findItem(R.id.menu_filter).setVisible(true);
 
         if (source == TaskConstant.SOURCE.RETAILER)//this is applicable for store wise task
             menu.findItem(R.id.menu_reason).setVisible(taskPresenter.isNoTaskReason());
 
+        if (drawerOpen) {
+            menu.clear();
+        }
     }
 
     @Override
@@ -557,12 +663,13 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
         int i1 = item.getItemId();
         if (i1 == android.R.id.home) {
-            backNavigation();
-        } else if (i1 == R.id.menu_new_task) {
-            if (!isPreVisit)
-                goToNewTaskActivity();
+            if (drawerLayout.isDrawerOpen(GravityCompat.END))
+                drawerLayout.closeDrawers();
+            else
+                backNavigation();
         } else if (i1 == R.id.menu_reason) {
-            goToNoTaskReasonDialog();
+            if (!isPreVisit)
+                goToNoTaskReasonDialog();
         } else if (i1 == R.id.menu_sort) {
             if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED) {
                 hideBottomSheet();
@@ -572,6 +679,8 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
             }
         } else if (i1 == R.id.menu_notification) {
             taskViewListener.switchTaskView(true);
+        } else if (i1 == R.id.menu_filter) {
+            showFilter();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -603,6 +712,35 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         i.putExtra(TaskConstant.MENU_CODE, menuCode);
         i.putExtra(TaskConstant.SCREEN_TITLE, screenTitle);
         startActivityForResult(i, TaskConstant.TASK_CREATED_SUCCESS_CODE);
+    }
+
+    private void showFilter() {
+        try {
+
+            drawerLayout.openDrawer(GravityCompat.END);
+
+            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            FilterFragment frag = (FilterFragment) fm
+                    .findFragmentByTag("filter");
+            FragmentTransaction ft = fm
+                    .beginTransaction();
+            if (frag != null)
+                ft.detach(frag);
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("SelectedFilterList", selectedFilterIds);
+            bundle.putSerializable("hashList", filterHashMapList);
+            bundle.putSerializable("menuList", menuList);
+            bundle.putBoolean(TaskConstant.FROM_HOME_SCREEN, isFromHomeSrc);
+
+            // set FragmentClass Arguments
+            FilterFragment mFragment = new FilterFragment();
+            mFragment.setArguments(bundle);
+            mFragment.setFilterViewListener(this);
+            ft.replace(R.id.right_drawer, mFragment, "filter");
+            ft.commit();
+        } catch (Exception e) {
+            Commons.printException(e + "");
+        }
     }
 
     // This dialog used for when task was not completed
@@ -645,7 +783,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
             if (resultCode == 2) {
                 removeAndRefreshAdapter();
             } else if (resultCode == TaskConstant.TASK_CREATED_SUCCESS_CODE) {
-                getTaskListItem(tabLayout.getSelectedTabPosition(), tabLayout.getSelectedTabPosition() == 3);
+                getTaskListItem(tabLayout.getSelectedTabPosition(), tabLayout.getSelectedTabPosition() == 4);
             } else {
                 if (data != null
                         && data.getExtras().containsKey(TaskConstant.TASK_EXECUTE_RESPONSE)) {
@@ -655,7 +793,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
             }
         } else if (requestCode == TaskConstant.TASK_CREATED_SUCCESS_CODE
                 && resultCode == 3) {
-            getTaskListItem(tabLayout.getSelectedTabPosition(), tabLayout.getSelectedTabPosition() == 3);
+            getTaskListItem(tabLayout.getSelectedTabPosition(), tabLayout.getSelectedTabPosition() == 4);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
@@ -679,6 +817,14 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         handleVisibilty(View.GONE);
     }
 
+    @Override
+    public void setUpFilterList(HashMap<String, ArrayList<FilterBo>> filterListHashMap) {
+        if (!filterListHashMap.isEmpty()) {
+            filterHashMapList = new HashMap<>();
+            filterHashMapList.putAll(filterListHashMap);
+        }
+    }
+
     private void handleVisibilty(int visibility) {
         listHeaderLL.setVisibility(visibility);
         recyclerView.setVisibility(visibility);
@@ -697,7 +843,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
     @Override
     public void addReason(int selectedResId) {
-        taskPresenter.updateTaskExecution(mSelectedRetailerID, taskList.get(taskListLastSelectedPos), selectedResId);
+        taskPresenter.updateTaskExecution(taskList.get(taskListLastSelectedPos), selectedResId);
     }
 
     @Override
@@ -705,4 +851,27 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         reasonCaptureDialog.dismiss();
     }
 
+    @Override
+    public void apply(ArrayList<String> menuList, HashMap<String, ArrayList<FilterBo>> filterListHashMap, HashMap<String, ArrayList<Object>> selectedIdList, String filerName) {
+        drawerLayout.closeDrawers();
+        this.selectedFilterIds = selectedIdList;
+        this.menuList = new ArrayList<>();
+        this.menuList.addAll(menuList);
+
+        if (selectedFilterIds != null
+                && !selectedFilterIds.isEmpty())
+            taskPresenter.updateFilterListData(selectedIdList, filerName.equalsIgnoreCase("Retailer"));
+    }
+
+    @Override
+    public void clearAll() {
+        this.selectedFilterIds = new HashMap<>();
+        this.menuList = new ArrayList<>();
+
+        if (drawerLayout.isDrawerOpen(GravityCompat.END))
+            drawerLayout.closeDrawers();
+
+        taskPresenter.fetchFilterList(isFromHomeSrc);
+        taskPresenter.updateFilterListData(new HashMap<>(), false);
+    }
 }

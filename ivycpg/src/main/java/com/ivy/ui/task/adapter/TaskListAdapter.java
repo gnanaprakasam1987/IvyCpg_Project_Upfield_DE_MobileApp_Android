@@ -40,8 +40,9 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
     private int mTabPosition;
     private final ViewBinderHelper binderHelper = new ViewBinderHelper();
     private boolean isPreVisit = false;
+    private boolean isFromHomeSrc;
 
-    public TaskListAdapter(Context mContext, ArrayList<TaskDataBO> taskDatas, String outDateFormat, TaskClickListener taskClickListener, TaskConstant.SOURCE source, boolean isShowProdLevel, int mTabPosition, boolean isPreVisit) {
+    public TaskListAdapter(Context mContext, ArrayList<TaskDataBO> taskDatas, String outDateFormat, TaskClickListener taskClickListener, TaskConstant.SOURCE source, boolean isShowProdLevel, int mTabPosition, boolean isPreVisit, boolean isFromHomeSrc) {
         this.taskDatas = taskDatas;
         this.mContext = mContext;
         this.outDateFormat = outDateFormat;
@@ -49,8 +50,8 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         this.source = source;
         this.isShowProdLevel = isShowProdLevel;
         this.mTabPosition = mTabPosition;
-
         this.isPreVisit = isPreVisit;
+        this.isFromHomeSrc = isFromHomeSrc;
 
         // to open only one row at a time
         binderHelper.setOpenOnlyOne(true);
@@ -75,7 +76,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
         // put an unique string id as value, can be any string which uniquely define the data
         binderHelper.bind(holder.swipeLayout, taskBo.getTaskId());
 
-        if (mTabPosition == 2
+        if (mTabPosition == 3
                 || taskBo.isChecked()
                 || (taskBo.isUpload() && taskBo.getIsdone().equals("1")))
             binderHelper.lockSwipe(taskBo.getTaskId());
@@ -83,19 +84,32 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
 
         holder.taskTitle.setText(taskBo.getTasktitle());
         holder.taskProductLevel.setText(taskBo.getTaskCategoryDsc());
-        if (mTabPosition == 2)
-            holder.taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
-                    (taskBo.getTaskExecDate(), outDateFormat));
-        else
-            holder.taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
-                    (taskBo.getTaskDueDate(), outDateFormat));
+
+        if (mTabPosition == 3) {
+            if (taskBo.getRid() != 0 && isFromHomeSrc)
+                holder.taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
+                        (taskBo.getTaskExecDate(), outDateFormat) + " @" + taskBo.getRetailerName());
+            else
+                holder.taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
+                        (taskBo.getTaskExecDate(), outDateFormat));
+        } else {
+            if (taskBo.getRid() != 0 && isFromHomeSrc)
+                holder.taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
+                        (taskBo.getTaskDueDate(), outDateFormat) + " @" + taskBo.getRetailerName());
+            else
+                holder.taskDueDateTv.setText(DateTimeUtils.convertFromServerDateToRequestedFormat
+                        (taskBo.getTaskDueDate(), outDateFormat));
+        }
+
 
         int daysCount = DateTimeUtils.getDateCount(taskBo.getTaskDueDate(),
                 DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), "yyyy/MM/dd");
         if (daysCount >= 1) {
+            holder.btnCloseTask.setVisibility(View.VISIBLE);
             holder.dueDaysTv.setVisibility(View.VISIBLE);
             holder.dueDaysTv.setText(mContext.getString(R.string.over_due));
         } else {
+            holder.btnCloseTask.setVisibility(View.GONE);
             holder.dueDaysTv.setVisibility(View.GONE);
         }
         holder.taskCB.setOnClickListener(v -> {
@@ -220,7 +234,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
                     || (source == TaskConstant.SOURCE.HOME_SCREEN))
                 taskProductLevel.setVisibility(View.GONE);
 
-            if (mTabPosition == 2) {
+            if (mTabPosition == 3) {
                 btnAttachFile.setVisibility(View.GONE);
                 taskCB.setVisibility(View.GONE);
             }

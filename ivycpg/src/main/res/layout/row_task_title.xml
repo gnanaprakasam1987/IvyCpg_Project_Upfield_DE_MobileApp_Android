@@ -151,6 +151,8 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:gravity="center"
+                    android:ellipsize="end"
+                    android:maxLines="1"
                     android:text="@string/due_date" />
 
             </LinearLayout>

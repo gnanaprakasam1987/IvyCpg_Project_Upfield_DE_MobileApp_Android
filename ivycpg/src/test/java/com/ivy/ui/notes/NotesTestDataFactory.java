@@ -9,7 +9,7 @@ import java.util.HashMap;
 
 public class NotesTestDataFactory {
 
-    public static RetailerMasterBO retailerMasterBO = new RetailerMasterBO(1, "abcd");
+    public static RetailerMasterBO retailerMasterBO = new RetailerMasterBO("1", "abcd");
 
     public static UserMasterBO userMasterBO = new UserMasterBO(2, "user1");
 
@@ -106,10 +106,10 @@ public class NotesTestDataFactory {
 
     public static ArrayList<RetailerMasterBO> getRetailerNames() {
         ArrayList<RetailerMasterBO> nLocalArrayList = new ArrayList<>();
-        nLocalArrayList.add(new RetailerMasterBO(1, "abc"));
-        nLocalArrayList.add(new RetailerMasterBO(2, "abc1"));
-        nLocalArrayList.add(new RetailerMasterBO(3, "abc2"));
-        nLocalArrayList.add(new RetailerMasterBO(4, "abc3"));
+        nLocalArrayList.add(new RetailerMasterBO("1", "abc"));
+        nLocalArrayList.add(new RetailerMasterBO("2", "abc1"));
+        nLocalArrayList.add(new RetailerMasterBO("3", "abc2"));
+        nLocalArrayList.add(new RetailerMasterBO("4", "abc3"));
 
         return nLocalArrayList;
     }
