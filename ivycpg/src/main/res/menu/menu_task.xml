@@ -43,4 +43,13 @@
         android:title="@string/sort_by"
         android:visible="false"
         ivydist:showAsAction="always" />
+
+    <item
+        android:id="@+id/menu_filter"
+        android:icon="@drawable/icon_menu_filter"
+        android:orderInCategory="101"
+        android:visible="false"
+        android:title="@string/next"
+        ivydist:showAsAction="ifRoom" />
+
 </menu>

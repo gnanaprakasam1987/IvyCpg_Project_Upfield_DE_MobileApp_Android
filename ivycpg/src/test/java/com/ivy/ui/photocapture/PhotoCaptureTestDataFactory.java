@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 public abstract class PhotoCaptureTestDataFactory {
 
-    public static RetailerMasterBO retailerMasterBO = new RetailerMasterBO(1,"abcd");
+    public static RetailerMasterBO retailerMasterBO = new RetailerMasterBO("1","abcd");
 
     public static ArrayList<PhotoCaptureProductBO> getPhotoCaptureProductList() {
         ArrayList<PhotoCaptureProductBO> photoCaptureProductBOS = new ArrayList<>();

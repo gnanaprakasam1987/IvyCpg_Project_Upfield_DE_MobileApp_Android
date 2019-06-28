@@ -68,7 +68,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     TaskContract.TaskPresenter<TaskContract.TaskView> taskPresenter;
 
     private int mSelectedCategoryID = 0;
-    private boolean isRetailerWiseTask = false;
+    private boolean isRetailerWiseTask;
     private boolean isFromHomeSrc;
     private String menuCode;
     private int screenMode = 0;
@@ -202,14 +202,22 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         taskCreationDownloadMethods();
 
         if (isRetailerWiseTask) {
-            mode = TaskConstant.RETAILER_WISE;
-            switchOption.setVisibility(View.GONE);
-            optionTextView.setVisibility(View.GONE);
-            retSelectionAutoCompTxt.setVisibility(View.GONE);
-            peerUserRb.setVisibility(View.GONE);
+            setUpRetailerWiseMode();
         } else {
             mode = TaskConstant.SELLER_WISE;
         }
+    }
+
+    private void setUpRetailerWiseMode() {
+        mode = TaskConstant.RETAILER_WISE;
+        switchOption.setVisibility(View.GONE);
+        optionTextView.setText(getString(R.string.retailer_wise));
+        if (!isFromHomeSrc)
+            retSelectionAutoCompTxt.setVisibility(View.GONE);
+        else {
+            retSelectionAutoCompTxt.setVisibility(View.VISIBLE);
+        }
+        peerUserRb.setVisibility(View.GONE);
     }
 
 
@@ -539,37 +547,24 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
             taskAssignId = getSelectedUserId();
         } else {
             mode = TaskConstant.RETAILER_WISE;
-            if (!isRetailerWiseTask)
-                taskAssignId = SDUtil.convertToInt(retailerMasterArrayAdapter.getItem(retSelectedPos).getRetailerID());
-            else
+            if (isFromHomeSrc) {
+                taskAssignId = (taskBo != null && retSelectedPos == 0) ? taskBo.getRid() : SDUtil.convertToInt(retailerMasterArrayAdapter.getItem(retSelectedPos).getRetailerID());
+            } else
                 taskAssignId = taskPresenter.getRetailerID();
 
             linkUserId = getSelectedUserId();
-
-            if (!switchOption.isChecked()
-                    && switchOption.getVisibility() == View.VISIBLE) {
-                taskAssignId = getSelectedUserId();
-            } else {
-                mode = TaskConstant.RETAILER_WISE;
-                if (isFromHomeSrc) {
-                    taskAssignId = (taskBo != null && retSelectedPos == 0) ? taskBo.getRid() : SDUtil.convertToInt(retailerMasterArrayAdapter.getItem(retSelectedPos).getRetailerID());
-                } else
-                    taskAssignId = taskPresenter.getRetailerID();
-
-                linkUserId = getSelectedUserId();
-            }
-
-            if (screenMode == TaskConstant.NEW_TASK_CREATION)
-                taskBo = new TaskDataBO();
-
-            taskBo.setTasktitle(taskTitleDec);
-            taskBo.setTaskDesc(taskDetailDesc);
-            taskBo.setTaskDueDate(taskDuedate);
-            taskBo.setTaskCategoryID(mSelectedCategoryID);
-            taskBo.setMode(mode);
-
-            taskPresenter.onSaveTask(taskAssignId, taskBo, linkUserId, retSelectionId);
         }
+
+        if (screenMode == TaskConstant.NEW_TASK_CREATION)
+            taskBo = new TaskDataBO();
+
+        taskBo.setTasktitle(taskTitleDec);
+        taskBo.setTaskDesc(taskDetailDesc);
+        taskBo.setTaskDueDate(taskDuedate);
+        taskBo.setTaskCategoryID(mSelectedCategoryID);
+        taskBo.setMode(mode);
+
+        taskPresenter.onSaveTask(taskAssignId, taskBo, linkUserId, retSelectionId);
     }
 
     private int getSelectedUserId() {
@@ -717,7 +712,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
 
         if (resultCode != -1) {
 
-            if (!isRetailerWiseTask)
+            if (isFromHomeSrc)
                 setResult(resultCode, new Intent(TaskCreationActivity.this,
                         HomeScreenActivity.class).putExtra(TaskConstant.MENU_CODE, menuCode));
             else
@@ -787,6 +782,9 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         dueDateBtn.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(
                 taskDataObj.getTaskDueDate(), taskPresenter.outDateFormat()));
 
+        if (taskDataObj.getRid() != 0)
+            updateRetailerSelection();
+
         switch (taskDataObj.getMode()) {
 
             case TaskConstant.SELLER_WISE:
@@ -813,9 +811,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
                 break;
 
             case TaskConstant.RETAILER_WISE:
-                switchOption.setChecked(true);
-                switchOption.setText(getString(R.string.retailer_wise));
-                retSelectionAutoCompTxt.setText(retailerMasterArrayAdapter.getItem(getAdapterPosition(taskBo.getMode())).getRetailerName());
+                if (isFromHomeSrc)
+                    retSelectionAutoCompTxt.setText(retailerMasterArrayAdapter.getItem(getAdapterPosition(taskBo.getMode())).getRetailerName());
 
                 if (!linkUserMasterArrayAdapter.isEmpty()) {
                     handleLinkUserVisibility(View.VISIBLE);
@@ -828,6 +825,18 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         }
         taskView.setText(taskDataObj.getTaskDesc());
 
+    }
+
+    private void updateRetailerSelection() {
+        if (isFromHomeSrc)
+            retSelectionAutoCompTxt.setText(retailerMasterArrayAdapter.getItem(getAdapterPosition(TaskConstant.RETAILER_WISE)).getRetailerName());
+
+        if (!linkUserMasterArrayAdapter.isEmpty()) {
+            handleLinkUserVisibility(View.VISIBLE);
+            linkUserRb.setChecked(true);
+            setUpSpinnerData(3);
+            spinnerSelection.setSelection(getAdapterPosition(TaskConstant.LINK_WISE));
+        }
     }
 
     private int getAdapterPosition(String mode) {

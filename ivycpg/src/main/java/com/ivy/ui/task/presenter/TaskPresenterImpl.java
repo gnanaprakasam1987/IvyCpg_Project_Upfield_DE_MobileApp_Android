@@ -4,7 +4,6 @@ import android.arch.lifecycle.LifecycleObserver;
 
 import com.ivy.core.IvyConstants;
 import com.ivy.core.base.presenter.BasePresenter;
-import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.channel.ChannelDataManager;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.core.data.label.LabelsDataManager;
@@ -24,6 +23,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.data.TaskDataManager;
+import com.ivy.ui.task.model.FilterBo;
 import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.ui.task.model.TaskRetailerBo;
 import com.ivy.utils.DateTimeUtils;
@@ -32,9 +32,9 @@ import com.ivy.utils.rx.SchedulerProvider;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -49,11 +49,11 @@ import static com.ivy.utils.DateTimeUtils.DATE_GLOBAL;
 
 public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePresenter<V> implements TaskContract.TaskPresenter<V>, LifecycleObserver {
 
+    private DataManager mDataManager;
     private UserDataManager mUserDataManager;
     private ChannelDataManager mChannelDataManager;
     private ConfigurationMasterHelper mConfigurationMasterHelper;
     private TaskDataManager mTaskDataManager;
-    private AppDataProvider appDataProvider;
     private OutletTimeStampDataManager mOutletTimeStampDataManager;
     private ReasonDataManager mReasonDataManager;
     private LabelsDataManager mLabelsDataManager;
@@ -67,6 +67,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     ArrayList<String> deletedImageList;
     ArrayList<TaskRetailerBo> taskRetailerListBo;
     HashMap<String, ArrayList<TaskDataBO>> taskListHashMap;
+    HashMap<String, ArrayList<FilterBo>> filterhashMapList;
     ArrayList<ReasonMaster> taskNonCompleteReasonList;
 
     private int TASK_PRODUCT_LEVEL_NO;
@@ -84,16 +85,16 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                              @UserInfo UserDataManager userDataManager,
                              @ChannelInfo ChannelDataManager channelDataManager,
                              TaskDataManager taskDataManager,
-                             AppDataProvider appDataProvider,
                              @OutletTimeStampInfo OutletTimeStampDataManager mOutletTimeStampDataManager,
                              @ReasonInfo ReasonDataManager mReasonDataManager,
                              @LabelMasterInfo LabelsDataManager labelsDataManager) {
         super(dataManager, schedulerProvider, compositeDisposable, configurationMasterHelper, view);
+
+        this.mDataManager = dataManager;
         this.mConfigurationMasterHelper = configurationMasterHelper;
         this.mUserDataManager = userDataManager;
         this.mChannelDataManager = channelDataManager;
         this.mTaskDataManager = taskDataManager;
-        this.appDataProvider = appDataProvider;
         this.mOutletTimeStampDataManager = mOutletTimeStampDataManager;
         this.mReasonDataManager = mReasonDataManager;
         this.mLabelsDataManager = labelsDataManager;
@@ -276,63 +277,31 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
     @Override
-    public void getTaskListData(int userCreatedTask, String retailerID, boolean isRetailerWise, boolean isSurveywise, boolean isDelegate) {
+    public void getTaskListData(int tapPos, int userCreatedTask, String retailerID, boolean isFromHomeSrc, boolean isSurveywise, boolean isDelegate) {
         taskPreparedList = new ArrayList<>();
         taskNonCompleteReasonList = new ArrayList<>();
+        ArrayList<String> filterMenuList = new ArrayList<>();
         getIvyView().showLoading();
-        ArrayList<String> channelIds = getChannelIds();
-        ArrayList<TaskDataBO> taskLocalList = new ArrayList<>();
-        getCompositeDisposable().add(Observable.zip(mTaskDataManager.fetchTaskData(retailerID, userCreatedTask, isDelegate)
+        getCompositeDisposable().add(Observable.zip(mTaskDataManager.fetchTaskData(tapPos, retailerID, userCreatedTask, isDelegate)
                 , mReasonDataManager.fetchReasonFromStdListMasterByListCode(TaskConstant.TASK_NOT_COMPLETE_REASON)
                 , new BiFunction<ArrayList<TaskDataBO>, ArrayList<ReasonMaster>, Boolean>() {
-
                     @Override
                     public Boolean apply(ArrayList<TaskDataBO> taskDataBOS, ArrayList<ReasonMaster> reasonMasterArrayList) throws Exception {
 
-                        taskLocalList.clear();
-                        taskLocalList.addAll(taskDataBOS);
+                        taskPreparedList.clear();
+                        taskPreparedList.addAll(taskDataBOS);
 
                         taskNonCompleteReasonList.clear();
                         taskNonCompleteReasonList.addAll(reasonMasterArrayList);
 
+
                         return true;
                     }
                 }).subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui()).subscribeWith(new DisposableObserver<Boolean>() {
+                .observeOn(getSchedulerProvider().ui())
+                .subscribe(new Consumer<Boolean>() {
                     @Override
-                    public void onNext(Boolean aBoolean) {
-
-                        for (TaskDataBO dataBO : taskLocalList) {
-
-                            if (isRetailerWise) {
-                                if (String.valueOf(dataBO.getRid()).equals(retailerID)) {
-                                    taskPreparedList.add(dataBO);
-                                } else if (isSurveywise) {
-                                    for (String chId : channelIds) {
-                                        if (chId.equals(String.valueOf(dataBO.getChannelId()))) {
-                                            taskPreparedList.add(dataBO);
-                                        }
-                                    }
-                                }
-                            } else {
-                                if (dataBO.getRid() == 0
-                                        && (dataBO.getUserId() == getUserID()
-                                        || dataBO.getUserId() != 0)) {
-                                    taskPreparedList.add(dataBO);
-                                }
-                            }
-                        }
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        getIvyView().hideLoading();
-                        getIvyView().showErrorMsg();
-                    }
-
-                    @Override
-                    public void onComplete() {
+                    public void accept(Boolean aBoolean) {
                         if (!taskPreparedList.isEmpty()) {
                             getIvyView().updateListData(taskPreparedList);
                             getIvyView().hideLoading();
@@ -342,23 +311,6 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                         }
                     }
                 }));
-    }
-
-    private ArrayList<String> getChannelIds() {
-        ArrayList<String> channelIds = new ArrayList<>();
-        getCompositeDisposable().add(mChannelDataManager.fetchChannelIds()
-                .subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(new Consumer<String>() {
-                    @Override
-                    public void accept(String channelId) throws Exception {
-
-                        if (channelId != null && channelId.length() > 0)
-                            channelIds.add(Arrays.toString(channelId.split(",")));
-                    }
-                }));
-
-        return channelIds;
     }
 
     @Override
@@ -398,14 +350,14 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
     @Override
-    public void updateTaskExecution(String retailerID, TaskDataBO taskDataBO, int reasonId) {
-
-        getCompositeDisposable().add(mTaskDataManager.updateTaskExecutionData(taskDataBO, retailerID, reasonId)
+    public void updateTaskExecution(TaskDataBO taskDataBO, int reasonId) {
+        String retailerId = String.valueOf(taskDataBO.getRid());
+        getCompositeDisposable().add(mTaskDataManager.updateTaskExecutionData(taskDataBO, retailerId, reasonId)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(isUpdated -> {
                     if (isUpdated) {
-                        if (!retailerID.equals("0"))// This method required for into the store task creation
+                        if (!retailerId.equals("0"))// This method required for into the store task creation
                             saveModuleCompletion("MENU_TASK");
 
                         if (reasonId == 0)
@@ -429,6 +381,32 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
                 }));
     }
 
+    @Override
+    public void updateFilterListData(HashMap<String, ArrayList<Object>> selectedIds, boolean isRetailerWise) {
+
+        ArrayList<TaskDataBO> filteredList = new ArrayList<>();
+        if (selectedIds != null
+                && !selectedIds.isEmpty()) {
+            for (Map.Entry<String, ArrayList<Object>> entry : selectedIds.entrySet()) {
+                for (TaskDataBO taskBo : taskPreparedList) {
+                    if (taskBo.getRid() != 0
+                            && (entry.getValue().contains(taskBo.getRid())
+                            || entry.getValue().contains(taskBo.getTaskCategoryID()))) {
+                        if (!filteredList.contains(taskBo))
+                            filteredList.add(taskBo);
+                    } else if (taskBo.getRid() == 0) {
+                        if (entry.getValue().contains(taskBo.getTaskCategoryID()))
+                            filteredList.add(taskBo);
+                    }
+                }
+            }
+            getIvyView().updateListData(filteredList);
+        } else {
+            getIvyView().updateListData(taskPreparedList);
+        }
+
+    }
+
 
     @Override
     public void updateModuleTime() {
@@ -446,19 +424,19 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
 
     @Override
     public int getUserID() {
-        return appDataProvider.getUser().getUserid();
+        return mDataManager.getUser().getUserid();
     }
 
     @Override
     public int getRetailerID() {
-        return appDataProvider.getRetailMaster() == null ? 0 : SDUtil.convertToInt(appDataProvider.getRetailMaster().getRetailerID());
+        return mDataManager.getRetailMaster() == null ? 0 : SDUtil.convertToInt(mDataManager.getRetailMaster().getRetailerID());
     }
 
     @Override
     public RetailerMasterBO getRetailerMasterBo(String retailerId) {
-        for (RetailerMasterBO retBo : appDataProvider.getRetailerMasters()) {
+        for (RetailerMasterBO retBo : mDataManager.getRetailerMasters()) {
             if (retBo.getRetailerID().equals(retailerId)) {
-                appDataProvider.setRetailerMaster(retBo);
+                mDataManager.setRetailerMaster(retBo);
                 return retBo;
             }
         }
@@ -561,6 +539,7 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
         getIvyView().showLoading();
         taskRetailerListBo = new ArrayList<>();
         taskListHashMap = new HashMap<>();
+        ArrayList<String> filterMenuList = new ArrayList<>();
         getCompositeDisposable().add(Observable.zip(mTaskDataManager.fetchUnPlannedRetailers(mConfigurationMasterHelper.IS_TASK_DUDE_DATE_COUNT),
                 mTaskDataManager.fetchUnPlanedTaskData(mConfigurationMasterHelper.IS_TASK_DUDE_DATE_COUNT)
                 , new BiFunction<ArrayList<TaskRetailerBo>, HashMap<String, ArrayList<TaskDataBO>>, Boolean>() {
@@ -605,6 +584,25 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
             return taskNonCompleteReasonList;
         else
             return new ArrayList<>();
+    }
+
+    @Override
+    public void fetchFilterList(boolean isFromHomeSrc) {
+        filterhashMapList = new HashMap<>();
+        getCompositeDisposable()
+                .add(mTaskDataManager
+                        .fetchFilterData(mConfigurationMasterHelper.TASK_PRODUCT_LEVEL_NO, isFromHomeSrc)
+                        .subscribeOn(getSchedulerProvider().io())
+                        .observeOn(getSchedulerProvider().ui())
+                        .subscribe(new Consumer<HashMap<String, ArrayList<FilterBo>>>() {
+                            @Override
+                            public void accept(HashMap<String, ArrayList<FilterBo>> filterList) throws Exception {
+                                filterhashMapList.clear();
+                                filterhashMapList.putAll(filterList);
+
+                                ((TaskContract.TaskListView) getIvyView()).setUpFilterList(filterhashMapList);
+                            }
+                        }));
     }
 
     @Override
