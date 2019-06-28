@@ -142,6 +142,9 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
             selectedSeller.setTargetLines(0);
             selectedSeller.setAchievedLines(0);
 
+            selectedSeller.setTargetTotalWeight(0);
+            selectedSeller.setAchievedTotalWeight(0);
+
             db = new DBUtil(context, DataMembers.DB_NAME
             );
             db.createDataBase();
