@@ -990,7 +990,11 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             filterList.add(0, tempPosm);
         }
 
-        updatedData(filterList);
+        ArrayAdapter<AssetAddDetailBO> mAssetSpinAdapter = new ArrayAdapter<>(
+                this, R.layout.spinner_bluetext_layout, filterList);
+        mAssetSpinAdapter
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+        mAsset.setAdapter(mAssetSpinAdapter);
 
     }
 
