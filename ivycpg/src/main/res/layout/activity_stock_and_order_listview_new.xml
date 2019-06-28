@@ -18,11 +18,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <android.support.constraint.ConstraintLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+
            >
 
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/layout_primary">
 
 
             <com.elyeproj.loaderviewlibrary.LoaderTextView
@@ -35,46 +40,54 @@
                 android:maxLines="1"
                 android:text="@string/product_name"
                 app:use_gradient="true"
-                card_view:layout_constraintLeft_toLeftOf="parent"
-                card_view:layout_constraintTop_toTopOf="parent"
+                android:layout_alignParentTop="true"
+                android:layout_toLeftOf="@+id/layout_icons"
+                android:layout_toStartOf="@+id/layout_icons"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 />
 
+                <LinearLayout
+                    android:id="@+id/layout_icons"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:gravity="center_vertical">
             <ImageView
                 android:id="@+id/iv_stock"
                 android:layout_width="@dimen/info_icon"
                 android:layout_height="@dimen/info_icon"
                 android:src="@drawable/activity_icon_stock_check"
                 android:tint="@color/black_bg1"
-                card_view:layout_constraintRight_toLeftOf="@+id/layout_product_tag_color"
-                card_view:layout_constraintTop_toTopOf="parent"
-                card_view:layout_constraintBottom_toBottomOf="@+id/stock_and_order_listview_productname"
+                android:layout_toLeftOf="@+id/layout_product_tag_color"
+
                 />
             <LinearLayout
                 android:id="@+id/layout_product_tag_color"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:minWidth="@dimen/dimens_50dp"
                 android:gravity="end"
-                card_view:layout_constraintRight_toRightOf="parent"
-                card_view:layout_constraintTop_toTopOf="parent"
-                card_view:layout_constraintBottom_toBottomOf="@+id/stock_and_order_listview_productname"
+                android:layout_alignParentRight="true"
+
                 >
 
             </LinearLayout>
-
+                </LinearLayout>
+            </RelativeLayout>
             <TextView
                 android:id="@+id/textView_SecondaryLabel"
                 style="@style/TextViewListItemSecondary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/stock_and_order_listview_productname"
+                android:layout_below="@+id/layout_primary"
                 android:layout_marginRight="@dimen/dimens_4dp"
                 android:maxLines="1"
                 android:tag="pcode"
                 android:text="@string/prod_code"
                 android:visibility="visible"
-                card_view:layout_constraintTop_toBottomOf="@+id/stock_and_order_listview_productname"
+                card_view:layout_constraintTop_toBottomOf="@+id/layout_primary"
                 card_view:layout_constraintLeft_toLeftOf="parent"/>
 
 
@@ -86,6 +99,7 @@
                 android:maxLines="1"
                 card_view:layout_constraintTop_toBottomOf="@+id/textView_SecondaryLabel"
                 card_view:layout_constraintLeft_toLeftOf="parent"
+                android:layout_below="@+id/textView_SecondaryLabel"
 
                 />
 
@@ -100,6 +114,8 @@
                 android:text="@string/so_case"
                 android:layout_marginStart="@dimen/margin_5px"
                 android:layout_marginLeft="@dimen/margin_5px"
+                android:layout_toRightOf="@+id/textView_product_tertiary_labels"
+                android:layout_below="@+id/textView_SecondaryLabel"
                 card_view:layout_constraintLeft_toRightOf="@+id/textView_product_tertiary_labels"
                 card_view:layout_constraintTop_toBottomOf="@+id/textView_SecondaryLabel" />
 
@@ -114,6 +130,8 @@
                 android:maxLines="1"
                 android:tag="so_piece"
                 android:text="@string/so"
+                android:layout_toRightOf="@+id/stock_and_order_listview_socs"
+                android:layout_below="@+id/textView_SecondaryLabel"
                 card_view:layout_constraintLeft_toRightOf="@+id/stock_and_order_listview_socs"
                 card_view:layout_constraintTop_toBottomOf="@+id/textView_SecondaryLabel"
                 />
@@ -129,10 +147,12 @@
                 android:maxLines="1"
                 android:tag="item_sr_piece"
                 android:text="@string/stock"
+                android:layout_toRightOf="@+id/stock_and_order_listview_so"
+                android:layout_below="@+id/textView_SecondaryLabel"
                 card_view:layout_constraintLeft_toRightOf="@+id/stock_and_order_listview_so"
                 card_view:layout_constraintTop_toBottomOf="@+id/textView_SecondaryLabel"/>
 
-        </android.support.constraint.ConstraintLayout>
+        </RelativeLayout>
 
 
 
@@ -145,21 +165,12 @@
             android:background="@drawable/line_dotted" />
 
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/white"
-                android:orientation="horizontal">
-
         <android.support.constraint.ConstraintLayout
             android:id="@+id/lleditLaouyt"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
             android:orientation="horizontal"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_toLeftOf="@+id/layout_label"
             >
             <!--card_view:layout_constraintTop_toTopOf="parent"
             card_view:layout_constraintBottom_toBottomOf="parent"
@@ -195,7 +206,7 @@
                 android:layout_height="wrap_content"
                 android:maxLines="1"
                 android:tag="avail_title"
-                android:text="Avail"
+                android:text="@string/avail"
                 card_view:layout_constraintLeft_toLeftOf="parent"
                 card_view:layout_constraintTop_toTopOf="parent" />
 
@@ -203,8 +214,7 @@
                     android:id="@+id/btn_availability"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
                     android:gravity="center"
                     card_view:layout_constraintLeft_toLeftOf="parent"
                     card_view:layout_constraintTop_toBottomOf="@+id/shelfPcsCB"
@@ -216,7 +226,7 @@
                     android:id="@+id/barrier_availability"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    card_view:barrierDirection="end"
+                    card_view:barrierDirection="right"
                     card_view:constraint_referenced_ids="shelfPcsCB,btn_availability"
                      />
 
@@ -248,7 +258,6 @@
                         card_view:layout_constraintStart_toEndOf="@+id/barrier_availability"
                         card_view:layout_constraintTop_toBottomOf="@+id/shelfCaseTitle"
                         android:layout_marginLeft="@dimen/dimen_2dp"
-
                         />
 
                 <android.support.constraint.Barrier
@@ -618,7 +627,10 @@
                     android:layout_height="wrap_content"
                     android:tag="sales_return"
                     android:text="@string/sr"
-                    card_view:layout_constraintStart_toEndOf="@+id/barrier_srp_edit"/>
+                    card_view:layout_constraintTop_toTopOf="parent"
+                    card_view:layout_constraintLeft_toRightOf="@+id/barrier_srp_edit"
+                    />
+<!--            card_view:layout_constraintStart_toEndOf="@+id/barrier_srp_edit"-->
 
                 <EditText
                     android:id="@+id/stock_and_order_listview_sales_return_qty"
@@ -628,114 +640,120 @@
                     android:gravity="start"
                     android:maxLength="8"
                     android:text="@string/zero"
-                    android:visibility="gone"
-                    card_view:layout_constraintStart_toEndOf="@+id/barrier_srp_edit"
-                    card_view:layout_constraintTop_toBottomOf="@+id/stkRtTitle"/>
+                    card_view:layout_constraintTop_toBottomOf="@+id/stkRtTitle"
+                    card_view:layout_constraintLeft_toRightOf="@+id/barrier_srp_edit"
+                    />
+
+            <android.support.constraint.Barrier
+                android:id="@+id/barrier_sr_return"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                card_view:barrierDirection="right"
+                card_view:constraint_referenced_ids="stkRtTitle,stock_and_order_listview_sales_return_qty"
+                />
+
+
+            <android.support.constraint.Group
+                android:id="@+id/group_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                card_view:layout_constraintLeft_toRightOf="@+id/barrier_srp_edit"
+                card_view:constraint_referenced_ids="totalTitle,stock_and_order_listview_total"
+                />
+
+            <TextView
+                android:id="@+id/totalTitle"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/weight"
+                android:tag="totaltitle"
+                android:layout_alignParentTop="true"
+                android:text="@string/total"
+                card_view:layout_constraintTop_toTopOf="parent"
+                card_view:layout_constraintRight_toRightOf="@+id/barrier_weight"
+                />
+
+
+            <TextView
+                android:id="@+id/stock_and_order_listview_total"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center|end"
+                android:text="@string/zero"
+                android:textColor="@color/black_bg1"
+                android:textSize="@dimen/text_size_primary"
+                card_view:layout_constraintRight_toRightOf="@+id/barrier_weight"
+                card_view:layout_constraintTop_toBottomOf="@+id/totalTitle"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+
+                />
+
+            <android.support.constraint.Barrier
+                android:id="@+id/barrier_total"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                card_view:barrierDirection="end"
+                card_view:constraint_referenced_ids="totalTitle,stock_and_order_listview_total"
+                />
+
+
+            <android.support.constraint.Group
+                android:id="@+id/group_total_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                card_view:constraint_referenced_ids="weight,stock_and_order_listview_weight"
+                />-->
+
+            <TextView
+                android:id="@+id/weight"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:tag="weighttitle"
+                android:text="@string/weight"
+                card_view:layout_constraintTop_toTopOf="parent"
+                card_view:layout_constraintRight_toRightOf="parent"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                />
+
+
+            <TextView
+                android:id="@+id/stock_and_order_listview_weight"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/weight"
+                android:gravity="center|end"
+                android:text="@string/zero"
+                android:textColor="@color/black_bg1"
+                android:textSize="@dimen/text_size_primary"
+                card_view:layout_constraintRight_toRightOf="parent"
+                android:layout_marginLeft="@dimen/dimen_5dp"
+                card_view:layout_constraintTop_toBottomOf="@+id/weight"
+                card_view:layout_constraintBottom_toBottomOf="parent"
+                />
+
+            <android.support.constraint.Barrier
+                android:id="@+id/barrier_weight"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                card_view:barrierDirection="left"
+                card_view:constraint_referenced_ids="weight,stock_and_order_listview_weight"
+                />
 
 
 
             </android.support.constraint.ConstraintLayout>
 
 
-                <RelativeLayout
-                    android:id="@+id/layout_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:orientation="horizontal"
-                    >
-                    <!--card_view:layout_constraintTop_toTopOf="parent"
-                    card_view:layout_constraintBottom_toBottomOf="parent"
-                    card_view:layout_constraintRight_toRightOf="parent"
-                    >-->
-                    <!--  <android.support.constraint.Group
-                        android:id="@+id/group_labels"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        card_view:constraint_referenced_ids="totalTitle,stock_and_order_listview_total,weight,stock_and_order_listview_weight"
-                        />-->
-                    <!-- <android.support.constraint.Group
-                    android:id="@+id/group_total"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    card_view:constraint_referenced_ids="totalTitle,stock_and_order_listview_total"
-                    />-->
-
-                    <TextView
-                        android:id="@+id/totalTitle"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@+id/weight"
-                        android:tag="totaltitle"
-
-                        android:text="@string/total" />
-
-                    <!-- card_view:layout_constraintRight_toLeftOf="@+id/barrier_total"
-                    card_view:layout_constraintTop_toTopOf="parent"-->
 
 
-                    <TextView
-                        android:id="@+id/stock_and_order_listview_total"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toLeftOf="@+id/weight"
-                        android:gravity="center|end"
-                        android:text="@string/zero"
 
-                        android:layout_below="@+id/totalTitle"
-                        android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/text_size_primary" />
-
-                    <!-- card_view:layout_constraintTop_toBottomOf="@+id/totalTitle"
-                    card_view:layout_constraintBottom_toBottomOf="parent"
-                    card_view:layout_constraintRight_toLeftOf="@+id/barrier_total"-->
-
-                    <!--<android.support.constraint.Barrier
-                    android:id="@+id/barrier_total"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    card_view:barrierDirection="left"
-                    card_view:constraint_referenced_ids="weight,stock_and_order_listview_weight"
-                    />
-
-                <android.support.constraint.Group
-                    android:id="@+id/group_total_weight"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    card_view:constraint_referenced_ids="weight,stock_and_order_listview_weight"
-                    />-->
-
-                    <TextView
-                        android:id="@+id/weight"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentRight="true"
-                        android:tag="weighttitle"
-                        android:text="@string/weight"
-                         />
-
-
-                    <TextView
-                        android:id="@+id/stock_and_order_listview_weight"
-                        style="@style/TextViewListItemCaption"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/weight"
-                        android:layout_alignParentRight="true"
-                        android:gravity="center|end"
-                        android:text="@string/zero"
-                        android:textColor="@color/black_bg1"
-                        android:textSize="@dimen/text_size_primary"
-                         />
-
-
-                </RelativeLayout>
-
-            </RelativeLayout>
 <!--</android.support.constraint.ConstraintLayout>-->
 
 

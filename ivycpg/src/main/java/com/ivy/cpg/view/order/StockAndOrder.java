@@ -20,6 +20,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
 import android.support.constraint.Group;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
@@ -65,6 +66,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -397,14 +399,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             }
         });
-        ((TextView) findViewById(R.id.totalText)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.totalValue)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.lpc_title)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.lcp)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.distText)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.distValue)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.title_totalweigh)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_totalweigh)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
 
         if (!bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
             findViewById(R.id.ll_lpc).setVisibility(View.GONE);
@@ -1415,6 +1409,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         private Group group_total,group_avail,group_sc,group_sho,group_sp,group_uom_label,group_uom_qty,group_case,group_outer,group_pc,group_foc,group_srp_edit,group_sr_return_qty;
 
+        private Group group_total_weight;
     }
 
     private void showSecondaryProductLabels(ViewHolder holder){
@@ -1877,7 +1872,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
         if(viewType==0) {
 
-           // holder.group_total =row.findViewById(R.id.group_availability_checkbox);
+           holder.group_total =row.findViewById(R.id.group_total);
             holder.group_avail =row.findViewById(R.id.group_availability_checkbox);
             holder.group_sc =row.findViewById(R.id.group_shelf_case);
             holder.group_sho =row.findViewById(R.id.group_shelf_outer);
@@ -1894,18 +1889,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             holder.group_sr_return_qty=row.findViewById(R.id.group_sr_return_qty);
 
+            holder.group_total_weight=row.findViewById(R.id.group_total_weight);
+
          //  holder.group_avail.setVisibility(View.GONE);
-          holder.group_sc.setVisibility(View.GONE);
-            holder.group_sho.setVisibility(View.GONE);
-            holder.group_sp.setVisibility(View.GONE);
-            holder.group_uom_label.setVisibility(View.GONE);
-            holder.group_uom_qty.setVisibility(View.GONE);
 
-            holder.group_case.setVisibility(View.GONE);
-            holder.group_outer.setVisibility(View.GONE);
-
-           holder.group_foc.setVisibility(View.GONE);
-            holder.group_srp_edit.setVisibility(View.GONE);
 
 
 
@@ -1994,11 +1981,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                         layout_row = new LinearLayout(StockAndOrder.this);
                         layout_row.setGravity(Gravity.CENTER_VERTICAL);
+                       // ConstraintLayout.LayoutParams layoutParams_parent=new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
                         LinearLayout.LayoutParams layoutParams_parent = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
                         layout_row.setLayoutParams(layoutParams_parent);
 
                         imageView=new ImageView(StockAndOrder.this);
                         imageView.setImageDrawable(getResources().getDrawable(R.drawable.dot_circle_green));
+                      //  ConstraintLayout.LayoutParams layoutParams_image = new ConstraintLayout.LayoutParams(getPixelsFromDp(StockAndOrder.this, 10), getPixelsFromDp(StockAndOrder.this, 10));//ViewGroup.LayoutParams.WRAP_CONTENT);
                         LinearLayout.LayoutParams layoutParams_image = new LinearLayout.LayoutParams(getPixelsFromDp(StockAndOrder.this, 10), getPixelsFromDp(StockAndOrder.this, 10));//ViewGroup.LayoutParams.WRAP_CONTENT);
                         imageView.setLayoutParams(layoutParams_image);
                         imageView.setColorFilter(holder.productObj.getProductTagColorList().get(tagCode));
@@ -2007,7 +1996,8 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
                 textView = new TextView(StockAndOrder.this);
                 textView.setPadding(getPixelsFromDp(StockAndOrder.this, 5),0,0,0);
-                LinearLayout.LayoutParams layoutParams_text = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
+               //         ConstraintLayout.LayoutParams layoutParams_text = new ConstraintLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT)
+                        LinearLayout.LayoutParams layoutParams_text = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
                 view.setLayoutParams(layoutParams_text);
                 textView.setText(productHelper.getSpecialFilterName(tagCode));
                 layout_row.addView(textView);
@@ -2031,21 +2021,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             //setting typefaces
             holder.psname.setTypeface(FontUtils.getProductNameFont(StockAndOrder.this));
 
-            holder.shelfCaseQty.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.shelfPcsQty.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.shelfouter.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.srpEdit.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-
-            holder.caseQty.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.pcsQty.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.foc.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.outerQty.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.total.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-
-            holder.salesReturn.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.uom_qty.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.tv_uo_names.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-
 
             if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
                 holder.group_sr_return_qty.setVisibility(View.VISIBLE);
@@ -2062,7 +2037,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
             else {
                 holder.group_avail.setVisibility(View.VISIBLE);
-                ((TextView) row.findViewById(R.id.shelfPcsCB)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                 if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                         R.id.shelfPcsCB).getTag()) != null)
                     ((TextView) row.findViewById(R.id.shelfPcsCB))
@@ -2080,7 +2054,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             else {
                 holder.group_sc.setVisibility(View.VISIBLE);
                 try {
-                    ((TextView) row.findViewById(R.id.shelfCaseTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.shelfCaseTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.shelfCaseTitle))
@@ -2101,7 +2074,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             else {
                 holder.group_sp.setVisibility(View.VISIBLE);
                 try {
-                    ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.shelfPcsTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.shelfPcsTitle))
@@ -2121,7 +2093,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             else {
                 holder.group_sho.setVisibility(View.VISIBLE);
                 try {
-                    ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.shelfOuterTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.shelfOuterTitle))
@@ -2160,7 +2131,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
                         holder.caseQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
 
-                    ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.caseTitle).getTag()) != null) {
                         ((TextView) row.findViewById(R.id.caseTitle))
@@ -2186,7 +2156,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
                         holder.pcsQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
 
-                    ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.pcsTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.pcsTitle))
@@ -2203,7 +2172,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             else {
                  holder.group_foc.setVisibility(View.VISIBLE);
                 try {
-                    ((TextView) row.findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.focTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.focTitle))
@@ -2223,7 +2191,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
                         holder.outerQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
 
-                    ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.outercaseTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.outercaseTitle))
@@ -2241,7 +2208,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             else {
                 holder.group_srp_edit.setVisibility(View.VISIBLE);
                 try {
-                    ((TextView) row.findViewById(R.id.srpeditTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.srpeditTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.srpeditTitle))
@@ -2260,7 +2226,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             else {
                 holder.group_sr_return_qty.setVisibility(View.VISIBLE);
                 try {
-                    ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(R.id.stkRtTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.stkRtTitle))
                                 .setText(bmodel.labelsMasterHelper
@@ -2271,11 +2236,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
 
-          /*  if (!bmodel.configurationMasterHelper.SHOW_ORDER_TOTAL)
-                (row.findViewById(R.id.llTotal)).setVisibility(View.GONE);
+            if (!bmodel.configurationMasterHelper.SHOW_ORDER_TOTAL)
+                holder.group_total.setVisibility(View.GONE);
             else {
+                holder.group_total.setVisibility(View.VISIBLE);
                 try {
-                    ((TextView) row.findViewById(R.id.totalTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.totalTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.totalTitle))
@@ -2285,14 +2250,14 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 } catch (Exception e) {
                     Commons.printException(e + "");
                 }
-            }*/
+            }
 
 
-           /* if (!bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
-                (row.findViewById(R.id.llWeight)).setVisibility(View.GONE);
+            if (!bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
+                holder.group_total_weight.setVisibility(View.GONE);
             else {
+                holder.group_total_weight.setVisibility(View.VISIBLE);
                 try {
-                    ((TextView) row.findViewById(R.id.weight)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.weight).getTag()) != null)
                         ((TextView) row.findViewById(R.id.weight))
@@ -2303,7 +2268,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 } catch (Exception e) {
                     Commons.printException(e + "");
                 }
-            }*/
+            }
 
 
             if (!bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER)
@@ -2316,7 +2281,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 holder.group_pc.setVisibility(View.GONE);
                 holder.group_case.setVisibility(View.GONE);
                 holder.group_outer.setVisibility(View.GONE);
-                ((TextView) row.findViewById(R.id.uomTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                 try {
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.uomTitle).getTag()) != null)
@@ -3775,7 +3739,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             holder.foc = row
                     .findViewById(R.id.stock_and_order_listview_foc);
-            holder.foc.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
 
 
 
@@ -3801,7 +3764,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             (row.findViewById(R.id.llFoc)).setVisibility(View.GONE);
         else {
             try {
-                ((TextView) row.findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                 if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                         R.id.focTitle).getTag()) != null)
                     ((TextView) row.findViewById(R.id.focTitle))
@@ -3893,6 +3855,23 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             });
         }
+
+        holder.group_sc.setVisibility(View.GONE);
+        holder.group_sho.setVisibility(View.GONE);
+        holder.group_sp.setVisibility(View.GONE);
+        holder.group_uom_label.setVisibility(View.GONE);
+        holder.group_uom_qty.setVisibility(View.GONE);
+
+        holder.group_case.setVisibility(View.VISIBLE);
+        holder.group_outer.setVisibility(View.GONE);
+        holder.group_outer.setVisibility(View.GONE);
+
+        holder.group_foc.setVisibility(View.GONE);
+        holder.group_srp_edit.setVisibility(View.GONE);
+        holder.group_sr_return_qty.setVisibility(View.GONE);
+        holder.group_avail.setVisibility(View.GONE);
+
+        holder.group_total_weight.setVisibility(View.GONE);
 
     }
 
@@ -6171,6 +6150,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     view.setImageDrawable(getResources().getDrawable(R.drawable.dot_circle_green));
                     LinearLayout.LayoutParams layoutParams_parent = new LinearLayout.LayoutParams(getPixelsFromDp(this, 7), getPixelsFromDp(this, 7));
                         layoutParams_parent.setMargins(getPixelsFromDp(this, 5), 0, 0, 0);
+                   // view.setPadding(getPixelsFromDp(StockAndOrder.this, 5),5,5,5);
                     view.setLayoutParams(layoutParams_parent);
                     view.setColorFilter(productMasterBO.getProductTagColorList().get(tagCode));
 
