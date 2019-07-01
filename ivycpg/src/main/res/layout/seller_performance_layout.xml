@@ -400,12 +400,76 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:id="@+id/volume_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/lines_layout"
+            android:background="@color/white"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/_14sdp"
+            android:paddingLeft="@dimen/_4sdp"
+            android:paddingRight="@dimen/_4sdp"
+            android:paddingTop="@dimen/_7sdp"
+            android:weightSum="1">
+
+            <TextView
+                android:id="@+id/volume_text"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.4"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/_8sdp"
+                android:tag="sell_perf_volume"
+                android:text="Volume"
+                android:textColor="#8b000000"
+                android:textSize="@dimen/_12sdp" />
+
+            <TextView
+                android:id="@+id/volume_target"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.23"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="0"
+                android:textColor="#8b000000"
+                android:textSize="@dimen/_12sdp" />
+
+            <TextView
+                android:id="@+id/volume_actual"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.23"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="0"
+                android:textColor="#8b000000"
+                android:textSize="@dimen/_12sdp" />
+
+            <TextView
+                android:id="@+id/volume_percent"
+                style="@style/TextViewListItemCaption"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.16"
+                android:gravity="center"
+                android:maxLines="1"
+                android:text="0%"
+                android:textColor="#8b000000"
+                android:textSize="@dimen/_12sdp" />
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/calls_status_text"
             style="@style/TextViewListItemCaption"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/lines_layout"
+            android:layout_below="@+id/volume_layout"
             android:background="#EBEBEB"
             android:maxLines="1"
             android:paddingBottom="@dimen/_6sdp"
