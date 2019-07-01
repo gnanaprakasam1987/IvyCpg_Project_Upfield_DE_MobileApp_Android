@@ -182,6 +182,12 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                         if (isMTD)
                             selectedSeller.setAchievedLines(c.getInt(1));
                     }
+                    else if(c.getString(3).equals("VOL")) {
+                        selectedSeller.setTargetTotalWeight(c.getDouble(0));
+
+                        if (isMTD)
+                            selectedSeller.setAchievedTotalWeight(c.getDouble(1));
+                    }
                 }
                 c.close();
             }
@@ -264,6 +270,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                                 selectedSeller.setTotalOrderValue(documentSnapshotBo.getTotalOrderValue());
                                 selectedSeller.setLpc(documentSnapshotBo.getLpc());
                                 selectedSeller.setTotallpc(documentSnapshotBo.getTotallpc());
+                                selectedSeller.setTotalweight(documentSnapshotBo.getTotalweight());
 
                                 sellerPerformanceView.updateSellerPerformanceData(selectedSeller);
 
@@ -650,7 +657,9 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                 }
 
                 //Toast.makeText(context, masterName+" Download Successfull", Toast.LENGTH_SHORT).show();
-            }//else
+            }else
+                if (alertDialog != null)
+                    alertDialog.dismiss();
                 //Toast.makeText(context, masterName+" Download Failed", Toast.LENGTH_SHORT).show();
         }
 

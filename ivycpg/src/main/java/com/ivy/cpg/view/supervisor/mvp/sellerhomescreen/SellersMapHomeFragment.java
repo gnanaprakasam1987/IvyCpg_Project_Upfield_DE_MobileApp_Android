@@ -48,6 +48,7 @@ import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.outletmapview.OutletMapListActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellerlistview.SellerListActivity;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancelist.SellerPerformanceListActivity;
+import com.ivy.lib.Utils;
 import com.ivy.maplib.MapWrapperLayout;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -594,7 +595,7 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
 
     @Override
     public void updateOrderValue(double totalOrderValue) {
-        tvOrderValue.setText(String.valueOf(totalOrderValue));
+        tvOrderValue.setText(Utils.formatAsTwoDecimal(totalOrderValue));
     }
 
     @Override
@@ -675,9 +676,14 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
         Calendar cal = Calendar.getInstance();
         cal.set(day, month, year);
 
-        picker = new DatePickerDialog(getContext(), R.style.SellerDatePickerStyle, mDateSetListener,
-                day, month, year);
-        picker.getDatePicker().setMaxDate(new Date().getTime());
+        picker = new DatePickerDialog(getContext(), R.style.SellerDatePickerStyle, mDateSetListener, day, month, year);
+
+        Calendar maxDate = Calendar.getInstance();
+        maxDate.set(Calendar.HOUR_OF_DAY, 23);
+        maxDate.set(Calendar.MINUTE, 59);
+        maxDate.set(Calendar.SECOND, 59);
+
+        picker.getDatePicker().setMaxDate(maxDate.getTimeInMillis());
         picker.updateDate(year, month - 1, day);
 
         picker.show();
