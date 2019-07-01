@@ -1961,56 +1961,58 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 @Override
                 public void onClick(View view) {
 
-                    PopupWindow popupWindowCompat=new PopupWindow(StockAndOrder.this);
-                    popupWindowCompat.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
-                    LayoutInflater inflater=getLayoutInflater();
-                    View parentView=inflater.inflate(R.layout.layout_product_tag_colors,null);
-                    LinearLayout layout_parent=parentView.findViewById(R.id.layout_parent);
-                    popupWindowCompat.setContentView(parentView);
-                    popupWindowCompat.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
-                    popupWindowCompat.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
-                    // Closes the popup window when touch outside of it - when looses focus
-                    popupWindowCompat.setOutsideTouchable(true);
-                    popupWindowCompat.setFocusable(true);
+                    if (holder.productObj.getProductTagColorList() != null && holder.productObj.getProductTagColorList().size() > 0) {
 
-                    LinearLayout layout_row;
-                    ImageView imageView;
-                    TextView textView;
-                    ProductHelper productHelper=ProductHelper.getInstance(StockAndOrder.this);
-                    for (String tagCode : holder.productObj.getProductTagColorList().keySet()) {
+                        PopupWindow popupWindowCompat = new PopupWindow(StockAndOrder.this);
+                        popupWindowCompat.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                        LayoutInflater inflater = getLayoutInflater();
+                        View parentView = inflater.inflate(R.layout.layout_product_tag_colors, null);
+                        LinearLayout layout_parent = parentView.findViewById(R.id.layout_parent);
+                        popupWindowCompat.setContentView(parentView);
+                        popupWindowCompat.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+                        popupWindowCompat.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+                        // Closes the popup window when touch outside of it - when looses focus
+                        popupWindowCompat.setOutsideTouchable(true);
+                        popupWindowCompat.setFocusable(true);
 
-                        layout_row = new LinearLayout(StockAndOrder.this);
-                        layout_row.setGravity(Gravity.CENTER_VERTICAL);
-                       // ConstraintLayout.LayoutParams layoutParams_parent=new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
-                        LinearLayout.LayoutParams layoutParams_parent = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
-                        layout_row.setLayoutParams(layoutParams_parent);
+                        LinearLayout layout_row;
+                        ImageView imageView;
+                        TextView textView;
+                        ProductHelper productHelper = ProductHelper.getInstance(StockAndOrder.this);
+                        for (String tagCode : holder.productObj.getProductTagColorList().keySet()) {
 
-                        imageView=new ImageView(StockAndOrder.this);
-                        imageView.setImageDrawable(getResources().getDrawable(R.drawable.dot_circle_green));
-                      //  ConstraintLayout.LayoutParams layoutParams_image = new ConstraintLayout.LayoutParams(getPixelsFromDp(StockAndOrder.this, 10), getPixelsFromDp(StockAndOrder.this, 10));//ViewGroup.LayoutParams.WRAP_CONTENT);
-                        LinearLayout.LayoutParams layoutParams_image = new LinearLayout.LayoutParams(getPixelsFromDp(StockAndOrder.this, 10), getPixelsFromDp(StockAndOrder.this, 10));//ViewGroup.LayoutParams.WRAP_CONTENT);
-                        imageView.setLayoutParams(layoutParams_image);
-                        imageView.setColorFilter(holder.productObj.getProductTagColorList().get(tagCode));
-                        layout_row.addView(imageView);
+                            layout_row = new LinearLayout(StockAndOrder.this);
+                            layout_row.setGravity(Gravity.CENTER_VERTICAL);
+                            // ConstraintLayout.LayoutParams layoutParams_parent=new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+                            LinearLayout.LayoutParams layoutParams_parent = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                            layout_row.setLayoutParams(layoutParams_parent);
 
-
-                textView = new TextView(StockAndOrder.this);
-                textView.setPadding(getPixelsFromDp(StockAndOrder.this, 5),0,0,0);
-               //         ConstraintLayout.LayoutParams layoutParams_text = new ConstraintLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT)
-                        LinearLayout.LayoutParams layoutParams_text = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
-                view.setLayoutParams(layoutParams_text);
-                textView.setText(productHelper.getSpecialFilterName(tagCode));
-                layout_row.addView(textView);
+                            imageView = new ImageView(StockAndOrder.this);
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.dot_circle_green));
+                            //  ConstraintLayout.LayoutParams layoutParams_image = new ConstraintLayout.LayoutParams(getPixelsFromDp(StockAndOrder.this, 10), getPixelsFromDp(StockAndOrder.this, 10));//ViewGroup.LayoutParams.WRAP_CONTENT);
+                            LinearLayout.LayoutParams layoutParams_image = new LinearLayout.LayoutParams(getPixelsFromDp(StockAndOrder.this, 10), getPixelsFromDp(StockAndOrder.this, 10));//ViewGroup.LayoutParams.WRAP_CONTENT);
+                            imageView.setLayoutParams(layoutParams_image);
+                            imageView.setColorFilter(holder.productObj.getProductTagColorList().get(tagCode));
+                            layout_row.addView(imageView);
 
 
-                        layout_parent.addView(layout_row);
+                            textView = new TextView(StockAndOrder.this);
+                            textView.setPadding(getPixelsFromDp(StockAndOrder.this, 5), 0, 0, 0);
+                            //         ConstraintLayout.LayoutParams layoutParams_text = new ConstraintLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT)
+                            LinearLayout.LayoutParams layoutParams_text = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                            view.setLayoutParams(layoutParams_text);
+                            textView.setText(productHelper.getSpecialFilterName(tagCode));
+                            layout_row.addView(textView);
 
+
+                            layout_parent.addView(layout_row);
+
+                        }
+
+
+                        // Show anchored to button
+                        popupWindowCompat.showAsDropDown(holder.layout_product_tag_color);
                     }
-
-
-
-                    // Show anchored to button
-                    popupWindowCompat.showAsDropDown(holder.layout_product_tag_color);
                 }
             });
 
