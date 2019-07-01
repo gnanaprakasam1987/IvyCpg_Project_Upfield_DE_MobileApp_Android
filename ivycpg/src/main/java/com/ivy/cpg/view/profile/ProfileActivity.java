@@ -2204,8 +2204,7 @@ public class ProfileActivity extends IvyBaseActivityNoActionBar
                 strTitle = getResources().getString(
                         R.string.not_able_to_find_user_location);
             else
-                strTitle = getResources().getString(R.string.need_otp)
-                        + getResources().getString(R.string.or_you_are) + " "
+                strTitle = getResources().getString(R.string.or_you_are) + " "
                         + distance + getResources().getString(R.string.mts_away);
 
             if (otpValidationDialog != null && otpValidationDialog.isShowing()) {
