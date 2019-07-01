@@ -1168,16 +1168,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             holder.productObj = product;
             holder.productId = holder.productObj.getProductID();
 
-
-            try {
-                holder.psname.setTextColor(product.getTextColor());
-            } catch (Exception e) {
-                Commons.printException(e);
-                holder.psname.setTextColor(ContextCompat.getColor(getApplicationContext(),
-                        android.R.color.black));
-            }
-
-
             holder.psname.setText(holder.productObj.getProductShortName());
             holder.pname = holder.productObj.getProductName();
             showSecondaryProductLabels(holder);
