@@ -1216,7 +1216,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if (strShelfCase >= 0) {
                         holder.shelfCaseQty.setText(strShelfCase + "");
                     } else {
-                        holder.shelfCaseQty.setText("12345678");
+                        holder.shelfCaseQty.setText("");
                     }
                 }
                 if (stockCheckHelper.SHOW_STOCK_SP
@@ -1238,7 +1238,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     if (strShelfOuter >= 0) {
                         holder.shelfouter.setText(strShelfOuter + "");
                     } else {
-                        holder.shelfouter.setText("12345678");
+                        holder.shelfouter.setText("");
                     }
                 }
 
