@@ -388,4 +388,5 @@
     <string name="due_today">Due today</string>
     <string name="compliance_pt">PT</string>
     <string name="assigned">Assigned</string>
+    <string name="select_parent">Select Parent</string>
 </resources>

@@ -81,6 +81,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/task_category_tv"
                     android:layout_marginEnd="@dimen/_10sdp"
+                    android:layout_alignBottom="@+id/tsk_category_divider"
                     android:adjustViewBounds="true"
                     android:paddingStart="@dimen/dimen_10dp"
                     android:paddingLeft="@dimen/dimen_10dp"
@@ -118,7 +119,7 @@
                     android:id="@+id/tsk_category_divider"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/activity_divider_height"
-                    android:layout_below="@+id/task_category_value_tv"
+                    android:layout_below="@+id/task_due_date_value_tv"
                     android:layout_margin="@dimen/_10sdp"
                     android:background="@color/divider_view_color"
                     android:labelFor="@+id/evidence_img_recycler_view" />
