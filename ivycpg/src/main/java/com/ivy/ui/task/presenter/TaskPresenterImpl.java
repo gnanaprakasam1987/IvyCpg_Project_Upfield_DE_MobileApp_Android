@@ -334,25 +334,27 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
     @Override
-    public void onSaveTask(int channelId, TaskDataBO taskObj, int linkUserId, int retailerId) {
+    public void onSaveTask(int channelId, TaskDataBO taskObj, int linkUserId, int retailerId, String deletedImageId) {
         getIvyView().showLoading();
-        getCompositeDisposable().add(mTaskDataManager.saveTask(channelId
-                , taskObj, getTaskImgList(), linkUserId).subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(isAdded -> {
-                    getIvyView().hideLoading();
-                    if (isAdded) {
-                        ((TaskContract.TaskCreationView) getIvyView()).showTaskSaveAlertMsg();
-                    } else {
-                        getIvyView().showErrorMsg();
-                    }
-                }));
+        getCompositeDisposable()
+                .add(mTaskDataManager
+                        .saveTask(channelId, taskObj, getTaskImgList(), linkUserId, deletedImageId)
+                        .subscribeOn(getSchedulerProvider().io())
+                        .observeOn(getSchedulerProvider().ui())
+                        .subscribe(isAdded -> {
+                            getIvyView().hideLoading();
+                            if (isAdded) {
+                                ((TaskContract.TaskCreationView) getIvyView()).showTaskSaveAlertMsg();
+                            } else {
+                                getIvyView().showErrorMsg();
+                            }
+                        }));
     }
 
     @Override
     public void updateTaskExecution(TaskDataBO taskDataBO, int reasonId) {
         String retailerId = String.valueOf(taskDataBO.getRid());
-        getCompositeDisposable().add(mTaskDataManager.updateTaskExecutionData(taskDataBO, retailerId, reasonId)
+        getCompositeDisposable().add(mTaskDataManager.updateTaskExecutionData(taskDataBO, reasonId)
                 .subscribeOn(getSchedulerProvider().io())
                 .observeOn(getSchedulerProvider().ui())
                 .subscribe(isUpdated -> {
@@ -490,6 +492,12 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     }
 
     @Override
+    public boolean isShowRemarks() {
+        mConfigurationMasterHelper.IS_TASK_REMARKS_MANDATORY = true;
+        return mConfigurationMasterHelper.IS_TASK_REMARKS_MANDATORY;
+    }
+
+    @Override
     public String outDateFormat() {
         return ConfigurationMasterHelper.outDateFormat;
     }
@@ -614,23 +622,25 @@ public class TaskPresenterImpl<V extends TaskContract.TaskView> extends BasePres
     public void deleteTask(String taskId, String taskOwner, int serverTask) {
         getIvyView().showLoading();
         getDeletedImages(taskId);
-        getCompositeDisposable().add(mTaskDataManager.deleteTaskData(taskId, taskOwner, serverTask).subscribeOn(getSchedulerProvider().io())
-                .observeOn(getSchedulerProvider().ui())
-                .subscribe(isDeleted -> {
-                    if (isDeleted) {
-                        for (String imageName : deletedImageList) {
-                            FileUtils.deleteFiles(FileUtils.photoFolderPath, imageName);
-                            FileUtils.deleteFiles(TaskConstant.TASK_SERVER_IMG_PATH, imageName);
-                        }
-                        getIvyView().hideLoading();
-                        getIvyView().onDeleteSuccess();
-                    } else {
-                        getIvyView().hideLoading();
-                        getIvyView().showErrorMsg();
-                    }
-                }));
+        getCompositeDisposable()
+                .add(mTaskDataManager
+                        .deleteTaskData(taskId, taskOwner, serverTask)
+                        .subscribeOn(getSchedulerProvider().io())
+                        .observeOn(getSchedulerProvider().ui())
+                        .subscribe(isDeleted -> {
+                            if (isDeleted) {
+                                for (String imageName : deletedImageList) {
+                                    FileUtils.deleteFiles(FileUtils.photoFolderPath, imageName);
+                                    FileUtils.deleteFiles(TaskConstant.TASK_SERVER_IMG_PATH, imageName);
+                                }
+                                getIvyView().hideLoading();
+                                getIvyView().onDeleteSuccess();
+                            } else {
+                                getIvyView().hideLoading();
+                                getIvyView().showErrorMsg();
+                            }
+                        }));
     }
-
 
     private void getDeletedImages(String taskId) {
         deletedImageList = new ArrayList<>();

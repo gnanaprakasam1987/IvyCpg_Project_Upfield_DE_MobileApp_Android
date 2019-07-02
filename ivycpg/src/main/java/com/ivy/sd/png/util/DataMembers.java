@@ -589,7 +589,7 @@ public class DataMembers {
     private static final String tbl_distributor_order_header_cols = "UId,DistId,Date,TotalValue,LPC,DownloadedDate,DeliveryDate";
     private static final String tbl_distributor_order_detail_cols = "UId,PId,Qty,Price,BatchId,UomId,UomCount,LineValue";
     private static final String tbl_TaskExecutionDetails = "TaskExecutionDetails";
-    private static final String getTbl_TaskExecutionDetails_cols = "TaskId,RetailerId,Date,UId,ridSF";
+    private static final String getTbl_TaskExecutionDetails_cols = "TaskId,RetailerId,Date,UId,ridSF,Remarks";
     private static final String tbl_SOD_Tracking_Block_Detail = "SOD_Tracking_Block_Detail";
     private static final String tbl_SOD_Tracking_Block_Detail_cols = "uid,PId,CellId,SubCellId,ChildPId,LocId";
     private static final String tbl_SOD_Tracking_Parent_Detail = "SOD_Tracking_Parent_Detail";

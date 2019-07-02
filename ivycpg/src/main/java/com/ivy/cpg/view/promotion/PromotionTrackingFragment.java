@@ -80,7 +80,7 @@ import java.util.Locale;
 
 
 public class PromotionTrackingFragment extends IvyBaseFragment implements BrandDialogInterface,
-        DataPickerDialogFragment.UpdateDateInterface, FiveLevelFilterCallBack, RemarksDialog.PromotionRemarks {
+        DataPickerDialogFragment.UpdateDateInterface, FiveLevelFilterCallBack, RemarksDialog.RemarksListener {
 
     private BusinessModel businessModel;
     private PromotionHelper promotionHelper;
@@ -704,7 +704,8 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
     }
 
     @Override
-    public void updateRemarks() {
+    public void updateRemarks(String remark) {
+        promoList.get(selectedposition).setRemarks(remark);
         if (promotionAdapter != null)
         promotionAdapter.notifyDataSetChanged();
     }
@@ -1126,9 +1127,10 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             holder.img_remarks.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    selectedposition = position;
                     FragmentTransaction ft = getActivity()
                             .getSupportFragmentManager().beginTransaction();
-                    RemarksDialog dialog = new RemarksDialog(holder.mPromotionMasterBO, "MENU_PROMO_REMARKS",
+                    RemarksDialog dialog = new RemarksDialog(holder.mPromotionMasterBO.getRemarks(), "MENU_PROMO_REMARKS",
                             PromotionTrackingFragment.this);
                     dialog.setCancelable(false);
                     dialog.show(ft, "MENU_PROMO_REMARKS");

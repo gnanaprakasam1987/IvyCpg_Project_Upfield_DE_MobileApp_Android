@@ -87,20 +87,20 @@ public class FilterFragment extends BaseFragment implements FilterMenuAdapter.Up
             if (bundle.containsKey(TaskConstant.FROM_HOME_SCREEN))
                 isFromHomeSrc = true;
 
-            if (bundle.containsKey("SelectedFilterList")
-                    && bundle.get("SelectedFilterList") != null) {
-                selectedIdsHashMap = ((HashMap<String, ArrayList<Object>>) bundle.getSerializable("SelectedFilterList"));
+            if (bundle.containsKey(TaskConstant.SELECTED_FILTER_LIST)
+                    && bundle.get(TaskConstant.SELECTED_FILTER_LIST) != null) {
+                selectedIdsHashMap = ((HashMap<String, ArrayList<Object>>) bundle.getSerializable(TaskConstant.SELECTED_FILTER_LIST));
             }
 
-            if (bundle.containsKey("hashList")) {
+            if (bundle.containsKey(TaskConstant.FILTER_LIST)) {
                 hasMapFilterList = new HashMap<>();
-                hasMapFilterList = (HashMap<String, ArrayList<FilterBo>>) bundle.getSerializable("hashList");
+                hasMapFilterList = (HashMap<String, ArrayList<FilterBo>>) bundle.getSerializable(TaskConstant.FILTER);
             }
 
-            if (bundle.containsKey("menuList")
-                    && bundle.getStringArrayList("menuList") != null) {
+            if (bundle.containsKey(TaskConstant.FILTER_MENU_LIST)
+                    && bundle.getStringArrayList(TaskConstant.FILTER_MENU_LIST) != null) {
                 menuList = new ArrayList<>();
-                menuList.addAll(bundle.getStringArrayList("menuList"));
+                menuList.addAll(bundle.getStringArrayList(TaskConstant.FILTER_MENU_LIST));
             }
         }
     }
@@ -111,7 +111,7 @@ public class FilterFragment extends BaseFragment implements FilterMenuAdapter.Up
         setUpRecyclerView();
 
         if (isFromHomeSrc)
-            lastSelectedMenuName = "Retailer";
+            lastSelectedMenuName = TaskConstant.RETAILER_FILTER_MENU;
 
         if (!hasMapFilterList.isEmpty()) {
             if (menuList == null

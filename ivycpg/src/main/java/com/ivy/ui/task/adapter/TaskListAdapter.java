@@ -122,7 +122,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListAdapter.TaskLi
                 taskBo.setChecked(false);
                 binderHelper.unlockSwipe(taskBo.getTaskId());
             }
-            taskClickListener.onTaskExecutedClick(taskBo);
+            taskClickListener.onTaskExecutedClick(taskBo, holder.getAdapterPosition());
 
         });
 
