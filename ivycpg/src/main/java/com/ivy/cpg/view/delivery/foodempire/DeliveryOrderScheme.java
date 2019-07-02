@@ -15,8 +15,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.SchemeBO;
-import com.ivy.sd.png.bo.SchemeProductBO;
+import com.ivy.cpg.view.order.scheme.SchemeBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;

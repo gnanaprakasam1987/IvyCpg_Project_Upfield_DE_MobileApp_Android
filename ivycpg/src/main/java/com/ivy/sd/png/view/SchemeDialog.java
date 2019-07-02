@@ -12,7 +12,7 @@ import android.view.Window;
 import com.ivy.cpg.view.order.productdetails.ProductDetailsFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SchemeBO;
+import com.ivy.cpg.view.order.scheme.SchemeBO;
 
 import java.util.List;
 

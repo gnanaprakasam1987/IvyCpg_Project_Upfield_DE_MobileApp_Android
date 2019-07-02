@@ -16,7 +16,7 @@ import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SchemeProductBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;

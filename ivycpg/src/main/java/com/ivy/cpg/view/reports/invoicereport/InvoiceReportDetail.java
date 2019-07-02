@@ -25,7 +25,6 @@ import android.view.ViewGroup;
 import android.widget.BaseExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,7 +34,7 @@ import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SchemeProductBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;

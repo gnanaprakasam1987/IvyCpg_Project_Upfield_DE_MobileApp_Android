@@ -1,7 +1,5 @@
 package com.ivy.cpg.view.van.vanstockapply;
 
-import com.ivy.sd.png.bo.VanLoadSpinnerBO;
-
 import java.util.Comparator;
 
 public class VanLoadStockApplyBO {

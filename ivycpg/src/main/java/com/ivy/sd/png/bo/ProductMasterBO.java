@@ -2,6 +2,8 @@ package com.ivy.sd.png.bo;
 
 import android.support.annotation.NonNull;
 
+import com.ivy.cpg.view.order.scheme.SchemeBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 

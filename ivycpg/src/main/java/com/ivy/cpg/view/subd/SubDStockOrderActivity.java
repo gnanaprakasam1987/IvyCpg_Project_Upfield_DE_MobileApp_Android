@@ -71,7 +71,7 @@ import com.ivy.sd.png.bo.GuidedSellingBO;
 import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SchemeProductBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;

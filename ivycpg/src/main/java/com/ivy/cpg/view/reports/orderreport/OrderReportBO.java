@@ -3,7 +3,7 @@ package com.ivy.cpg.view.reports.orderreport;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.ivy.sd.png.bo.SchemeProductBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 
 import java.util.List;
 

@@ -50,7 +50,7 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.bo.TeamLeadBO;
 import com.ivy.sd.png.bo.UserMasterBO;
-import com.ivy.sd.png.bo.VanLoadMasterBO;
+import com.ivy.cpg.view.van.vanstockapply.VanLoadMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;

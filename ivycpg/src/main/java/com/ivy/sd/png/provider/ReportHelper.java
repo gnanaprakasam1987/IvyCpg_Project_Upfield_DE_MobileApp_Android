@@ -16,7 +16,7 @@ import com.ivy.sd.png.bo.ProductivityReportBO;
 import com.ivy.sd.png.bo.ReportBrandPerformanceBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.RetailersReportBO;
-import com.ivy.sd.png.bo.SchemeProductBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.sd.png.bo.SpinnerBO;
 import com.ivy.sd.png.bo.StockReportBO;
 import com.ivy.cpg.view.sync.uploadStatusReport.SyncStatusBO;

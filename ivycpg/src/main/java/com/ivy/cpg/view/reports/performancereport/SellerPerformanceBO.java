@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.reports.performancereport;
 
 /**
  * Created by mansoor.k on 11/01/2017.
@@ -6,11 +6,11 @@ package com.ivy.sd.png.bo;
 
 public class SellerPerformanceBO {
 
-    int userId;
-    int plannedCall, DeviatedCall, actualCall, productiveCall;
-    String userName;
-    String timeSpent, objective, actual, visitPer, productivePer, lastSync, salesVolume;
-    String fitScore;
+    private int userId;
+    private int plannedCall, DeviatedCall, actualCall, productiveCall;
+    private String userName;
+    private String timeSpent, objective, actual, visitPer, productivePer, lastSync, salesVolume;
+    private String fitScore;
 
     public int getUserId() {
         return userId;

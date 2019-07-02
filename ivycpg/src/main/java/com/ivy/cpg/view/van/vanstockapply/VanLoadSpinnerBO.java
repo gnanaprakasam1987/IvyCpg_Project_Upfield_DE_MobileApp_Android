@@ -1,4 +1,4 @@
-package com.ivy.sd.png.bo;
+package com.ivy.cpg.view.van.vanstockapply;
 
 public class VanLoadSpinnerBO {
 

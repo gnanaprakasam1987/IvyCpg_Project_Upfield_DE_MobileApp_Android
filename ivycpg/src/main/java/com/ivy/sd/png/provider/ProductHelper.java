@@ -31,7 +31,7 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SchemeBO;
+import com.ivy.cpg.view.order.scheme.SchemeBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.commons.SDUtil;
