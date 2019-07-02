@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -28,6 +29,7 @@ import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.ui.task.TaskConstant;
 import com.ivy.ui.task.TaskContract;
 import com.ivy.ui.task.adapter.TaskImgListAdapter;
@@ -50,7 +52,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class TaskDetailActivity extends BaseActivity implements TaskContract.TaskListView, ReasonCaptureDialog.OnButtonClickListener {
+public class TaskDetailActivity extends BaseActivity implements TaskContract.TaskListView, ReasonCaptureDialog.OnButtonClickListener, RemarksDialog.RemarksListener {
     private static final int CAMERA_REQUEST_CODE = 1;
 
     @BindView(R.id.toolbar)
@@ -252,12 +254,22 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
         else
             taskDetailBo.setChecked(true);
 
-        if (source == TaskConstant.SOURCE.RETAILER) {
-            taskPresenter.updateModuleTime();
-            taskPresenter.updateTaskExecution(taskDetailBo, 0);
+        if (taskPresenter.isShowRemarks()) {
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            RemarksDialog dialog = new RemarksDialog(taskDetailBo.getRemark(),
+                    "MENU_PROMO_REMARKS", this);
+            dialog.setCancelable(false);
+            dialog.show(ft, "TASK");
         } else {
-            taskPresenter.updateTaskExecution(taskDetailBo, 0);
+            updateTaskExecution();
         }
+    }
+
+    private void updateTaskExecution() {
+        if (source == TaskConstant.SOURCE.RETAILER)
+            taskPresenter.updateModuleTime();
+
+        taskPresenter.updateTaskExecution(taskDetailBo, 0);
     }
 
     @Override
@@ -546,5 +558,11 @@ public class TaskDetailActivity extends BaseActivity implements TaskContract.Tas
     @Override
     public void onDismiss() {
         reasonCaptureDialog.dismiss();
+    }
+
+    @Override
+    public void updateRemarks(String remark) {
+        taskDetailBo.setRemark(remark);
+        updateTaskExecution();
     }
 }

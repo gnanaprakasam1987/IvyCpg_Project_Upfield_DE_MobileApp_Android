@@ -4,9 +4,9 @@ import com.ivy.ui.task.model.TaskDataBO;
 
 public interface TaskClickListener {
 
-    void onTaskExecutedClick(TaskDataBO taskDataBO);
+    void onTaskExecutedClick(TaskDataBO taskDataBO, int selectedListPos);
 
-    void onTaskButtonClick(TaskDataBO taskBO, int actionMode,int selectedListPos);
+    void onTaskButtonClick(TaskDataBO taskBO, int actionMode, int selectedListPos);
 
     void onAttachFile(TaskDataBO taskBO);
 

@@ -166,17 +166,6 @@ public class TaskTestDataFactory {
         return mockReasonList;
     }
 
-    public static String getChannelIdList() {
-        StringBuilder mockChannelIds = new StringBuilder();
-
-        mockChannelIds.append("1213,");
-        mockChannelIds.append("1214,");
-        mockChannelIds.append("1215,");
-        mockChannelIds.append("1216,");
-        mockChannelIds.append("1217");
-        return mockChannelIds.toString();
-    }
-
     public static ArrayList<TaskDataBO> getTaskWithoutUserId() {
         ArrayList<TaskDataBO> mockTaskList = new ArrayList<>();
         TaskDataBO mockImgBo = new TaskDataBO();

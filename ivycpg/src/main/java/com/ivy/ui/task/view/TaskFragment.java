@@ -39,6 +39,7 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
+import com.ivy.sd.png.view.RemarksDialog;
 import com.ivy.ui.task.FilterViewListener;
 import com.ivy.ui.task.TaskClickListener;
 import com.ivy.ui.task.TaskConstant;
@@ -62,7 +63,7 @@ import java.util.Objects;
 
 import javax.inject.Inject;
 
-public class TaskFragment extends BaseFragment implements TaskContract.TaskListView, TabLayout.OnTabSelectedListener, TaskClickListener, ReasonCaptureDialog.OnButtonClickListener, FilterViewListener {
+public class TaskFragment extends BaseFragment implements TaskContract.TaskListView, TabLayout.OnTabSelectedListener, TaskClickListener, ReasonCaptureDialog.OnButtonClickListener, FilterViewListener, RemarksDialog.RemarksListener {
 
     private DrawerLayout drawerLayout;
     private FrameLayout drawer;
@@ -323,11 +324,28 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
 
     @Override
-    public void onTaskExecutedClick(TaskDataBO taskDataBO) {
-        if (source == TaskConstant.SOURCE.RETAILER) {
-            taskPresenter.updateModuleTime();
+    public void onTaskExecutedClick(TaskDataBO taskDataBO, int selectedListPos) {
+        taskListLastSelectedPos = selectedListPos;
+
+        if (taskPresenter.isShowRemarks()
+                && taskDataBO.isChecked()) {
+            FragmentTransaction ft = getActivity()
+                    .getSupportFragmentManager().beginTransaction();
+            RemarksDialog dialog = new RemarksDialog(taskDataBO.getRemark(),
+                    TaskConstant.TASK_REMARK, this);
+            dialog.setCancelable(false);
+            dialog.show(ft, TaskConstant.TASK_REMARK);
+        } else {
+            updateTaskExecution();
         }
-        taskPresenter.updateTaskExecution(taskDataBO, 0);
+    }
+
+
+    private void updateTaskExecution() {
+        if (source == TaskConstant.SOURCE.RETAILER)
+            taskPresenter.updateModuleTime();
+
+        taskPresenter.updateTaskExecution(taskList.get(taskListLastSelectedPos), 0);
     }
 
     @Override
@@ -604,7 +622,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
         taskList.clear();
         taskList.addAll(updatedList);
-        taskListAdapter = new TaskListAdapter(getActivity(), taskList, taskPresenter.outDateFormat(), this, source, taskPresenter.isShowProdLevel(), tabLayout.getSelectedTabPosition(), isPreVisit,isFromHomeSrc);
+        taskListAdapter = new TaskListAdapter(getActivity(), taskList, taskPresenter.outDateFormat(), this, source, taskPresenter.isShowProdLevel(), tabLayout.getSelectedTabPosition(), isPreVisit, isFromHomeSrc);
         recyclerView.setAdapter(taskListAdapter);
 
         if (bottomSheetBehavior.getState() == BottomSheetBehavior.STATE_EXPANDED)
@@ -710,6 +728,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
         Intent i = new Intent(getActivity(), TaskCreationActivity.class);
         i.putExtra(TaskConstant.RETAILER_WISE_TASK, source == TaskConstant.SOURCE.RETAILER);
         i.putExtra(TaskConstant.MENU_CODE, menuCode);
+        i.putExtra(TaskConstant.FROM_HOME_SCREEN, isFromHomeSrc);
         i.putExtra(TaskConstant.SCREEN_TITLE, screenTitle);
         startActivityForResult(i, TaskConstant.TASK_CREATED_SUCCESS_CODE);
     }
@@ -721,22 +740,22 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
             android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
             FilterFragment frag = (FilterFragment) fm
-                    .findFragmentByTag("filter");
+                    .findFragmentByTag(TaskConstant.FILTER);
             FragmentTransaction ft = fm
                     .beginTransaction();
             if (frag != null)
                 ft.detach(frag);
             Bundle bundle = new Bundle();
-            bundle.putSerializable("SelectedFilterList", selectedFilterIds);
-            bundle.putSerializable("hashList", filterHashMapList);
-            bundle.putSerializable("menuList", menuList);
+            bundle.putSerializable(TaskConstant.SELECTED_FILTER_LIST, selectedFilterIds);
+            bundle.putSerializable(TaskConstant.FILTER_LIST, filterHashMapList);
+            bundle.putSerializable(TaskConstant.FILTER_MENU_LIST, menuList);
             bundle.putBoolean(TaskConstant.FROM_HOME_SCREEN, isFromHomeSrc);
 
             // set FragmentClass Arguments
             FilterFragment mFragment = new FilterFragment();
             mFragment.setArguments(bundle);
             mFragment.setFilterViewListener(this);
-            ft.replace(R.id.right_drawer, mFragment, "filter");
+            ft.replace(R.id.right_drawer, mFragment, TaskConstant.FILTER);
             ft.commit();
         } catch (Exception e) {
             Commons.printException(e + "");
@@ -860,7 +879,7 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
         if (selectedFilterIds != null
                 && !selectedFilterIds.isEmpty())
-            taskPresenter.updateFilterListData(selectedIdList, filerName.equalsIgnoreCase("Retailer"));
+            taskPresenter.updateFilterListData(selectedIdList, filerName.equalsIgnoreCase(TaskConstant.RETAILER_FILTER_MENU));
     }
 
     @Override
@@ -873,5 +892,11 @@ public class TaskFragment extends BaseFragment implements TaskContract.TaskListV
 
         taskPresenter.fetchFilterList(isFromHomeSrc);
         taskPresenter.updateFilterListData(new HashMap<>(), false);
+    }
+
+    @Override
+    public void updateRemarks(String remark) {
+        taskList.get(taskListLastSelectedPos).setRemark(remark);
+        updateTaskExecution();
     }
 }

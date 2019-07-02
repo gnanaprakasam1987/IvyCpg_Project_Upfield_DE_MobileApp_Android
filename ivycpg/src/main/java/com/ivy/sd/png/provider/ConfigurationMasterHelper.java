@@ -1589,6 +1589,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_TASK_DUDE_DATE_COUNT = "TASK02";
     public int IS_TASK_DUDE_DATE_COUNT;
 
+    private static final String CODE_TASK_REMARKS_MANDATORY = "TASK03";
+    public boolean IS_TASK_REMARKS_MANDATORY;
+
     private static final String CODE_SHOW_RETAILER_LAST_VISIT = "RTRS33";
     public boolean IS_SHOW_RETAILER_LAST_VISIT;
     public boolean IS_SHOW_RETAILER_LAST_VISITEDBY;
@@ -2808,6 +2811,7 @@ public class ConfigurationMasterHelper {
         if (hashMapHHTModuleConfig.get(CODE_TASK_DUDE_DATE_COUNT) != null) {
             IS_TASK_DUDE_DATE_COUNT = hashMapHHTModuleOrder.get(CODE_TASK_DUDE_DATE_COUNT);
         }
+        this.IS_TASK_REMARKS_MANDATORY = hashMapHHTModuleConfig.get(CODE_TASK_REMARKS_MANDATORY) != null ? hashMapHHTModuleConfig.get(CODE_TASK_REMARKS_MANDATORY) : false;
 
         this.IS_SHOW_RETAILER_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LAST_VISIT) : false;
         this.IS_SHOW_RETAILER_LAST_VISITEDBY = isShowLastVisitedBy();
