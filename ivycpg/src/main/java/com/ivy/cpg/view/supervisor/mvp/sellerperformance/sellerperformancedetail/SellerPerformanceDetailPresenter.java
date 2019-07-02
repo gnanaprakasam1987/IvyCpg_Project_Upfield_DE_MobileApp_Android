@@ -457,18 +457,6 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     }
 
     @Override
-    public String convertMillisToTime(Long time) {
-
-        if (time != null && time != 0) {
-            Date date = new Date(time);
-            DateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-            return format.format(date);
-        } else
-            return "";
-    }
-
-    @Override
     public String calculateDuration(long startTime,long endTime){
 
         String duratingStr = (String) DateUtils.getRelativeTimeSpanString(startTime, endTime, 0);

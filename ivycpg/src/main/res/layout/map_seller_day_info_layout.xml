@@ -9,6 +9,7 @@
     android:visibility="visible"
     app:behavior_hideable="false"
     app:behavior_peekHeight="@dimen/_210sdp"
+    android:clickable="true"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
 

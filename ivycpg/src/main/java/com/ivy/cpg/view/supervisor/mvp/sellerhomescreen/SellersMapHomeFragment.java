@@ -440,6 +440,9 @@ public class SellersMapHomeFragment extends IvyBaseFragment implements
 
             }
         } else if (item.getItemId() == R.id.menu_date) {
+
+            sellerListRecyclerView.setVisibility(View.GONE);
+
             showDatePicker();
         } else if (item.getItemId() == R.id.menu_user) {
             displayUsers();

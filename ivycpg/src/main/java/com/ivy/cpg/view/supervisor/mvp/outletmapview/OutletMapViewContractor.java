@@ -39,8 +39,6 @@ public interface OutletMapViewContractor {
 
         void setUnbilledOutlet();
 
-        String convertMillisToTime(Long time);
-
         String calculateDuration(long startTime,long endTime);
     }
 }
