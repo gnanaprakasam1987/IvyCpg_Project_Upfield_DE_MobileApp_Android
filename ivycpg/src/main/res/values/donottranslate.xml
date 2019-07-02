@@ -366,4 +366,7 @@
     <string name="upload">Upload</string>
     <string name="records">Record\'s</string>
     <string name="seconds">Second\'s</string>
+    <string name="sync_report">Sync Report</string>
+    <string name="freeze_columns">Freeze Columns</string>
+    <string name="freeze_columns_alert_title">Select columns want to be freeze</string>
 </resources>

@@ -49,5 +49,11 @@
         android:icon="@drawable/ic_action_icon_reports"
         android:title="Download Report"
         android:orderInCategory="1017"/>
+    <item
+        android:id="@+id/menu_download_upload_report"
+        IvyDist:showAsAction="collapseActionView"
+        android:icon="@drawable/ic_action_icon_reports"
+        android:title="@string/sync_report"
+        android:orderInCategory="1018"/>
 
 </menu>

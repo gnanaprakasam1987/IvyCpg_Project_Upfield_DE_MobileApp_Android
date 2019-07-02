@@ -898,6 +898,12 @@
         <activity
             android:name="com.ivy.ui.retailer.viewretailers.view.list.RetailerListActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.ui.reports.syncreport.view.SyncReportActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name="com.ivy.ui.reports.dynamicreport.view.DynamicReportActivity"
+            android:screenOrientation="portrait" />
 
     </application>
 

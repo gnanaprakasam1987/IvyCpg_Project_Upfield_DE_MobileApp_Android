@@ -106,6 +106,7 @@ import com.ivy.sd.png.view.NewoutletContainerFragment;
 import com.ivy.sd.png.view.PlanDeviationFragment;
 import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.ui.attendance.inout.view.TimeTrackingFragment;
+import com.ivy.ui.reports.dynamicreport.view.DynamicReportFragmentNew;
 import com.ivy.ui.retailerplan.calendar.view.CalendarPlanFragment;
 import com.ivy.ui.retailer.viewretailers.view.map.RetailerMapFragment;
 import com.ivy.ui.notes.NoteConstant;
@@ -131,6 +132,7 @@ import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_DASH_KPI;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_DELMGMT_RET;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_DENOMINATION;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_DIGITIAL_SELLER;
+import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_DYNAMIC_REPORT;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_EMPTY_RECONCILIATION;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_EXPENSE;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_IN_OUT;
@@ -1655,6 +1657,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (menuItem.getConfigCode().equals(MENU_NOTES_SW)) {
 
             switchFragment(menuItem.getConfigCode(), menuItem.getMenuName());
+        } else if (menuItem.getConfigCode().equals(MENU_DYNAMIC_REPORT)) {
+
+            switchFragment(menuItem.getConfigCode(), menuItem.getMenuName());
         }
 
 
@@ -1768,6 +1773,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
         NotesListFragment notesListFragment = (NotesListFragment) fm.findFragmentByTag(MENU_NOTES_SW);
 
+        DynamicReportFragmentNew dynamicReportFragmentNew = (DynamicReportFragmentNew) fm.findFragmentByTag(MENU_DYNAMIC_REPORT);
         if (mNewOutletFragment != null && (fragmentName.equals(MENU_NEW_RETAILER))
                 && mNewOutletFragment.isVisible()
                 && !bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER) {
@@ -1898,6 +1904,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (retailerMapFragment != null && (fragmentName.equals(MENU_MAP_PLAN))
                 && retailerMapFragment.isVisible()) {
             return;
+        } else if (dynamicReportFragmentNew != null && (fragmentName.equals(MENU_DYNAMIC_REPORT))
+                && dynamicReportFragmentNew.isVisible()) {
+            return;
         }
         android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
 
@@ -1985,6 +1994,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(calendarPlanFragment);
         if (retailerMapFragment != null)
             ft.remove(retailerMapFragment);
+        if (dynamicReportFragmentNew != null)
+            ft.remove(dynamicReportFragmentNew);
 
         Bundle bndl;
         Fragment fragment;
@@ -2385,6 +2396,16 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 fragment.setArguments(bndl);
                 ft.add(R.id.fragment_content, fragment,
                         MENU_OFLNE_PLAN);
+                break;
+            case MENU_DYNAMIC_REPORT:
+                bndl = new Bundle();
+                bndl.putString("screentitle", menuName);
+                bndl.putString("menucode", MENU_DYNAMIC_REPORT);
+                bndl.putString("rid", "0");
+                fragment = new DynamicReportFragmentNew();
+                fragment.setArguments(bndl);
+                ft.add(R.id.fragment_content, fragment,
+                        MENU_DYNAMIC_REPORT);
                 break;
         }
         ft.commitAllowingStateLoss();
