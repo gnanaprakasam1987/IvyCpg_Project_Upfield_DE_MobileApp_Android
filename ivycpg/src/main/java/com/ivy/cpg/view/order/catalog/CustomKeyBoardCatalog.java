@@ -97,16 +97,16 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         if (total_tv == null) {
             value_keyboard.setVisibility(View.GONE);
             //setKeyboard(((pdtBO.downloadInStoreLocationsForStockCheck().get(0).getShelfPiece() != -1) ? pdtBO.downloadInStoreLocationsForStockCheck().get(0).getShelfPiece() : 0) + "");
-            setCaseKeyboard(((pdtBO.getLocations().get(0).getShelfCase() != -1) ? pdtBO.getLocations().get(0).getShelfCase() : 0) + "");
-            setOuterKeyboard(((pdtBO.getLocations().get(0).getShelfOuter() != -1) ? pdtBO.getLocations().get(0).getShelfOuter() : 0) + "");
-            setPcsKeyboard(((pdtBO.getLocations().get(0).getShelfPiece() != -1) ? pdtBO.getLocations().get(0).getShelfPiece() : 0) + "");
+            setCaseKeyboard(((pdtBO.getLocations().get(0).getShelfCase() != -1) ? pdtBO.getLocations().get(0).getShelfCase() : 0) + "",true);
+            setOuterKeyboard(((pdtBO.getLocations().get(0).getShelfOuter() != -1) ? pdtBO.getLocations().get(0).getShelfOuter() : 0) + "",true);
+            setPcsKeyboard(((pdtBO.getLocations().get(0).getShelfPiece() != -1) ? pdtBO.getLocations().get(0).getShelfPiece() : 0) + "",true);
         } else {
             value_keyboard.setText(context.getResources().getString(R.string.value) + " : " + bmodel.formatValue(pdtBO.getTotalamount()));
             //mSelectedTV = tv;
 
-            setCaseKeyboard(pdtBO.getOrderedCaseQty() + "");
-            setOuterKeyboard(pdtBO.getOrderedOuterQty() + "");
-            setPcsKeyboard(pdtBO.getOrderedPcsQty() + "");
+            setCaseKeyboard(pdtBO.getOrderedCaseQty() + "",false);
+            setOuterKeyboard(pdtBO.getOrderedOuterQty() + "",false);
+            setPcsKeyboard(pdtBO.getOrderedPcsQty() + "",false);
         }
         if (isDecimalAllowed) {
             decimal_point.setVisibility(View.VISIBLE);
@@ -272,13 +272,16 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
         }
     }
 
-    private void setCaseKeyboard(String s) {
+    private void setCaseKeyboard(String s,boolean isStock) {
 
         /**
          * set max length digit based on IS_ORD_DIGIT config initially it will allow 4 digit only
          */
-        if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
+        if (bmodel.configurationMasterHelper.IS_ORD_DIGIT && !isStock)
             case_typed_value.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
+        if (bmodel.configurationMasterHelper.IS_STK_DIGIT && isStock)
+            case_typed_value.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
+
 
         currentCsQty = pdtBO.getOrderedCaseQty();
 
@@ -304,65 +307,24 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
             }
         });
 
-            case_typed_value.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        case_typed_value.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                }
+            }
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    String qty = s.toString();
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String qty = s.toString();
 
-                    if (total_tv != null) {
+                if (total_tv != null) {
 
-                        float totalQty = (SDUtil.convertToInt(qty) * pdtBO.getCaseSize())
-                                + (pdtBO.getOrderedPcsQty())
-                                + (pdtBO.getOrderedOuterQty() * pdtBO.getOutersize());
+                    float totalQty = (SDUtil.convertToInt(qty) * pdtBO.getCaseSize())
+                            + (pdtBO.getOrderedPcsQty())
+                            + (pdtBO.getOrderedOuterQty() * pdtBO.getOutersize());
 
-                        if (pdtBO.isAllocation() == 1 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                            if (totalQty <= pdtBO.getSIH()) {
-                                isOrderAllowed = true;
-                                if (!qty.equals("")) {
-                                    pdtBO.setOrderedCaseQty(SDUtil.convertToInt(qty));
-                                }
-                                double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getCsrp())
-                                        + (pdtBO.getOrderedPcsQty() * pdtBO.getSrp())
-                                        + (pdtBO.getOrderedOuterQty() * pdtBO.getOsrp());
-                                //double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getSrp());
-                                pdtBO.setTotalamount(tot);
-                            } else {
-                                isOrderAllowed = false;
-                                if (!qty.equals("0")) {
-                                    Toast.makeText(context, String.format(context.getResources().getString(R.string.exceed),
-                                            pdtBO.getSIH()), Toast.LENGTH_SHORT).show();
-                                    //Delete the last entered number and reset the qty
-                                    qty = qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0";
-                                    pdtBO.setOrderedCaseQty(SDUtil.convertToInt(qty));
-                                }
-                            }
-                        } else if (pdtBO.isCbsihAvailable()) {
-                            if (totalQty <= pdtBO.getCpsih()) {
-                                isOrderAllowed = true;
-                                if (!qty.equals("")) {
-                                    pdtBO.setOrderedCaseQty(SDUtil.convertToInt(qty));
-                                }
-                                double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getCsrp())
-                                        + (pdtBO.getOrderedPcsQty() * pdtBO.getSrp())
-                                        + (pdtBO.getOrderedOuterQty() * pdtBO.getOsrp());
-                                //double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getSrp());
-                                pdtBO.setTotalamount(tot);
-                            } else {
-                                isOrderAllowed = false;
-                                if (!qty.equals("0")) {
-                                    Toast.makeText(context, String.format(context.getResources().getString(R.string.exceed),
-                                            pdtBO.getCpsih()), Toast.LENGTH_SHORT).show();
-                                    //Delete the last entered number and reset the qty
-                                    qty = qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0";
-                                    pdtBO.setOrderedCaseQty(SDUtil.convertToInt(qty));
-                                }
-                            }
-                        } else {
+                    if (pdtBO.isAllocation() == 1 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                        if (totalQty <= pdtBO.getSIH()) {
                             isOrderAllowed = true;
                             if (!qty.equals("")) {
                                 pdtBO.setOrderedCaseQty(SDUtil.convertToInt(qty));
@@ -372,42 +334,85 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
                                     + (pdtBO.getOrderedOuterQty() * pdtBO.getOsrp());
                             //double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getSrp());
                             pdtBO.setTotalamount(tot);
+                        } else {
+                            isOrderAllowed = false;
+                            if (!qty.equals("0")) {
+                                Toast.makeText(context, String.format(context.getResources().getString(R.string.exceed),
+                                        pdtBO.getSIH()), Toast.LENGTH_SHORT).show();
+                                //Delete the last entered number and reset the qty
+                                qty = qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0";
+                                pdtBO.setOrderedCaseQty(SDUtil.convertToInt(qty));
+                            }
+                        }
+                    } else if (pdtBO.isCbsihAvailable()) {
+                        if (totalQty <= pdtBO.getCpsih()) {
+                            isOrderAllowed = true;
+                            if (!qty.equals("")) {
+                                pdtBO.setOrderedCaseQty(SDUtil.convertToInt(qty));
+                            }
+                            double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getCsrp())
+                                    + (pdtBO.getOrderedPcsQty() * pdtBO.getSrp())
+                                    + (pdtBO.getOrderedOuterQty() * pdtBO.getOsrp());
+                            //double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getSrp());
+                            pdtBO.setTotalamount(tot);
+                        } else {
+                            isOrderAllowed = false;
+                            if (!qty.equals("0")) {
+                                Toast.makeText(context, String.format(context.getResources().getString(R.string.exceed),
+                                        pdtBO.getCpsih()), Toast.LENGTH_SHORT).show();
+                                //Delete the last entered number and reset the qty
+                                qty = qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0";
+                                pdtBO.setOrderedCaseQty(SDUtil.convertToInt(qty));
+                            }
                         }
                     } else {
+                        isOrderAllowed = true;
                         if (!qty.equals("")) {
-                            if (qty.endsWith("."))
-                                qty = qty.substring(0, qty.length() - 1);
-                            if (qty.equals("-1"))
-                                pdtBO.getLocations().get(0).setShelfCase(-1);
-                            else
-                                pdtBO.getLocations().get(0).setShelfCase(SDUtil.convertToInt(qty));
+                            pdtBO.setOrderedCaseQty(SDUtil.convertToInt(qty));
+                        }
+                        double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getCsrp())
+                                + (pdtBO.getOrderedPcsQty() * pdtBO.getSrp())
+                                + (pdtBO.getOrderedOuterQty() * pdtBO.getOsrp());
+                        //double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getSrp());
+                        pdtBO.setTotalamount(tot);
+                    }
+                } else {
+                    if (!qty.equals("")) {
+                        if (qty.endsWith("."))
+                            qty = qty.substring(0, qty.length() - 1);
+                        if (qty.equals("-1"))
+                            pdtBO.getLocations().get(0).setShelfCase(-1);
+                        else
+                            pdtBO.getLocations().get(0).setShelfCase(SDUtil.convertToInt(qty));
 
-                            if (bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
-                                    && (!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
-                                    || bmodel.configurationMasterHelper.getSOLogic() != 1)) {
+                        if (bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
+                                && (!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
+                                || bmodel.configurationMasterHelper.getSOLogic() != 1)) {
 
-                                String totalStockInPiece = getProductTotalValue();
-                                tv_totalStockQty.setText(totalStockInPiece);
+                            String totalStockInPiece = getProductTotalValue();
+                            tv_totalStockQty.setText(totalStockInPiece);
 
-                            }
                         }
                     }
                 }
+            }
 
-                @Override
-                public void afterTextChanged(Editable s) {
+            @Override
+            public void afterTextChanged(Editable s) {
 
-                }
-            });
+            }
+        });
     }
 
-    private void setOuterKeyboard(String s) {
+    private void setOuterKeyboard(String s,boolean isStock) {
 
         /**
          * set max length digit based on IS_ORD_DIGIT config initially it will allow 4 digit only
          */
-        if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
+        if (bmodel.configurationMasterHelper.IS_ORD_DIGIT && !isStock)
             outer_case_typed_value.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
+        if (bmodel.configurationMasterHelper.IS_STK_DIGIT && isStock)
+            outer_case_typed_value.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
 
         currentOuQty = pdtBO.getOrderedOuterQty();
         if (s.length() > 0)
@@ -432,63 +437,22 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
             }
         });
 
-            outer_case_typed_value.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        outer_case_typed_value.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                }
+            }
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    String qty = s.toString();
-                    if (total_tv != null) {
-                        float totalQty = (SDUtil.convertToInt(qty) * pdtBO.getOutersize())
-                                + (pdtBO.getOrderedCaseQty() * pdtBO.getCaseSize())
-                                + (pdtBO.getOrderedPcsQty());
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String qty = s.toString();
+                if (total_tv != null) {
+                    float totalQty = (SDUtil.convertToInt(qty) * pdtBO.getOutersize())
+                            + (pdtBO.getOrderedCaseQty() * pdtBO.getCaseSize())
+                            + (pdtBO.getOrderedPcsQty());
 
-                        if (pdtBO.isAllocation() == 1 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                            if (totalQty <= pdtBO.getSIH()) {
-                                isOrderAllowed = true;
-                                if (!qty.equals("")) {
-                                    pdtBO.setOrderedOuterQty(SDUtil.convertToInt(qty));
-                                }
-                                double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getCsrp())
-                                        + (pdtBO.getOrderedPcsQty() * pdtBO.getSrp())
-                                        + (pdtBO.getOrderedOuterQty() * pdtBO.getOsrp());
-                                //double tot = (pdtBO.getOrderedOuterQty() * pdtBO.getSrp());
-                                pdtBO.setTotalamount(tot);
-                            } else {
-                                isOrderAllowed = false;
-                                if (!qty.equals("0")) {
-                                    Toast.makeText(context, String.format(context.getResources().getString(R.string.exceed),
-                                            pdtBO.getSIH()), Toast.LENGTH_SHORT).show();
-                                    //Delete the last entered number and reset the qty
-                                    qty = qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0";
-                                    pdtBO.setOrderedOuterQty(SDUtil.convertToInt(qty));
-                                }
-                            }
-                        } else if (pdtBO.isCbsihAvailable()) {
-                            if (totalQty <= pdtBO.getCpsih()) {
-                                isOrderAllowed = true;
-                                if (!qty.equals("")) {
-                                    pdtBO.setOrderedOuterQty(SDUtil.convertToInt(qty));
-                                }
-                                double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getCsrp())
-                                        + (pdtBO.getOrderedPcsQty() * pdtBO.getSrp())
-                                        + (pdtBO.getOrderedOuterQty() * pdtBO.getOsrp());
-                                //double tot = (pdtBO.getOrderedOuterQty() * pdtBO.getSrp());
-                                pdtBO.setTotalamount(tot);
-                            } else {
-                                isOrderAllowed = false;
-                                if (!qty.equals("0")) {
-                                    Toast.makeText(context, String.format(context.getResources().getString(R.string.exceed),
-                                            pdtBO.getCpsih()), Toast.LENGTH_SHORT).show();
-                                    //Delete the last entered number and reset the qty
-                                    qty = qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0";
-                                    pdtBO.setOrderedOuterQty(SDUtil.convertToInt(qty));
-                                }
-                            }
-                        } else {
+                    if (pdtBO.isAllocation() == 1 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                        if (totalQty <= pdtBO.getSIH()) {
                             isOrderAllowed = true;
                             if (!qty.equals("")) {
                                 pdtBO.setOrderedOuterQty(SDUtil.convertToInt(qty));
@@ -498,43 +462,87 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
                                     + (pdtBO.getOrderedOuterQty() * pdtBO.getOsrp());
                             //double tot = (pdtBO.getOrderedOuterQty() * pdtBO.getSrp());
                             pdtBO.setTotalamount(tot);
+                        } else {
+                            isOrderAllowed = false;
+                            if (!qty.equals("0")) {
+                                Toast.makeText(context, String.format(context.getResources().getString(R.string.exceed),
+                                        pdtBO.getSIH()), Toast.LENGTH_SHORT).show();
+                                //Delete the last entered number and reset the qty
+                                qty = qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0";
+                                pdtBO.setOrderedOuterQty(SDUtil.convertToInt(qty));
+                            }
+                        }
+                    } else if (pdtBO.isCbsihAvailable()) {
+                        if (totalQty <= pdtBO.getCpsih()) {
+                            isOrderAllowed = true;
+                            if (!qty.equals("")) {
+                                pdtBO.setOrderedOuterQty(SDUtil.convertToInt(qty));
+                            }
+                            double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getCsrp())
+                                    + (pdtBO.getOrderedPcsQty() * pdtBO.getSrp())
+                                    + (pdtBO.getOrderedOuterQty() * pdtBO.getOsrp());
+                            //double tot = (pdtBO.getOrderedOuterQty() * pdtBO.getSrp());
+                            pdtBO.setTotalamount(tot);
+                        } else {
+                            isOrderAllowed = false;
+                            if (!qty.equals("0")) {
+                                Toast.makeText(context, String.format(context.getResources().getString(R.string.exceed),
+                                        pdtBO.getCpsih()), Toast.LENGTH_SHORT).show();
+                                //Delete the last entered number and reset the qty
+                                qty = qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0";
+                                pdtBO.setOrderedOuterQty(SDUtil.convertToInt(qty));
+                            }
                         }
                     } else {
-
+                        isOrderAllowed = true;
                         if (!qty.equals("")) {
-                            if (qty.endsWith("."))
-                                qty = qty.substring(0, qty.length() - 1);
-                            if (qty.equals("-1"))
-                                pdtBO.getLocations().get(0).setShelfOuter(-1);
-                            else
-                                pdtBO.getLocations().get(0).setShelfOuter(SDUtil.convertToInt(qty));
+                            pdtBO.setOrderedOuterQty(SDUtil.convertToInt(qty));
+                        }
+                        double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getCsrp())
+                                + (pdtBO.getOrderedPcsQty() * pdtBO.getSrp())
+                                + (pdtBO.getOrderedOuterQty() * pdtBO.getOsrp());
+                        //double tot = (pdtBO.getOrderedOuterQty() * pdtBO.getSrp());
+                        pdtBO.setTotalamount(tot);
+                    }
+                } else {
 
-                            if (!qty.equals("") && bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
-                                    && (!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
-                                    || bmodel.configurationMasterHelper.getSOLogic() != 1)) {
+                    if (!qty.equals("")) {
+                        if (qty.endsWith("."))
+                            qty = qty.substring(0, qty.length() - 1);
+                        if (qty.equals("-1"))
+                            pdtBO.getLocations().get(0).setShelfOuter(-1);
+                        else
+                            pdtBO.getLocations().get(0).setShelfOuter(SDUtil.convertToInt(qty));
 
-                                String totalStockInPiece = getProductTotalValue();
-                                tv_totalStockQty.setText(totalStockInPiece);
+                        if (!qty.equals("") && bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
+                                && (!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
+                                || bmodel.configurationMasterHelper.getSOLogic() != 1)) {
 
-                            }
+                            String totalStockInPiece = getProductTotalValue();
+                            tv_totalStockQty.setText(totalStockInPiece);
+
                         }
                     }
                 }
+            }
 
-                @Override
-                public void afterTextChanged(Editable s) {
+            @Override
+            public void afterTextChanged(Editable s) {
 
-                }
-            });
+            }
+        });
     }
 
-    private void setPcsKeyboard(String s) {
+    private void setPcsKeyboard(String s,boolean isStock) {
 
         /**
          * set max length digit based on IS_ORD_DIGIT config initially it will allow 4 digit only
          */
-        if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
+        if (bmodel.configurationMasterHelper.IS_ORD_DIGIT && !isStock)
             pcs_typed_value.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
+        if (bmodel.configurationMasterHelper.IS_STK_DIGIT && isStock)
+            pcs_typed_value.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
+
 
         currentPsQty = pdtBO.getOrderedPcsQty();
         if (s.length() > 0)
@@ -559,66 +567,23 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
             }
         });
 
-            pcs_typed_value.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        pcs_typed_value.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
-                }
+            }
 
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    String qty = s.toString();
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String qty = s.toString();
 
-                    if (total_tv != null) {
-                        float totalQty = (pdtBO.getOrderedCaseQty() * pdtBO.getCaseSize())
-                                + (SDUtil.convertToInt(qty))
-                                + (pdtBO.getOrderedOuterQty() * pdtBO.getOutersize());
+                if (total_tv != null) {
+                    float totalQty = (pdtBO.getOrderedCaseQty() * pdtBO.getCaseSize())
+                            + (SDUtil.convertToInt(qty))
+                            + (pdtBO.getOrderedOuterQty() * pdtBO.getOutersize());
 
-                        if (pdtBO.isAllocation() == 1 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
-                            if (totalQty <= pdtBO.getSIH()) {
-                                isOrderAllowed = true;
-                                if (!qty.equals("")) {
-                                    pdtBO.setOrderedPcsQty(SDUtil.convertToInt(qty));
-                                }
-                                double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getCsrp())
-                                        + (pdtBO.getOrderedPcsQty() * pdtBO.getSrp())
-                                        + (pdtBO.getOrderedOuterQty() * pdtBO.getOsrp());
-                                //double tot = (pdtBO.getOrderedPcsQty() * pdtBO.getSrp());
-                                pdtBO.setTotalamount(tot);
-                            } else {
-                                isOrderAllowed = false;
-                                if (!qty.equals("0")) {
-                                    Toast.makeText(context, String.format(context.getResources().getString(
-                                            R.string.exceed),
-                                            pdtBO.getSIH()), Toast.LENGTH_SHORT).show();
-                                    //Delete the last entered number and reset the qty
-                                    qty = qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0";
-                                    pdtBO.setOrderedPcsQty(SDUtil.convertToInt(qty));
-                                }
-                            }
-                        } else if (pdtBO.isCbsihAvailable()) {
-                            if (totalQty <= pdtBO.getCpsih()) {
-                                isOrderAllowed = true;
-                                if (!qty.equals("")) {
-                                    pdtBO.setOrderedPcsQty(SDUtil.convertToInt(qty));
-                                }
-                                double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getCsrp())
-                                        + (pdtBO.getOrderedPcsQty() * pdtBO.getSrp())
-                                        + (pdtBO.getOrderedOuterQty() * pdtBO.getOsrp());
-                                //double tot = (pdtBO.getOrderedPcsQty() * pdtBO.getSrp());
-                                pdtBO.setTotalamount(tot);
-                            } else {
-                                isOrderAllowed = false;
-                                if (!qty.equals("0")) {
-                                    Toast.makeText(context, String.format(context.getResources().getString(
-                                            R.string.exceed),
-                                            pdtBO.getCpsih()), Toast.LENGTH_SHORT).show();
-                                    //Delete the last entered number and reset the qty
-                                    qty = qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0";
-                                    pdtBO.setOrderedPcsQty(SDUtil.convertToInt(qty));
-                                }
-                            }
-                        } else {
+                    if (pdtBO.isAllocation() == 1 && bmodel.configurationMasterHelper.IS_SIH_VALIDATION) {
+                        if (totalQty <= pdtBO.getSIH()) {
                             isOrderAllowed = true;
                             if (!qty.equals("")) {
                                 pdtBO.setOrderedPcsQty(SDUtil.convertToInt(qty));
@@ -628,34 +593,77 @@ public class CustomKeyBoardCatalog extends Dialog implements View.OnClickListene
                                     + (pdtBO.getOrderedOuterQty() * pdtBO.getOsrp());
                             //double tot = (pdtBO.getOrderedPcsQty() * pdtBO.getSrp());
                             pdtBO.setTotalamount(tot);
+                        } else {
+                            isOrderAllowed = false;
+                            if (!qty.equals("0")) {
+                                Toast.makeText(context, String.format(context.getResources().getString(
+                                        R.string.exceed),
+                                        pdtBO.getSIH()), Toast.LENGTH_SHORT).show();
+                                //Delete the last entered number and reset the qty
+                                qty = qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0";
+                                pdtBO.setOrderedPcsQty(SDUtil.convertToInt(qty));
+                            }
+                        }
+                    } else if (pdtBO.isCbsihAvailable()) {
+                        if (totalQty <= pdtBO.getCpsih()) {
+                            isOrderAllowed = true;
+                            if (!qty.equals("")) {
+                                pdtBO.setOrderedPcsQty(SDUtil.convertToInt(qty));
+                            }
+                            double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getCsrp())
+                                    + (pdtBO.getOrderedPcsQty() * pdtBO.getSrp())
+                                    + (pdtBO.getOrderedOuterQty() * pdtBO.getOsrp());
+                            //double tot = (pdtBO.getOrderedPcsQty() * pdtBO.getSrp());
+                            pdtBO.setTotalamount(tot);
+                        } else {
+                            isOrderAllowed = false;
+                            if (!qty.equals("0")) {
+                                Toast.makeText(context, String.format(context.getResources().getString(
+                                        R.string.exceed),
+                                        pdtBO.getCpsih()), Toast.LENGTH_SHORT).show();
+                                //Delete the last entered number and reset the qty
+                                qty = qty.length() > 1 ? qty.substring(0, qty.length() - 1) : "0";
+                                pdtBO.setOrderedPcsQty(SDUtil.convertToInt(qty));
+                            }
                         }
                     } else {
+                        isOrderAllowed = true;
                         if (!qty.equals("")) {
+                            pdtBO.setOrderedPcsQty(SDUtil.convertToInt(qty));
+                        }
+                        double tot = (pdtBO.getOrderedCaseQty() * pdtBO.getCsrp())
+                                + (pdtBO.getOrderedPcsQty() * pdtBO.getSrp())
+                                + (pdtBO.getOrderedOuterQty() * pdtBO.getOsrp());
+                        //double tot = (pdtBO.getOrderedPcsQty() * pdtBO.getSrp());
+                        pdtBO.setTotalamount(tot);
+                    }
+                } else {
+                    if (!qty.equals("")) {
 
-                            if (qty.endsWith("."))
-                                qty = qty.substring(0, qty.length() - 1);
-                            if (qty.equals("-1"))
-                                pdtBO.getLocations().get(0).setShelfPiece(-1);
-                            else
-                                pdtBO.getLocations().get(0).setShelfPiece(SDUtil.convertToInt(qty));
+                        if (qty.endsWith("."))
+                            qty = qty.substring(0, qty.length() - 1);
+                        if (qty.equals("-1"))
+                            pdtBO.getLocations().get(0).setShelfPiece(-1);
+                        else
+                            pdtBO.getLocations().get(0).setShelfPiece(SDUtil.convertToInt(qty));
 
-                            if (!qty.equals("") && bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
-                                    && (!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
-                                    || bmodel.configurationMasterHelper.getSOLogic() != 1)) {
+                        if (!qty.equals("") && bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER
+                                && (!bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER_LOGIC
+                                || bmodel.configurationMasterHelper.getSOLogic() != 1)) {
 
-                                String totalStockInPiece = getProductTotalValue();
-                                tv_totalStockQty.setText(totalStockInPiece);
+                            String totalStockInPiece = getProductTotalValue();
+                            tv_totalStockQty.setText(totalStockInPiece);
 
-                            }
                         }
                     }
                 }
+            }
 
-                @Override
-                public void afterTextChanged(Editable s) {
+            @Override
+            public void afterTextChanged(Editable s) {
 
-                }
-            });
+            }
+        });
     }
 
     @Override

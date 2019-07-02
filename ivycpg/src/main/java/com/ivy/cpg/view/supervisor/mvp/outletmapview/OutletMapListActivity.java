@@ -396,7 +396,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
             menu.findItem(R.id.menu_search).setVisible(false);
         }
         else {
-            menu.findItem(R.id.menu_search).setVisible(true);
+            menu.findItem(R.id.menu_search).setVisible(false);
         }
 
         return super.onPrepareOptionsMenu(menu);

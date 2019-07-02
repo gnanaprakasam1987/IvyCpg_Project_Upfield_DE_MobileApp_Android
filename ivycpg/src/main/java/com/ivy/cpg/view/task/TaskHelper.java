@@ -8,7 +8,9 @@ import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.utils.DateTimeUtils;
+import com.ivy.utils.StringUtils;
 
 import java.util.Vector;
 
@@ -300,8 +302,18 @@ public class TaskHelper {
         );
         db.createDataBase();
         db.openDataBase();
+        String UID;
+        String retIdSF = null;
+        if (retailerid.equals("0")) {
+            UID = StringUtils.QT(bmodel.getAppDataProvider().getUser().getUserid()
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
+        } else {
+            UID = StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
+                    + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
+            retIdSF = StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
+        }
 
-        String UID = QT(retailerid + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
+
         String columns = "TaskId,RetailerId,Date,UId,Upload,ridSF";
         String values;
 
@@ -309,9 +321,9 @@ public class TaskHelper {
 
         if (taskBO.isChecked()) {
             values = QT(taskBO.getTaskId()) + "," + QT(retailerid) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + UID + ",'N'" + ","
-                     + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
+                    + retIdSF;
             db.insertSQL("TaskExecutionDetails", columns, values);
-            bmodel.saveModuleCompletion("MENU_TASK", true);
+            bmodel.saveModuleCompletion("MENU_TASK",true);
         } else {
 
             Cursor c = db.selectSQL("Select * from TaskExecutionDetails");

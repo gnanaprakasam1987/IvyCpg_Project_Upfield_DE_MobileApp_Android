@@ -1303,10 +1303,11 @@
     <string name="rejected_order">Rejected Order</string>
 
     <string-array name="task_tab_header">
-        <item>TÜMÜ</item>
+        <item>Herşey</item>
         <item>VERİLENLER</item>
         <item>KENDİME AİT</item>
         <item>Tamamlanan</item>
+        <item>TEMSİLCİ</item>
     </string-array>
 
     <string-array name="task_sort_list">

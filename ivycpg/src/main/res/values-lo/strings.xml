@@ -1303,10 +1303,11 @@
     <string name="rejected_order">Rejected Order</string>
 
     <string-array name="task_tab_header">
-        <item>ທັງ​ໜົດ</item>
+        <item>ทั้งหมด</item>
         <item>ກຳ​ນົດ​ໃຫ້</item>
         <item>ໜ້າ​ວຽກ​ຂ້ອຍ</item>
         <item>ที่เสร็จสมบูรณ์</item>
+        <item>ตัวแทน</item>
     </string-array>
 
     <string-array name="task_sort_list">

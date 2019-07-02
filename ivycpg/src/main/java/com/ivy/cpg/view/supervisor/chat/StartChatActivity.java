@@ -4,9 +4,8 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.TypedValue;
 import android.widget.Toast;
 
@@ -15,7 +14,6 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.ivy.core.base.view.BaseActivity;
 import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
@@ -24,37 +22,25 @@ import com.ivy.utils.AppUtils;
 
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import co.chatsdk.core.base.BaseNetworkAdapter;
 import co.chatsdk.core.dao.DaoCore;
 import co.chatsdk.core.dao.Keys;
-import co.chatsdk.core.dao.Message;
 import co.chatsdk.core.dao.User;
-import co.chatsdk.core.events.EventType;
-import co.chatsdk.core.events.NetworkEvent;
-import co.chatsdk.core.interfaces.ThreadType;
 import co.chatsdk.core.session.ChatSDK;
 import co.chatsdk.core.session.InterfaceManager;
 import co.chatsdk.core.session.NetworkManager;
 import co.chatsdk.core.session.StorageManager;
 import co.chatsdk.core.types.AccountDetails;
-import co.chatsdk.core.types.AccountType;
-import co.chatsdk.core.types.AuthKeys;
 import co.chatsdk.core.types.ConnectionType;
-import co.chatsdk.core.types.ReadStatus;
-import co.chatsdk.core.utils.NotificationUtils;
 import co.chatsdk.firebase.FirebaseEventHandler;
-import co.chatsdk.firebase.wrappers.ThreadWrapper;
-import co.chatsdk.ui.login.LoginActivity;
 import co.chatsdk.ui.utils.ToastHelper;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 
+import static co.chatsdk.firebase.FirebasePaths.IndexPath;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.USERS;
@@ -98,6 +84,8 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
 
             FirebaseEventHandler.shared().currentUserOn(ChatSDK.currentUser().getEntityID());
 
+            setUserName();
+
             if (userChatId.equals("")) {
                 InterfaceManager.shared().a.startMainActivity(this);
                 finish();
@@ -111,6 +99,18 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
             }
         }
 
+    }
+
+    private void setUserName() {
+        try {
+            BusinessModel businessModel = (BusinessModel) getApplicationContext();
+            ChatSDK.currentUser().setName(businessModel.getAppDataProvider().getUser().getUserName());
+            ChatSDK.currentUser().update();
+
+            setUserInfo();
+        }catch (Exception e){
+            Commons.printException(e);
+        }
     }
 
     protected int getTaskDescriptionColor() {
@@ -149,6 +149,8 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
                 .subscribe(new Action() {
                     @Override
                     public void run() throws Exception {
+
+                        setUserName();
 
                         if (userChatId.equals("")) {
                             InterfaceManager.shared().a.startMainActivity(StartChatActivity.this);
@@ -216,6 +218,25 @@ public class StartChatActivity extends co.chatsdk.ui.main.BaseActivity {
                     }
                 });
 
+    }
+
+    private void setUserInfo(){
+
+        User user = ChatSDK.currentUser();
+
+        Map<String,Object> mapVal = new HashMap<>();
+        mapVal.put("name",user.getName());
+
+        DatabaseReference mDatabase;
+        mDatabase = FirebaseDatabase.getInstance().getReference();
+
+        mDatabase.child(AppUtils.getSharedPreferences(this).getString(FIREBASE_ROOT_PATH, ""))
+                .child(USERS).child(user.getEntityID()).child("meta")
+                .updateChildren(mapVal);
+
+        mDatabase.child(AppUtils.getSharedPreferences(this).getString(FIREBASE_ROOT_PATH, ""))
+                .child(IndexPath).child(user.getEntityID())
+                .updateChildren(mapVal);
     }
 
     private void startChatActivity() {

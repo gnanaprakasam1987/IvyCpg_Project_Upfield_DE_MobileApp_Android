@@ -1306,6 +1306,7 @@
         <item>Assigned</item>
         <item>My Task</item>
         <item>Completed</item>
+        <item>Delegate</item>
     </string-array>
 
     <string-array name="task_sort_list">

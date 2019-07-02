@@ -15,7 +15,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/toolbar"
-        android:layout_margin="@dimen/_15sdp"
+        android:layout_margin="@dimen/_10sdp"
         android:text="@string/title" />
 
     <android.support.v7.widget.AppCompatEditText
@@ -24,12 +24,10 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/edittext_height"
         android:layout_below="@+id/note_title_label_tv"
-        android:layout_marginStart="@dimen/_15sdp"
-        android:layout_marginLeft="@dimen/_15sdp"
-        android:layout_marginEnd="@dimen/_15sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
         android:gravity="start|center"
         android:hint="@string/type_here"
-        android:padding="@dimen/_4sdp"
         android:inputType="textCapSentences|textMultiLine"
         android:textAlignment="textStart" />
 
@@ -40,7 +38,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/note_title_val"
-        android:layout_margin="@dimen/_15sdp"
+        android:layout_margin="@dimen/_10sdp"
         android:visibility="gone"
         android:text="@string/assign_to_retailer" />
 
@@ -50,9 +48,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/spinner_layout_height"
         android:layout_below="@+id/note_spinner_label_tv"
-        android:layout_marginStart="@dimen/_15sdp"
-        android:layout_marginLeft="@dimen/_15sdp"
-        android:layout_marginEnd="@dimen/_15sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
         android:visibility="gone"
         android:gravity="start|center"
         />
@@ -64,7 +61,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/retailer_selection_sp"
-        android:layout_margin="@dimen/_15sdp"
+        android:layout_margin="@dimen/_10sdp"
         android:text="@string/description" />
 
     <android.support.v7.widget.AppCompatEditText
@@ -73,9 +70,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/_300sdp"
         android:layout_below="@+id/note_desc_label_tv"
-        android:layout_marginStart="@dimen/_15sdp"
-        android:layout_marginLeft="@dimen/_15sdp"
-        android:layout_marginEnd="@dimen/_15sdp"
+        android:layout_marginStart="@dimen/_10sdp"
+        android:layout_marginEnd="@dimen/_10sdp"
         android:background="@drawable/button_box_corner_grey"
         android:gravity="start|top"
         android:hint="@string/type_here"

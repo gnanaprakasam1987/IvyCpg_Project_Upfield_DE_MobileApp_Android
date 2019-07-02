@@ -36,6 +36,7 @@ import java.util.Locale;
 
 import javax.annotation.Nullable;
 
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_APPLICATION_ID;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_PATH;
 
@@ -43,7 +44,6 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
 
     private SellerPerformanceContractor.SellerPerformanceView sellerPerformanceView;
     private Context context;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ListenerRegistration registration ;
     private int CHART_DAYS = 0;
     private final int CHART_DAYS_COUNT = 4;
@@ -109,8 +109,12 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
     @Override
     public void sellerActivityInfoListener(final int userId, final String date) {
 
-        if (basePath.equals(""))
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
+
+        if (appId.equals("") || basePath.equals(""))
             return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         CollectionReference queryRef = db
                 .collection(basePath)
@@ -148,8 +152,12 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
     @Override
     public void prepareChartData(final int userId,final String date){
 
-        if (basePath.equals(""))
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
+
+        if (appId.equals("") || basePath.equals(""))
             return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         CollectionReference queryRef = db
                 .collection(basePath)
@@ -254,7 +262,7 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
         try {
             SellerBo sellerBoDocumentSnapshot = documentSnapshot.toObject((SellerBo.class));
 
-            System.out.println("setValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
+            //System.out.println("setValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
             if (sellerBoDocumentSnapshot != null && sellerInfoHasMap.get(sellerBoDocumentSnapshot.getUserId()) != null) {
 
@@ -320,7 +328,7 @@ public class SellerPerformancePresenter implements SellerPerformanceContractor.S
     //0 : A-Z --- 1 : Z-A ---- 2 : Performance
     void sortList(int sortBy,ArrayList<SellerBo> sellerBos){
 
-        System.out.println("sortBy = " + sortBy);
+        Commons.print("sortBy = " + sortBy);
 
         if(sortBy == 0) {
             Collections.sort(sellerBos, new Comparator<SellerBo>() {

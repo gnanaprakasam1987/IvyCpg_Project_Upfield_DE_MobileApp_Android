@@ -573,90 +573,35 @@ public class LoadManagementFragment extends IvyBaseFragment {
                     isMandatoryModulesAvailable=true;
                 }
 
-                if (menuDB.get(i).getConfigCode().equals(MENU_STOCK_PROPOSAL)) {
-                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
-                        menuDB.get(i).setDone(true);
-                        count_moduleCompleted+=1;
-                    }
-                }
-                else if (menuDB.get(i).getConfigCode().equals(MENU_MANUAL_VAN_LOAD)) {
+                if (menuDB.get(i).getConfigCode().equals(MENU_STOCK_PROPOSAL)
+                        || menuDB.get(i).getConfigCode().equals(MENU_MANUAL_VAN_LOAD)
+                        || menuDB.get(i).getConfigCode().equals(MENU_STOCK_VIEW)
+                        || menuDB.get(i).getConfigCode().equals(MENU_VANLOAD_STOCK_VIEW)
+                        || menuDB.get(i).getConfigCode().equals(MENU_VAN_UNLOAD)
+                        || menuDB.get(i).getConfigCode().equals(MENU_VAN_PLANOGRAM)
+                        || menuDB.get(i).getConfigCode().equals(MENU_LOAD_WEBVIEW)
+                        || menuDB.get(i).getConfigCode().equals(MENU_PLANNING)
+                        || menuDB.get(i).getConfigCode().equals(MENU_TASK_REPORT)
+                        || menuDB.get(i).getConfigCode().equals(MENU_DASH_DAY)
+                        || menuDB.get(i).getConfigCode().equals(MENU_DAMAGE_STOCK)
+                        || menuDB.get(i).getConfigCode().equals(MENU_SURVEY01_SW)
+                        || menuDB.get(i).getConfigCode().equals(MENU_SRTDAY_SURVEY)
+                        || menuDB.get(i).getConfigCode().equals(MENU_ENDDAY_SURVEY)) {
+
                     if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
                         menuDB.get(i).setDone(true);
                         count_moduleCompleted += 1;
                     }
-                }
-                else if (menuDB.get(i).getConfigCode().equals(MENU_ODAMETER)) {
 
-                    if(fromScreen.equals("MENU_PLANNING_SUB")) {
+                } else if (menuDB.get(i).getConfigCode().equals(MENU_ODAMETER)) {
+
+                    if (fromScreen.equals("MENU_PLANNING_SUB"))
                         menuDB.get(i).setDone(OdameterHelper.getInstance(getActivity().getApplicationContext()).isOdameterStarted(getActivity()));
-                    }
-                    else {
+                    else
                         menuDB.get(i).setDone(OdameterHelper.getInstance(getActivity().getApplicationContext()).isOdameterEnded(getActivity()));
 
-                    }
-
-                    if(menuDB.get(i).isDone())
-                        count_moduleCompleted+=1;
-                }
-                else if (menuDB.get(i).getConfigCode().equals(MENU_STOCK_VIEW)) {
-                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
-                        menuDB.get(i).setDone(true);
+                    if (menuDB.get(i).isDone())
                         count_moduleCompleted += 1;
-                    }
-                }
-                else if (menuDB.get(i).getConfigCode().equals(MENU_VANLOAD_STOCK_VIEW)) {
-                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
-                        menuDB.get(i).setDone(true);
-                        count_moduleCompleted += 1;
-                    }
-                }
-                else if (menuDB.get(i).getConfigCode().equals(MENU_VAN_UNLOAD)) {
-                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
-                        menuDB.get(i).setDone(true);
-                        count_moduleCompleted += 1;
-                    }
-                }
-                else if (menuDB.get(i).getConfigCode().equals(MENU_VAN_PLANOGRAM)) {
-                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
-                        menuDB.get(i).setDone(true);
-                        count_moduleCompleted += 1;
-                    }
-                }
-                else if (menuDB.get(i).getConfigCode().equals(MENU_LOAD_WEBVIEW)) {
-                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
-                        menuDB.get(i).setDone(true);
-                        count_moduleCompleted += 1;
-                    }
-                }
-                else if (menuDB.get(i).getConfigCode().equals(MENU_PLANNING)) {
-                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
-                        menuDB.get(i).setDone(true);
-                        count_moduleCompleted += 1;
-                    }
-                }
-                else if (menuDB.get(i).getConfigCode().equals(MENU_TASK_REPORT)) {
-                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
-                        menuDB.get(i).setDone(true);
-                        count_moduleCompleted += 1;
-                    }
-                }
-                else if (menuDB.get(i).getConfigCode().equals(MENU_DASH_DAY)) {
-                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
-                        menuDB.get(i).setDone(true);
-                        count_moduleCompleted += 1;
-                    }
-                }
-                else if (menuDB.get(i).getConfigCode().equals(MENU_DAMAGE_STOCK)) {
-                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
-                        menuDB.get(i).setDone(true);
-                        count_moduleCompleted += 1;
-                    }
-                }
-                else if (menuDB.get(i).getConfigCode().equals(MENU_SURVEY01_SW)) {
-                    if (bmodel.isModuleCompleted(menuDB.get(i).getConfigCode())) {
-                        menuDB.get(i).setDone(true);
-                        count_moduleCompleted += 1;
-                    }
                 }
             }
 
@@ -834,7 +779,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                         bmodel.mSelectedActivityName = menuName;
                         bmodel.mSelectedActivityConfigCode = menuCode;
                         surveyHelper1.loadSurveyConfig(MENU_SRTDAY_SURVEY);
-                        navigateToActivity(MENU_SRTDAY_SURVEY, menuName, SurveyActivityNew.class);
+                        navigateToActivity(menuName, MENU_SRTDAY_SURVEY, SurveyActivityNew.class);
                     } else {
                         showMessage(getString(R.string.data_not_mapped));
                     }
@@ -846,7 +791,7 @@ public class LoadManagementFragment extends IvyBaseFragment {
                         bmodel.mSelectedActivityName = menuName;
                         bmodel.mSelectedActivityConfigCode = menuCode;
                         surveyHelper2.loadSurveyConfig(MENU_ENDDAY_SURVEY);
-                        navigateToActivity(MENU_ENDDAY_SURVEY, menuName, SurveyActivityNew.class);
+                        navigateToActivity(menuName, MENU_ENDDAY_SURVEY, SurveyActivityNew.class);
                     } else {
                         showMessage(getString(R.string.data_not_mapped));
                     }

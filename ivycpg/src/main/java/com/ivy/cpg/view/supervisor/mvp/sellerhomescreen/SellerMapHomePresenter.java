@@ -39,6 +39,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
 import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
+import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -69,6 +70,8 @@ import java.util.Vector;
 import javax.annotation.Nullable;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.ATTENDANCE_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.DETAIL_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_APPLICATION_ID;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_EMAIL;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOCATION_PATH;
@@ -76,10 +79,9 @@ import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_P
 
 public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHomePresenter {
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
     private LinkedHashMap<Integer,SellerBo> sellerInfoHasMap = new LinkedHashMap<>();
     private HashSet<Integer> sellerIdHashSet = new HashSet<>();
+    private HashSet<Integer> retailerIdHashSet = new HashSet<>();
     private SellerMapHomeContract.SellerMapHomeView sellerMapHomeView;
     private Context context;
     private ListenerRegistration registration ;
@@ -115,6 +117,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         sellerCountFirestore = 0;
         isZoomed = false;
         totalOutletCount = 0;
+        retailerIdHashSet.clear();
 
         DBUtil db = null;
         try {
@@ -146,7 +149,6 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
                     totalSellerCount = totalSellerCount + 1;
 
-                    totalOutletCount = totalOutletCount + sellerBo.getTarget();
                 }
                 c.close();
             }
@@ -157,9 +159,18 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                 db.closeDB();
         }
 
+        totalOutletCount  = getTotalOutletCount();
+
         sellerMapHomeView.displayTotalSellerCount(totalSellerCount);
         sellerMapHomeView.updateSellerAttendance(totalSellerCount,0);
         sellerMapHomeView.displayTotalOutletCount(totalOutletCount);
+    }
+
+    private int getTotalOutletCount() {
+
+        retailerIdHashSet.addAll(SupervisorActivityHelper.getInstance().getRetailerMasterHashmap().keySet());
+
+        return retailerIdHashSet.size();
     }
 
     @Override
@@ -217,6 +228,10 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     @Override
     public void loginToFirebase(final Context context, final int userId) {
 
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
+        if (appId.equals(""))
+            return;
+
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             String email = AppUtils.getSharedPreferences(context).getString(FIREBASE_EMAIL,"");
 
@@ -254,9 +269,12 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     @Override
     public void sellerActivityInfoListener(int userId,String date) {
 
-        if (basePath.equals(""))
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
+
+        if (appId.equals("") || basePath.equals(""))
             return;
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference queryRef = db
                 .collection(basePath)
                 .document(TIME_STAMP_PATH)
@@ -283,18 +301,53 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
                                         setValues(snapshot.getDocument());
                                         break;
                                 }
+
+                                computeDeviateOutletCount(snapshot);
                             }
                         }
                     }
                 });
     }
 
+    private void computeDeviateOutletCount(DocumentChange snapshot){
+
+        try {
+            snapshot.getDocument()
+                    .getReference().collection(DETAIL_PATH)
+                    .whereEqualTo("isDeviated", true)
+                    .get()
+                    .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+
+                            if (task.getResult() != null) {
+
+                                for (DocumentChange documentChange : task.getResult().getDocumentChanges()) {
+
+                                    RetailerBo documentRetailerBo = documentChange.getDocument().toObject((RetailerBo.class));
+
+                                    retailerIdHashSet.add(documentRetailerBo.getRetailerId());
+                                }
+                            }
+
+                            totalOutletCount = retailerIdHashSet.size();
+                            sellerMapHomeView.displayTotalOutletCount(totalOutletCount);
+                        }
+                    });
+        }catch (Exception e){
+            Commons.printException(e);
+        }
+    }
+
     @Override
     public void realtimeLocationInfoListener(int userId,String date){
 
-        if (basePath.equals(""))
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
+
+        if (appId.equals("") || basePath.equals(""))
             return;
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference queryRef = db
                 .collection(basePath)
                 .document(REALTIME_LOCATION_PATH)
@@ -330,9 +383,12 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     @Override
     public void sellerAttendanceInfoListener(int userId,String date){
 
-        if (basePath.equals(""))
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
+
+        if (appId.equals("") || basePath.equals(""))
             return;
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference queryRef = db
                 .collection(basePath)
                 .document(ATTENDANCE_PATH)
@@ -361,8 +417,6 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     }
 
     private void updateAttendanceValues(DocumentSnapshot document) {
-
-            System.out.println("setAttendanceValues documentSnapshot = " + document.getData().get("userId"));
 
             Integer userId = (int) (long) document.getData().get("userId");
 
@@ -542,6 +596,8 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
     }
 
     public void setSupervisorLastVisit(){
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         Map<String, Object> stringObjectMap = new HashMap<>();
         stringObjectMap.put("lastUpdate", FieldValue.serverTimestamp());
         db.collection("SupervisorState")
@@ -586,7 +642,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
         if (documentSnapshot.getData() != null) {
 
-            System.out.println("setAttendanceValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
+           // System.out.println("setAttendanceValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
             Integer userId = (int) (long) documentSnapshot.getData().get("userId");
 
@@ -621,7 +677,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         try {
             SellerBo sellerBoDocumentSnapshot = documentSnapshot.toObject((SellerBo.class));
 
-            System.out.println("setValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
+            //System.out.println("setValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
             if (sellerBoDocumentSnapshot != null && sellerInfoHasMap.get(sellerBoDocumentSnapshot.getUserId()) != null) {
 
@@ -677,7 +733,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
 
             if (sellerBoDocumentSnapshot != null) {
 
-                System.out.println("setLocationValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
+//                System.out.println("setLocationValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
                 LatLng destLatLng = new LatLng(sellerBoDocumentSnapshot.getLatitude(), sellerBoDocumentSnapshot.getLongitude());
 
@@ -806,7 +862,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
             String downloadurl = getDownloadUrl();
 
             Commons.print("downloadUrl "+downloadurl);
-            System.out.println("json = " + json);
+            Commons.print("json = " + json);
 
             Vector<String> responseVector = getSupRetailerMasterResponse(json, downloadurl);
 

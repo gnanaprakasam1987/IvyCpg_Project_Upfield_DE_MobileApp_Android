@@ -20,6 +20,8 @@ import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -873,5 +875,61 @@ public class StockCheckPresenterImpl implements StockCheckContractor.StockCheckP
         businessModel.productHelper.clearOrderTable();
         businessModel.outletTimeStampHelper.updateTimeStampModuleWise(DateTimeUtils
                 .now(DateTimeUtils.TIME));
+    }
+
+    public enum SORTBY {
+        AVAILABILITY_ASC(0),
+        AVAILABILITY_DESC(1),
+        ISDISTRIBUTED_ASC(2),
+        ISDISTRIBUTED_DESC(3);
+
+        private int value;
+
+        SORTBY(int value) {
+            this.value = value;
+        }
+
+    }
+
+    void sortList(int sortBy,ArrayList<ProductMasterBO> sellerBos){
+
+        System.out.println("sortBy = " + sortBy);
+
+        if (SORTBY.AVAILABILITY_ASC.value == sortBy) {
+            Collections.sort(sellerBos, new Comparator<ProductMasterBO>() {
+                @Override
+                public int compare(ProductMasterBO p1, ProductMasterBO p2) {
+                    return String.valueOf(p2.getAvailable()).compareTo(String.valueOf(p1.getAvailable()));
+                }
+            });
+
+        } else if (SORTBY.AVAILABILITY_DESC.value == (sortBy)) {
+            Collections.sort(sellerBos, new Comparator<ProductMasterBO>() {
+                @Override
+                public int compare(ProductMasterBO p1, ProductMasterBO p2) {
+                    return String.valueOf(p1.getAvailable()).compareTo(String.valueOf(p2.getAvailable()));
+                }
+            });
+        } else if (SORTBY.ISDISTRIBUTED_ASC.value == (sortBy)) {
+            Collections.sort(sellerBos, new Comparator<ProductMasterBO>() {
+                @Override
+                public int compare(ProductMasterBO p1, ProductMasterBO p2) {
+                    return String.valueOf(p2.getIsDistributed()).compareTo(String.valueOf(p1.getIsDistributed()));
+                }
+            });
+        } else if (SORTBY.ISDISTRIBUTED_DESC.value == (sortBy)) {
+            Collections.sort(sellerBos, new Comparator<ProductMasterBO>() {
+                @Override
+                public int compare(ProductMasterBO p1, ProductMasterBO p2) {
+                    return String.valueOf(p1.getIsDistributed()).compareTo(String.valueOf(p2.getIsDistributed()));
+                }
+            });
+        } else {
+            sellerBos.clear();
+            sellerBos.addAll(ProductTaggingHelper.getInstance(context).getTaggedProducts());
+        }
+        System.out.print(sellerBos);
+        stockCheckView.notifyListChange();
+
     }
 }

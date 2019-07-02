@@ -16,10 +16,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 
 import com.github.mikephil.charting.animation.Easing;
@@ -41,13 +38,10 @@ import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.cpg.view.supervisor.mvp.sellerperformance.sellerperformancedetail.SellerPerformanceDetailActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
-import com.ivy.sd.png.model.HideShowScrollListener;
 import com.ivy.utils.FontUtils;
 import com.ivy.utils.view.OnSingleClickListener;
 
 import java.util.ArrayList;
-
-import static android.graphics.Color.rgb;
 
 public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar implements SellerPerformanceContractor.SellerPerformanceView
         , SellerPerformanceListAdapter.ItemClickedListener{
@@ -55,8 +49,6 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
     private RecyclerView sellerPerformanceRecycler;
     private SellerPerformanceListAdapter sellerPerformanceListAdapter;
 
-    private LinearLayout bottomLayout;
-    private Animation slide_down, slide_up;
     private ArrayList<SellerBo> sellerPerformanceList = new ArrayList<>();
     private SellerPerformancePresenter sellerPerformancePresenter;
 
@@ -74,14 +66,8 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         setContentView(R.layout.activity_seller_performance_list);
 
         sellerPerformanceRecycler = findViewById(R.id.seller_list_recycler);
-        bottomLayout = findViewById(R.id.bottom_layout);
 
         sortView = findViewById(R.id.fab);
-
-        slide_down = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.out_to_bottom);
-        slide_up = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.bottom_layout_slideup);
 
         overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
 
@@ -190,30 +176,6 @@ public class SellerPerformanceListActivity extends IvyBaseActivityNoActionBar im
         sellerPerformanceRecycler.setLayoutManager(mLayoutManager);
         sellerPerformanceRecycler.setItemAnimator(new DefaultItemAnimator());
 
-
-        sellerPerformanceRecycler.addOnScrollListener(new HideShowScrollListener() {
-            @Override
-            public void onHide() {
-                if (bottomLayout.getVisibility() == View.VISIBLE) {
-                    bottomLayout.startAnimation(slide_down);
-                    bottomLayout.setVisibility(View.GONE);
-                }
-            }
-
-            @Override
-            public void onShow() {
-                if (bottomLayout.getVisibility() == View.GONE) {
-                    bottomLayout.setVisibility(View.VISIBLE);
-                    bottomLayout.startAnimation(slide_up);
-                }
-            }
-
-            @Override
-            public void onScrolled() {
-                // To load more data
-            }
-
-        });
     }
 
     @Override

@@ -37,14 +37,15 @@ negative button and neutral button -->
 
     <style name="AppTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabIndicatorColor">?attr/accentcolor</item>
+        <item name="android:outlineAmbientShadowColor" tools:targetApi="p">@color/light_gray</item>
         <item name="tabIndicatorHeight">@dimen/tab_indicator_height</item>
         <item name="tabPaddingStart">6dp</item>
         <item name="tabPaddingEnd">6dp</item>
         <item name="tabBackground">?attr/primarycolor</item>
+        <item name="android:elevation" tools:targetApi="lollipop">4dp</item>
         <item name="android:background">?attr/primarycolor</item>
         <item name="tabTextAppearance">@style/AppTabTextAppearance</item>
         <item name="tabSelectedTextColor">@color/white</item>
-        <item name="android:textSize">@dimen/font_small</item>
     </style>
 
     <style name="AppTabTextAppearance" parent="TextAppearance.Design.Tab">
@@ -453,7 +454,8 @@ negative button and neutral button -->
         <!-- Custom Buttons -->
         <item name="roundedCustomButtonSmallGrey">@style/ButtonSmallRoundCornerGrey_enabled</item>
         <item name="roundedCustomButtonSmall">@style/ButtonSmallRoundCornerBlue_enabled</item>
-        <item name="roundedCustomButtonSmallTransparent">@style/ButtonSmallRoundCornerTransparent_enabled
+        <item name="roundedCustomButtonSmallTransparent">
+            @style/ButtonSmallRoundCornerTransparent_enabled
         </item>
         <item name="roundedCustomButtonNormalGrey">@style/ButtonNormalRoundCornerGrey_enabled</item>
         <item name="roundedCustomButtonNormal">@style/ButtonNormalRoundCornerBlue_enabled</item>
@@ -585,13 +587,11 @@ negative button and neutral button -->
 
     </style>
 
-    <style name="AppBottomSheetDialogTheme"
-        parent="Theme.Design.Light.BottomSheetDialog">
+    <style name="AppBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
         <item name="bottomSheetStyle">@style/AppModalStyle</item>
     </style>
 
-    <style name="AppModalStyle"
-        parent="Widget.Design.BottomSheet.Modal">
+    <style name="AppModalStyle" parent="Widget.Design.BottomSheet.Modal">
         <item name="behavior_peekHeight">@dimen/_80sdp</item>
     </style>
 

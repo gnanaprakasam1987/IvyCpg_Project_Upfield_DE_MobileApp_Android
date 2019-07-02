@@ -4,7 +4,7 @@
     style="?android:attr/spinnerItemStyle"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:gravity="center"
+    android:gravity="start|center"
     android:maxLines="1"
     android:textSize="@dimen/drop_down_text_font_size"
     android:fontFamily="@font/roboto_regular"

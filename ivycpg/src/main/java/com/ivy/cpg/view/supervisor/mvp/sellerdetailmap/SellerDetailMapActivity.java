@@ -526,7 +526,7 @@ public class SellerDetailMapActivity extends IvyBaseActivityNoActionBar implemen
         if (mDrawerLayout.isDrawerOpen(GravityCompat.END)) {
             menu.findItem(R.id.menu_search).setVisible(false);
         } else {
-            menu.findItem(R.id.menu_search).setVisible(true);
+            menu.findItem(R.id.menu_search).setVisible(false);
         }
 
         return true;

@@ -50,6 +50,8 @@ import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.gson.JsonArray;
 import com.ivy.apptutoriallibrary.AppTutorialPlugin;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.ivy.core.CodeCleanUpUtil;
 import com.ivy.core.IvyConstants;
 import com.ivy.core.data.app.AppDataProvider;
@@ -187,6 +189,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Vector;
 
 import javax.inject.Inject;
@@ -197,6 +200,11 @@ import co.chatsdk.firebase.FirebaseNetworkAdapter;
 import co.chatsdk.firebase.file_storage.FirebaseFileStorageModule;
 import co.chatsdk.firebase.push.FirebasePushModule;
 
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_API_KEY;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_APPLICATION_ID;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_DATABSE_URL;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_PROJECT_ID;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_STORAGE_BUCKET;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 
 public class BusinessModel extends Application {
@@ -689,6 +697,7 @@ public class BusinessModel extends Application {
 
             codeCleanUpUtil = CodeCleanUpUtil.getInstance(this, appDataProvider);
 
+            initializeFirebase();
             initializeChatSdk();
 
             AppTutorialPlugin.getInstance().setContext(this);
@@ -727,7 +736,7 @@ public class BusinessModel extends Application {
                 Configuration.Builder builder = new Configuration.Builder(context);
 
                 builder.firebaseRootPath(rootPath);
-                builder.firebaseStorageURL(BuildConfig.FB_STORAGE_URL); // /files/new_folder_cpg/chat_img
+                builder.firebaseStorageURL(Objects.requireNonNull(FirebaseApp.getInstance()).getOptions().getStorageBucket()); // /files/new_folder_cpg/chat_img
                 //builder.firebaseCloudMessagingServerKey(BuildConfig.FB_SERVER_KEY);
                 builder.googleMaps(getResources().getString(R.string.google_maps_api_key));
                 builder.locationMessagesEnabled(true);
@@ -751,6 +760,33 @@ public class BusinessModel extends Application {
 
         } catch (Exception e) {
             Commons.printException(e);
+        }
+    }
+
+    public FirebaseApp initializeFirebase(){
+
+        String appId = AppUtils.getSharedPreferences(this).getString(FB_APPLICATION_ID, "");
+        String apiKey = AppUtils.getSharedPreferences(this).getString(FB_API_KEY, "");
+        String dbUrl = AppUtils.getSharedPreferences(this).getString(FB_DATABSE_URL, "");
+        String storageBucket = AppUtils.getSharedPreferences(this).getString(FB_STORAGE_BUCKET, "");
+        String proId = AppUtils.getSharedPreferences(this).getString(FB_PROJECT_ID, "");
+
+        if (!appId.isEmpty() && FirebaseApp.getApps(this).isEmpty()) {
+
+            Commons.print("No Firebase Instance Found");
+
+            FirebaseOptions.Builder builder = new FirebaseOptions.Builder()
+                    .setApplicationId(appId)
+                    .setApiKey(apiKey)
+                    .setDatabaseUrl(dbUrl)
+                    .setStorageBucket(storageBucket)
+                    .setProjectId(proId);
+
+            return FirebaseApp.initializeApp(this, builder.build());
+
+        }else {
+            Commons.print("Firebase Instance Already Created");
+            return null;
         }
     }
 
@@ -928,7 +964,7 @@ public class BusinessModel extends Application {
             StringBuffer sb = new StringBuffer();
 
             sb.append("SELECT distinct Inv.InvoiceNo, Inv.InvoiceDate, Round(invNetamount,2) as Inv_amt,");
-            sb.append(" Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt,");
+            sb.append(" Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+IFNULL(Inv.paidAmount,0),2) as RcvdAmt,");
             sb.append(" Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os,");
             sb.append(" payment.ChequeNumber,payment.ChequeDate,Round(Inv.discountedAmount,2),sum(PD.discountvalue),inv.DocRefNo,inv.DueDays,inv.DueDate,payment.Date");
             sb.append(" FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo");
@@ -1627,9 +1663,6 @@ public class BusinessModel extends Application {
 
                     mRetailerBOByRetailerid.put(retailer.getRetailerID(), retailer);
 
-                    if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
-                        updateIsToday(db);
-
 
                 }
                 c.close();
@@ -1642,11 +1675,12 @@ public class BusinessModel extends Application {
             if (configurationMasterHelper.SHOW_DATE_ROUTE) {
                 mRetailerHelper.updatePlannedDatesInRetailerObj(db);
                 mRetailerHelper.getPlannedRetailerFromDate();
-
-            } else {
-
-                getPlannedRetailer();
             }
+            else if (configurationMasterHelper.SHOW_DATE_PLAN_ROUTE)
+                updateIsToday(db);
+            else
+                getPlannedRetailer();
+
 
             if (configurationMasterHelper.SHOW_MISSED_RETAILER) {
                 mRetailerHelper.downloadMissedRetailer(db);
@@ -1685,6 +1719,7 @@ public class BusinessModel extends Application {
             }
 
             mRetailerHelper.downloadRetailerTarget("SV", db);
+
 
             db.closeDB();
 
@@ -1762,12 +1797,15 @@ public class BusinessModel extends Application {
 
     private void updateIsToday(DBUtil db) {
         List<String> retailerIds = new ArrayList<>();
-        Cursor c = db.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND VisitStatus = 'PLANNED' or 'COMPLETED' " +
-                "and Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+        List<String> vistedRetailerIds = new ArrayList<>();
+        Cursor c = db.selectSQL("select EntityId,VisitStatus From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
+                "AND Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         if (c != null
                 && c.getCount() > 0) {
             while (c.moveToNext()) {
                 retailerIds.add(c.getString(0));
+                if (c.getString(1).equals("COMPLETED"))
+                    vistedRetailerIds.add(c.getString(0));
             }
 
             c.close();
@@ -1775,8 +1813,11 @@ public class BusinessModel extends Application {
         if (retailerIds.size() > 0)
             for (RetailerMasterBO retailerMasterBO : getRetailerMaster()) {
                 retailerMasterBO.setIsToday(0);
+                retailerMasterBO.setIsVisited("N");
                 if (retailerIds.contains(retailerMasterBO.getRetailerID())) {
                     retailerMasterBO.setIsToday(1);
+                    if (vistedRetailerIds.contains(retailerMasterBO.getRetailerID()))
+                        retailerMasterBO.setIsVisited("Y");
                 }
             }
     }
@@ -3751,7 +3792,7 @@ public class BusinessModel extends Application {
                 c.close();
             }
 
-            c = db.selectSQL("SELECT DISTINCT ImageName FROM SerializedAssetMaster");
+            c = db.selectSQL("SELECT DISTINCT ImageName FROM SerializedAssetImageDetails");
             if (c != null) {
                 while ((c.moveToNext())) {
                     getDigitalContentURLS().put(
@@ -5592,7 +5633,7 @@ public class BusinessModel extends Application {
             db.openDataBase();
             String columns = "Message, Imageurl, TimeStamp, Type";
 
-            values = QT(msg) + "," + url + QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME)) + QT(type);
+            values = QT(msg) + "," +  (url)+ "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME))+ "," + QT(type);
 
             db.insertSQL("Notification", columns, values);
 
@@ -6844,11 +6885,10 @@ public class BusinessModel extends Application {
 
     public void writeToFile(String data, String filename, String foldername, String filePath) {
         String path;
-        if(filePath.equals("")){
-            path=getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
-        }
-        else {
-            path=filePath+ foldername;
+        if (filePath.equals("")) {
+            path = getExternalFilesDir(Environment.DIRECTORY_PICTURES) + foldername;
+        } else {
+            path = filePath + foldername;
         }
 
         File folder = new File(path);

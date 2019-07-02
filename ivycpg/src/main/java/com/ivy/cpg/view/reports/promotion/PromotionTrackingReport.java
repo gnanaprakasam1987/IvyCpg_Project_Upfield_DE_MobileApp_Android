@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 
 import java.util.ArrayList;
@@ -43,11 +44,11 @@ public class PromotionTrackingReport extends IvyBaseFragment {
 
         ArrayAdapter<RetailerMasterBO> brandAdapter = new ArrayAdapter<>(getActivity(),
                 R.layout.call_analysis_spinner_layout);
-        brandAdapter.add(new RetailerMasterBO(0, getResources().getString(
+        brandAdapter.add(new RetailerMasterBO("0", getResources().getString(
                 R.string.select)));
         for (int i = 0; i < retailerMasterList.size(); i++) {
             brandAdapter
-                    .add(new RetailerMasterBO(retailerMasterList.get(i).getRetailerId(),
+                    .add(new RetailerMasterBO(String.valueOf(retailerMasterList.get(i).getRetailerId()),
                             retailerMasterList.get(i).getRetailerName()));
         }
         brandAdapter
@@ -57,8 +58,8 @@ public class PromotionTrackingReport extends IvyBaseFragment {
         spnBeat.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long l) {
-                retailerID = ((RetailerMasterBO) parent
-                        .getItemAtPosition(position)).getRetailerId();
+                retailerID = SDUtil.convertToInt(((RetailerMasterBO) parent
+                        .getItemAtPosition(position)).getRetailerID());
                 loadData(retailerID);
             }
 

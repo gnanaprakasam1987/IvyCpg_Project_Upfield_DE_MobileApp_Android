@@ -1308,6 +1308,7 @@
         <item>Assigned</item>
         <item>My Task</item>
         <item>Completed</item>
+        <item>Delegate</item>
     </string-array>
 
     <string-array name="task_sort_list">
@@ -1354,5 +1355,13 @@
     <string name="oth_disc">Oth. Disc (Other Discount)</string>
     <string name="sch_disc">Sch. Disc (Scheme Discount)</string>
     <string name="attachment">Attachment</string>
+
+    <string-array name="stockcheck_sort_list">
+        <item>Availability Asc</item>
+        <item>Availability Desc</item>
+        <item>IsDistribution Asc</item>
+        <item>IsDistribution Desc</item>
+        <item>Default</item>
+    </string-array>
 
 </resources>

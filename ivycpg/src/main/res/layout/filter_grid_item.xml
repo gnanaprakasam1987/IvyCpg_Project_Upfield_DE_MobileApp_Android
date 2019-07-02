@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/GridItem"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/filter_level_height"
+    android:layout_height="@dimen/list_item_height"
     android:orientation="horizontal"
     android:gravity="center_vertical">
 
@@ -13,14 +13,14 @@
             android:layout_height="wrap_content"
             style="@style/TextViewListItemValues"
             android:layout_weight="8"
-            android:gravity="center_horizontal|center_vertical"
+            android:gravity="center"
             android:text="@string/dummy_txt"
             android:textAllCaps="true"/>
 
         <ImageView
             android:id="@+id/selectedfilters"
             android:layout_width="0dp"
-            android:layout_height="@dimen/selected_filter_image_size"
+            android:layout_height="@dimen/info_icon"
             android:layout_weight="2"
             android:src="@drawable/ic_filter_selected"
             android:visibility="gone"

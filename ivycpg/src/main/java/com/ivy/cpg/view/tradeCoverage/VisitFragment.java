@@ -484,6 +484,8 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
                 lbl_TodayTgt.setText(getString(R.string.total_vol));
             if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME_WGT)
                 lbl_TodayTgt.setText(getString(R.string.total_weight));
+            if(bmodel.configurationMasterHelper.SHOW_TOTAL_TIME_SPEND)
+                lbl_TodayTgt.setText(getString(R.string.text_total_time));
         }
 
         try {
@@ -717,27 +719,39 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         }
 
 
-        if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
-            tv_target.setText(String.valueOf(getStoreVisited()));
+        if (!bmodel.configurationMasterHelper.SHOW_ALL_ROUTES) {
 
-            //cpg137 - Tid18
-        else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME_WGT)
-            tv_target.setText(String.valueOf(getTotalWeight()));
+            if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
+                tv_target.setText(String.valueOf(getStoreVisited()));
 
-            //cpg132-task13
-        else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME)
-            tv_target.setText(String.valueOf(getTotalVolume()));
-        else
-            tv_target.setText(getTotalVisitActual());
+                //cpg137 - Tid18
+            else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME_WGT)
+                tv_target.setText(String.valueOf(getTotalWeight()));
 
+                //cpg132-task13
+            else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME)
+                tv_target.setText(String.valueOf(getTotalVolume()));
 
-        if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
-            tv_target1.setText(String.valueOf(getStoreVisited()));
-        else
-            tv_target1.setText(getTotalVisitActual());
+            else if (bmodel.configurationMasterHelper.SHOW_TOTAL_TIME_SPEND)
+                tv_target.setText(getTotalTimeSpend());
+            else
+                tv_target.setText(getTotalVisitActual());
+        } else {
 
-        if (retailerSelectionAdapter != null)
-            retailerSelectionAdapter.notifyDataSetChanged();
+            if (bmodel.configurationMasterHelper.SHOW_STORE_VISITED_COUNT)
+                tv_target1.setText(String.valueOf(getStoreVisited()));
+            else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME_WGT)
+                tv_target1.setText(String.valueOf(getTotalWeight()));
+
+                //cpg132-task13
+            else if (bmodel.configurationMasterHelper.SHOW_TOTAL_ACHIEVED_VOLUME)
+                tv_target1.setText(String.valueOf(getTotalVolume()));
+
+            else if (bmodel.configurationMasterHelper.SHOW_TOTAL_TIME_SPEND)
+                tv_target1.setText(getTotalTimeSpend());
+            else
+                tv_target1.setText(getTotalVisitActual());
+        }
 
     }
 
@@ -2280,5 +2294,27 @@ public class VisitFragment extends IvyBaseFragment implements BrandDialogInterfa
         return bmodel.getAppDataProvider().getPausedRetailer() != null
                 && !retailerMasterBO.getRetailerID().equals(bmodel.getAppDataProvider().getPausedRetailer().getRetailerID());
     }
+
+    private String getTotalTimeSpend() {
+        String totTimeSpend = null;
+        try {
+            DBUtil db = new DBUtil(getActivity(), DataMembers.DB_NAME);
+            db.openDataBase();
+
+            Cursor c = db.selectSQL("select intime from AttendanceTimeDetails");
+            if (c != null) {
+                while (c.moveToNext()) {
+
+                    totTimeSpend = c.getString(0);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException(e);
+        }
+        return DateTimeUtils.getTimeSpend(totTimeSpend,DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "yyyy/MM/dd HH:mm:ss");
+    }
+
 
 }
