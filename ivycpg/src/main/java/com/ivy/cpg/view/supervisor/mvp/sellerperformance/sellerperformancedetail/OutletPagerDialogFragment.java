@@ -24,6 +24,7 @@ import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -320,8 +321,8 @@ public class OutletPagerDialogFragment extends DialogFragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-            holder.tvInTime.setText(sellerPerformanceDetailPresenter.convertMillisToTime(visitedRetailers.get(position).getInTime()));
-            holder.tvOutTime.setText(sellerPerformanceDetailPresenter.convertMillisToTime(visitedRetailers.get(position).getOutTime()));
+            holder.tvInTime.setText(DateTimeUtils.getTimeFromMillis(visitedRetailers.get(position).getInTime()));
+            holder.tvOutTime.setText(DateTimeUtils.getTimeFromMillis(visitedRetailers.get(position).getOutTime()));
             holder.tvOrderValue.setText(Utils.formatAsTwoDecimal(visitedRetailers.get(position).getOrderValue()));
             holder.tvDuration.setText(
                     sellerPerformanceDetailPresenter.calculateDuration(visitedRetailers.get(position).getInTime(),

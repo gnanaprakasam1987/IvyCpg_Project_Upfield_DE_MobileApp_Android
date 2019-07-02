@@ -21,6 +21,7 @@ import com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -89,7 +90,7 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
             holder.retailerName.setText(context.getResources().getString(R.string.last_vist) +" "+context.getResources().getString(R.string.yet_to_visit));
         else
             holder.retailerName.setText(context.getResources().getString(R.string.last_vist)+" "+sellerArrayList.get(position).getRetailerName());
-        holder.retailerVisit.setText(context.getResources().getString(R.string.visit_time)+" "+convertTime(sellerArrayList.get(position).getInTime()));
+        holder.retailerVisit.setText(context.getResources().getString(R.string.visit_time)+" "+ DateTimeUtils.getTimeFromMillis(sellerArrayList.get(position).getInTime()));
         holder.target.setText(context.getResources().getString(R.string.targeted)+" "+sellerArrayList.get(position).getTarget());
         holder.covered.setText(context.getResources().getString(R.string.covered)+" "+sellerArrayList.get(position).getCovered());
 
@@ -137,17 +138,6 @@ public class InMarketSellerAdapter extends RecyclerView.Adapter<InMarketSellerAd
     @Override
     public int getItemCount() {
         return sellerArrayList.size();
-    }
-
-    private String convertTime(long time){
-
-        if(time != 0) {
-            Date date = new Date(time);
-            DateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-            return format.format(date);
-        }else
-            return "";
     }
 
     private void setProfileImage(ImageView userView,String imagePath,int userId) {

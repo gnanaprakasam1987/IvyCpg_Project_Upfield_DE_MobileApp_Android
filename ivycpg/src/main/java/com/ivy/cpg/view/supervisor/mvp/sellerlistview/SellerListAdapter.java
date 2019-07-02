@@ -27,6 +27,7 @@ import com.ivy.cpg.view.supervisor.mvp.sellerdetailmap.SellerDetailMapActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -133,7 +134,7 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
                             .setDismissOnClick(false)
                             .setCornerRadius(5f)
                             .setGravity(Gravity.BOTTOM)
-                            .setText("Last visit at " + convertTime(sellerListBos.get(holder.getAdapterPosition()).getInTime()))
+                            .setText("Last visit at " + DateTimeUtils.getTimeFromMillis(sellerListBos.get(holder.getAdapterPosition()).getInTime()))
                             .setTextSize(R.dimen._11sdp)
                             .setBackgroundColor(ContextCompat.getColor(context, R.color.tootl_tip_bg))
                             .setTextColor(ContextCompat.getColor(context, R.color.white))
@@ -184,16 +185,6 @@ public class SellerListAdapter extends RecyclerView.Adapter<SellerListAdapter.My
     @Override
     public int getItemCount() {
         return sellerListBos.size();
-    }
-
-    private String convertTime(Long time){
-
-        if(time !=null && time != 0) {
-            Date date = new Date(time);
-            Format format = new SimpleDateFormat("hh:mm a", Locale.US);
-            return format.format(date);
-        }else
-            return "";
     }
 
     private void setProfileImage(ImageView userView,String imagePath,int userId) {

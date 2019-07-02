@@ -43,6 +43,7 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.NetworkUtils;
 
 import org.json.JSONArray;
@@ -312,18 +313,6 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     }
 
     @Override
-    public String convertMillisToTime(Long time) {
-
-        if (time != null && time != 0) {
-            Date date = new Date(time);
-            DateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-            return format.format(date);
-        } else
-            return "";
-    }
-
-    @Override
     public String calculateDuration(long startTime, long endTime) {
 
         String duratingStr = (String) DateUtils.getRelativeTimeSpanString(startTime, endTime, 0);
@@ -401,8 +390,8 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
             SellerBo sellerBo = document.toObject((SellerBo.class));
 
             if (sellerBo != null) {
-                String timeIn = convertMillisToTime(sellerBo.getInTime());
-                String retailerName = sellerBo.getRetailerName() != null ? sellerBo.getRetailerName() : "";
+                String timeIn = DateTimeUtils.getTimeFromMillis(sellerBo.getInTime());
+                String retailerName = sellerBo.getRetailerName()!=null?sellerBo.getRetailerName():"";
                 String covered = String.valueOf(sellerBo.getCovered());
 
                 double latitude = sellerBo.getLatitude();
