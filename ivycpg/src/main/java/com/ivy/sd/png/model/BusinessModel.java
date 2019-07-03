@@ -273,6 +273,7 @@ public class BusinessModel extends Application {
     public ModuleTimeStampHelper moduleTimeStampHelper;
     public FitScoreHelper fitscoreHelper;
     //Glide - Circle Image Transform
+    @Deprecated
     public CircleTransform circleTransform;
     /* ******* Invoice Number To Print ******* */
     public String invoiceNumber;
