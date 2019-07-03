@@ -1515,6 +1515,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_DEFAULT_UOM = "ORDB24";
     public boolean IS_SHOW_DEFAULT_UOM;
 
+    private static final String CODE_SHOW_EXPLIST_IN_PROMO = "PROMO06";
+    public boolean IS_SHOW_EXPLIST_IN_PROMO;
+
     private static final String CODE_SHOW_ORDER_PHOTO_CAPTURE = "ORDB20";
     public boolean IS_SHOW_ORDER_PHOTO_CAPTURE;
     //132 --- task 45
@@ -2831,6 +2834,7 @@ public class ConfigurationMasterHelper {
         this.IS_SURVEY_PDF_SHARE = hashMapHHTModuleConfig.get(CODE_SURVEY_PDF_SHARE) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_PDF_SHARE) : false;
         this.IS_PRE_VISIT = hashMapHHTModuleConfig.get(CODE_PRE_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_PRE_VISIT) : false;
         this.IS_SHOW_SORT_STKCHK = hashMapHHTModuleConfig.get(CODE_SHOW_SORT_STKCHK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SORT_STKCHK) : false;
+        this.IS_SHOW_EXPLIST_IN_PROMO = hashMapHHTModuleConfig.get(CODE_SHOW_EXPLIST_IN_PROMO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_EXPLIST_IN_PROMO) : false;
     }
 
     private boolean isInOutModule() {
@@ -4931,6 +4935,7 @@ public class ConfigurationMasterHelper {
     }
 
 
+
     public int getSbdDistTargetPCent() {
         int targetPercent = 0;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -5046,6 +5051,8 @@ public class ConfigurationMasterHelper {
     public void setGenFilter(Vector<ConfigureBO> genFilter) {
         this.genFilter = genFilter;
     }
+
+
 
     public String getLoadmanagementtitle() {
         return loadmanagementtitle;

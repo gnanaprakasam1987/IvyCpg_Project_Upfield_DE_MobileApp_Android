@@ -976,7 +976,8 @@ public class ProductHelper {
                     + " F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid,F.ASRP as asrp,"
                     + " (CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
                     + " (CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom,F.MarginPrice as marginprice"
-                    + (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE ? ",FSH.qty as freeSIH" : ",0 as freeSIH")
+                    + (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE ? ",FSH.qty as freeSIH" : ",0 as freeSIH,")
+                    + "(CASE WHEN A.PID in (PPM.PID) then '1' else '0' end) as  isTradePromo"
                     + " from ProductMaster A";
 
             sql = sql + " left join PriceMaster F on A.Pid = F.pid and F.scid = " + bmodel.getRetailerMasterBO().getGroupId()
@@ -986,6 +987,7 @@ public class ProductHelper {
                     + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A.pid and PWHS.UomID=A.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                     + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A.HSNId"
                     + (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE ? " LEFT JOIN FreeStockInHandMaster FSH ON FSH.pid=A.pid" : "")
+                    + " left join PromotionProductMapping PPM on PPM.PID = A.PID"
                     + " WHERE A.PLid IN(" + mContentLevelId + ") ";
 
             if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
@@ -1080,6 +1082,7 @@ public class ProductHelper {
                     product.setHsnCode(c.getString(c.getColumnIndex("HSNCode")));
                     product.setIsDrug(c.getInt(c.getColumnIndex("IsDrug")));
                     product.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
+                    product.setmTradePromotion(c.getInt(c.getColumnIndex("isTradePromo")));
                     if (bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM) {
                         if (c.getInt(c.getColumnIndex("DefaultUom")) == 0) {
                             if (product.getPcUomid() > 0)
