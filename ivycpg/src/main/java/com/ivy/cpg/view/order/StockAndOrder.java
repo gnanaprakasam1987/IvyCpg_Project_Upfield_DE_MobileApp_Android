@@ -3848,22 +3848,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             });
         }
 
-        holder.group_sc.setVisibility(View.GONE);
-        holder.group_sho.setVisibility(View.GONE);
-        holder.group_sp.setVisibility(View.GONE);
-        holder.group_uom_label.setVisibility(View.GONE);
-        holder.group_uom_qty.setVisibility(View.GONE);
-
-        holder.group_case.setVisibility(View.VISIBLE);
-        holder.group_outer.setVisibility(View.GONE);
-        holder.group_outer.setVisibility(View.GONE);
-
-        holder.group_foc.setVisibility(View.GONE);
-        holder.group_srp_edit.setVisibility(View.GONE);
-        holder.group_sr_return_qty.setVisibility(View.GONE);
-        holder.group_avail.setVisibility(View.GONE);
-
-        holder.group_total_weight.setVisibility(View.GONE);
 
     }
 
