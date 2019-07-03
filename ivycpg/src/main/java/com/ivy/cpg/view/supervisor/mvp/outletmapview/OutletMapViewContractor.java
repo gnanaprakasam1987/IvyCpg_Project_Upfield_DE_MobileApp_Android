@@ -27,7 +27,7 @@ public interface OutletMapViewContractor {
 
         void setView(OutletMapView outletMapView,Context context);
 
-        void downloadOutletListAws();
+        void downloadOutletListAws(String date);
 
         void setOutletActivityDetail(int userId, String date);
 

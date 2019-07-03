@@ -78,7 +78,8 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
     }
 
     @Override
-    public void downloadOutletListAws() {
+    public void downloadOutletListAws(String date) {
+        SupervisorActivityHelper.getInstance().downloadOutletListAws(context,convertPlaneDateToGlobal(date));
         retailerMasterHashmap.putAll(SupervisorActivityHelper.getInstance().getRetailerMasterHashmap());
     }
 

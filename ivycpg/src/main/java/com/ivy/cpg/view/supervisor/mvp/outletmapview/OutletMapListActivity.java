@@ -220,7 +220,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
 
         tabLayout.getTabAt(tabPos).select();
 
-        outletMapViewPresenter.downloadOutletListAws();
+        outletMapViewPresenter.downloadOutletListAws(selectedDate);
 
         outletMapViewPresenter.setTabPosition(tabPos);
 
