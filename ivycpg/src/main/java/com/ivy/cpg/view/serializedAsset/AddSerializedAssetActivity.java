@@ -634,16 +634,20 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                         showMessage(getString(R.string.enter) + " " + serialNoTag);
                         return;
                     }
-                    if (btnAddEffTodate.getText().toString().isEmpty()) {
+
+                    if (assetTrackingHelper.SHOW_ASSET_EFFECTIVE_DATE
+                            && btnAddEffTodate.getText().toString().isEmpty()) {
 
                         showMessage(getString(R.string.choose_eff_to_date));
                         return;
                     }
 
-                    String rentPriceErrorMsg = rentalPriceValidation();
-                    if (!rentPriceErrorMsg.isEmpty()) {
-                        showMessage(rentPriceErrorMsg);
-                        return;
+                    if (assetTrackingHelper.SHOW_ASSET_RENTAL_PRICE) {
+                        String rentPriceErrorMsg = rentalPriceValidation();
+                        if (!rentPriceErrorMsg.isEmpty()) {
+                            showMessage(rentPriceErrorMsg);
+                            return;
+                        }
                     }
 
                     if (!assetTrackingHelper
@@ -711,12 +715,10 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
     }
 
     private String rentalPriceValidation() {
-        if (SDUtil.convertToInt(assetRentPriceEdTxt.getText().toString()) <= 0)
-            return getString(R.string.rental_price_must_be_grater_than_zero);
-
-        else if (assetRentPriceEdTxt.getText().toString().isEmpty())
+        if (assetRentPriceEdTxt.getText().toString().isEmpty())
             return getString(R.string.enter_rental_price);
-
+        else if (SDUtil.convertToDouble(assetRentPriceEdTxt.getText().toString()) <= 0)
+            return getString(R.string.rental_price_must_be_grater_than_zero);
         else
             return "";
     }
