@@ -1,11 +1,13 @@
 package com.ivy.cpg.view.promotion;
 
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -22,6 +24,8 @@ import android.support.v7.widget.CardView;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +42,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -49,6 +54,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.ReasonMaster;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
@@ -59,6 +65,7 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.view.CircleTransform;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
 import com.ivy.sd.png.view.HomeScreenTwo;
@@ -76,7 +83,10 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Locale;
+import java.util.Set;
+import java.util.Vector;
 
 
 public class PromotionTrackingFragment extends IvyBaseFragment implements BrandDialogInterface,
@@ -113,6 +123,20 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
     private Context context;
 
+    private HorizontalScrollView hscrl_spl_filter;
+
+    // To define Accepted or NonAccepted State
+    private ArrayAdapter<ConfigureBO> mStateAdapter;
+    private int mSelectedPromoStateIndex;
+    private ConfigureBO mSelectedPromoStateBO;
+
+    //To Define Trade or Platform Promotions
+    private boolean isGroupSelectedFilterAvailable = false;
+    private boolean isAcceptedFilterSelected = false;
+    private String groupSelectedFilter;
+
+    MyExpAdapter promotionExpAdapter;
+    private CircleTransform circleTransform;
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -141,6 +165,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         drawer.setLayoutParams(params);
         businessModel = (BusinessModel) getActivity().getApplicationContext();
         promotionHelper = PromotionHelper.getInstance(getContext());
+        circleTransform = CircleTransform.getInstance(getContext());
         isFilterAvailable = businessModel.productHelper.isFilterAvaiable(HomeScreenTwo.MENU_PROMO);
         // Initialize the UI components
         viewInitialization(view);
@@ -222,6 +247,15 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             mSelectedStandardListBO = mLocationAdapter.getItem(mSelectedLocationIndex);
         }
 
+        if(promotionHelper.isNonAcceptedPromotionsAvailable()) {
+            mStateAdapter = new ArrayAdapter<>(getActivity(),
+                    android.R.layout.select_dialog_singlechoice);
+            for (ConfigureBO temp : promotionHelper.getPromoStateFilter())
+                mStateAdapter.add(temp);
+            if (mStateAdapter.getCount() > 0) {
+                mSelectedPromoStateBO = mStateAdapter.getItem(mSelectedPromoStateIndex);
+            }
+        }
         if (mFilteredPid != 0 || mSelectedIdByLevelId != null || mAttributeProducts != null) {
             updateFromFiveLevelFilter(mFilteredPid, mSelectedIdByLevelId, mAttributeProducts, filter_text);
         } else {
@@ -330,6 +364,10 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             }
         });
 
+        if(promotionHelper.getPromoFilter() != null && promotionHelper.getPromoFilter().size() > 0) {
+            loadSpecialFilterView(view);
+            scrollToSelectedTabPosition();
+        }
     }
 
     @Override
@@ -478,9 +516,12 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             if (businessModel.configurationMasterHelper.IS_GLOBAL_LOCATION)
                 menu.findItem(R.id.menu_loc_filter).setVisible(false);
             else {
-                if (businessModel.productHelper.getInStoreLocation().size() < 2)
+                if (businessModel.productHelper.getInStoreLocation().size() < 2
+                        || !promotionHelper.SHOW_PROMO_LOCATION)
                     menu.findItem(R.id.menu_loc_filter).setVisible(false);
+                else menu.findItem(R.id.menu_loc_filter).setVisible(true);
             }
+            menu.findItem(R.id.menu_promostate_filter).setVisible(promotionHelper.isNonAcceptedPromotionsAvailable());
             if (drawerOpen)
                 menu.clear();
         } catch (Exception e) {
@@ -506,6 +547,9 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             return true;
         } else if (i == R.id.menu_loc_filter) {
             showLocation();
+            return true;
+        } else if (i == R.id.menu_promostate_filter) {
+            showAccepted();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -552,16 +596,44 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             }
 
             promoList = new ArrayList<>();
+            Set<String> promotionKeys = new HashSet<>();
+
+            boolean isAccepted = mSelectedPromoStateBO.getConfigCode().equals("A");
+
             // Iterate the List and the items to the ListHolder
             for (PromotionBO temp : items) {
                 if (temp.getProductId() > 0 && businessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY && !temp.getParentHierarchy().contains("/" + businessModel.productHelper.getmSelectedGlobalProductId() + "/"))
                     continue;
-                if (temp.getProductId() == mPid || mPid == -1)
-                    promoList.add(temp);
+                if (temp.getProductId() == mPid || mPid == -1) {
+                    if(isGroupSelectedFilterAvailable && isAcceptedFilterSelected){
+                        if(temp.getPromotionGroupName().equals(groupSelectedFilter) && (temp.isAccepted() == isAccepted)){
+                            promoList.add(temp);
+                            promotionKeys.add(temp.getPromoName());
+                        }
+                    } else if(isGroupSelectedFilterAvailable && !isAcceptedFilterSelected){
+                        if(temp.getPromotionGroupName().equals(groupSelectedFilter)){
+                            promoList.add(temp);
+                            promotionKeys.add(temp.getPromoName());
+                        }
+                    } else if(isAcceptedFilterSelected && !isGroupSelectedFilterAvailable){
+                        if(temp.isAccepted() == isAccepted){
+                            promoList.add(temp);
+                            promotionKeys.add(temp.getPromoName());
+                        }
+                    } else {
+                        promoList.add(temp);
+                        promotionKeys.add(temp.getPromoName());
+                    }
+                }
             }
             // set the list values to the adapter
-            promotionAdapter = new MyAdapter(promoList);
-            listView.setAdapter(promotionAdapter);
+            if(businessModel.configurationMasterHelper.IS_SHOW_EXPLIST_IN_PROMO) {
+                promotionExpAdapter = new MyExpAdapter(promoList, promotionKeys);
+                listView.setAdapter(promotionExpAdapter);
+            } else {
+                promotionAdapter = new MyAdapter(promoList);
+                listView.setAdapter(promotionAdapter);
+            }
         } catch (Exception e) {
             Commons.printException("" + e);
         }
@@ -667,6 +739,27 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         businessModel.applyAlertDialogTheme(builder);
     }
 
+    /* Shows in store locations as dialog */
+    private void showAccepted() {
+        AlertDialog.Builder builder;
+
+        builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(null);
+        builder.setSingleChoiceItems(mStateAdapter, mSelectedPromoStateIndex,
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int item) {
+                        mSelectedPromoStateIndex = item;
+                        mSelectedPromoStateBO = mStateAdapter.getItem(mSelectedPromoStateIndex);
+                        isAcceptedFilterSelected = true;
+                        updateBrandText("",-1);
+                        dialog.dismiss();
+                    }
+                });
+
+        businessModel.applyAlertDialogTheme(builder);
+    }
+
     /* To get the numbers from the customized keyboard while pressing the number */
     public void numberPressed(View vw) {
         if (QUANTITY == null) {
@@ -712,7 +805,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
     class ViewHolder {
         PromotionBO mPromotionMasterBO;
-        TextView tv_promoName;
+        TextView tv_promoName, tv_promoHeader, tv_product_price;
         EditText etPromoQty;
         CheckBox rbExecuted;
         CheckBox rbAnnounced;
@@ -723,7 +816,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         TextView tvProductName;
         Button mFromDateBTN;
         Button mToDateBTN;
-        LinearLayout ll_Rating;
+        LinearLayout ll_Rating, ll_price;
         ImageView img_remarks;
     }
 
@@ -943,25 +1036,25 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 holder.btnPhoto.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        if (businessModel.isExternalStorageAvailable()) {
+                        if (FileUtils.isExternalStorageAvailable(10)) {
                             mImageName = "PT_"
-                                    + businessModel.getRetailerMasterBO()
+                                    + businessModel.getAppDataProvider().getRetailMaster()
                                     .getRetailerID() + "_" + mSelectedStandardListBO.getListID() + "_"
                                     + holder.mPromotionMasterBO.getPromoId()
                                     +"_"+holder.mPromotionMasterBO.getProductId()
-                                    + "_" + Commons.now(Commons.DATE_TIME)
+                                    + "_" + DateTimeUtils.now(Commons.DATE_TIME)
                                     + "_img.jpg";
 
                             promotionHelper.mSelectedPromoID = holder.mPromotionMasterBO.getPromoId();
                             promotionHelper.mSelectedProductId = holder.mPromotionMasterBO.getProductId();
                             String fNameStarts = "PT_"
-                                    + businessModel.getRetailerMasterBO()
+                                    + businessModel.getAppDataProvider().getRetailMaster()
                                     .getRetailerID() + "_" + mSelectedStandardListBO.getListID() + "_"
                                     + holder.mPromotionMasterBO.getPromoId()
                                     +"_"+holder.mPromotionMasterBO.getProductId()
-                                    + "_" + Commons.now(Commons.DATE);
+                                    + "_" + DateTimeUtils.now(Commons.DATE);
 
-                            boolean nFilesThere = businessModel
+                            boolean nFilesThere = FileUtils
                                     .checkForNFilesInFolder(
                                             FileUtils.photoFolderPath, 1,
                                             fNameStarts);
@@ -1027,11 +1120,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
                 holder.reasonSpin.setEnabled(true);
             }
-            if (holder.mPromotionMasterBO.getHasAnnouncer() == 1) {
-                holder.rbAnnounced.setChecked(true);
-            } else {
-                holder.rbAnnounced.setChecked(false);
-            }
+            holder.rbAnnounced.setChecked(holder.mPromotionMasterBO.getHasAnnouncer() == 1);
 
             if (holder.mPromotionMasterBO.getIsExecuted() == 0) {
                 holder.btnPhoto.setImageBitmap(null);
@@ -1046,18 +1135,14 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                         .load(imgFile.getAbsoluteFile())
                         .asBitmap()
                         .centerCrop()
-                        .transform(businessModel.circleTransform)
+                        .transform(circleTransform)
                         .into(new BitmapImageViewTarget(holder.btnPhoto));
 
             } else {
                 holder.btnPhoto.setImageBitmap(null);
                 holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
             }
-            if (holder.mPromotionMasterBO.getIsExecuted() == 1) {
-                holder.etPromoQty.setEnabled(true);
-            } else {
-                holder.etPromoQty.setEnabled(false);
-            }
+            holder.etPromoQty.setEnabled(holder.mPromotionMasterBO.getIsExecuted() == 1);
 
             if ("I".equals(holder.mPromotionMasterBO.getFlag()))
                 holder.tv_promoName.setTextColor(getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView).getColor(R.styleable.MyTextView_accentcolor, 0));
@@ -1376,5 +1461,554 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         });
         dialog.show();
         dialog.setCancelable(false);
+    }
+
+    private class MyExpAdapter extends ArrayAdapter<PromotionBO> {
+        private final ArrayList<PromotionBO> items;
+        private final Set<String> keySet;
+
+        public MyExpAdapter(ArrayList<PromotionBO> myList, Set<String> keySet) {
+            super(getActivity(), R.layout.row_promo, myList);
+            this.items = myList;
+            this.keySet = keySet;
+        }
+
+        public PromotionBO getItem(int position) {
+            return items.get(position);
+        }
+
+        public long getItemId(int position) {
+            return position;
+        }
+
+        public int getCount() {
+            return items.size();
+        }
+
+        @NonNull
+        @Override
+        public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
+            final ViewHolder holder;
+            View row = convertView;
+            if (row == null) {
+
+                holder = new ViewHolder();
+                row = LayoutInflater.from(getActivity()
+                        .getBaseContext()).inflate(R.layout.row_promo, parent, false);
+
+                holder.tv_promoName = row
+                        .findViewById(R.id.tvPromoName);
+                holder.tv_promoName.setVisibility(View.GONE);
+
+                holder.tv_promoHeader = row
+                        .findViewById(R.id.tvPromoHeader);
+                holder.tv_promoHeader.setVisibility(View.GONE);
+                holder.tv_product_price = row
+                        .findViewById(R.id.price);
+                holder.rbExecuted = row
+                        .findViewById(R.id.executed_CB);
+                holder.rbAnnounced = row
+                        .findViewById(R.id.announced_CB);
+
+                holder.etPromoQty = row.findViewById(R.id.et_promo_qty);
+
+
+                holder.btnPhoto = row
+                        .findViewById(R.id.btn_photo);
+                holder.tvGroupName = row.findViewById(R.id.tv_group_name);
+
+                holder.reasonSpin = row
+                        .findViewById(R.id.spin_reason);
+
+                //Promotion Enhancement
+                holder.tvProductName = row
+                        .findViewById(R.id.tv_product_name);
+                holder.mFromDateBTN = row.findViewById(R.id.btn_fromdatepicker);
+                holder.mToDateBTN = row.findViewById(R.id.btn_todatepicker);
+
+                holder.reasonSpin.setAdapter(reasonAdapter);
+                holder.ratingSpin = row.findViewById(R.id.spin_rating);
+                holder.ll_Rating = row.findViewById(R.id.ll_rating);
+                holder.ll_price = row.findViewById(R.id.ll_price);
+                holder.img_remarks = row.findViewById(R.id.img_feedback);
+                if (mRatingAdapter != null)
+                    holder.ratingSpin.setAdapter(mRatingAdapter);
+
+
+                if (!promotionHelper.SHOW_PROMO_PHOTO)
+                    row.findViewById(R.id.ll_photo).setVisibility(View.GONE);
+
+                if (promotionHelper.SHOW_PROMO_TYPE) {
+                    holder.tvGroupName.setVisibility(View.VISIBLE);
+                } else {
+                    holder.tvGroupName.setVisibility(View.GONE);
+                }
+                if (promotionHelper.SHOW_PROMO_RATING) {
+                    holder.ll_Rating.setVisibility(View.VISIBLE);
+                    try {
+                        if (businessModel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.executing_rating_label).getTag()) != null) {
+                            ((TextView) row.findViewById(R.id.executing_rating_label))
+                                    .setText(businessModel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.executing_rating_label).getTag()));
+
+                        }
+                    } catch (Exception e) {
+                        Commons.printException("" + e);
+                    }
+                } else {
+                    holder.ll_Rating.setVisibility(View.GONE);
+                }
+                if (promotionHelper.SHOW_PROMO_PRICE) {
+                    holder.ll_price.setVisibility(View.VISIBLE);
+                    try {
+                        if (businessModel.labelsMasterHelper.applyLabels(row.findViewById(
+                                R.id.price_label).getTag()) != null) {
+                            ((TextView) row.findViewById(R.id.price_label))
+                                    .setText(businessModel.labelsMasterHelper
+                                            .applyLabels(row.findViewById(
+                                                    R.id.price_label).getTag()));
+
+                        }
+                    } catch (Exception e) {
+                        Commons.printException("" + e);
+                    }
+                } else {
+                    holder.ll_price.setVisibility(View.GONE);
+                }
+
+                if (promotionHelper.SHOW_PROMO_QTY) {
+                    holder.etPromoQty.setVisibility(View.VISIBLE);
+                } else {
+                    holder.etPromoQty.setVisibility(View.GONE);
+                }
+                if (!promotionHelper.SHOW_PROMO_ANNOUNCER)
+                    (row.findViewById(R.id.ll_announced)).setVisibility(View.GONE);
+                if (!promotionHelper.SHOW_PROMO_REASON)
+                    (row.findViewById(R.id.ll_reason)).setVisibility(View.GONE);
+                if (promotionHelper.SHOW_PROMO_FEEDBACK) {
+                    holder.img_remarks.setVisibility(View.VISIBLE);
+                } else {
+                    holder.img_remarks.setVisibility(View.GONE);
+                }
+
+                holder.rbExecuted.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (holder.mPromotionMasterBO.getIsExecuted() == 1) {
+                            holder.rbExecuted.setChecked(false);
+                            holder.mPromotionMasterBO.setIsExecuted(0);
+                            holder.btnPhoto.setEnabled(false);
+                            holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
+                            holder.reasonSpin.setEnabled(true);
+                            holder.etPromoQty.setEnabled(false);
+                            holder.etPromoQty.setText("0");
+                            QUANTITY = null;
+                        } else {
+                            holder.rbExecuted.setChecked(true);
+                            holder.mPromotionMasterBO.setIsExecuted(1);
+                            holder.btnPhoto.setEnabled(true);
+                            holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
+                            holder.reasonSpin.setEnabled(false);
+                            holder.reasonSpin.setSelection(0);
+                            holder.mPromotionMasterBO.setReasonID("0");
+                            holder.etPromoQty.setEnabled(true);
+                        }
+                    }
+                });
+                holder.rbAnnounced.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (holder.mPromotionMasterBO.getHasAnnouncer() == 1) {
+                            holder.rbAnnounced.setChecked(false);
+                            holder.mPromotionMasterBO.setHasAnnouncer(0);
+                        } else {
+                            holder.rbAnnounced.setChecked(true);
+                            holder.mPromotionMasterBO.setHasAnnouncer(1);
+                        }
+                    }
+                });
+
+                holder.reasonSpin
+                        .setOnItemSelectedListener(new OnItemSelectedListener() {
+                            public void onItemSelected(AdapterView<?> parent,
+                                                       View view, int position, long id) {
+
+                                ReasonMaster reString = (ReasonMaster) holder.reasonSpin
+                                        .getSelectedItem();
+
+                                holder.mPromotionMasterBO.setReasonID(reString
+                                        .getReasonID());
+                                holder.mPromotionMasterBO
+                                        .setReasonDesc(reString.getReasonDesc());
+
+                            }
+
+                            public void onNothingSelected(AdapterView<?> parent) {
+                            }
+                        });
+
+                holder.ratingSpin.setOnItemSelectedListener(new OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                        StandardListBO standardListBO = (StandardListBO) holder.ratingSpin.getSelectedItem();
+                        holder.mPromotionMasterBO.setRatingId(standardListBO.getListID());
+                        holder.mPromotionMasterBO.setRatingDec(standardListBO.getListName());
+                    }
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+                    }
+                });
+                holder.etPromoQty.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                        if (!"".equals(s.toString())) {
+                            if (s.toString().length() > 0)
+                                holder.etPromoQty.setSelection(s.toString().length());
+                            int scQty = SDUtil.convertToInt(holder.etPromoQty
+                                    .getText().toString());
+                            holder.mPromotionMasterBO.setPromoQty(scQty);
+                        }
+
+
+                    }
+                });
+
+                holder.etPromoQty.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        QUANTITY = holder.etPromoQty;
+                        QUANTITY.setTag(holder.mPromotionMasterBO);
+                        int inType = holder.etPromoQty.getInputType();
+                        holder.etPromoQty.setInputType(InputType.TYPE_NULL);
+                        holder.etPromoQty.onTouchEvent(event);
+                        holder.etPromoQty.setInputType(inType);
+                        holder.etPromoQty.requestFocus();
+                        if (holder.etPromoQty.getText().length() > 0)
+                            holder.etPromoQty.setSelection(holder.etPromoQty.getText().length());
+                        inputManager.hideSoftInputFromWindow(holder.etPromoQty.getWindowToken(), 0);
+                        return true;
+                    }
+                });
+
+                holder.btnPhoto.setOnClickListener(new OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (FileUtils.isExternalStorageAvailable(10)) {
+                            mImageName = "PT_"
+                                    + businessModel.getAppDataProvider().getRetailMaster()
+                                    .getRetailerID() + "_" + mSelectedStandardListBO.getListID() + "_"
+                                    + holder.mPromotionMasterBO.getPromoId()
+                                    +"_"+holder.mPromotionMasterBO.getProductId()
+                                    + "_" + DateTimeUtils.now(Commons.DATE_TIME)
+                                    + "_img.jpg";
+
+                            promotionHelper.mSelectedPromoID = holder.mPromotionMasterBO.getPromoId();
+                            promotionHelper.mSelectedProductId = holder.mPromotionMasterBO.getProductId();
+                            String fNameStarts = "PT_"
+                                    + businessModel.getAppDataProvider().getRetailMaster()
+                                    .getRetailerID() + "_" + mSelectedStandardListBO.getListID() + "_"
+                                    + holder.mPromotionMasterBO.getPromoId()
+                                    +"_"+holder.mPromotionMasterBO.getProductId()
+                                    + "_" + DateTimeUtils.now(Commons.DATE);
+
+                            boolean nFilesThere = FileUtils
+                                    .checkForNFilesInFolder(
+                                            FileUtils.photoFolderPath, 1,
+                                            fNameStarts);
+                            if (nFilesThere) {
+                                showFileDeleteAlert(
+                                        holder.mPromotionMasterBO.getPromoId()
+                                                + "", fNameStarts);
+                            } else {
+                                Intent intent = new Intent(getActivity(),
+                                        CameraActivity.class);
+                                intent.putExtra(CameraActivity.QUALITY, 40);
+                                String path = FileUtils.photoFolderPath + "/"
+                                        + mImageName;
+                                intent.putExtra(CameraActivity.PATH, path);
+                                startActivityForResult(intent,
+                                        businessModel.CAMERA_REQUEST_CODE);
+                                holder.btnPhoto.requestFocus();
+                            }
+
+                        } else {
+                            Toast.makeText(
+                                    getActivity(),
+                                    R.string.sdcard_is_not_ready_to_capture_img,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
+
+                //Promotion Enhancement
+                if (businessModel.configurationMasterHelper.IS_ENABLE_PROMOTION_SKUNAME) {
+                    holder.tvProductName.setVisibility(View.VISIBLE);
+                    holder.tvGroupName.setVisibility(View.GONE);
+                } else {
+                    holder.tvProductName.setVisibility(View.GONE);
+                    holder.tvGroupName.setVisibility(View.VISIBLE);
+                }
+
+                if (!businessModel.configurationMasterHelper.IS_ENABLE_PROMOTION_DATES) {
+                    row.findViewById(R.id.ll_install_date).setVisibility(View.GONE);
+                    row.findViewById(R.id.ll_service_date).setVisibility(View.GONE);
+                }
+                row.setTag(holder);
+
+            } else {
+                holder = (ViewHolder) row.getTag();
+            }
+
+            holder.mPromotionMasterBO = items.get(position);
+
+            if(keySet.contains(holder.mPromotionMasterBO.getPromoName())){
+                holder.tv_promoHeader.setVisibility(View.VISIBLE);
+                holder.tv_promoHeader.setText(holder.mPromotionMasterBO.getPromoName());
+                keySet.remove(holder.mPromotionMasterBO.getPromoName());
+            }
+            //holder.tv_product_price.setText(holder.mPromotionMasterBO.getProductPrice() + "");
+            if (holder.mPromotionMasterBO.getIsExecuted() == 1) {
+                holder.rbExecuted.setChecked(true);
+                holder.btnPhoto.setEnabled(true);
+                holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_blue_24dp, null));
+                holder.reasonSpin.setEnabled(false);
+                holder.reasonSpin.setSelection(0);
+                holder.mPromotionMasterBO.setReasonID("0");
+            } else {
+                holder.rbExecuted.setChecked(false);
+                holder.btnPhoto.setEnabled(false);
+                holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
+                holder.reasonSpin.setEnabled(true);
+            }
+            holder.rbAnnounced.setChecked(holder.mPromotionMasterBO.getHasAnnouncer() == 1);
+
+            if (holder.mPromotionMasterBO.getIsExecuted() == 0) {
+                holder.btnPhoto.setImageBitmap(null);
+                holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
+
+            } else if ((holder.mPromotionMasterBO.getImageName() != null)
+                    && (!"".equals(holder.mPromotionMasterBO.getImageName()))
+                    && (!"null"
+                    .equals(holder.mPromotionMasterBO.getImageName()))) {
+                File imgFile = new File(FileUtils.photoFolderPath + "/" + holder.mPromotionMasterBO.getImageName());
+                Glide.with(getActivity())
+                        .load(imgFile.getAbsoluteFile())
+                        .asBitmap()
+                        .centerCrop()
+                        .transform(circleTransform)
+                        .into(new BitmapImageViewTarget(holder.btnPhoto));
+
+            } else {
+                holder.btnPhoto.setImageBitmap(null);
+                holder.btnPhoto.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_photo_camera_grey_24dp, null));
+            }
+            holder.etPromoQty.setEnabled(holder.mPromotionMasterBO.getIsExecuted() == 1);
+
+//            if ("I".equals(holder.mPromotionMasterBO.getFlag()))
+//                holder.tv_promoName.setTextColor(getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView).getColor(R.styleable.MyTextView_accentcolor, 0));
+//            else
+//                holder.tv_promoName.setTextColor(ContextCompat.getColor(getActivity(),
+//                        R.color.list_item_text_primary_color));
+            holder.reasonSpin
+                    .setSelection(getReasonIndex(holder.mPromotionMasterBO
+                            .getReasonID()));
+            holder.ratingSpin.setSelection(getRatingIndex(holder.mPromotionMasterBO.getRatingId()));
+
+            String promo_groupName = getString(R.string.group_name) + ": " + holder.mPromotionMasterBO.getGroupName();
+            try {
+                if (businessModel.labelsMasterHelper.applyLabels(holder.tvGroupName.getTag()) != null)
+                    promo_groupName = businessModel.labelsMasterHelper
+                            .applyLabels(holder.tvGroupName.getTag()) + ": "
+                            + holder.mPromotionMasterBO.getGroupName();
+                else
+                    promo_groupName = getString(R.string.group_name) + ": " + holder.mPromotionMasterBO.getGroupName();
+            } catch (Exception e) {
+                Commons.printException("" + e);
+                promo_groupName = getString(R.string.group_name) + ": " + holder.mPromotionMasterBO.getGroupName();
+            }
+            holder.tvGroupName.setText(promo_groupName);
+
+
+            String promoQty = holder.mPromotionMasterBO.getPromoQty() + "";
+            holder.etPromoQty.setText(promoQty);
+
+            holder.tvProductName.setText(holder.mPromotionMasterBO.getpName() == null ? "" : holder.mPromotionMasterBO.getpName());
+            holder.mFromDateBTN.setText(holder.mPromotionMasterBO.getFromDate() == null ? "" :
+                    DateTimeUtils.convertFromServerDateToRequestedFormat(
+                            holder.mPromotionMasterBO.getFromDate(), ConfigurationMasterHelper.outDateFormat));
+            holder.mToDateBTN.setText(holder.mPromotionMasterBO.getToDate() == null ? "" :
+                    DateTimeUtils.convertFromServerDateToRequestedFormat(
+                            holder.mPromotionMasterBO.getToDate(), ConfigurationMasterHelper.outDateFormat));
+
+            holder.mFromDateBTN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectedposition = position;
+                    DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
+                    Bundle args = new Bundle();
+                    args.putString("MODULE", "");
+                    newFragment.setArguments(args);
+                    newFragment.show(getChildFragmentManager(), "fromdatePicker");
+                }
+            });
+
+            holder.mToDateBTN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    selectedposition = position;
+                    DataPickerDialogFragment newFragment = new DataPickerDialogFragment();
+                    Bundle args = new Bundle();
+                    args.putString("MODULE", "");
+                    newFragment.setArguments(args);
+                    newFragment.show(getChildFragmentManager(), "toPicker");
+                }
+            });
+
+            if (!StringUtils.isEmptyString(holder.mPromotionMasterBO.getRemarks()))
+                holder.img_remarks.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.feedback_promo, null));
+            else
+                holder.img_remarks.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.feedback_no_promo, null));
+
+            holder.img_remarks.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FragmentTransaction ft = getActivity()
+                            .getSupportFragmentManager().beginTransaction();
+                    RemarksDialog dialog = new RemarksDialog(holder.mPromotionMasterBO, "MENU_PROMO_REMARKS",
+                            PromotionTrackingFragment.this);
+                    dialog.setCancelable(false);
+                    dialog.show(ft, "MENU_PROMO_REMARKS");
+                }
+            });
+            if(promotionHelper.SHOW_PROMO_PRICE){
+                holder.ll_price.setVisibility(View.VISIBLE);
+                holder.tv_product_price.setText(holder.mPromotionMasterBO.getProductPrice() + "");
+            } else {
+                holder.ll_price.setVisibility(View.GONE);
+            }
+            return row;
+        }
+    }
+
+    LinearLayout ll_spl_filter, ll_tab_selection;
+    private int x, y;
+    Vector<ConfigureBO> generalFilter = new Vector<>();
+
+    private void loadSpecialFilterView(View view) {
+        hscrl_spl_filter = view.findViewById(R.id.hscrl_spl_filter);
+        hscrl_spl_filter.setVisibility(View.VISIBLE);
+        ll_spl_filter = view.findViewById(R.id.ll_spl_filter);
+        ll_tab_selection = view.findViewById(R.id.ll_tab_selection);
+
+        generalFilter = promotionHelper.getPromoFilter();
+        if(generalFilter.size() > 0){
+            isGroupSelectedFilterAvailable = true;
+        }
+        float scale = getContext().getResources().getDisplayMetrics().widthPixels;
+        int width = (int) (scale / generalFilter.size());
+
+        float den = getContext().getResources().getDisplayMetrics().density;
+        float dimen_wd = getResources().getDimension(R.dimen.special_filter_item_width);
+        if (width < (int) (dimen_wd * den + 25.5f)) {
+            scale = den;
+            width = (int) (dimen_wd * scale + 25.5f);
+        }
+
+        for (int i = 0; i < generalFilter.size(); i++) {
+
+            ConfigureBO config = generalFilter.get(i);
+            TypedArray typeArr = getActivity().getTheme().obtainStyledAttributes(R.styleable.MyTextView);
+            final int color = typeArr.getColor(R.styleable.MyTextView_textColor, 0);
+            final int indicator_color = typeArr.getColor(R.styleable.MyTextView_accentcolor, 0);
+            Button tab = new Button(getActivity());
+            tab.setText(config.getMenuName());
+            tab.setTag(config.getConfigCode());
+            tab.setGravity(Gravity.CENTER);
+            tab.setTextColor(color);
+            tab.setMaxLines(1);
+            tab.setTextSize(TypedValue.COMPLEX_UNIT_PX, getResources().getDimension(R.dimen.font_small));
+            tab.setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.transparent));
+            tab.setWidth(width);
+            tab.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    groupSelectedFilter = view.getTag().toString();
+                    updateBrandText("", -1);
+                    selectTab(view.getTag());
+                }
+            });
+
+
+            ll_spl_filter.addView(tab);
+
+            if (i == 0) {
+                x = tab.getLeft();
+                y = tab.getTop();
+            }
+
+            Button tv_selection_identifier = new Button(getActivity());
+            tv_selection_identifier.setTag(config.getConfigCode() + config.getMenuName());
+            tv_selection_identifier.setWidth(width);
+            tv_selection_identifier.setBackgroundColor(indicator_color);
+            if (i == 0) {
+                tv_selection_identifier.setVisibility(View.VISIBLE);
+                groupSelectedFilter = generalFilter.get(i).getConfigCode();
+                updateBrandText("", -1);
+            } else {
+                tv_selection_identifier.setVisibility(View.GONE);
+            }
+
+            ll_tab_selection.addView(tv_selection_identifier);
+        }
+
+
+    }
+
+    private void selectTab(Object tag) {
+        for (ConfigureBO config : promotionHelper.getPromoFilter()) {
+            View view = getView().findViewWithTag(config.getConfigCode());
+            View view1 = getView().findViewWithTag(config.getConfigCode() + config.getMenuName());
+            if (tag == config.getConfigCode()) {
+                if (view instanceof TextView) {
+                    ((TextView) view).setText(config.getMenuName());
+                }
+                if (view1 instanceof Button) {
+                    view1.setVisibility(View.VISIBLE);
+                }
+
+
+            } else {
+                if (view instanceof TextView) {
+                    ((TextView) view).setText(config.getMenuName());
+                }
+                if (view1 instanceof Button) {
+                    view1.setVisibility(View.INVISIBLE);
+                }
+
+            }
+        }
+        getActivity().supportInvalidateOptionsMenu();
+    }
+
+    public void scrollToSelectedTabPosition() {
+        if (hscrl_spl_filter != null) {
+            hscrl_spl_filter.scrollTo(x, y);
+        }
+        selectTab(generalFilter.get(0).getConfigCode());
     }
 }
