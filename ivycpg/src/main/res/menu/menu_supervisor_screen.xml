@@ -21,7 +21,7 @@
         android:id="@+id/menu_user"
         android:icon="@drawable/ic_default_user"
         android:title="@string/user"
-        android:visible="true"
+        android:visible="false"
         ivydist:showAsAction="always" />
 
     <item
@@ -53,7 +53,7 @@
         android:title="search"
         ivydist:actionViewClass="android.support.v7.widget.SearchView"
         ivydist:showAsAction="always"
-        android:visible="true"/>
+        android:visible="false"/>
 
 
 

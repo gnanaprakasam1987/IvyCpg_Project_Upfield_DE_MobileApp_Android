@@ -34,7 +34,7 @@ import com.ivy.cpg.view.order.OrderHelper;
 import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SchemeProductBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.bo.SubDepotBo;
 import com.ivy.cpg.view.order.tax.TaxBO;

@@ -527,7 +527,8 @@ public class SerializedAssetFragment extends IvyBaseFragment implements TextView
             startActivity(new Intent(getActivity(), SerializedAssetApprovalActivity.class));
             return true;
         } else if (i == R.id.menu_asset_change) {
-            startActivity(new Intent(getActivity(), SerialNoChangeActivity.class));
+            startActivity(new Intent(getActivity(), SerialNoChangeActivity.class)
+                    .putExtra("screenTitle",item.getTitle()));
             return true;
         }
 

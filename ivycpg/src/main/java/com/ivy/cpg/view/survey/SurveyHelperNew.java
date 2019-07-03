@@ -1132,6 +1132,7 @@ public class SurveyHelperNew {
             int userid = bmodel.userMasterHelper.getUserMasterBO().getUserid();
 
             String retailerid = "0";
+            String ridSF = "0";
             int distID = 0;
             String type = "RETAILER";
             int superwiserID = 0;
@@ -1141,7 +1142,8 @@ public class SurveyHelperNew {
             }
 
             if (!isFromHomeScreen()) {
-                retailerid = bmodel.getRetailerMasterBO().getRetailerID();
+                retailerid = bmodel.getAppDataProvider().getRetailMaster().getRetailerID();
+                ridSF = bmodel.getAppDataProvider().getRetailMaster().getRidSF();
                 distID = bmodel.getRetailerMasterBO().getDistributorId();
             }
 
@@ -1308,7 +1310,7 @@ public class SurveyHelperNew {
                                     totalAchievedScore += score;
                                     String detailvalues = QT(uid) + "," + questionBO.getSurveyid()
                                             + "," + questionBO.getQuestionID() + ","
-                                            + score + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
+                                            + score + "," + QT(retailerid);
                                     db.insertSQL("AnswerScoreDetail", "uid,surveyid,qid,score,RetailerID",
                                             detailvalues);
                                 }
@@ -1511,8 +1513,8 @@ public class SurveyHelperNew {
                                         totalAchievedScore += score;
                                         String detailvalues = QT(uid) + "," + questionBO.getSurveyid()
                                                 + "," + questionBO.getQuestionID() + ","
-                                                + score + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID());
-                                        db.insertSQL("AnswerScoreDetail", "uid,surveyid,qid,score,retailerID",
+                                                + score + "," + QT(retailerid);
+                                        db.insertSQL("AnswerScoreDetail", "uid,surveyid,qid,score,RetailerID",
                                                 detailvalues);
                                     }
                                 }
@@ -1537,9 +1539,8 @@ public class SurveyHelperNew {
                                             + "," + QT(remarkDone) + "," + QT(type) + ",0,''"
                                             + "," + userid
                                             + "," + QT(sBO.getSurveyFreq())
-                                            + "," + QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF())
-                                            + "," + bmodel.getAppDataProvider().getUniqueId()
-                                            + "," + QT(getSignaturePath());
+                                            + "," + QT(ridSF)
+                                            + "," + bmodel.getAppDataProvider().getUniqueId();
 
                                     surBO.setSignaturePath(getSignaturePath());
                                     db.insertSQL("AnswerHeader", headerColumns, headerValues);

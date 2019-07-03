@@ -48,8 +48,8 @@ public class NotesDataManagerImpl implements NotesDataManager {
                 ArrayList<RetailerMasterBO> retailerMaster = new ArrayList<>();
                 for (RetailerMasterBO retBo : appDataProvider.getRetailerMasters()) {
                     temp = new RetailerMasterBO();
-                    temp.setTretailerId(SDUtil.convertToInt(retBo.getRetailerID()));
-                    temp.setTretailerName(retBo.getRetailerName());
+                    temp.setRetailerID(retBo.getRetailerID());
+                    temp.setRetailerName(retBo.getRetailerName());
                     retailerMaster.add(temp);
                 }
                 return retailerMaster;

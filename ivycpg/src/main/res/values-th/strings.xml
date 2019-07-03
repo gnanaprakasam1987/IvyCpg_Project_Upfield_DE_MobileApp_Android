@@ -1311,6 +1311,7 @@
         <item>Assigned</item>
         <item>My Task</item>
         <item>Completed</item>
+        <item>Delegate</item>
     </string-array>
     <string-array name="task_sort_list">
         <item>Task(A—Z)</item>
@@ -1320,6 +1321,7 @@
         <item>Due Date(old—new)</item>
         <item>Due Date(new—old)</item>
     </string-array>
+
     <string-array name="days_in_week">
         <item>Sun</item>
         <item>Mon</item>

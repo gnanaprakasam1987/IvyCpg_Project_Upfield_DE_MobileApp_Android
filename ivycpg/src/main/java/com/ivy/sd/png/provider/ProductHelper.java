@@ -31,7 +31,7 @@ import com.ivy.sd.png.bo.LevelBO;
 import com.ivy.sd.png.bo.LoadManagementBO;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SchemeBO;
+import com.ivy.cpg.view.order.scheme.SchemeBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.StoreWiseDiscountBO;
 import com.ivy.sd.png.commons.SDUtil;
@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Vector;
+import java.util.regex.Pattern;
 
 public class ProductHelper {
 
@@ -365,6 +366,25 @@ public class ProductHelper {
 
                     String stockQty = hashMap1.get(p.getProductID());
                     p.setRetailerWiseP4StockQty(stockQty != null ? stockQty : "0,0,0,0");
+
+                    if(stockQty != null){
+                        String[] splitQty = stockQty.split(",");
+                        if (splitQty.length >= 4) {
+                            p.setLastVisitColor(splitQty[0].equals("") ? android.R.color.darker_gray :
+                                    (Pattern.compile("[1-9]").matcher(splitQty[0]).find() ? android.R.color.holo_green_dark :
+                                            android.R.color.holo_red_dark));
+                            p.setLastVisit1Color(splitQty[1].equals("") ? android.R.color.darker_gray :
+                                    (Pattern.compile("[1-9]").matcher(splitQty[1]).find() ? android.R.color.holo_green_dark :
+                                    android.R.color.holo_red_dark));
+                            p.setLastVisit2Color(splitQty[2].equals("") ? android.R.color.darker_gray :
+                                    (Pattern.compile("[1-9]").matcher(splitQty[2]).find() ? android.R.color.holo_green_dark :
+                                    android.R.color.holo_red_dark));
+                            p.setLastVisit3Color(splitQty[3].equals("") ? android.R.color.darker_gray :
+                                    (Pattern.compile("[1-9]").matcher(splitQty[3]).find() ? android.R.color.holo_green_dark :
+                                    android.R.color.holo_red_dark));
+
+                        }
+                    }
 
                     p.setOos(oosMap.get(p.getProductID()) == null || oosMap.get(p.getProductID()) == 0 ? -2 : oosMap.get(p.getProductID()));
                 }
@@ -956,7 +976,8 @@ public class ProductHelper {
                     + " F.priceoffvalue as priceoffvalue,F.PriceOffId as priceoffid,F.ASRP as asrp,"
                     + " (CASE WHEN F.scid =" + bmodel.getRetailerMasterBO().getGroupId() + " THEN F.scid ELSE 0 END) as groupid,"
                     + " (CASE WHEN PWHS.PID=A.PID then 'true' else 'false' end) as IsAvailWareHouse,A.DefaultUom,F.MarginPrice as marginprice"
-                    + (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE ? ",FSH.qty as freeSIH" : ",0 as freeSIH")
+                    + (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE ? ",FSH.qty as freeSIH" : ",0 as freeSIH,")
+                    + "(CASE WHEN A.PID in (PPM.PID) then '1' else '0' end) as  isTradePromo"
                     + " from ProductMaster A";
 
             sql = sql + " left join PriceMaster F on A.Pid = F.pid and F.scid = " + bmodel.getRetailerMasterBO().getGroupId()
@@ -966,6 +987,7 @@ public class ProductHelper {
                     + " LEFT JOIN ProductWareHouseStockMaster PWHS ON PWHS.pid=A.pid and PWHS.UomID=A.piece_uomid and (PWHS.DistributorId=" + bmodel.getRetailerMasterBO().getDistributorId() + " OR PWHS.DistributorId=0)"
                     + " LEFT JOIN HSNMaster HSN ON HSN.HSNId=A.HSNId"
                     + (bmodel.configurationMasterHelper.IS_FREE_SIH_AVAILABLE ? " LEFT JOIN FreeStockInHandMaster FSH ON FSH.pid=A.pid" : "")
+                    + " left join PromotionProductMapping PPM on PPM.PID = A.PID"
                     + " WHERE A.PLid IN(" + mContentLevelId + ") ";
 
             if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
@@ -1060,6 +1082,7 @@ public class ProductHelper {
                     product.setHsnCode(c.getString(c.getColumnIndex("HSNCode")));
                     product.setIsDrug(c.getInt(c.getColumnIndex("IsDrug")));
                     product.setParentHierarchy(c.getString(c.getColumnIndex("ParentHierarchy")));
+                    product.setmTradePromotion(c.getInt(c.getColumnIndex("isTradePromo")));
                     if (bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM) {
                         if (c.getInt(c.getColumnIndex("DefaultUom")) == 0) {
                             if (product.getPcUomid() > 0)

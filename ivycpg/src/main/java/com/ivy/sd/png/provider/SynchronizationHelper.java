@@ -50,7 +50,7 @@ import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.bo.TeamLeadBO;
 import com.ivy.sd.png.bo.UserMasterBO;
-import com.ivy.sd.png.bo.VanLoadMasterBO;
+import com.ivy.cpg.view.van.vanstockapply.VanLoadMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
@@ -155,6 +155,7 @@ SynchronizationHelper {
     public boolean isDistributorDownloadDone;
     public boolean isLastVisitTranDownloadDone;
     public boolean isSihDownloadDone;
+    public boolean isFbCredentialDownloadDone;
 
     public static final int DISTRIBUTOR_SELECTION_REQUEST_CODE = 51;
     public String dataMissedTable = "";
@@ -190,8 +191,11 @@ SynchronizationHelper {
         DISTRIBUTOR_DOWNLOAD(1),
         LAST_VISIT_TRAN_DOWNLOAD(2),
         SIH_DOWNLOAD(3),
-        DIGITAL_CONTENT_AVALILABLE(4), DEFAULT(5),
-        NON_DISTRIBUTOR_DOWNLOAD(6);
+        FB_CREDENTIALS_DOWNLOAD(4),
+        DIGITAL_CONTENT_AVALILABLE(5),
+        DEFAULT(6),
+        NON_DISTRIBUTOR_DOWNLOAD(7);
+
         private int value;
 
         NEXT_METHOD(int value) {
@@ -300,16 +304,13 @@ SynchronizationHelper {
     public static final String SYNC_TYPE_DOWNLOAD = "DOWNLOAD";
     public static final String SYNC_TYPE_UPLOAD = "UPLOAD";
     public static final String SYNC_TYPE_DGT_DOWNLOAD = "DGTDOWNLOAD";
-    public static final String SYNC_TYPE_DGT_UPLOAD= "DGTUPLOAD";
+    public static final String SYNC_TYPE_DGT_UPLOAD = "DGTUPLOAD";
 
-    public static final String SYNC_STATUS_COMPLETED= "COMPLETED";
+    public static final String SYNC_STATUS_COMPLETED = "COMPLETED";
     public static final String SYNC_STATUS_FAILED = "FAILED";
     public static final String SYNC_STATUS_PARTIAL = "PARTIAL";
     public static final String SYNC_TYPE_NO_INTERNET = "NO INTERNET";
-    public static final String SYNC_TYPE_CONN_LOST= "CONNECTION LOST";
-
-
-
+    public static final String SYNC_TYPE_CONN_LOST = "CONNECTION LOST";
 
 
     protected SynchronizationHelper(Context context) {
@@ -537,7 +538,7 @@ SynchronizationHelper {
 
     }
 
-    private void deleteUploadedFiles(String path){
+    private void deleteUploadedFiles(String path) {
         try {
 
             File f = new File(path);
@@ -878,7 +879,7 @@ SynchronizationHelper {
             exceptionTableList.add("LastVisitPlanogramImages");
         }
 
-        if(bmodel.configurationMasterHelper.IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN){
+        if (bmodel.configurationMasterHelper.IS_DISPLAY_ASSET_RETAIN_LAST_VISIT_TRAN) {
             updateLastVisitDisplayAsset();
             exceptionTableList.add("LastVisitDisplayAsset");
         }
@@ -928,7 +929,6 @@ SynchronizationHelper {
                     + DataMembers.DIGITAL_CONTENT + "/"
                     + DataMembers.TASK_DIGITAL_CONTENT + "/";
             deleteUploadedFiles(taskImages);
-
 
 
         } catch (Exception e) {
@@ -4374,7 +4374,6 @@ SynchronizationHelper {
             }
 
 
-
             db.closeDB();
         } catch (Exception ex) {
             Commons.printException(ex);
@@ -4717,6 +4716,9 @@ SynchronizationHelper {
                 && !getSIHUrl().equals("")) {
             isSihDownloadDone = true;
             return NEXT_METHOD.SIH_DOWNLOAD;
+        } else if (!isFbCredentialDownloadDone) {
+            isFbCredentialDownloadDone = true;
+            return NEXT_METHOD.FB_CREDENTIALS_DOWNLOAD;
         } else if (bmodel.isDigitalContentAvailable()) {
             return NEXT_METHOD.DIGITAL_CONTENT_AVALILABLE;
         } else {
@@ -5061,44 +5063,42 @@ SynchronizationHelper {
                 userID = "0";
                 downloadedDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
             }
-                DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
-                db.createDataBase();
-                db.openDataBase();
+            DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
+            db.createDataBase();
+            db.openDataBase();
 
-                String dgtType = "";
+            String query = "select transactionid from synclogdetails where synctype=";
             if (SYNC_TYPE_DGT_DOWNLOAD.equals(syncType))
-                dgtType = StringUtils.QT(SYNC_TYPE_DOWNLOAD);
+                query = query + StringUtils.QT(SYNC_TYPE_DOWNLOAD);
             else if (SYNC_TYPE_DGT_UPLOAD.equals(syncType))
-                dgtType = StringUtils.QT(SYNC_TYPE_UPLOAD);
+                query = query + StringUtils.QT(SYNC_TYPE_UPLOAD);
 
-            if (!StringUtils.isEmptyString(dgtType)) {
-                Cursor cursor = db.selectSQL("select transactionid from synclogdetails where synctype=" + dgtType);
-                if (cursor != null) {
-                    if (cursor.moveToNext()) {
-                        syncLogId = cursor.getString(0);
-                    }
-                    cursor.close();
+            Cursor cursor = db.selectSQL(query);
+            if (cursor != null) {
+                if (cursor.moveToNext()) {
+                    syncLogId = cursor.getString(0);
                 }
+                cursor.close();
             }
 
-                if (SYNC_TYPE_DGT_DOWNLOAD.equals(syncType))
+            if (SYNC_TYPE_DGT_DOWNLOAD.equals(syncType))
                 db.updateSQL("update SyncLogDetails set userid=" + StringUtils.QT(bmodel.getAppDataProvider().getUser().getUserid() + "")
-                        +",downloadeddate=" + StringUtils.QT(bmodel.getAppDataProvider().getUser().getDownloadDate())
-                                + " where synctype=" + StringUtils.QT(SYNC_TYPE_DOWNLOAD));
+                        + ",downloadeddate=" + StringUtils.QT(bmodel.getAppDataProvider().getUser().getDownloadDate())
+                        + " where synctype=" + StringUtils.QT(SYNC_TYPE_DOWNLOAD));
 
-                String columns = "userid,appversionnumber,osname,osversion,devicename,synctype,starttime,endtime,photoscount,syncstatus,upload,transactionid,downloadeddate,totalcount";
+            String columns = "userid,appversionnumber,osname,osversion,devicename,synctype,starttime,endtime,photoscount,syncstatus,upload,transactionid,downloadeddate,totalcount";
 
-                String values = StringUtils.QT(userID) + "," + StringUtils.QT(AppUtils.getApplicationVersionName(context))
-                        + "," + StringUtils.QT("Android")
-                        + "," + StringUtils.QT(android.os.Build.VERSION.RELEASE) + "," + StringUtils.QT(android.os.Build.MANUFACTURER + " " +android.os.Build.MODEL)
-                        + "," + StringUtils.QT(syncType) + "," + StringUtils.QT(startTime)
-                        + "," + StringUtils.QT(endTime) + "," + photosCount
-                        + "," + StringUtils.QT(syncStatus) + ",'N'"
-                        + "," + StringUtils.QT(syncLogId) + "," + StringUtils.QT(downloadedDate)
-                        + "," + totalCount;
-                db.insertSQL("SyncLogDetails", columns,
-                        values);
-                db.closeDB();
+            String values = StringUtils.QT(userID) + "," + StringUtils.QT(AppUtils.getApplicationVersionName(context))
+                    + "," + StringUtils.QT("Android")
+                    + "," + StringUtils.QT(android.os.Build.VERSION.RELEASE) + "," + StringUtils.QT(android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL)
+                    + "," + StringUtils.QT(syncType) + "," + StringUtils.QT(startTime)
+                    + "," + StringUtils.QT(endTime) + "," + photosCount
+                    + "," + StringUtils.QT(syncStatus) + ",'N'"
+                    + "," + StringUtils.QT(syncLogId) + "," + StringUtils.QT(downloadedDate)
+                    + "," + totalCount;
+            db.insertSQL("SyncLogDetails", columns,
+                    values);
+            db.closeDB();
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -5169,6 +5169,7 @@ SynchronizationHelper {
 
     /**
      * Method to update endtime of sync download
+     *
      * @param endTime - Download completed time
      */
     private void updateSyncLogDetails(String endTime, String syncStatus) {

@@ -549,6 +549,10 @@ public class ConfigurationMasterHelper {
     public boolean IS_ORD_DIGIT;
     public int ORD_DIGIT;
 
+    private static final String CODE_STK_DIGIT = "ORDB80";
+    public boolean IS_STK_DIGIT;
+    public int STK_DIGIT;
+
     private static final String CODE_SWITCH_WITH_OUT_TGT_SELLER_DASHBOARD = "DASH15";
     public boolean IS_SWITCH_WITH_OUT_TGT;
     public String SELLER_KPI_CODES;
@@ -673,6 +677,7 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_STOCK_RSN;// available reason
     public boolean SHOW_STOCK_CB;// available checkbox
     public boolean CHANGE_AVAL_FLOW;// check box tristate flow
+    public boolean SHOW_LASTVISIT_GRAPH;
 
     public boolean SHOW_DISCOUNT_ACTIVITY;// FUN03
     public boolean SHOW_REPLACED_QTY_PC;
@@ -1349,14 +1354,14 @@ public class ConfigurationMasterHelper {
     public boolean SHOW_TOTAL_QTY_ORDER;
     private static final String CODE_SHOW_QTY_ORDER = "ORDB65";
 
-    public boolean SHOW_STORE_VISITED_COUNT;
-    private static final String CODE_SHOW_STORE_VISITED = "FUN55";
 
 
     //cpg132-task 13
     public boolean SHOW_TOTAL_ACHIEVED_VOLUME;
     public boolean SHOW_TOTAL_ACHIEVED_VOLUME_WGT;
-    private static final String CODE_TOTAL_ACHIEVEDVOLUME = "FUN70";
+    public boolean SHOW_TOTAL_TIME_SPEND;
+    public boolean SHOW_STORE_VISITED_COUNT;
+    private static final String CODE_TOTAL_ACHIEVEDVOLUME = "RTRS34";
 
     public static final String CODE_TAX_MODEL = "TAX_MODEL";
     public boolean IS_GST;
@@ -1510,6 +1515,9 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_DEFAULT_UOM = "ORDB24";
     public boolean IS_SHOW_DEFAULT_UOM;
 
+    private static final String CODE_SHOW_EXPLIST_IN_PROMO = "PROMO06";
+    public boolean IS_SHOW_EXPLIST_IN_PROMO;
+
     private static final String CODE_SHOW_ORDER_PHOTO_CAPTURE = "ORDB20";
     public boolean IS_SHOW_ORDER_PHOTO_CAPTURE;
     //132 --- task 45
@@ -1581,6 +1589,12 @@ public class ConfigurationMasterHelper {
     public boolean IS_SHOW_TASK_PRODUCT_LEVEL;
     public int TASK_PRODUCT_LEVEL_NO;
 
+    private static final String CODE_TASK_DUDE_DATE_COUNT = "TASK02";
+    public int IS_TASK_DUDE_DATE_COUNT;
+
+    private static final String CODE_TASK_REMARKS_MANDATORY = "TASK03";
+    public boolean IS_TASK_REMARKS_MANDATORY;
+
     private static final String CODE_SHOW_RETAILER_LAST_VISIT = "RTRS33";
     public boolean IS_SHOW_RETAILER_LAST_VISIT;
     public boolean IS_SHOW_RETAILER_LAST_VISITEDBY;
@@ -1591,6 +1605,9 @@ public class ConfigurationMasterHelper {
 
     private static final String CODE_DISABLE_CALL_ANALAYSIS_TIMER = "FUN82";
     public boolean IS_DISABLE_CALL_ANALYSIS_TIMER = true;
+
+    private static final String CODE_SHOW_SORT_STKCHK = "FUN85";
+    public boolean IS_SHOW_SORT_STKCHK = true;
 
     private static final String CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER = "NOTE01";
     public boolean IS_ENABLE_EDIT_OPTION_FOR_OTHER_USER;
@@ -2567,13 +2584,17 @@ public class ConfigurationMasterHelper {
 
         this.SHOW_TOTAL_VALUE_ORDER = hashMapHHTModuleConfig.get(CODE_SHOW_VALUE_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_VALUE_ORDER) : false;
         this.SHOW_TOTAL_QTY_ORDER = hashMapHHTModuleConfig.get(CODE_SHOW_QTY_ORDER) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_QTY_ORDER) : false;
-        this.SHOW_STORE_VISITED_COUNT = hashMapHHTModuleConfig.get(CODE_SHOW_STORE_VISITED) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_STORE_VISITED) : false;
 
         this.SHOW_TOTAL_ACHIEVED_VOLUME = hashMapHHTModuleConfig.get(CODE_TOTAL_ACHIEVEDVOLUME) != null ? hashMapHHTModuleConfig.get(CODE_TOTAL_ACHIEVEDVOLUME) : false;
 
-        if (hashMapHHTModuleOrder.get(CODE_TOTAL_ACHIEVEDVOLUME) != null)
+        if (hashMapHHTModuleOrder.get(CODE_TOTAL_ACHIEVEDVOLUME) != null) {
             if (hashMapHHTModuleOrder.get(CODE_TOTAL_ACHIEVEDVOLUME) == 1)
                 this.SHOW_TOTAL_ACHIEVED_VOLUME_WGT = true;
+            else if (hashMapHHTModuleOrder.get(CODE_TOTAL_ACHIEVEDVOLUME) == 2)
+                this.SHOW_TOTAL_TIME_SPEND = true;
+            else if (hashMapHHTModuleOrder.get(CODE_TOTAL_ACHIEVEDVOLUME) == 3)
+                this.SHOW_STORE_VISITED_COUNT = true;
+        }
 
         this.IS_PROFILE_IMAGE = hashMapHHTModuleConfig.get(CODE_PROFILE_IMAGE) != null ? hashMapHHTModuleConfig.get(CODE_PROFILE_IMAGE) : false;
 
@@ -2790,6 +2811,11 @@ public class ConfigurationMasterHelper {
             TASK_PRODUCT_LEVEL_NO = hashMapHHTModuleOrder.get(CODE_SHOW_TASK_PRODUCT_LEVEL);
         }
 
+        if (hashMapHHTModuleConfig.get(CODE_TASK_DUDE_DATE_COUNT) != null) {
+            IS_TASK_DUDE_DATE_COUNT = hashMapHHTModuleOrder.get(CODE_TASK_DUDE_DATE_COUNT);
+        }
+        this.IS_TASK_REMARKS_MANDATORY = hashMapHHTModuleConfig.get(CODE_TASK_REMARKS_MANDATORY) != null ? hashMapHHTModuleConfig.get(CODE_TASK_REMARKS_MANDATORY) : false;
+
         this.IS_SHOW_RETAILER_LAST_VISIT = hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LAST_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_RETAILER_LAST_VISIT) : false;
         this.IS_SHOW_RETAILER_LAST_VISITEDBY = isShowLastVisitedBy();
 
@@ -2807,6 +2833,8 @@ public class ConfigurationMasterHelper {
         this.GLOBAL_GPS_DISTANCE = hashMapHHTModuleOrder.get(CODE_ENABLE_GLOBAL_GPS_DISTANCE) != null ? hashMapHHTModuleOrder.get(CODE_ENABLE_GLOBAL_GPS_DISTANCE) : 0;
         this.IS_SURVEY_PDF_SHARE = hashMapHHTModuleConfig.get(CODE_SURVEY_PDF_SHARE) != null ? hashMapHHTModuleConfig.get(CODE_SURVEY_PDF_SHARE) : false;
         this.IS_PRE_VISIT = hashMapHHTModuleConfig.get(CODE_PRE_VISIT) != null ? hashMapHHTModuleConfig.get(CODE_PRE_VISIT) : false;
+        this.IS_SHOW_SORT_STKCHK = hashMapHHTModuleConfig.get(CODE_SHOW_SORT_STKCHK) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_SORT_STKCHK) : false;
+        this.IS_SHOW_EXPLIST_IN_PROMO = hashMapHHTModuleConfig.get(CODE_SHOW_EXPLIST_IN_PROMO) != null ? hashMapHHTModuleConfig.get(CODE_SHOW_EXPLIST_IN_PROMO) : false;
     }
 
     private boolean isInOutModule() {
@@ -4067,6 +4095,8 @@ public class ConfigurationMasterHelper {
             IS_SWITCH_WITH_OUT_SKU_WISE_TGT = false;
             SELLER_SKU_WISE_KPI_CODES = "";
 
+            SHOW_LASTVISIT_GRAPH = false;
+
             String codeValue = null;
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
             );
@@ -4642,6 +4672,17 @@ public class ConfigurationMasterHelper {
                 c.close();
             }
 
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_STK_DIGIT) + " and Flag=1 and  ForSwitchSeller = 0 ";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    STK_DIGIT = (c.getInt(0) <= 5) ? 5 : c.getInt(0);
+                    IS_STK_DIGIT = true;
+                }
+                c.close();
+            }
+
 
             //Seller KPI Dashboard
             sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
@@ -4665,6 +4706,19 @@ public class ConfigurationMasterHelper {
                         && c.getString(0).length() > 0) {
                     IS_SWITCH_WITH_OUT_SKU_WISE_TGT = true;
                     SELLER_SKU_WISE_KPI_CODES = c.getString(0);
+                }
+                c.close();
+            }
+
+            sql = "select RField from " + DataMembers.tbl_HhtModuleMaster
+                    + " where hhtCode=" + bmodel.QT(CODE_SHOW_PSQ) + " and  ForSwitchSeller = 0 ";
+            c = db.selectSQL(sql);
+            if (c != null && c.getCount() != 0) {
+                if (c.moveToNext()) {
+                    int value = c.getInt(0);
+                    if (value == 1) {
+                        SHOW_LASTVISIT_GRAPH = true;
+                    }
                 }
                 c.close();
             }
@@ -4881,6 +4935,7 @@ public class ConfigurationMasterHelper {
     }
 
 
+
     public int getSbdDistTargetPCent() {
         int targetPercent = 0;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -4996,6 +5051,8 @@ public class ConfigurationMasterHelper {
     public void setGenFilter(Vector<ConfigureBO> genFilter) {
         this.genFilter = genFilter;
     }
+
+
 
     public String getLoadmanagementtitle() {
         return loadmanagementtitle;

@@ -48,11 +48,9 @@ import java.util.Vector;
 import static android.content.Context.LOCATION_SERVICE;
 import static com.ivy.cpg.locationservice.LocationConstants.GPS_NOTIFICATION_ID;
 import static com.ivy.cpg.locationservice.LocationConstants.MOCK_NOTIFICATION_ID;
-import static com.ivy.sd.png.util.DataMembers.tbl_movement_tracking_history;
-import static com.ivy.sd.png.util.DataMembers.tbl_movement_tracking_history_cols;
-import static com.ivy.utils.StringUtils.QT;
 import static com.ivy.utils.AppUtils.getApplicationVersionName;
 import static com.ivy.utils.AppUtils.getApplicationVersionNumber;
+import static com.ivy.utils.StringUtils.QT;
 
 public class LocationServiceHelper {
 
@@ -150,8 +148,8 @@ public class LocationServiceHelper {
 
 
     /*Notifies the user, if GPS not enabled send user to the GPS settings
-    * Also cancel the notification if permission enabled
-    */
+     * Also cancel the notification if permission enabled
+     */
     public boolean notifyGPSStatus(Context context) {
 
         if (!LocationServiceHelper.getInstance().isGpsEnabled(context)) {
@@ -181,8 +179,8 @@ public class LocationServiceHelper {
     }
 
     /*Notifies the user, if Mock Location is enabled send user to the settings
-    *Also cancel the notification if permission enabled
-    */
+     *Also cancel the notification if permission enabled
+     */
     public boolean notifyMockLocationStatus(Context context, Location location) {
 
         boolean isMock;
@@ -381,7 +379,7 @@ public class LocationServiceHelper {
 
             String columns = "Tid,Date,Latitude,Longtitude,Accuracy,Activity,Battery,LocationProvider,IsLocationEnabled";
 
-            String Tid = userMasterBO.getUserid() + ""+ DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
+            String Tid = userMasterBO.getUserid() + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             String values = QT(Tid) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
                     + "," + QT(String.valueOf(locationDetailBO.getLatitude()))
@@ -401,14 +399,14 @@ public class LocationServiceHelper {
         }
     }
 
-    public boolean isUserLocationAvailable(Context ctx,String tableName) {
-        DBUtil db ;
+    public boolean isUserLocationAvailable(Context ctx, String tableName) {
+        DBUtil db;
         boolean isAvail = false;
         try {
             db = new DBUtil(ctx, DataMembers.DB_NAME);
             db.openDataBase();
 
-            Cursor c = db.selectSQL("SELECT count(*) FROM "+tableName+"  where upload = 'N'");
+            Cursor c = db.selectSQL("SELECT count(*) FROM " + tableName + "  where upload = 'N'");
 
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
@@ -425,8 +423,8 @@ public class LocationServiceHelper {
         return isAvail;
     }
 
-    public void uploadLocationTracking(Context ctx,UserMasterBO userMasterBO) {
-
+    public void uploadLocationTrackingAws(Context ctx, UserMasterBO userMasterBO,
+                                          String uploadName, boolean isRealTime) {
         DBUtil db = null;
         try {
 
@@ -438,18 +436,22 @@ public class LocationServiceHelper {
 
             JSONObject jsonObjData;
 
-            Set<String> keys = DataMembers.uploadLocationTrackingColumn
-                    .keySet();
+            Set<String> keys;
+            String tableName ="";
+
+            if (isRealTime)
+                tableName = DataMembers.tbl_movement_tracking_history;
+            else
+                tableName = DataMembers.tbl_location_tracking;
 
             jsonObjData = new JSONObject();
-            for (String tableName : keys) {
-                JSONArray jsonArray = prepareDataForLocationTrackingUploadJSON(
-                        db, tableName,
-                        DataMembers.uploadLocationTrackingColumn.get(tableName));
 
-                if (jsonArray.length() > 0)
-                    jsonObjData.put(tableName, jsonArray);
-            }
+            JSONArray jsonArray = prepareDataForLocationTrackingUploadJSON(
+                    db, tableName,
+                    isRealTime?DataMembers.uploadMovementTrackingHistoryColumn.get(tableName):DataMembers.uploadLocationTrackingColumn.get(tableName));
+
+            if (jsonArray.length() > 0)
+                jsonObjData.put(tableName, jsonArray);
 
             JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
             try {
@@ -463,11 +465,11 @@ public class LocationServiceHelper {
                 jsonFormatter.addParameter("BranchId", userMasterBO.getBranchId());
                 jsonFormatter.addParameter("LoginId", userMasterBO.getLoginName());
                 jsonFormatter.addParameter("DeviceId", DeviceUtils.getIMEINumber(ctx));
-                jsonFormatter.addParameter("VersionCode",getApplicationVersionNumber(ctx));
+                jsonFormatter.addParameter("VersionCode", getApplicationVersionNumber(ctx));
                 jsonFormatter.addParameter("OrganisationId", userMasterBO.getOrganizationId());
                 jsonFormatter.addParameter("MobileDate", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
-                jsonFormatter.addParameter("MobileUTCDateTime",Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
-                jsonFormatter.addParameter("DownloadedDataDate",userMasterBO.getDownloadDate());
+                jsonFormatter.addParameter("MobileUTCDateTime", Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
+                jsonFormatter.addParameter("DownloadedDataDate", userMasterBO.getDownloadDate());
                 jsonFormatter.addParameter("VanId", userMasterBO.getVanId());
                 String LastDayClose = "";
                 if (synchronizationHelper.isDayClosed()) {
@@ -481,7 +483,9 @@ public class LocationServiceHelper {
             } catch (Exception e) {
                 Commons.printException(e);
             }
-            String url = synchronizationHelper.getUploadUrl("UPLDTRAN");
+
+            String url = synchronizationHelper.getUploadUrl(uploadName);
+
             Vector<String> responseVector = synchronizationHelper
                     .getUploadResponse(jsonFormatter.getDataInJson(),
                             jsonObjData.toString(), url);
@@ -517,10 +521,10 @@ public class LocationServiceHelper {
                 if (!synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
                     String errorMsg = synchronizationHelper.getErrormessageByErrorCode().get(synchronizationHelper.getAuthErroCode());
                     if (errorMsg != null) {
-                        Commons.print("errorMsg "+errorMsg);
+                        Commons.print("errorMsg " + errorMsg);
 //                        Toast.makeText(ctx, errorMsg, Toast.LENGTH_SHORT).show();
                     } else {
-                        Commons.print("errorMsg "+ctx.getResources().getString(R.string.data_not_downloaded));
+                        Commons.print("errorMsg " + ctx.getResources().getString(R.string.data_not_downloaded));
 //                        Toast.makeText(ctx, ctx.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -537,17 +541,17 @@ public class LocationServiceHelper {
 
                 System.gc();
                 try {
-                    db.executeQ("DELETE FROM LocationTracking");
+                    db.executeQ("DELETE FROM "+tableName);
                     db.closeDB();
                 } catch (Exception e) {
                     Commons.printException(e);
                 }
 
-            }else
+            } else
                 db.closeDB();
 
         } catch (Exception e) {
-            if(db!=null)
+            if (db != null)
                 db.closeDB();
             Commons.printException(e);
         }
@@ -598,7 +602,7 @@ public class LocationServiceHelper {
 
             String columns = "userid,latitude,longitude,date_time";
 
-            String values = QT(userMasterBO.getUserid()+"")
+            String values = QT(userMasterBO.getUserid() + "")
                     + "," + QT(String.valueOf(locationDetailBO.getLatitude()))
                     + "," + QT(String.valueOf(locationDetailBO.getLongitude()))
                     + "," + System.currentTimeMillis();
@@ -610,85 +614,4 @@ public class LocationServiceHelper {
             Commons.printException(e);
         }
     }
-
-    public void uploadRealTimeLocation(Context ctx){
-        DBUtil db = null;
-        try {
-
-            SynchronizationHelper synchronizationHelper = SynchronizationHelper.getInstance(ctx);
-
-            db = new DBUtil(ctx, DataMembers.DB_NAME);
-            db.createDataBase();
-            db.openDataBase();
-
-            JSONArray jsonArray = prepareDataForLocationTrackingUploadJSON(
-                    db, tbl_movement_tracking_history,
-                    tbl_movement_tracking_history_cols);
-
-            String url = "/MovementTracking/Upload";
-
-            Vector<String> responseVector = synchronizationHelper
-                    .getUploadResponseForLocation(jsonArray.toString(), url);
-
-            int response = 0;
-
-            if (responseVector.size() > 0) {
-
-
-                for (String s : responseVector) {
-                    JSONObject jsonObject = new JSONObject(s);
-
-                    Iterator itr = jsonObject.keys();
-                    while (itr.hasNext()) {
-                        String key = (String) itr.next();
-                        if (key.equals("Response")) {
-                            response = jsonObject.getInt("Response");
-
-                        } else if (key.equals("ErrorCode")) {
-                            String tokenResponse = jsonObject.getString("ErrorCode");
-                            if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
-                                    || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
-                                    || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
-
-                                response = 9;
-
-                            }
-
-                        }
-                    }
-                }
-            } else {
-                if (!synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    String errorMsg = synchronizationHelper.getErrormessageByErrorCode().get(synchronizationHelper.getAuthErroCode());
-                    if (errorMsg != null) {
-                        Commons.print("errorMsg "+errorMsg);
-//                        Toast.makeText(ctx, errorMsg, Toast.LENGTH_SHORT).show();
-                    } else {
-                        Commons.print("errorMsg "+ctx.getResources().getString(R.string.data_not_downloaded));
-//                        Toast.makeText(ctx, ctx.getResources().getString(R.string.data_not_downloaded), Toast.LENGTH_SHORT).show();
-                    }
-                }
-            }
-
-            if (response == 1) {
-
-                System.gc();
-                try {
-                    db.executeQ("DELETE FROM MovementTrackingHistory");
-                    db.closeDB();
-                } catch (Exception e) {
-                    Commons.printException(e);
-                }
-
-            }
-            else
-                db.closeDB();
-
-        } catch (Exception e) {
-            if(db!=null)
-                db.closeDB();
-            Commons.printException(e);
-        }
-    }
-
 }

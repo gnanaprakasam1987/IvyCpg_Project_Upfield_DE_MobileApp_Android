@@ -60,7 +60,7 @@ import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SchemeProductBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
@@ -2260,7 +2260,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     }
                     if (stockCheckHelper.SHOW_SHELF_OUTER) {
-                        (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
+                        (row.findViewById(R.id.llShelfOuter)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this, FontUtils.FontType.MEDIUM));
                         holder.shelfOuterQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this, FontUtils.FontType.MEDIUM));
                         try {
@@ -2618,7 +2618,7 @@ public class OrderSummary extends IvyBaseActivityNoActionBar implements OnClickL
 
                     }
                     if (stockCheckHelper.SHOW_SHELF_OUTER) {
-                        (row.findViewById(R.id.llShelfPiece)).setVisibility(View.VISIBLE);
+                        (row.findViewById(R.id.llShelfOuter)).setVisibility(View.VISIBLE);
                         ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(FontUtils.getFontRoboto(OrderSummary.this, FontUtils.FontType.LIGHT));
                         holder.shelfOuterQty.setTypeface(FontUtils.getFontRoboto(OrderSummary.this, FontUtils.FontType.MEDIUM));
                         try {

@@ -4,12 +4,13 @@ import com.ivy.core.data.AppDataManagerContract;
 import com.ivy.sd.png.bo.UserMasterBO;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import io.reactivex.Completable;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
-public interface UserDataManager extends AppDataManagerContract{
+public interface UserDataManager extends AppDataManagerContract {
 
     Completable fetchUserDetails();
 
@@ -34,6 +35,14 @@ public interface UserDataManager extends AppDataManagerContract{
     Completable updateUserProfile(UserMasterBO userMasterBO);
 
     Observable<ArrayList<UserMasterBO>> fetchAllUsers();
+
+    Observable<ArrayList<UserMasterBO>> fetchParentUsers();
+
+    Observable<ArrayList<UserMasterBO>> fetchChildUsers();
+
+    Observable<ArrayList<UserMasterBO>> fetchPeerUsers();
+
+    Observable<HashMap<String, ArrayList<UserMasterBO>>> fetchLinkUsers(int retailerId);
 
     Observable<ArrayList<UserMasterBO>> fetchDashboardUsers();
 

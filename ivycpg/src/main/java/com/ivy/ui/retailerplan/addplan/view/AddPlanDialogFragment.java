@@ -16,11 +16,13 @@ import android.support.v4.content.ContextCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.ivy.core.base.view.BaseBottomSheetDialogFragment;
+import com.ivy.cpg.view.profile.CommonReasonDialog;
 import com.ivy.cpg.view.profile.ProfileActivity;
 import com.ivy.cpg.view.retailercontact.RetailerContactAvailBo;
 import com.ivy.cpg.view.retailercontact.TimeSlotPickFragment;
@@ -28,8 +30,10 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.MyDatePickerDialog;
 import com.ivy.ui.retailerplan.addplan.AddPlanContract;
 import com.ivy.ui.retailerplan.addplan.DateWisePlanBo;
 import com.ivy.ui.retailerplan.addplan.di.AddPlanModule;
@@ -44,6 +48,7 @@ import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.Objects;
 
@@ -62,7 +67,7 @@ import static com.ivy.utils.DateTimeUtils.TIME_HOUR_MINS;
 
 @SuppressLint("ValidFragment")
 public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment implements AddPlanContract.AddPlanView,
-        CommonReasonDialog.AddNonVisitListener,CommonDialog.PositiveClickListener {
+        CommonReasonDialog.AddNonVisitListener, CommonDialog.PositiveClickListener {
 
     @BindView(R.id.tv_add)
     TextView addPlan;
@@ -124,6 +129,12 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
     @BindView(R.id.seperator_view)
     View seperatorView;
 
+    @BindView(R.id.tv_date_selection_txt)
+    TextView tvDateSelection;
+
+    @BindView(R.id.btn_date_picker)
+    Button btnDateSelection;
+
     private BottomSheetBehavior bottomSheetBehavior;
 
     private Context context;
@@ -136,11 +147,16 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
 
     private ArrayList<DateWisePlanBo> planList;
 
+    private MyDatePickerDialog datePickerDialog;
+    private int mYear;
+    private int mMonth;
+    private int mDay;
+
     @Inject
     AddPlanPresenterImpl<AddPlanContract.AddPlanView> addPlanPresenter;
 
-    public AddPlanDialogFragment(String selectedDate,RetailerMasterBO retailerMaster,
-                                 DateWisePlanBo dateWisePlanBo, ArrayList<DateWisePlanBo> planList){
+    public AddPlanDialogFragment(String selectedDate, RetailerMasterBO retailerMaster,
+                                 DateWisePlanBo dateWisePlanBo, ArrayList<DateWisePlanBo> planList) {
         retailerMasterBO = retailerMaster;
         this.dateWisePlanBo = dateWisePlanBo;
         this.planList = planList;
@@ -417,6 +433,14 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
         showAlert("Delete Plan", "Are You Sure Want To Delete ?", this, true);
     }
 
+    @OnClick(R.id.btn_date_picker)
+    void datePickerDialog() {
+        if (datePickerDialog == null)
+            createDatePickerDialog();
+
+        datePickerDialog.show();
+    }
+
     private View.OnClickListener addToPlanListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -561,8 +585,48 @@ public class AddPlanDialogFragment extends BaseBottomSheetDialogFragment impleme
                     }else
                         addPlan.setVisibility(View.VISIBLE);
             }
+
+            final Calendar c = Calendar.getInstance();
+            mYear = c.get(Calendar.YEAR);
+            mMonth = c.get(Calendar.MONTH);
+            mDay = c.get(Calendar.DAY_OF_MONTH);
+            btnDateSelection.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat));
         }
 
+    }
+
+    private void createDatePickerDialog() {
+        datePickerDialog = new MyDatePickerDialog(
+                context, R.style.DatePickerDialogStyle,
+                (view, year, monthOfYear, dayOfMonth) -> {
+                    mYear = year;
+                    mMonth = monthOfYear;
+                    mDay = dayOfMonth;
+                    Calendar selectedDate = new GregorianCalendar(
+                            year, monthOfYear, dayOfMonth);
+
+                    String selectedDateStr = DateTimeUtils
+                            .convertDateObjectToRequestedFormat(
+                                    selectedDate.getTime(),
+                                    ConfigurationMasterHelper.outDateFormat);
+
+                    btnDateSelection.setText(selectedDateStr);
+                    Calendar mCurrentCalendar = Calendar
+                            .getInstance();
+                    if (DateTimeUtils.getDateCount(selectedDateStr, DateTimeUtils.now(DATE_GLOBAL), "yyyy/MM/dd") <= 0) {
+
+                        showMessage(getString(R.string.select_future_date));
+
+                        btnDateSelection.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), ConfigurationMasterHelper.outDateFormat));
+
+                        mYear = mCurrentCalendar.get(Calendar.YEAR);
+                        mMonth = mCurrentCalendar.get(Calendar.MONTH);
+                        mDay = mCurrentCalendar.get(Calendar.DAY_OF_MONTH);
+
+                    }
+                    this.selectedDate = selectedDateStr;
+                }, mYear, mMonth, mDay);
+        datePickerDialog.setPermanentTitle(getString(R.string.choose_date));
     }
 
     @Subscribe

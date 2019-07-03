@@ -14,6 +14,7 @@ import com.ivy.utils.DateTimeUtils;
 import org.mindrot.BCrypt;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.Callable;
 
 import javax.inject.Inject;
@@ -49,11 +50,11 @@ public class UserDataManagerImpl implements UserDataManager {
 
     private void initDb() {
         mDbUtil.createDataBase();
-        if(mDbUtil.isDbNullOrClosed())
+        if (mDbUtil.isDbNullOrClosed())
             mDbUtil.openDataBase();
     }
 
-    private void shutDownDb(){
+    private void shutDownDb() {
         mDbUtil.closeDB();
     }
 
@@ -207,6 +208,11 @@ public class UserDataManagerImpl implements UserDataManager {
         });
     }
 
+    /**
+     *  * Method to use download joinCall users list from usermaster where isDeviceuser = 0 and relationShip = PARENT
+     *  * Set the joint call users list inside UserMasterBO
+     * @return joinCallUserList
+     */
     @Override
     public Completable fetchJoinCallDetails() {
         return Completable.fromCallable(new Callable() {
@@ -222,7 +228,7 @@ public class UserDataManagerImpl implements UserDataManager {
                     if (configurationMasterHelper.userLevel != null && configurationMasterHelper.userLevel.length() > 0)
                         sb.append("userLevel in (").append(configurationMasterHelper.userLevel).append(")");
                     else
-                        sb.append("relationship !='CHILD'");
+                        sb.append("relationship ='PARENT'");
 
                     Cursor c = mDbUtil.selectSQL(sb.toString());
                     if (c != null) {
@@ -672,6 +678,194 @@ public class UserDataManagerImpl implements UserDataManager {
     }
 
     @Override
+    public Observable<ArrayList<UserMasterBO>> fetchParentUsers() {
+        return Observable.fromCallable(new Callable<ArrayList<UserMasterBO>>() {
+            @Override
+            public ArrayList<UserMasterBO> call() throws Exception {
+                try {
+                    initDb();
+
+                    ArrayList<UserMasterBO> userList = new ArrayList<>();
+                    String query = "select userid,username from usermaster where relationship =" + QT("PARENT");
+                    Cursor c = mDbUtil.selectSQL(query);
+                    if (c != null) {
+                        userList = new ArrayList<>();
+                        UserMasterBO userMasterBO;
+                        while (c.moveToNext()) {
+                            userMasterBO = new UserMasterBO();
+                            userMasterBO.setUserid(c.getInt(0));
+                            userMasterBO.setUserName(c.getString(1));
+                            userList.add(userMasterBO);
+                        }
+                        c.close();
+                    }
+                    shutDownDb();
+
+                    return userList;
+                } catch (Exception ignored) {
+                }
+
+                shutDownDb();
+                return new ArrayList<>();
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<UserMasterBO>> fetchChildUsers() {
+        return Observable.fromCallable(new Callable<ArrayList<UserMasterBO>>() {
+            @Override
+            public ArrayList<UserMasterBO> call() throws Exception {
+                try {
+                    initDb();
+
+                    ArrayList<UserMasterBO> userList = new ArrayList<>();
+                    String query = "select userid,username from usermaster where relationship =" + QT("CHILD");
+                    Cursor c = mDbUtil.selectSQL(query);
+                    if (c != null) {
+                        userList = new ArrayList<>();
+                        UserMasterBO userMasterBO;
+                        while (c.moveToNext()) {
+                            userMasterBO = new UserMasterBO();
+                            userMasterBO.setUserid(c.getInt(0));
+                            userMasterBO.setUserName(c.getString(1));
+                            userList.add(userMasterBO);
+                        }
+                        c.close();
+                    }
+                    shutDownDb();
+
+                    return userList;
+                } catch (Exception ignored) {
+                }
+
+                shutDownDb();
+                return new ArrayList<>();
+            }
+        });
+    }
+
+    @Override
+    public Observable<ArrayList<UserMasterBO>> fetchPeerUsers() {
+        return Observable.fromCallable(new Callable<ArrayList<UserMasterBO>>() {
+            @Override
+            public ArrayList<UserMasterBO> call() throws Exception {
+                try {
+                    initDb();
+
+                    ArrayList<UserMasterBO> userList = new ArrayList<>();
+                    String query = "select userid,username from usermaster where relationship =" + QT("PEER");
+                    Cursor c = mDbUtil.selectSQL(query);
+                    if (c != null) {
+                        userList = new ArrayList<>();
+                        UserMasterBO userMasterBO;
+                        while (c.moveToNext()) {
+                            userMasterBO = new UserMasterBO();
+                            userMasterBO.setUserid(c.getInt(0));
+                            userMasterBO.setUserName(c.getString(1));
+                            userList.add(userMasterBO);
+                        }
+                        c.close();
+                    }
+                    shutDownDb();
+
+                    return userList;
+                } catch (Exception ignored) {
+                }
+
+                shutDownDb();
+                return new ArrayList<>();
+            }
+        });
+    }
+
+    @Override
+    public Observable<HashMap<String, ArrayList<UserMasterBO>>> fetchLinkUsers(int retailerId) {
+        return Observable.fromCallable(new Callable<HashMap<String, ArrayList<UserMasterBO>>>() {
+            @Override
+            public HashMap<String, ArrayList<UserMasterBO>> call() throws Exception {
+
+                try {
+                    HashMap<String, ArrayList<UserMasterBO>> linkUserListMap = new HashMap<>();
+                    ArrayList<UserMasterBO> linkUserList = new ArrayList<>();
+                    initDb();
+                    String whereCond = "";
+
+                    if (retailerId != 0)
+                        whereCond = " where retailerId =" + retailerId;
+                    ArrayList<UserMasterBO> userList = new ArrayList<>();
+                    String query = "select userid,username,retailerId from UserRetailerMapping" + whereCond;
+                    Cursor c = mDbUtil.selectSQL(query);
+                    if (c != null) {
+                        userList = new ArrayList<>();
+                        UserMasterBO userMasterBO;
+                        while (c.moveToNext()) {
+                            userMasterBO = new UserMasterBO();
+                            userMasterBO.setUserid(c.getInt(0));
+                            userMasterBO.setUserName(c.getString(1));
+                            userMasterBO.setRetailerID(c.getString(2));
+
+                            if (linkUserListMap.get(c.getString(2)) != null) {
+                                ArrayList<UserMasterBO> linkUserList2 = linkUserListMap.get(c.getString(2));
+                                linkUserList2.add(userMasterBO);
+                            } else {
+                                userList = new ArrayList<>();
+                                userList.add(userMasterBO);
+                                linkUserListMap.put(c.getString(2), userList);
+                            }
+                        }
+                        c.close();
+                    }
+                    shutDownDb();
+                    return linkUserListMap;
+
+                } catch (Exception e) {
+                    shutDownDb();
+                }
+                return new HashMap<>();
+            }
+        });
+    }
+
+    /*@Override
+    public Observable<ArrayList<UserMasterBO>> fetchLinkUsers(int retailerId) {
+        return Observable.fromCallable(new Callable<ArrayList<UserMasterBO>>() {
+            @Override
+            public ArrayList<UserMasterBO> call() throws Exception {
+                try {
+                    initDb();
+                    String whereCond = "";
+
+                    if (retailerId != 0)
+                        whereCond = " where retailerId =" + retailerId;
+                    ArrayList<UserMasterBO> userList = new ArrayList<>();
+                    String query = "select userid,username,retailerId from UserRetailerMapping" + whereCond;
+                    Cursor c = mDbUtil.selectSQL(query);
+                    if (c != null) {
+                        userList = new ArrayList<>();
+                        UserMasterBO userMasterBO;
+                        while (c.moveToNext()) {
+                            userMasterBO = new UserMasterBO();
+                            userMasterBO.setUserid(c.getInt(0));
+                            userMasterBO.setUserName(c.getString(1));
+                            userMasterBO.setRetailerID(c.getString(2));
+                            userList.add(userMasterBO);
+                        }
+                        c.close();
+                    }
+                    shutDownDb();
+
+                    return userList;
+                } catch (Exception ignored) {
+                }
+
+                shutDownDb();
+                return new ArrayList<>();
+            }
+        });
+    }
+*/
+    @Override
     public Observable<ArrayList<UserMasterBO>> fetchDashboardUsers() {
         return Observable.fromCallable(new Callable<ArrayList<UserMasterBO>>() {
             @Override
@@ -777,7 +971,7 @@ public class UserDataManagerImpl implements UserDataManager {
 
     @Override
     public void tearDown() {
-        if(mDbUtil!=null)
+        if (mDbUtil != null)
             mDbUtil.closeDB();
     }
 

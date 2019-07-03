@@ -7,9 +7,7 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
-import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
-import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.CheckBox;
@@ -38,9 +36,8 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.NonproductivereasonBO;
 import com.ivy.sd.png.bo.SubDepotBo;
-import com.ivy.sd.png.bo.VanLoadMasterBO;
+import com.ivy.cpg.view.van.vanstockapply.VanLoadMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
@@ -127,7 +124,7 @@ public class LoadManagementHelper {
 
                     String type = cursor.getString(6);
                     if (type != null && type.equalsIgnoreCase("distributor")) {
-                        if (bmodel.userMasterHelper.getUserMasterBO().getDistributorid() == subDepots.getSubDepotId()) {
+                        if (bmodel.getAppDataProvider().getUser().getDistributorid() == subDepots.getSubDepotId()) {
                             subDepots.setdName(cursor.getString(1)
                                     + "- Primary");
                         } else {
@@ -246,7 +243,7 @@ public class LoadManagementHelper {
             db.openDataBase();
             db.createDataBase();
             for (SubDepotBo bo : getDistributorList()) {
-                if (bmodel.userMasterHelper.getUserMasterBO()
+                if (bmodel.getAppDataProvider().getUser()
                         .getDistributorid() != bo.getSubDepotId()) {
                     cursor = db
                             .selectSQL("Select pid from vanload where subdepotid="
@@ -451,7 +448,7 @@ public class LoadManagementHelper {
     private JSONObject getHeaderJson() {
         JSONObject json = new JSONObject();
         try {
-            json.put("UserId", bmodel.userMasterHelper.getUserMasterBO()
+            json.put("UserId", bmodel.getAppDataProvider().getUser()
                     .getUserid());
             json.put("VersionCode", bmodel.getApplicationVersionNumber());
             json.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
@@ -475,7 +472,7 @@ public class LoadManagementHelper {
         try {
             db.openDataBase();
             db.createDataBase();
-            Cursor c = db.selectSQL("select startDate from TripMaster where userId="+bmodel.userMasterHelper.getUserMasterBO().getUserid());
+            Cursor c = db.selectSQL("select startDate from TripMaster where userId="+bmodel.getAppDataProvider().getUser().getUserid());
             if (c != null) {
                 if (c.getCount() > 0) {
                     if (c.moveToNext()) {
@@ -537,7 +534,7 @@ public class LoadManagementHelper {
 
                 db.openDataBase();
                 db.createDataBase();
-                Cursor c = db.selectSQL("select uid from TripMaster where userId=" + bmodel.userMasterHelper.getUserMasterBO().getUserid());
+                Cursor c = db.selectSQL("select uid from TripMaster where userId=" + bmodel.getAppDataProvider().getUser().getUserid());
                 if (c != null) {
                     if (c.getCount() > 0) {
                         if (c.moveToNext()) {
@@ -566,7 +563,7 @@ public class LoadManagementHelper {
         try {
             db.openDataBase();
             db.createDataBase();
-            Cursor c = db.selectSQL("select endDate from TripMaster where userId="+bmodel.userMasterHelper.getUserMasterBO().getUserid());
+            Cursor c = db.selectSQL("select endDate from TripMaster where userId="+bmodel.getAppDataProvider().getUser().getUserid());
             if (c != null) {
                 if (c.getCount() > 0) {
                     if (c.moveToNext()) {
@@ -604,7 +601,7 @@ public class LoadManagementHelper {
 
                 StringBuilder stringBuilder=new StringBuilder();
                 stringBuilder.append(StringUtils.QT(id));
-                stringBuilder.append(","+bmodel.userMasterHelper.getUserMasterBO().getUserid());
+                stringBuilder.append(","+bmodel.getAppDataProvider().getUser().getUserid());
                 stringBuilder.append(","+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW)));
                 stringBuilder.append(","+StringUtils.QT("N"));
                 stringBuilder.append(","+StringUtils.QT("STARTED"));
@@ -623,7 +620,7 @@ public class LoadManagementHelper {
                         +" set endDate="+StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
                         +","+"upload='N',status='COMPLETED'"
                         +",endlatitude="+LocationUtil.latitude+",endlongitude="+LocationUtil.longitude
-                        +" where userId="+bmodel.userMasterHelper.getUserMasterBO().getUserid());
+                        +" where userId="+bmodel.getAppDataProvider().getUser().getUserid());
 
         }
         catch (Exception ex){
@@ -709,7 +706,7 @@ public class LoadManagementHelper {
         String tripStartDate="";
         db.openDataBase();
         db.createDataBase();
-        Cursor c = db.selectSQL("select startDate from TripMaster where userId=" + bmodel.userMasterHelper.getUserMasterBO().getUserid());
+        Cursor c = db.selectSQL("select startDate from TripMaster where userId=" + bmodel.getAppDataProvider().getUser().getUserid());
         if (c != null) {
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
@@ -722,7 +719,7 @@ public class LoadManagementHelper {
             c.close();
 
 
-        int difference=DateTimeUtils.getDateCount(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),tripStartDate,"yyyy/MM/dd");
+        int difference=DateTimeUtils.getDateCount(tripStartDate,bmodel.getAppDataProvider().getUser().getDownloadDate(),"yyyy/MM/dd");
 
         if(difference>0)
             return false;
@@ -742,7 +739,7 @@ public class LoadManagementHelper {
         }
 
         if (bmodel.outletTimeStampHelper
-                .isJointCall(bmodel.userMasterHelper.getUserMasterBO()
+                .isJointCall(bmodel.getAppDataProvider().getUser()
                         .getJoinCallUserList())) {
             bmodel.showAlert(
                     context.getResources().getString(
@@ -751,7 +748,7 @@ public class LoadManagementHelper {
             return false;
         }
 
-        if (DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), bmodel.userMasterHelper.getUserMasterBO().getDownloadDate(),
+        if (DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), bmodel.getAppDataProvider().getUser().getDownloadDate(),
                 "yyyy/MM/dd") < 0) {
             Toast.makeText(context,
                     context.getResources().getString(R.string.download_date_mismatch),

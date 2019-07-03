@@ -57,7 +57,20 @@ public class CommonDialog extends Dialog {
         this.negBtnTxt = null;
 
     }
-
+    public CommonDialog(Context context, String title, String msg,
+                        boolean imgDisplay, String posBtnTxt, String negBtnTxt,
+                        PositiveClickListener posClickListener, negativeOnClickListener negClickListener) {
+        super(context);
+        this.context = context;
+        bmodel = (BusinessModel) bContext;
+        this.posClickListener = posClickListener;
+        this.title = title;
+        this.msg = msg;
+        this.imgDisplay = imgDisplay;
+        this.posBtnTxt = posBtnTxt;
+        this.negBtnTxt = negBtnTxt;
+        this.negClickListener = negClickListener;
+    }
 
     public CommonDialog(Context context, String title, String msg,
                         String posBtnTxt) {

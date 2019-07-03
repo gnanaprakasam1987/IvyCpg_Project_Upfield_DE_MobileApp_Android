@@ -15,6 +15,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthUserCollisionException;
@@ -30,6 +31,7 @@ import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
 import java.io.File;
@@ -202,99 +204,104 @@ public class LoginHelper {
         final SharedPreferences prefs = AppUtils.getSharedPreferences(mContext);
         boolean registrationId = prefs.getBoolean(PROPERTY_IS_REG_ID_NEW, false);
 
-        if (checkPlayServices(mContext.getApplicationContext())) {
+        if (FirebaseApp.getApps(mContext).isEmpty() && businessModel.initializeFirebase() != null) {
 
-            FirebaseInstanceId.getInstance().getInstanceId()
-                    .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                            if (!task.isSuccessful()) {
-                                Commons.printException(task.getException());
-                                return;
-                            }
+            Commons.print("Firebase Instance Not Created");
 
-                            final String fcmToken = task.getResult().getToken();
+            if (checkPlayServices(mContext.getApplicationContext())) {
 
-                            //Send FCM Token to aws server if change in Fcm Reg id
-                            if (!registrationId)
-                                registerInBackground(mContext, fcmToken);
-
-
-                            if (isRealTimeConfigAvail(mContext) || isSupervisorMenuAvail(mContext)) {
-                                final String domainName = getDomainName(mContext);
-                                String loginName = businessModel.userMasterHelper.getUserMasterBO().getLoginName();
-
-                                loginName = loginName.replace(" ","_");
-
-                                final String email = loginName + "@" + domainName + ".com";
-
-                                if (FirebaseAuth.getInstance().getCurrentUser() == null && !email.equals("")) {
-
-                                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, FIREBASE_PASSWORD)
-                                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<AuthResult> task1) {
-                                                    // Get new Instance ID token
-
-                                                    if (!task1.isSuccessful()) {
-                                                        if (task1.getException() instanceof FirebaseAuthUserCollisionException) {
-                                                            FirebaseAuth.getInstance().signInWithEmailAndPassword(email, FIREBASE_PASSWORD)
-                                                                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                                                        @Override
-                                                                        public void onComplete(@NonNull Task<AuthResult> task1) {
-
-                                                                            if (isSupervisorMenuAvail(mContext))
-                                                                                updateTokenInFirebase(mContext, fcmToken, domainName);
-
-                                                                            storeFireBaseCredentials(mContext,
-                                                                                    email,
-                                                                                    domainName);
-
-                                                                            if (businessModel.configurationMasterHelper.IS_FIREBASE_CHAT_ENABLED)
-                                                                                businessModel.initializeChatSdk();
-
-                                                                        }
-                                                                    });
-                                                        }
-                                                    } else {
-
-                                                        if (isSupervisorMenuAvail(mContext))
-                                                            updateTokenInFirebase(mContext, fcmToken, domainName);
-
-                                                        storeFireBaseCredentials(mContext,
-                                                                email,
-                                                                domainName);
-
-                                                        if (businessModel.configurationMasterHelper.IS_FIREBASE_CHAT_ENABLED)
-                                                            businessModel.initializeChatSdk();
-
-                                                    }
-
-                                                }
-                                            });
+                FirebaseInstanceId.getInstance().getInstanceId()
+                        .addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<InstanceIdResult> task) {
+                                if (!task.isSuccessful()) {
+                                    Commons.printException(task.getException());
+                                    return;
                                 }
 
+                                final String fcmToken = task.getResult().getToken();
+
+                                //Send FCM Token to aws server if change in Fcm Reg id
+                                if (!registrationId)
+                                    registerInBackground(mContext, fcmToken);
+
+
+                                if (isRealTimeConfigAvail(mContext) || isSupervisorMenuAvail(mContext)) {
+                                    final String domainName = getDomainName(mContext);
+                                    String loginName = businessModel.userMasterHelper.getUserMasterBO().getLoginName();
+
+                                    loginName = loginName.replace(" ", "_");
+
+                                    final String email = loginName + "@" + domainName + ".com";
+
+                                    if (FirebaseAuth.getInstance().getCurrentUser() == null && !email.equals("")) {
+
+                                        FirebaseAuth.getInstance().createUserWithEmailAndPassword(email, FIREBASE_PASSWORD)
+                                                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<AuthResult> task1) {
+                                                        // Get new Instance ID token
+
+                                                        if (!task1.isSuccessful()) {
+                                                            if (task1.getException() instanceof FirebaseAuthUserCollisionException) {
+                                                                FirebaseAuth.getInstance().signInWithEmailAndPassword(email, FIREBASE_PASSWORD)
+                                                                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                                                            @Override
+                                                                            public void onComplete(@NonNull Task<AuthResult> task1) {
+
+                                                                                if (isSupervisorMenuAvail(mContext))
+                                                                                    updateTokenInFirebase(mContext, fcmToken, domainName);
+
+                                                                                storeFireBaseCredentials(mContext,
+                                                                                        email,
+                                                                                        domainName);
+
+                                                                                if (businessModel.configurationMasterHelper.IS_FIREBASE_CHAT_ENABLED)
+                                                                                    businessModel.initializeChatSdk();
+
+                                                                            }
+                                                                        });
+                                                            }
+                                                        } else {
+
+                                                            if (isSupervisorMenuAvail(mContext))
+                                                                updateTokenInFirebase(mContext, fcmToken, domainName);
+
+                                                            storeFireBaseCredentials(mContext,
+                                                                    email,
+                                                                    domainName);
+
+                                                            if (businessModel.configurationMasterHelper.IS_FIREBASE_CHAT_ENABLED)
+                                                                businessModel.initializeChatSdk();
+
+                                                        }
+
+                                                    }
+                                                });
+                                    }
+
+                                }
                             }
+                        });
+
+
+                //Subscribe Topic Name
+                final String topicName = getFCMTopicName(mContext);
+                if (topicName != null && !topicName.equals("")) {
+
+                    String[] topicNameArr = topicName.split(",");
+
+                    for (String topic : topicNameArr) {
+
+                        if (validateTopicName(topic)) {
+                            FirebaseMessaging.getInstance().subscribeToTopic(topic);
                         }
-                    });
-
-
-            //Subscribe Topic Name
-            final String topicName = getFCMTopicName(mContext);
-            if (topicName != null && !topicName.equals("")) {
-
-                String[] topicNameArr = topicName.split(",");
-
-                for (String topic : topicNameArr) {
-
-                    if (validateTopicName(topic)) {
-                        FirebaseMessaging.getInstance().subscribeToTopic(topic);
                     }
                 }
-            }
 
-        } else {
-            Commons.printInformation("No valid Google Play Services APK found.");
+            } else {
+                Commons.printInformation("No valid Google Play Services APK found.");
+            }
         }
     }
 
@@ -733,5 +740,33 @@ public class LoginHelper {
 
     private void setTermsAccepted(boolean termsAccepted) {
         isTermsAccepted = termsAccepted;
+    }
+
+    public int getNearByDueDataTaskAvail(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+        int taskCount = 0;
+        try {
+            db.openDataBase();
+            String maxDueDate = DateTimeUtils.getRequestedDateByGetType(businessModel.configurationMasterHelper.IS_TASK_DUDE_DATE_COUNT, Calendar.DATE);
+            String query = "select distinct A.taskid" +
+                    " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid " +
+                    " left join DatewisePlan DWP on DWP.Date = B.DueDate" +
+                    " and DWP.EntityId = A.retailerID and DWP.Status!='D' and DWP.EntityType = 'RETAILER'" +
+                    " where B.DueDate<=" + StringUtils.QT(maxDueDate) + " and DWP.Date IS NULL and (B.Status!='D' OR B.Status IS NULL)" +
+                    " and A.retailerId!=0 and A.TaskId not in (Select taskid from TaskHistory where RetailerId = A.retailerId)";
+
+            Cursor c = db.selectSQL(query);
+
+            if (c.getCount() > 0) {
+                if (c.moveToFirst()) {
+                    taskCount = c.getCount();
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        } finally {
+            db.closeDB();
+        }
+        return taskCount;
     }
 }

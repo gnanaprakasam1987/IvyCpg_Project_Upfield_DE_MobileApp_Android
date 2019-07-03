@@ -107,4 +107,12 @@
         android:visible="false"
         ivydist:showAsAction="ifRoom" />
 
+    <item
+        android:id="@+id/menu_sort"
+        android:icon="@drawable/ic_action_sort"
+        android:title="Sort"
+        ivydist:showAsAction="always"
+        android:visible="false"
+        android:iconTint="@color/white"/>
+
 </menu>

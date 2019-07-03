@@ -2255,17 +2255,30 @@ public class NewOutletFragment extends IvyBaseFragment
                         break;
                     }
                 } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("MOBILE")
-                        && mandatory == 1) {
+                        .equalsIgnoreCase("MOBILE")) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
-                    if (editText[i].getText().toString().trim().length() == 0) {
-                        validate = false;
-                        scrollToSpecificEditText(edittextinputLayout);
-                        editText[i].requestFocus();
-                        edittextinputLayout.setErrorEnabled(true);
-                        edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
-                        editText[i].addTextChangedListener(watcher);
-                        break;
+                    if (editText[i].getText().toString().trim().length() == 0 ||
+                            editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo()) {
+
+                        int length = editText[i].getText().toString().trim().length();
+                        if (mandatory == 1 && editText[i].getText().toString().trim().length() == 0) {
+                            validate = false;
+                            scrollToSpecificEditText(edittextinputLayout);
+                            editText[i].requestFocus();
+                            edittextinputLayout.setErrorEnabled(true);
+                            edittextinputLayout.setError(getResources().getString(R.string.enter) + " " + menuName);
+                            editText[i].addTextChangedListener(watcher);
+                            break;
+                        }else if (length > 0 && editText[i].getText().toString().trim().length() < profileConfig.get(i).getMaxLengthNo()) {
+                            validate = false;
+                            scrollToSpecificEditText(edittextinputLayout);
+                            editText[i].requestFocus();
+                            edittextinputLayout.setErrorEnabled(true);
+                            edittextinputLayout.setError(menuName + " Length Must Be " + profileConfig.get(i).getMaxLengthNo());
+                            editText[i].addTextChangedListener(watcher);
+                            break;
+                        }
+
                     }
                 } else if (bmodel.configurationMasterHelper.IS_CONTACT_TAB) {
                     ArrayList<RetailerContactBo> contactList = bmodel.newOutletHelper.getRetailerContactList();
@@ -5066,7 +5079,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
                     Intent intent = new Intent(getActivity(),
                             SurveyActivityNew.class);
-                    intent.putExtra("menucode", MENU_NEW_RETAILER);
+                    intent.putExtra("menuCode", MENU_NEW_RETAILER);
                     intent.putExtra("screenMode", screenMode);
                     startActivity(intent);
                 }

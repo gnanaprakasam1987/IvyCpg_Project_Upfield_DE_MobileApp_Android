@@ -11,7 +11,7 @@ public class SellerBo implements Parcelable {
     private int userId,billed,covered,target,retailerId,lpc,totallpc,productivityPercent,deviationCount;
     private String userName,RetailerName,imagePath,uid="";
     private boolean isAttendanceDone = false,isSellerWorking = true;
-    private double latitude,longitude,totalOrderValue,orderValue;
+    private double latitude,longitude,totalOrderValue,orderValue, totalweight,achievedTotalWeight,targetTotalWeight;
     private long  inTime, outTime,totalCallDuration;
     private Marker marker;
 
@@ -45,6 +45,9 @@ public class SellerBo implements Parcelable {
         inTime = in.readLong();
         outTime = in.readLong();
         totalOrderValue = in.readDouble();
+        totalweight = in.readDouble();
+        achievedTotalWeight = in.readDouble();
+        targetTotalWeight = in.readDouble();
         totalCallDuration = in.readLong();
         targetLines = in.readInt();
         achievedLines = in.readInt();
@@ -298,6 +301,29 @@ public class SellerBo implements Parcelable {
         this.uid = uid;
     }
 
+    public double getTotalweight() {
+        return totalweight;
+    }
+
+    public void setTotalweight(double totalweight) {
+        this.totalweight = totalweight;
+    }
+
+    public double getAchievedTotalWeight() {
+        return achievedTotalWeight;
+    }
+
+    public void setAchievedTotalWeight(double achievedTotalWeight) {
+        this.achievedTotalWeight = achievedTotalWeight;
+    }
+
+    public double getTargetTotalWeight() {
+        return targetTotalWeight;
+    }
+
+    public void setTargetTotalWeight(double targetTotalWeight) {
+        this.targetTotalWeight = targetTotalWeight;
+    }
 
     @Override
     public int describeContents() {
@@ -334,5 +360,8 @@ public class SellerBo implements Parcelable {
         dest.writeInt(achievedCoverage);
         dest.writeLong(targetValue);
         dest.writeLong(achievedValue);
+        dest.writeDouble(totalweight);
+        dest.writeDouble(achievedTotalWeight);
+        dest.writeDouble(targetTotalWeight);
     }
 }

@@ -2,6 +2,7 @@
 <android.support.v7.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
@@ -32,7 +33,7 @@
             style="@style/RetailerNameListView"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical|left"
+            android:gravity="center_vertical|start"
             android:maxLines="1"
             android:padding="@dimen/_1sdp"
             android:text=""
@@ -224,8 +225,8 @@
             android:id="@+id/tv_cancel_edit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical|left"
-            android:text="Cancel"
+            android:gravity="center_vertical|start"
+            android:text="@string/cancel"
             android:background="@drawable/curved_end_bg"
             android:textColor="@color/plan_text_color"
             android:paddingLeft="@dimen/_10sdp"
@@ -233,12 +234,45 @@
             android:paddingBottom="@dimen/_5sdp"
             android:paddingTop="@dimen/_5sdp"
             android:drawablePadding="@dimen/_5sdp"
-            android:layout_marginRight="@dimen/_15sdp"
+            android:layout_marginEnd="@dimen/_15sdp"
             android:visibility="visible"
             android:textSize="@dimen/text_size_secondary"
-            app:layout_constraintTop_toTopOf="@+id/tv_save"
             app:layout_constraintBottom_toBottomOf="@+id/tv_save"
-            app:layout_constraintRight_toLeftOf="@+id/tv_save"/>
+            app:layout_constraintRight_toLeftOf="@+id/tv_save"
+            app:layout_constraintTop_toTopOf="@+id/tv_save" />
+
+
+        <TextView
+            android:id="@+id/tv_date_selection_txt"
+            style="@style/TextViewListItemSecondary"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:gravity="center_vertical|start"
+            android:maxLines="1"
+            android:padding="@dimen/_1sdp"
+            android:text="@string/visit_date"
+            android:textColor="@color/plan_view_secondary_text_color"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_profile" />
+
+        <Button
+            android:id="@+id/btn_date_picker"
+            style="@style/TextViewListItemSecondary"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/list_item_date_picker_height"
+            android:background="@drawable/edittext_full_border"
+            android:gravity="center_vertical|start"
+            android:maxLines="1"
+            android:padding="@dimen/_5sdp"
+            android:text="@string/date_label"
+            android:drawableTint="?primarycolor"
+            android:drawableEnd="@drawable/ic_date_picker"
+            android:textColor="@color/plan_view_secondary_text_color"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_date_selection_txt"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_date_selection_txt"
+            tools:ignore="UnusedAttribute" />
 
         <!--Visit Start Begins-->
         <TextView
@@ -248,12 +282,12 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_20sdp"
-            android:gravity="center_vertical|left"
+            android:gravity="center_vertical|start"
             android:maxLines="1"
             android:padding="@dimen/_1sdp"
             android:text="Visit Start/End Time"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tv_profile" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_date_selection_txt" />
 
         <TextView
             android:id="@+id/tv_visit_time"
@@ -261,7 +295,7 @@
             android:textColor="@color/plan_view_secondary_text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical|left"
+            android:gravity="center_vertical|start"
             android:maxLines="1"
             android:text="10:00"
             android:padding="@dimen/_5sdp"
@@ -277,7 +311,7 @@
             android:textColor="@color/plan_view_secondary_text_color"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical|left"
+            android:gravity="center_vertical|start"
             android:maxLines="1"
             android:padding="@dimen/_5sdp"
             android:text="12:00"
@@ -319,7 +353,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/_10sdp"
-            android:gravity="center_vertical|left"
+            android:gravity="center_vertical|start"
             android:maxLines="1"
             android:padding="@dimen/_3sdp"
             android:text="Planned Time Slots"

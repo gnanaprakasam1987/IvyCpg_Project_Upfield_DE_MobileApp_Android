@@ -1320,6 +1320,7 @@
     <string name="attachment">Attaché</string>
 
     <string-array name="task_tab_header">
+        <item>Toute</item>
         <item>Tous</item>
         <item>Assigné</item>
         <item>Mes tâches</item>

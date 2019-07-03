@@ -13,7 +13,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.SchemeBO;
 import com.ivy.sd.png.model.BusinessModel;
 
 public class NextSlabSchemeDialog extends Dialog {

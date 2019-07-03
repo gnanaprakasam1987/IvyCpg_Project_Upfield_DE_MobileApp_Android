@@ -75,7 +75,7 @@ public class InventoryReportFragment extends IvyBaseFragment {
 
         for(RetailerMasterBO bo:bmodel.getRetailerMaster()){
             if(bo.getIsToday()==1) {
-                spinnerAdapter.add(new RetailerMasterBO(SDUtil.convertToInt(bo.getRetailerID()), bo.getRetailerName()));
+                spinnerAdapter.add(new RetailerMasterBO(bo.getRetailerID(), bo.getRetailerName()));
             }
         }
         spnRetailers.setAdapter(spinnerAdapter);
@@ -83,7 +83,7 @@ public class InventoryReportFragment extends IvyBaseFragment {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if(inventoryTypeAdapter.getCount()>0) {
-                    lstData = inventoryReportHelper.downloadInventoryReport(spinnerAdapter.getItem(i).getRetailerId(),
+                    lstData = inventoryReportHelper.downloadInventoryReport(spinnerAdapter.getItem(i).getRetailerID(),
                             inventoryTypeAdapter.getItem(spnType.getSelectedItemPosition()).getConfigCode());
                 refreshLsit();
                 }
@@ -114,7 +114,7 @@ public class InventoryReportFragment extends IvyBaseFragment {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
                 if(spnRetailers.getCount()>0) {
-                    lstData = inventoryReportHelper.downloadInventoryReport(spinnerAdapter.getItem(spnRetailers.getSelectedItemPosition()).getRetailerId(),
+                    lstData = inventoryReportHelper.downloadInventoryReport(spinnerAdapter.getItem(spnRetailers.getSelectedItemPosition()).getRetailerID(),
                             inventoryTypeAdapter.getItem(i).getConfigCode());
                 refreshLsit();  }
 

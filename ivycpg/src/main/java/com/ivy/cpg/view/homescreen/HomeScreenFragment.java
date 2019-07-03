@@ -111,7 +111,10 @@ import com.ivy.ui.retailer.viewretailers.view.map.RetailerMapFragment;
 import com.ivy.ui.notes.NoteConstant;
 import com.ivy.ui.notes.view.NotesListFragment;
 import com.ivy.ui.task.TaskConstant;
+import com.ivy.ui.task.TaskViewListener;
 import com.ivy.ui.task.view.TaskFragment;
+import com.ivy.ui.task.view.TaskUnplannedFragment;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
@@ -158,6 +161,7 @@ import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_REALLOCATION;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_REPORT;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_ROAD_ACTIVITY;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_ROUTE_KPI;
+import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_RTR_TASK_PENDING;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_SKUWISESTGT;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_SUBD;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_SUPERVISOR_CALLANALYSIS;
@@ -177,12 +181,13 @@ import static com.ivy.cpg.view.homescreen.HomeMenuConstants.MENU_WVW_PLAN;
 import static com.ivy.cpg.view.homescreen.HomeMenuConstants.menuIcons;
 
 public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment.MapViewListener
-        , PlanningMapFragment.DataPulling, ChannelSelectionDialog.ChannelSelectionListener {
+        , PlanningMapFragment.DataPulling, ChannelSelectionDialog.ChannelSelectionListener, TaskViewListener {
 
     private BusinessModel bmodel;
 
     public static boolean fromHomeScreen = false;
     public static boolean isLeave_today;
+    private int taskDueDateCount = 0;
 
     private boolean isClicked;
     private boolean isInandOutModuleEnabled = false;
@@ -506,6 +511,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         bmodel.setContext(getActivity());
 
         bmodel.configurationMasterHelper.getPrinterConfig();
+
+        LoginHelper loginHelper = LoginHelper.getInstance(getActivity());
+        taskDueDateCount = loginHelper.getNearByDueDataTaskAvail(getActivity());
+
 
         if (bmodel.userMasterHelper.getUserMasterBO().getUserid() == 0) {
             Toast.makeText(getActivity(),
@@ -1487,12 +1496,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             if (!isClicked) {
                 isClicked = false;
                 switchFragment(MENU_TASK_NEW, menuItem.getMenuName());
-               /* Intent intent = new Intent(getActivity(), Task.class);
-                intent.putExtra("screentitle", menuItem.getMenuName());
-                intent.putExtra("IsRetailerwisetask", false);
-                intent.putExtra("fromHomeScreen", true);
-                startActivity(intent);
-                getActivity().finish();*/
+            }
+        } else if (menuItem.getConfigCode().equals(MENU_RTR_TASK_PENDING)) {
+            if (!isClicked) {
+                isClicked = false;
+                switchFragment(MENU_RTR_TASK_PENDING, menuItem.getMenuName());
             }
         } else if (menuItem.getConfigCode().equals(MENU_PRIMARY_SALES)) {
             if (bmodel.synchronizationHelper.isDayClosed()) {
@@ -1751,7 +1759,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 .findFragmentByTag(MENU_JOINT_ACK);
         PlanDeviationFragment planDeviationFragment = (PlanDeviationFragment) fm
                 .findFragmentByTag(MENU_NON_FIELD);
-        TaskFragment taskFragment = (TaskFragment) fm.findFragmentByTag(MENU_TASK_NEW);
+
+        TaskUnplannedFragment   taskUnplannedFragment = (TaskUnplannedFragment) fm
+                    .findFragmentByTag(MENU_RTR_TASK_PENDING);
+
+        TaskFragment   taskFragment = (TaskFragment) fm
+                    .findFragmentByTag(MENU_TASK_NEW);
 
         BackUpSellerFragment backUpSellerFragment = (BackUpSellerFragment) fm.findFragmentByTag(MENU_BACKUP_SELLER);
 
@@ -1877,6 +1890,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         } else if (taskFragment != null && fragmentName.equals(MENU_TASK_NEW)
                 && taskFragment.isVisible()) {
             return;
+        } else if (taskUnplannedFragment != null && fragmentName.equals(MENU_RTR_TASK_PENDING)
+                && taskUnplannedFragment.isVisible()) {
+            return;
         } else if (backUpSellerFragment != null && fragmentName.equals(MENU_BACKUP_SELLER)
                 && backUpSellerFragment.isVisible()) {
             return;
@@ -1971,6 +1987,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             ft.remove(expenseFragment);
         if (taskFragment != null)
             ft.remove(taskFragment);
+        if (taskUnplannedFragment != null)
+            ft.remove(taskUnplannedFragment);
         if (backUpSellerFragment != null)
             ft.remove(backUpSellerFragment);
         if (supervisorMapCFragment != null)
@@ -2113,7 +2131,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
                 bndl.putInt("SurveyType", 1);
-                bndl.putString("menucode", fragmentName);
+                bndl.putString("menuCode", fragmentName);
                 bndl.putString("from", "HomeScreen");
                 fragment = new SurveyActivityNewFragment();
                 fragment.setArguments(bndl);
@@ -2124,7 +2142,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
                 bndl.putInt("SurveyType", 0);
-                bndl.putString("menucode", fragmentName);
+                bndl.putString("menuCode", fragmentName);
                 bndl.putString("from", "HomeScreen");
                 fragment = new SurveyActivityNewFragment();
                 fragment.setArguments(bndl);
@@ -2135,7 +2153,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
                 bndl.putInt("SurveyType", 0);
-                bndl.putString("menucode", fragmentName);
+                bndl.putString("menuCode", fragmentName);
                 bndl.putString("from", "HomeScreen");
                 fragment = new SurveyActivityNewFragment();
                 fragment.setArguments(bndl);
@@ -2314,10 +2332,33 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 bndl.putString(TaskConstant.SCREEN_TITLE, menuName);
                 bndl.putBoolean(TaskConstant.FROM_HOME_SCREEN, true);
                 bndl.putString(TaskConstant.MENU_CODE, MENU_TASK_NEW);
-                fragment = new TaskFragment();
+
+                if (!getTaskNotificationFlag() && taskDueDateCount > 0) {
+                    setTAskNotificationFlag(true);
+                    fragment = new TaskUnplannedFragment();
+                    fragment.setArguments(bndl);
+                    ((TaskUnplannedFragment) fragment).setTaskViewListener(this);
+                    ft.add(R.id.fragment_content, fragment,
+                            MENU_RTR_TASK_PENDING);
+                } else {
+                    fragment = new TaskFragment();
+                    fragment.setArguments(bndl);
+                    ((TaskFragment) fragment).setTaskViewListener(this);
+                    ft.add(R.id.fragment_content, fragment,
+                            MENU_TASK_NEW);
+                }
+                break;
+            case MENU_RTR_TASK_PENDING:
+                bndl = new Bundle();
+                bndl.putString(TaskConstant.SCREEN_TITLE, menuName);
+                bndl.putBoolean(TaskConstant.FROM_HOME_SCREEN, true);
+                bndl.putString(TaskConstant.MENU_CODE, MENU_RTR_TASK_PENDING);
+                setTAskNotificationFlag(true);
+                fragment = new TaskUnplannedFragment();
                 fragment.setArguments(bndl);
+                ((TaskUnplannedFragment) fragment).setTaskViewListener(this);
                 ft.add(R.id.fragment_content, fragment,
-                        MENU_TASK_NEW);
+                        MENU_RTR_TASK_PENDING);
                 break;
             case MENU_BACKUP_SELLER:
                 bndl = new Bundle();
@@ -2471,6 +2512,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         }
     }
 
+
     @Override
     public void loadNewOutLet(int position, String menuName) {
         ChannelBO channelBO = mChannelList.get(position);
@@ -2481,6 +2523,26 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         bmodel.newOutletHelper.downloadLinkRetailer();
         switchFragment(MENU_NEW_RETAILER, menuName);
         dialogFragment.dismiss();
+    }
+
+    @Override
+    public void switchTaskView(boolean fromPendingTask) {
+        if (!fromPendingTask) {
+            for (ConfigureBO con : bmodel.configurationMasterHelper.getConfig()) {
+                if (con.getConfigCode().equals(MENU_TASK_NEW)) {
+                    gotoNextActivity(con);
+                    break;
+                }
+            }
+        } else {
+            ConfigureBO conBo = new ConfigureBO();
+            conBo.setConfigCode(MENU_RTR_TASK_PENDING);
+            conBo.setMenuName(getString(R.string.pending_task));
+            conBo.setFlag(1);
+            conBo.setHasLink(1);
+            gotoNextActivity(conBo);
+        }
+
     }
 
     private class LoadRoadActivityData extends
@@ -2558,9 +2620,10 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 holder = new ViewHolder();
                 holder.menuIcon = convertView
                         .findViewById(R.id.list_item_icon_ib);
-
                 holder.menuBTN = convertView
                         .findViewById(R.id.list_item_menu_tv_new);
+                holder.badgeViewTv = convertView
+                        .findViewById(R.id.list_item_badge_view);
 
                 convertView.setOnClickListener(new OnClickListener() {
 
@@ -2591,6 +2654,12 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             else
                 holder.menuIcon.setImageResource(menuIcons.get(MENU_PLANNING));
 
+            if (holder.config.getConfigCode().equalsIgnoreCase(MENU_TASK_NEW)
+                    && taskDueDateCount > 0) {
+                holder.badgeViewTv.setVisibility(View.VISIBLE);
+            } else {
+                holder.badgeViewTv.setVisibility(View.GONE);
+            }
 
             return convertView;
         }
@@ -2601,6 +2670,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             int position;
             private ImageView menuIcon;
             private TextView menuBTN;
+            private TextView badgeViewTv;
         }
     }
 
@@ -2764,5 +2834,17 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     Toast.LENGTH_SHORT).show();
         }
     }
+
+    private void setTAskNotificationFlag(boolean flag) {
+        SharedPreferences.Editor editor = AppUtils.getSharedPreferenceByName(bmodel.getApplicationContext(), HomeMenuConstants.TASK_NOTIFICATION).edit();
+        editor.putBoolean(HomeMenuConstants.TASK_NOTIFICATION, flag);
+        editor.apply();
+    }
+
+    private boolean getTaskNotificationFlag() {
+        SharedPreferences editor = AppUtils.getSharedPreferenceByName(bmodel.getApplicationContext(), HomeMenuConstants.TASK_NOTIFICATION);
+        return editor.getBoolean(HomeMenuConstants.TASK_NOTIFICATION, false);
+    }
+
 
 }

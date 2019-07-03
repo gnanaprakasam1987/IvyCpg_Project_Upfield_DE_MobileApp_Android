@@ -31,5 +31,7 @@ public interface StockCheckContractor {
         void scrollToSelectedTabPosition();
 
         void savePromptMessage(int type, String text);
+
+        void notifyListChange();
     }
 }

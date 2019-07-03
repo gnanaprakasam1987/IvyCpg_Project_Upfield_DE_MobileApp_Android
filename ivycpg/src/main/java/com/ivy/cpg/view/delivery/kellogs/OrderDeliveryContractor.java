@@ -1,7 +1,7 @@
 package com.ivy.cpg.view.delivery.kellogs;
 
 import com.ivy.sd.png.bo.ProductMasterBO;
-import com.ivy.sd.png.bo.SchemeProductBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 
 import java.util.ArrayList;
 import java.util.Vector;

@@ -39,5 +39,11 @@
         android:title="L.F"
         android:orderInCategory="101"
         ivydist:showAsAction="always"/>
+    <item
+        android:id="@+id/menu_promostate_filter"
+        android:icon="@drawable/ic_action_location_place"
+        android:title="Promo State"
+        android:orderInCategory="101"
+        ivydist:showAsAction="always"/>
 
 </menu>
