@@ -332,7 +332,7 @@
     <string name="survey">Survey</string>
     <string name="last_service_date">Last Service Date</string>
     <string name="old_serial_no">Old SNo: </string>
-    <string name="serial_no_change_request">Update Serial No</string>
+    <string name="serial_no_change_request">Change Request</string>
     <string name="asset_update_request">Asset Update Request</string>
     <string name="requested_date">Req Date</string>
     <string name="asset_approval">Asset Approval</string>

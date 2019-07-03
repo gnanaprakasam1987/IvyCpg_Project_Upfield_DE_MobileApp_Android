@@ -20,14 +20,13 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.view.DataPickerDialogFragment;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Objects;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class SerialNoChangeActivity extends IvyBaseActivityNoActionBar implements BarCodeChangeListener {
@@ -54,12 +53,12 @@ public class SerialNoChangeActivity extends IvyBaseActivityNoActionBar implement
         recyclerViewChangeList.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewChangeList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         setSupportActionBar(toolbar);
-        setUpToolbar(getString(R.string.serial_no_change_request));
+        setUpToolbar(getIntent().getExtras().getString("screenTitle", getString(R.string.serial_no_change_request)));
 
         if (!serializedAssetHelper.SHOW_SERIAL_NO_IN_UPDATE_REQUEST)
             findViewById(R.id.tv_isAvail).setVisibility(View.GONE);
 
-        serializedAssetHelper.fetchSerialNo(this);
+        fetchTransactionData();
         assetList = new ArrayList<>();
         assetList = serializedAssetHelper.getAssetTrackingList();
         serialNoChangeAdapter = new SerialNoChangeAdapter(this, assetList, this, ConfigurationMasterHelper.outDateFormat, serializedAssetHelper, bModel);
@@ -67,42 +66,87 @@ public class SerialNoChangeActivity extends IvyBaseActivityNoActionBar implement
 
         findViewById(R.id.btn_save_sno_change).setOnClickListener(v -> {
 
-            if (validate())
-                onSaveBtnClick();
-            else
-                showMessage(getString(R.string.mandatory_fileds_empty));
+            onSaveBtnClick();
         });
 
     }
 
-    private boolean validate() {
-        for (SerializedAssetBO assetBO : assetList) {
+    private void fetchTransactionData() {
 
-            if (serializedAssetHelper.SHOW_ASSET_RENTAL_PRICE
-                    && assetBO.getRentalPrice() > 0)
-                return true;
-            else if (serializedAssetHelper.SHOW_ASSET_EFFECTIVE_DATE
-                    && !assetBO.getEffectiveToDate().isEmpty())
-                return true;
-            else if (serializedAssetHelper.SHOW_SERIAL_NO_IN_UPDATE_REQUEST
-                    && !assetBO.getNewSerialNo().isEmpty())
-                return true;
+        compositeDisposable.add(serializedAssetHelper.fetchSerialNo(this)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(String s) throws Exception {
 
+                    }
+                }));
+
+    }
+
+    private boolean validateRentalPrice() {
+        boolean isFlag = true;
+        if (serializedAssetHelper.SHOW_ASSET_RENTAL_PRICE) {
+            for (SerializedAssetBO assetBO : assetList) {
+
+                if (assetBO.getRentalPrice() <= 0) {
+                    isFlag = false;
+                    break;
+                }
+
+            }
         }
-        return false;
+        return isFlag;
+    }
+
+
+    private boolean validateEffToDate() {
+        boolean isFlag = true;
+        if (serializedAssetHelper.SHOW_ASSET_EFFECTIVE_DATE) {
+            for (SerializedAssetBO assetBO : assetList) {
+
+                if (assetBO.getEffectiveToDate().isEmpty()) {
+                    isFlag = false;
+                    break;
+                }
+            }
+        }
+        return isFlag;
+    }
+
+    private boolean validateSerialNo() {
+        boolean isFlag = true;
+        if (serializedAssetHelper.SHOW_SERIAL_NO_IN_UPDATE_REQUEST) {
+            for (SerializedAssetBO assetBO : assetList) {
+
+                if (assetBO.getNewSerialNo().isEmpty()) {
+                    isFlag = false;
+                    break;
+                }
+            }
+        }
+        return isFlag;
     }
 
     private void onSaveBtnClick() {
-        compositeDisposable.add(serializedAssetHelper.updateSerialNo(this, assetList)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(isUpdated -> {
-                    if (isUpdated) {
-                        showMessage(getString(R.string.saved_successfully));
-                        finish();
-                    } else
-                        showMessage(getString(R.string.something_went_wrong));
-                }));
+        if (validateRentalPrice()
+                && validateEffToDate()
+                && validateSerialNo()) {
+            compositeDisposable = new CompositeDisposable();
+            compositeDisposable.add(serializedAssetHelper.updateSerialNo(this, assetList)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(isUpdated -> {
+                        if (isUpdated) {
+                            showMessage(getString(R.string.saved_successfully));
+                            finish();
+                        } else
+                            showMessage(getString(R.string.error));
+                    }));
+        } else {
+            showMessage(getString(R.string.mandatory_fileds_empty));
+        }
     }
 
 

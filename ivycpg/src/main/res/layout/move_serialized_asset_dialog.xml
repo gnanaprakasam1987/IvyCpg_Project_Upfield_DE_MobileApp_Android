@@ -123,8 +123,9 @@
         android:layout_marginEnd="@dimen/dimen_10dp"
         android:background="@drawable/edittext_bottom_border"
         android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
         android:hint="@string/price"
+        android:maxLength="10"
+        android:inputType="numberDecimal"
         android:gravity="start|center"
         android:textAlignment="textStart"
         android:textStyle="normal" />
@@ -136,12 +137,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/autoCompleteMovementOutletName"
         android:layout_alignStart="@+id/autoCompleteMovementOutletName"
-        android:layout_alignLeft="@+id/autoCompleteMovementOutletName"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:tag="asset_eff_to_date"
         android:layout_marginEnd="@dimen/dimen_10dp"
-        android:layout_marginRight="@dimen/dimen_10dp"
         android:gravity="start"
         android:text="@string/choose_eff_to_date"
         android:textAlignment="textStart" />

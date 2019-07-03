@@ -72,7 +72,7 @@ public class SerialNoChangeAdapter extends RecyclerView.Adapter<SerialNoChangeAd
         holder.newSerialNoEdTxt.setText(assetBo.getNewSerialNo());
 
         holder.rentalPriceEdTxt.setText(String.valueOf(assetBo.getRentalPrice()));
-        holder.effToDateBtn.setText(assetBo.getEffectiveToDate());
+        holder.effToDateBtn.setText(DateTimeUtils.convertFromServerDateToRequestedFormat(assetBo.getEffectiveToDate(), outPutDateFormat));
 
         holder.newSerialNoEdTxt.setOnTouchListener((v, event) -> {
             holder.newSerialNoEdTxt.onTouchEvent(event);
@@ -130,8 +130,7 @@ public class SerialNoChangeAdapter extends RecyclerView.Adapter<SerialNoChangeAd
             @Override
             public void afterTextChanged(Editable s) {
                 double price = SDUtil.convertToDouble(s.toString());
-                if (price > 0)
-                    assetBo.setRentalPrice(price);
+                assetBo.setRentalPrice(price);
             }
         });
 
