@@ -243,6 +243,7 @@ public class ProductMasterBO implements Comparable {
     private int isSMP;
     private int isNMustSell;
     private int mDeadProduct;
+    private int mTradePromotion;
 
     /**
      * Total scheme discount amount applied on line value.
@@ -2100,4 +2101,11 @@ public class ProductMasterBO implements Comparable {
         return this.available-available;
     }
 
+    public int getmTradePromotion() {
+        return mTradePromotion;
+    }
+
+    public void setmTradePromotion(int mTradePromotion) {
+        this.mTradePromotion = mTradePromotion;
+    }
 }

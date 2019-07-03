@@ -78,6 +78,7 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
     private static final String FILTER_CODE_SMP = "Filt22";
     private static final String FILTER_CODE_NEAR_EXPIRY = "Filt19";
     private static final String FILTER_CODE_SHELF = "Filt24";
+    private static final String FILTER_CODE_TRADEPROMOTION = "Filt31";
 
     private final String GENERAL = "General";
 
@@ -380,7 +381,8 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
                 || (selectedFilter.equalsIgnoreCase(FILTER_CODE_SHELF) && (ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfCase() > -1 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfPiece() > -1 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfOuter() > -1 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getAvailability() > -1))
                 || (selectedFilter.equalsIgnoreCase(FILTER_CODE_SUGGESTED_ORDER) && ret.getSoInventory() > 0)
                 || (selectedFilter.equalsIgnoreCase(FILTER_CODE_DRUG_PROD) && ret.getIsDrug() == 1)
-                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_DEAD_PRODUCTS) && ret.getmDeadProduct() == 1);
+                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_DEAD_PRODUCTS) && ret.getmDeadProduct() == 1)
+                || (selectedFilter.equalsIgnoreCase(FILTER_CODE_TRADEPROMOTION) && ret.getmTradePromotion() == 1);
     }
 
     private boolean applyCommonFilterConfig(ProductMasterBO ret) {
@@ -396,7 +398,7 @@ public class ProductSearch implements View.OnClickListener,TextView.OnEditorActi
                         || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfCase() > -1 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getShelfOuter() > -1 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getWHPiece() > 0
                         || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getWHCase() > 0 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getWHOuter() > 0 || ret.getLocations().get(productHelper.getmSelectedLocationIndex()).getAvailability() > -1))
                         || (bo.getConfigCode().equals(FILTER_CODE_DISCOUNT) && ret.getIsDiscountable() == 1) || (bo.getConfigCode().equals(FILTER_CODE_DRUG_PROD) && ret.getIsDrug() == 1)
-                        || (bo.getConfigCode().equals(FILTER_CODE_DEAD_PRODUCTS) && ret.getmDeadProduct() == 1);
+                        || (bo.getConfigCode().equals(FILTER_CODE_DEAD_PRODUCTS) && ret.getmDeadProduct() == 1) || (bo.getConfigCode().equals(FILTER_CODE_TRADEPROMOTION) && ret.getmTradePromotion() == 1);
 
             }
         }
