@@ -2,6 +2,18 @@ package com.ivy.ui.task;
 
 public class TaskConstant {
 
+    public static final String TASK_REMARK = "TASK";
+
+    public static final String FILTER = "filter";
+
+    public static final String SELECTED_FILTER_LIST = "SelectedFilterList";
+
+    public static final String FILTER_LIST = "hashList";
+
+    public static final String FILTER_MENU_LIST = "menuList";
+
+    public static final String RETAILER_FILTER_MENU = "Retailer";
+
     public static final String RETAILER_WISE_TASK = "isRetailerWiseTask";
 
     public static final String FORM_CHANNEL_WISE = "FromChannelWise";
@@ -19,8 +31,6 @@ public class TaskConstant {
     public static final String TASK_NOTIFICATION_SRC = "fromTaskNotification";
 
     public static final String TASK_DETAIL_SRC = "fromTaskDetailSrc";
-
-    public static final int SERVER_TASK = 1;
 
     public static final int TASK_TITLE_ASC = 0;//Order By Ascending for Task Title Name
     public static final int TASK_TITLE_DESC = 1;//Order By Descending  for Task Title Name

@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.SchemeBO;
+import com.ivy.cpg.view.order.scheme.SchemeBO;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;

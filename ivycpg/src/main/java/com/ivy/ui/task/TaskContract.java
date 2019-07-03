@@ -97,7 +97,7 @@ public interface TaskContract {
 
         void addNewImage(String imageName);
 
-        void onSaveTask(int channelId, TaskDataBO taskObj, int linkUserId, int retailerId);
+        void onSaveTask(int channelId, TaskDataBO taskObj, int linkUserId, int retailerId, String deletedImageId);
 
         void updateTaskExecution(TaskDataBO taskDataBO, int reasonId);
 
@@ -126,6 +126,8 @@ public interface TaskContract {
         boolean isNoTaskReason();
 
         boolean isShowProdLevel();
+
+        boolean isShowRemarks();
 
         String outDateFormat();
 

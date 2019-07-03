@@ -9,17 +9,47 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <HorizontalScrollView
+            android:id="@+id/hscrl_spl_filter"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dummy_tab_lay"
+            android:background="?attr/primarycolor"
+            android:fillViewport="true"
+            android:scrollbars="none"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:id="@+id/ll_spl_filter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal" />
+                <!--android:gravity="center_vertical"-->
+                <LinearLayout
+                    android:id="@+id/ll_tab_selection"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/tab_selection_identifier_height"
+                    android:orientation="horizontal">
+                    <!--android:layout_height="@dimen/tab_selection_identifier_height"-->
+                </LinearLayout>
+            </LinearLayout>
+        </HorizontalScrollView>
 
         <LinearLayout
             android:id="@+id/header_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/list_header_height"
-            android:layout_alignParentTop="true"
+            android:layout_below="@id/hscrl_spl_filter"
             android:background="@color/list_title_bg_color"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="@dimen/list_padding_left_n_right"
-            android:paddingEnd="@dimen/list_padding_left_n_right">
+            android:paddingEnd="@dimen/list_padding_left_n_right"
+            android:paddingStart="@dimen/list_padding_left_n_right">
 
             <TextView
                 android:id="@+id/tvDesc"
@@ -92,8 +122,8 @@
             android:id="@+id/list"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/header_layout"
             android:layout_above="@+id/ll_keypad"
+            android:layout_below="@+id/header_layout"
             android:cacheColorHint="@null"
             android:divider="@color/light_gray"
             android:dividerHeight="0.5dp"
@@ -118,11 +148,11 @@
             android:id="@+id/footer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="@dimen/footer_height"
             android:layout_alignParentBottom="true"
             android:background="?attr/customFooterBackgroundColor"
-            android:padding="@dimen/footer_padding"
-            android:orientation="vertical">
+            android:minHeight="@dimen/footer_height"
+            android:orientation="vertical"
+            android:padding="@dimen/footer_padding">
 
             <Button
                 android:id="@+id/btn_save"

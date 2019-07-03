@@ -22,11 +22,11 @@ public interface TaskDataManager extends AppDataManagerContract {
 
     Single<Integer> fetchTaskCount();
 
-    Single<Boolean> updateTaskExecutionData(TaskDataBO taskDataBO, String retailerId, int reasonId);
+    Single<Boolean> updateTaskExecutionData(TaskDataBO taskDataBO, int reasonId);
 
     Single<Boolean> updateTaskExecutionImage(String imageName, String taskId);
 
-    Single<Boolean> saveTask(int channelId, TaskDataBO taskObj, ArrayList<TaskDataBO> taskImgList, int linkUserId);
+    Single<Boolean> saveTask(int channelId, TaskDataBO taskObj, ArrayList<TaskDataBO> taskImgList, int linkUserId, String deletedImgIds);
 
     Observable<ArrayList<RetailerMasterBO>> fetchAllRetailers();
 

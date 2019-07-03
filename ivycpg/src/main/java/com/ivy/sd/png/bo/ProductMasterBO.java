@@ -2,6 +2,8 @@ package com.ivy.sd.png.bo;
 
 import android.support.annotation.NonNull;
 
+import com.ivy.cpg.view.order.scheme.SchemeBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 
@@ -243,6 +245,7 @@ public class ProductMasterBO implements Comparable {
     private int isSMP;
     private int isNMustSell;
     private int mDeadProduct;
+    private int mTradePromotion;
 
     /**
      * Total scheme discount amount applied on line value.
@@ -2100,4 +2103,11 @@ public class ProductMasterBO implements Comparable {
         return this.available-available;
     }
 
+    public int getmTradePromotion() {
+        return mTradePromotion;
+    }
+
+    public void setmTradePromotion(int mTradePromotion) {
+        this.mTradePromotion = mTradePromotion;
+    }
 }

@@ -3,248 +3,294 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:orientation="vertical"
-    android:paddingStart="@dimen/list_padding_left_n_right"
-    android:paddingTop="@dimen/target_top_margin"
-    android:paddingEnd="@dimen/list_padding_left_n_right"
-    android:paddingBottom="@dimen/target_top_margin">
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/orderScreenListRow"
+    <TextView
+        android:id="@+id/tvPromoHeader"
+        style="@style/TextViewListItemPrimary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:ellipsize="end"
         android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:maxLines="2"
+        android:paddingTop="@dimen/_10sdp"
+        android:paddingLeft="@dimen/_7sdp"
+        android:text="@string/promotion"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/target_top_margin"
+        android:paddingEnd="@dimen/list_padding_left_n_right"
+        android:paddingStart="@dimen/list_padding_left_n_right" >
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:id="@+id/orderScreenListRow"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="4.5"
             android:gravity="center_vertical"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/tvPromoName"
-                style="@style/TextViewListItemPrimary"
-                android:layout_width="match_parent"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:gravity="start"
-                android:maxLines="2"
-                android:text="@string/promotion" />
+                android:layout_weight="4.5"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tv_product_name"
-                style="@style/TextViewListItemSecondaryHighlight"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="start"
-                android:maxLines="2"
-                android:tag="promotion_type"
-                android:text="@string/product_name"
+                <TextView
+                    android:id="@+id/tvPromoName"
+                    style="@style/TextViewListItemPrimary"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:gravity="start"
+                    android:maxLines="2"
+                    android:text="@string/promotion" />
+
+                <TextView
+                    android:id="@+id/tv_product_name"
+                    style="@style/TextViewListItemSecondaryHighlight"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:maxLines="2"
+                    android:tag="promotion_type"
+                    android:text="@string/product_name"
+                    android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/tv_group_name"
+                    style="@style/TextViewListItemSecondaryHighlight"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:maxLines="2"
+                    android:tag="promotion_type"
+                    android:text="@string/group_name" />
+            </LinearLayout>
+
+
+            <EditText
+                android:id="@+id/et_promo_qty"
+                style="@style/EditText_ListItem"
+                android:layout_width="0dp"
+                android:layout_weight="1.5"
+                android:gravity="center"
+                android:inputType="number"
+                android:text="@string/zero"
                 android:visibility="visible" />
 
-            <TextView
-                android:id="@+id/tv_group_name"
-                style="@style/TextViewListItemSecondaryHighlight"
-                android:layout_width="wrap_content"
+
+            <LinearLayout
+                android:id="@+id/ll_executed"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:gravity="center">
+
+                <CheckBox
+                    android:id="@+id/executed_CB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_announced"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1.5"
+                android:gravity="center">
+
+                <CheckBox
+                    android:id="@+id/announced_CB"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_photo"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/btn_photo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/photo"
+                    android:src="@drawable/ic_photo_camera_blue_24dp" />
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_marginTop="@dimen/list_item_inter_margin"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:id="@+id/ll_install_date"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:gravity="start"
-                android:maxLines="2"
-                android:tag="promotion_type"
-                android:text="@string/group_name" />
-        </LinearLayout>
+                android:layout_gravity="center_vertical"
+                android:layout_weight="2"
+                android:orientation="vertical">
 
+                <TextView
+                    android:id="@+id/tv_from_date_title"
+                    style="@style/TextViewListItemCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/fromdate" />
 
-        <EditText
-            android:id="@+id/et_promo_qty"
-            style="@style/EditText_ListItem"
-            android:layout_width="0dp"
-            android:layout_weight="1.5"
-            android:gravity="center"
-            android:text="@string/zero"
-            android:inputType="number"
-            android:visibility="visible" />
+                <Button
+                    android:id="@+id/btn_fromdatepicker"
+                    style="@style/datePickerButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/list_item_date_picker_height"
+                    android:layout_marginEnd="@dimen/dimen_2dp"
+                    android:layout_marginRight="@dimen/dimen_2dp"
+                    android:gravity="center|start"
+                    android:maxLines="1"
+                    android:text="@string/instaldate" />
+            </LinearLayout>
 
+            <LinearLayout
+                android:id="@+id/ll_service_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/dimens_6dp"
+                android:layout_marginStart="@dimen/dimens_6dp"
+                android:layout_weight="2"
+                android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/ll_executed"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.5"
-            android:gravity="center">
+                <TextView
+                    android:id="@+id/tv_to_date_title"
+                    style="@style/TextViewListItemCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/todate" />
 
-            <CheckBox
-                android:id="@+id/executed_CB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+                <Button
+                    android:id="@+id/btn_todatepicker"
+                    style="@style/datePickerButton"
+                    android:layout_width="@dimen/list_item_date_picker_width"
+                    android:layout_height="@dimen/list_item_date_picker_height"
+                    android:layout_marginEnd="@dimen/dimen_2dp"
+                    android:layout_marginRight="@dimen/dimen_2dp"
+                    android:gravity="center|start"
+                    android:maxLines="1"
+                    android:text="@string/servicedate" />
+            </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/ll_announced"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1.5"
-            android:gravity="center">
+            <LinearLayout
+                android:id="@+id/ll_reason"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
 
-            <CheckBox
-                android:id="@+id/announced_CB"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-        </LinearLayout>
+                <TextView
+                    style="@style/TextViewListItemCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginLeft="@dimen/dimens_6dp"
+                    android:layout_marginStart="@dimen/dimens_6dp"
+                    android:text="@string/reason" />
 
-        <LinearLayout
-            android:id="@+id/ll_photo"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center">
+                <Spinner
+                    android:id="@+id/spin_reason"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/list_item_date_picker_height"
+                    android:layout_marginEnd="@dimen/dimen_2dp"
+                    android:layout_marginRight="@dimen/dimen_2dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center|start"
+                    android:overlapAnchor="false"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_rating"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:gravity="center_vertical"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/executing_rating_label"
+                    style="@style/TextViewListItemCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginLeft="@dimen/dimens_6dp"
+                    android:layout_marginStart="@dimen/dimens_6dp"
+                    android:tag="promotion_ratinglevel"
+                    android:text="@string/exec_rating" />
+
+                <Spinner
+                    android:id="@+id/spin_rating"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/list_item_date_picker_height"
+                    android:layout_gravity="start"
+                    android:layout_marginEnd="@dimen/dimen_2dp"
+                    android:layout_marginRight="@dimen/dimen_2dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center|start"
+                    android:overlapAnchor="false"
+                    android:textAlignment="center" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/ll_price"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginLeft="@dimen/dimens_6dp"
+                android:layout_marginStart="@dimen/dimens_6dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/price_label"
+                    style="@style/TextViewListItemCaption"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:tag="promoprice_level"
+                    android:text="@string/price" />
+
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="@dimen/list_item_date_picker_width"
+                    android:layout_height="@dimen/list_item_date_picker_height"
+                    android:layout_marginEnd="@dimen/dimen_2dp"
+                    android:layout_marginRight="@dimen/dimen_2dp"
+                    android:gravity="center|start"
+                    android:maxLines="1" />
+            </LinearLayout>
 
             <ImageView
-                android:id="@+id/btn_photo"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:contentDescription="@string/photo"
-                android:src="@drawable/ic_photo_camera_blue_24dp" />
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/list_item_inter_margin"
-        android:layout_gravity="center_vertical"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:id="@+id/ll_install_date"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2.25"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_from_date_title"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
+                android:id="@+id/img_feedback"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="@string/fromdate" />
-
-            <Button
-                android:id="@+id/btn_fromdatepicker"
-                style="@style/datePickerButton"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/list_item_date_picker_height"
-                android:layout_marginEnd="@dimen/dimen_2dp"
-                android:layout_marginRight="@dimen/dimen_2dp"
-                android:gravity="center|start"
-                android:maxLines="1"
-                android:text="@string/instaldate" />
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:contentDescription="@string/feedback"
+                android:src="@drawable/feedback_no_promo"></ImageView>
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/ll_service_date"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2.25"
-            android:layout_marginStart="@dimen/dimens_6dp"
-            android:layout_marginLeft="@dimen/dimens_6dp"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_to_date_title"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/todate" />
-
-            <Button
-                android:id="@+id/btn_todatepicker"
-                style="@style/datePickerButton"
-                android:layout_width="@dimen/list_item_date_picker_width"
-                android:layout_height="@dimen/list_item_date_picker_height"
-                android:layout_marginEnd="@dimen/dimen_2dp"
-                android:layout_marginRight="@dimen/dimen_2dp"
-                android:gravity="center|start"
-                android:maxLines="1"
-                android:text="@string/servicedate" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/ll_reason"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2.25"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginStart="@dimen/dimens_6dp"
-                android:layout_marginLeft="@dimen/dimens_6dp"
-                android:text="@string/reason" />
-
-            <Spinner
-                android:id="@+id/spin_reason"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/list_item_date_picker_height"
-                android:layout_marginEnd="@dimen/dimen_2dp"
-                android:layout_marginRight="@dimen/dimen_2dp"
-                android:background="@android:color/transparent"
-                android:gravity="center|start"
-                android:overlapAnchor="false"
-                android:textAlignment="center" />
-        </LinearLayout>
-
-
-        <LinearLayout
-            android:id="@+id/ll_rating"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="2.25"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/executing_rating_label"
-                style="@style/TextViewListItemCaption"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:layout_marginStart="@dimen/dimens_6dp"
-                android:layout_marginLeft="@dimen/dimens_6dp"
-                android:tag="promotion_ratinglevel"
-                android:text="@string/exec_rating" />
-
-            <Spinner
-                android:id="@+id/spin_rating"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/list_item_date_picker_height"
-                android:layout_gravity="start"
-                android:layout_marginEnd="@dimen/dimen_2dp"
-                android:layout_marginRight="@dimen/dimen_2dp"
-                android:background="@android:color/transparent"
-                android:gravity="center|start"
-                android:overlapAnchor="false"
-                android:textAlignment="center" />
-        </LinearLayout>
-        <ImageView
-            android:id="@+id/img_feedback"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/feedback_no_promo"
-            android:contentDescription="@string/feedback">
-        </ImageView>
     </LinearLayout>
 
 </LinearLayout>

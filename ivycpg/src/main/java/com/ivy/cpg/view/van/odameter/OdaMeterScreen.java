@@ -39,7 +39,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.sd.camera.CameraActivity;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.VanLoadMasterBO;
+import com.ivy.cpg.view.van.vanstockapply.VanLoadMasterBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;

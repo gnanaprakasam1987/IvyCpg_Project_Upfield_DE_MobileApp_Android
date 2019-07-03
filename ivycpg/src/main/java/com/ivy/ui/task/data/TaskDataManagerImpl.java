@@ -62,6 +62,8 @@ public class TaskDataManagerImpl implements TaskDataManager {
                 String userIdCond = "";
                 String retailerIdCond = "";
 
+                int subStrStartWith = 16 + String.valueOf(dataManager.getUser().getUserid()).length();
+
                 if (tabPos != 0) {
                     userIdCond = " and A.UserId=" + dataManager.getUser().getUserid();
                 }
@@ -77,7 +79,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                         + "(CASE WHEN ifnull(TD.TaskId,0) >0 THEN 1 ELSE 0 END) as isDone,"
                         + "B.usercreated , B.taskowner , B.date, A.upload,A.channelid,A.userid,"
                         + "IFNULL(B.DueDate,''),B.CategoryId,IFNULL(PL.PName,''),"
-                        + "B.IsServerTask,SUBSTR(TD.ImageName,18) as eveImage,IFNULL(UM.Relationship,'') as userType,RM.retailerName"
+                        + "B.IsServerTask,SUBSTR(TD.ImageName," + subStrStartWith + ") as eveImage,IFNULL(UM.Relationship,'') as userType,RM.retailerName"
                         + " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid"
                         + " left join TaskExecutionDetails TD on TD.TaskId=A.taskid and TD.RetailerId = " + retailerId
                         + " left join ProductMaster PL on PL.PID=B.CategoryId"
@@ -289,17 +291,16 @@ public class TaskDataManagerImpl implements TaskDataManager {
      * This method used to update task execution
      *
      * @param taskDataBO
-     * @param retailerId
      * @return
      */
     @Override
-    public Single<Boolean> updateTaskExecutionData(TaskDataBO taskDataBO, String retailerId, int reasonId) {
+    public Single<Boolean> updateTaskExecutionData(TaskDataBO taskDataBO, int reasonId) {
         return Single.fromCallable(new Callable<Boolean>() {
             @Override
             public Boolean call() throws Exception {
                 try {
                     initDb();
-                    mDbUtil.deleteSQL("TaskExecutionDetails", "TaskId=" + StringUtils.QT(taskDataBO.getTaskId()) + " and RetailerId = " + retailerId, false);
+                    mDbUtil.deleteSQL("TaskExecutionDetails", "TaskId=" + StringUtils.QT(taskDataBO.getTaskId()) + " and RetailerId = " + taskDataBO.getRid(), false);
 
                     return true;
                 } catch (Exception e) {
@@ -314,7 +315,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                     @Override
                     public Boolean call() throws Exception {
                         String uID;
-                        if (retailerId.equals("0"))
+                        if (taskDataBO.getRid() == 0)
                             uID = StringUtils.QT(dataManager.getUser().getUserid()
                                     + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
                         else
@@ -322,7 +323,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                                     + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
 
 
-                        String columns = "TaskId,RetailerId,Date,UId,Upload,ImageName,ReasonId";
+                        String columns = "TaskId,RetailerId,Date,UId,Upload,ImageName,ReasonId,Remarks";
                         String values;
                         String taskEvdImage = taskDataBO.getTaskEvidenceImg() == null ? null : StringUtils.QT(taskDataBO.getTaskEvidenceImg());
 
@@ -330,11 +331,12 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             if (taskDataBO.isChecked()
                                     || reasonId != 0) {
                                 values = StringUtils.QT(taskDataBO.getTaskId()) + ","
-                                        + StringUtils.QT(retailerId) + ","
+                                        + taskDataBO.getRid() + ","
                                         + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                                         + uID + ",'N'" + ","
                                         + taskEvdImage + ","
-                                        + reasonId;
+                                        + reasonId + ","
+                                        + StringUtils.QT(taskDataBO.getRemark());
                                 mDbUtil.insertSQL("TaskExecutionDetails", columns, values);
                             } else {
 
@@ -396,7 +398,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
      */
     @Override
     public Single<Boolean> saveTask(int selectedId, TaskDataBO taskObj,
-                                    ArrayList<TaskDataBO> taskImgList, int linkUserId) {
+                                    ArrayList<TaskDataBO> taskImgList, int linkUserId, String deletedImgIds) {
 
         //remove Quotes
         String title = DatabaseUtils.sqlEscapeString(taskObj.getTasktitle());
@@ -448,7 +450,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
 
                             mDbUtil.deleteSQL(DataMembers.tbl_TaskConfigurationMaster, "taskid=" + StringUtils.QT(taskObj.getTaskId()), false);
 
-                            mDbUtil.deleteSQL("TaskImageDetails", "TaskId=" + StringUtils.QT(taskObj.getTaskId()), false);
+                            mDbUtil.deleteSQL("TaskImageDetails", "TaskId= (Select taskid from TaskMaster where taskid =" + StringUtils.QT(taskObj.getTaskId()) + " and IsServerTask=0)", false);
 
                         }
                     }
@@ -462,7 +464,7 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             .convertToServerDateFormat(
                                     taskObj.getTaskDueDate(),
                                     ConfigurationMasterHelper.outDateFormat)) + ","
-                            + taskObj.getTaskCategoryID() + "," + endDate + "," + finalStatus + "," + 0;
+                            + taskObj.getTaskCategoryID() + "," + endDate + "," + finalStatus + "," + taskObj.getServerTask();
 
                     mDbUtil.insertSQL("TaskMaster", columns_new, value_new);
 
@@ -487,6 +489,10 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             mDbUtil.insertSQL("TaskImageDetails", columns_new, value_new);
                         }
                     }
+
+                    if (!deletedImgIds.isEmpty())
+                        mDbUtil.updateSQL("UPDATE TaskImageDetails " +
+                                "SET status='D',Upload='N' WHERE TaskImageId in(" + deletedImgIds + ")  AND TaskId=" + StringUtils.QT(taskObj.getTaskId()));
 
 
                     return true;
@@ -666,11 +672,12 @@ public class TaskDataManagerImpl implements TaskDataManager {
             public ArrayList<TaskDataBO> call() throws Exception {
                 try {
                     initDb();
-                    int subStrStartWith = 15 + String.valueOf(userIdLength).length();
+                    int subStrStartWith = 16 + String.valueOf(userIdLength).length();
 
-                    String query = "SELECT SUBSTR(TMD.TaskImageName," + subStrStartWith + ") as ImageName FROM TaskImageDetails TMD"
-                            + " INNER JOIN TaskMaster TM ON TM.taskId = TMD.TaskId"
-                            + " WHERE (TMD.Status!='D' OR TMD.Status IS NULL) AND TMD.TaskId = " + StringUtils.QT(taskId);
+                    String query = "SELECT SUBSTR(TMD.TaskImageName," + subStrStartWith + ") as ImageName,TM.IsServerTask,TMD.TaskImageId" +
+                            " FROM TaskImageDetails TMD" +
+                            " INNER JOIN TaskMaster TM ON TM.taskId = TMD.TaskId" +
+                            " WHERE (TMD.Status!='D' OR TMD.Status IS NULL) AND TMD.TaskId = " + StringUtils.QT(taskId);
 
 
                     ArrayList<TaskDataBO> taskImgList = new ArrayList<>();
@@ -681,6 +688,8 @@ public class TaskDataManagerImpl implements TaskDataManager {
                             TaskDataBO taskImgBo = new TaskDataBO();
                             taskImgBo.setTaskImg(c.getString(0));
                             taskImgBo.setTaskImgPath(TaskConstant.TASK_SERVER_IMG_PATH);
+                            taskImgBo.setServerTask(c.getInt(1));
+                            taskImgBo.setTaskImgId(c.getString(2));
                             taskImgList.add(taskImgBo);
                         }
                         c.close();
@@ -765,8 +774,9 @@ public class TaskDataManagerImpl implements TaskDataManager {
                     ArrayList<String> deletedImgList = new ArrayList<>();
 
                     initDb();
+                    int subStrStartWith = 16 + String.valueOf(dataManager.getUser().getUserid()).length();
 
-                    String query = "SELECT SUBSTR(TaskImageName,18) FROM TaskImageDetails"
+                    String query = "SELECT SUBSTR(TaskImageName," + subStrStartWith + ") FROM TaskImageDetails"
                             + " WHERE TaskId = " + StringUtils.QT(taskId);
 
                     Cursor c = mDbUtil.selectSQL(query);

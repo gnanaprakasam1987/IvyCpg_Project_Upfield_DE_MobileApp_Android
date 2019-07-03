@@ -1,8 +1,5 @@
 package com.ivy.cpg.view.order.scheme;
 
-import com.ivy.sd.png.bo.SchemeBO;
-import com.ivy.sd.png.bo.SchemeProductBO;
-
 import java.util.Vector;
 
 /**

@@ -9,6 +9,7 @@ public class TaskDataBO implements Parcelable {
     private String taskId;
     private int channelId;
 
+    private String taskImgId;
     private String taskImg = "";
     private String taskImgPath;
 
@@ -38,6 +39,7 @@ public class TaskDataBO implements Parcelable {
     private int noOfDueDays;
     private String lastVisitDate;
     private String linkUserName;
+    private String remark;
 
     protected TaskDataBO(Parcel in) {
         taskDesc = in.readString();
@@ -71,7 +73,9 @@ public class TaskDataBO implements Parcelable {
         taskExecDate = in.readString();
         noOfDueDays = in.readInt();
         lastVisitDate = in.readString();
-        linkUserName= in.readString();
+        linkUserName = in.readString();
+        remark = in.readString();
+        taskImgId = in.readString();
     }
 
     public static final Creator<TaskDataBO> CREATOR = new Creator<TaskDataBO>() {
@@ -287,6 +291,14 @@ public class TaskDataBO implements Parcelable {
         this.flag = flag;
     }
 
+    public String getTaskImgId() {
+        return taskImgId;
+    }
+
+    public void setTaskImgId(String taskImgId) {
+        this.taskImgId = taskImgId;
+    }
+
     public String getTaskImgPath() {
         return taskImgPath;
     }
@@ -373,6 +385,14 @@ public class TaskDataBO implements Parcelable {
         this.linkUserName = linkUserName;
     }
 
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(taskDesc);
@@ -407,6 +427,8 @@ public class TaskDataBO implements Parcelable {
         parcel.writeInt(noOfDueDays);
         parcel.writeString(lastVisitDate);
         parcel.writeString(linkUserName);
+        parcel.writeString(remark);
+        parcel.writeString(taskImgId);
     }
 
 }
