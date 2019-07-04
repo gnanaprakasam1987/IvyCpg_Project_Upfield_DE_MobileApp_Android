@@ -704,21 +704,30 @@ public class BusinessModel extends Application {
             initializeFirebase();
             initializeChatSdk();
 
-            if (!SupervisorActivityHelper.getInstance().isChatConfigAvail(this)) {
-
-                PackageManager pm = getPackageManager();
-                ComponentName compName =
-                        new ComponentName(getApplicationContext(),
-                                DefaultBroadcastReceiver.class);
-                pm.setComponentEnabledSetting(
-                        compName,
-                        PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                        PackageManager.DONT_KILL_APP);
-            }
-
         } catch (Exception ex) {
             Commons.printException(ex);
         }
+
+    }
+
+    private void enableDisableChatReceiver(boolean isenableReceiver){
+
+        PackageManager pm = getPackageManager();
+        ComponentName compName =
+                new ComponentName(getApplicationContext(),
+                        DefaultBroadcastReceiver.class);
+
+
+        if (isenableReceiver)
+            pm.setComponentEnabledSetting(
+                    compName,
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                    PackageManager.DONT_KILL_APP);
+        else
+            pm.setComponentEnabledSetting(
+                    compName,
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                    PackageManager.DONT_KILL_APP);
 
     }
 
@@ -768,7 +777,13 @@ public class BusinessModel extends Application {
 
                 FirebaseFileStorageModule.activate();
                 FirebasePushModule.activateForFirebase();
+
             }
+
+            if (!SupervisorActivityHelper.getInstance().isChatConfigAvail(this))
+                enableDisableChatReceiver(false);
+            else
+                enableDisableChatReceiver(true);
 
         } catch (Exception e) {
             Commons.printException(e);
