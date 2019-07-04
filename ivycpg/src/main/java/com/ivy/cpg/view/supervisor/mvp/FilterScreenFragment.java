@@ -323,7 +323,7 @@ public class FilterScreenFragment extends Fragment implements OnItemClickListene
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME
             );
             db.openDataBase();
-            Cursor c = db.selectSQL("SELECT distinct pid,PName from ProductMaster where pid in( "+productIds+" ) and PLid ='103'");
+            Cursor c = db.selectSQL("SELECT distinct pid,PName from ProductMaster where pid in( "+productIds+" ) and PLid = (Select parentid from ProductLevel order by Sequence desc limit 1)");
 
             if (c != null) {
 
