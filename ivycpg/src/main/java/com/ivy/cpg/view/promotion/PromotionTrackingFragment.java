@@ -1889,7 +1889,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
                 public void onClick(View v) {
                     FragmentTransaction ft = getActivity()
                             .getSupportFragmentManager().beginTransaction();
-                    RemarksDialog dialog = new RemarksDialog(holder.mPromotionMasterBO, "MENU_PROMO_REMARKS",
+                    RemarksDialog dialog = new RemarksDialog(holder.mPromotionMasterBO.getRemarks(), "MENU_PROMO_REMARKS",
                             PromotionTrackingFragment.this);
                     dialog.setCancelable(false);
                     dialog.show(ft, "MENU_PROMO_REMARKS");
