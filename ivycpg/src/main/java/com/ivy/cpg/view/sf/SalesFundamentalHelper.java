@@ -194,6 +194,18 @@ public class SalesFundamentalHelper {
             db.openDataBase();
             int mContentLevelId = 0;
 
+            StringBuilder accountGroupIds=new StringBuilder();
+            String accountQuery="Select groupId from AccountGroupDetail where retailerId="+ mBModel.getRetailerMasterBO().getRetailerID();
+            Cursor accountCursor=db.selectSQL(accountQuery);
+            if(accountCursor.getCount()>0){
+                while (accountCursor.moveToNext()){
+                    accountGroupIds.append(accountCursor.getString(0));
+
+                    if(accountGroupIds.toString().length()>0)
+                        accountGroupIds.append(",");
+                }
+            }
+
             Cursor filterCur = db
                     .selectSQL("SELECT IFNULL(PL.LevelId,0) "
                             + "FROM ConfigActivityFilter CF "
@@ -224,21 +236,26 @@ public class SalesFundamentalHelper {
             }
             sBuffer.append(moduleName.replace("MENU_", "") + "_NormMapping  SFN ON A.pid = SFN.pid  ");
 
-            if (IsRetailer) {
-                sBuffer.append("and SFN.RetailerId =");
-                sBuffer.append(mBModel.getRetailerMasterBO().getRetailerID());
+            if(accountGroupIds.toString().length()>0) {
+               sBuffer.append(" AND SFN.accountGroupId in("+accountGroupIds.toString()+")");
             }
-            if (IsAccount) {
-                sBuffer.append(" and SFN.AccId=" + mBModel.getRetailerMasterBO().getAccountid());
-            }
-            if (IsClass) {
-                sBuffer.append(" and SFN.ClassId=" + mBModel.getRetailerMasterBO().getClassid());
-            }
+            else {
+                if (IsRetailer) {
+                    sBuffer.append("and SFN.RetailerId =");
+                    sBuffer.append(mBModel.getRetailerMasterBO().getRetailerID());
+                }
+                if (IsAccount) {
+                    sBuffer.append(" and SFN.AccId=" + mBModel.getRetailerMasterBO().getAccountid());
+                }
+                if (IsClass) {
+                    sBuffer.append(" and SFN.ClassId=" + mBModel.getRetailerMasterBO().getClassid());
+                }
 
-            if (LocId > 0)
-                sBuffer.append(" and SFN.LocId=" + mBModel.productHelper.getMappingLocationId(LocId, mBModel.getRetailerMasterBO().getLocationId()));
-            if (ChId > 0)
-                sBuffer.append(" and SFN.ChId=" + mBModel.productHelper.getMappingChannelId(ChId, mBModel.getRetailerMasterBO().getSubchannelid()));
+                if (LocId > 0)
+                    sBuffer.append(" and SFN.LocId=" + mBModel.productHelper.getMappingLocationId(LocId, mBModel.getRetailerMasterBO().getLocationId()));
+                if (ChId > 0)
+                    sBuffer.append(" and SFN.ChId=" + mBModel.productHelper.getMappingChannelId(ChId, mBModel.getRetailerMasterBO().getSubchannelid()));
+            }
 
             sBuffer.append(" LEFT JOIN " + moduleName.replace("MENU_", "") + "_NormMaster   SF ON SF.HId = SFN.HId");
             sBuffer.append(" AND " + mBModel.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))

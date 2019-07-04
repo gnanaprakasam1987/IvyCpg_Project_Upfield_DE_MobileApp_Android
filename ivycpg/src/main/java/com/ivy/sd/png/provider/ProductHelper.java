@@ -1826,47 +1826,98 @@ public class ProductHelper {
                 product = productMaster.get(i);
 
                 if (product.getmDeadProduct() == 1
-                        && getFilterColor("Filt15") != 0)
-                    product.setTextColor(getFilterColor("Filt15"));
-                else if (product.getIsMustSell() == 1
-                        && getFilterColor("Filt10") != 0)
-                    product.setTextColor(getFilterColor("Filt10"));
-                else if (product.getIsFocusBrand() == 1
-                        && getFilterColor("Filt11") != 0)
-                    product.setTextColor(getFilterColor("Filt11"));
-                else if (product.getIsFocusBrand2() == 1
-                        && getFilterColor("Filt12") != 0)
-                    product.setTextColor(getFilterColor("Filt12"));
-                else if (product.getIsFocusBrand3() == 1
-                        && getFilterColor("Filt20") != 0)
-                    product.setTextColor(getFilterColor("Filt20"));
-                else if (product.getIsFocusBrand4() == 1
-                        && getFilterColor("Filt21") != 0)
-                    product.setTextColor(getFilterColor("Filt21"));
-                else if (product.getIsNMustSell() == 1
-                        && getFilterColor("Filt16") != 0)
-                    product.setTextColor(getFilterColor("Filt16"));
-                else if (product.isRPS() && getFilterColor("Filt02") != 0)
-                    product.setTextColor(getFilterColor("Filt02"));
-                else if (product.isPromo() && getFilterColor("Filt09") != 0)
-                    product.setTextColor(getFilterColor("Filt09"));
-                else if (product.getIsDiscountable() == 1
-                        && getFilterColor("Filt18") != 0)
-                    product.setTextColor(getFilterColor("Filt18"));
-                else if (product.getIsNearExpiryTaggedProduct() == 1
-                        && getFilterColor("Filt19") != 0)
-                    product.setTextColor(getFilterColor("Filt19"));
-                else if (product.getIsSMP() == 1
-                        && getFilterColor("Filt22") != 0)
-                    product.setTextColor(getFilterColor("Filt22"));
-                else
-                    product.setTextColor(mContext.getResources().getColor(
+                        && getFilterColor("Filt15") != 0) {
+                   // product.setTextColor(getFilterColor("Filt15"));
+                    int filterColorCode=getFilterColor("Filt15");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt15",filterColorCode);
+                }
+                if (product.getIsMustSell() == 1
+                        && getFilterColor("Filt10") != 0) {
+                   // product.setTextColor(getFilterColor("Filt10"));
+                    int filterColorCode=getFilterColor("Filt10");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt10",filterColorCode);
+                }
+                if (product.getIsFocusBrand() == 1
+                        && getFilterColor("Filt11") != 0) {
+                   // product.setTextColor(getFilterColor("Filt11"));
+                    int filterColorCode=getFilterColor("Filt11");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt11",filterColorCode);
+                }
+                if (product.getIsFocusBrand2() == 1
+                        && getFilterColor("Filt12") != 0) {
+                    //product.setTextColor(getFilterColor("Filt12"));
+                    int filterColorCode=getFilterColor("Filt12");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt12",filterColorCode);
+                }
+                if (product.getIsFocusBrand3() == 1
+                        && getFilterColor("Filt20") != 0) {
+                   // product.setTextColor(getFilterColor("Filt20"));
+                    int filterColorCode=getFilterColor("Filt20");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt20",filterColorCode);
+                }
+                if (product.getIsFocusBrand4() == 1
+                        && getFilterColor("Filt21") != 0) {
+                    //product.setTextColor(getFilterColor("Filt21"));
+                    int filterColorCode=getFilterColor("Filt21");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt21",filterColorCode);
+                }
+                if (product.getIsNMustSell() == 1
+                        && getFilterColor("Filt16") != 0) {
+                   // product.setTextColor(getFilterColor("Filt16"));
+                    int filterColorCode=getFilterColor("Filt16");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt16",filterColorCode);
+                }
+                if (product.isRPS() && getFilterColor("Filt02") != 0) {
+                   // product.setTextColor(getFilterColor("Filt02"));
+                    int filterColorCode=getFilterColor("Filt02");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt02",filterColorCode);
+                }
+                if (product.isPromo() && getFilterColor("Filt09") != 0) {
+                    //product.setTextColor(getFilterColor("Filt09"));
+                    int filterColorCode=getFilterColor("Filt09");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt09",filterColorCode);
+                }
+                if (product.getIsDiscountable() == 1
+                        && getFilterColor("Filt18") != 0) {
+                    //product.setTextColor(getFilterColor("Filt18"));
+                    int filterColorCode=getFilterColor("Filt18");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt18",filterColorCode);
+                }
+                if (product.getIsNearExpiryTaggedProduct() == 1
+                        && getFilterColor("Filt19") != 0) {
+                   // product.setTextColor(getFilterColor("Filt19"));
+                    int filterColorCode=getFilterColor("Filt19");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt19",filterColorCode);
+                }
+                if (product.getIsSMP() == 1
+                        && getFilterColor("Filt22") != 0) {
+                    //product.setTextColor(getFilterColor("Filt22"));
+                    int filterColorCode=getFilterColor("Filt22");
+                    if(filterColorCode!=0)
+                    product.getProductTagColorList().put("Filt22",filterColorCode);
+                }
+
+
+                product.setTextColor(mContext.getResources().getColor(
                             R.color.list_item_primary_text_color));
 
                 if (bmodel.configurationMasterHelper.SHOW_HIGHLIGHT_FOR_OOS
                         && product.getWSIH() == 0)
                     product.setTextColor(mContext.getResources().getColor(
                             R.color.RED));
+
+
 
             }
         } catch (Exception e) {
@@ -1884,6 +1935,7 @@ public class ProductHelper {
             for (int i = 0; i < genfilter.size(); i++) {
                 if (genfilter.get(i).getConfigCode()
                         .equalsIgnoreCase(filtername)) {
+
                     if (!genfilter.get(i).getMenuNumber().equals("0") && !genfilter.get(i).getMenuNumber().equals(""))
                         return Color.parseColor((genfilter.get(i)
                                 .getMenuNumber()));
@@ -1896,6 +1948,25 @@ public class ProductHelper {
             return 0;
         }
         return 0;
+
+    }
+
+    public String getSpecialFilterName(String filterCode) {
+
+        Vector<ConfigureBO> genfilter = bmodel.configurationMasterHelper
+                .getGenFilter();
+        try {
+            for (int i = 0; i < genfilter.size(); i++) {
+                if (genfilter.get(i).getConfigCode()
+                        .equalsIgnoreCase(filterCode)) {
+                    return genfilter.get(i).getMenuName();
+                }
+            }
+        } catch (Exception e) {
+            Commons.printException(e);
+            return "";
+        }
+        return "";
 
     }
 

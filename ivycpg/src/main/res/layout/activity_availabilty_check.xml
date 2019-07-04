@@ -520,7 +520,6 @@
                 android:tag="price_case"
                 android:text="@string/avail_cases"
                 app:layout_constraintEnd_toStartOf="@+id/tv_price_ouTitle"
-                app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/tv_price_pcTitle"
                 app:layout_constraintTop_toBottomOf="@+id/tvTitlePriceCheck"
                 app:layout_constraintTop_toTopOf="@+id/tv_price_pcTitle" />
@@ -843,7 +842,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                app:layout_constraintGuide_percent="0.18" />
+                app:layout_constraintGuide_begin="112dp" />
 
             <android.support.constraint.Guideline
                 android:id="@+id/guideline2"

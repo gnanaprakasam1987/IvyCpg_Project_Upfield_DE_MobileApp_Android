@@ -9,6 +9,7 @@ import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 public class ProductMasterBO implements Comparable {
@@ -381,6 +382,19 @@ public class ProductMasterBO implements Comparable {
     private String brandname;
     private double priceoffvalue;
     private int PriceOffId;
+
+    public HashMap<String, Integer> getProductTagColorList() {
+        if(productTagColorList==null)
+            productTagColorList=new HashMap<>();
+
+        return productTagColorList;
+    }
+
+    public void setProductTagColorList(HashMap<String, Integer> productTagColorList) {
+        this.productTagColorList = productTagColorList;
+    }
+
+    private HashMap<String,Integer> productTagColorList;
 
     public float getASRP() {
         return priceWithTax;
