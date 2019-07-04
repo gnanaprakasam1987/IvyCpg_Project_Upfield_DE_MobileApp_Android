@@ -16,9 +16,12 @@ import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.constraint.ConstraintLayout;
+import android.support.constraint.Group;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -62,6 +65,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupWindow;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -104,6 +109,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.model.ProductSearchCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.provider.SBDHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
@@ -117,7 +123,6 @@ import com.ivy.sd.png.view.MustSellReasonDialog;
 import com.ivy.sd.png.view.OrderDiscount;
 import com.ivy.sd.png.view.ReasonPhotoDialog;
 import com.ivy.sd.png.view.RemarksDialog;
-import com.ivy.sd.png.view.SlantView;
 import com.ivy.sd.png.view.SpecialFilterFragment;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
@@ -386,14 +391,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
             }
         });
-        ((TextView) findViewById(R.id.totalText)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.totalValue)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.lpc_title)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.lcp)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.distText)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.distValue)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.title_totalweigh)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-        ((TextView) findViewById(R.id.tv_totalweigh)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
 
         if (!bmodel.configurationMasterHelper.SHOW_LPC_ORDER) {
             findViewById(R.id.ll_lpc).setVisibility(View.GONE);
@@ -1154,17 +1151,9 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             holder.productObj = product;
             holder.productId = holder.productObj.getProductID();
 
-
-            try {
-                holder.psname.setTextColor(product.getTextColor());
-            } catch (Exception e) {
-                Commons.printException(e);
-                holder.psname.setTextColor(ContextCompat.getColor(getApplicationContext(),
-                        android.R.color.black));
-            }
             holder.psname.setText(holder.productObj.getProductShortName());
             holder.pname = holder.productObj.getProductName();
-            holder.tvbarcode.setText(holder.productObj.getBarCode());
+            showSecondaryProductLabels(holder);
 
             if (viewType == 0) {
 
@@ -1184,100 +1173,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 }
 
-
-                if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
-                    String prodCode = getResources().getString(R.string.prod_code) + ": " +
-                            holder.productObj.getProductCode() + " ";
-                    if (bmodel.labelsMasterHelper.applyLabels(holder.tvProductCode.getTag()) != null)
-                        prodCode = bmodel.labelsMasterHelper
-                                .applyLabels(holder.tvProductCode.getTag()) + ": " +
-                                holder.productObj.getProductCode() + " ";
-                    holder.tvProductCode.setText(prodCode);
-                }
-
+                showTertiaryProductLabels(holder);
 
                 if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE && holder.productObj.getCaseSize() > 0) {
                     String label = holder.caseTitleText + "(" + holder.productObj.getCaseSize() + getResources().getQuantityString(R.plurals.pcs, holder.productObj.getCaseSize()) + ")";
                     ((TextView) row.findViewById(R.id.caseTitle)).setText(label);
-                }
-
-                if (bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP) {
-                    String strMrp = getResources().getString(R.string.mrp)
-                            + ": " + bmodel.formatValue(holder.productObj.getMRP());
-                    holder.mrp.setText(strMrp);
-                }
-
-                if (bmodel.configurationMasterHelper.SHOW_INDICATIVE_ORDER) {
-                    String strFlexOc = getString(R.string.io) + ": ";
-
-                    if (bmodel.labelsMasterHelper.applyLabels(holder.indicativeOrder_oc.getTag()) != null)
-                        strFlexOc = (bmodel.labelsMasterHelper
-                                .applyLabels(holder.indicativeOrder_oc.getTag())) + ": ";
-
-                    strFlexOc += holder.productObj.getIndicative_flex_oc() + "";
-
-                    holder.indicativeOrder_oc.setText(strFlexOc);
-                }
-
-                if (bmodel.configurationMasterHelper.SHOW_CLEANED_ORDER) {
-                    String strOrderOc = getString(R.string.co) + ": ";
-
-                    if (bmodel.labelsMasterHelper.applyLabels(holder.cleanedOrder_oc.getTag()) != null)
-                        strOrderOc = bmodel.labelsMasterHelper
-                                .applyLabels(holder.cleanedOrder_oc.getTag()) + ": ";
-
-                    strOrderOc += holder.productObj.getIndicativeOrder_oc() + "";
-
-                    holder.cleanedOrder_oc.setText(strOrderOc);
-                }
-
-                String strPPQ = "";
-                if (bmodel.labelsMasterHelper
-                        .applyLabels("ppq") != null) {
-                    strPPQ = bmodel.labelsMasterHelper
-                            .applyLabels("ppq") + ": "
-                            + holder.productObj.getRetailerWiseProductWiseP4Qty() + "";
-                } else {
-                    strPPQ = getResources().getString(R.string.ppq) + ": "
-                            + holder.productObj.getRetailerWiseProductWiseP4Qty() + "";
-                }
-                holder.ppq.setText(strPPQ);
-
-
-                String strPSQ = "";
-                if (bmodel.labelsMasterHelper
-                        .applyLabels("psq") != null) {
-                    strPSQ = bmodel.labelsMasterHelper
-                            .applyLabels("psq") + ": "
-                            + holder.productObj.getRetailerWiseP4StockQty() + "";
-                } else {
-                    strPSQ = getResources().getString(R.string.psq) + ": "
-                            + holder.productObj.getRetailerWiseP4StockQty();
-                }
-                holder.psq.setText(strPSQ);
-
-
-                String strMSQty = "";
-                if (bmodel.labelsMasterHelper
-                        .applyLabels("msq") != null) {
-                    strMSQty = bmodel.labelsMasterHelper
-                            .applyLabels("msq") + ": "
-                            + holder.productObj.getMSQty() + "";
-                } else {
-                    strMSQty = getResources().getString(R.string.msq) + ": "
-                            + holder.productObj.getMSQty() + "";
-                }
-                holder.msq.setText(strMSQty);
-
-                if (bmodel.configurationMasterHelper.IS_MOQ_ENABLED) {
-                    String moqTitle = getString(R.string.moq) + ": ";
-
-                    if (bmodel.labelsMasterHelper
-                            .applyLabels("moq") != null) {
-                        moqTitle = bmodel.labelsMasterHelper.applyLabels("moq") + ": ";
-                    }
-
-                    holder.moq.setText(moqTitle + holder.productObj.getRField1());
                 }
 
 
@@ -1315,28 +1215,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 }
 
-                if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
-                        || bmodel.configurationMasterHelper.SHOW_SALES_RETURN_TV_IN_ORDER) {
-                    int total = 0;
-                    if (product.getSalesReturnReasonList() != null) {
-                        for (SalesReturnReasonBO obj : product.getSalesReturnReasonList())
-                            total = total + obj.getPieceQty() + (obj.getCaseQty() * obj.getCaseSize()) + (obj.getOuterQty() * obj.getOuterSize());
-                    }
-                    String strTotal = Integer.toString(total);
-                    holder.salesReturn.setText(strTotal);
 
-                    String srQtyTv = "";
-                    if (bmodel.labelsMasterHelper
-                            .applyLabels("sales_return") != null) {
-                        srQtyTv = bmodel.labelsMasterHelper
-                                .applyLabels("sales_return") + ": "
-                                + strTotal + "";
-                    } else {
-                        srQtyTv = getResources().getString(R.string.sr) + ": "
-                                + strTotal;
-                    }
-                    holder.sales_return_tv.setText(srQtyTv);
-                }
 
                 if (holder.productObj.getLocations()
                         .get(mSelectedLocationIndex).getAvailability() == 1) {
@@ -1353,214 +1232,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     CompoundButtonCompat.setButtonTintList(holder.imageButton_availability, ColorStateList.valueOf(ContextCompat.getColor(StockAndOrder.this, R.color.checkbox_default_color)));
                 }
 
-                // set SO value
-                if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER) {
-                    String soPieceTitle = getString(R.string.so) + ": ";
-
-                    if (bmodel.labelsMasterHelper.applyLabels(holder.so.getTag()) != null)
-                        soPieceTitle = bmodel.labelsMasterHelper
-                                .applyLabels(holder.so.getTag()) + ": ";
-
-                    if (bmodel.configurationMasterHelper.SHOW_SO_SPLIT) {
-                        String soCaseTitle = getString(R.string.so_case);
-
-                        if (bmodel.labelsMasterHelper.applyLabels(holder.socs.getTag()) != null)
-                            soCaseTitle = bmodel.labelsMasterHelper
-                                    .applyLabels(holder.socs.getTag()) + ": ";
-
-
-                        int soQty = holder.productObj.getSoInventory()
-                                + (holder.productObj.getSocInventory()
-                                * holder.productObj.getCaseSize());
-                        if ((soQty < holder.productObj
-                                .getCaseSize())
-                                || holder.productObj.getCaseSize() == 0) {
-                            holder.socs.setText(soCaseTitle + "0");
-                            String strInventory = holder.productObj.getSoInventory()
-                                    + "";
-                            holder.so.setText(soPieceTitle + strInventory);
-                        } else if (soQty == holder.productObj
-                                .getCaseSize()) {
-                            String strSocs = soQty / holder.productObj
-                                    .getCaseSize()
-                                    + "";
-                            holder.socs.setText(soCaseTitle + strSocs);
-                            holder.so.setText(soPieceTitle + "0");
-                        } else {
-                            String strSocs = soQty / holder.productObj
-                                    .getCaseSize()
-                                    + "";
-                            holder.socs.setText(soCaseTitle + strSocs);
-                            String strSo = soQty % holder.productObj
-                                    .getCaseSize()
-                                    + "";
-                            holder.so.setText(soPieceTitle + strSo);
-                        }
-                    } else {
-                        String strSoi = holder.productObj.getSoInventory() + "";
-                        holder.so.setText(soPieceTitle + strSoi);
-                    }
-                }
-
-
-                //set SIH value
-                if (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND) {
-                    String sihPSTitle = getString(R.string.sih) + ": ";
-
-                    if (bmodel.labelsMasterHelper.applyLabels(holder.sih.getTag()) != null)
-                        sihPSTitle = bmodel.labelsMasterHelper.applyLabels(holder.sih.getTag());
-
-                    if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
-                        String sihCSTitle = getString(R.string.sih_case) + ": ";
-                        String sihOUTitle = getString(R.string.sih_outer) + ": ";
-
-                        if (bmodel.labelsMasterHelper.applyLabels(holder.sihCase.getTag()) != null)
-                            sihCSTitle = bmodel.labelsMasterHelper.applyLabels(holder.sihCase.getTag());
-
-                        if (bmodel.labelsMasterHelper.applyLabels(holder.sihOuter.getTag()) != null)
-                            sihOUTitle = bmodel.labelsMasterHelper.applyLabels(holder.sihOuter.getTag());
-
-                        if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
-                                && bmodel.configurationMasterHelper.SHOW_OUTER_CASE
-                                && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                            if (holder.productObj.getSIH() == 0) {
-                                holder.sihCase.setText(sihCSTitle + "0");
-                                holder.sihOuter.setText(sihOUTitle + "0");
-                                holder.sih.setText(sihPSTitle + "0");
-                            } else if (holder.productObj.getCaseSize() == 0) {
-                                holder.sihCase.setText(sihCSTitle + "0");
-                                if (holder.productObj.getOutersize() == 0) {
-                                    holder.sihOuter.setText(sihOUTitle + "0");
-                                    String strSIh = holder.productObj.getSIH() + "";
-                                    holder.sih.setText(sihPSTitle + strSIh);
-                                } else {
-                                    String strSihOuter = holder.productObj.getSIH()
-                                            / holder.productObj.getOutersize() + "";
-                                    holder.sihOuter.setText(sihOUTitle + strSihOuter);
-                                    String strSih = holder.productObj.getSIH()
-                                            % holder.productObj.getOutersize() + "";
-                                    holder.sih.setText(sihPSTitle + strSih);
-                                }
-                            } else {
-                                String strSihCase = holder.productObj.getSIH()
-                                        / holder.productObj.getCaseSize() + "";
-                                holder.sihCase.setText(sihCSTitle + strSihCase);
-                                if (holder.productObj.getOutersize() > 0
-                                        && (holder.productObj.getSIH() % holder.productObj
-                                        .getCaseSize()) >= holder.productObj
-                                        .getOutersize()) {
-                                    String strSihOuter = (holder.productObj.getSIH() % holder.productObj
-                                            .getCaseSize())
-                                            / holder.productObj.getOutersize() + "";
-                                    holder.sihOuter
-                                            .setText(sihOUTitle + strSihOuter);
-                                    String strSih = (holder.productObj.getSIH() % holder.productObj
-                                            .getCaseSize())
-                                            % holder.productObj.getOutersize() + "";
-                                    holder.sih
-                                            .setText(sihPSTitle + strSih);
-                                } else {
-                                    holder.sihOuter.setText(sihOUTitle + "0");
-                                    String strSih = holder.productObj.getSIH()
-                                            % holder.productObj.getCaseSize() + "";
-                                    holder.sih.setText(sihPSTitle + strSih);
-                                }
-                            }
-                        } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
-                                && bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                            if (holder.productObj.getSIH() == 0) {
-                                holder.sihCase.setText(sihCSTitle + "0");
-                                holder.sihOuter.setText(sihOUTitle + "0");
-                            } else if (holder.productObj.getCaseSize() == 0) {
-                                holder.sihCase.setText(sihCSTitle + "0");
-                                if (holder.productObj.getOutersize() == 0)
-                                    holder.sihOuter.setText(sihOUTitle + "0");
-                                else {
-                                    String strSihOuter = holder.productObj.getSIH()
-                                            / holder.productObj.getOutersize() + "";
-                                    holder.sihOuter.setText(sihOUTitle + strSihOuter);
-                                }
-                            } else {
-                                String strSihCase = holder.productObj.getSIH()
-                                        / holder.productObj.getCaseSize() + "";
-                                holder.sihCase.setText(sihCSTitle + strSihCase);
-                                if (holder.productObj.getOutersize() > 0
-                                        && (holder.productObj.getSIH() % holder.productObj
-                                        .getCaseSize()) >= holder.productObj
-                                        .getOutersize()) {
-                                    String strSihOuter = (holder.productObj.getSIH() % holder.productObj
-                                            .getCaseSize())
-                                            / holder.productObj.getOutersize() + "";
-                                    holder.sihOuter
-                                            .setText(sihOUTitle + strSihOuter);
-                                } else {
-                                    holder.sihOuter.setText(sihOUTitle + "0");
-                                }
-                            }
-                        } else if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE
-                                && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                            if (holder.productObj.getSIH() == 0) {
-                                holder.sih.setText(sihPSTitle + "0");
-                                holder.sihOuter.setText(sihOUTitle + "0");
-                            } else if (holder.productObj.getOutersize() == 0) {
-                                String strSih = holder.productObj.getSIH() + "";
-                                holder.sih.setText(sihPSTitle + strSih);
-                                holder.sihOuter.setText(sihOUTitle + "0");
-                            } else {
-                                String strSihOuter = holder.productObj.getSIH()
-                                        / holder.productObj.getOutersize() + "";
-                                holder.sihOuter.setText(sihOUTitle + strSihOuter);
-                                String strSih = holder.productObj.getSIH()
-                                        % holder.productObj.getOutersize() + "";
-                                holder.sih.setText(sihPSTitle + strSih);
-                            }
-                        } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
-                                && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                            if (holder.productObj.getSIH() == 0) {
-                                holder.sih.setText(sihPSTitle + "0");
-                                holder.sihCase.setText(sihCSTitle + "0");
-                            } else if (holder.productObj.getCaseSize() == 0) {
-                                String strsih = holder.productObj.getSIH() + "";
-                                holder.sih.setText(sihPSTitle + strsih);
-                                holder.sihCase.setText(sihCSTitle + "0");
-                            } else {
-                                String strSihCase = holder.productObj.getSIH()
-                                        / holder.productObj.getCaseSize() + "";
-                                holder.sihCase.setText(sihCSTitle + strSihCase);
-                                String strSih = holder.productObj.getSIH()
-                                        % holder.productObj.getCaseSize() + "";
-                                holder.sih.setText(sihPSTitle + strSih);
-                            }
-                        } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
-                            if (holder.productObj.getSIH() == 0)
-                                holder.sihCase.setText(sihCSTitle + "0");
-                            else if (holder.productObj.getCaseSize() == 0)
-                                holder.sihCase.setText(sihCSTitle + "0");
-                            else {
-                                String strSih = holder.productObj.getSIH()
-                                        / holder.productObj.getCaseSize() + "";
-                                holder.sihCase.setText(sihCSTitle + strSih);
-                            }
-                        } else if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
-                            if (holder.productObj.getSIH() == 0)
-                                holder.sihOuter.setText(sihOUTitle + "0");
-                            else if (holder.productObj.getOutersize() == 0)
-                                holder.sihOuter.setText(sihOUTitle + "0");
-                            else {
-                                String strSihOuter = holder.productObj.getSIH()
-                                        / holder.productObj.getOutersize() + "";
-                                holder.sihOuter.setText(sihOUTitle + strSihOuter);
-                            }
-                        } else if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
-                            String strSih = holder.productObj.getSIH() + "";
-                            holder.sih.setText(sihPSTitle + strSih);
-                        }
-                    } else {
-                        String strSih = holder.productObj.getSIH() + "";
-                        holder.sih.setText(sihPSTitle + strSih);
-                    }
-
-                }
 
                 // Set order qty
                 if (!bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM) {
@@ -1576,30 +1247,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         String strOuterQty = holder.productObj.getOrderedOuterQty() + "";
                         holder.outerQty.setText(strOuterQty);
                     }
-                }
-
-
-                if (bmodel.configurationMasterHelper.IS_WSIH) {
-                    String wSIH = getString(R.string.wsih_label) + ": ";
-
-                    if (bmodel.labelsMasterHelper.applyLabels(holder.wsih.getTag()) != null) {
-                        wSIH = bmodel.labelsMasterHelper.applyLabels(holder.wsih.getTag()) + ": ";
-                    }
-
-                    wSIH += holder.productObj.getWSIH() + "";
-                    holder.wsih.setText(wSIH);
-                }
-
-
-                try {
-                    if (holder.productObj.isPromo()) {
-                        holder.slant_view_bg.setVisibility(View.VISIBLE);
-                        holder.slant_view_bg.setBackgroundColor(Color.RED);
-                    } else {
-                        holder.slant_view_bg.setVisibility(View.GONE);
-                    }
-                } catch (Exception e) {
-                    Commons.printException(e);
                 }
 
                 //set order Qty based on UOM wise
@@ -1643,16 +1290,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
 
 
-                if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP) {
-                    String srpTitle = getString(R.string.srp) + ": ";
 
-                    if (bmodel.labelsMasterHelper.applyLabels(holder.srp.getTag()) != null)
-                        srpTitle = bmodel.labelsMasterHelper
-                                .applyLabels(holder.srp.getTag()) + ": ";
-
-                    holder.srp.setText(srpTitle + bmodel.formatValue(holder.productObj
-                            .getSrp()));
-                }
                 if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT)
                     holder.srpEdit.setText(bmodel.formatValue(holder.productObj
                             .getSrp()));
@@ -1691,74 +1329,21 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     }
                 }
 
-                if (bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_CS) {
-                    String strRepCaseQty = getString(R.string.rep_case) + ": ";
 
-                    if (bmodel.labelsMasterHelper.applyLabels(holder.rep_cs.getTag()) != null)
-                        strRepCaseQty = bmodel.labelsMasterHelper
-                                .applyLabels(holder.rep_cs.getTag() + ": ");
 
-                    strRepCaseQty += holder.productObj.getRepCaseQty() + "";
 
-                    holder.rep_cs.setText(strRepCaseQty);
-                }
-                if (bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_OU) {
-                    String strRepOuterQty = getString(R.string.rep_outer) + ": ";
 
-                    if (bmodel.labelsMasterHelper.applyLabels(holder.rep_ou.getTag()) != null)
-                        strRepOuterQty = bmodel.labelsMasterHelper
-                                .applyLabels(holder.rep_ou.getTag() + ": ");
 
-                    strRepOuterQty += holder.productObj.getRepOuterQty() + "";
-
-                    holder.rep_ou.setText(strRepOuterQty);
-                }
-                if (bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_PC) {
-                    String strRepPcsQty = getString(R.string.rep_pcs) + ": ";
-
-                    if (bmodel.labelsMasterHelper.applyLabels(holder.rep_ou.getTag()) != null)
-                        strRepPcsQty = bmodel.labelsMasterHelper
-                                .applyLabels(holder.rep_ou.getTag() + ": ");
-
-                    strRepPcsQty += holder.productObj.getRepPieceQty() + "";
-
-                    holder.rep_pcs.setText(strRepPcsQty);
-                }
-
-                if (hasStockChecked(holder.productObj)) {
-                    String totSTKQty = getString(R.string.stock) + ": ";
-
-                    if (bmodel.labelsMasterHelper.applyLabels(holder.text_stock.getTag()) != null) {
-                        holder.text_stock.setText(bmodel.labelsMasterHelper.applyLabels(holder.text_stock.getTag()) + ": " + holder.productObj.getTotalStockQty() + "");
-                    } else {
-                        holder.text_stock.setText(getString(R.string.stock) + ": " + holder.productObj.getTotalStockQty() + "");
-                    }
-
-                    if (bmodel.labelsMasterHelper.applyLabels(holder.text_stock.getTag()) != null)
-                        totSTKQty = bmodel.labelsMasterHelper
-                                .applyLabels(holder.text_stock.getTag()) + ": ";
-                    holder.text_stock.setText(totSTKQty + String.valueOf(holder.productObj.getTotalStockQty()));
-                }
-
-                if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
-
-                    String allocationTitle = getString(R.string.allocation) + ": ";
-
-                    if (bmodel.labelsMasterHelper.applyLabels(holder.text_allocation.getTag()) != null)
-                        allocationTitle = bmodel.labelsMasterHelper
-                                .applyLabels(holder.text_allocation.getTag()) + ": ";
-
-                    holder.text_allocation.setText(allocationTitle + (holder.productObj.getAllocationQty() != null &&
-                            holder.productObj.getAllocationQty().length() > 0
-                            ? holder.productObj.getAllocationQty() : "0"));
-                }
-            } else {
+            }
+            else {
 
                 if (bmodel.configurationMasterHelper.SHOW_FOC) {
                     String strFoc = holder.productObj.getFoc() + "";
                     holder.foc.setText(strFoc);
                 }
             }
+
+            addProductTagColorView(holder.layout_product_tag_color,holder.productObj);
 
 
             return row;
@@ -1771,22 +1356,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private String caseTitleText;
         private String pname;
         private ProductMasterBO productObj;
-        private TextView tvbarcode;
-        private TextView psname, tvProductCode;
+        private TextView psname, textView_SecondaryLabel;
         private TextView so;
-        private TextView sih;
-        private TextView ppq;
-        private TextView msq;
-        private TextView srp;
-        private TextView psq;
         private TextView socs;
-        private TextView wsih;
-        private TextView sihCase;
-        private TextView sihOuter;
-        private TextView mrp;
         private TextView weight;
-        private TextView indicativeOrder_oc;
-        private TextView cleanedOrder_oc;
         private EditText shelfPcsQty;
         private EditText shelfCaseQty;
         private EditText pcsQty;
@@ -1796,49 +1369,510 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
         private EditText shelfouter;
         private EditText srpEdit;
         private TextView total;
-        private TextView rep_pcs;
-        private TextView rep_cs;
-        private TextView rep_ou;
         private ImageView imageView_stock;
         private EditText salesReturn;
-        private TextView moq;
         private TextView text_stock;
-        private TextView sales_return_tv;
 
-        private TextView text_allocation;
+        private TextView textView_product_tertiary_labels;
 
         private EditText uom_qty;
         private Button tv_uo_names;
-        private SlantView slant_view_bg;
 
+        private LinearLayout layout_product_tag_color;
+
+        private Group group_total,group_avail,group_sc,group_sho,group_sp,group_uom_label,group_uom_qty,group_case,group_outer,group_pc,group_foc,group_srp_edit,group_sr_return_qty;
+
+        private Group group_total_weight;
+    }
+
+    private void showSecondaryProductLabels(ViewHolder holder){
+
+        if(bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE||bmodel.configurationMasterHelper.SHOW_BARCODE) {
+
+            StringBuilder stringBuilder = new StringBuilder();
+            if (bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE) {
+                String prodCode = getResources().getString(R.string.prod_code) + ": " +
+                        holder.productObj.getProductCode() + " ";
+                if (bmodel.labelsMasterHelper.applyLabels(holder.textView_SecondaryLabel.getTag()) != null)
+                    prodCode = bmodel.labelsMasterHelper
+                            .applyLabels(holder.textView_SecondaryLabel.getTag()) + ": " +
+                            holder.productObj.getProductCode() + "  ";
+
+                stringBuilder.append(prodCode);
+            }
+
+
+            if (bmodel.configurationMasterHelper.SHOW_BARCODE) {
+                String barcode = getResources().getString(R.string.barcode) + ": " +
+                        holder.productObj.getBarCode() + " ";
+                if (bmodel.labelsMasterHelper.applyLabels("barcode") != null)
+                    barcode = bmodel.labelsMasterHelper
+                            .applyLabels("barcode") + ": " +
+                            holder.productObj.getBarCode();
+
+                stringBuilder.append(barcode);
+            }
+
+            holder.textView_SecondaryLabel.setText(stringBuilder.toString());
+        }
+        else {
+            holder.textView_SecondaryLabel.setVisibility(View.GONE);
+
+        }
 
     }
 
+    private void showTertiaryProductLabels(ViewHolder holder){
 
-    private void initializeRowViews(View row, ViewHolder holder, int SOLogic, int viewType) {
+        StringBuilder stringBuilder=new StringBuilder();
+        if (bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP){
+
+                String srpTitle = getString(R.string.srp) + ": ";
+                if (bmodel.labelsMasterHelper.applyLabels("srp") != null)
+                    srpTitle = bmodel.labelsMasterHelper
+                            .applyLabels("srp") + ": ";
+
+                String srpLabel=srpTitle + bmodel.formatValue(holder.productObj.getSrp())+"  ";
+
+            stringBuilder.append(srpLabel);
+        }
+
+        if (bmodel.configurationMasterHelper.IS_SHOW_PPQ) {
+
+            String strPPQ = "";
+            if (bmodel.labelsMasterHelper
+                    .applyLabels("ppq") != null) {
+                strPPQ = bmodel.labelsMasterHelper
+                        .applyLabels("ppq") + ": "
+                        + holder.productObj.getRetailerWiseProductWiseP4Qty() + "  ";
+            } else {
+                strPPQ = getResources().getString(R.string.ppq) + ": "
+                        + holder.productObj.getRetailerWiseProductWiseP4Qty() + "  ";
+            }
+
+            stringBuilder.append(strPPQ);
+
+        }
+
+        if (bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP) {
+            String strMrp = getResources().getString(R.string.mrp)
+                    + ": " + bmodel.formatValue(holder.productObj.getMRP())+"  ";
+            stringBuilder.append(strMrp);
+        }
+
+        ////// MSQ ////////
+        String strMSQty = "";
+        if (bmodel.labelsMasterHelper
+                .applyLabels("msq") != null) {
+            strMSQty = bmodel.labelsMasterHelper
+                    .applyLabels("msq") + ": "
+                    + holder.productObj.getMSQty() + "  ";
+        } else {
+            strMSQty = getResources().getString(R.string.msq) + ": "
+                    + holder.productObj.getMSQty() + "  ";
+        }
+        stringBuilder.append(strMSQty);
+
+        if (bmodel.configurationMasterHelper.IS_SHOW_PSQ) {
+            String strPSQ = "";
+            if (bmodel.labelsMasterHelper
+                    .applyLabels("psq") != null) {
+                strPSQ = bmodel.labelsMasterHelper
+                        .applyLabels("psq") + ": "
+                        + holder.productObj.getRetailerWiseP4StockQty() + "  ";
+            } else {
+                strPSQ = getResources().getString(R.string.psq) + ": "
+                        + holder.productObj.getRetailerWiseP4StockQty()+"  ";
+            }
+            stringBuilder.append(strPSQ);
+        }
+
+        if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER
+                || bmodel.configurationMasterHelper.SHOW_SALES_RETURN_TV_IN_ORDER) {
+            int total = 0;
+            if (holder.productObj.getSalesReturnReasonList() != null) {
+                for (SalesReturnReasonBO obj : holder.productObj.getSalesReturnReasonList())
+                    total = total + obj.getPieceQty() + (obj.getCaseQty() * obj.getCaseSize()) + (obj.getOuterQty() * obj.getOuterSize());
+            }
+            String strTotal = Integer.toString(total);
+            holder.salesReturn.setText(strTotal);
+
+            String srQtyTv = "";
+            if (bmodel.labelsMasterHelper
+                    .applyLabels("sales_return") != null) {
+                srQtyTv = bmodel.labelsMasterHelper
+                        .applyLabels("sales_return") + ": "
+                        + strTotal + "  ";
+            } else {
+                srQtyTv = getResources().getString(R.string.sr) + ": "
+                        + strTotal+"  ";
+            }
+            stringBuilder.append(srQtyTv);
+        }
+
+        if (bmodel.configurationMasterHelper.IS_MOQ_ENABLED) {
+            String moqTitle = getString(R.string.moq) + ": ";
+
+            if (bmodel.labelsMasterHelper
+                    .applyLabels("moq") != null) {
+                moqTitle = bmodel.labelsMasterHelper.applyLabels("moq") + ": ";
+            }
+            String moqLabel=moqTitle + holder.productObj.getRField1()+"  ";
+
+            stringBuilder.append(moqLabel);
+        }
+
+
+        if (bmodel.configurationMasterHelper.IS_WSIH) {
+            String wSIH = getString(R.string.wsih_label) + ": ";
+
+            if (bmodel.labelsMasterHelper.applyLabels("wsih") != null) {
+                wSIH = bmodel.labelsMasterHelper.applyLabels("wsih") + ": ";
+            }
+
+            wSIH += holder.productObj.getWSIH() + "  ";
+            stringBuilder.append(wSIH);
+        }
+
+
+        //
+        //set SIH value
+        if (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND) {
+            String sihPSTitle = getString(R.string.sih) + ": ";
+
+            if (bmodel.labelsMasterHelper.applyLabels("sih_piece") != null)
+                sihPSTitle = bmodel.labelsMasterHelper.applyLabels("sih_piece");
+
+            if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
+                String sihCSTitle = getString(R.string.sih_case) + ": ";
+                String sihOUTitle = getString(R.string.sih_outer) + ": ";
+
+                if (bmodel.labelsMasterHelper.applyLabels("sih_case") != null)
+                    sihCSTitle = bmodel.labelsMasterHelper.applyLabels("sih_case");
+
+                if (bmodel.labelsMasterHelper.applyLabels("sih_outer") != null)
+                    sihOUTitle = bmodel.labelsMasterHelper.applyLabels("sih_outer");
+
+                if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
+                        && bmodel.configurationMasterHelper.SHOW_OUTER_CASE
+                        && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                    if (holder.productObj.getSIH() == 0) {
+                        stringBuilder.append(sihCSTitle + "0 ");
+                        stringBuilder.append(sihOUTitle + "0 ");
+                        stringBuilder.append(sihPSTitle + "0 ");
+
+                    } else if (holder.productObj.getCaseSize() == 0) {
+                        stringBuilder.append(sihCSTitle + "0 ");
+                        if (holder.productObj.getOutersize() == 0) {
+                            stringBuilder.append(sihOUTitle + "0 ");
+                            stringBuilder.append(sihPSTitle + holder.productObj.getSIH()+" ");
+                        } else {
+                            String strSihOuter = holder.productObj.getSIH()
+                                    / holder.productObj.getOutersize() + "";
+                            stringBuilder.append(sihOUTitle +strSihOuter+ " ");
+                            String strSih = holder.productObj.getSIH()
+                                    % holder.productObj.getOutersize() + "";
+                            stringBuilder.append(sihPSTitle + strSih+" ");
+                        }
+                    } else {
+                        String strSihCase = holder.productObj.getSIH()
+                                / holder.productObj.getCaseSize() + "";
+                        stringBuilder.append(sihCSTitle +strSihCase+ " ");
+                        if (holder.productObj.getOutersize() > 0
+                                && (holder.productObj.getSIH() % holder.productObj
+                                .getCaseSize()) >= holder.productObj
+                                .getOutersize()) {
+
+                            String strSihOuter = (holder.productObj.getSIH() % holder.productObj
+                                    .getCaseSize())
+                                    / holder.productObj.getOutersize() + "";
+                            stringBuilder.append(sihOUTitle +strSihOuter+ " ");
+
+                            String strSih = (holder.productObj.getSIH() % holder.productObj
+                                    .getCaseSize())
+                                    % holder.productObj.getOutersize() + "";
+                            stringBuilder.append(sihPSTitle + strSih+" ");
+
+                        } else {
+                            stringBuilder.append(sihOUTitle + "0 ");
+                            String strSih = holder.productObj.getSIH()
+                                    % holder.productObj.getCaseSize() + "";
+                            stringBuilder.append(sihPSTitle + strSih+" ");
+                        }
+                    }
+                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
+                        && bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                    if (holder.productObj.getSIH() == 0) {
+                        stringBuilder.append(sihCSTitle + "0 ");
+                        stringBuilder.append(sihOUTitle + "0 ");
+                    } else if (holder.productObj.getCaseSize() == 0) {
+                        stringBuilder.append(sihCSTitle + "0 ");
+                        if (holder.productObj.getOutersize() == 0)
+                            stringBuilder.append(sihOUTitle + "0 ");
+                        else {
+                            String strSihOuter = holder.productObj.getSIH()
+                                    / holder.productObj.getOutersize() + "";
+                            stringBuilder.append(sihOUTitle +strSihOuter+ " ");
+                        }
+                    } else {
+                        String strSihCase = holder.productObj.getSIH()
+                                / holder.productObj.getCaseSize() + "";
+                        stringBuilder.append(sihCSTitle + strSihCase+" ");
+                        if (holder.productObj.getOutersize() > 0
+                                && (holder.productObj.getSIH() % holder.productObj
+                                .getCaseSize()) >= holder.productObj
+                                .getOutersize()) {
+                            String strSihOuter = (holder.productObj.getSIH() % holder.productObj
+                                    .getCaseSize())
+                                    / holder.productObj.getOutersize() + "";
+                            stringBuilder.append(sihOUTitle +strSihOuter+ " ");
+                        } else {
+                            stringBuilder.append(sihOUTitle + "0 ");
+                        }
+                    }
+                } else if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE
+                        && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                    if (holder.productObj.getSIH() == 0) {
+                        stringBuilder.append(sihPSTitle + "0 ");
+                        stringBuilder.append(sihOUTitle + "0 ");
+                    } else if (holder.productObj.getOutersize() == 0) {
+                        String strSih = holder.productObj.getSIH() + "";
+                        stringBuilder.append(sihPSTitle +strSih+ " ");
+                        stringBuilder.append(sihOUTitle + "0 ");
+                    } else {
+                        String strSihOuter = holder.productObj.getSIH()
+                                / holder.productObj.getOutersize() + "";
+                        stringBuilder.append(sihOUTitle +strSihOuter+ " ");
+                        String strSih = holder.productObj.getSIH()
+                                % holder.productObj.getOutersize() + "";
+                        stringBuilder.append(sihPSTitle +strSih+ " ");
+                    }
+                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE
+                        && bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                    if (holder.productObj.getSIH() == 0) {
+                        stringBuilder.append(sihPSTitle + "0 ");
+                        stringBuilder.append(sihCSTitle + "0 ");
+                    } else if (holder.productObj.getCaseSize() == 0) {
+                        String strsih = holder.productObj.getSIH() + "";
+                        stringBuilder.append(sihPSTitle +strsih+ " ");
+                        stringBuilder.append(sihCSTitle + "0 ");
+                    } else {
+                        String strSihCase = holder.productObj.getSIH()
+                                / holder.productObj.getCaseSize() + "";
+                        stringBuilder.append(sihCSTitle + strSihCase+" ");
+                        String strSih = holder.productObj.getSIH()
+                                % holder.productObj.getCaseSize() + "";
+                        stringBuilder.append(sihPSTitle +strSih+ " ");
+                    }
+                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_CASE) {
+                    if (holder.productObj.getSIH() == 0)
+                        stringBuilder.append(sihPSTitle + "0 ");
+                    else if (holder.productObj.getCaseSize() == 0)
+                        stringBuilder.append(sihCSTitle + "0 ");
+                    else {
+                        String strSih = holder.productObj.getSIH()
+                                / holder.productObj.getCaseSize() + "";
+                        stringBuilder.append(sihCSTitle +strSih+ " ");
+                    }
+                } else if (bmodel.configurationMasterHelper.SHOW_OUTER_CASE) {
+                    if (holder.productObj.getSIH() == 0)
+                    stringBuilder.append(sihOUTitle + "0 ");
+                    else if (holder.productObj.getOutersize() == 0)
+                    stringBuilder.append(sihOUTitle + "0 ");
+                    else {
+                        String strSihOuter = holder.productObj.getSIH()
+                                / holder.productObj.getOutersize() + "";
+                        stringBuilder.append(sihOUTitle + strSihOuter+" ");
+                    }
+                } else if (bmodel.configurationMasterHelper.SHOW_ORDER_PCS) {
+                    String strSih = holder.productObj.getSIH() + "";
+                    stringBuilder.append(sihPSTitle +strSih+ "  ");
+                }
+            } else {
+                String strSih = holder.productObj.getSIH() + "";
+                stringBuilder.append(sihPSTitle +strSih+ "  ");
+            }
+
+        }
+
+        if (bmodel.configurationMasterHelper.SHOW_INDICATIVE_ORDER) {
+            String strFlexOc = getString(R.string.io) + ": ";
+
+            if (bmodel.labelsMasterHelper.applyLabels("io_case") != null)
+                strFlexOc = (bmodel.labelsMasterHelper
+                        .applyLabels("io_case")) + ": ";
+
+            strFlexOc += holder.productObj.getIndicative_flex_oc() + "  ";
+
+            stringBuilder.append(strFlexOc);
+        }
+
+        if (bmodel.configurationMasterHelper.SHOW_CLEANED_ORDER) {
+            String strOrderOc = getString(R.string.co) + ": ";
+
+            if (bmodel.labelsMasterHelper.applyLabels("co_case") != null)
+                strOrderOc = bmodel.labelsMasterHelper
+                        .applyLabels("co_case") + ": ";
+
+            strOrderOc += holder.productObj.getIndicativeOrder_oc() + "  ";
+            stringBuilder.append(strOrderOc);
+
+        }
+
+        if (bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_CS) {
+            String strRepCaseQty = getString(R.string.rep_case) + ": ";
+
+            if (bmodel.labelsMasterHelper.applyLabels("item_sr_case") != null)
+                strRepCaseQty = bmodel.labelsMasterHelper
+                        .applyLabels("item_sr_case" + ": ");
+
+            strRepCaseQty += holder.productObj.getRepCaseQty() + "  ";
+
+            stringBuilder.append(strRepCaseQty);
+        }
+        if (bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_OU) {
+            String strRepOuterQty = getString(R.string.rep_outer) + ": ";
+
+            if (bmodel.labelsMasterHelper.applyLabels("item_sr_outer") != null)
+                strRepOuterQty = bmodel.labelsMasterHelper
+                        .applyLabels("item_sr_outer") + ": ";
+
+            strRepOuterQty += holder.productObj.getRepOuterQty() + "  ";
+
+            stringBuilder.append(strRepOuterQty);
+        }
+        if (bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_PC) {
+            String strRepPcsQty = getString(R.string.rep_pcs) + ": ";
+
+            if (bmodel.labelsMasterHelper.applyLabels("item_sr_piece") != null)
+                strRepPcsQty = bmodel.labelsMasterHelper
+                        .applyLabels("item_sr_piece" )+ ": ";
+
+            strRepPcsQty += holder.productObj.getRepPieceQty() + "  ";
+
+            stringBuilder.append(strRepPcsQty);
+        }
+
+
+        if (bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
+
+            String allocationTitle = getString(R.string.allocation) + ": ";
+
+            if (bmodel.labelsMasterHelper.applyLabels("allocation") != null)
+                allocationTitle = bmodel.labelsMasterHelper
+                        .applyLabels("allocation") + ": ";
+
+            String allocationLabel=allocationTitle + (holder.productObj.getAllocationQty() != null &&
+                    holder.productObj.getAllocationQty().length() > 0
+                    ? holder.productObj.getAllocationQty()+"  " : "0  ");
+
+            stringBuilder.append(allocationLabel);
+        }
+
+        holder.textView_product_tertiary_labels.setText(stringBuilder.toString());
+
+        //----------------------------Labels with specific textView-----------------------------------
+
+        // set SO value
+        if (bmodel.configurationMasterHelper.IS_SUGGESTED_ORDER) {
+            String soPieceTitle = getString(R.string.so) + ": ";
+
+            if (bmodel.labelsMasterHelper.applyLabels(holder.so.getTag()) != null)
+                soPieceTitle = bmodel.labelsMasterHelper
+                        .applyLabels(holder.so.getTag()) + ": ";
+
+            if (bmodel.configurationMasterHelper.SHOW_SO_SPLIT) {
+                String soCaseTitle = getString(R.string.so_case);
+
+                if (bmodel.labelsMasterHelper.applyLabels(holder.socs.getTag()) != null)
+                    soCaseTitle = bmodel.labelsMasterHelper
+                            .applyLabels(holder.socs.getTag()) + ": ";
+
+
+                int soQty = holder.productObj.getSoInventory()
+                        + (holder.productObj.getSocInventory()
+                        * holder.productObj.getCaseSize());
+                if ((soQty < holder.productObj
+                        .getCaseSize())
+                        || holder.productObj.getCaseSize() == 0) {
+                    holder.socs.setText(soCaseTitle + "0");
+                    String strInventory = holder.productObj.getSoInventory()
+                            + "";
+                    holder.so.setText(soPieceTitle + strInventory);
+                } else if (soQty == holder.productObj
+                        .getCaseSize()) {
+                    String strSocs = soQty / holder.productObj
+                            .getCaseSize()
+                            + "";
+                    holder.socs.setText(soCaseTitle + strSocs);
+                    holder.so.setText(soPieceTitle + "0");
+                } else {
+                    String strSocs = soQty / holder.productObj
+                            .getCaseSize()
+                            + "";
+                    holder.socs.setText(soCaseTitle + strSocs);
+                    String strSo = soQty % holder.productObj
+                            .getCaseSize()
+                            + "";
+                    holder.so.setText(soPieceTitle + strSo);
+                }
+            } else {
+                String strSoi = holder.productObj.getSoInventory() + "  ";
+                holder.so.setText(soPieceTitle + strSoi);
+            }
+        }
+
+        // Total Shelf Stock
+        if (hasStockChecked(holder.productObj)) {
+            String totSTKQty = getString(R.string.stock) + ": ";
+
+            if (bmodel.labelsMasterHelper.applyLabels(holder.text_stock.getTag()) != null) {
+                holder.text_stock.setText(bmodel.labelsMasterHelper.applyLabels(holder.text_stock.getTag()) + ": " + holder.productObj.getTotalStockQty() + "");
+            } else {
+                holder.text_stock.setText(getString(R.string.stock) + ": " + holder.productObj.getTotalStockQty() + "");
+            }
+
+            if (bmodel.labelsMasterHelper.applyLabels(holder.text_stock.getTag()) != null)
+                totSTKQty = bmodel.labelsMasterHelper
+                        .applyLabels(holder.text_stock.getTag()) + ": ";
+            holder.text_stock.setText(totSTKQty + String.valueOf(holder.productObj.getTotalStockQty()));
+        }
+
+
+    }
+    private void initializeRowViews(View row, ViewHolder holder,int SOLogic,int viewType){
 
 
         if (viewType == 0) {
 
+           holder.group_total =row.findViewById(R.id.group_total);
+            holder.group_avail =row.findViewById(R.id.group_availability_checkbox);
+            holder.group_sc =row.findViewById(R.id.group_shelf_case);
+            holder.group_sho =row.findViewById(R.id.group_shelf_outer);
+            holder.group_sp =row.findViewById(R.id.group_shelf_pc);
+            holder.group_uom_label=row.findViewById(R.id.group_shelf_uom);
+            holder.group_uom_qty=row.findViewById(R.id.group_llUom_Qty);
 
-            holder.tvbarcode = row
-                    .findViewById(R.id.stock_and_order_listview_productbarcode);
+            holder.group_case=row.findViewById(R.id.group_case);
+            holder.group_outer=row.findViewById(R.id.group_outer);
+            holder.group_pc=row.findViewById(R.id.group_pc);
+
+            holder.group_foc=row.findViewById(R.id.group_foc);
+            holder.group_srp_edit=row.findViewById(R.id.group_srp_edit);
+
+            holder.group_sr_return_qty=row.findViewById(R.id.group_sr_return_qty);
+
+            holder.group_total_weight=row.findViewById(R.id.group_total_weight);
+
+         //  holder.group_avail.setVisibility(View.GONE);
+
+
+
 
             holder.psname = row
                     .findViewById(R.id.stock_and_order_listview_productname);
-            holder.tvProductCode = row
-                    .findViewById(R.id.stock_and_order_listview_productcode);
-            holder.mrp = row
-                    .findViewById(R.id.stock_and_order_listview_mrp);
-            holder.ppq = row
-                    .findViewById(R.id.stock_and_order_listview_ppq);
-            holder.msq = row
-                    .findViewById(R.id.stock_and_order_listview_msq);
-            holder.psq = row
-                    .findViewById(R.id.stock_and_order_listview_psq);
-            holder.moq = row.
-                    findViewById(R.id.stock_and_order_listview_moq);
-
+            holder.textView_SecondaryLabel = row
+                    .findViewById(R.id.textView_SecondaryLabel);
 
             //Store - Stock Check
 
@@ -1858,14 +1892,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             holder.socs = row
                     .findViewById(R.id.stock_and_order_listview_socs);
 
-            //WareHouse Stock In Hand
-            holder.wsih = row
-                    .findViewById(R.id.stock_and_order_listview_wsih);
-            //Van Stock In Hand
-            holder.sih = row
-                    .findViewById(R.id.stock_and_order_listview_sih);
-            holder.sihCase = row.findViewById(R.id.stock_and_order_listview_sih_case);
-            holder.sihOuter = row.findViewById(R.id.stock_and_order_listview_sih_outer);
 
             //Store - Order
             holder.caseQty = row
@@ -1882,16 +1908,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             holder.uom_qty = row
                     .findViewById(R.id.stock_and_order_listview_uom_qty);
 
-            holder.srp = row
-                    .findViewById(R.id.stock_and_order_listview_srp);
             holder.srpEdit = row
                     .findViewById(R.id.stock_and_order_listview_srpedit);
 
             holder.salesReturn = row
                     .findViewById(R.id.stock_and_order_listview_sales_return_qty);
             holder.salesReturn.setFocusable(false);
-            holder.sales_return_tv = row
-                    .findViewById(R.id.stock_and_order_listview_sr_tv);
+
 
             holder.total = row
                     .findViewById(R.id.stock_and_order_listview_total);
@@ -1900,130 +1923,111 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             holder.weight = row
                     .findViewById(R.id.stock_and_order_listview_weight);
 
-            holder.rep_cs = row.findViewById(R.id.rep_case);
-            holder.rep_ou = row.findViewById(R.id.rep_outer);
-            holder.rep_pcs = row.findViewById(R.id.rep_pcs);
-            holder.indicativeOrder_oc = row.findViewById(R.id.indicativeOrder_oc);
-            holder.cleanedOrder_oc = row.findViewById(R.id.cleanedOrder_oc);
-
 
             holder.text_stock = row.findViewById(R.id.text_stock);
 
-            holder.text_allocation = row.findViewById(R.id.stock_and_order_listview_allocation);
+            holder.textView_product_tertiary_labels = row.findViewById(R.id.textView_product_tertiary_labels);
 
-            //slant view
-            holder.slant_view_bg = row.findViewById(R.id.slant_view_bg);
+
+            holder.layout_product_tag_color=row.findViewById(R.id.layout_product_tag_color);
+            holder.layout_product_tag_color.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    if (holder.productObj.getProductTagColorList() != null && holder.productObj.getProductTagColorList().size() > 0) {
+
+                        PopupWindow popupWindowCompat = new PopupWindow(StockAndOrder.this);
+                        popupWindowCompat.setBackgroundDrawable(new ColorDrawable(android.graphics.Color.TRANSPARENT));
+                        LayoutInflater inflater = getLayoutInflater();
+                        View parentView = inflater.inflate(R.layout.layout_product_tag_colors, null);
+                        LinearLayout layout_parent = parentView.findViewById(R.id.layout_parent);
+                        popupWindowCompat.setContentView(parentView);
+                        popupWindowCompat.setHeight(WindowManager.LayoutParams.WRAP_CONTENT);
+                        popupWindowCompat.setWidth(WindowManager.LayoutParams.WRAP_CONTENT);
+                        // Closes the popup window when touch outside of it - when looses focus
+                        popupWindowCompat.setOutsideTouchable(true);
+                        popupWindowCompat.setFocusable(true);
+
+                        LinearLayout layout_row;
+                        ImageView imageView;
+                        TextView textView;
+                        ProductHelper productHelper = ProductHelper.getInstance(StockAndOrder.this);
+                        for (String tagCode : holder.productObj.getProductTagColorList().keySet()) {
+
+                            layout_row = new LinearLayout(StockAndOrder.this);
+                            layout_row.setGravity(Gravity.CENTER_VERTICAL);
+                            // ConstraintLayout.LayoutParams layoutParams_parent=new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT);
+                            LinearLayout.LayoutParams layoutParams_parent = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                            layout_row.setLayoutParams(layoutParams_parent);
+
+                            imageView = new ImageView(StockAndOrder.this);
+                            imageView.setImageDrawable(getResources().getDrawable(R.drawable.dot_circle_green));
+                            //  ConstraintLayout.LayoutParams layoutParams_image = new ConstraintLayout.LayoutParams(getPixelsFromDp(StockAndOrder.this, 10), getPixelsFromDp(StockAndOrder.this, 10));//ViewGroup.LayoutParams.WRAP_CONTENT);
+                            LinearLayout.LayoutParams layoutParams_image = new LinearLayout.LayoutParams(getPixelsFromDp(StockAndOrder.this, 10), getPixelsFromDp(StockAndOrder.this, 10));//ViewGroup.LayoutParams.WRAP_CONTENT);
+                            imageView.setLayoutParams(layoutParams_image);
+                            imageView.setColorFilter(holder.productObj.getProductTagColorList().get(tagCode));
+                            layout_row.addView(imageView);
+
+
+                            textView = new TextView(StockAndOrder.this);
+                            textView.setPadding(getPixelsFromDp(StockAndOrder.this, 5), 0, 0, 0);
+                            //         ConstraintLayout.LayoutParams layoutParams_text = new ConstraintLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT)
+                            LinearLayout.LayoutParams layoutParams_text = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);//ViewGroup.LayoutParams.WRAP_CONTENT);
+                            view.setLayoutParams(layoutParams_text);
+                            textView.setText(productHelper.getSpecialFilterName(tagCode));
+                            layout_row.addView(textView);
+
+
+                            layout_parent.addView(layout_row);
+
+                        }
+
+
+                        // Show anchored to button
+                        popupWindowCompat.showAsDropDown(holder.layout_product_tag_color);
+                    }
+                }
+            });
+
+
 
             holder.psname.setMaxLines(bmodel.configurationMasterHelper.MAX_NO_OF_PRODUCT_LINES);
 
             //setting typefaces
-            holder.tvbarcode.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
             holder.psname.setTypeface(FontUtils.getProductNameFont(StockAndOrder.this));
-            holder.tvProductCode.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-            holder.mrp.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.ppq.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.msq.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.psq.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.moq.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.shelfCaseQty.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.shelfPcsQty.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.shelfouter.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.srpEdit.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.so.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.socs.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.wsih.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.sih.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.sihCase.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.sihOuter.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.caseQty.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.pcsQty.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.foc.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.outerQty.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.srp.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.total.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.weight.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.rep_cs.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.rep_ou.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.rep_pcs.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.indicativeOrder_oc.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.cleanedOrder_oc.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.salesReturn.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.text_stock.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.text_allocation.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.uom_qty.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.tv_uo_names.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
-            holder.sales_return_tv.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
 
-            if (!bmodel.configurationMasterHelper.IS_ENABLE_PRODUCT_TAGGING_VALIDATION) {
-                holder.text_allocation.setVisibility(View.GONE);
-            }
-
-            if (bmodel.configurationMasterHelper.IS_SHOW_PSQ) {
-                holder.psq.setVisibility(View.VISIBLE);
-            } else {
-                holder.psq.setVisibility(View.GONE);
-            }
-
-            if (!bmodel.configurationMasterHelper.IS_SHOW_PPQ) {
-                holder.ppq.setVisibility(View.GONE);
-            }
-
-            if (bmodel.configurationMasterHelper.IS_MOQ_ENABLED)
-                holder.moq.setVisibility(View.VISIBLE);
-
-            if (!bmodel.configurationMasterHelper.SHOW_BARCODE)
-                holder.tvbarcode.setVisibility(View.GONE);
 
             if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
-                holder.salesReturn.setVisibility(View.VISIBLE);
+                holder.group_sr_return_qty.setVisibility(View.VISIBLE);
+            else holder.group_sr_return_qty.setVisibility(View.GONE);
 
-            if (bmodel.configurationMasterHelper.SHOW_SALES_RETURN_TV_IN_ORDER)
-                holder.sales_return_tv.setVisibility(View.VISIBLE);
 
-            if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_MRP)
-                holder.mrp.setVisibility(View.GONE);
 
             if (!bmodel.configurationMasterHelper.IS_COMBINED_STOCK_CHECK_FROM_ORDER)
                 holder.imageView_stock.setVisibility(View.GONE);
-
-            if (!bmodel.configurationMasterHelper.SHOW_INDICATIVE_ORDER) {
-                holder.indicativeOrder_oc.setVisibility(View.GONE);
-            }
-            //wsih or Distributor Inventory
-            if (!bmodel.configurationMasterHelper.IS_WSIH) {
-                holder.wsih.setVisibility(View.GONE);
-            }
-
-            if (!bmodel.configurationMasterHelper.SHOW_CLEANED_ORDER) {
-                holder.cleanedOrder_oc.setVisibility(View.GONE);
-            }
-
             if (!stockCheckHelper.SHOW_STOCK_CB
                     || screenCode
-                    .equals(ConfigurationMasterHelper.MENU_ORDER))
-                (row.findViewById(R.id.llAvail)).setVisibility(View.GONE);
-
-            else {
-                try {
-                    ((TextView) row.findViewById(R.id.shelfPcsCB)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-                    if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
-                            R.id.shelfPcsCB).getTag()) != null)
-                        ((TextView) row.findViewById(R.id.shelfPcsCB))
-                                .setText(bmodel.labelsMasterHelper
-                                        .applyLabels(row.findViewById(
-                                                R.id.shelfPcsCB)
-                                                .getTag()));
-                } catch (Exception e) {
-                    Commons.printException(e + "");
-                }
+                    .equals(ConfigurationMasterHelper.MENU_ORDER)){
+                holder.group_avail.setVisibility(View.GONE);
             }
-
+            else {
+                holder.group_avail.setVisibility(View.VISIBLE);
+                if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
+                        R.id.shelfPcsCB).getTag()) != null)
+                    ((TextView) row.findViewById(R.id.shelfPcsCB))
+                            .setText(bmodel.labelsMasterHelper
+                                    .applyLabels(row.findViewById(
+                                            R.id.shelfPcsCB)
+                                            .getTag()));
+            }
 
             if (!stockCheckHelper.SHOW_STOCK_SC
                     || screenCode
-                    .equals(ConfigurationMasterHelper.MENU_ORDER))
-                (row.findViewById(R.id.llShelfCase)).setVisibility(View.GONE);
+                    .equals(ConfigurationMasterHelper.MENU_ORDER)){
+                holder.group_sc.setVisibility(View.GONE);
+            }
             else {
+                holder.group_sc.setVisibility(View.VISIBLE);
                 try {
 
                     if (bmodel.configurationMasterHelper.IS_STK_DIGIT)
@@ -2041,15 +2045,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     Commons.printException(e + "");
                 }
             }
+
+
             if (!stockCheckHelper.SHOW_STOCK_SP
                     || screenCode
                     .equals(ConfigurationMasterHelper.MENU_ORDER))
-                (row.findViewById(R.id.llShelfPc)).setVisibility(View.GONE);
+                holder.group_sp.setVisibility(View.GONE);
             else {
+                holder.group_sp.setVisibility(View.VISIBLE);
                 try {
-                    if (bmodel.configurationMasterHelper.IS_STK_DIGIT)
-                        holder.shelfPcsQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
-                    ((TextView) row.findViewById(R.id.shelfPcsTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.shelfPcsTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.shelfPcsTitle))
@@ -2061,15 +2065,14 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     Commons.printException(e + "");
                 }
             }
+
             if (!stockCheckHelper.SHOW_SHELF_OUTER
                     || screenCode
                     .equals(ConfigurationMasterHelper.MENU_ORDER))
-                (row.findViewById(R.id.llShelfOuter)).setVisibility(View.GONE);
+                holder.group_sho.setVisibility(View.GONE);
             else {
+                holder.group_sho.setVisibility(View.VISIBLE);
                 try {
-                    if (bmodel.configurationMasterHelper.IS_STK_DIGIT)
-                        holder.shelfouter.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.STK_DIGIT)});
-                    ((TextView) row.findViewById(R.id.shelfOuterTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.shelfOuterTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.shelfOuterTitle))
@@ -2097,34 +2100,17 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                         | Paint.UNDERLINE_TEXT_FLAG);
             }
 
-            // SIH - Enable/Disable - Start
-            if (bmodel.configurationMasterHelper.IS_STOCK_IN_HAND) {
-                if (bmodel.configurationMasterHelper.SHOW_SIH_SPLIT) {
-                    if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-                        holder.sihCase.setVisibility(View.GONE);
-                    if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
-                        holder.sihOuter.setVisibility(View.GONE);
-                    if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-                        holder.sih.setVisibility(View.GONE);
-                } else {
-                    holder.sihCase.setVisibility(View.GONE);
-                    holder.sihOuter.setVisibility(View.GONE);
-                }
-            } else {
-                holder.sih.setVisibility(View.GONE);
-                holder.sihCase.setVisibility(View.GONE);
-                holder.sihOuter.setVisibility(View.GONE);
-            }
+
             // SIH - Enable/Disable - Start
             // Order Field - Enable/Disable
             if (!bmodel.configurationMasterHelper.SHOW_ORDER_CASE)
-                (row.findViewById(R.id.llCase)).setVisibility(View.GONE);
+                holder.group_sc.setVisibility(View.GONE);
             else {
+                holder.group_sc.setVisibility(View.VISIBLE);
                 try {
                     if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
                         holder.caseQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
 
-                    ((TextView) row.findViewById(R.id.caseTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.caseTitle).getTag()) != null) {
                         ((TextView) row.findViewById(R.id.caseTitle))
@@ -2141,14 +2127,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                     holder.caseTitleText = getResources().getString(R.string.item_case);
                 }
             }
-            if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
-                (row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
+
+           if (!bmodel.configurationMasterHelper.SHOW_ORDER_PCS)
+               holder.group_pc.setVisibility(View.GONE);
             else {
+               holder.group_pc.setVisibility(View.VISIBLE);
                 try {
                     if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
                         holder.pcsQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
 
-                    ((TextView) row.findViewById(R.id.pcsTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.pcsTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.pcsTitle))
@@ -2160,11 +2147,11 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
 
-            if (!bmodel.configurationMasterHelper.SHOW_FOC)
-                (row.findViewById(R.id.llFoc)).setVisibility(View.GONE);
+             if (!bmodel.configurationMasterHelper.SHOW_FOC)
+                holder.group_foc.setVisibility(View.GONE);
             else {
+                 holder.group_foc.setVisibility(View.VISIBLE);
                 try {
-                    ((TextView) row.findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.focTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.focTitle))
@@ -2177,13 +2164,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
             if (!bmodel.configurationMasterHelper.SHOW_OUTER_CASE)
-                (row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
+                holder.group_outer.setVisibility(View.GONE);
             else {
+                holder.group_outer.setVisibility(View.VISIBLE);
                 try {
                     if (bmodel.configurationMasterHelper.IS_ORD_DIGIT)
                         holder.outerQty.setFilters(new InputFilter[]{new InputFilter.LengthFilter(bmodel.configurationMasterHelper.ORD_DIGIT)});
 
-                    ((TextView) row.findViewById(R.id.outercaseTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.outercaseTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.outercaseTitle))
@@ -2197,10 +2184,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
             if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP_EDT)
-                (row.findViewById(R.id.llSrpEdit)).setVisibility(View.GONE);
+                holder.group_srp_edit.setVisibility(View.GONE);
             else {
+                holder.group_srp_edit.setVisibility(View.VISIBLE);
                 try {
-                    ((TextView) row.findViewById(R.id.srpeditTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.srpeditTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.srpeditTitle))
@@ -2212,14 +2199,13 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
 
-            if (!bmodel.configurationMasterHelper.SHOW_STK_ORD_SRP)
-                holder.srp.setVisibility(View.GONE);
+
 
             if (!bmodel.configurationMasterHelper.SHOW_SALES_RETURN_IN_ORDER)
-                (row.findViewById(R.id.llStkRtEdit)).setVisibility(View.GONE);
+                holder.group_sr_return_qty.setVisibility(View.GONE);
             else {
+                holder.group_sr_return_qty.setVisibility(View.VISIBLE);
                 try {
-                    ((TextView) row.findViewById(R.id.stkRtTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(R.id.stkRtTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.stkRtTitle))
                                 .setText(bmodel.labelsMasterHelper
@@ -2231,10 +2217,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             }
 
             if (!bmodel.configurationMasterHelper.SHOW_ORDER_TOTAL)
-                (row.findViewById(R.id.llTotal)).setVisibility(View.GONE);
+                holder.group_total.setVisibility(View.GONE);
             else {
+                holder.group_total.setVisibility(View.VISIBLE);
                 try {
-                    ((TextView) row.findViewById(R.id.totalTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.totalTitle).getTag()) != null)
                         ((TextView) row.findViewById(R.id.totalTitle))
@@ -2248,10 +2234,10 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
 
 
             if (!bmodel.configurationMasterHelper.SHOW_ORDER_WEIGHT)
-                (row.findViewById(R.id.llWeight)).setVisibility(View.GONE);
+                holder.group_total_weight.setVisibility(View.GONE);
             else {
+                holder.group_total_weight.setVisibility(View.VISIBLE);
                 try {
-                    ((TextView) row.findViewById(R.id.weight)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.weight).getTag()) != null)
                         ((TextView) row.findViewById(R.id.weight))
@@ -2264,26 +2250,17 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
 
-            if (!bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_CS)
-                holder.rep_cs.setVisibility(View.GONE);
-
-            if (!bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_OU)
-                holder.rep_ou.setVisibility(View.GONE);
-
-            if (!bmodel.configurationMasterHelper.SHOW_REPLACED_QTY_PC)
-                holder.rep_pcs.setVisibility(View.GONE);
 
             if (!bmodel.configurationMasterHelper.SHOW_STK_QTY_IN_ORDER)
                 holder.text_stock.setVisibility(View.GONE);
 
             if (!bmodel.configurationMasterHelper.IS_SHOW_DEFAULT_UOM) {
-                (row.findViewById(R.id.llUom_Qty)).setVisibility(View.GONE);
-                (row.findViewById(R.id.llUom_dropdwon)).setVisibility(View.GONE);
+                holder.group_uom_qty.setVisibility(View.GONE);
+                holder.group_uom_label.setVisibility(View.GONE);
             } else {
-                (row.findViewById(R.id.llPcs)).setVisibility(View.GONE);
-                (row.findViewById(R.id.llCase)).setVisibility(View.GONE);
-                (row.findViewById(R.id.llOuter)).setVisibility(View.GONE);
-                ((TextView) row.findViewById(R.id.uomTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
+                holder.group_pc.setVisibility(View.GONE);
+                holder.group_case.setVisibility(View.GONE);
+                holder.group_outer.setVisibility(View.GONE);
                 try {
                     if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                             R.id.uomTitle).getTag()) != null)
@@ -2297,8 +2274,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             }
 
-            if (!bmodel.configurationMasterHelper.IS_SHOW_SKU_CODE)
-                holder.tvProductCode.setVisibility(View.GONE);
+
 
             holder.tv_uo_names.setOnClickListener(new OnClickListener() {
                 @Override
@@ -3733,21 +3709,15 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             });
         } else {
 
-            holder.tvbarcode = row
-                    .findViewById(R.id.stock_and_order_listview_productbarcode);
 
-            holder.tvbarcode.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
-
-            if (!bmodel.configurationMasterHelper.SHOW_BARCODE)
-                holder.tvbarcode.setVisibility(View.GONE);
+            holder.textView_SecondaryLabel = row
+                    .findViewById(R.id.textView_SecondaryLabel);
 
             holder.psname = row
                     .findViewById(R.id.stock_and_order_listview_productname);
-           /* holder.tvProductCode = row
-                    .findViewById(R.id.stock_and_order_listview_productcode);*/
+
             holder.foc = row
                     .findViewById(R.id.stock_and_order_listview_foc);
-            holder.foc.setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.MEDIUM));
 
 
         }
@@ -3772,7 +3742,6 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             (row.findViewById(R.id.llFoc)).setVisibility(View.GONE);
         else {
             try {
-                ((TextView) row.findViewById(R.id.focTitle)).setTypeface(FontUtils.getFontRoboto(StockAndOrder.this, FontUtils.FontType.LIGHT));
                 if (bmodel.labelsMasterHelper.applyLabels(row.findViewById(
                         R.id.focTitle).getTag()) != null)
                     ((TextView) row.findViewById(R.id.focTitle))
@@ -3864,6 +3833,7 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
                 }
             });
         }
+
 
     }
 
@@ -6117,4 +6087,41 @@ public class StockAndOrder extends IvyBaseActivityNoActionBar implements OnClick
             rvFilterList.setAdapter(filterAdapter);
         }
     }
+
+    private void addProductTagColorView(LinearLayout linearLayout,ProductMasterBO productMasterBO){
+
+        try {
+            if(linearLayout!=null)
+                linearLayout.removeAllViews();
+
+            if (productMasterBO.getProductTagColorList() != null) {
+
+                //LinearLayout layout_row;
+                ImageView view;
+                for (String tagCode : productMasterBO.getProductTagColorList().keySet()) {
+
+                    view = new ImageView(this);
+                    view.setImageDrawable(getResources().getDrawable(R.drawable.dot_circle_green));
+                    LinearLayout.LayoutParams layoutParams_parent = new LinearLayout.LayoutParams(getPixelsFromDp(this, 7), getPixelsFromDp(this, 7));
+                        layoutParams_parent.setMargins(getPixelsFromDp(this, 5), 0, 0, 0);
+                   // view.setPadding(getPixelsFromDp(StockAndOrder.this, 5),5,5,5);
+                    view.setLayoutParams(layoutParams_parent);
+                    view.setColorFilter(productMasterBO.getProductTagColorList().get(tagCode));
+
+                    linearLayout.addView(view);
+                }
+            }
+        }
+        catch (Exception ex){
+            Commons.printException(ex);
+        }
+
+
+    }
+
+    private int getPixelsFromDp(Context context, float dp) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dp * scale + 0.5f);
+    }
+
 }
