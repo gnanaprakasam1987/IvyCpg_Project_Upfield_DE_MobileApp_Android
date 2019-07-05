@@ -11,6 +11,7 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
@@ -452,6 +453,19 @@ public class SurveyHelperNew {
             );
             db.openDataBase();
 
+            String productDistributions="";
+            if (bmodel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                //downloading product distribution and preparing query to get products mapped..
+                int mContentLevelId = ProductHelper.getInstance(context).getContentLevel(db, moduleCode);
+                String pdQuery = ProductHelper.getInstance(context).downloadProductDistribution(mContentLevelId);
+                if (pdQuery.length() > 0) {
+                    productDistributions=  pdQuery;
+                }
+                else {
+                    productDistributions= "0";
+                }
+            }
+
             StringBuilder sb = new StringBuilder();
             sb.append("Select distinct SM.SurveyId, SM.SurveyDesc, SM.BonusPoint,");
             sb.append(" A.QId, A.QText, A.QType, IFNULL(C.ListCode, ''), A.BrandID, A.IsMand,");
@@ -484,6 +498,8 @@ public class SurveyHelperNew {
                 if (moduleCode.equalsIgnoreCase("MENU_NEW_RET") && bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER)
                     sb.append(" AND SCM.CriteriaID=" + bmodel.newOutletHelper.getmSelectedChannelid() + "  and SL.listcode='CHANNEL' OR SL.listcode='SUBCHANNEL'");
             }
+
+            sb.append(productDistributions.length()>0?" AND A.BrandID in ("+productDistributions+")":"");
 
             sb.append(" and SM.SurveyId not in (select AH.surveyid from answerheader AH ");
             sb.append("Where retailerid = '" + retailerid + "' and AH.frequency='DAILY_PIRAMAL') ");

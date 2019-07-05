@@ -294,6 +294,46 @@ public class ProductDetailsFragment extends IvyBaseFragment {
                     value = "" + productMasterBO.getASRP();
                     break;
                 }
+                case "PRODET18": {
+                    value = "" + productMasterBO.getRField1();
+                    break;
+                }
+                case "PRODET19": {
+                    value = "" + productMasterBO.getRField2();
+                    break;
+                }
+                case "PRODET20": {
+                    value = "" + productMasterBO.getRField3();
+                    break;
+                }
+                case "PRODET21": {
+                    value = "" + productMasterBO.getRField4();
+                    break;
+                }
+                case "PRODET22": {
+                    value = "" + productMasterBO.getRField5();
+                    break;
+                }
+                case "PRODET23": {
+                    value = "" + productMasterBO.getRField6();
+                    break;
+                }
+                case "PRODET24": {
+                    value = "" + productMasterBO.getRField7();
+                    break;
+                }
+                case "PRODET25": {
+                    value = "" + productMasterBO.getRField8();
+                    break;
+                }
+                case "PRODET26": {
+                    value = "" + productMasterBO.getRField9();
+                    break;
+                }
+                case "PRODET27": {
+                    value = "" + productMasterBO.getRField10();
+                    break;
+                }
             }
         }
         return value;

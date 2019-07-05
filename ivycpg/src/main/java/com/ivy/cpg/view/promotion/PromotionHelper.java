@@ -11,6 +11,7 @@ import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
@@ -74,7 +75,7 @@ public class PromotionHelper {
         businessModel.productHelper.setFilterProductsByLevelIdRex(businessModel.productHelper.downloadFilterLevelProducts(
                 businessModel.productHelper.getRetailerModuleSequenceValues(), false));
 
-        downloadPromotionMaster(mContext);
+        downloadPromotionMaster(mContext,mMenuCode);
         loadPromoEntered(mContext);
     }
 
@@ -156,17 +157,33 @@ public class PromotionHelper {
      * locationId - The hierarchy of the location level (Which level of location is set in ConfigActivityFiler)
      * channelId - The hierarchy of the channel level (Which level of channel is set in ConfigActivityFilter)
      */
-    private void downloadPromotionMaster(Context mContext) {
+    private void downloadPromotionMaster(Context mContext,String mMenuCode) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             PromotionBO promotionMaster;
             db.openDataBase();
             Cursor c;
+
+
+            String productDistributions="";
+            if (businessModel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                //downloading product distribution and preparing query to get products mapped..
+                int mContentLevelId = ProductHelper.getInstance(mContext).getContentLevel(db, mMenuCode);
+                String pdQuery = ProductHelper.getInstance(mContext).downloadProductDistribution(mContentLevelId);
+                if (pdQuery.length() > 0) {
+                    productDistributions= pdQuery ;
+                }
+                else {
+                    productDistributions= "0";
+                }
+            }
+
             String query = " where PM.AccId in (0," + businessModel.getRetailerMasterBO().getAccountid() + ")"
                     + " and (PM.ChId in(0," + businessModel.getRetailerMasterBO().getSubchannelid() + ") OR PM.Chid in(0," + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(), mContext) + "))"
                     + " and PM.retailerid in (0," + businessModel.getRetailerMasterBO().getRetailerID() + ")"
                     + " and PM.ClassId in (0," + businessModel.getRetailerMasterBO().getClassid() + ")"
                     + " and (PM.LocId in (0," + businessModel.getRetailerMasterBO().getLocationId() + ") OR PM.LocId in(0," + businessModel.channelMasterHelper.getLocationHierarchy(mContext) + "))"
+                    +  (productDistributions.length()>0?" AND PPM.pid in ("+productDistributions+")":"")
                     + " GROUP BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId,PPM.PromoId,PPM.Pid,PPM.GroupName ORDER BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId,PPM.GroupName ";
 
 

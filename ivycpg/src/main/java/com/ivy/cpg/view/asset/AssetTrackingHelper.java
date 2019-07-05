@@ -14,6 +14,7 @@ import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
@@ -428,13 +429,13 @@ public class AssetTrackingHelper {
     /**
      * Method that to download Asset Details from SQLite
      *
-     * @param moduleName module name
+     * @param mMenuCode module name
      */
-    private void downloadAssetMaster(Context mContext, String moduleName) {
+    private void downloadAssetMaster(Context mContext, String mMenuCode) {
         ArrayList<AssetTrackingBO> mAllAssetTrackingList = null;
 
         String type;
-        if (MENU_ASSET.equals(moduleName))
+        if (MENU_ASSET.equals(mMenuCode))
             type = MERCH;
         else
             type = MERCH_INIT;
@@ -446,6 +447,7 @@ public class AssetTrackingHelper {
         StringBuilder sb = new StringBuilder();
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
         );
+
         try {
 
             db.openDataBase();
@@ -462,8 +464,20 @@ public class AssetTrackingHelper {
                 }
             }
 
+            String productDistributions="";
+            if (mBusinessModel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                //downloading product distribution and preparing query to get products mapped..
+                int mContentLevelId = ProductHelper.getInstance(mContext).getContentLevel(db, mMenuCode);
+                String pdQuery = ProductHelper.getInstance(mContext).downloadProductDistribution(mContentLevelId);
+                if (pdQuery.length() > 0) {
+                    productDistributions= pdQuery;
+                }
+                else {
+                    productDistributions= "0";
+                }
+            }
 
-            mBusinessModel.productHelper.getRetailerlevel(moduleName);
+            mBusinessModel.productHelper.getRetailerlevel(mMenuCode);
             sb.append("select Distinct P.PosmId,P.Posmdesc,SBD.SerialNO,SBD.Target,SBD.Productid,SLM.listname,SLM.listid,SBD.NfcTagId,SBD.StoreLocId,SDM.listname as locname,PM.ParentHierarchy as ParentHierarchy, ");
             sb.append("SBDM.InstallDate,SBDM.LastServiceDate from PosmMaster P  ");
             sb.append("inner join POSMCriteriaMapping SBD on P.PosmID=SBD.posmid ");
@@ -474,6 +488,7 @@ public class AssetTrackingHelper {
             sb.append("where  SBD.TypeLovId=(select listid from StandardListMaster where ListCode=");
             sb.append(mBusinessModel.QT(type));
             sb.append(" and ListType='SBD_TYPE') ");
+            sb.append(productDistributions.length()>0?" AND SBD.Productid in ("+productDistributions+")":"");
 
             String allMasterSb = sb.toString();
 
@@ -552,7 +567,7 @@ public class AssetTrackingHelper {
 
             //load serial no's into hash map for uniqueness
 
-            if (MENU_ASSET.equals(moduleName)) {
+            if (MENU_ASSET.equals(mMenuCode)) {
                 String sb1 = "select SerialNO from POSMCriteriaMapping where " +
                         "TypeLovId=(select listid from StandardListMaster where ListCode=" + mBusinessModel.QT(type) + ")";
                 c = db.selectSQL(sb1);
