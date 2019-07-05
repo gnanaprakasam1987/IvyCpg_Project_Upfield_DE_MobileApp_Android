@@ -2551,8 +2551,8 @@ public class SurveyActivityNewFragment extends IvyBaseFragment implements TabLay
     }
 
     private void showAlert() {
-        CommonDialog dialog = new CommonDialog(context, getResources().getString(R.string.doyouwantgoback),
-                "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+        CommonDialog dialog = new CommonDialog(context, "",
+                getResources().getString(R.string.doyouwantgoback), getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
                 if (mFrom.equalsIgnoreCase("HomeScreenTwo")) {
