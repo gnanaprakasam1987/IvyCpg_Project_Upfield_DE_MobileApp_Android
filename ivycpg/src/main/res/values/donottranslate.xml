@@ -389,4 +389,5 @@
     <string name="compliance_pt">PT</string>
     <string name="assigned">Assigned</string>
     <string name="select_parent">Select Parent</string>
+    <string name="seriallized_no_error_message">Serialized Number Should be more then two </string>
 </resources>
