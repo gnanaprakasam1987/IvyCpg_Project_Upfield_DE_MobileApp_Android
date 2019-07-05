@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -515,6 +516,12 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
             @Override
             public void afterTextChanged(Editable s) {
+                if(s.toString().length() <= 2){
+                    mSNO.setError(getResources().getString(R.string.seriallized_no_error_message));
+                }else{
+                    mSNO.setError(null) ;
+                }
+
 
                 if (s.toString().length() > 0)
                     mSNO.setSelection(s.toString().length());
