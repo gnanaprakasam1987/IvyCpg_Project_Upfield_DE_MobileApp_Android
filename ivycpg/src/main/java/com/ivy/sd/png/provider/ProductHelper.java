@@ -1232,7 +1232,7 @@ public class ProductHelper {
      * @param mContentLevelId to identify given products level id
      * @return Returns a query which gets products(content level) mapped to current distribution type
      */
-    private String downloadProductDistribution(int mContentLevelId) {
+    public String downloadProductDistribution(int mContentLevelId) {
 
         String PRODUCT_DISTRIBUTION_TYPE_ROUTE = "ROUTE";
         String PRODUCT_DISTRIBUTION_TYPE_RETAILER = "RETAILER";

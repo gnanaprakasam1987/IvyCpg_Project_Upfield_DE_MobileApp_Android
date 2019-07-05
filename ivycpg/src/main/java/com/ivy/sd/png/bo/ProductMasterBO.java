@@ -220,6 +220,88 @@ public class ProductMasterBO implements Comparable {
     }
 
     private String RField1;
+    private String RField2;
+    private String RField3;
+    private String RField4;
+
+    public String getRField2() {
+        return RField2;
+    }
+
+    public void setRField2(String RField2) {
+        this.RField2 = RField2;
+    }
+
+    public String getRField3() {
+        return RField3;
+    }
+
+    public void setRField3(String RField3) {
+        this.RField3 = RField3;
+    }
+
+    public String getRField4() {
+        return RField4;
+    }
+
+    public void setRField4(String RField4) {
+        this.RField4 = RField4;
+    }
+
+    public String getRField5() {
+        return RField5;
+    }
+
+    public void setRField5(String RField5) {
+        this.RField5 = RField5;
+    }
+
+    public String getRField6() {
+        return RField6;
+    }
+
+    public void setRField6(String RField6) {
+        this.RField6 = RField6;
+    }
+
+    public String getRField7() {
+        return RField7;
+    }
+
+    public void setRField7(String RField7) {
+        this.RField7 = RField7;
+    }
+
+    public String getRField8() {
+        return RField8;
+    }
+
+    public void setRField8(String RField8) {
+        this.RField8 = RField8;
+    }
+
+    public String getRField9() {
+        return RField9;
+    }
+
+    public void setRField9(String RField9) {
+        this.RField9 = RField9;
+    }
+
+    public String getRField10() {
+        return RField10;
+    }
+
+    public void setRField10(String RField10) {
+        this.RField10 = RField10;
+    }
+
+    private String RField5;
+    private String RField6;
+    private String RField7;
+    private String RField8;
+    private String RField9;
+    private String RField10;
 
 
 
