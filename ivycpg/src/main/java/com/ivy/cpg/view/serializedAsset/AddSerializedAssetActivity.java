@@ -838,7 +838,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                 if (result != null) {
                     if (result.getContents() == null) {
 
-                        showMessage(getString(R.string.serial_no_not_captured_kindly_choose_reason));
+                        showMessage(getString(R.string.barcode_not_caputered_error));
 
                         barcodeNoReasonSpinner.setSelection(0);
                         enableBarCodeViews(true);
