@@ -515,6 +515,11 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
             @Override
             public void afterTextChanged(Editable s) {
+                if(s.toString().length() <= 2){
+                    mSNO.setError(getResources().getString(R.string.seriallized_no_error_message));
+                }else{
+                    mSNO.setError(null) ;
+                }
 
                 if (s.toString().length() > 0)
                     mSNO.setSelection(s.toString().length());
@@ -833,7 +838,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                 if (result != null) {
                     if (result.getContents() == null) {
 
-                        showMessage(getString(R.string.serial_no_not_captured_kindly_choose_reason));
+                        showMessage(getString(R.string.barcode_not_caputered_error));
 
                         barcodeNoReasonSpinner.setSelection(0);
                         enableBarCodeViews(true);

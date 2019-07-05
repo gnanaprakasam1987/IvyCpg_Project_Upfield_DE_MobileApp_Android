@@ -1736,8 +1736,9 @@ public class BusinessModel extends Application {
      */
     private void updateRetailerPriceGRP(RetailerMasterBO retObj, DBUtil db) {
 
+        Cursor c =null;
         try {
-            Cursor c;
+
             int distId = 0;
             c = db.selectSQL("select DistributorID From RetailerPriceGroup where DistributorID<>0 AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()));
             if (c != null
@@ -1746,7 +1747,9 @@ public class BusinessModel extends Application {
                     distId = c.getInt(0);
 
             }
-            c.close();
+            if (c != null) {
+                c.close();
+            }
 
             c = db.selectSQL("SELECT IFNULL(GroupId,0) From RetailerPriceGroup WHERE DistributorID=" + distId + " AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
             if (c != null
@@ -1754,9 +1757,15 @@ public class BusinessModel extends Application {
                 if (c.moveToNext())
                     retObj.setGroupId(c.getInt(0));
             }
-            c.close();
+            if (c != null) {
+                c.close();
+            }
         } catch (Exception e) {
             Commons.printException("Exception ", e);
+        }finally {
+            if (c != null) {
+                c.close();
+            }
         }
 
     }
@@ -2872,7 +2881,7 @@ public class BusinessModel extends Application {
         } catch (Exception ex) {
             Commons.printException(ex);
         }
-        return formattedValue;
+        return SDUtil.getWithoutExponential(formattedValue);
     }
 
 

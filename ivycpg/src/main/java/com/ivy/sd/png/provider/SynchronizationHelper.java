@@ -1504,6 +1504,7 @@ SynchronizationHelper {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", "OAuth " + access_token);
                 headers.put("Content_Type", "application/json");
+                headers.put("HeaderInformation", getJsonObjectforLog().toString());
                 return headers;
             }
 
@@ -1549,6 +1550,23 @@ SynchronizationHelper {
                 TAG_JSON_OBJ);
     }
 
+    private JSONObject getJsonObjectforLog(){
+        JSONObject jsonLogObject = new JSONObject();
+        try {
+            jsonLogObject.put("DeviceId", DeviceUtils.getIMEINumber(context));
+            jsonLogObject.put("LoginId", bmodel.userNameTemp);
+            jsonLogObject.put(SynchronizationHelper.MOBILE_DATE_TIME, Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            jsonLogObject.put(SynchronizationHelper.MOBILE_UTC_DATE_TIME, Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
+            jsonLogObject.put(SynchronizationHelper.VERSION_NAME, AppUtils.getApplicationVersionName(context));
+            jsonLogObject.put(SynchronizationHelper.VERSION_CODE, AppUtils.getApplicationVersionNumber(context));
+            jsonLogObject.put("Platform", "Android");
+            jsonLogObject.put("OSVersion", android.os.Build.VERSION.RELEASE);
+            jsonLogObject.put("Model", Build.MODEL);
+        } catch (JSONException jsonException) {
+            Commons.print(jsonException.getMessage());
+        }
+        return jsonLogObject;
+    }
 
     private void downloadMasterSFDC(final String url, final FROM_SCREEN isFromWhere,
                                     final int totalListCount, final int which) {

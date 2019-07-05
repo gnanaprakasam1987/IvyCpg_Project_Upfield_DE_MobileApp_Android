@@ -707,6 +707,7 @@ public class UploadHelper {
                     Map<String, String> headers = new HashMap<>();
                     headers.put("Authorization", "OAuth " + access_token);
                     headers.put("Content_Type", "application/json");
+                    headers.put("HeaderInformation", getJsonObjectforLog().toString());
                     if (businessModel.synchronizationHelper.isDayClosed()) {
                         /*int varianceDwnDate = DateTimeUtils.compareDate(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                                 businessModel.userMasterHelper.getUserMasterBO().getDownloadDate(),
@@ -757,6 +758,26 @@ public class UploadHelper {
             Commons.printException("" + e);
         }
 
+    }
+
+    private JSONObject getJsonObjectforLog(){
+        JSONObject jsonLogObject = new JSONObject();
+        try {
+            jsonLogObject.put("DeviceId", DeviceUtils.getIMEINumber(mContext));
+            jsonLogObject.put("LoginId", businessModel.userNameTemp);
+            jsonLogObject.put(SynchronizationHelper.MOBILE_DATE_TIME, Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            jsonLogObject.put(SynchronizationHelper.MOBILE_UTC_DATE_TIME, Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
+            jsonLogObject.put(SynchronizationHelper.VERSION_NAME, businessModel.getApplicationVersionName());
+            jsonLogObject.put(SynchronizationHelper.VERSION_CODE, businessModel.getApplicationVersionNumber());
+            jsonLogObject.put("Platform", "Android");
+            jsonLogObject.put("OSVersion", android.os.Build.VERSION.RELEASE);
+            jsonLogObject.put("Model", Build.MODEL);
+            jsonLogObject.put("UserId", businessModel.getAppDataProvider().getUser().getUserid());
+            jsonLogObject.put("BackupUserId", businessModel.getAppDataProvider().getUser().getBackupSellerID());
+        } catch (JSONException jsonException) {
+            Commons.print(jsonException.getMessage());
+        }
+        return jsonLogObject;
     }
 
     private RequestQueue getRequestQueue() {
