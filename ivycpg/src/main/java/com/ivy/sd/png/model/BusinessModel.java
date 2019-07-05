@@ -2898,7 +2898,7 @@ public class BusinessModel extends Application {
         } catch (Exception ex) {
             Commons.printException(ex);
         }
-        return formattedValue;
+        return SDUtil.getWithoutExponential(formattedValue);
     }
 
 
