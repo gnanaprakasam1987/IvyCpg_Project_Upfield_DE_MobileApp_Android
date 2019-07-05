@@ -46,7 +46,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="name" />
+                android:text="" />
 
             <TextView
                 android:id="@+id/tvTitle"
@@ -54,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="Superviso"/>
+                android:text=""/>
 
             <TextView
                 android:id="@+id/tvContactNo"
@@ -62,7 +62,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="991827090" />
+                android:text="" />
 
             <TextView
                 android:id="@+id/tvEmail"
@@ -70,7 +70,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="a.sajen91" />
+                android:text="" />
 
             <RelativeLayout
                 android:id="@+id/time_slot_layout"
