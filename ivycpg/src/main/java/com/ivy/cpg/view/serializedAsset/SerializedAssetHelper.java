@@ -8,6 +8,7 @@ import com.ivy.cpg.view.asset.bo.AssetAddDetailBO;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ReasonMaster;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -1001,7 +1002,7 @@ public class SerializedAssetHelper {
                     + "0" + ","
                     + "'WH_RTR'" + ","
                     + 0 + ","
-                    + assets.getRentalPrice() + ","
+                    + SDUtil.getWithoutExponential(assets.getRentalPrice()) + ","
                     + StringUtils.QT(DateTimeUtils.convertToServerDateFormat(assets.getEffectiveToDate(), ConfigurationMasterHelper.outDateFormat)) + ","
                     + StringUtils.QT(outletLastVisitID);
 
