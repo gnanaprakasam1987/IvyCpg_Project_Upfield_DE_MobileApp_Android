@@ -745,6 +745,10 @@ public class RetailerHelper {
                 }
             }
 
+            if (c != null) {
+                c.close();
+            }
+
             sb = "select rk.retailerid,rk.interval,rkmd.target,rk.kpiid,rkmd.kpiparamlovid from RetailerKPI rk" +
                     " inner join RetailerKPIModifiedDetail rkmd on rk.kpiid = rkmd.kpiid INNER JOIN StandardListMaster SM" +
                     " ON SM.listid = rkmd.KPIParamLovId where SM.listcode=" + bmodel.QT(code);
@@ -762,6 +766,10 @@ public class RetailerHelper {
                     retailerMasterBO.setKpi_param_day(c.getInt(4));
                     tempList.add(retailerMasterBO);
                 }
+            }
+
+            if (c != null) {
+                c.close();
             }
 
             for (RetailerMasterBO masterBO : getRetailerTargetList()) {

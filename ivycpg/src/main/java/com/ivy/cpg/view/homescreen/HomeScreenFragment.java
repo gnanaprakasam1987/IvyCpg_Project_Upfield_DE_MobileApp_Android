@@ -751,7 +751,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 }
             }
 
-            if (bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
+            if (false&&bmodel.configurationMasterHelper.IS_DATE_VALIDATION_REQUIRED &&
                     (DateTimeUtils.compareDate(bmodel.userMasterHelper.getUserMasterBO()
                                     .getDownloadDate(), DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL),
                             "yyyy/MM/dd") > 0)) {
@@ -775,7 +775,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
             } else if (bmodel.configurationMasterHelper.IS_ENABLE_TRIP && !LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isValidTrip()) {
                 showDialog(2);
             }
-            else if(!LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isDownloadedDateValid()){
+            else if(false&&!LoadManagementHelper.getInstance(getActivity().getApplicationContext()).isDownloadedDateValid()){
                 Toast.makeText(getActivity(),
                         getResources().getString(R.string.next_day_coverage),
                         Toast.LENGTH_SHORT).show();

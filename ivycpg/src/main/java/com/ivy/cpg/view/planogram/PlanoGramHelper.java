@@ -284,12 +284,28 @@ public class PlanoGramHelper {
             else
                 retailerID = mBModel.getRetailerMasterBO().getRetailerID();
 
-            query1 = " MP.AccId in (0 ," + mBModel.getRetailerMasterBO().getAccountid() + ") and"
-                    + " MP.RetailerId in (0 ," + retailerID + ") and"
-                    + " MP.ClassId in (0 ," + mBModel.getRetailerMasterBO().getClassid() + ") and"
-                    + " MP.LocId in (0 ," + mBModel.productHelper.getMappingLocationId(mBModel.productHelper.locid, mBModel.getRetailerMasterBO().getLocationId()) + ") and"
-                    + " MP.ChId in (0 ," + mBModel.productHelper.getMappingChannelId(mBModel.productHelper.chid, mBModel.getRetailerMasterBO().getSubchannelid()) + ")";
+            StringBuilder accountGroupIds=new StringBuilder();
+            String accountQuery="Select groupId from AccountGroupDetail where retailerId="+ mBModel.getRetailerMasterBO().getRetailerID();
+            Cursor accountCursor=db.selectSQL(accountQuery);
+            if(accountCursor.getCount()>0){
+                while (accountCursor.moveToNext()){
+                    accountGroupIds.append(accountCursor.getString(0));
 
+                    if(accountGroupIds.toString().length()>0)
+                        accountGroupIds.append(",");
+                }
+            }
+
+            if(accountGroupIds.toString().length()>0){
+                query1=" MP.accountGroupId in("+accountGroupIds.toString()+")";
+
+            } else {
+                query1 = " MP.AccId in (0 ," + mBModel.getRetailerMasterBO().getAccountid() + ") and"
+                        + " MP.RetailerId in (0 ," + retailerID + ") and"
+                        + " MP.ClassId in (0 ," + mBModel.getRetailerMasterBO().getClassid() + ") and"
+                        + " MP.LocId in (0 ," + mBModel.productHelper.getMappingLocationId(mBModel.productHelper.locid, mBModel.getRetailerMasterBO().getLocationId()) + ") and"
+                        + " MP.ChId in (0 ," + mBModel.productHelper.getMappingChannelId(mBModel.productHelper.chid, mBModel.getRetailerMasterBO().getSubchannelid()) + ")";
+            }
 
             if ("MENU_PLANOGRAM".equals(moduleName) || "MENU_PLANOGRAM_CS".equals(moduleName)) {
                 query = "SELECT ifnull(PM.Pid,0) ,MP.MappingId as PlanogramID, P.PLDesc, PI.ImgName,STM.listid ,MP.StoreLocId, PM.PName,PI.ImgId,PM.ParentHierarchy"

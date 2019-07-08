@@ -14,6 +14,7 @@ import com.ivy.cpg.view.asset.bo.AssetTrackingBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
+import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
@@ -428,13 +429,13 @@ public class AssetTrackingHelper {
     /**
      * Method that to download Asset Details from SQLite
      *
-     * @param moduleName module name
+     * @param mMenuCode module name
      */
-    private void downloadAssetMaster(Context mContext, String moduleName) {
+    private void downloadAssetMaster(Context mContext, String mMenuCode) {
         ArrayList<AssetTrackingBO> mAllAssetTrackingList = null;
 
         String type;
-        if (MENU_ASSET.equals(moduleName))
+        if (MENU_ASSET.equals(mMenuCode))
             type = MERCH;
         else
             type = MERCH_INIT;
@@ -446,37 +447,69 @@ public class AssetTrackingHelper {
         StringBuilder sb = new StringBuilder();
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
         );
+
         try {
 
             db.openDataBase();
 
-            mBusinessModel.productHelper.getRetailerlevel(moduleName);
+            StringBuilder accountGroupIds=new StringBuilder();
+            String accountQuery="Select groupId from AccountGroupDetail where retailerId="+ mBusinessModel.getRetailerMasterBO().getRetailerID();
+            Cursor accountCursor=db.selectSQL(accountQuery);
+            if(accountCursor.getCount()>0){
+                while (accountCursor.moveToNext()){
+                    accountGroupIds.append(accountCursor.getString(0));
+
+                    if(accountGroupIds.toString().length()>0)
+                        accountGroupIds.append(",");
+                }
+            }
+
+            String productDistributions="";
+            if (mBusinessModel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                //downloading product distribution and preparing query to get products mapped..
+                int mContentLevelId = ProductHelper.getInstance(mContext).getContentLevel(db, mMenuCode);
+                String pdQuery = ProductHelper.getInstance(mContext).downloadProductDistribution(mContentLevelId);
+                if (pdQuery.length() > 0) {
+                    productDistributions= pdQuery;
+                }
+                else {
+                    productDistributions= "0";
+                }
+            }
+
+            mBusinessModel.productHelper.getRetailerlevel(mMenuCode);
             sb.append("select Distinct P.PosmId,P.Posmdesc,SBD.SerialNO,SBD.Target,SBD.Productid,SLM.listname,SLM.listid,SBD.NfcTagId,SBD.StoreLocId,SDM.listname as locname,PM.ParentHierarchy as ParentHierarchy, ");
             sb.append("SBDM.InstallDate,SBDM.LastServiceDate from PosmMaster P  ");
             sb.append("inner join POSMCriteriaMapping SBD on P.PosmID=SBD.posmid ");
-            sb.append("left join SbdMerchandisingMaster SBDM on SBDM.Value=P.PosmId ");
+            sb.append("left join SbdMerchandisingMaster SBDM on SBDM.serialnumber=SBD.serialno ");
             sb.append("left join Standardlistmaster SLM on SLM.listid=SBD.PosmGroupLovId and SLM.ListType='POSM_GROUP_TYPE' ");
             sb.append("left join Standardlistmaster SDM on SDM.listid=SBD.StoreLocId and SDM.ListType='PL' ");
             sb.append("left join ProductMaster PM on PM.PID=SBD.Productid ");
             sb.append("where  SBD.TypeLovId=(select listid from StandardListMaster where ListCode=");
             sb.append(mBusinessModel.QT(type));
             sb.append(" and ListType='SBD_TYPE') ");
+            sb.append(productDistributions.length()>0?" AND SBD.Productid in ("+productDistributions+")":"");
 
             String allMasterSb = sb.toString();
-            sb.append(" and SBD.AccountId in(0,");
-            sb.append(mBusinessModel.getRetailerMasterBO().getAccountid() + ")");
-            sb.append(" and SBD.Retailerid in(0,");
-            sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
-            sb.append(" and SBD.Classid in (0,");
-            sb.append(mBusinessModel.getRetailerMasterBO().getClassid() + ")");
-            sb.append(" and SBD.Locid in(0,");
-            sb.append(mBusinessModel.productHelper.getMappingLocationId(mBusinessModel.productHelper.locid, mBusinessModel.getRetailerMasterBO().getLocationId()));
-            sb.append(")");
-            sb.append(" and (SBD.Channelid in(0,");
-            sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid() + ")");
-            sb.append(" OR SBD.Channelid in (0,");
-            sb.append(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext) + "))");
 
+            if(accountGroupIds.toString().length()>0){
+                sb.append(" AND SBD.accountGroupId in("+accountGroupIds.toString()+")");
+
+            } else {
+                sb.append(" and SBD.AccountId in(0,");
+                sb.append(mBusinessModel.getRetailerMasterBO().getAccountid() + ")");
+                sb.append(" and SBD.Retailerid in(0,");
+                sb.append(mBusinessModel.QT(mBusinessModel.getRetailerMasterBO().getRetailerID()) + ")");
+                sb.append(" and SBD.Classid in (0,");
+                sb.append(mBusinessModel.getRetailerMasterBO().getClassid() + ")");
+                sb.append(" and SBD.Locid in(0,");
+                sb.append(mBusinessModel.productHelper.getMappingLocationId(mBusinessModel.productHelper.locid, mBusinessModel.getRetailerMasterBO().getLocationId()));
+                sb.append(")");
+                sb.append(" and (SBD.Channelid in(0,");
+                sb.append(mBusinessModel.getRetailerMasterBO().getSubchannelid() + ")");
+                sb.append(" OR SBD.Channelid in (0,");
+                sb.append(mBusinessModel.channelMasterHelper.getChannelHierarchy(mBusinessModel.getRetailerMasterBO().getSubchannelid(), mContext) + "))");
+            }
 
             if (mBusinessModel.configurationMasterHelper.IS_GLOBAL_CATEGORY) {
                 sb.append(" and (SBD.Productid = ");
@@ -534,7 +567,7 @@ public class AssetTrackingHelper {
 
             //load serial no's into hash map for uniqueness
 
-            if (MENU_ASSET.equals(moduleName)) {
+            if (MENU_ASSET.equals(mMenuCode)) {
                 String sb1 = "select SerialNO from POSMCriteriaMapping where " +
                         "TypeLovId=(select listid from StandardListMaster where ListCode=" + mBusinessModel.QT(type) + ")";
                 c = db.selectSQL(sb1);

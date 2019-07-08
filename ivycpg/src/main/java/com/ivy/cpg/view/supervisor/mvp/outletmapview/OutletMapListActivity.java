@@ -178,6 +178,7 @@ public class OutletMapListActivity extends IvyBaseActivityNoActionBar implements
         findViewById(R.id.filter_layout).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                outletHorizontalRecycleView.setVisibility(View.GONE);
                 filterFragment();
             }
         });

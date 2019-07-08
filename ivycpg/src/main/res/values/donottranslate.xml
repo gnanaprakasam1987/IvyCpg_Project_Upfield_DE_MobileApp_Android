@@ -171,6 +171,7 @@
     <string name="condition_mandatory">Plases select Condition</string>
     <string name="nfc_code">NFC Code</string>
     <string name="serial_no_not_captured_kindly_choose_reason">Some problem in serial no capture so kindly choose reason for not captured…</string>
+    <string name="barcode_not_caputered_error">Barcode not captured</string>
     <string name="delete_alert_common">Are you sure want to delete?</string>
     <string name="total_collected">Total Collected</string>
     <string name="total_cash">Total Cash</string>
@@ -332,7 +333,7 @@
     <string name="survey">Survey</string>
     <string name="last_service_date">Last Service Date</string>
     <string name="old_serial_no">Old SNo: </string>
-    <string name="serial_no_change_request">Update Serial No</string>
+    <string name="serial_no_change_request">Change Request</string>
     <string name="asset_update_request">Asset Update Request</string>
     <string name="requested_date">Req Date</string>
     <string name="asset_approval">Asset Approval</string>
@@ -388,6 +389,8 @@
     <string name="due_today">Due today</string>
     <string name="compliance_pt">PT</string>
     <string name="assigned">Assigned</string>
+    <string name="select_parent">Select Parent</string>
+    <string name="seriallized_no_error_message">Serialized Number Should be more then two </string>
     <string name="sync_report">Sync Report</string>
     <string name="freeze_columns">Freeze Columns</string>
     <string name="freeze_columns_alert_title">Select columns want to be freeze</string>

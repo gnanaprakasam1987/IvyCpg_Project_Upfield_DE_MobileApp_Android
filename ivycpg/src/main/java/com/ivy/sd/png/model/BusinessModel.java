@@ -48,7 +48,6 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStates;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.gson.JsonArray;
 import com.ivy.apptutoriallibrary.AppTutorialPlugin;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.FirebaseOptions;
@@ -92,7 +91,6 @@ import com.ivy.cpg.view.van.vanstockapply.VanLoadStockApplyHelper;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
-import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BankMasterBO;
 import com.ivy.sd.png.bo.BranchMasterBO;
@@ -108,7 +106,7 @@ import com.ivy.sd.png.bo.OrderFullfillmentBO;
 import com.ivy.sd.png.bo.OrderHeader;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
-import com.ivy.sd.png.bo.SchemeProductBO;
+import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.sd.png.bo.StandardListBO;
 import com.ivy.sd.png.bo.SupplierMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
@@ -274,6 +272,7 @@ public class BusinessModel extends Application {
     public ModuleTimeStampHelper moduleTimeStampHelper;
     public FitScoreHelper fitscoreHelper;
     //Glide - Circle Image Transform
+    @Deprecated
     public CircleTransform circleTransform;
     /* ******* Invoice Number To Print ******* */
     public String invoiceNumber;
@@ -719,6 +718,26 @@ public class BusinessModel extends Application {
         return mApplicationComponent;
     }
 
+    private void enableDisableChatReceiver(boolean isenableReceiver){
+
+        PackageManager pm = getPackageManager();
+        ComponentName compName =
+                new ComponentName(getApplicationContext(),
+                        DefaultBroadcastReceiver.class);
+
+
+        if (isenableReceiver)
+            pm.setComponentEnabledSetting(
+                    compName,
+                    PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+                    PackageManager.DONT_KILL_APP);
+        else
+            pm.setComponentEnabledSetting(
+                    compName,
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+                    PackageManager.DONT_KILL_APP);
+
+    }
 
     /*******************************************************************************************************************************************************************************/
 
@@ -757,6 +776,11 @@ public class BusinessModel extends Application {
                 FirebaseFileStorageModule.activate();
                 FirebasePushModule.activateForFirebase();
             }
+
+            if (!SupervisorActivityHelper.getInstance().isChatConfigAvail(this))
+                enableDisableChatReceiver(false);
+            else
+                enableDisableChatReceiver(true);
 
         } catch (Exception e) {
             Commons.printException(e);
@@ -1737,8 +1761,9 @@ public class BusinessModel extends Application {
      */
     private void updateRetailerPriceGRP(RetailerMasterBO retObj, DBUtil db) {
 
+        Cursor c =null;
         try {
-            Cursor c;
+
             int distId = 0;
             c = db.selectSQL("select DistributorID From RetailerPriceGroup where DistributorID<>0 AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()));
             if (c != null
@@ -1747,7 +1772,9 @@ public class BusinessModel extends Application {
                     distId = c.getInt(0);
 
             }
-            c.close();
+            if (c != null) {
+                c.close();
+            }
 
             c = db.selectSQL("SELECT IFNULL(GroupId,0) From RetailerPriceGroup WHERE DistributorID=" + distId + " AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
             if (c != null
@@ -1755,9 +1782,15 @@ public class BusinessModel extends Application {
                 if (c.moveToNext())
                     retObj.setGroupId(c.getInt(0));
             }
-            c.close();
+            if (c != null) {
+                c.close();
+            }
         } catch (Exception e) {
             Commons.printException("Exception ", e);
+        }finally {
+            if (c != null) {
+                c.close();
+            }
         }
 
     }
@@ -2873,7 +2906,7 @@ public class BusinessModel extends Application {
         } catch (Exception ex) {
             Commons.printException(ex);
         }
-        return formattedValue;
+        return SDUtil.getWithoutExponential(formattedValue);
     }
 
 

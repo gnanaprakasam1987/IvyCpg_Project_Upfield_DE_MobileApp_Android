@@ -164,7 +164,7 @@ public class SerializedAssetMovementDialog extends DialogFragment {
         TVOutletName.setText(retailerName);
         TVAssetName.setText(assetName);
         rentalPriceEdTxt.setText(String.valueOf(rentalPrice));
-        addEffToDateBtn.setText((DateTimeUtils.convertFromServerDateToRequestedFormat(effToDateStr, ConfigurationMasterHelper.outDateFormat)));
+
         initSpinner();
 
         super.onViewCreated(view, savedInstanceState);
@@ -285,18 +285,32 @@ public class SerializedAssetMovementDialog extends DialogFragment {
             if (SpReason.getSelectedItemPosition() != 0) {
 
                 setAddAssetDetails();
-                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET, true);
+                mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET,true);
                 assetTrackingHelper
                         .saveAssetMovementDetails(getContext().getApplicationContext(), movementType, referenceId);
                 Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
                         Toast.LENGTH_SHORT).show();
                 dismiss();
+                if (assetTrackingHelper.SHOW_ASSET_EFFECTIVE_DATE
+                        && addEffToDateBtn.getText().toString().isEmpty()) {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.choose_eff_to_date),
+                            Toast.LENGTH_SHORT).show();
+                } else if (assetTrackingHelper.SHOW_ASSET_RENTAL_PRICE
+                        && SDUtil.convertToDouble(rentalPriceEdTxt.getText().toString()) <= 0) {
+                    Toast.makeText(getActivity(), getResources().getString(R.string.enter_rental_price),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    setAddAssetDetails();
+                    mBModel.saveModuleCompletion(HomeScreenTwo.MENU_ASSET,true);
+                    assetTrackingHelper
+                            .saveAssetMovementDetails(getContext().getApplicationContext(), movementType, referenceId);
+                    Toast.makeText(getActivity(), getResources().getString(R.string.saved_successfully),
+                            Toast.LENGTH_SHORT).show();
+                    dismiss();
+                }
             } else {
                 Toast.makeText(mBModel, "Select Reason and Try again", Toast.LENGTH_SHORT).show();
             }
-           /* } else {
-                Toast.makeText(mBModel, "Select OutletName and Try again", Toast.LENGTH_SHORT).show();
-            }*/
     }
 
     private void setAddAssetDetails() {

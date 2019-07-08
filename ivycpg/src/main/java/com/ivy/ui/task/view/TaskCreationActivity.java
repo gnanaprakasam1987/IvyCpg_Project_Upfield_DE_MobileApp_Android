@@ -43,6 +43,7 @@ import com.ivy.ui.task.di.TaskModule;
 import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
+import com.ivy.utils.StringUtils;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -150,6 +151,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     private HashMap<String, ArrayList<UserMasterBO>> linkUserListHashMap = new HashMap<>();
 
     private ArrayList<String> capturedImgList = new ArrayList<>();
+    private String deletedImageId = "";
 
 
     @Override
@@ -254,7 +256,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
     public void setParentUserListData(ArrayList<UserMasterBO> userList) {
         if (!userList.isEmpty()) {
             parentUserMasterArrayAdapter.clear();
-            parentUserMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_seller)));
+            parentUserMasterArrayAdapter.add(new UserMasterBO(0, getString(R.string.select_parent)));
             parentUserMasterArrayAdapter.addAll(userList);
             parentUserMasterArrayAdapter.notifyDataSetChanged();
             spinnerSelection.setAdapter(parentUserMasterArrayAdapter);
@@ -378,7 +380,21 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         showMessage(getString(R.string.something_went_wrong));
     }
 
-    TaskImgListAdapter.PhotoClickListener photoClickListener = this::prepareTaskPhotoCapture;
+    TaskImgListAdapter.PhotoClickListener photoClickListener = new TaskImgListAdapter.PhotoClickListener() {
+        @Override
+        public void onTakePhoto() {
+            prepareTaskPhotoCapture();
+        }
+
+        @Override
+        public void updateDeletedImageIds(String imageId) {
+
+            if (!deletedImageId.isEmpty())
+                deletedImageId = deletedImageId + ",";
+
+            deletedImageId += StringUtils.QT(imageId);
+        }
+    };
 
     @Override
     public String getTaskMode() {
@@ -564,7 +580,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         taskBo.setTaskCategoryID(mSelectedCategoryID);
         taskBo.setMode(mode);
 
-        taskPresenter.onSaveTask(taskAssignId, taskBo, linkUserId, retSelectionId);
+        taskPresenter.onSaveTask(taskAssignId, taskBo, linkUserId, retSelectionId,deletedImageId);
     }
 
     private int getSelectedUserId() {

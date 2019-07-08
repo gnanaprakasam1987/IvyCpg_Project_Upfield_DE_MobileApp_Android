@@ -1,12 +1,17 @@
 package com.ivy.cpg.view.promotion;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.preference.PreferenceManager;
 
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.R;
+import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.StandardListBO;
+import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;
@@ -14,6 +19,7 @@ import com.ivy.utils.FileUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Vector;
 
 import static com.ivy.lib.Utils.QT;
 
@@ -32,6 +38,10 @@ public class PromotionHelper {
     boolean SHOW_PROMO_QTY;
     boolean SHOW_PROMO_ANNOUNCER;
     boolean SHOW_PROMO_FEEDBACK;
+    boolean SHOW_PROMO_PRICE;
+    boolean SHOW_PROMO_LOCATION;
+    boolean isNonAcceptedPromotionsAvailable = false;
+    private Vector<ConfigureBO> promoFilter, promoStateFilter;
 
     private PromotionHelper(Context context) {
         businessModel = (BusinessModel) context.getApplicationContext();
@@ -53,6 +63,9 @@ public class PromotionHelper {
     public void loadDataForPromotion(Context mContext, String mMenuCode) {
         loadPromotionConfigs(mContext);
 
+        downloadPromoFilterList(mContext);
+        downloadPromoStateFilterList();
+
         if (businessModel.productHelper.getInStoreLocation().size() == 0) {
             businessModel.productHelper.downloadInStoreLocations();
         }
@@ -62,7 +75,7 @@ public class PromotionHelper {
         businessModel.productHelper.setFilterProductsByLevelIdRex(businessModel.productHelper.downloadFilterLevelProducts(
                 businessModel.productHelper.getRetailerModuleSequenceValues(), false));
 
-        downloadPromotionMaster(mContext);
+        downloadPromotionMaster(mContext,mMenuCode);
         loadPromoEntered(mContext);
     }
 
@@ -77,7 +90,8 @@ public class PromotionHelper {
             SHOW_PROMO_QTY = false;
             SHOW_PROMO_ANNOUNCER = false;
             SHOW_PROMO_FEEDBACK = false;
-
+            SHOW_PROMO_PRICE = false;
+            SHOW_PROMO_LOCATION = false;
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
             );
             db.openDataBase();
@@ -113,6 +127,13 @@ public class PromotionHelper {
                                 case "FEEDBACK":
                                     this.SHOW_PROMO_FEEDBACK = true;
                                     break;
+                                case "PRICE":
+                                    this.SHOW_PROMO_PRICE = true;
+                                    break;
+                                case "LOCATION":
+                                    this.SHOW_PROMO_LOCATION = true;
+                                    break;
+
                             }
                         }
                     }
@@ -136,21 +157,37 @@ public class PromotionHelper {
      * locationId - The hierarchy of the location level (Which level of location is set in ConfigActivityFiler)
      * channelId - The hierarchy of the channel level (Which level of channel is set in ConfigActivityFilter)
      */
-    private void downloadPromotionMaster(Context mContext) {
+    private void downloadPromotionMaster(Context mContext,String mMenuCode) {
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
         try {
             PromotionBO promotionMaster;
             db.openDataBase();
             Cursor c;
+
+
+            String productDistributions="";
+            if (businessModel.configurationMasterHelper.IS_PRODUCT_DISTRIBUTION) {
+                //downloading product distribution and preparing query to get products mapped..
+                int mContentLevelId = ProductHelper.getInstance(mContext).getContentLevel(db, mMenuCode);
+                String pdQuery = ProductHelper.getInstance(mContext).downloadProductDistribution(mContentLevelId);
+                if (pdQuery.length() > 0) {
+                    productDistributions= pdQuery ;
+                }
+                else {
+                    productDistributions= "0";
+                }
+            }
+
             String query = " where PM.AccId in (0," + businessModel.getRetailerMasterBO().getAccountid() + ")"
                     + " and (PM.ChId in(0," + businessModel.getRetailerMasterBO().getSubchannelid() + ") OR PM.Chid in(0," + businessModel.channelMasterHelper.getChannelHierarchy(businessModel.getRetailerMasterBO().getSubchannelid(), mContext) + "))"
                     + " and PM.retailerid in (0," + businessModel.getRetailerMasterBO().getRetailerID() + ")"
                     + " and PM.ClassId in (0," + businessModel.getRetailerMasterBO().getClassid() + ")"
                     + " and (PM.LocId in (0," + businessModel.getRetailerMasterBO().getLocationId() + ") OR PM.LocId in(0," + businessModel.channelMasterHelper.getLocationHierarchy(mContext) + "))"
-                    + " GROUP BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId,PPM.PromoId,PPM.Pid ORDER BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId ";
+                    +  (productDistributions.length()>0?" AND PPM.pid in ("+productDistributions+")":"")
+                    + " GROUP BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId,PPM.PromoId,PPM.Pid,PPM.GroupName ORDER BY PM.RetailerId,PM.AccId,PM.ChId,PM.LocId,PM.ClassId,PPM.GroupName ";
 
 
-            c = db.selectSQL("select DISTINCT PPM.PromoId,PPM.PId,PPM.PromoName,PM.MappingId,SLM.listname,P.PName,PMM.StartDate,PMM.EndDate,P.ParentHierarchy"
+            c = db.selectSQL("select DISTINCT PPM.PromoId,PPM.PId,PPM.PromoName,PM.MappingId,SLM.listname,P.PName,PMM.StartDate,PMM.EndDate,P.ParentHierarchy,PPM.TargetPrice,PPM.GroupName"
                     + "  from PromotionMapping PM"
                     + " inner join PromotionMaster PMM on PM.HId = PMM.HId and " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                     + " between PMM.StartDate and PMM.EndDate inner join PromotionProductMapping PPM on PPM.PromoId=PM.PromoId"
@@ -172,18 +209,66 @@ public class PromotionHelper {
                     promotionMaster.setFromDate(c.getString(6));
                     promotionMaster.setToDate(c.getString(7));
                     promotionMaster.setParentHierarchy(c.getString(8));
+                    promotionMaster.setProductPrice(c.getString(9));
+                    promotionMaster.setAccepted(true);
+                    promotionMaster.setPromotionGroupName(c.getString(10));
                     getPromotionList().add(promotionMaster);
                 }
+                c.close();
+            }
 
-                if (mPromotionList != null) {
-                    for (StandardListBO standardListBO : businessModel.productHelper.getInStoreLocation()) {
+            //Method to download NonAccepted Promotions
+            downloadNonAcceptedPromotions(mContext);
 
-                        ArrayList<PromotionBO> clonedList = new ArrayList<>(mPromotionList.size());
-                        for (PromotionBO promotionBO : mPromotionList) {
-                            clonedList.add(new PromotionBO(promotionBO));
-                        }
-                        standardListBO.setPromotionTrackingList(clonedList);
+            if (mPromotionList != null) {
+                for (StandardListBO standardListBO : businessModel.productHelper.getInStoreLocation()) {
+                    ArrayList<PromotionBO> clonedList = new ArrayList<>(mPromotionList.size());
+                    for (PromotionBO promotionBO : mPromotionList) {
+                        clonedList.add(new PromotionBO(promotionBO));
                     }
+                    standardListBO.setPromotionTrackingList(clonedList);
+                }
+            }
+            db.closeDB();
+
+        } catch (Exception e) {
+            db.closeDB();
+            Commons.printException("" + e);
+        }
+    }
+
+    private void downloadNonAcceptedPromotions(Context mContext) {
+        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+        try {
+            PromotionBO promotionMaster;
+            db.openDataBase();
+
+            //To Retrieve Non Accepted Promotions
+            Cursor c = db.selectSQL("select DISTINCT PPM.PromoId,PPM.PId,PPM.PromoName,PM.MappingId,SLM.listname,P.PName,PMM.StartDate,PMM.EndDate,P.ParentHierarchy,PPM.TargetPrice, PPM.GroupName"
+                    + " from PromotionMappingApproval PM"
+                    + " inner join PromotionMaster PMM on PM.HId = PMM.HId and " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + " between PMM.StartDate and PMM.EndDate inner join PromotionProductMapping PPM on PPM.PromoId=PM.PromoId"
+                    + " left join standardlistmaster SLM on SLM.listid=PPm.PromoTypeLovId "
+                    + " left join ProductMaster P on PPM.PId =  P.PID "
+                    + " left join ProductLevel PL on P.PLid = PL.LevelId where PM.retailerid in (0," + businessModel.getRetailerMasterBO().getRetailerID() + ")"
+                    + " GROUP BY PM.RetailerId ORDER BY PM.RetailerId");
+            if (c != null) {
+                while (c.moveToNext()) {
+                    promotionMaster = new PromotionBO();
+                    promotionMaster.setPromoId(c.getInt(0));
+                    promotionMaster.setProductId(c.getInt(1));
+                    promotionMaster.setPromoName(c.getString(2));
+                    promotionMaster.setMappingId(c.getInt(3));
+                    promotionMaster.setGroupName(c.getString(4));
+                    promotionMaster.setpName(c.getString(5));
+                    promotionMaster.setFromDate(c.getString(6));
+                    promotionMaster.setToDate(c.getString(7));
+                    promotionMaster.setParentHierarchy(c.getString(8));
+                    promotionMaster.setProductPrice(c.getString(9));
+                    promotionMaster.setAccepted(false);
+                    promotionMaster.setPromotionGroupName(c.getString(10));
+                    getPromotionList().add(promotionMaster);
+                    setNonAcceptedPromotionsAvailable(true);
                 }
                 c.close();
             }
@@ -382,7 +467,7 @@ public class PromotionHelper {
                 }
             }
 
-            sql1 = "SELECT PD.PromotionId, PD.IsExecuted,pd.ImageName,PD.reasonid,PD.brandid,pm.PromoName,pd.ExecRatingLovId,PD.HasAnnouncer,PD.fromDate,PD.toDate,P.ParentHierarchy,PD.remarks FROM PromotionDetail pd"
+            sql1 = "SELECT PD.PromotionId, PD.IsExecuted,pd.ImageName,PD.reasonid,PD.brandid,pm.PromoName,pd.ExecRatingLovId,PD.HasAnnouncer,PD.fromDate,PD.toDate,P.ParentHierarchy,PD.remarks,PM.TargetPrice FROM PromotionDetail pd"
                     + " inner join PromotionProductMapping  pm on pm.PromoId = pd.PromotionId"
                     + " left join ProductMaster P on P.PID = PD.brandid"
                     + " WHERE Uid="
@@ -411,6 +496,7 @@ public class PromotionHelper {
                     promotionMaster.setToDate(orderDetailCursor.getString(9));
                     promotionMaster.setParentHierarchy(orderDetailCursor.getString(10));
                     promotionMaster.setRemarks(orderDetailCursor.getString(11));
+                    promotionMaster.setProductPrice(orderDetailCursor.getString(12));
 
                     getPromotionList().add(promotionMaster);
 
@@ -605,4 +691,86 @@ public class PromotionHelper {
         return mPromotionList;
     }
 
+    public Vector<ConfigureBO> getPromoFilter() {
+        return promoFilter;
+    }
+
+    public boolean isNonAcceptedPromotionsAvailable() {
+        return isNonAcceptedPromotionsAvailable;
+    }
+
+    public void setNonAcceptedPromotionsAvailable(boolean nonAcceptedPromotionsAvailable) {
+        isNonAcceptedPromotionsAvailable = nonAcceptedPromotionsAvailable;
+    }
+
+    public void setPromoFilter(Vector<ConfigureBO> promoFilter) {
+        this.promoFilter = promoFilter;
+    }
+
+    public Vector<ConfigureBO> getPromoStateFilter() {
+        return promoStateFilter;
+    }
+
+    public void setPromoStateFilter(Vector<ConfigureBO> promoStateFilter) {
+        this.promoStateFilter = promoStateFilter;
+    }
+
+    public Vector<ConfigureBO> downloadPromoFilterList(Context mContext) {
+        setPromoFilter(new Vector<>());
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mContext);
+        String language = sharedPrefs.getString("languagePref",
+                ApplicationConfigs.LANGUAGE);
+
+        try {
+            DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
+            );
+            db.openDataBase();
+
+            String sql = "select DISTINCT GroupName from PromotionProductMapping";
+
+            Cursor c = db.selectSQL(sql);
+            int cnt = 0;
+            ConfigureBO con;
+            if (c != null) {
+                while (c.moveToNext()) {
+                    cnt++;
+                    con = new ConfigureBO();
+                    con.setConfigCode(c.getString(0));
+                    con.setMenuName(c.getString(0));
+                    con.setMenuNumber(cnt + "");
+                    con.setHasLink(1);
+                    con.setMandatory(0);
+                    getPromoFilter().add(con);
+                }
+                c.close();
+            }
+            db.closeDB();
+        } catch (Exception e) {
+            Commons.printException("" + e);
+        }
+        return getPromoFilter();
+    }
+
+    public Vector<ConfigureBO> downloadPromoStateFilterList() {
+        setPromoStateFilter(new Vector<>());
+
+        ConfigureBO con = new ConfigureBO();
+        con.setConfigCode("A");
+        con.setMenuName("Accepted");
+        con.setMenuNumber("1");
+        con.setHasLink(1);
+        con.setMandatory(0);
+        getPromoStateFilter().add(con);
+
+        con = new ConfigureBO();
+        con.setConfigCode("NA");
+        con.setMenuName("NonAccepted");
+        con.setMenuNumber("2");
+        con.setHasLink(1);
+        con.setMandatory(0);
+        getPromoStateFilter().add(con);
+
+        return getPromoStateFilter();
+    }
 }

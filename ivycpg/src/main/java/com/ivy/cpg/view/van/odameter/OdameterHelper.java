@@ -6,7 +6,7 @@ import android.database.Cursor;
 import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.location.LocationUtil;
-import com.ivy.sd.png.bo.VanLoadMasterBO;
+import com.ivy.cpg.view.van.vanstockapply.VanLoadMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;

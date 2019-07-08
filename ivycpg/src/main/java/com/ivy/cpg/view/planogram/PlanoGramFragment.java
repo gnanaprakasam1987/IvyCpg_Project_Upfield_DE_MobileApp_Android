@@ -1587,35 +1587,24 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     }
 
     private void showAlert() {
-        CommonDialog dialog = new CommonDialog(getActivity(), getResources().getString(R.string.doyouwantgoback),
-                "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+        new CommonDialog(getActivity(), "", getResources().getString(
+                R.string.doyouwantgoback), false, getResources().getString(R.string.ok),
+                getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
                 if ("1".equals(calledBy) || "3".equals(calledBy)) {
                     getActivity().finish();
                 } else if ("2".equals(calledBy)) {
-
-                    if (!isPreVisit)
-                        mBModel.outletTimeStampHelper
+                    mBModel.outletTimeStampHelper
                             .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
-
-                    Intent intent = new Intent(context,HomeScreenTwo.class);
-
-                    if (isPreVisit)
-                        intent.putExtra("PreVisit",true);
-
-                    startActivity(intent);
-
-                    ((Activity)context).finish();
+                    startActivityAndFinish(HomeScreenTwo.class);
                 }
             }
-        }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {
+        }, new CommonDialog.negativeOnClickListener() {
             @Override
             public void onNegativeButtonClick() {
-
             }
-        });
-        dialog.show();
-        dialog.setCancelable(false);
+        }).show();
+
     }
 }
