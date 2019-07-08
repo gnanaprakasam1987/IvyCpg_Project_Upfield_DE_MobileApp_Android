@@ -391,4 +391,7 @@
     <string name="assigned">Assigned</string>
     <string name="select_parent">Select Parent</string>
     <string name="seriallized_no_error_message">Serialized Number Should be more then two </string>
+    <string name="sync_report">Sync Report</string>
+    <string name="freeze_columns">Freeze Columns</string>
+    <string name="freeze_columns_alert_title">Select columns want to be freeze</string>
 </resources>

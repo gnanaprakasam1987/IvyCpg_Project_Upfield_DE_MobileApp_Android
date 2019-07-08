@@ -85,6 +85,7 @@ import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.util.LabelsKey;
+import com.ivy.ui.reports.syncreport.view.SyncReportActivity;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 import com.ivy.utils.NetworkUtils;
@@ -771,6 +772,8 @@ public class SynchronizationFragment extends IvyBaseFragment
         }else
             menu.findItem(R.id.menu_file_download).setVisible(false);
 
+        menu.findItem(R.id.menu_download_upload_report).setVisible(bmodel.configurationMasterHelper.SHOW_SYNC_EXPORT_TXT);
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -806,6 +809,9 @@ public class SynchronizationFragment extends IvyBaseFragment
         }
         else if (i == R.id.menu_file_download){
             startActivity(new Intent(getActivity(), LargeFileDownloadActivity.class));
+        } else if (i == R.id.menu_download_upload_report) {
+            startActivity(new Intent(getActivity(), SyncReportActivity.class));
+            getActivity().overridePendingTransition(R.anim.trans_left_in, R.anim.trans_left_out);
         }
         return true;
     }

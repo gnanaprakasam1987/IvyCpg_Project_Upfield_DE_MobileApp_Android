@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/table_list_header"
+    style="@style/TextViewListTitle"
+    android:layout_width="wrap_content"
+    android:background="?attr/customListTitleBackgroundColor"
+    android:drawablePadding="@dimen/dimens_6dp"
+    android:drawableEnd="@drawable/icon_sort"
+    android:layout_height="wrap_content">
+
+</TextView>
