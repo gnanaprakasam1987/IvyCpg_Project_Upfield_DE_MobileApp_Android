@@ -1451,7 +1451,7 @@ SynchronizationHelper {
                     if (isSFDC) {
                         String downloadUrl = instance_url + "/" + url;
                         downloadMasterSFDC(downloadUrl, fromLogin, mDownloadUrlList.size(),
-                                VOLLEY_DOWNLOAD_INSERT);
+                                VOLLEY_DOWNLOAD_INSERT, url);
                     } else {
                         String downloadUrl = DataMembers.SERVER_URL + url;
                         callVolley(downloadUrl, fromLogin, mDownloadUrlList.size(),
@@ -1569,7 +1569,7 @@ SynchronizationHelper {
     }
 
     private void downloadMasterSFDC(final String url, final FROM_SCREEN isFromWhere,
-                                    final int totalListCount, final int which) {
+                                    final int totalListCount, final int which, String api) {
 
         String start_time = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
         mJsonObjectResponseByTableName = new HashMap<>();
@@ -1598,7 +1598,7 @@ SynchronizationHelper {
             public void onErrorResponse(VolleyError error) {
                 Commons.print("Volley error " + error);
                 Commons.print("AuthFailureError 7");
-                insertSyncApiDetails(url,
+                insertSyncApiDetails(api,
                         start_time
                         , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), error.toString(), "");
             }
@@ -1629,7 +1629,7 @@ SynchronizationHelper {
                     bmodel.isTokenUpdated = false;
                     new getRefreshedAuthTokenSFDC(isFromWhere, null).execute();*/
                 }
-                insertSyncApiDetails(url,
+                insertSyncApiDetails(api,
                         start_time
                         , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), volleyError.toString(), "");
                 return super.parseNetworkError(volleyError);
@@ -1691,7 +1691,7 @@ SynchronizationHelper {
                                         Commons.print("Table name& value " + tableName + ", " + value);
                                         mJsonObjectResponseByTableName.put(tableName, value);
                                         tableList.add(tableName);
-                                        insertSyncApiDetails(url,
+                                        insertSyncApiDetails(api,
                                                 start_time
                                                 , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "", tableName);
                                         break;
@@ -1712,7 +1712,7 @@ SynchronizationHelper {
                                                     mJsonObjectResponseByTableName.put(tableName, value);
                                                     tableList.add(tableName);
                                                     value = null;
-                                                    insertSyncApiDetails(url,
+                                                    insertSyncApiDetails(api,
                                                             start_time
                                                             , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "", tableName);
                                                 }
@@ -1739,7 +1739,7 @@ SynchronizationHelper {
                                 tableList.add(tableName);
                                 i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
                                 context.startService(i);
-                                insertSyncApiDetails(url,
+                                insertSyncApiDetails(api,
                                         start_time
                                         , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "", tableName);
                                 break;
@@ -1767,7 +1767,7 @@ SynchronizationHelper {
                                         tableList.add(tableName);
                                         i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
                                         context.startService(i);
-                                        insertSyncApiDetails(url,
+                                        insertSyncApiDetails(api,
                                                 start_time
                                                 , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "", tableName);
                                         break;
@@ -1859,7 +1859,7 @@ SynchronizationHelper {
                         deleteAllRequestQueue();
                     }
                 }
-                insertSyncApiDetails(url,
+                insertSyncApiDetails(api,
                         start_time
                         , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), error.toString(), "");
                 if ((totalListCount == mDownloadUrlCount) && which == VOLLEY_DOWNLOAD_INSERT) {
@@ -2010,6 +2010,7 @@ SynchronizationHelper {
                             final int totalListCount, final int which, JSONObject headerInfo) {
         JsonObjectRequest jsonObjectRequest;
         String start_time = DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW);
+        String apiURL = url.substring(url.indexOf("/api/") + 5);
         try {
 
             headerInfo.put(MOBILE_DATE_TIME, Utils.getDate("yyyy/MM/dd HH:mm:ss"));
@@ -2036,7 +2037,7 @@ SynchronizationHelper {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                insertSyncApiDetails(url,
+                insertSyncApiDetails(apiURL,
                         start_time
                         , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), error.toString(), "");
                 Commons.printException("Volley Error", error);
@@ -2063,7 +2064,7 @@ SynchronizationHelper {
 
             @Override
             protected VolleyError parseNetworkError(VolleyError volleyError) {
-                insertSyncApiDetails(url,
+                insertSyncApiDetails(apiURL,
                         start_time
                         , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), volleyError.toString(), "");
                 return super.parseNetworkError(volleyError);
@@ -2118,7 +2119,7 @@ SynchronizationHelper {
 
                                         mJsonObjectResponseByTableName.put(tableName, value);
                                         tableList.add(tableName);
-                                        insertSyncApiDetails(url,
+                                        insertSyncApiDetails(apiURL,
                                                 start_time
                                                 , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "", tableName);
                                         break;
@@ -2139,7 +2140,7 @@ SynchronizationHelper {
                                                     mJsonObjectResponseByTableName.put(tableName, value);
                                                     tableList.add(tableName);
                                                     value = null;
-                                                    insertSyncApiDetails(url,
+                                                    insertSyncApiDetails(apiURL,
                                                             start_time
                                                             , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "", tableName);
                                                 }
@@ -2167,7 +2168,7 @@ SynchronizationHelper {
                                     tableList.add(tableName);
                                     i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
                                     context.startService(i);
-                                    insertSyncApiDetails(url,
+                                    insertSyncApiDetails(apiURL,
                                             start_time
                                             , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "", tableName);
                                     break label;
@@ -2196,7 +2197,7 @@ SynchronizationHelper {
                                             tableList.add(tableName);
                                             i.putStringArrayListExtra(JSON_OBJECT_TABLE_LIST, tableList);
                                             context.startService(i);
-                                            insertSyncApiDetails(url,
+                                            insertSyncApiDetails(apiURL,
                                                     start_time
                                                     , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), "", tableName);
                                             break label;
@@ -2267,7 +2268,7 @@ SynchronizationHelper {
                         context.startService(i);
                     }
                 }
-                insertSyncApiDetails(url,
+                insertSyncApiDetails(apiURL,
                         start_time
                         , DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW), error.toString(), "");
                 if ((totalListCount == mDownloadUrlCount) && which == VOLLEY_DOWNLOAD_INSERT) {
