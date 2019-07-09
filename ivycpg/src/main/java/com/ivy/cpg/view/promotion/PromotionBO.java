@@ -1,5 +1,7 @@
 package com.ivy.cpg.view.promotion;
 
+import java.util.ArrayList;
+
 public class PromotionBO {
 
     private int promoId;
@@ -23,6 +25,7 @@ public class PromotionBO {
     private String productPrice;
     private boolean isAccepted;
     private String promotionGroupName;
+    private ArrayList<PromotionAttachmentBO> promotionAttchmentList;
 
     PromotionBO() {
 
@@ -49,6 +52,7 @@ public class PromotionBO {
         this.productPrice = promotionBO.getProductPrice();
         this.isAccepted = promotionBO.isAccepted();
         this.promotionGroupName = promotionBO.getPromotionGroupName();
+        this.promotionAttchmentList = promotionBO.getPromotionAttchmentList();
     }
 
     public String getImagePath() {
@@ -245,5 +249,13 @@ public class PromotionBO {
 
     public void setPromotionGroupName(String promotionGroupName) {
         this.promotionGroupName = promotionGroupName;
+    }
+
+    public ArrayList<PromotionAttachmentBO> getPromotionAttchmentList() {
+        return promotionAttchmentList;
+    }
+
+    public void setPromotionAttchmentList(ArrayList<PromotionAttachmentBO> promotionAttchmentList) {
+        this.promotionAttchmentList = promotionAttchmentList;
     }
 }

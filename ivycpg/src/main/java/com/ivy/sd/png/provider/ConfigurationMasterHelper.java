@@ -1606,7 +1606,7 @@ public class ConfigurationMasterHelper {
     private static final String CODE_DISABLE_CALL_ANALAYSIS_TIMER = "FUN82";
     public boolean IS_DISABLE_CALL_ANALYSIS_TIMER = true;
 
-    private static final String CODE_SHOW_SORT_STKCHK = "FUN85";
+    private static final String CODE_SHOW_SORT_STKCHK = "CSSTK09";
     public boolean IS_SHOW_SORT_STKCHK = true;
 
     private static final String CODE_ENABLE_EDIT_OPTION_FOR_OTHER_USER = "NOTE01";

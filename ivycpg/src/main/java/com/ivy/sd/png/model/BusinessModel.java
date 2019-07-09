@@ -3,6 +3,7 @@ package com.ivy.sd.png.model;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Application;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -83,6 +84,7 @@ import com.ivy.cpg.view.salesreturn.SalesReturnSummery;
 import com.ivy.cpg.view.stockcheck.StockCheckActivity;
 import com.ivy.cpg.view.stockcheck.StockCheckHelper;
 import com.ivy.cpg.view.supervisor.chat.BaseInterfaceAdapter;
+import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.sync.AWSConnectionHelper;
 import com.ivy.cpg.view.sync.AzureConnectionHelper;
 import com.ivy.cpg.view.sync.largefiledownload.DigitalContentModel;
@@ -196,6 +198,7 @@ import co.chatsdk.core.session.ChatSDK;
 import co.chatsdk.core.session.Configuration;
 import co.chatsdk.firebase.FirebaseNetworkAdapter;
 import co.chatsdk.firebase.file_storage.FirebaseFileStorageModule;
+import co.chatsdk.firebase.push.DefaultBroadcastReceiver;
 import co.chatsdk.firebase.push.FirebasePushModule;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_API_KEY;
@@ -3831,6 +3834,17 @@ public class BusinessModel extends Application {
                     getDigitalContentURLS().put(
                             DataMembers.IMG_DOWN_URL + "" + c.getString(0),
                             DataMembers.SERIALIZED_ASSET_DIG_CONTENT);
+
+                }
+                c.close();
+            }
+
+            c = db.selectSQL("SELECT DISTINCT FilePath FROM PromotionAttachment");
+            if (c != null) {
+                while ((c.moveToNext())) {
+                    getDigitalContentURLS().put(
+                            DataMembers.IMG_DOWN_URL + "" + c.getString(0),
+                            DataMembers.PROMOTION);
 
                 }
                 c.close();

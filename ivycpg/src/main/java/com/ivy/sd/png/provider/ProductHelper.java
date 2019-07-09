@@ -370,16 +370,16 @@ public class ProductHelper {
                     if(stockQty != null){
                         String[] splitQty = stockQty.split(",");
                         if (splitQty.length >= 4) {
-                            p.setLastVisitColor(splitQty[0].equals("") ? android.R.color.darker_gray :
+                            p.setLastVisitColor(splitQty[0].contains("-") ? android.R.color.darker_gray :
                                     (Pattern.compile("[1-9]").matcher(splitQty[0]).find() ? android.R.color.holo_green_dark :
                                             android.R.color.holo_red_dark));
-                            p.setLastVisit1Color(splitQty[1].equals("") ? android.R.color.darker_gray :
+                            p.setLastVisit1Color(splitQty[1].contains("-") ? android.R.color.darker_gray :
                                     (Pattern.compile("[1-9]").matcher(splitQty[1]).find() ? android.R.color.holo_green_dark :
                                     android.R.color.holo_red_dark));
-                            p.setLastVisit2Color(splitQty[2].equals("") ? android.R.color.darker_gray :
+                            p.setLastVisit2Color(splitQty[2].contains("-") ? android.R.color.darker_gray :
                                     (Pattern.compile("[1-9]").matcher(splitQty[2]).find() ? android.R.color.holo_green_dark :
                                     android.R.color.holo_red_dark));
-                            p.setLastVisit3Color(splitQty[3].equals("") ? android.R.color.darker_gray :
+                            p.setLastVisit3Color(splitQty[3].contains("-") ? android.R.color.darker_gray :
                                     (Pattern.compile("[1-9]").matcher(splitQty[3]).find() ? android.R.color.holo_green_dark :
                                     android.R.color.holo_red_dark));
 
