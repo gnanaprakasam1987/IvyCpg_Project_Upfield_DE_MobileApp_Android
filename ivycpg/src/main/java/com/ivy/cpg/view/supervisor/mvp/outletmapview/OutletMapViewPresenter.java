@@ -46,6 +46,7 @@ import java.util.TimeZone;
 import javax.annotation.Nullable;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.DETAIL_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_APPLICATION_ID;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_PATH;
 
@@ -53,7 +54,6 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
 
     private OutletMapViewContractor.OutletMapView outletMapView;
     private Context context;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ListenerRegistration registration;
 
     private LinkedHashMap<Integer,ArrayList<RetailerBo>> retailerVisitDetailsByRId = new LinkedHashMap<>();
@@ -78,15 +78,19 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
     }
 
     @Override
-    public void downloadOutletListAws() {
+    public void downloadOutletListAws(String date) {
+        SupervisorActivityHelper.getInstance().downloadOutletListAws(context,convertPlaneDateToGlobal(date));
         retailerMasterHashmap.putAll(SupervisorActivityHelper.getInstance().getRetailerMasterHashmap());
     }
 
     @Override
     public void setOutletActivityDetail(int userId, String date) {
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
 
-        if (basePath.equals(""))
+        if (appId.equals("") || basePath.equals(""))
             return;
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         Query queryRef = db
                 .collection(basePath)
@@ -299,18 +303,6 @@ public class OutletMapViewPresenter  implements OutletMapViewContractor.OutletMa
 
         if (isFocus)
             outletMapView.focusMarker(builder);
-    }
-
-    @Override
-    public String convertMillisToTime(Long time) {
-
-        if (time != null && time != 0) {
-            Date date = new Date(time);
-            DateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-            return format.format(date);
-        } else
-            return "";
     }
 
     @Override

@@ -1,5 +1,7 @@
 package com.ivy.sd.png.bo;
 
+import android.support.annotation.NonNull;
+
 import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 
@@ -7,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class ProductMasterBO {
+public class ProductMasterBO implements Comparable {
 
     // Download from product master
     private String ProductID;
@@ -241,6 +243,7 @@ public class ProductMasterBO {
     private int isSMP;
     private int isNMustSell;
     private int mDeadProduct;
+    private int mTradePromotion;
 
     /**
      * Total scheme discount amount applied on line value.
@@ -632,6 +635,7 @@ public class ProductMasterBO {
         this.defaultUomId = productBO.getDefaultUomId();
         this.selectedUomId = productBO.getSelectedUomId();
         this.mDeadProduct = productBO.getmDeadProduct();
+        this.isDistributed = productBO.getIsDistributed();
     }
 
     // ******* Location ********
@@ -2044,5 +2048,64 @@ public class ProductMasterBO {
 
     public void setTempSrp(float tempSrp) {
         this.tempSrp = tempSrp;
+    }
+
+    int lastVisitColor,lastVisit1Color,lastVisit2Color,lastVisit3Color;
+
+    public int getLastVisitColor() {
+        return lastVisitColor;
+    }
+
+    public void setLastVisitColor(int lastVisitColor) {
+        this.lastVisitColor = lastVisitColor;
+    }
+
+    public int getLastVisit1Color() {
+        return lastVisit1Color;
+    }
+
+    public void setLastVisit1Color(int lastVisit1Color) {
+        this.lastVisit1Color = lastVisit1Color;
+    }
+
+    public int getLastVisit2Color() {
+        return lastVisit2Color;
+    }
+
+    public void setLastVisit2Color(int lastVisit2Color) {
+        this.lastVisit2Color = lastVisit2Color;
+    }
+
+    public int getLastVisit3Color() {
+        return lastVisit3Color;
+    }
+
+    public void setLastVisit3Color(int lastVisit3Color) {
+        this.lastVisit3Color = lastVisit3Color;
+    }
+
+    private int available;
+
+    public int getAvailable() {
+        return available;
+    }
+
+    public void setAvailable(int available) {
+        this.available = available;
+    }
+
+    @Override
+    public int compareTo(@NonNull Object o) {
+        int available=((ProductMasterBO)o).getAvailable();
+        /* For Ascending order*/
+        return this.available-available;
+    }
+
+    public int getmTradePromotion() {
+        return mTradePromotion;
+    }
+
+    public void setmTradePromotion(int mTradePromotion) {
+        this.mTradePromotion = mTradePromotion;
     }
 }

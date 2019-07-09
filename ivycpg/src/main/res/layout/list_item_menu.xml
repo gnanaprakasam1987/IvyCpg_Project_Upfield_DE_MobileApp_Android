@@ -1,11 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/list_item_space"
     android:background="?android:attr/selectableItemBackground"
     android:gravity="center_vertical"
     android:paddingStart="@dimen/space_betwn_icon_and_text"
-    android:paddingLeft="@dimen/space_betwn_icon_and_text">
+    android:paddingEnd="@dimen/space_betwn_icon_and_text">
+
+
+    <TextView
+        android:id="@+id/list_item_badge_view"
+        android:layout_width="@dimen/_8sdp"
+        android:layout_height="@dimen/_8sdp"
+        android:layout_alignTop="@+id/list_item_icon_ib"
+        android:layout_alignEnd="@+id/list_item_icon_ib"
+        android:layout_gravity="top"
+        android:adjustViewBounds="true"
+        android:background="@drawable/rounded_corner_red"
+        android:gravity="center" />
 
     <ImageView
         android:id="@+id/list_item_icon_ib"
@@ -19,9 +31,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/space_betwn_icon_and_text"
         android:layout_marginEnd="@dimen/dimen_2dp"
+        android:layout_toEndOf="@+id/list_item_icon_ib"
         android:gravity="center_vertical"
-        android:textStyle="bold"
-        android:layout_marginLeft="@dimen/space_betwn_icon_and_text"
-        android:layout_marginRight="@dimen/dimen_2dp" />
-
-</LinearLayout>
+        android:textStyle="bold" />
+</RelativeLayout>

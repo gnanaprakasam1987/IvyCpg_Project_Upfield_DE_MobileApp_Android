@@ -5069,7 +5069,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
                     Intent intent = new Intent(getActivity(),
                             SurveyActivityNew.class);
-                    intent.putExtra("menucode", MENU_NEW_RETAILER);
+                    intent.putExtra("menuCode", MENU_NEW_RETAILER);
                     intent.putExtra("screenMode", screenMode);
                     startActivity(intent);
                 }

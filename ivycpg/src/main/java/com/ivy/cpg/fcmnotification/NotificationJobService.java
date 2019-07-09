@@ -84,6 +84,10 @@ public class NotificationJobService extends JobService {
                 bmodel.saveNotification(jsonMsg, DatabaseUtils.sqlEscapeString(jsonObject.getString("icon")), "MESSAGE_NOTIFY");
             } else if (jsonType.equals("NEWTSK")) {
                 bmodel.parseJSONAndInsert(jsonObject.getJSONObject("Data"));
+            }else{
+                notifyId = 7;
+                jsonMsg = jsonObject.getString("Message");
+                sendNotification(jsonMsg);
             }
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -91,7 +95,7 @@ public class NotificationJobService extends JobService {
     }
 
     private void sendNotification(String message) {
-        Intent intent = new Intent(this, LoginScreen.class);
+        Intent intent = new Intent();
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
                 PendingIntent.FLAG_ONE_SHOT);

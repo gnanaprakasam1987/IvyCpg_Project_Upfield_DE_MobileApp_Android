@@ -21,9 +21,11 @@ import com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPag
 import com.ivy.cpg.view.supervisor.customviews.scrollingpagerindicator.ScrollingPagerIndicator;
 import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.lib.DialogFragment;
+import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FontUtils;
 
 import java.io.File;
@@ -251,7 +253,7 @@ public class OutletPagerDialogFragment extends DialogFragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
             holder.tvStoreName.setText(visitedRetailers.get(position).getRetailerName());
-            holder.tvOrderValue.setText(String.valueOf(visitedRetailers.get(position).getTotalOrderValue()));
+            holder.tvOrderValue.setText(Utils.formatAsTwoDecimal(visitedRetailers.get(position).getTotalOrderValue()));
             holder.tvStoreAddress.setText(visitedRetailers.get(position).getAddress());
 
             ArrayList<RetailerBo> retailerVisitedDetail = outletMapViewPresenter.getRetailerVisitDetailsByRId(visitedRetailers.get(position).getRetailerId());
@@ -339,9 +341,9 @@ public class OutletPagerDialogFragment extends DialogFragment {
         @Override
         public void onBindViewHolder(MyViewHolder holder, final int position) {
 
-            holder.tvInTime.setText(outletMapViewPresenter.convertMillisToTime(visitedRetailers.get(position).getInTime()));
-            holder.tvOutTime.setText(outletMapViewPresenter.convertMillisToTime(visitedRetailers.get(position).getOutTime()));
-            holder.tvOrderValue.setText(String.valueOf(visitedRetailers.get(position).getOrderValue()));
+            holder.tvInTime.setText(DateTimeUtils.getTimeFromMillis(visitedRetailers.get(position).getInTime()));
+            holder.tvOutTime.setText(DateTimeUtils.getTimeFromMillis(visitedRetailers.get(position).getOutTime()));
+            holder.tvOrderValue.setText(Utils.formatAsTwoDecimal(visitedRetailers.get(position).getOrderValue()));
             holder.tvDuration.setText(
                     outletMapViewPresenter.calculateDuration(visitedRetailers.get(position).getInTime(),
                             visitedRetailers.get(position).getOutTime()));

@@ -629,6 +629,9 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
+            if (mDrawerLayout.isDrawerOpen(GravityCompat.END))
+                mDrawerLayout.closeDrawers();
+            else
             onBackButonClick();
             return true;
         } else if (i == R.id.menu_next) {
@@ -1031,9 +1034,15 @@ public class PlanoGramFragment extends IvyBaseFragment implements
             holder.rdPartial.setTypeface(mBModel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
             holder.productName.setText(holder.planoObj.getProductName());
 
-            if ("0".equals(holder.planoObj.getAdherence())||"-1".equals(holder.planoObj.getAdherence())) {
+            if ("0".equals(holder.planoObj.getAdherence())) {
                 holder.layout_reason.setVisibility(View.VISIBLE);
-            } else {
+                holder.adherence_reason.setVisibility(View.VISIBLE);
+                holder.spinner_percentage.setVisibility(View.GONE);
+            } else if("-1".equals(holder.planoObj.getAdherence())) {
+                holder.layout_reason.setVisibility(View.VISIBLE);
+                holder.adherence_reason.setVisibility(View.GONE);
+                holder.spinner_percentage.setVisibility(View.VISIBLE);
+            }else {
                 holder.layout_reason.setVisibility(View.GONE);
             }
             holder.setImageFromServer();
@@ -1578,35 +1587,24 @@ public class PlanoGramFragment extends IvyBaseFragment implements
     }
 
     private void showAlert() {
-        CommonDialog dialog = new CommonDialog(getActivity(), getResources().getString(R.string.doyouwantgoback),
-                "", getResources().getString(R.string.ok), new CommonDialog.PositiveClickListener() {
+        new CommonDialog(getActivity(), "", getResources().getString(
+                R.string.doyouwantgoback), false, getResources().getString(R.string.ok),
+                getResources().getString(R.string.cancel), new CommonDialog.PositiveClickListener() {
             @Override
             public void onPositiveButtonClick() {
                 if ("1".equals(calledBy) || "3".equals(calledBy)) {
                     getActivity().finish();
                 } else if ("2".equals(calledBy)) {
-
-                    if (!isPreVisit)
-                        mBModel.outletTimeStampHelper
+                    mBModel.outletTimeStampHelper
                             .updateTimeStampModuleWise(DateTimeUtils.now(DateTimeUtils.TIME));
-
-                    Intent intent = new Intent(context,HomeScreenTwo.class);
-
-                    if (isPreVisit)
-                        intent.putExtra("PreVisit",true);
-
-                    startActivity(intent);
-
-                    ((Activity)context).finish();
+                    startActivityAndFinish(HomeScreenTwo.class);
                 }
             }
-        }, getResources().getString(R.string.cancel), new CommonDialog.negativeOnClickListener() {
+        }, new CommonDialog.negativeOnClickListener() {
             @Override
             public void onNegativeButtonClick() {
-
             }
-        });
-        dialog.show();
-        dialog.setCancelable(false);
+        }).show();
+
     }
 }

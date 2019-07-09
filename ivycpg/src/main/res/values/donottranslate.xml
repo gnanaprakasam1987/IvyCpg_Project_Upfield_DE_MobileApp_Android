@@ -171,6 +171,7 @@
     <string name="condition_mandatory">Plases select Condition</string>
     <string name="nfc_code">NFC Code</string>
     <string name="serial_no_not_captured_kindly_choose_reason">Some problem in serial no capture so kindly choose reason for not captured…</string>
+    <string name="barcode_not_caputered_error">Barcode not captured</string>
     <string name="delete_alert_common">Are you sure want to delete?</string>
     <string name="total_collected">Total Collected</string>
     <string name="total_cash">Total Cash</string>
@@ -332,7 +333,7 @@
     <string name="survey">Survey</string>
     <string name="last_service_date">Last Service Date</string>
     <string name="old_serial_no">Old SNo: </string>
-    <string name="serial_no_change_request">Update Serial No</string>
+    <string name="serial_no_change_request">Change Request</string>
     <string name="asset_update_request">Asset Update Request</string>
     <string name="requested_date">Req Date</string>
     <string name="asset_approval">Asset Approval</string>
@@ -361,6 +362,26 @@
     <string name="kpi_label">KPI</string>
     <string name="ach_label">Ach.</string>
     <string name="do_u_want_close">Do you want to Close?</string>
-    <string name="downloading_app_tutorial">Downloading App Tutorial</string>
-    <string name="error_in_downloading_tutorial">Error in Downloading Tutorial</string>
+    <string name="due_in_next_days">Due in next %1$d days</string>
+    <string name="next_visit_date">Next Visit Date: </string>
+    <string name="next_visit_date_count">%1$d days to go</string>
+    <string name="pending_task">Pending Task</string>
+    <string name="parent">Parent</string>
+    <string name="child">Child</string>
+    <string name="link_user">Link</string>
+    <string name="peer_user">Peer</string>
+    <string name="retailer_wise">Retailer Wise</string>
+    <string name="over_due">Overdue</string>
+    <string name="select_peer">Select Peer</string>
+    <string name="select_child">Select child</string>
+    <string name="select_link">Select Link</string>
+    <string name="would_you_like_add_reason_to_close_task">Would you like to close this task?</string>
+    <string name="task_reason_updated_successfully">Reason updated successfully…</string>
+    <string name="select_retailer">Select Retails</string>
+    <string name="visit_date">Visit Date Selection</string>
+    <string name="mark_as_executed">Mark as execute</string>
+    <string name="mark_as_un_executed">Mark as un executed</string>
+    <string name="due_today">Due today</string>
+    <string name="compliance_pt">PT</string>
+    <string name="seriallized_no_error_message">Serialized Number Should be more then two </string>
 </resources>

@@ -44,8 +44,6 @@ public interface SellerPerformanceDetailContractor {
 
         void setSellerActivityDetailListener(int userId,String date);
 
-        String convertMillisToTime(Long time);
-
         String calculateDuration(long startTime,long endTime);
 
         void removeFirestoreListener();

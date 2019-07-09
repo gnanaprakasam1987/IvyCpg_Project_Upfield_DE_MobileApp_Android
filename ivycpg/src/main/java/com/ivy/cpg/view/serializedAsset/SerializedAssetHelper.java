@@ -8,10 +8,12 @@ import com.ivy.cpg.view.asset.bo.AssetAddDetailBO;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.ReasonMaster;
+import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
@@ -25,6 +27,8 @@ import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Single;
+import io.reactivex.SingleSource;
+import io.reactivex.functions.Function;
 
 public class SerializedAssetHelper {
 
@@ -96,8 +100,6 @@ public class SerializedAssetHelper {
     //
 
     private static final String MENU_SERIALIZED_ASSET = "MENU_SERIALIZED_ASSET";
-
-    private StringBuilder assetIds;
 
     private String outletLastVisitID;
 
@@ -457,13 +459,6 @@ public class SerializedAssetHelper {
                     assetTrackingBO.setSihQty(c.getInt(c.getColumnIndex("AssetSIH")));
 
                     mAssetTrackingList.add(assetTrackingBO);
-
-                    assetIds = new StringBuilder();
-                    if (assetIds.length() > 0)
-                        assetIds.append(",");
-
-                    assetIds.append(assetTrackingBO.getAssetID());
-
                 }
 
             }
@@ -1008,7 +1003,7 @@ public class SerializedAssetHelper {
                     + "0" + ","
                     + "'WH_RTR'" + ","
                     + 0 + ","
-                    + assets.getRentalPrice() + ","
+                    + SDUtil.getWithoutExponential(assets.getRentalPrice()) + ","
                     + StringUtils.QT(DateTimeUtils.convertToServerDateFormat(assets.getEffectiveToDate(), ConfigurationMasterHelper.outDateFormat)) + ","
                     + StringUtils.QT(outletLastVisitID);
 
@@ -1233,7 +1228,7 @@ public class SerializedAssetHelper {
             String columns = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId";
 
             String values = id + ","
-                    + StringUtils.QT(posmId) + "," + StringUtils.QT(mSno) + "," + StringUtils.QT(NFCId) + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                    + StringUtils.QT(posmId) + "," + StringUtils.QT(mSno) + "," + StringUtils.QT(NFCId == null ? "" : NFCId) + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                     + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + StringUtils.QT("R") + ","
                     + StringUtils.QT(reasonId) + "," + StringUtils.QT("") + "," + mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID() + "," + 0 + "," + StringUtils.QT("RTR_WH") + "," + StringUtils.QT(refId);
 
@@ -1308,7 +1303,8 @@ public class SerializedAssetHelper {
 
 
             String values = id + "," + StringUtils.QT(assets.getPOSM()) + "," + StringUtils.QT(assets.getSNO()) + ","
-                    + StringUtils.QT(assets.getNFCTagId()) + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                    + StringUtils.QT( assets.getNFCTagId() == null? "" : assets.getNFCTagId())
+                    + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                     + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + StringUtils.QT("T") + "," +
                     StringUtils.QT(assets.getReasonId()) + ","
                     + StringUtils.QT(assets.getRemarks()) + ","
@@ -1642,33 +1638,65 @@ public class SerializedAssetHelper {
     }
 
 
-    public void fetchSerialNo(Context mContext) {
-        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
-        try {
-            db.openDataBase();
+    public Single<String> fetchSerialNo(Context mContext) {
+        StringBuilder assetIds = new StringBuilder();
+        return Single.fromCallable(new Callable<String>() {
+            @Override
+            public String call() throws Exception {
+                StringBuilder serialNo = new StringBuilder();
+                for (SerializedAssetBO sNoBo : mAssetTrackingList) {
+                    if (assetIds.length() > 0)
+                        assetIds.append(",");
 
-            String query = "Select NewSerialNumber,AssetId,rentPrice,toDate From SerializedAssetUpdate Where AssetId in (" + assetIds + ")";
+                    if (serialNo.length() > 0)
+                        serialNo.append(",");
 
-            Cursor c = db.selectSQL(query);
-            if (c.getCount() > 0) {
-                while (c.moveToNext()) {
-                    for (SerializedAssetBO sNoBo : mAssetTrackingList) {
-                        if (sNoBo.getAssetID() == c.getInt(1)) {
-                            sNoBo.setNewSerialNo(c.getString(0));
-                            sNoBo.setRentalPrice(c.getDouble(2));
-                            sNoBo.setEffectiveToDate(c.getString(3));
-                        }
-
-                    }
+                    assetIds.append(sNoBo.getAssetID());
+                    serialNo.append(sNoBo.getSerialNo());
                 }
-                c.close();
+                return serialNo.toString();
             }
-            db.closeDB();
-        } catch (Exception e) {
-            Commons.printException("" + e);
-            db.closeDB();
-        }
+        }).flatMap(new Function<String, SingleSource<? extends String>>() {
+            @Override
+            public SingleSource<? extends String> apply(String serialNo) throws Exception {
+                return Single.fromCallable(new Callable<String>() {
+                    @Override
+                    public String call() throws Exception {
+                        DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
+                        try {
+                            db.openDataBase();
+
+                            String query = "Select NewSerialNumber,AssetId,rentPrice,toDate From SerializedAssetUpdate " +
+                                    " Where AssetId in (" + assetIds + ")" +
+                                    " And serialNumber in(" + StringUtils.QT(serialNo) + ")";
+
+                            Cursor c = db.selectSQL(query);
+                            if (c.getCount() > 0) {
+                                while (c.moveToNext()) {
+                                    for (SerializedAssetBO sNoBo : mAssetTrackingList) {
+                                        if (sNoBo.getAssetID() == c.getInt(1)) {
+                                            sNoBo.setNewSerialNo(c.getString(0));
+                                            sNoBo.setRentalPrice(c.getDouble(2));
+                                            sNoBo.setEffectiveToDate(c.getString(3));
+                                        }
+
+                                    }
+                                }
+                                c.close();
+                            }
+                            db.closeDB();
+                        } catch (Exception e) {
+                            Commons.printException("" + e);
+                            db.closeDB();
+                        }
+                        return "";
+                    }
+                });
+            }
+        });
+
     }
+
 
     public Single<Boolean> updateSerialNo(final Context mContext, ArrayList<SerializedAssetBO> serialNoAssetList) {
 

@@ -30,6 +30,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
+import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
 import com.ivy.cpg.view.supervisor.mvp.models.RetailerBo;
 import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.lib.existing.DBUtil;
@@ -37,22 +38,18 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.model.MyHttpConnectionNew;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
+import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.NetworkUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,14 +63,15 @@ import java.util.Vector;
 import javax.annotation.Nullable;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.DETAIL_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_APPLICATION_ID;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.REALTIME_LOCATION_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_PATH;
 import static com.ivy.sd.png.provider.SynchronizationHelper.JSON_DATA_KEY;
+import static com.ivy.utils.AppUtils.getApplicationVersionNumber;
 
 public class SellerDetailMapPresenter implements SellerDetailMapContractor.SellerDetailMapPresenter {
 
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ListenerRegistration registration;
     private boolean isRealTimeLocationOn = false;
     private Context context;
@@ -103,7 +101,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     public void setView(SellerDetailMapContractor.SellerDetailMapView sellerMapView, Context context) {
         this.sellerMapView = sellerMapView;
         this.context = context;
-        basePath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH,"");
+        basePath = AppUtils.getSharedPreferences(context).getString(FIREBASE_ROOT_PATH, "");
 
         businessModel = (BusinessModel) context.getApplicationContext();
     }
@@ -181,8 +179,14 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     @Override
     public void setSellerActivityListener(int userId, String date) {
 
-        if (basePath.equals(""))
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
+
+
+        if (appId.equals("") || basePath.equals(""))
             return;
+
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         DocumentReference documentReference = db
                 .collection(basePath)
@@ -204,11 +208,14 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     @Override
     public void setSellerMovementListener(int userId, String date) {
 
-        if (basePath.equals(""))
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
+
+        if (appId.equals("") || basePath.equals(""))
             return;
 
         if (isRealTimeLocationOn) {
 
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
             DocumentReference documentReference = db
                     .collection(basePath)
                     .document(REALTIME_LOCATION_PATH)
@@ -229,10 +236,12 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
     @Override
     public void setSellerActivityDetailListener(int userId, String date) {
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
 
-        if (basePath.equals(""))
+        if (appId.equals("") || basePath.equals(""))
             return;
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference queryRef = db
                 .collection(basePath)
                 .document(TIME_STAMP_PATH)
@@ -301,18 +310,6 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
         if (isFocus)
             sellerMapView.focusMarker(builder);
-    }
-
-    @Override
-    public String convertMillisToTime(Long time) {
-
-        if (time != null && time != 0) {
-            Date date = new Date(time);
-            DateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-            return format.format(date);
-        } else
-            return "";
     }
 
     @Override
@@ -393,7 +390,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
             SellerBo sellerBo = document.toObject((SellerBo.class));
 
             if (sellerBo != null) {
-                String timeIn = convertMillisToTime(sellerBo.getInTime());
+                String timeIn = DateTimeUtils.getTimeFromMillis(sellerBo.getInTime());
                 String retailerName = sellerBo.getRetailerName()!=null?sellerBo.getRetailerName():"";
                 String covered = String.valueOf(sellerBo.getCovered());
 
@@ -431,7 +428,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         }
     }
 
-    public void addRoutePoint(LatLng sellerCurrentLocation){
+    public void addRoutePoint(LatLng sellerCurrentLocation) {
         ArrayList<LatLng> routeLatLngList = new ArrayList<>();
         if (valuesList.size() > 0) {
             routeLatLngList.add(valuesList.get(valuesList.size() - 1));
@@ -459,14 +456,14 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                 RetailerBo retailerMasterBo = retailerMasterHashmap.get(documentSnapshotBo.getRetailerId());
 
                 if (retailerMasterBo == null) {
-                    retailerMasterHashmap.put(documentSnapshotBo.getRetailerId(),documentSnapshotBo);
+                    retailerMasterHashmap.put(documentSnapshotBo.getRetailerId(), documentSnapshotBo);
 
                     retailerMasterBo = retailerMasterHashmap.get(documentSnapshotBo.getRetailerId());
                 }
 
                 if (retailerMasterBo != null) {
 
-                    if (!retailerMasterBo.getIsDeviated() && documentSnapshotBo.getIsDeviated()){
+                    if (!retailerMasterBo.getIsDeviated() && documentSnapshotBo.getIsDeviated()) {
                         retailerMasterBo.setIsDeviated(true);
                     }
 
@@ -503,9 +500,9 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                     if (lastVisited < retailerMasterBo.getMasterSequence())
                         lastVisited = retailerMasterBo.getMasterSequence();
 
-                    if (retailerMasterBo.getMasterLatitude() == 0 || retailerMasterBo.getMasterLongitude() == 0){
+                    if (retailerMasterBo.getMasterLatitude() == 0 || retailerMasterBo.getMasterLongitude() == 0) {
 
-                        if(documentSnapshotBo.getLatitude() != 0 && documentSnapshotBo.getLongitude() != 0){
+                        if (documentSnapshotBo.getLatitude() != 0 && documentSnapshotBo.getLongitude() != 0) {
 
                             retailerMasterBo.setMasterLatitude(documentSnapshotBo.getLatitude());
                             retailerMasterBo.setMasterLongitude(documentSnapshotBo.getLongitude());
@@ -556,7 +553,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
                     retailerBoObj.setInTime(documentSnapshotBo.getInTime());
                     retailerBoObj.setOutTime(documentSnapshotBo.getOutTime());
                     retailerBoObj.setRetailerId(documentSnapshotBo.getRetailerId());
-                    retailerBoObj.setRetailerName(documentSnapshotBo.getRetailerName()!=null?documentSnapshotBo.getRetailerName():"");
+                    retailerBoObj.setRetailerName(documentSnapshotBo.getRetailerName() != null ? documentSnapshotBo.getRetailerName() : "");
                     retailerBoObj.setVisitedSequence(retailersVisitedSequence + 1);
 
                     if (retailerVisitDetailsByRId.get(documentSnapshotBo.getRetailerId()) != null) {
@@ -665,7 +662,7 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
     }
 
     @Override
-    public void downloadSellerRoute(String userId,String date){
+    public void downloadSellerRoute(String userId, String date) {
         new DownloadSellerRoute(userId, date).execute();
     }
 
@@ -676,9 +673,9 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
 
     class DownloadSellerRoute extends AsyncTask<String, Void, Boolean> {
 
-        private String userId,date;
+        private String userId, date;
 
-        DownloadSellerRoute(String userId,String date){
+        DownloadSellerRoute(String userId, String date) {
             this.userId = userId;
             this.date = date;
         }
@@ -701,7 +698,12 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
         @Override
         protected Boolean doInBackground(String... params) {
 
-            return NetworkUtils.isNetworkConnected(context) && prepareDownloadData(userId,date);
+            prepareJson(userId, convertPlaneDateToGlobal(date));
+
+            String loginId = businessModel.synchronizationHelper.
+                    getSelectedUserLoginId(userId, context);
+
+            return NetworkUtils.isNetworkConnected(context) && prepareDownloadData(loginId);
         }
 
         @Override
@@ -713,155 +715,167 @@ public class SellerDetailMapPresenter implements SellerDetailMapContractor.Selle
             }
         }
 
-    }
+        private JSONObject json = new JSONObject();
 
-    private boolean prepareDownloadData(String userId,String date) {
-
-        boolean isSuccess = false;
-        try {
-
-
-            String downloadurl = DataMembers.SERVER_URL+"/MovementTracking/Download?userId="+userId+"&routeDate="+convertPlaneDateToGlobal(date);
-//            String downloadurl = "http://192.168.2.92/api/MovementTracking/Download?userId="+userId+"&routeDate="+convertPlaneDateToGlobal(date);
-
-            Vector<String> responseVector = connectMe(downloadurl);
-
+        private void prepareJson(String sellerId, String date) {
             try {
-                if (responseVector.size() > 0) {
 
-                    for (String s : responseVector) {
+                json.put("UserId", sellerId);
+                json.put("LoginUserId", businessModel.getAppDataProvider().getUser().getUserid());
+                json.put("VersionCode", getApplicationVersionNumber(context));
+                json.put("RequestDate", date);
 
-                        JSONObject jsonObject = new JSONObject(s);
-                        Iterator itr = jsonObject.keys();
-                        while (itr.hasNext()) {
+            } catch (Exception e) {
+                Commons.printException(e);
+            }
 
-                            String key = (String) itr.next();
-                            if (key.equals("Master")) {
-                                parseJSONAndInsert(jsonObject);
-                                Commons.print("Seller Route Downloaded");
-                                isSuccess = true;
+        }
 
-                            } else if (key.equals("Errorcode")) {
-                                String tokenResponse = jsonObject.getString("Errorcode");
-                                if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
-                                        || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
-                                        || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
+        private boolean prepareDownloadData(String userLoginId) {
 
-                                    isSuccess = false;
+            boolean isSuccess = false;
+            try {
 
+
+                String downloadurl = SupervisorActivityHelper.getInstance().getDownloadUrl(context, "USERLOCATIONREPORT");
+
+                Commons.print("downloadUrl " + downloadurl);
+                Commons.print("json = " + json);
+
+                Vector<String> responseVector = getMasterResponse(json, downloadurl, userLoginId);
+
+                try {
+                    if (responseVector.size() > 0) {
+
+                        for (String s : responseVector) {
+
+                            JSONObject jsonObject = new JSONObject(s);
+                            Iterator itr = jsonObject.keys();
+                            while (itr.hasNext()) {
+
+                                String key = (String) itr.next();
+                                if (key.equals("Master")) {
+                                    parseJSON(jsonObject);
+                                    isSuccess = true;
+
+                                } else if (key.equals("Errorcode")) {
+                                    String tokenResponse = jsonObject.getString("Errorcode");
+                                    if (tokenResponse.equals(SynchronizationHelper.INVALID_TOKEN)
+                                            || tokenResponse.equals(SynchronizationHelper.TOKEN_MISSINIG)
+                                            || tokenResponse.equals(SynchronizationHelper.EXPIRY_TOKEN_CODE)) {
+
+                                        isSuccess = false;
+
+                                    }
                                 }
                             }
                         }
                     }
+                } catch (JSONException jsonException) {
+                    Commons.print(jsonException.getMessage());
                 }
-            } catch (JSONException jsonException) {
-                Commons.print(jsonException.getMessage());
+
+            } catch (Exception e) {
+                Commons.printException(e);
             }
 
-        }catch (Exception e){
-            Commons.printException(e);
+            return isSuccess;
+
         }
 
-        return isSuccess;
+        private Vector<String> getMasterResponse(JSONObject data,
+                                                 String appendurl, String userLoginId) {
 
-    }
+//        bmodel.synchronizationHelper.updateAuthenticateTokenWithoutPassword(userLoginId);
+            // Update Security key
+            businessModel.synchronizationHelper.updateAuthenticateToken(false);
+            StringBuilder url = new StringBuilder();
+            url.append(DataMembers.SERVER_URL);
+            url.append(appendurl);
+            if (businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                try {
+                    MyHttpConnectionNew http = new MyHttpConnectionNew();
+                    http.create(MyHttpConnectionNew.POST, url.toString(), null);
+                    http.addHeader("SECURITY_TOKEN_KEY", businessModel.synchronizationHelper.getSecurityKey());
+                    http.setParamsJsonObject(data);
 
-    private Vector<String> connectMe(String url) {
-        URL uri;
-        HttpURLConnection con = null;
-        try {
-
-            uri = new URL(url.trim());
-            con = (HttpURLConnection) uri.openConnection();
-
-            return this.processEntity(con.getInputStream());
-
-        } catch (Exception var5) {
-            Commons.printException(this.getClass().getName() + ",Exception occured while connecting to server");
-        }finally {
-            if (con != null) {
-                con.disconnect();
+                    http.connectMe();
+                    Vector<String> result = http.getResult();
+                    if (result == null) {
+                        return new Vector<>();
+                    }
+                    return result;
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                    return new Vector<>();
+                }
+            } else {
+                return new Vector<>();
             }
         }
 
-        return new Vector<>();
 
-    }
+        public void parseJSON(JSONObject jsonObject) {
 
-    private Vector<String> processEntity(InputStream in) throws IllegalStateException, IOException {
-        BufferedReader rd = new BufferedReader(new InputStreamReader(in));
-        String line ;
-        Vector<String> result = new Vector<>();
+            try {
 
-        while ((line = rd.readLine()) != null) {
-            result.addElement(line);
-        }
+                JSONArray first = jsonObject.getJSONArray(JSON_DATA_KEY);
 
-        return result;
+                for (int j = 0; j < first.length(); j++) {
+                    JSONArray value = (JSONArray) first.get(j);
 
-    }
+                    String firstValue = value.toString();
 
-    public void parseJSONAndInsert(JSONObject jsonObject) {
+                    firstValue = firstValue.substring(1, firstValue.length() - 1);
 
-        try {
+                    firstValue = firstValue.replace("\\/", "/");
 
-            JSONArray first = jsonObject.getJSONArray(JSON_DATA_KEY);
+                    String[] strArray = firstValue.split(",");
 
-            for (int j = 0; j < first.length(); j++) {
-                JSONArray value = (JSONArray) first.get(j);
+                    LatLng latLng = new LatLng(SDUtil.convertToDouble(strArray[1]), SDUtil.convertToDouble(strArray[2]));
 
-                String firstValue = value.toString();
+                    valuesList.add(latLng);
 
-                firstValue = firstValue.substring(1, firstValue.length() - 1);
+                }
 
-                firstValue = firstValue.replace("\\/", "/");
+                Commons.print("Route Values " + valuesList);
 
-                String[] strArray = firstValue.split(",");
-
-                LatLng latLng = new LatLng(SDUtil.convertToDouble(strArray[1]),SDUtil.convertToDouble(strArray[2]));
-
-                valuesList.add(latLng);
-
+            } catch (JSONException e) {
+                Commons.printException("" + e);
             }
 
-            Commons.print("Route Values "+valuesList);
-
-        } catch (JSONException e) {
-            Commons.printException("" + e);
         }
 
-    }
+        public void customProgressDialog(AlertDialog.Builder builder, String message) {
 
-    public void customProgressDialog(AlertDialog.Builder builder, String message) {
+            try {
+                View view = View.inflate(context, R.layout.custom_alert_dialog, null);
 
-        try {
-            View view = View.inflate(context, R.layout.custom_alert_dialog, null);
+                TextView title = view.findViewById(R.id.title);
+                title.setText(DataMembers.SD);
+                TextView messagetv = view.findViewById(R.id.text);
+                messagetv.setText(message);
 
-            TextView title = view.findViewById(R.id.title);
-            title.setText(DataMembers.SD);
-            TextView messagetv = view.findViewById(R.id.text);
-            messagetv.setText(message);
+                builder.setView(view);
+                builder.setCancelable(false);
 
-            builder.setView(view);
-            builder.setCancelable(false);
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
+            } catch (Exception e) {
+                Commons.printException("" + e);
+            }
         }
-    }
-
-    public void setRetailerMaster(RetailerBo retailerBO){
-
-        RetailerMasterBO retailerMaster = new RetailerMasterBO();
-        retailerMaster.setRetailerName(retailerBO.getRetailerName());
-        retailerMaster.setRetailerID(retailerBO.getRetailerId()+"");
-        retailerMaster.setLatitude(retailerBO.getLatitude());
-        retailerMaster.setLongitude(retailerBO.getLongitude());
-
-        businessModel.getAppDataProvider().setRetailerMaster(retailerMaster);
     }
 
     // Download Process Ends
 
 
+    public void setRetailerMaster(RetailerBo retailerBO) {
+
+        RetailerMasterBO retailerMaster = new RetailerMasterBO();
+        retailerMaster.setRetailerName(retailerBO.getRetailerName());
+        retailerMaster.setRetailerID(retailerBO.getRetailerId() + "");
+        retailerMaster.setLatitude(retailerBO.getLatitude());
+        retailerMaster.setLongitude(retailerBO.getLongitude());
+
+        businessModel.getAppDataProvider().setRetailerMaster(retailerMaster);
+    }
 }

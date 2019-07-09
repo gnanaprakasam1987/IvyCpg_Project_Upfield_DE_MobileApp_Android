@@ -4,7 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 
 import com.ivy.lib.existing.DBUtil;
-import com.ivy.cpg.view.task.TaskDataBO;
+import com.ivy.ui.task.model.TaskDataBO;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.DateTimeUtils;

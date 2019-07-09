@@ -44,6 +44,7 @@ public class SignatureView extends View {
         this.mContent = mContent;
         File directory = new File(photoPath);
         mypath = new File(directory, imageName);
+        signCaptured=false;
     }
 
     @SuppressLint("WrongThread")

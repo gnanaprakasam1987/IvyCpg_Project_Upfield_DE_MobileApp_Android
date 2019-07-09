@@ -21,6 +21,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -515,6 +516,12 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
 
             @Override
             public void afterTextChanged(Editable s) {
+                if(s.toString().length() <= 2){
+                    mSNO.setError(getResources().getString(R.string.seriallized_no_error_message));
+                }else{
+                    mSNO.setError(null) ;
+                }
+
 
                 if (s.toString().length() > 0)
                     mSNO.setSelection(s.toString().length());
@@ -634,16 +641,20 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                         showMessage(getString(R.string.enter) + " " + serialNoTag);
                         return;
                     }
-                    if (btnAddEffTodate.getText().toString().isEmpty()) {
+
+                    if (assetTrackingHelper.SHOW_ASSET_EFFECTIVE_DATE
+                            && btnAddEffTodate.getText().toString().isEmpty()) {
 
                         showMessage(getString(R.string.choose_eff_to_date));
                         return;
                     }
 
-                    String rentPriceErrorMsg = rentalPriceValidation();
-                    if (!rentPriceErrorMsg.isEmpty()) {
-                        showMessage(rentPriceErrorMsg);
-                        return;
+                    if (assetTrackingHelper.SHOW_ASSET_RENTAL_PRICE) {
+                        String rentPriceErrorMsg = rentalPriceValidation();
+                        if (!rentPriceErrorMsg.isEmpty()) {
+                            showMessage(rentPriceErrorMsg);
+                            return;
+                        }
                     }
 
                     if (!assetTrackingHelper
@@ -711,12 +722,10 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
     }
 
     private String rentalPriceValidation() {
-        if (SDUtil.convertToInt(assetRentPriceEdTxt.getText().toString()) <= 0)
-            return getString(R.string.rental_price_must_be_grater_than_zero);
-
-        else if (assetRentPriceEdTxt.getText().toString().isEmpty())
+        if (assetRentPriceEdTxt.getText().toString().isEmpty())
             return getString(R.string.enter_rental_price);
-
+        else if (SDUtil.convertToDouble(assetRentPriceEdTxt.getText().toString()) <= 0)
+            return getString(R.string.rental_price_must_be_grater_than_zero);
         else
             return "";
     }
@@ -831,7 +840,7 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
                 if (result != null) {
                     if (result.getContents() == null) {
 
-                        showMessage(getString(R.string.serial_no_not_captured_kindly_choose_reason));
+                        showMessage(getString(R.string.barcode_not_caputered_error));
 
                         barcodeNoReasonSpinner.setSelection(0);
                         enableBarCodeViews(true);
@@ -990,7 +999,11 @@ public class AddSerializedAssetActivity extends IvyBaseActivityNoActionBar imple
             filterList.add(0, tempPosm);
         }
 
-        updatedData(filterList);
+        ArrayAdapter<AssetAddDetailBO> mAssetSpinAdapter = new ArrayAdapter<>(
+                this, R.layout.spinner_bluetext_layout, filterList);
+        mAssetSpinAdapter
+                .setDropDownViewResource(R.layout.spinner_bluetext_list_item);
+        mAsset.setAdapter(mAssetSpinAdapter);
 
     }
 

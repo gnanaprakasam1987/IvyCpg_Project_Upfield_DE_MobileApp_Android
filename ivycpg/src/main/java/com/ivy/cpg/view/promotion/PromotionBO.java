@@ -20,6 +20,9 @@ public class PromotionBO {
     private int MappingId;
     private String parentHierarchy;
     private String remarks;
+    private String productPrice;
+    private boolean isAccepted;
+    private String promotionGroupName;
 
     PromotionBO() {
 
@@ -43,6 +46,9 @@ public class PromotionBO {
         this.toDate = promotionBO.getToDate();
         this.parentHierarchy = promotionBO.getParentHierarchy();
         this.remarks = promotionBO.getRemarks();
+        this.productPrice = promotionBO.getProductPrice();
+        this.isAccepted = promotionBO.isAccepted();
+        this.promotionGroupName = promotionBO.getPromotionGroupName();
     }
 
     public String getImagePath() {
@@ -215,5 +221,29 @@ public class PromotionBO {
 
     public void setRemarks(String remarks) {
         this.remarks = remarks;
+    }
+
+    public String getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(String productPrice) {
+        this.productPrice = productPrice;
+    }
+
+    public boolean isAccepted() {
+        return isAccepted;
+    }
+
+    public void setAccepted(boolean accepted) {
+        isAccepted = accepted;
+    }
+
+    public String getPromotionGroupName() {
+        return promotionGroupName;
+    }
+
+    public void setPromotionGroupName(String promotionGroupName) {
+        this.promotionGroupName = promotionGroupName;
     }
 }

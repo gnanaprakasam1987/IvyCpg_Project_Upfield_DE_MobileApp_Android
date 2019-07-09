@@ -28,6 +28,7 @@ import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.DeviceUtils;
 
@@ -45,6 +46,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 import static android.content.Context.MODE_PRIVATE;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_API_KEY;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_APPLICATION_ID;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_DATABSE_URL;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_PROJECT_ID;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_STORAGE_BUCKET;
 import static com.ivy.sd.png.model.ApplicationConfigs.LANGUAGE;
 
 /**
@@ -332,7 +338,7 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
     @Override
     public void onLoginClick() {
         if (syncDone) {
-            if (ApplicationConfigs.checkUTCTime && businessModel.isOnline()) {
+            if (ApplicationConfigs.checkUTCTime && businessModel.isOnline() && !isSFDC ) {
                 new DownloadUTCTime().execute();
             } else {
                 proceedToLocalLogin();
@@ -838,6 +844,8 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
             new InitiateRetailerDownload().execute();
         } else if (response == SynchronizationHelper.NEXT_METHOD.SIH_DOWNLOAD) {
             new SihDownloadTask().execute();
+        } else if (response == SynchronizationHelper.NEXT_METHOD.FB_CREDENTIALS_DOWNLOAD) {
+            new FBCredentialDownload().execute();
         } else if (response == SynchronizationHelper.NEXT_METHOD.DIGITAL_CONTENT_AVALILABLE
                 || response == SynchronizationHelper.NEXT_METHOD.DEFAULT) {
             new LoadData().execute();
@@ -990,6 +998,62 @@ public class LoginPresenterImpl implements LoginContract.LoginPresenter {
             callNextTask(next_method);
         }
     }
+
+    class FBCredentialDownload extends AsyncTask<String, String, String> {
+        JSONObject json = null;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+            json = businessModel.synchronizationHelper.getCommonJsonObject();
+        }
+
+        @Override
+        protected String doInBackground(String... params) {
+
+            String responseCode = "E01";
+            String response = businessModel.synchronizationHelper.sendPostMethod("/FirebaseConfiguration/Masters", json);
+            try {
+
+                JSONObject jsonObject = new JSONObject(response);
+                setFirebaseCredentials(context,jsonObject);
+
+            } catch (Exception jsonException) {
+                Commons.printException(jsonException);
+            }
+
+            return responseCode;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+            SynchronizationHelper.NEXT_METHOD next_method = businessModel.synchronizationHelper.checkNextSyncMethod();
+            callNextTask(next_method);
+        }
+    }
+
+    private void setFirebaseCredentials(final Context mContext,JSONObject fbObj){
+        try {
+
+            if (fbObj.has("ErrorCode"))
+                return;
+
+            final SharedPreferences prefs = AppUtils.getSharedPreferences(mContext);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(FB_APPLICATION_ID, fbObj.getString(FB_APPLICATION_ID));
+            editor.putString(FB_API_KEY, fbObj.getString(FB_API_KEY));
+            editor.putString(FB_DATABSE_URL, fbObj.getString(FB_DATABSE_URL));
+            editor.putString(FB_STORAGE_BUCKET, fbObj.getString(FB_STORAGE_BUCKET));
+            editor.putString(FB_PROJECT_ID, fbObj.getString(FB_PROJECT_ID));
+            editor.apply();
+        }catch(Exception e){
+            Commons.printException(e);
+        }
+    }
+
 
     /**
      * After download all data from server using this method to  update data from temporary table to

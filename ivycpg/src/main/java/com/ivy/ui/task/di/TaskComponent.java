@@ -6,6 +6,7 @@ import com.ivy.core.di.scope.PerActivity;
 import com.ivy.ui.task.view.TaskCreationActivity;
 import com.ivy.ui.task.view.TaskDetailActivity;
 import com.ivy.ui.task.view.TaskFragment;
+import com.ivy.ui.task.view.TaskUnplannedFragment;
 
 import dagger.Component;
 
@@ -19,6 +20,6 @@ public interface TaskComponent {
 
     void inject(TaskDetailActivity taskDetailActivity);
 
-
+    void inject(TaskUnplannedFragment taskUnplannedFragment);
 
 }

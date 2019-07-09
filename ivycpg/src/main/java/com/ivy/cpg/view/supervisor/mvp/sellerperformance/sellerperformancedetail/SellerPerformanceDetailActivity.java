@@ -28,6 +28,7 @@ import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 import com.ivy.cpg.view.supervisor.mvp.models.SellerBo;
 import com.ivy.lib.DialogFragment;
+import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.util.Commons;
@@ -44,7 +45,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
     private SellerPerformanceDetailPresenter sellerPerformancePresenter;
     private TextView sellerNameTv,sellerPerformPercentTv,valueTargetTv,valueActualTv,valuePercentTv,
             coverageTargetTv,coverageActualtv,coveragePercenttv,linesTargetTv,linesActualTv,linesPercentTv,
-            plannedValueTv,deviatedTv,durationTv,productiveTv;
+            plannedValueTv,deviatedTv,durationTv,productiveTv,volumeTargetTv,volumeActualTv,volumePercentTv;
     private ImageView userImage;
 
     private ProgressBar progressBar;
@@ -106,6 +107,7 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         ((TextView)findViewById(R.id.value_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
         ((TextView)findViewById(R.id.coverage_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
         ((TextView)findViewById(R.id.lines_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        ((TextView)findViewById(R.id.volume_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
         ((TextView)findViewById(R.id.calls_status_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
         ((TextView)findViewById(R.id.planned_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
         ((TextView)findViewById(R.id.deviated_text)).setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
@@ -132,6 +134,10 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         durationTv = findViewById(R.id.duration_value);
         productiveTv = findViewById(R.id.productive_value);
 
+        volumeTargetTv = findViewById(R.id.volume_target);
+        volumeActualTv = findViewById(R.id.volume_actual);
+        volumePercentTv = findViewById(R.id.volume_percent);
+
         progressBar = findViewById(R.id.progressBar);
 
         sellerNameTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
@@ -150,6 +156,10 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         deviatedTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
         durationTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
         productiveTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.MEDIUM));
+
+        volumeTargetTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        volumeActualTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
+        volumePercentTv.setTypeface(FontUtils.getFontRoboto(this, FontUtils.FontType.REGULAR));
 
         mChart = findViewById(R.id.combined_chart);
         mChart.setNoDataText("Loading...");
@@ -261,24 +271,29 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
     public void updateSellerTabViewInfo(SellerBo sellerBo) {
         coverageTargetTv.setText(String.valueOf(sellerBo.getTargetCoverage()));
         linesTargetTv.setText(String.valueOf(sellerBo.getTargetLines()));
-        valueTargetTv.setText(String.valueOf(sellerBo.getTargetValue()));
+        valueTargetTv.setText(Utils.formatAsTwoDecimal((double) sellerBo.getTargetValue()));
+        volumeTargetTv.setText(Utils.formatAsTwoDecimal(sellerBo.getTargetTotalWeight()));
 
         int covered,lines;
-        double orderValue;
+        double orderValue,weight;
 
         if(tabLayout.getSelectedTabPosition() == 1){
             covered = sellerBo.getAchievedCoverage();
             orderValue = sellerBo.getAchievedValue();
             lines = sellerBo.getAchievedLines();
+            weight = sellerBo.getAchievedTotalWeight();
         }else{
             covered = sellerBo.getCovered();
             orderValue = sellerBo.getTotalOrderValue();
             lines = sellerBo.getTotallpc();
+            weight = sellerBo.getTotalweight();
         }
 
         coverageActualtv.setText(String.valueOf(covered));
-        valueActualTv.setText(String.valueOf(orderValue));
+        valueActualTv.setText(Utils.formatAsTwoDecimal(orderValue));
         linesActualTv.setText(String.valueOf(lines));
+
+        volumeActualTv.setText(Utils.formatAsTwoDecimal(weight));
 
         if (sellerBo.getTargetCoverage() != 0) {
             int coverPercent = (int)((float)covered / (float)sellerBo.getTargetCoverage() * 100);
@@ -293,6 +308,11 @@ public class SellerPerformanceDetailActivity extends IvyBaseActivityNoActionBar 
         if (sellerBo.getTargetLines() != 0) {
             int linePercent = (int)((float)lines / (float)sellerBo.getTargetLines() * 100);
             linesPercentTv.setText((linePercent>100?100:linePercent)+"%");
+        }
+
+        if (sellerBo.getTargetTotalWeight() != 0) {
+            int weightPercent = (int)((float)weight / (float)sellerBo.getTargetTotalWeight() * 100);
+            volumePercentTv.setText((weightPercent>100?100:weightPercent)+"%");
         }
 
 

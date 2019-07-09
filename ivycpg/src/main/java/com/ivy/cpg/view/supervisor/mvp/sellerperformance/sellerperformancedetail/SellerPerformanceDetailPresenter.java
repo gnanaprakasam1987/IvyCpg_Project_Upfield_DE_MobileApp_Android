@@ -55,6 +55,7 @@ import java.util.concurrent.TimeUnit;
 import javax.annotation.Nullable;
 
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.DETAIL_PATH;
+import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FB_APPLICATION_ID;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.FIREBASE_ROOT_PATH;
 import static com.ivy.cpg.view.supervisor.SupervisorModuleConstants.TIME_STAMP_PATH;
 
@@ -63,7 +64,6 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     private Context context;
     private SellerPerformanceDetailContractor.SellerPerformanceDetailView sellerPerformanceView;
     private SellerBo selectedSeller;
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private ListenerRegistration registration ;
     private int CHART_DAYS = 0;
     private final int CHART_DAYS_COUNT = 4;
@@ -142,6 +142,9 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
             selectedSeller.setTargetLines(0);
             selectedSeller.setAchievedLines(0);
 
+            selectedSeller.setTargetTotalWeight(0);
+            selectedSeller.setAchievedTotalWeight(0);
+
             db = new DBUtil(context, DataMembers.DB_NAME
             );
             db.createDataBase();
@@ -168,16 +171,22 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                             selectedSeller.setAchievedCoverage(c.getInt(1));
                     }
                     else if(c.getString(3).equals("SV")) {
-                        selectedSeller.setTargetValue(c.getInt(0));
+                        selectedSeller.setTargetValue(c.getLong(0));
 
                         if (isMTD)
-                            selectedSeller.setAchievedValue(c.getInt(1));
+                            selectedSeller.setAchievedValue(c.getLong(1));
                     }
                     else if(c.getString(3).equals("LPC")) {
                         selectedSeller.setTargetLines(c.getInt(0));
 
                         if (isMTD)
                             selectedSeller.setAchievedLines(c.getInt(1));
+                    }
+                    else if(c.getString(3).equals("VOL")) {
+                        selectedSeller.setTargetTotalWeight(c.getDouble(0));
+
+                        if (isMTD)
+                            selectedSeller.setAchievedTotalWeight(c.getDouble(1));
                     }
                 }
                 c.close();
@@ -235,9 +244,12 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     @Override
     public void setSellerActivityListener(final int userId, final String date) {
 
-        if (basePath.equals(""))
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
+
+        if (appId.equals("") || basePath.equals(""))
             return;
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference queryRef = db
                 .collection(basePath)
                 .document(TIME_STAMP_PATH)
@@ -258,6 +270,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                                 selectedSeller.setTotalOrderValue(documentSnapshotBo.getTotalOrderValue());
                                 selectedSeller.setLpc(documentSnapshotBo.getLpc());
                                 selectedSeller.setTotallpc(documentSnapshotBo.getTotallpc());
+                                selectedSeller.setTotalweight(documentSnapshotBo.getTotalweight());
 
                                 sellerPerformanceView.updateSellerPerformanceData(selectedSeller);
 
@@ -275,9 +288,12 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     @Override
     public void setSellerActivityDetailListener(int userId,String date) {
 
-        if (basePath.equals(""))
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
+
+        if (appId.equals("") || basePath.equals(""))
             return;
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference queryRef = db
                 .collection(basePath)
                 .document(TIME_STAMP_PATH)
@@ -306,9 +322,11 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
     @Override
     public void prepareChartData(final int userId,final String date){
 
-        if (basePath.equals(""))
-            return;
+        String appId = AppUtils.getSharedPreferences(context).getString(FB_APPLICATION_ID, "");
 
+        if (appId.equals("") ||basePath.equals(""))
+            return;
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
         DocumentReference queryRef = db
                 .collection(basePath)
                 .document(TIME_STAMP_PATH)
@@ -365,7 +383,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
         try {
             RetailerBo documentSnapshotBo = documentSnapshot.toObject((RetailerBo.class));
 
-            System.out.println("setSellerDetailValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
+            //System.out.println("setSellerDetailValues documentSnapshot = " + documentSnapshot.getData().get("userId"));
 
             if (documentSnapshotBo != null) {
 
@@ -436,18 +454,6 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
         }catch (Exception e){
             Commons.printException(e);
         }
-    }
-
-    @Override
-    public String convertMillisToTime(Long time) {
-
-        if (time != null && time != 0) {
-            Date date = new Date(time);
-            DateFormat format = new SimpleDateFormat("hh:mm a", Locale.US);
-            format.setTimeZone(TimeZone.getTimeZone("UTC"));
-            return format.format(date);
-        } else
-            return "";
     }
 
     @Override
@@ -639,7 +645,9 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
                 }
 
                 //Toast.makeText(context, masterName+" Download Successfull", Toast.LENGTH_SHORT).show();
-            }//else
+            }else
+                if (alertDialog != null)
+                    alertDialog.dismiss();
                 //Toast.makeText(context, masterName+" Download Failed", Toast.LENGTH_SHORT).show();
         }
 
@@ -672,7 +680,7 @@ public class SellerPerformanceDetailPresenter implements SellerPerformanceDetail
             String downloadurl = getDownloadUrl(masterName);
 
             Commons.print("downloadUrl "+downloadurl);
-            System.out.println("json = " + json);
+            Commons.print("json = " + json);
 
             Vector<String> responseVector = getKPIMasterResponse(json, downloadurl);
 
