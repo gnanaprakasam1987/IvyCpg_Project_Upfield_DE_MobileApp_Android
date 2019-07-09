@@ -2,7 +2,7 @@ package com.ivy.sd.png.view;
 
 import android.content.Context;
 import android.preference.Preference;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;

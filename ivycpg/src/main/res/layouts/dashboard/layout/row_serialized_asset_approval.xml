@@ -5,7 +5,7 @@
     android:minHeight="@dimen/list_item_width"
     android:padding="@dimen/_8sdp">
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/check_img"
         android:layout_width="@dimen/info_icon"
         android:layout_height="@dimen/info_icon"
@@ -15,7 +15,7 @@
         android:src="@drawable/ic_tick_disable"
         />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/asset_name_tv"
         style="@style/TextViewListItemPrimary"
         android:layout_width="@dimen/list_product_name_width_medium"
@@ -31,7 +31,7 @@
         android:text="@string/asset_name" />
 
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/serial_no_tv"
         style="@style/TextViewListItemSecondaryHighlight"
         android:layout_width="wrap_content"
@@ -42,7 +42,7 @@
         android:tag="asset_serialno"
         android:text="@string/serial_no" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/requested_date_tv"
         style="@style/TextViewListItemSecondaryHighlight"
         android:layout_width="wrap_content"
@@ -53,7 +53,7 @@
         android:tag="asset_req_date"
         android:text="@string/requested_date" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/requested_type_tv"
         style="@style/TextViewListItemSecondaryHighlight"
         android:layout_width="wrap_content"

@@ -1,6 +1,7 @@
 package com.ivy.ui.reports.dynamicreport.presenter;
 
-import android.arch.lifecycle.LifecycleObserver;
+
+import androidx.lifecycle.LifecycleObserver;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;

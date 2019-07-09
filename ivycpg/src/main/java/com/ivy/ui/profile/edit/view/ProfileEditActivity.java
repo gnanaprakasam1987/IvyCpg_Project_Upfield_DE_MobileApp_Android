@@ -1,8 +1,8 @@
 package com.ivy.ui.profile.edit.view;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -13,7 +13,7 @@ import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.NearByRetailerDialog;
-import com.ivy.sd.png.view.NewoutletContainerFragment;
+import com.ivy.sd.png.view.ProfileContainerFragment;
 import com.ivy.utils.rx.AppSchedulerProvider;
 
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class ProfileEditActivity extends IvyBaseActivityNoActionBar
             @Override
             public void onNext(ArrayList<RetailerContactBo> contactList) {
                 bmodel.newOutletHelper.setRetailerContactList(contactList);
-                Fragment fragment = new NewoutletContainerFragment();
+                Fragment fragment = new ProfileContainerFragment();
                 Bundle bundle = new Bundle();
                 bundle.putBoolean("isEdit",true);
                 bundle.putString("retailerId", bmodel.getAppDataProvider().getRetailMaster().getRetailerID());

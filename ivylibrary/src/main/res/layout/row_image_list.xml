@@ -9,7 +9,7 @@
         android:layout_margin="10dp"
         tools:ignore="UnusedAttribute">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/image_view"
             android:layout_width="match_parent"
             android:layout_height="80dp"
@@ -18,7 +18,7 @@
             android:focusable="true"
             android:scaleType="fitXY" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/file_name_tv"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -32,7 +32,7 @@
             android:textColor="@android:color/white" />
     </RelativeLayout>
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/delete_image_view"
         android:layout_width="20dp"
         android:layout_height="20dp"

@@ -25,7 +25,7 @@ import io.reactivex.Single;
 import io.reactivex.SingleSource;
 import io.reactivex.functions.Function;
 
-import static com.ivy.utils.StringUtils.QT;
+import static com.ivy.utils.StringUtils.getStringQueryParam;
 
 public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
 
@@ -233,12 +233,12 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                             + " AND DistributorID="
                             + appDataProvider.getRetailMaster().getDistributorId()
                             + " AND Date = "
-                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                            + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
                     if (cursor.getCount() > 0) {
                         cursor.moveToNext();
                         mDbUtil.deleteSQL(DataMembers.actPhotocapture,
-                                "Uid=" + QT(cursor.getString(0)), false);
+                                "Uid=" + getStringQueryParam(cursor.getString(0)), false);
                         cursor.close();
                     }
                     return true;
@@ -256,7 +256,7 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                         String columns = "uid,date,phototypeid,pid,imagepath,retailerid,RetailerName,ImageCount4Retailer,FromDate,ToDate,LocId," +
                                 "sku_name,abv,lot_code,seq_num,DistributorID,feedback,imgName,ridSF,VisitId";
 
-                        String uid = QT(appDataProvider.getUser()
+                        String uid = getStringQueryParam(appDataProvider.getUser()
                                 .getDistributorid()
                                 + ""
                                 + appDataProvider.getUser().getUserid()
@@ -269,13 +269,13 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
 
                                 String sBuffer = uid +
                                         "," +
-                                        QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) +
+                                        getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) +
                                         "," +
                                         photoCaptureLocationBO.getPhotoTypeId() +
                                         "," +
                                         photoCaptureLocationBO.getProductID() +
                                         "," +
-                                        QT(photoCaptureLocationBO.getImagePath()) +
+                                        getStringQueryParam(photoCaptureLocationBO.getImagePath()) +
                                         "," +
                                         appDataProvider.getRetailMaster().getRetailerID() +
                                         "," +
@@ -285,28 +285,28 @@ public class PhotoCaptureDataManagerImpl implements PhotoCaptureDataManager {
                                         "," +
                                         "1" +
                                         "," +
-                                        QT(photoCaptureLocationBO.getFromDate()) +
+                                        getStringQueryParam(photoCaptureLocationBO.getFromDate()) +
                                         "," +
-                                        QT(photoCaptureLocationBO.getToDate()) +
+                                        getStringQueryParam(photoCaptureLocationBO.getToDate()) +
                                         "," +
                                         photoCaptureLocationBO.getLocationId() +
                                         "," +
-                                        QT(photoCaptureLocationBO.getSKUName()) +
+                                        getStringQueryParam(photoCaptureLocationBO.getSKUName()) +
                                         "," +
-                                        QT(photoCaptureLocationBO.getAbv()) +
+                                        getStringQueryParam(photoCaptureLocationBO.getAbv()) +
                                         "," +
-                                        QT(photoCaptureLocationBO.getLotCode()) +
+                                        getStringQueryParam(photoCaptureLocationBO.getLotCode()) +
                                         "," +
-                                        QT(photoCaptureLocationBO.getSequenceNO()) +
+                                        getStringQueryParam(photoCaptureLocationBO.getSequenceNO()) +
                                         "," +
                                         appDataProvider.getRetailMaster()
                                                 .getDistributorId() +
                                         "," +
-                                        QT(photoCaptureLocationBO.getFeedback()) +
+                                        getStringQueryParam(photoCaptureLocationBO.getFeedback()) +
                                         "," +
-                                        QT(photoCaptureLocationBO.getImageName()) +
+                                        getStringQueryParam(photoCaptureLocationBO.getImageName()) +
                                         "," +
-                                        QT(appDataProvider.getRetailMaster().getRidSF()) +
+                                        getStringQueryParam(appDataProvider.getRetailMaster().getRidSF()) +
                                         "," +
                                         appDataProvider.getUniqueId();
 

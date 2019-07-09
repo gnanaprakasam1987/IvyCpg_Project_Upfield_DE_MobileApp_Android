@@ -1,6 +1,6 @@
 package com.ivy.cpg.view.supervisor.customviews.recyclerviewpager;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 public class ViewUtils {

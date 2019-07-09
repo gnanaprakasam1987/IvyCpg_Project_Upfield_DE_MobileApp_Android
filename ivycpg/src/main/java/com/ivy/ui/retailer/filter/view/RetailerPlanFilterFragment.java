@@ -2,11 +2,11 @@ package com.ivy.ui.retailer.filter.view;
 
 import android.annotation.SuppressLint;
 import android.app.Dialog;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.FragmentActivity;
-import android.support.v7.widget.AppCompatCheckBox;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.FragmentActivity;
+import androidx.appcompat.widget.AppCompatCheckBox;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;

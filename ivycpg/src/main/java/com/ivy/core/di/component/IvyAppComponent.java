@@ -1,7 +1,10 @@
 package com.ivy.core.di.component;
 
+
 import android.content.Context;
 
+
+import com.android.volley.RequestQueue;
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.base.view.BaseFragment;
 import com.ivy.core.data.app.AppDataProvider;
@@ -20,21 +23,26 @@ import com.ivy.core.di.scope.BeatInfo;
 import com.ivy.core.di.scope.ChannelInfo;
 import com.ivy.core.di.scope.DataBaseInfo;
 import com.ivy.core.di.scope.DistributorInfo;
+import com.ivy.cpg.view.survey.SurveyHelperNew;
+import com.ivy.lib.existing.DBUtil;
+import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.core.di.scope.LabelMasterInfo;
 import com.ivy.core.di.scope.OutletTimeStampInfo;
 import com.ivy.core.di.scope.ReasonInfo;
 import com.ivy.core.di.scope.RetailerInfo;
 import com.ivy.core.di.scope.UserInfo;
-import com.ivy.lib.existing.DBUtil;
-import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.BeatMasterHelper;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.NewOutletHelper;
+import com.ivy.sd.png.provider.ProductHelper;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
+import com.ivy.ui.profile.create.di.NewRetailer;
 import com.ivy.ui.profile.edit.di.Profile;
 
 import java.util.Vector;
@@ -80,6 +88,10 @@ public interface IvyAppComponent {
     @ChannelInfo
     ChannelDataManager channelDataManager();
 
+    @NewRetailer
+    SurveyHelperNew provideSurveyHelperNew();
+
+
     ConfigurationMasterHelper configurationMasterHelper();
 
     @LabelMasterInfo
@@ -102,11 +114,19 @@ public interface IvyAppComponent {
     @OutletTimeStampInfo
     OutletTimeStampDataManager outletTimeStampDataManager();
 
+    BusinessModel provideApplication();
+
     @BeatInfo
     BeatDataManager beatDataManager();
 
     @ReasonInfo
     ReasonDataManager reasonDataManager();
+
+    ProductHelper productHelper();
+
+    ProductTaggingHelper productTaggingHelper();
+
+    RequestQueue providesRequestQueue();
 
     void inject(BusinessModel businessModel);
 

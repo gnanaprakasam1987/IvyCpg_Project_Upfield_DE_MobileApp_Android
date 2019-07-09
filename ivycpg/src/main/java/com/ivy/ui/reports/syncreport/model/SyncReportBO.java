@@ -1,6 +1,6 @@
 package com.ivy.ui.reports.syncreport.model;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 public class SyncReportBO implements Comparable<SyncReportBO> {
 

@@ -1,7 +1,8 @@
 package com.ivy.ui.reports.dynamicreport.view;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+
+import androidx.appcompat.widget.Toolbar;
 
 import com.ivy.core.base.presenter.BaseIvyPresenter;
 import com.ivy.core.base.presenter.BasePresenter;

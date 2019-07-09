@@ -1,8 +1,11 @@
 package com.ivy.sd.png.view;
 
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.Toolbar;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 
 import com.ivy.sd.png.asean.view.R;
@@ -15,6 +18,8 @@ public class NewOutlet extends IvyBaseActivityNoActionBar {
     private Bundle instate;
     private BusinessModel bmodel;
 
+    private int channelid = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -22,6 +27,27 @@ public class NewOutlet extends IvyBaseActivityNoActionBar {
 
         toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        init();
+
+        getSupportFragmentManager().findFragmentById(R.id.newoutlet_fragment);
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        ProfileContainerFragment containerFragment=new ProfileContainerFragment();
+
+        Bundle bundleNewoutLet=new Bundle();
+        bundleNewoutLet.putInt("channelid",channelid);
+        containerFragment.setArguments(bundleNewoutLet);
+
+        fragmentTransaction.replace(android.R.id.content,containerFragment);
+        fragmentTransaction.commit();
+
+    }
+
+
+    private void init(){
+
+        channelid = this.getIntent().getIntExtra("channelid",0) ;
 
         if (getSupportActionBar()!=null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -31,10 +57,8 @@ public class NewOutlet extends IvyBaseActivityNoActionBar {
             getSupportActionBar().setDisplayShowTitleEnabled(false);
 
             try {
-                if (bmodel.labelsMasterHelper
-                        .applyLabels("new_retailer") != null)
-                    setScreenTitle(bmodel.labelsMasterHelper
-                            .applyLabels("new_retailer"));
+                if (bmodel.labelsMasterHelper.applyLabels("new_retailer") != null)
+                    setScreenTitle(bmodel.labelsMasterHelper.applyLabels("new_retailer"));
                 else
                     setScreenTitle(getResources().getString(R.string.new_retailer));
             } catch (Exception e) {
@@ -43,14 +67,13 @@ public class NewOutlet extends IvyBaseActivityNoActionBar {
         }
         bmodel = (BusinessModel) getApplicationContext();
         bmodel.setContext(this);
-
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        NewoutletContainerFragment newOutletFragment=(NewoutletContainerFragment) getSupportFragmentManager().findFragmentById(R.id.newoutlet_fragment);
-        newOutletFragment.onViewStateRestored(instate);
+        /*ProfileContainerFragment newOutletFragment=(ProfileContainerFragment) getSupportFragmentManager().findFragmentById(R.id.newoutlet_fragment);
+        newOutletFragment.onViewStateRestored(instate);*/
     }
 
     protected void passData(AppCompatEditText editText[],Bundle instate) {

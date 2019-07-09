@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingTop="@dimen/_3sdp">
+
+    <!--Title Spinner-->
+    <com.ivy.sd.png.commons.MaterialSpinner
+        android:id="@+id/contactTitleSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/_10sdp"
+        android:layout_marginRight="@dimen/_10sdp"
+        android:layout_marginBottom="@dimen/_10sdp"
+        android:visibility="gone"/>
+
+    <!--other Title-->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/titleWrapper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_weight="1"
+        android:visibility="gone">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/contactOther"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:textSize="@dimen/font_small" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <!--FirstName-->
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/contacFirstNameWrapper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_weight="1">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/contacFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_small" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <!--LastName-->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/contactLastNameWrapper"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:layout_marginLeft="2dp"
+        android:layout_weight="1">
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/contactLastName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/font_small" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+</LinearLayout>

@@ -8,7 +8,7 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Environment;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -23,11 +23,11 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.ivy.core.IvyConstants;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.asean.view.BuildConfig;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.AppUtils;
@@ -221,9 +221,10 @@ public class LoginHelper {
 
                                 final String fcmToken = task.getResult().getToken();
 
-                                //Send FCM Token to aws server if change in Fcm Reg id
-                                if (!registrationId)
-                                    registerInBackground(mContext, fcmToken);
+                                businessModel.getAppDataProvider().setFcmRegistrationToken(fcmToken);
+                            //Send FCM Token to aws server if change in Fcm Reg id
+                            if (!registrationId)
+                                registerInBackground(mContext, fcmToken);
 
 
                                 if (isRealTimeConfigAvail(mContext) || isSupervisorMenuAvail(mContext)) {
@@ -463,7 +464,7 @@ public class LoginHelper {
             );
             db.createDataBase();
             db.openDataBase();
-            Cursor c = db.selectSQL("select UserPositionId from usermaster where userid =" + StringUtils.QT(businessModel.userMasterHelper.getUserMasterBO().getUserid() + ""));
+            Cursor c = db.selectSQL("select UserPositionId from usermaster where userid =" + StringUtils.getStringQueryParam(businessModel.userMasterHelper.getUserMasterBO().getUserid() + ""));
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
                     posId = c.getInt(0);
@@ -527,10 +528,10 @@ public class LoginHelper {
 //                    if (gcm == null)
 //                        gcm = GoogleCloudMessaging.getInstance(mContext);
 //
-//                    businessModel.regid = gcm.register(SENDER_ID);
+//                    businessModel.fcmRegistrationToken = gcm.register(SENDER_ID);
 
-                    businessModel.regid = token;
-                    msg = "Device registered, registration ID=" + businessModel.regid;
+                    businessModel.fcmRegistrationToken = token;
+                    msg = "Device registered, registration ID=" + businessModel.fcmRegistrationToken;
                     if (BuildConfig.FLAVOR.equalsIgnoreCase("aws"))
                         businessModel.synchronizationHelper.updateAuthenticateToken(false);
                 } catch (Exception ex) {
@@ -542,8 +543,8 @@ public class LoginHelper {
 
             @Override
             protected void onPostExecute(String msg) {
-                if (businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
-                    storeRegistrationId(mContext, businessModel.regid);
+                if (businessModel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
+                    storeRegistrationId(mContext, businessModel.fcmRegistrationToken);
                 } else {
                     String errorMsg = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
                     if (errorMsg != null) {
@@ -581,7 +582,7 @@ public class LoginHelper {
             );
             db.createDataBase();
             db.openDataBase();
-            Cursor c = db.selectSQL("select IsResetPassword from usermaster where loginid ='" + businessModel.userNameTemp + "' COLLATE NOCASE");
+            Cursor c = db.selectSQL("select IsResetPassword from usermaster where loginid ='" + businessModel.getAppDataProvider().getUserName() + "' COLLATE NOCASE");
             if (c.getCount() > 0) {
                 if (c.moveToNext()) {
                     isReset = c.getInt(0) > 0;
@@ -752,7 +753,7 @@ public class LoginHelper {
                     " from TaskConfigurationMaster A inner join TaskMaster B on A.taskid=B.taskid " +
                     " left join DatewisePlan DWP on DWP.Date = B.DueDate" +
                     " and DWP.EntityId = A.retailerID and DWP.Status!='D' and DWP.EntityType = 'RETAILER'" +
-                    " where B.DueDate<=" + StringUtils.QT(maxDueDate) + " and DWP.Date IS NULL and (B.Status!='D' OR B.Status IS NULL)" +
+                    " where B.DueDate<=" + StringUtils.getStringQueryParam(maxDueDate) + " and DWP.Date IS NULL and (B.Status!='D' OR B.Status IS NULL)" +
                     " and A.retailerId!=0 and A.TaskId not in (Select taskid from TaskHistory where RetailerId = A.retailerId)";
 
             Cursor c = db.selectSQL(query);

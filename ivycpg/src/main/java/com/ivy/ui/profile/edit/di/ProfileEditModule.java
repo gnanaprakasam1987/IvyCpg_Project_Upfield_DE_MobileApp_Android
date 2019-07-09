@@ -1,12 +1,13 @@
 package com.ivy.ui.profile.edit.di;
 
 
+import com.ivy.core.data.sync.SynchronizationDataManager;
+import com.ivy.core.data.sync.SynchronizationDataManagerImpl;
 import com.ivy.core.di.scope.PerActivity;
-import com.ivy.ui.profile.data.IProfileDataManager;
+import com.ivy.ui.profile.data.ProfileDataManager;
 import com.ivy.ui.profile.data.ProfileDataManagerImpl;
 import com.ivy.ui.profile.edit.IProfileEditContract;
 import com.ivy.ui.profile.edit.presenter.ProfileEditPresenterImp;
-import com.ivy.ui.profile.edit.view.ProfileEditFragmentNew;
 import com.ivy.utils.rx.AppSchedulerProvider;
 import com.ivy.utils.rx.SchedulerProvider;
 
@@ -45,8 +46,13 @@ public class ProfileEditModule {
     }
 
     @Provides
-    IProfileDataManager provideProfileDataManager(ProfileDataManagerImpl profileDataManager){
+    ProfileDataManager provideProfileDataManager(ProfileDataManagerImpl profileDataManager){
         return profileDataManager;
+    }
+
+    @Provides
+    SynchronizationDataManager providesSynchronizationDataManager(SynchronizationDataManagerImpl synchronizationDataManager){
+        return synchronizationDataManager;
     }
 
 }

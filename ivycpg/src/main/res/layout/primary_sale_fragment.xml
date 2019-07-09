@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         app:cardCornerRadius="@dimen/dimen_2dp"
         app:cardElevation="@dimen/dimen_4dp"
         android:layout_width="fill_parent"
@@ -26,5 +26,5 @@
             android:scrollbarAlwaysDrawHorizontalTrack="true"
             android:scrollbarAlwaysDrawVerticalTrack="false"/>
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 </LinearLayout>

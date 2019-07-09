@@ -5,7 +5,6 @@ import android.content.Context;
 import com.ivy.lib.Logs;
 import com.ivy.lib.base64.Base64;
 import com.ivy.sd.png.util.Commons;
-import com.ivy.sd.png.util.DataMembers;
 import com.ivy.utils.StringUtils;
 
 import java.math.BigDecimal;
@@ -13,11 +12,7 @@ import java.math.RoundingMode;
 import java.security.MessageDigest;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Locale;
-import java.util.TimeZone;
 
 public class SDUtil {
 
@@ -255,7 +250,7 @@ public class SDUtil {
 
     public static String getWithoutExponential(String value) {
 
-        if (StringUtils.isEmptyString(value))
+        if (StringUtils.isNullOrEmpty(value))
             value = "0";
         else if(value.contains("E"))
             value = df.format(new BigDecimal(value));

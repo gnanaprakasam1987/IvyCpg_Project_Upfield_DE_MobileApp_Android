@@ -25,4 +25,8 @@ public interface AppDataManager extends AppDataManagerContract{
 
     Observable<ArrayList<ConfigureBO>> fetchNewActivityMenu(String menuName);
 
+    Single<Boolean> isDayClosed();
+
+    Single<Boolean> isFloatingSurveyEnabled(String moduleCode);
+
 }

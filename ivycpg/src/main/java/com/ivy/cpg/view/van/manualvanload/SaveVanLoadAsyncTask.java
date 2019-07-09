@@ -3,7 +3,7 @@ package com.ivy.cpg.view.van.manualvanload;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;

@@ -120,16 +120,16 @@ public class OfflinePlanHelper {
             String values = offlineDateWisePlanBO.getPlanId() + ","
                     + offlineDateWisePlanBO.getDistributorId() + ","
                     + offlineDateWisePlanBO.getUserId() + ","
-                    + StringUtils.QT(offlineDateWisePlanBO.getDate()) + ","
+                    + StringUtils.getStringQueryParam(offlineDateWisePlanBO.getDate()) + ","
                     + offlineDateWisePlanBO.getEntityId() + ","
-                    + StringUtils.QT(offlineDateWisePlanBO.getEntityType()) + ","
-                    + StringUtils.QT(offlineDateWisePlanBO.getStatus()) + ","
+                    + StringUtils.getStringQueryParam(offlineDateWisePlanBO.getEntityType()) + ","
+                    + StringUtils.getStringQueryParam(offlineDateWisePlanBO.getStatus()) + ","
                     + offlineDateWisePlanBO.getSequence()
-                    + StringUtils.QT("") + ","
-                    + StringUtils.QT("")
-                    + StringUtils.QT("") + ","
-                    + StringUtils.QT("") + ","
-                    + StringUtils.QT("") + ","
+                    + StringUtils.getStringQueryParam("") + ","
+                    + StringUtils.getStringQueryParam("")
+                    + StringUtils.getStringQueryParam("") + ","
+                    + StringUtils.getStringQueryParam("") + ","
+                    + StringUtils.getStringQueryParam("") + ","
                     + offlineDateWisePlanBO.getEntityId(); //Added for RetailerID COlumn for RetailerWise Upload.
 
             String columns = "PlanId,DistributorId,UserId,Date,EntityId,EntityType,Status,Sequence,StartTime,EndTime,VisitStatus,PlanSource,planStatus,RetailerID";
@@ -151,10 +151,10 @@ public class OfflinePlanHelper {
                 db.updateSQL("UPDATE " + DataMembers.tbl_date_wise_plan
                         + " SET status = 'D' "
                         + " , upload = 'N'"
-                        + " WHERE " + " PlanId =" + offlineDateWisePlanBO.getPlanId() + " and EntityType = " + StringUtils.QT(offlineDateWisePlanBO.getEntityType()));
+                        + " WHERE " + " PlanId =" + offlineDateWisePlanBO.getPlanId() + " and EntityType = " + StringUtils.getStringQueryParam(offlineDateWisePlanBO.getEntityType()));
             } else {
                 db.deleteSQL(DataMembers.tbl_date_wise_plan, "EntityId=" + offlineDateWisePlanBO.getEntityId() +
-                        " and Date = " + StringUtils.QT(offlineDateWisePlanBO.getDate()) + " and EntityType = " + StringUtils.QT(offlineDateWisePlanBO.getEntityType()), false);
+                        " and Date = " + StringUtils.getStringQueryParam(offlineDateWisePlanBO.getDate()) + " and EntityType = " + StringUtils.getStringQueryParam(offlineDateWisePlanBO.getEntityType()), false);
             }
 
             db.closeDB();

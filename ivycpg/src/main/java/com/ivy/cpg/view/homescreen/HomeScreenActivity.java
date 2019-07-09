@@ -3,10 +3,11 @@ package com.ivy.cpg.view.homescreen;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -128,7 +129,7 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
     }
 
     public void numberPressed(View vw) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         StockProposalFragment asf = (StockProposalFragment) fm
                 .findFragmentById(R.id.fragment_content);
         asf.numberPressed(vw);
@@ -136,7 +137,7 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         StockProposalFragment asf = (StockProposalFragment) fm
                 .findFragmentById(R.id.fragment_content);
         asf.updateBrandText(mFilterText, id);
@@ -144,7 +145,7 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
 
     @Override
     public void updateGeneralText(String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         StockProposalFragment asf = (StockProposalFragment) fm
                 .findFragmentById(R.id.fragment_content);
         asf.updateGeneralText(mFilterText);
@@ -152,7 +153,7 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
 
     @Override
     public void updateCancel() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         StockProposalFragment asf = (StockProposalFragment) fm
                 .findFragmentById(R.id.fragment_content);
         asf.updateCancel();
@@ -160,7 +161,7 @@ public class HomeScreenActivity extends IvyBaseActivityNoActionBar implements Ho
 
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         StockProposalFragment asf = (StockProposalFragment) fm
                 .findFragmentById(R.id.fragment_content);
         asf.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);

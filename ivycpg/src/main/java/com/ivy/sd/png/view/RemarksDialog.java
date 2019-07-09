@@ -2,7 +2,7 @@ package com.ivy.sd.png.view;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
 import android.text.InputFilter;
 import android.text.InputType;
 import android.text.Spanned;
@@ -354,7 +354,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                 textInputLayout2.setVisibility(View.GONE);
                 textInputLayout3.setVisibility(View.GONE);
                 lnrRField1.setVisibility(View.GONE);
-                if (!StringUtils.isEmptyString(selectedRemark))
+                if (!StringUtils.isNullOrEmpty(selectedRemark))
                     remarks.setText(selectedRemark);
                 else
                     remarks.setText("");
@@ -363,7 +363,7 @@ public class RemarksDialog extends DialogFragment implements OnClickListener {
                 textInputLayout2.setVisibility(View.GONE);
                 textInputLayout3.setVisibility(View.GONE);
                 lnrRField1.setVisibility(View.GONE);
-                if (!StringUtils.isEmptyString(selectedRemark))
+                if (!StringUtils.isNullOrEmpty(selectedRemark))
                     remarks.setText(selectedRemark);
                 else
                     remarks.setText("");

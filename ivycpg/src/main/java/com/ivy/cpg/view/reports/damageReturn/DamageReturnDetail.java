@@ -178,7 +178,7 @@ public class DamageReturnDetail extends IvyBaseFragment {
             holder.deliveryStkBO = items.get(position);
 
             holder.tvwpsname.setTypeface(FontUtils.getFontRoboto(getActivity(), FontUtils.FontType.MEDIUM));
-            if (StringUtils.isEmptyString(holder.deliveryStkBO.getProductShortName()))
+            if (StringUtils.isNullOrEmpty(holder.deliveryStkBO.getProductShortName()))
                 holder.tvwpsname.setText(holder.deliveryStkBO.getProductName());
 
             holder.tvwpsname.setText(holder.deliveryStkBO.getProductShortName());

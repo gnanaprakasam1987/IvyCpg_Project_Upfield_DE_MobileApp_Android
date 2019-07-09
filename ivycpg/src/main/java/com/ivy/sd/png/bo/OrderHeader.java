@@ -1,6 +1,8 @@
 package com.ivy.sd.png.bo;
 
-public class OrderHeader {
+import java.io.Serializable;
+
+public class OrderHeader implements Serializable {
 
     // Bill Net value
     private double OrderValue;

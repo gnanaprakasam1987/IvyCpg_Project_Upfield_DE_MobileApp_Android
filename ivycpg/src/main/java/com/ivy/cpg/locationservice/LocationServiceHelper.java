@@ -17,13 +17,15 @@ import android.location.LocationManager;
 import android.os.BatteryManager;
 import android.os.Build;
 import android.provider.Settings;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
+
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.locationservice.movementtracking.MovementTrackingAlarmReceiver;
 import com.ivy.lib.Utils;
 import com.ivy.lib.existing.DBUtil;
@@ -50,7 +52,7 @@ import static com.ivy.cpg.locationservice.LocationConstants.GPS_NOTIFICATION_ID;
 import static com.ivy.cpg.locationservice.LocationConstants.MOCK_NOTIFICATION_ID;
 import static com.ivy.utils.AppUtils.getApplicationVersionName;
 import static com.ivy.utils.AppUtils.getApplicationVersionNumber;
-import static com.ivy.utils.StringUtils.QT;
+import static com.ivy.utils.StringUtils.getStringQueryParam;
 
 public class LocationServiceHelper {
 
@@ -381,14 +383,14 @@ public class LocationServiceHelper {
 
             String Tid = userMasterBO.getUserid() + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
-            String values = QT(Tid) + "," + QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
-                    + "," + QT(String.valueOf(locationDetailBO.getLatitude()))
-                    + "," + QT(String.valueOf(locationDetailBO.getLongitude()))
+            String values = getStringQueryParam(Tid) + "," + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
+                    + "," + getStringQueryParam(String.valueOf(locationDetailBO.getLatitude()))
+                    + "," + getStringQueryParam(String.valueOf(locationDetailBO.getLongitude()))
                     + "," + locationDetailBO.getAccuracy()
-                    + "," + QT(String.valueOf(locationDetailBO.getActivityType()))
+                    + "," + getStringQueryParam(String.valueOf(locationDetailBO.getActivityType()))
                     + "," + locationDetailBO.getBatteryStatus()
-                    + "," + QT(String.valueOf(locationDetailBO.getProvider()))
-                    + "," + QT(String.valueOf(locationDetailBO.isGpsEnabled()));
+                    + "," + getStringQueryParam(String.valueOf(locationDetailBO.getProvider()))
+                    + "," + getStringQueryParam(String.valueOf(locationDetailBO.isGpsEnabled()));
 
             db.insertSQL("LocationTracking", columns, values);
 
@@ -518,7 +520,7 @@ public class LocationServiceHelper {
                     }
                 }
             } else {
-                if (!synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (!synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     String errorMsg = synchronizationHelper.getErrormessageByErrorCode().get(synchronizationHelper.getAuthErroCode());
                     if (errorMsg != null) {
                         Commons.print("errorMsg " + errorMsg);
@@ -602,9 +604,9 @@ public class LocationServiceHelper {
 
             String columns = "userid,latitude,longitude,date_time";
 
-            String values = QT(userMasterBO.getUserid() + "")
-                    + "," + QT(String.valueOf(locationDetailBO.getLatitude()))
-                    + "," + QT(String.valueOf(locationDetailBO.getLongitude()))
+            String values = getStringQueryParam(userMasterBO.getUserid() + "")
+                    + "," + getStringQueryParam(String.valueOf(locationDetailBO.getLatitude()))
+                    + "," + getStringQueryParam(String.valueOf(locationDetailBO.getLongitude()))
                     + "," + System.currentTimeMillis();
             db.insertSQL("MovementTrackingHistory", columns, values);
 

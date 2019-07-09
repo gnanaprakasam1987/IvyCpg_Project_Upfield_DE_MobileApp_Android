@@ -580,6 +580,7 @@ public class ConfigurationMasterHelper {
     public boolean IS_CUMULATIVE_AND;
     public boolean IS_NEARBY = false;
     public boolean SHOW_DEVICE_STATUS;
+    @Deprecated
     public boolean floating_Survey = false;
     public boolean floating_np_reason_photo = false;
     public boolean IS_NEW_TASK;
@@ -1355,7 +1356,6 @@ public class ConfigurationMasterHelper {
     private static final String CODE_SHOW_QTY_ORDER = "ORDB65";
 
 
-
     //cpg132-task 13
     public boolean SHOW_TOTAL_ACHIEVED_VOLUME;
     public boolean SHOW_TOTAL_ACHIEVED_VOLUME_WGT;
@@ -1997,12 +1997,14 @@ public class ConfigurationMasterHelper {
             );
             db.openDataBase();
             Cursor c = db.selectSQL(sql);
-            if (c != null && c.getCount() != 0) {
-                while (c.moveToNext()) {
-                    CALC_QDVP3 = true;
-                }
-                c.close();
-            }
+            if (c != null)
+                if (c.getCount() != 0) {
+                    while (c.moveToNext()) {
+                        CALC_QDVP3 = true;
+                    }
+                    c.close();
+                }else
+                    c.close();
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -2011,9 +2013,10 @@ public class ConfigurationMasterHelper {
     }
 
     /**
-     * This method will return RFiled6 column value from the HHTMenuMaster table.
-     *
      * @return boolean true - survey is required.
+     * @See {@link com.ivy.core.data.db.AppDataManagerImpl#isFloatingSurveyEnabled(String)}
+     * This method will return RFiled6 column value from the HHTMenuMaster table.
+     * @deprecated
      */
     public boolean downloadFloatingSurveyConfig(String moduleCode) {
 
@@ -4943,7 +4946,6 @@ public class ConfigurationMasterHelper {
     }
 
 
-
     public int getSbdDistTargetPCent() {
         int targetPercent = 0;
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
@@ -5059,7 +5061,6 @@ public class ConfigurationMasterHelper {
     public void setGenFilter(Vector<ConfigureBO> genFilter) {
         this.genFilter = genFilter;
     }
-
 
 
     public String getLoadmanagementtitle() {
@@ -6379,7 +6380,7 @@ public class ConfigurationMasterHelper {
             db.openDataBase();
 
             Cursor c = db.selectSQL("select RField from " + DataMembers.tbl_HhtModuleMaster
-                    + " where hhtCode=" + StringUtils.QT(ConfigurationMasterHelper.CODE_CHECK_DIGITAL_SIZE));
+                    + " where hhtCode=" + StringUtils.getStringQueryParam(ConfigurationMasterHelper.CODE_CHECK_DIGITAL_SIZE));
             if (c != null && c.getCount() != 0) {
                 if (c.moveToNext()) {
                     this.DIGITAL_CONTENT_SIZE = c.getLong(0);

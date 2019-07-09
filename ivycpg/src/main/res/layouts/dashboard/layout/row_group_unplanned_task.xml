@@ -15,7 +15,7 @@
         android:paddingTop="@dimen/_6sdp"
         android:paddingBottom="@dimen/_minus6sdp">
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/retailer_name_tv"
             style="@style/TextViewListItemPrimary"
             android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
             android:paddingEnd="@dimen/_10sdp"
             android:text="@string/retailer_name" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/retailer_address_tv"
             style="@style/TextViewListItemSecondary"
             android:layout_width="@dimen/_300sdp"
@@ -40,7 +40,7 @@
             android:paddingEnd="@dimen/_10sdp"
             android:text="@string/Address" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/add_plan_btn"
             android:layout_width="@dimen/_60sdp"
             android:layout_height="@dimen/_30sdp"
@@ -58,7 +58,7 @@
             android:layout_marginBottom="@dimen/_6sdp"
             android:background="@color/light_gray" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/nex_visit_date_tv"
             style="@style/TextViewListItemSecondary"
             android:layout_width="wrap_content"
@@ -72,7 +72,7 @@
             android:paddingEnd="@dimen/_10sdp"
             android:text="@string/date_label" />
 
-        <android.support.v7.widget.AppCompatTextView
+        <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/child_view_arrow_tv"
             style="@style/TextViewListItemSecondaryHighlight"
             android:layout_width="wrap_content"
@@ -83,7 +83,7 @@
             android:text="@string/dummy_txt"
             tools:ignore="UnusedAttribute" />
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/child_img_view"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/info_icon"

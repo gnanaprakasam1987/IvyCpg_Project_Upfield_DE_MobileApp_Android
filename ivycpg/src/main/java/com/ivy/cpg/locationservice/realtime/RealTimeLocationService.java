@@ -14,10 +14,10 @@ import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.location.ActivityRecognitionClient;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -44,7 +44,6 @@ import java.util.Map;
 
 import static com.ivy.cpg.locationservice.LocationConstants.LOCATION_DISPLACEMENT;
 import static com.ivy.cpg.locationservice.LocationConstants.LOCATION_INTERVAL;
-import static com.ivy.cpg.locationservice.LocationConstants.LOCATION_MAX_WAIT_TIME;
 import static com.ivy.cpg.locationservice.LocationConstants.REALTIME_NOTIFICATION_ID;
 
 public class RealTimeLocationService extends Service {

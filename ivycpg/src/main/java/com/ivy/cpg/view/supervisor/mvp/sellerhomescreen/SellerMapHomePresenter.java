@@ -11,7 +11,7 @@ import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 import android.widget.TextView;
@@ -36,6 +36,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.supervisor.SupervisorModuleConstants;
 import com.ivy.cpg.view.supervisor.customviews.LatLngInterpolator;
 import com.ivy.cpg.view.supervisor.mvp.SupervisorActivityHelper;
@@ -913,7 +914,7 @@ public class SellerMapHomePresenter implements SellerMapHomeContract.SellerMapHo
         StringBuilder url = new StringBuilder();
         url.append(DataMembers.SERVER_URL);
         url.append(appendurl);
-        if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+        if (bmodel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
             try {
                 MyHttpConnectionNew http = new MyHttpConnectionNew();
                 http.create(MyHttpConnectionNew.POST, url.toString(), null);

@@ -1,7 +1,7 @@
 package com.ivy.cpg.view.survey;
 
 import android.app.Activity;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.DragEvent;
 import android.view.View;
 

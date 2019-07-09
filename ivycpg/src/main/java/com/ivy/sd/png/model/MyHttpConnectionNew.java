@@ -134,7 +134,7 @@ public class MyHttpConnectionNew {
                             //didn't remove comment for future reference if needed
 //                            StringBuilder resultbuilder = new StringBuilder();
 //                            for (Map.Entry<String, String> entry : params.entrySet()) {
-//                                resultbuilder.append((resultbuilder.length() > 0 ? "&" : "") + entry.getKey() + ":" + entry.getValue());//appends: key=value (for first param) OR &key=value(second and more)
+//                                resultbuilder.append((resultbuilder.length() > 0 ? "&" : "") + entry.getKey() + ":" + entry.getOutletData());//appends: key=value (for first param) OR &key=value(second and more)
 //                            }
 //                            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
 //                            writer.write(resultbuilder.toString());

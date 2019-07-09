@@ -68,7 +68,7 @@ public class OTPValidationHelper {
 
             String columns = "Tid,RetailerID,ReasonID,Date,Type,ExpectedRadius,ActualRadius,upload";
 
-            id = StringUtils.QT(bModel.getAppDataProvider().getUser()
+            id = StringUtils.getStringQueryParam(bModel.getAppDataProvider().getUser()
                     .getDistributorid()
                     + ""
                     + bModel.getAppDataProvider().getUser().getUserid()
@@ -78,24 +78,24 @@ public class OTPValidationHelper {
 
             values = id
                     + ","
-                    + StringUtils.QT(mRetailerBO.getRetailerID())
+                    + StringUtils.getStringQueryParam(mRetailerBO.getRetailerID())
                     + ","
                     + reasonID
                     + ","
-                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-                    + "," + StringUtils.QT(reasonType)
+                    + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + "," + StringUtils.getStringQueryParam(reasonType)
                     + "," + mRetailerBO.getGpsDistance()
                     + "," + actualRadius
-                    + "," + StringUtils.QT("N");
+                    + "," + StringUtils.getStringQueryParam("N");
 
             /*db.deleteSQL(
                     "RetailerLocationDeviation",
                     "RetailerID="
-                            + StringUtils.QT(mRetailerBO.getRetailerID())
+                            + StringUtils.getStringQueryParam(mRetailerBO.getRetailerID())
                             + " and Type="
-                            + StringUtils.QT(reasonType)
+                            + StringUtils.getStringQueryParam(reasonType)
                             + " and Date="
-                            + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)), false);*/
+                            + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)), false);*/
 
             db.insertSQL("RetailerLocationDeviation", columns, values);
 

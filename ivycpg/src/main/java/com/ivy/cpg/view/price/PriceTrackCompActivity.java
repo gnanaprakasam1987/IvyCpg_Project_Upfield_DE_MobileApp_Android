@@ -1,8 +1,10 @@
 package com.ivy.cpg.view.price;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -27,7 +29,7 @@ public class PriceTrackCompActivity extends IvyBaseActivityNoActionBar {
     }
 
     public void numberPressed(View v) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         PriceTrackCompFragment fragment = (PriceTrackCompFragment) fm
                 .findFragmentById(R.id.price_trackcomp__fragment);
         fragment.numberPressed(v);

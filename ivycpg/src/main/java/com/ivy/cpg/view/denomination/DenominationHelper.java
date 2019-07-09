@@ -163,10 +163,10 @@ public class DenominationHelper {
 
                         String columns = "uid,value,count,lineAmount,isCoin";
 
-                        String values = StringUtils.QT(id) + ","
-                                + StringUtils.QT(denominationInputValues.get(i).getDenominationDisplayNameValues()) + ","
-                                + StringUtils.QT(denominationInputValues.get(i).getCount()) + ","
-                                + StringUtils.QT(String.valueOf(lineAmount)) + ","
+                        String values = StringUtils.getStringQueryParam(id) + ","
+                                + StringUtils.getStringQueryParam(denominationInputValues.get(i).getDenominationDisplayNameValues()) + ","
+                                + StringUtils.getStringQueryParam(denominationInputValues.get(i).getCount()) + ","
+                                + StringUtils.getStringQueryParam(String.valueOf(lineAmount)) + ","
                                 + denominationInputValues.get(i).getIsCoin();
 
                         db.insertSQL("DenominationDetails", columns, values);
@@ -178,7 +178,7 @@ public class DenominationHelper {
 
                         String columns = "uid,date,amount";
 
-                        String values = StringUtils.QT(id) + "," + StringUtils.QT(currentDate) + "," + StringUtils.QT(initialTotalAmount);
+                        String values = StringUtils.getStringQueryParam(id) + "," + StringUtils.getStringQueryParam(currentDate) + "," + StringUtils.getStringQueryParam(initialTotalAmount);
 
                         db.insertSQL("DenominationHeader", columns, values);
                     }

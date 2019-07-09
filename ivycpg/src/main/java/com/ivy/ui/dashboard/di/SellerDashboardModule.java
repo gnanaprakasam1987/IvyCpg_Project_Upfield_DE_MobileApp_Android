@@ -14,7 +14,6 @@ import com.ivy.ui.dashboard.presenter.SellerDashboardPresenterImp;
 import com.ivy.utils.rx.AppSchedulerProvider;
 import com.ivy.utils.rx.SchedulerProvider;
 
-import java.util.ArrayList;
 
 import dagger.Module;
 import dagger.Provides;

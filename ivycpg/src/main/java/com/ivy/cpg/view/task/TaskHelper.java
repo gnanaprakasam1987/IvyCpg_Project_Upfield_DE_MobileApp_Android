@@ -305,12 +305,12 @@ public class TaskHelper {
         String UID;
         String retIdSF = null;
         if (retailerid.equals("0")) {
-            UID = StringUtils.QT(bmodel.getAppDataProvider().getUser().getUserid()
+            UID = StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getUser().getUserid()
                     + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
         } else {
-            UID = StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
+            UID = StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getRetailMaster().getRetailerID()
                     + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
-            retIdSF = StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
+            retIdSF = StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
         }
 
 

@@ -1,7 +1,7 @@
 package com.ivy.core.di.module;
 
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.ivy.core.di.scope.ActivityContext;
 import com.ivy.utils.rx.AppSchedulerProvider;

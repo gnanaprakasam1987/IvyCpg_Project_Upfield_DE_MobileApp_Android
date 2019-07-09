@@ -1,10 +1,12 @@
 package com.ivy.cpg.view.promotion;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -73,7 +75,7 @@ public class PromotionTrackingActivity extends IvyBaseActivityNoActionBar implem
 
 	@Override
 	public void updateBrandText(String mFilterText, int id) {
-		android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+		FragmentManager fm = getSupportFragmentManager();
 		PromotionTrackingFragment asf = (PromotionTrackingFragment) fm
 				.findFragmentById(R.id.promotion_tracking_fragment);
 		asf.updateBrandText(mFilterText, id);
@@ -85,7 +87,7 @@ public class PromotionTrackingActivity extends IvyBaseActivityNoActionBar implem
 
 	@Override
 	public void updateCancel() {
-		android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+		FragmentManager fm = getSupportFragmentManager();
 		PromotionTrackingFragment asf = (PromotionTrackingFragment) fm
 				.findFragmentById(R.id.promotion_tracking_fragment);
 		asf.updateCancel();
@@ -93,14 +95,14 @@ public class PromotionTrackingActivity extends IvyBaseActivityNoActionBar implem
 
 	@Override
 	public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-		android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+		FragmentManager fm = getSupportFragmentManager();
 		PromotionTrackingFragment asf = (PromotionTrackingFragment) fm
 				.findFragmentById(R.id.promotion_tracking_fragment);
 		asf.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
 	}
 
 	public void numberPressed(View vw) {
-		android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+		FragmentManager fm = getSupportFragmentManager();
 		PromotionTrackingFragment asf = (PromotionTrackingFragment) fm
 				.findFragmentById(R.id.promotion_tracking_fragment);
 		asf.numberPressed(vw);

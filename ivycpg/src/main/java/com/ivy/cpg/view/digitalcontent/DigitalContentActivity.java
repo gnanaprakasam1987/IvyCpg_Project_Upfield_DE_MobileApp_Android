@@ -1,7 +1,9 @@
 package com.ivy.cpg.view.digitalcontent;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -40,7 +42,7 @@ public class DigitalContentActivity extends IvyBaseActivityNoActionBar implement
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         DigitalContentFragment mFragment = (DigitalContentFragment) fm
                 .findFragmentById(R.id.digital_content_fragment);
         mFragment.updateBrandText(mFilterText, id);
@@ -48,7 +50,7 @@ public class DigitalContentActivity extends IvyBaseActivityNoActionBar implement
 
     @Override
     public void updateGeneralText(String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
 
         DigitalContentFragment mFragment = (DigitalContentFragment) fm
                 .findFragmentById(R.id.digital_content_fragment);
@@ -57,7 +59,7 @@ public class DigitalContentActivity extends IvyBaseActivityNoActionBar implement
 
     @Override
     public void updateCancel() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         DigitalContentFragment mFragment = (DigitalContentFragment) fm
                 .findFragmentById(R.id.digital_content_fragment);
         mFragment.updateCancel();
@@ -65,7 +67,7 @@ public class DigitalContentActivity extends IvyBaseActivityNoActionBar implement
 
     @Override
     public void updateFromFiveLevelFilter(int mFilteredPid, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         DigitalContentFragment mFragment = (DigitalContentFragment) fm
                 .findFragmentById(R.id.digital_content_fragment);
         mFragment.updateFromFiveLevelFilter(mFilteredPid, mSelectedIdByLevelId, mAttributeProducts, mFilterText);

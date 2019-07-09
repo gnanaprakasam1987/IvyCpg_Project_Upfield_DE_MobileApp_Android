@@ -30,7 +30,7 @@
         android:orientation="horizontal"
         android:weightSum="3">
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="@dimen/list_item_width"
             android:layout_height="wrap_content"
             android:layout_weight="1">
@@ -47,9 +47,9 @@
                 android:inputType="number"
                 android:selectAllOnFocus="false"
                 android:text="@string/zero" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="@dimen/list_item_width"
             android:layout_height="wrap_content"
             android:layout_weight="1">
@@ -66,9 +66,9 @@
                 android:inputType="number"
                 android:selectAllOnFocus="false"
                 android:text="@string/zero" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="@dimen/list_item_width"
             android:layout_height="wrap_content"
             android:layout_weight="1">
@@ -85,7 +85,7 @@
                 android:inputType="number"
                 android:selectAllOnFocus="false"
                 android:text="@string/zero" />
-        </android.support.design.widget.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 </LinearLayout>

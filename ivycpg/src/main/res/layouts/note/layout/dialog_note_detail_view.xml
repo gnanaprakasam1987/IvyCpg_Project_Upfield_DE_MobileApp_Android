@@ -4,7 +4,7 @@
     android:layout_height="wrap_content"
     android:gravity="start|center">
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/title_tv"
         style="@style/DialogTitleTextStyle"
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
         android:text="@string/note_details"
         android:textAllCaps="true" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/crated_by_label"
         style="@style/TextViewCaptionNormal"
         android:layout_width="@dimen/_150sdp"
@@ -32,7 +32,7 @@
         android:text="@string/created_by" />
 
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/created_by_value"
         style="@style/TextViewNormalRegular"
         android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
         android:text="@string/username" />
 
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/created_date_label"
         style="@style/TextViewCaptionNormal"
         android:layout_width="@dimen/_150sdp"
@@ -56,7 +56,7 @@
         android:text="@string/date_label" />
 
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/crated_date_value"
         style="@style/TextViewNormalRegular"
         android:layout_width="wrap_content"
@@ -68,7 +68,7 @@
         android:text="@string/create" />
 
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/retailer_name_label"
         style="@style/TextViewCaptionNormal"
         android:layout_width="@dimen/_150sdp"
@@ -80,7 +80,7 @@
         android:text="@string/retailer_name" />
 
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/retailer_name"
         style="@style/TextViewNormalRegular"
         android:layout_width="wrap_content"
@@ -91,7 +91,7 @@
         android:layout_toRightOf="@+id/retailer_name_label"
         android:text="@string/retailer" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/modified_by_label"
         style="@style/TextViewCaptionNormal"
         android:layout_width="@dimen/_150sdp"
@@ -103,7 +103,7 @@
         android:text="@string/modified_by" />
 
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/modified_by_name"
         style="@style/TextViewNormalRegular"
         android:layout_width="wrap_content"
@@ -115,7 +115,7 @@
         android:text="@string/modified_by" />
 
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/modified_date_label"
         style="@style/TextViewCaptionNormal"
         android:layout_width="@dimen/_150sdp"
@@ -127,7 +127,7 @@
         android:text="@string/modified_date" />
 
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/modified_date"
         style="@style/TextViewNormalRegular"
         android:layout_width="wrap_content"

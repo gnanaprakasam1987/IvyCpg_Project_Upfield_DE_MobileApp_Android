@@ -5,9 +5,9 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentTransaction;
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.FragmentTransaction;
 import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -24,10 +24,8 @@ import com.google.android.gms.maps.LocationSource;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.ivy.sd.png.asean.view.R;
 
 public abstract class BaseMapFragment extends BaseFragment implements BaseIvyView, BaseMapView,OnMapReadyCallback,
         GoogleMap.OnMyLocationClickListener, GoogleMap.OnMyLocationButtonClickListener,GoogleMap.OnMarkerClickListener,

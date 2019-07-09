@@ -4,7 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.preference.ListPreference;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -50,7 +50,7 @@ public class ThemedListPreference extends ListPreference  implements AdapterView
         mDoneBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //mClickedDialogEntryIndex = findIndexOfValue(getValue());
+                //mClickedDialogEntryIndex = findIndexOfValue(getOutletData());
                 ThemedListPreference.this.onClick(getDialog(), DialogInterface.BUTTON_POSITIVE);
                 getDialog().dismiss();
             }
@@ -60,7 +60,7 @@ public class ThemedListPreference extends ListPreference  implements AdapterView
         mCancelBTN.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //mClickedDialogEntryIndex = findIndexOfValue(getValue());
+                //mClickedDialogEntryIndex = findIndexOfValue(getOutletData());
                 ThemedListPreference.this.onClick(getDialog(), DialogInterface.BUTTON_NEGATIVE);
                 getDialog().dismiss();
             }
@@ -136,7 +136,7 @@ public class ThemedListPreference extends ListPreference  implements AdapterView
 
     @Override
     public CharSequence getSummary() {
-//        int pos = findIndexOfValue(getValue());
+//        int pos = findIndexOfValue(getOutletData());
 //        return getEntries()[pos];
 
         int pos = findIndexOfValue(getValue());

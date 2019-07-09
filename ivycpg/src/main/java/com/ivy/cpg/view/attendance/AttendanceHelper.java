@@ -299,12 +299,12 @@ public class AttendanceHelper {
                 String inTime = nonFieldTwoBo.getInTime() != null ? nonFieldTwoBo.getInTime() : " ";
 
                 String columns = "uid,date,intime,reasonid,userid,latitude,longitude,counterid,Remarks,upload";
-                String value = StringUtils.QT(nonFieldTwoBo.getId()) + ","
-                        + StringUtils.QT(nonFieldTwoBo.getFromDate()) + ","
-                        + StringUtils.QT(inTime) + ","
+                String value = StringUtils.getStringQueryParam(nonFieldTwoBo.getId()) + ","
+                        + StringUtils.getStringQueryParam(nonFieldTwoBo.getFromDate()) + ","
+                        + StringUtils.getStringQueryParam(inTime) + ","
                         + nonFieldTwoBo.getReason() + "," + userid + ","
-                        + StringUtils.QT(LocationUtil.latitude + "") + "," + StringUtils.QT(LocationUtil.longitude + "") + ","
-                        + bmodel.getCounterId() + "," + StringUtils.QT(nonFieldTwoBo.getRemarks()) + "," + StringUtils.QT("N");
+                        + StringUtils.getStringQueryParam(LocationUtil.latitude + "") + "," + StringUtils.getStringQueryParam(LocationUtil.longitude + "") + ","
+                        + bmodel.getCounterId() + "," + StringUtils.getStringQueryParam(nonFieldTwoBo.getRemarks()) + "," + StringUtils.getStringQueryParam("N");
 
                 db.insertSQL("AttendanceTimeDetails", columns, value);
 

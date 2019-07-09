@@ -35,8 +35,6 @@ public class CommonDialog extends Dialog {
     private String posBtnTxt;
     private String negBtnTxt;
     private Context context;
-    private Context bContext;
-    protected BusinessModel bmodel;
     private boolean imgDisplay;
     private boolean isMoveNext, isDynamicImageAvail = false;
     private String imageSrc;
@@ -47,8 +45,6 @@ public class CommonDialog extends Dialog {
                         boolean imgDisplay, String posBtnTxt, PositiveClickListener posClickListener) {
         super(context);
         this.context = context;
-        this.bContext = bContext;
-        bmodel = (BusinessModel) bContext;
         this.posClickListener = posClickListener;
         this.title = title;
         this.msg = msg;
@@ -62,7 +58,6 @@ public class CommonDialog extends Dialog {
                         PositiveClickListener posClickListener, negativeOnClickListener negClickListener) {
         super(context);
         this.context = context;
-        bmodel = (BusinessModel) bContext;
         this.posClickListener = posClickListener;
         this.title = title;
         this.msg = msg;
@@ -107,6 +102,20 @@ public class CommonDialog extends Dialog {
     }
 
     public CommonDialog(Context context, String title, String msg,
+                        String posBtnTxt,PositiveClickListener posClickListener,String negBtnTxt, negativeOnClickListener negClickListener, boolean isCancelable) {
+        super(context);
+        this.context = context;
+        this.title = title;
+        this.msg = msg;
+        this.posBtnTxt = posBtnTxt;
+        this.posClickListener = posClickListener;
+        this.negBtnTxt = negBtnTxt;
+        this.negClickListener = negClickListener;
+        this.isCancelable = isCancelable;
+
+    }
+
+    public CommonDialog(Context context, String title, String msg,
                         String posBtnTxt,PositiveClickListener posClickListener,boolean isCancel) {
         super(context);
         this.context = context;
@@ -124,8 +133,6 @@ public class CommonDialog extends Dialog {
                         PositiveClickListener posClickListener, negativeOnClickListener negClickListener) {
         super(context);
         this.context = context;
-        this.bContext = bContext;
-        bmodel = (BusinessModel) bContext;
         this.posClickListener = posClickListener;
         this.title = title;
         this.msg = msg;
@@ -140,8 +147,6 @@ public class CommonDialog extends Dialog {
                         PositiveClickListener posClickListener, negativeOnClickListener negClickListener) {
         super(context);
         this.context = context;
-        this.bContext = bContext;
-        bmodel = (BusinessModel) bContext;
         this.posClickListener = posClickListener;
         this.title = title;
         this.msg = msg;
@@ -158,8 +163,6 @@ public class CommonDialog extends Dialog {
                         PositiveClickListener posClickListener, negativeOnClickListener negClickListener) {
         super(context);
         this.context = context;
-        this.bContext = bContext;
-        bmodel = (BusinessModel) bContext;
         this.posClickListener = posClickListener;
         this.title = title;
         this.msg = msg;

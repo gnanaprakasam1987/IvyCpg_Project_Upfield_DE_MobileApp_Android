@@ -1107,7 +1107,7 @@ public class ProductHelper {
 
             db.closeDB();
 
-            if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER) {
+            if (bmodel.configurationMasterHelper.SHOW_TAX_MASTER && taxHelper!=null) {
                 taxHelper.downloadProductTaxDetails();
             }
 
@@ -1116,7 +1116,7 @@ public class ProductHelper {
                 downloadAttributeProductMapping();
 
 
-            if (filterProductLevels.size() > 0
+            if (filterProductLevels!=null && filterProductLevels.size() > 0
                     && (getLstProductAttributeMapping() != null
                     && getLstProductAttributeMapping().size() > 0))
                 downloadLeastBrandProductMapping(mContentLevelId, filterProductLevels.size(), moduleCode);
@@ -2470,7 +2470,7 @@ public class ProductHelper {
             db.openDataBase();
           /*  Cursor indicativeCursor = db
                     .selectSQL("select distinct(uid) from indicativeorder where rid="
-                            + QT(bmodel.getRetailerMasterBO().getRetailerID()));
+                            + getStringQueryParam(bmodel.getRetailerMasterBO().getRetailerID()));
             String uid = "";
             if (indicativeCursor.getCount() > 0) {
                 if (indicativeCursor.moveToFirst()) {

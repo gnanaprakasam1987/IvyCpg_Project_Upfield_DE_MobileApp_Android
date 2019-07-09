@@ -1,12 +1,15 @@
 package com.ivy.cpg.view.tradeCoverage.deviation;
 
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.tabs.TabLayout;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.google.android.gms.maps.MapsInitializer;
@@ -303,14 +306,14 @@ public class PlanningActivity extends IvyBaseActivityNoActionBar implements
     @Override
     public void onTabSelected(TabLayout.Tab tab) {
 
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
 
         mNonVisitFragment = (NonVisitFragment) fm.findFragmentByTag("all");
         MissedVisitFragment mMissedVisitFragment = (MissedVisitFragment) fm.findFragmentByTag(mMissedretailer);
         AdhocPlanningFragment mAdhocPlanningFragment = (AdhocPlanningFragment) fm.findFragmentByTag(mAdhoc);
 
 
-        android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+        FragmentTransaction ft = fm.beginTransaction();
 
         /** Detaches the fragment if exists */
 

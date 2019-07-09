@@ -11,10 +11,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -285,7 +285,7 @@ public class CollectionFragmentNew extends IvyBaseFragment
 
             view.setMinimumWidth(1400);
             view.setBackgroundColor(ContextCompat.getColor(getActivity(), android.R.color.darker_gray));
-            TextView snackbarTV = view.findViewById(android.support.design.R.id.snackbar_text);
+            TextView snackbarTV = view.findViewById(R.id.snackbar_text);
             snackbarTV.setTextColor(ContextCompat.getColor(getActivity(), R.color.dark_red));
             snackbar.show();
         }

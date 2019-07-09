@@ -1,15 +1,13 @@
 package com.ivy.cpg.view.sync.largefiledownload;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.support.annotation.NonNull;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +24,6 @@ import com.ivy.utils.FontUtils;
 import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-
-import static android.provider.MediaStore.Video.Thumbnails.MINI_KIND;
 
 public class VideoDownloadListAdapter extends RecyclerView.Adapter<VideoDownloadListAdapter.MyViewHolder> {
 

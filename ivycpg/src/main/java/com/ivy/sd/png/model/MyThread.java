@@ -68,8 +68,8 @@ public class MyThread extends Thread {
             LoginBaseActivity frm = (LoginScreen) ctx;
             int count = frm.loginPresenter.mPasswordLockCountPref.getInt("passwordlock", 0);
             if (bmodel.synchronizationHelper.validateUser(
-                    bmodel.userNameTemp.toLowerCase(Locale.US),
-                    bmodel.passwordTemp) && ((count + 1) != LoginHelper.getInstance(ctx).MAXIMUM_ATTEMPT_COUNT)) {
+                    bmodel.getAppDataProvider().getUserName().toLowerCase(Locale.US),
+                    bmodel.getAppDataProvider().getUserPassword()) && ((count + 1) != LoginHelper.getInstance(ctx).MAXIMUM_ATTEMPT_COUNT)) {
                 // If usermaster get updated
                 bmodel.userMasterHelper.downloadUserDetails();
                 bmodel.userMasterHelper.downloadDistributionDetails();

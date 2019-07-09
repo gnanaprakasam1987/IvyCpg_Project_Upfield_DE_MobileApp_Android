@@ -20,17 +20,17 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.view.ContextThemeWrapper;
-import android.support.v7.widget.AppCompatAutoCompleteTextView;
-import android.support.v7.widget.AppCompatCheckBox;
-import android.support.v7.widget.AppCompatEditText;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.ContextThemeWrapper;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatEditText;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -63,9 +63,11 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
 import com.ivy.cpg.view.order.OrderHelper;
+import com.ivy.cpg.view.retailercontact.RetailerContactBo;
 import com.ivy.cpg.view.survey.SurveyActivityNew;
 import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.cpg.view.sync.UploadHelper;
@@ -99,7 +101,6 @@ import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.provider.SynchronizationHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.cpg.view.retailercontact.RetailerContactBo;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
@@ -397,7 +398,7 @@ public class NewOutletFragment extends IvyBaseFragment
         }
         //for checking to show contact title spinner
         for (ConfigureBO configureBO : profileConfig) {
-            if (configureBO.getConfigCode().equalsIgnoreCase("CONTACTTITLE") && configureBO.isFlag() == 1) {
+            if (configureBO.getConfigCode().equalsIgnoreCase("CONTACT_TITLE") && configureBO.isFlag() == 1) {
                 isContactTitle = true;
                 mcontactTitleList = new ArrayList<>();
                 mcontactTitleList.add(0, new NewOutletBO(-1, getResources().getString(R.string.select_str) + " " + "Title"));
@@ -840,19 +841,19 @@ public class NewOutletFragment extends IvyBaseFragment
 
                 if (configCode.equalsIgnoreCase("STORENAME")
                         || configCode.equalsIgnoreCase("ADDRESS1")
-                        || configCode.equalsIgnoreCase("CONTACTPERSON1")
+                        || configCode.equalsIgnoreCase("CONTACT_PERSON1")
                         || configCode.equalsIgnoreCase("ADDRESS2")
                         || configCode.equalsIgnoreCase("ADDRESS3")
                         || configCode.equalsIgnoreCase("CITY")
                         || configCode.equalsIgnoreCase("STATE")
-                        || configCode.equalsIgnoreCase("CONTACTPERSON2")
+                        || configCode.equalsIgnoreCase("CONTACT_PERSON2")
                         || configCode.equalsIgnoreCase("PAN_NUMBER")
                         || configCode.equalsIgnoreCase("DRUG_LICENSE_NUM")
                         || configCode.equalsIgnoreCase("FOOD_LICENCE_NUM")
                         || configCode.equalsIgnoreCase("REGION")
                         || configCode.equalsIgnoreCase("COUNTRY")
                         || configCode.equalsIgnoreCase("DISTRICT")
-                        ) {
+                ) {
 
                     totalView.addView(getEditTextView(i, mName, InputType.TYPE_TEXT_VARIATION_PERSON_NAME, mandatory), commonsparams);
 
@@ -890,7 +891,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         || (configCode.equalsIgnoreCase("RFIELD4") && hasLink == 1)
                         || (configCode.equalsIgnoreCase("RFIELD6") && hasLink == 1)
                         || (configCode.equalsIgnoreCase("RFIELD7") && hasLink == 1)
-                        ) {
+                ) {
 
                     totalView.addView(
                             getSpinnerView(i, mName, configCode,
@@ -1134,11 +1135,11 @@ public class NewOutletFragment extends IvyBaseFragment
                             getTextView(i, mName, 0.0 + "", mandatory),
                             commonsparams);
                     isLatLong = true;
-                } else if (configCode.equalsIgnoreCase("TINNUM")) {
+                } else if (configCode.equalsIgnoreCase("TIN_NUM")) {
                     totalView.addView(getEditTextView(i, mName,
                             InputType.TYPE_CLASS_TEXT, mandatory),
                             commonsparams);
-                } else if (configCode.equalsIgnoreCase("TINEXPDATE")
+                } else if (configCode.equalsIgnoreCase("TIN_EXP_DATE")
                         || configCode.equalsIgnoreCase("DRUG_LICENSE_EXP_DATE")
                         || configCode.equalsIgnoreCase("FOOD_LICENCE_EXP_DATE")) {
                     totalView.addView(
@@ -1188,7 +1189,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     totalView.addView(getEditTextView(i, mName,
                             InputType.TYPE_CLASS_TEXT, mandatory),
                             commonsparams);
-                } else if (configCode.equalsIgnoreCase("INSEZ")) {
+                } else if (configCode.equalsIgnoreCase("IN_SEZ")) {
 
                     LinearLayout baselayout = new LinearLayout(getActivity());
                     baselayout.setOrientation(LinearLayout.VERTICAL);
@@ -1497,7 +1498,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         break;
                     }
                 } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("CONTACTPERSON1")
+                        .equalsIgnoreCase("CONTACT_PERSON1")
                         && mandatory == 1) {
 
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
@@ -1549,7 +1550,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
 
                 } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("CONTACTPERSON2")
+                        .equalsIgnoreCase("CONTACT_PERSON2")
                         && mandatory == 1) {
 
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
@@ -1745,7 +1746,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("LATLONG")
                         && mandatory == 1) {
-                    if (latlongtextview.getText().toString().startsWith("0.0")) {
+                    if (latlongtextview.getText().toString() .startsWith("0. 0")) {
                         validate = false;
                         latlongtextview.setFocusableInTouchMode(true);
                         latlongtextview.requestFocus();
@@ -1759,7 +1760,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
                 } else if (profileConfig.get(i).getConfigCode()
                         .equalsIgnoreCase("EMAIL")
-                        ) {
+                ) {
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
                     if (mandatory == 1 || editText[i].getText().toString().trim().length() != 0) {
                         if (!isValidEmail(editText[i].getText().toString())) {
@@ -1815,7 +1816,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         break;
                     }
                 } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("TINNUM")
+                        .equalsIgnoreCase("TIN_NUM")
                         && mandatory == 1) {
                     Commons.print("tin");
                     edittextinputLayout = (TextInputLayout) editText[i].getParentForAccessibility();
@@ -1831,7 +1832,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     }
 
                 } else if (profileConfig.get(i).getConfigCode()
-                        .equalsIgnoreCase("TINEXPDATE")
+                        .equalsIgnoreCase("TIN_EXP_DATE")
                         && mandatory == 1) {
                     Commons.print("tin exp date");
                     if (tinExpDateTextView.getText().toString().isEmpty() || tinExpDateTextView.getText().toString().equalsIgnoreCase("Select Date")) {
@@ -2350,7 +2351,7 @@ public class NewOutletFragment extends IvyBaseFragment
         }
 
 
-        if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("CONTACTPERSON1")) {
+        if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("CONTACT_PERSON1")) {
             edittextinputLayout = new TextInputLayout(getActivity());
             edittextinputLayout2 = new TextInputLayout(getActivity());
             checkRegex(profileConfig.get(mNumber).getRegex());
@@ -2582,7 +2583,7 @@ public class NewOutletFragment extends IvyBaseFragment
             }
 
 
-        } else if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("CONTACTPERSON2")) {
+        } else if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("CONTACT_PERSON2")) {
 
             edittextinputLayout = new TextInputLayout(getActivity());
             edittextinputLayout2 = new TextInputLayout(getActivity());
@@ -2987,7 +2988,7 @@ public class NewOutletFragment extends IvyBaseFragment
                             editText[mNumber].setSelection(editText[mNumber].length());
                         }
 
-                        if ("PINCODE".equalsIgnoreCase(profileConfig.get(mNumber).getConfigCode())){
+                        if ("PINCODE".equalsIgnoreCase(profileConfig.get(mNumber).getConfigCode())) {
                             CensusLocationBO censusLocationBO = getLocationDetails(s);
                             if (censusLocationBO != null) {
                                 setLocationDetails(censusLocationBO);
@@ -3180,7 +3181,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 return outlet.getOutletName();
             case "ADDRESS1":
                 return outlet.getAddress();
-            case "CONTACTPERSON1":
+            case "CONTACT_PERSON1":
                 return outlet.getContactpersonname();
             case "ADDRESS2":
                 return outlet.getAddress2();
@@ -3190,7 +3191,7 @@ public class NewOutletFragment extends IvyBaseFragment
                 return outlet.getCity();
             case "STATE":
                 return outlet.getState();
-            case "CONTACTPERSON2":
+            case "CONTACT_PERSON2":
                 return outlet.getContactpersonname2();
             case "PHNO1":
                 return outlet.getPhone();
@@ -3204,9 +3205,9 @@ public class NewOutletFragment extends IvyBaseFragment
                 return outlet.getEmail();
             case "CREDITLIMIT":
                 return outlet.getCreditLimit();
-            case "TINNUM":
+            case "TIN_NUM":
                 return outlet.getTinno();
-            case "TINEXPDATE":
+            case "TIN_EXP_DATE":
                 return outlet.getTinExpDate() == null ? "" : outlet.getTinExpDate();
             case "PINCODE":
                 return outlet.getPincode();
@@ -3252,13 +3253,13 @@ public class NewOutletFragment extends IvyBaseFragment
 
     private int getPosition(String code) {
         int default_value = 0;
-        if (code.equals("CONTACTPERSON1")) {
+        if (code.equals("CONTACT_PERSON1")) {
             for (int i = 0; i < mcontactTitleList.size(); i++) {
                 if (mcontactTitleList.get(i).getListId() == SDUtil.convertToInt(outlet.getContact1titlelovid())) {
                     return i;
                 }
             }
-        } else if (code.equals("CONTACTPERSON2")) {
+        } else if (code.equals("CONTACT_PERSON2")) {
             for (int i = 0; i < mcontactTitleList.size(); i++) {
                 if (mcontactTitleList.get(i).getListId() == SDUtil.convertToInt(outlet.getContact2titlelovid())) {
                     return i;
@@ -3459,7 +3460,7 @@ public class NewOutletFragment extends IvyBaseFragment
             dateTV.setTextColor(Color.BLACK);
             dateTV.setGravity(Gravity.CENTER);
             dateTV.setTypeface(bmodel.configurationMasterHelper.getFontRoboto(ConfigurationMasterHelper.FontType.LIGHT));
-            if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("TINEXPDATE")) {
+            if (profileConfig.get(mNumber).getConfigCode().equalsIgnoreCase("TIN_EXP_DATE")) {
                 tinExpDateTextView = dateTV;
                 tinExpDateTextView.setId(mNumber);
                 tinExpDateTextView.setText(textname);
@@ -3487,7 +3488,7 @@ public class NewOutletFragment extends IvyBaseFragment
                             month = Integer.valueOf(date.split("/")[1]) - 1;
                             day = Integer.valueOf(date.split("/")[2]);
                         }
-                        DialogFragment newFragment = new DatePickerFragment("TINEXPDATE", year, month, day);
+                        DialogFragment newFragment = new DatePickerFragment("TIN_EXP_DATE", year, month, day);
                         newFragment.show(getActivity().getSupportFragmentManager(), "tinDatePicker");
                     }
                 });
@@ -3659,7 +3660,7 @@ public class NewOutletFragment extends IvyBaseFragment
 
             Calendar selectedDate = new GregorianCalendar(year, month, day);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
-            if (code.equalsIgnoreCase("TINEXPDATE")) {
+            if (code.equalsIgnoreCase("TIN_EXP_DATE")) {
                 tinExpDateTextView.setText(sdf.format(selectedDate.getTime()));
             } else {
                 if (selectedDate.after(Calendar.getInstance())) {
@@ -4843,7 +4844,7 @@ public class NewOutletFragment extends IvyBaseFragment
         spinnerHashMap = new HashMap<>();
         spinnerAdapterMap = new HashMap<>();
         int rowCount = mAttributeParentList.size();
-        if(selectedAttribList==null)
+        if (selectedAttribList == null)
             selectedAttribList = new HashMap<>();// It may contain common attributes selected id while called from channel to load channel attribute
         for (int i = 0; i < rowCount; i++) {
             NewOutletAttributeBO parentBO = mAttributeParentList.get(i);
@@ -4912,7 +4913,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         });
 
                         if (screenMode == VIEW || screenMode == EDIT) {
-                            int selectedPosition=getAttriButePostion(arrayAdapter);
+                            int selectedPosition = getAttriButePostion(arrayAdapter);
                             spinner.setSelection(selectedPosition);
                             selectedAttribList.put(parentAttrId, attrbList.get(selectedPosition));
                             if (screenMode == 1)
@@ -4952,7 +4953,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         });
 
                         if (screenMode == VIEW || screenMode == EDIT) {
-                            int selectedPosition=getAttriButePostion(arrayAdapter);
+                            int selectedPosition = getAttriButePostion(arrayAdapter);
                             spinner.setSelection(selectedPosition);
                             selectedAttribList.put(parentAttrId, attrbList.get(selectedPosition));
                             if (screenMode == 1)
@@ -5184,6 +5185,7 @@ public class NewOutletFragment extends IvyBaseFragment
             }
         } else if (i == R.id.menu_order) {
             bmodel.setRetailerMasterBO(new RetailerMasterBO());
+
             if (isDistributor) {
                 DistributorMasterBO distBo = (DistributorMasterBO) distributorSpinner.getSelectedItem();
                 if (distBo.getDId().equals("0")) {
@@ -5200,14 +5202,14 @@ public class NewOutletFragment extends IvyBaseFragment
             }
 
             GenericObjectPair<Vector<ProductMasterBO>, Map<String, ProductMasterBO>> genericObjectPair = bmodel.productHelper.downloadProducts(MENU_NEW_RETAILER);
-                    if (genericObjectPair != null) {
-                        bmodel.productHelper.setProductMaster(genericObjectPair.object1);
-                        bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
-                    }
-                    bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
-                    bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
-                            bmodel.productHelper.getFilterProductLevels(),true));
+            if (genericObjectPair != null) {
+                bmodel.productHelper.setProductMaster(genericObjectPair.object1);
+                bmodel.productHelper.setProductMasterById(genericObjectPair.object2);
+            }
 
+            bmodel.productHelper.setFilterProductLevels(bmodel.productHelper.downloadFilterLevel(MENU_NEW_RETAILER));
+            bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(
+                    bmodel.productHelper.getFilterProductLevels(), true));
 
 
             bmodel.configurationMasterHelper.downloadProductDetailsList();
@@ -5388,7 +5390,7 @@ public class NewOutletFragment extends IvyBaseFragment
                                 bmodel.validateInput(editText[i].getText().toString()))
                         );
                     }
-                } else if (configCode.equalsIgnoreCase("CONTACTPERSON1")) {
+                } else if (configCode.equalsIgnoreCase("CONTACT_PERSON1")) {
                     isContactPerson1 = true;
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         outlet.setContactpersonname("");
@@ -5443,7 +5445,7 @@ public class NewOutletFragment extends IvyBaseFragment
                         outlet.setState(StringUtils.removeQuotes(
                                 bmodel.validateInput(editText[i].getText().toString())));
                     }
-                } else if (configCode.equalsIgnoreCase("CONTACTPERSON2")) {
+                } else if (configCode.equalsIgnoreCase("CONTACT_PERSON2")) {
                     isContactPerson2 = true;
                     if (TextUtils.isEmpty(bmodel.validateInput(editText[i].getText().toString()))) {
                         outlet.setContactpersonname2("");
@@ -5578,7 +5580,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     } else {
                         outlet.setCreditLimit(bmodel.validateInput(editText[i].getText().toString()));
                     }
-                } else if (configCode.equalsIgnoreCase("TINNUM")) {
+                } else if (configCode.equalsIgnoreCase("TIN_NUM")) {
 
                     tinno = true;
 
@@ -5587,7 +5589,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     } else {
                         outlet.setTinno(bmodel.validateInput(editText[i].getText().toString()));
                     }
-                } else if (configCode.equalsIgnoreCase("TINEXPDATE")) {
+                } else if (configCode.equalsIgnoreCase("TIN_EXP_DATE")) {
 
                     isTinExpDate = true;
 
@@ -5714,7 +5716,7 @@ public class NewOutletFragment extends IvyBaseFragment
                     } else {
                         outlet.setGstNum(bmodel.validateInput(editText[i].getText().toString()));
                     }
-                } else if (configCode.equalsIgnoreCase("INSEZ")) {
+                } else if (configCode.equalsIgnoreCase("IN_SEZ")) {
 
                     if (inSEZcheckBox.isChecked()) {
                         outlet.setIsSEZ(1);
@@ -6150,8 +6152,8 @@ public class NewOutletFragment extends IvyBaseFragment
                     alertDialog.dismiss();
                     bmodel = (BusinessModel) getActivity().getApplicationContext();
                     showAlert("Error: "
-                                    + getResources().getString(
-                                    R.string.new_store_infn_not_saved));
+                            + getResources().getString(
+                            R.string.new_store_infn_not_saved));
                     return true;
                 case DataMembers.SAVENEWOUTLET:
                     alertDialog.dismiss();
@@ -6329,10 +6331,10 @@ public class NewOutletFragment extends IvyBaseFragment
 
         switch (method) {
             case SynchronizationHelper.NEW_RETAILER_DOWNLOAD_INSERT:
-                if (SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE
+                if (IvyConstants.AUTHENTICATION_SUCCESS_CODE
                         .equals(errorCode)) {
 
-                    bmodel.synchronizationHelper.downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.NEW_RETAILER, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE,"");
+                    bmodel.synchronizationHelper.downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.NEW_RETAILER, SynchronizationHelper.DOWNLOAD_FINISH_UPDATE, "");
 
 
                 } else {
@@ -6683,17 +6685,17 @@ public class NewOutletFragment extends IvyBaseFragment
     private void setLocationDetails(CensusLocationBO censusLocationBO) {
         int size = profileConfig.size();
         int count = 0;
-        for (int i=0; i<size; i++) {
-            if ("CITY".equalsIgnoreCase(profileConfig.get(i).getConfigCode())){
+        for (int i = 0; i < size; i++) {
+            if ("CITY".equalsIgnoreCase(profileConfig.get(i).getConfigCode())) {
                 editText[i].setText(censusLocationBO.getLocationName());
                 count++;
-            }else if ("DISTRICT".equalsIgnoreCase(profileConfig.get(i).getConfigCode())){
+            } else if ("DISTRICT".equalsIgnoreCase(profileConfig.get(i).getConfigCode())) {
                 editText[i].setText(censusLocationBO.getDistrict());
                 count++;
-            } else if ("STATE".equalsIgnoreCase(profileConfig.get(i).getConfigCode())){
+            } else if ("STATE".equalsIgnoreCase(profileConfig.get(i).getConfigCode())) {
                 editText[i].setText(censusLocationBO.getState());
                 count++;
-            } else if ("COUNTRY".equalsIgnoreCase(profileConfig.get(i).getConfigCode())){
+            } else if ("COUNTRY".equalsIgnoreCase(profileConfig.get(i).getConfigCode())) {
                 editText[i].setText(censusLocationBO.getCountry());
                 count++;
             }

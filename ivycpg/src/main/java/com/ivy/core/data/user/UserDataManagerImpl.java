@@ -26,7 +26,7 @@ import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
 
 import static com.ivy.sd.png.provider.ConfigurationMasterHelper.CODE_ENABLE_USER_FILTER_DASHBOARD;
-import static com.ivy.utils.StringUtils.QT;
+import static com.ivy.utils.StringUtils.getStringQueryParam;
 
 public class UserDataManagerImpl implements UserDataManager {
 
@@ -346,7 +346,7 @@ public class UserDataManagerImpl implements UserDataManager {
 
                     StringBuffer sb = new StringBuffer();
                     sb.append("SELECT hhtcode FROM hhtmodulemaster WHERE hhtcode = ");
-                    sb.append(QT(CODE_IS_PWD_ENCRYPTED));
+                    sb.append(getStringQueryParam(CODE_IS_PWD_ENCRYPTED));
                     sb.append(" AND Flag = 1 and ForSwitchSeller = 0");
                     Cursor c = mDbUtil.selectSQL(sb.toString());
                     if (c.getCount() > 0) {
@@ -404,7 +404,7 @@ public class UserDataManagerImpl implements UserDataManager {
                             + "' where userID=" + userID;
                     mDbUtil.executeQ(query);
                     appDataProvider.getUser().setPassword(password);
-                    String query1 = "Update AppVariables set PasswordCreatedDate=" + QT(appDataProvider.getUser().getDownloadDate());
+                    String query1 = "Update AppVariables set PasswordCreatedDate=" + getStringQueryParam(appDataProvider.getUser().getDownloadDate());
                     mDbUtil.executeQ(query1);
 
 
@@ -454,7 +454,7 @@ public class UserDataManagerImpl implements UserDataManager {
                     String filter = "";
                     String sql = "select RField from "
                             + DataMembers.tbl_HhtModuleMaster
-                            + " where hhtCode=" + QT(CODE_ENABLE_USER_FILTER_DASHBOARD) + " and Flag=1 and ForSwitchSeller = 0";
+                            + " where hhtCode=" + getStringQueryParam(CODE_ENABLE_USER_FILTER_DASHBOARD) + " and Flag=1 and ForSwitchSeller = 0";
                     Cursor c = mDbUtil.selectSQL(sql);
                     if (c != null && c.getCount() != 0) {
                         if (c.moveToNext()) {
@@ -518,7 +518,7 @@ public class UserDataManagerImpl implements UserDataManager {
                     initDb();
                     String codeChild = "CHILD";
                     ArrayList<UserMasterBO> userList = new ArrayList<>();
-                    String query = "select userid,username from usermaster where isDeviceuser!=1 AND relationship =" + QT(codeChild);
+                    String query = "select userid,username from usermaster where isDeviceuser!=1 AND relationship =" + getStringQueryParam(codeChild);
                     Cursor c = mDbUtil.selectSQL(query);
                     if (c != null) {
                         userList = new ArrayList<>();
@@ -624,15 +624,15 @@ public class UserDataManagerImpl implements UserDataManager {
                             + "" + appDataProvider.getRetailMaster().getRetailerID()
                             + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
-                    mDbUtil.deleteSQL(DataMembers.tbl_UserEditDetail, " Code =" + QT("ProfileImagePath") + "and UserID=" + appDataProvider.getUser().getUserid(), false);
+                    mDbUtil.deleteSQL(DataMembers.tbl_UserEditDetail, " Code =" + getStringQueryParam("ProfileImagePath") + "and UserID=" + appDataProvider.getUser().getUserid(), false);
 
                     String imagePath = "User" + "/" + appDataProvider.getUser().getDownloadDate().replace("/", "")
                             + "/"
                             + appDataProvider.getUser().getUserid()
                             + "/" + userMasterBO.getImagePath();
                     String insertquery = "insert into UserEditDetail (Tid,UserID,Code,Value,Upload)" +
-                            "values (" + QT(tid) + "," + userMasterBO.getUserid()
-                            + ",'ProfileImagePath'," + QT(imagePath) + ",'N')";
+                            "values (" + getStringQueryParam(tid) + "," + userMasterBO.getUserid()
+                            + ",'ProfileImagePath'," + getStringQueryParam(imagePath) + ",'N')";
                     mDbUtil.executeQ(insertquery);
 
                 } catch (Exception ignored) {
@@ -652,7 +652,7 @@ public class UserDataManagerImpl implements UserDataManager {
                     initDb();
 
                     ArrayList<UserMasterBO> userList = new ArrayList<>();
-                    String query = "select userid,username from usermaster where isDeviceuser = 1 OR relationship =" + QT("CHILD");
+                    String query = "select userid,username from usermaster where isDeviceuser = 1 OR relationship =" + getStringQueryParam("CHILD");
                     Cursor c = mDbUtil.selectSQL(query);
                     if (c != null) {
                         userList = new ArrayList<>();
@@ -686,7 +686,7 @@ public class UserDataManagerImpl implements UserDataManager {
                     initDb();
 
                     ArrayList<UserMasterBO> userList = new ArrayList<>();
-                    String query = "select userid,username from usermaster where relationship =" + QT("PARENT");
+                    String query = "select userid,username from usermaster where relationship =" + getStringQueryParam("PARENT");
                     Cursor c = mDbUtil.selectSQL(query);
                     if (c != null) {
                         userList = new ArrayList<>();
@@ -720,7 +720,7 @@ public class UserDataManagerImpl implements UserDataManager {
                     initDb();
 
                     ArrayList<UserMasterBO> userList = new ArrayList<>();
-                    String query = "select userid,username from usermaster where relationship =" + QT("CHILD");
+                    String query = "select userid,username from usermaster where relationship =" + getStringQueryParam("CHILD");
                     Cursor c = mDbUtil.selectSQL(query);
                     if (c != null) {
                         userList = new ArrayList<>();
@@ -754,7 +754,7 @@ public class UserDataManagerImpl implements UserDataManager {
                     initDb();
 
                     ArrayList<UserMasterBO> userList = new ArrayList<>();
-                    String query = "select userid,username from usermaster where relationship =" + QT("PEER");
+                    String query = "select userid,username from usermaster where relationship =" + getStringQueryParam("PEER");
                     Cursor c = mDbUtil.selectSQL(query);
                     if (c != null) {
                         userList = new ArrayList<>();
@@ -908,7 +908,7 @@ public class UserDataManagerImpl implements UserDataManager {
                     initDb();
 
                     ArrayList<UserMasterBO> userList = new ArrayList<>();
-                    String query = "select userid,username from usermaster where relationship =" + QT("CHILD") + " OR relationship = 'ASSOCIATE'";
+                    String query = "select userid,username from usermaster where relationship =" + getStringQueryParam("CHILD") + " OR relationship = 'ASSOCIATE'";
                     Cursor c = mDbUtil.selectSQL(query);
                     if (c != null) {
                         UserMasterBO userMasterBO;

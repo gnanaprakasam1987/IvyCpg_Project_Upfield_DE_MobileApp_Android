@@ -6,7 +6,7 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -83,7 +83,7 @@ public class PlanoramaDetailActivity extends IvyBaseActivityNoActionBar {
         toolbar_selection.inflateMenu(R.menu.menu_planorama);
         toolbar_selection.getMenu().findItem(R.id.menu_delete).setVisible(false);
         toolbar_selection.setNavigationIcon(getResources().getDrawable(R.drawable.ok_tick));
-        toolbar_selection.setOnMenuItemClickListener(new android.support.v7.widget.Toolbar.OnMenuItemClickListener() {
+        toolbar_selection.setOnMenuItemClickListener(new androidx.appcompat.widget.Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {
                 if(item.getItemId()==R.id.menu_image_full_view){

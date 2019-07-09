@@ -16,9 +16,10 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v7.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -293,7 +294,7 @@ public class SubCompetitorTrackingActivity extends IvyBaseActivityNoActionBar {
         } else if (i == R.id.menu_remarks)
 
         {
-            android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
+            FragmentManager ft = getSupportFragmentManager();
             RemarksDialog dialog = new RemarksDialog(
                     HomeScreenTwo.MENU_COMPETITOR);
             dialog.setCancelable(false);

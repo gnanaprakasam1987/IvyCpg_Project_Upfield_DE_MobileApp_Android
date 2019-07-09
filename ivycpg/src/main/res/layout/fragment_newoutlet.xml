@@ -4,8 +4,7 @@
     android:id="@+id/root"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    tools:context="com.ivy.sd.png.view.NewOutlet">
+    android:orientation="vertical">
 
     <TextView
         android:id="@+id/title"
@@ -15,17 +14,28 @@
         android:layout_alignParentTop="true"
         android:visibility="gone" />
 
+
+    <!--Body Content added here -->
     <ScrollView
         android:id="@+id/scrollview2"
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/profile_botton_layout_height"
         android:layout_marginStart="@dimen/dimen_12dp"
-        android:layout_marginEnd="@dimen/dimen_12dp"
         android:layout_marginTop="@dimen/dimen_12dp"
-        android:scrollbars="none"/>
+        android:layout_marginEnd="@dimen/dimen_12dp"
+        android:layout_marginBottom="@dimen/profile_botton_layout_height"
+        android:scrollbars="none">
+        <!--Root Parent layout-->
+        <LinearLayout
+            android:id="@+id/rootLinearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/background_noise"
+            android:orientation="vertical" />
+    </ScrollView>
 
 
+    <!--Footer View Start here-->
     <LinearLayout
         android:id="@+id/bottom_layout"
         android:layout_width="match_parent"
@@ -57,11 +67,12 @@
                 style="?attr/roundedCustomButtonNormal"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:textAllCaps="false"
                 android:onClick="onClick"
-                android:text="@string/save" />
+                android:text="@string/save"
+                android:textAllCaps="false" />
 
         </LinearLayout>
     </LinearLayout>
+    <!--Footer View End here-->
 
 </RelativeLayout>

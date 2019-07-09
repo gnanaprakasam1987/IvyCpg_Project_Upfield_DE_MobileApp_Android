@@ -1,18 +1,16 @@
 package com.ivy.ui.reports.currentreport.presenter;
 
-import android.arch.lifecycle.Lifecycle;
-import android.arch.lifecycle.OnLifecycleEvent;
+import androidx.lifecycle.Lifecycle;
+import androidx.lifecycle.OnLifecycleEvent;
 import android.content.Context;
 
 import com.ivy.core.base.presenter.BasePresenter;
 import com.ivy.core.data.datamanager.DataManager;
 import com.ivy.sd.png.bo.ChildLevelBo;
 import com.ivy.sd.png.provider.ProductHelper;
-import com.ivy.sd.png.util.Commons;
 import com.ivy.ui.reports.currentreport.ICurrentReportContract;
 import com.ivy.ui.reports.currentreport.data.CurrentReportManager;
 import com.ivy.sd.png.bo.StockReportBO;
-import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;

@@ -1,10 +1,12 @@
 package com.ivy.cpg.view.van.stockproposal;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -74,7 +76,7 @@ public class StockProposalScreen extends IvyBaseActivityNoActionBar implements B
     }
 
     public void numberPressed(View vw) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         StockProposalFragment asf = (StockProposalFragment) fm
                 .findFragmentById(R.id.stock_proposal_fragment);
         asf.numberPressed(vw);
@@ -82,7 +84,7 @@ public class StockProposalScreen extends IvyBaseActivityNoActionBar implements B
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         StockProposalFragment asf = (StockProposalFragment) fm
                 .findFragmentById(R.id.stock_proposal_fragment);
         asf.updateBrandText(mFilterText, id);
@@ -90,7 +92,7 @@ public class StockProposalScreen extends IvyBaseActivityNoActionBar implements B
 
     @Override
     public void updateGeneralText(String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         StockProposalFragment asf = (StockProposalFragment) fm
                 .findFragmentById(R.id.stock_proposal_fragment);
         asf.updateGeneralText(mFilterText);
@@ -98,7 +100,7 @@ public class StockProposalScreen extends IvyBaseActivityNoActionBar implements B
 
     @Override
     public void updateCancel() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         StockProposalFragment asf = (StockProposalFragment) fm
                 .findFragmentById(R.id.stock_proposal_fragment);
         asf.updateCancel();
@@ -106,7 +108,7 @@ public class StockProposalScreen extends IvyBaseActivityNoActionBar implements B
 
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         StockProposalFragment asf = (StockProposalFragment) fm
                 .findFragmentById(R.id.stock_proposal_fragment);
         asf.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);

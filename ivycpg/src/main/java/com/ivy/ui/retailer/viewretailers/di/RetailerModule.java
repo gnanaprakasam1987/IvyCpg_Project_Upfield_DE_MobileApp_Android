@@ -1,5 +1,7 @@
 package com.ivy.ui.retailer.viewretailers.di;
 
+import com.ivy.core.data.sync.SynchronizationDataManager;
+import com.ivy.core.data.sync.SynchronizationDataManagerImpl;
 import com.ivy.core.di.scope.PerActivity;
 import com.ivy.ui.retailer.viewretailers.RetailerContract;
 import com.ivy.ui.retailer.viewretailers.data.RetailerDataManager;
@@ -45,5 +47,10 @@ public class RetailerModule {
     @Provides
     RetailerDataManager retailerDataManager(RetailerDataManagerImpl retailerDataManagerImpl){
         return retailerDataManagerImpl;
+    }
+
+    @Provides
+    SynchronizationDataManager synchronizationDataManager(SynchronizationDataManagerImpl synchronizationDataManager){
+        return synchronizationDataManager;
     }
 }

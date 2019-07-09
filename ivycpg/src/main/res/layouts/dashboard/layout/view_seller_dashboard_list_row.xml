@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,7 +10,7 @@
     card_view:cardUseCompatPadding="true"
     card_view:contentPadding="0dp">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/dimen_8dp"
@@ -65,7 +65,7 @@
             card_view:layout_constraintEnd_toStartOf="@id/score_title"
             card_view:layout_constraintTop_toTopOf="parent" />
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/incentiveGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -121,21 +121,21 @@
             android:background="@color/light_gray"
             card_view:layout_constraintTop_toBottomOf="@+id/factorName_dashboard_tv" />
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/scoreGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="visible"
             card_view:constraint_referenced_ids="score_title,score_dashboard_tv" />
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/initiativeGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="visible"
             card_view:constraint_referenced_ids="incentive_title,initiative_dashboard_tv" />
 
-        <android.support.constraint.Barrier
+        <androidx.constraintlayout.widget.Barrier
             android:id="@+id/barrier2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -189,7 +189,7 @@
             card_view:layout_constraintStart_toStartOf="@id/achived_title"
             card_view:layout_constraintTop_toBottomOf="@+id/achived_title" />
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/achievedGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -255,7 +255,7 @@
             card_view:layout_constraintStart_toStartOf="@id/balance_title"
             card_view:layout_constraintTop_toBottomOf="@+id/balance_title" />
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/balanceGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -321,7 +321,7 @@
             card_view:layout_constraintStart_toStartOf="@id/flex_title"
             card_view:layout_constraintTop_toBottomOf="@+id/flex_title" />
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/flexGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -385,7 +385,7 @@
             card_view:layout_constraintStart_toStartOf="@id/target_title"
             card_view:layout_constraintTop_toBottomOf="@+id/target_title" />
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/targetGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -434,7 +434,7 @@
             card_view:layout_constraintEnd_toStartOf="@+id/pieChart"
             card_view:layout_constraintTop_toBottomOf="@+id/rowSeperator" />
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/skuGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -453,6 +453,6 @@
             card_view:layout_constraintTop_toBottomOf="@+id/rowSeperator" />
 
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

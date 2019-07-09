@@ -36,7 +36,7 @@
         android:overlapAnchor="false"
         android:visibility="visible" />
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/remarkWrapper"
         android:layout_width="match_parent"
         android:visibility="gone"
@@ -52,7 +52,7 @@
             android:inputType="text"
             android:maxLines="1" />
 
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <View
         android:layout_width="match_parent"

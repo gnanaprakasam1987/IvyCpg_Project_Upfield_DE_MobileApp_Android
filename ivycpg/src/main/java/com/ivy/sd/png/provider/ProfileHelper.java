@@ -7,7 +7,7 @@ import android.database.SQLException;
 import android.net.Uri;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import android.support.v4.content.FileProvider;
+import androidx.core.content.FileProvider;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -111,7 +111,7 @@ public class ProfileHelper {
             );
             db.openDataBase();
             StringBuilder sb = new StringBuilder();
-            sb.append("select URL from UrlDownloadMaster where MasterName =" + StringUtils.QT(masterName));
+            sb.append("select URL from UrlDownloadMaster where MasterName =" + StringUtils.getStringQueryParam(masterName));
 
             Cursor c = db.selectSQL(sb.toString());
             if (c != null) {
@@ -683,7 +683,7 @@ public class ProfileHelper {
                             .selectSQL("select A.Tgt,A.Ach,RField from SkuWiseTarget A where A.Pid="
                                     + c.getInt(0)
                                     + " and A.date < "
-                                    + StringUtils.QT(DashBoardHelper.getFirstDateOfCurrentMonth("yyyy/MM/dd"))
+                                    + StringUtils.getStringQueryParam(DashBoardHelper.getFirstDateOfCurrentMonth("yyyy/MM/dd"))
                                     + "  and Rid="
                                     + bmodel.getRetailerMasterBO()
                                     .getRetailerID()
@@ -742,7 +742,7 @@ public class ProfileHelper {
                                 .selectSQL("select A.Tgt,A.Ach,RField from SkuWiseTarget A where A.Pid="
                                         + c.getInt(0)
                                         + " and A.date < "
-                                        + StringUtils.QT(DashBoardHelper.getFirstDateOfCurrentMonth("yyyy/MM/dd"))
+                                        + StringUtils.getStringQueryParam(DashBoardHelper.getFirstDateOfCurrentMonth("yyyy/MM/dd"))
                                         + "  and Rid="
                                         + bmodel.getRetailerMasterBO()
                                         .getRetailerID()
@@ -850,12 +850,12 @@ public class ProfileHelper {
                     + "" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID);
 
             String insertHeader = "insert into RetailerEditHeader (tid,RetailerId,date)" +
-                    "values (" + StringUtils.QT(tid)
+                    "values (" + StringUtils.getStringQueryParam(tid)
                     + "," + bmodel.getRetailerMasterBO().getRetailerID()
-                    + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ")";
+                    + "," + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ")";
             db.executeQ(insertHeader);
             String insertquery = "insert into RetailerEditDetail (tid,Code,value,RefId,RetailerId)" +
-                    "values (" + StringUtils.QT(tid)
+                    "values (" + StringUtils.getStringQueryParam(tid)
                     + ",'PRO23','1'," + bmodel.getRetailerMasterBO().getRetailerID() + "," + bmodel.getRetailerMasterBO().getRetailerID() + ")";
             db.executeQ(insertquery);
 
@@ -1063,7 +1063,7 @@ public class ProfileHelper {
 
     private String getGivenLovId() {
         String givenLovId = "";
-        String sql = " Select RField from HhtModuleMaster where hhtCode = " + StringUtils.QT(ConfigurationMasterHelper.CODE_SHOW_AVG_SALES_PER_LEVEL) + " and flag =1 and ForSwitchSeller = 0";
+        String sql = " Select RField from HhtModuleMaster where hhtCode = " + StringUtils.getStringQueryParam(ConfigurationMasterHelper.CODE_SHOW_AVG_SALES_PER_LEVEL) + " and flag =1 and ForSwitchSeller = 0";
         DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
         );
         db.openDataBase();
@@ -1085,7 +1085,7 @@ public class ProfileHelper {
                 HashMap<String, String> contactMenuMap = new HashMap<>();
 
                 try {
-                    String sql = " Select HHTCode,MName from HhtMenuMaster where MenuType = " + StringUtils.QT("RETAILER_CONTACT") + " and flag =1";
+                    String sql = " Select HHTCode,MName from HhtMenuMaster where MenuType = " + StringUtils.getStringQueryParam("RETAILER_CONTACT") + " and flag =1";
                     DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
                     );
                     db.openDataBase();
@@ -1126,7 +1126,7 @@ public class ProfileHelper {
                 + " ifnull(RC.contactname,'') as cName,ifnull(RC.contactname_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,RC.CPID  as cpid,"
                 + " ifnull(RC.Email,'') as email,ifnull(RC.salutationLovId,'') as salutationId, ifnull(RC.IsEmailNotificationReq,0) as emailPref,ifnull(RC.RetailerID,0) as retailerID from RetailerContact RC "
                 + " Left join StandardListMaster SM on SM.ListId= RC.contact_title_lovid "
-                + " Where RC.RetailerId =" + StringUtils.QT(retailerID);
+                + " Where RC.RetailerId =" + StringUtils.getStringQueryParam(retailerID);
 
                     DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
                     );
@@ -1159,7 +1159,7 @@ public class ProfileHelper {
             String retailerContactEditQuery = "select ifnull(RC.Contact_Title,'') as contactTitle, ifNull(SM.ListName,'') as listName, RC.Contact_Title_LovId as contact_title_lovid, ifnull(RC.ContactName,'') as cName,ifnull(RC.ContactName_LName,'') as cLname,ifnull(RC.ContactNumber,'') as cNumber,RC.IsPrimary as isPrimary,Rc.CPId as cpid,Rc.Status as status ,"
                     + " ifnull(RC.Email,'') as email,ifnull(RC.salutationLovId,'') as salutationId, ifnull(RC.IsEmailNotificationReq,0) as emailPref,ifnull(RC.RetailerID,0) as retailerID from RetailerContactEdit RC "
                     + " Left join StandardListMaster SM on SM.ListId= RC.Contact_Title_LovId "
-                    + " Where RC.RetailerId =" + StringUtils.QT(retailerID);
+                    + " Where RC.RetailerId =" + StringUtils.getStringQueryParam(retailerID);
 
                         Cursor retailerContactEditCurson = db.selectSQL(retailerContactEditQuery);
                         if (retailerContactEditCurson != null) {
@@ -1226,7 +1226,7 @@ public class ProfileHelper {
         if (isEdit)
             appendStatusStr = " ,status ";
 
-        Cursor c = db.selectSQL("Select Day,StartTime,EndTime,CPAId "+appendStatusStr+" from "+tableName+" where CPId ="+ StringUtils.QT(retailerContactBo.getCpId()));
+        Cursor c = db.selectSQL("Select Day,StartTime,EndTime,CPAId "+appendStatusStr+" from "+tableName+" where CPId ="+ StringUtils.getStringQueryParam(retailerContactBo.getCpId()));
 
         if (c != null) {
             while (c.moveToNext()) {
@@ -1271,7 +1271,7 @@ public class ProfileHelper {
                         query = query + " and MenuType= 'NEWRETAILER_CONTACT' ";
 
 
-                    query = query + " and lang=" + StringUtils.QT(locale) + " order by MNumber";
+                    query = query + " and lang=" + StringUtils.getStringQueryParam(locale) + " order by MNumber";
 
                     Cursor c = db.selectSQL(query);
                     ConfigureBO con;

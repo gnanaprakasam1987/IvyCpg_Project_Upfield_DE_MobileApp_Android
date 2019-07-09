@@ -2,7 +2,7 @@ package com.ivy.cpg.view.order;
 
 import android.app.Dialog;
 import android.content.Context;
-import android.support.v7.widget.AppCompatRadioButton;
+import androidx.appcompat.widget.AppCompatRadioButton;
 import android.text.TextUtils;
 import android.view.MotionEvent;
 import android.view.View;

@@ -147,7 +147,7 @@ public class VanLoadStockApplyHelper {
             StringBuffer sb = new StringBuffer();
             sb.append("select distinct A.pid,A.caseQty,A.pcsQty,B.pname,B.psname,B.mrp,B.dUomQty,A.uid,A.outerQty,B.dOuomQty,");
             sb.append("A.BatchId,o.isstarted,A.isFree from VanLoad A inner join productmaster B on A.pid=B.pid  ");
-            sb.append(" left join Odameter o where A.uid=" + StringUtils.QT(uid)
+            sb.append(" left join Odameter o where A.uid=" + StringUtils.getStringQueryParam(uid)
                     + " and A.upload='N'");
 
             Cursor c = db.selectSQL(sb.toString());
@@ -159,7 +159,7 @@ public class VanLoadStockApplyHelper {
                         if (isAlreadyStockAvailable(c.getString(0), c.getString(10), db)) {
                             String sql = "update StockInHandMaster set upload='N',qty=qty+"
                                     + totalQty + " where pid=" + c.getString(0)
-                                    + " and batchid=" + StringUtils.QT(c.getString(10));
+                                    + " and batchid=" + StringUtils.getStringQueryParam(c.getString(10));
                             db.executeQ(sql);
                         } else {
                             String columns = "pid,batchid,qty";
@@ -176,7 +176,7 @@ public class VanLoadStockApplyHelper {
                         if (isAlreadyFreeStockAvailable(c.getString(0), c.getString(10), db)) {
                             String sql = "update FreeStockInHandMaster set upload='N',qty=qty+"
                                     + totalQty + " where pid=" + c.getString(0)
-                                    + " and batchid=" + StringUtils.QT(c.getString(10));
+                                    + " and batchid=" + StringUtils.getStringQueryParam(c.getString(10));
                             db.executeQ(sql);
                         } else {
                             String columns = "pid,batchid,qty";
@@ -246,8 +246,8 @@ public class VanLoadStockApplyHelper {
             String sql1 = "insert into StockApply(uid,date,status,upload) values("
                     + uid
                     + ","
-                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME))
-                    + ",'A'," + StringUtils.QT(upload) + ")";
+                    + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_TIME))
+                    + ",'A'," + StringUtils.getStringQueryParam(upload) + ")";
             db.executeQ(sql1);
 
             db.closeDB();
@@ -267,7 +267,7 @@ public class VanLoadStockApplyHelper {
             );
             db.createDataBase();
             db.openDataBase();
-            db.updateSQL("update vanload set upload='N' where uid=" + StringUtils.QT(uid));
+            db.updateSQL("update vanload set upload='N' where uid=" + StringUtils.getStringQueryParam(uid));
             db.close();
         } catch (Exception e) {
 
@@ -368,7 +368,7 @@ public class VanLoadStockApplyHelper {
             db.createDataBase();
             db.openDataBase();
             Cursor c = db.selectSQL("select count(distinct pid) from VanLoad" +
-                    " where uid =" + StringUtils.QT(uid));
+                    " where uid =" + StringUtils.getStringQueryParam(uid));
 
             if (c != null) {
                 if (c.moveToNext()) {
@@ -405,8 +405,8 @@ public class VanLoadStockApplyHelper {
             String sql1 = "insert into StockApply(uid,date,status,upload) values("
                     + uid
                     + ","
-                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME))
-                    + ",'C'," + StringUtils.QT(upload) + ")";
+                    + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_TIME))
+                    + ",'C'," + StringUtils.getStringQueryParam(upload) + ")";
             db.executeQ(sql1);
             db.closeDB();
         } catch (Exception e) {

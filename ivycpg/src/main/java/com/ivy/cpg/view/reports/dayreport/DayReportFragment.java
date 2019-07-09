@@ -3,7 +3,7 @@ package com.ivy.cpg.view.reports.dayreport;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.os.Looper;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,13 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.GridView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.util.Commons;
 
 import javax.inject.Inject;
 

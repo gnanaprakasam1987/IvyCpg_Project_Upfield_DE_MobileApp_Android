@@ -1,8 +1,8 @@
 package com.ivy.ui.retailerplan.calendar.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
-import android.util.SparseArray;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

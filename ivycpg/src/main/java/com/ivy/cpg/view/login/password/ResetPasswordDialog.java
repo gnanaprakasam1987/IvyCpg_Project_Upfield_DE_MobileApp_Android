@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.login.LoginHelper;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
@@ -176,7 +177,7 @@ public class ResetPasswordDialog extends Dialog {
                 JSONObject jsonObject = new JSONObject();
                 jsonObject.put("VersionCode",
                         bmodel.getApplicationVersionNumber());
-                jsonObject.put("LoginId", bmodel.userNameTemp.trim());
+                jsonObject.put("LoginId", bmodel.getAppDataProvider().getUserName().trim());
                 jsonObject.put("MobileDateTime",
                         Utils.getDate("yyyy/MM/dd HH:mm:ss"));
                 jsonObject.put("MobileUTCDateTime",
@@ -222,7 +223,7 @@ public class ResetPasswordDialog extends Dialog {
                     }
 
                 } else {
-                    if (!bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    if (!bmodel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                         String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
                         if (errorMsg != null) {
                             Toast.makeText(ctx, errorMsg, Toast.LENGTH_SHORT).show();
@@ -260,10 +261,10 @@ public class ResetPasswordDialog extends Dialog {
                     edt.putInt("passwordlock", 0);
                     edt.apply();
                 }
-                bmodel.passwordTemp = Npassword;
+                bmodel.getAppDataProvider().setUserPassword(Npassword);
 
                 bmodel.userMasterHelper.changePassword(bmodel.getAppDataProvider()
-                        .getUser().getUserid(), bmodel.passwordTemp);
+                        .getUser().getUserid(), bmodel.getAppDataProvider().getUserPassword());
 
                 onCreateDialog(0, ctx.getResources().getString(R.string.password_changed_successfully)).show();
             } else if (result == -1) {

@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/dimen_4dp">
@@ -66,9 +66,9 @@
                     android:background="@null"/>
             </LinearLayout>
         </LinearLayout>
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:layout_width="fill_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/footer"
@@ -131,5 +131,5 @@
         android:scrollbarAlwaysDrawHorizontalTrack="true"
         android:scrollbarAlwaysDrawVerticalTrack="true"
         android:layout_below="@+id/ListHeader"/>
-    </RelativeLayout></android.support.v7.widget.CardView>
+    </RelativeLayout></androidx.cardview.widget.CardView>
 </LinearLayout>

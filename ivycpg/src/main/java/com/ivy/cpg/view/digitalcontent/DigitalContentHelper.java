@@ -2,13 +2,11 @@ package com.ivy.cpg.view.digitalcontent;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.support.v4.content.FileProvider;
+import androidx.core.content.FileProvider;
 import android.widget.Toast;
 
 import com.ivy.lib.existing.DBUtil;
@@ -24,7 +22,6 @@ import com.ivy.utils.StringUtils;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Vector;
 
 /**
@@ -394,8 +391,8 @@ public class DigitalContentHelper {
             String retailerId = mBModel.getRetailerMasterBO().getRetailerID() != null ? mBModel.getRetailerMasterBO().getRetailerID() : "0";
 
             Cursor c = db.selectSQL("select UId from DigitalContentTrackingHeader where DId =" +
-                    digiContentId + " and RetailerId = " + StringUtils.QT(retailerId) +
-                    " and upload='N' and Date=" + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                    digiContentId + " and RetailerId = " + StringUtils.getStringQueryParam(retailerId) +
+                    " and upload='N' and Date=" + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
             if (c != null && c.getCount() > 0 && c.moveToNext()) {
                 tid = c.getString(0);
@@ -407,10 +404,10 @@ public class DigitalContentHelper {
                         + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID) + "";
 
                 // UId,DId,RetailerId,Date
-                content = StringUtils.QT(tid) + ","
-                        + StringUtils.QT(digiContentId) + ","
-                        + StringUtils.QT(retailerId) + ","
-                        + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                content = StringUtils.getStringQueryParam(tid) + ","
+                        + StringUtils.getStringQueryParam(digiContentId) + ","
+                        + StringUtils.getStringQueryParam(retailerId) + ","
+                        + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                 ;
 
                 db.insertSQL(DataMembers.tbl_DigitalContent_Tracking_Header,
@@ -418,11 +415,11 @@ public class DigitalContentHelper {
             }
 
             // UId,DId,UserID,RetailerId,StartTime,EndTime,PId,isFastForwarded
-            content = StringUtils.QT(tid) + ","
-                    + StringUtils.QT(startTime) + ","//startTime
-                    + StringUtils.QT(endTime) + ","//EndTime
-                    + StringUtils.QT(productID) + ","//Product Id
-                    + "'" + isFastForward + "'," + StringUtils.QT(mBModel.getAppDataProvider().getRetailMaster().getRetailerID());
+            content = StringUtils.getStringQueryParam(tid) + ","
+                    + StringUtils.getStringQueryParam(startTime) + ","//startTime
+                    + StringUtils.getStringQueryParam(endTime) + ","//EndTime
+                    + StringUtils.getStringQueryParam(productID) + ","//Product Id
+                    + "'" + isFastForward + "'," + StringUtils.getStringQueryParam(mBModel.getAppDataProvider().getRetailMaster().getRetailerID());
             ;
             String columns = "UId,StartTime,EndTime,PId,isFastForwarded,RetailerID";
             db.insertSQL(DataMembers.tbl_DigitalContent_Tracking_Detail,
@@ -440,7 +437,7 @@ public class DigitalContentHelper {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
             db.openDataBase();
-            Cursor c = db.selectSQL("select Flag from HhtModuleMaster where hhtcode = " + StringUtils.QT(CODE_FLOAT_DGT_CONTENT) + " and  " +
+            Cursor c = db.selectSQL("select Flag from HhtModuleMaster where hhtcode = " + StringUtils.getStringQueryParam(CODE_FLOAT_DGT_CONTENT) + " and  " +
                     "menu_type= 'FLT_DGT_CNT'and ForSwitchSeller = 0");
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {

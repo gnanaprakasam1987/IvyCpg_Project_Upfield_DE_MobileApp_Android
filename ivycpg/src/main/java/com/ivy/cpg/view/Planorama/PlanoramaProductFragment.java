@@ -1,10 +1,7 @@
 package com.ivy.cpg.view.Planorama;
 
 import android.annotation.SuppressLint;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.CompoundButtonCompat;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;

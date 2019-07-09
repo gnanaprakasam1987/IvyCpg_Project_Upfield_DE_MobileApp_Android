@@ -31,7 +31,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.ivy.core.IvyConstants;
 import com.ivy.core.data.datamanager.DataManagerImpl;
+import com.ivy.core.data.db.AppDataManagerImpl;
+import com.ivy.core.data.sync.SynchronizationDataManagerImpl;
 import com.ivy.cpg.view.attendance.AttendanceHelper;
 import com.ivy.cpg.view.collection.CollectionHelper;
 import com.ivy.cpg.view.homescreen.HomeScreenFragment;
@@ -141,9 +144,6 @@ SynchronizationHelper {
     public static final int MOBILE_EMAIL_VERIFICATION = 20;
     public static final int WAREHOUSE_STOCK_DOWNLOAD = 21;
     public static final int APP_TUTORIAL_DOWNLOAD = 22;
-
-    public static final String AUTHENTICATION_SUCCESS_CODE = "0";
-    public static final String UPDATE_TABLE_SUCCESS_CODE = "-1";
 
 
     public static final String USER_ID = "UserId";
@@ -452,11 +452,12 @@ SynchronizationHelper {
     }
 
     /**
+     * @return true is day closed or false
+     * @See {@link AppDataManagerImpl#isDayClosed()} or {@link DataManagerImpl#isDayClosed()}
      * This method is used to check if the Day is closed or not. Day will be
      * closed from sync Screen. By default false. If the day is closed then its
      * not possible to preform any operation.
-     *
-     * @return true is day closed or false
+     * @deprecated
      */
     public boolean isDayClosed() {
         int i = 0;
@@ -1121,7 +1122,7 @@ SynchronizationHelper {
                     "union select count(uid) from DenominationDetails where upload='N'" +
                     "union select count(Tid) from RetailerLocationDeviation where upload='N'" +
                     "union select count(uid) from DisplayAssetTrackingHeader where upload='N'" +
-                    "union select count(uid) from DisplayAssetTrackingDetails where upload='N'"+
+                    "union select count(uid) from DisplayAssetTrackingDetails where upload='N'" +
                     "union select count(RetailerId) from RetailerNotes where upload='N'" +
                     "union select count(RetailerId) from SerializedAssetServiceRequest where upload='N'";
             Cursor c = db.selectSQL(sb);
@@ -1144,12 +1145,15 @@ SynchronizationHelper {
     }
 
     /**
+     * @deprecated
+     * @see {@link FileUtils#deleteFiles(String, String)}
      * method to use delete files from sdcard
      *
      * @param folderPath
      * @param fnamesStarts
      */
 
+    @Deprecated
     public void deleteFiles(String folderPath, String fnamesStarts) {
         File folder = new File(folderPath);
         if (folder.listFiles() != null) {
@@ -2094,7 +2098,6 @@ SynchronizationHelper {
                     label:
                     while (itr.hasNext()) {
                         String key = (String) itr.next();
-
                         if (key.equals("Tables")) {
                             JSONArray jsonArray = jsonObject.getJSONArray(JSON_KEY);
 
@@ -2722,6 +2725,10 @@ SynchronizationHelper {
 
     }
 
+    /**
+     * @deprecated
+     * This call has been deprecated from CPG 142 version
+     */
     public void updatetempTablesWithRetailerMaster() {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         try {
@@ -2735,6 +2742,10 @@ SynchronizationHelper {
         }
     }
 
+    /**
+     * @See {@link AppUtils#getErrorMessageByErrorCode(Context, String)}
+     * @deprecated
+     */
     public void loadErrorCode() {
         mErrorMessageByErrorCode = new HashMap<>();
         mErrorMessageByErrorCode.put("E01", context.getResources().getString(R.string.error_e01));
@@ -2767,6 +2778,10 @@ SynchronizationHelper {
         mErrorMessageByErrorCode.put("E100", context.getResources().getString(R.string.error_e100));
     }
 
+    /**
+     * @See {@link AppUtils#getErrorMessageByErrorCode(Context, String)}
+     * @deprecated
+     */
     public HashMap<String, String> getErrormessageByErrorCode() {
         if (mErrorMessageByErrorCode != null) {
             return mErrorMessageByErrorCode;
@@ -2776,6 +2791,8 @@ SynchronizationHelper {
     }
 
     /**
+     * @deprecated
+     * @see {@link SynchronizationDataManagerImpl#uploadDataToServer(String, String, String)}
      * Method to use upload data from mobile. If exception throws it return
      * empty Vector
      *
@@ -2791,7 +2808,7 @@ SynchronizationHelper {
         StringBuilder url = new StringBuilder();
         url.append(DataMembers.SERVER_URL);
         url.append(appendurl);
-        if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+        if (bmodel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
             try {
                 MyHttpConnectionNew http = new MyHttpConnectionNew();
                 http.create(MyHttpConnectionNew.POST, url.toString(), null);
@@ -2884,7 +2901,7 @@ SynchronizationHelper {
 
         StringBuffer url = new StringBuffer();
         url.append(DataMembers.SERVER_URL + appendurl);
-        if (getAuthErroCode().equals(AUTHENTICATION_SUCCESS_CODE)) {
+        if (getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
             try {
 
                 MyHttpConnectionNew http = new MyHttpConnectionNew();
@@ -2917,7 +2934,7 @@ SynchronizationHelper {
                     + "/UserMaster/SecureAuthorizeUser");
             JSONObject jsonObj = new JSONObject();
             if (loginId.equals(""))
-                jsonObj.put("LoginId", bmodel.userNameTemp);
+                jsonObj.put("LoginId", bmodel.getAppDataProvider().getUserName());
             else
                 jsonObj.put("LoginId", loginId);
             //jsonObj.put("Password", getPlainPwd());
@@ -2930,7 +2947,7 @@ SynchronizationHelper {
             jsonObj.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
             jsonObj.put("DeviceId",
                     DeviceUtils.getIMEINumber(context));
-            jsonObj.put("RegistrationId", bmodel.regid);
+            jsonObj.put("RegistrationId", bmodel.fcmRegistrationToken);
             jsonObj.put(MOBILE_DATE_TIME,
                     Utils.getDate("yyyy/MM/dd HH:mm:ss"));
             jsonObj.put("MobileUTCDateTime",
@@ -2983,6 +3000,11 @@ SynchronizationHelper {
     }
 
 
+    /**
+     * @param isInsertUser
+     * @See {@link SynchronizationDataManagerImpl#getAuthToken()}
+     * @deprecated NOTE: Download user from DB on Demand
+     */
     public void updateAuthenticateToken(boolean isInsertUser) {
 
         try {
@@ -2990,8 +3012,8 @@ SynchronizationHelper {
             mAuthErrorCode = "";
             String downloadUrl = DataMembers.SERVER_URL + DataMembers.AUTHENTICATE;
             JSONObject jsonObj = new JSONObject();
-            jsonObj.put("LoginId", bmodel.userNameTemp);
-            jsonObj.put("Password", bmodel.passwordTemp);
+            jsonObj.put("LoginId", bmodel.getAppDataProvider().getUserName());
+            jsonObj.put("Password", bmodel.getAppDataProvider().getUserPassword());
             jsonObj.put("Platform", "Android");
             jsonObj.put("OSVersion", android.os.Build.VERSION.RELEASE);
             jsonObj.put("FirmWare", "");
@@ -3001,7 +3023,7 @@ SynchronizationHelper {
             jsonObj.put(SynchronizationHelper.VERSION_NAME, bmodel.getApplicationVersionName());
             jsonObj.put("DeviceId",
                     DeviceUtils.getIMEINumber(context));
-            jsonObj.put("RegistrationId", bmodel.regid);
+            jsonObj.put("RegistrationId", bmodel.fcmRegistrationToken);
             jsonObj.put("DeviceUniqueId", DeviceUtils.getDeviceId(context));
             Commons.print("Update Authentication Token " + jsonObj.toString());
             // adding additional two parameters
@@ -3022,8 +3044,8 @@ SynchronizationHelper {
                         if (key.equals("ErrorCode")) {
                             mAuthErrorCode = jsonObject.get("ErrorCode").toString();
                             mAuthErrorCode = mAuthErrorCode.replaceAll("[\\[\\],\"]", "");
-
-                            if (mAuthErrorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE) && isInsertUser) {
+                            //TODO -- Download User on Demand in New Data manager
+                            if (mAuthErrorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE) && isInsertUser) {
                                 bmodel.synchronizationHelper.parseJSONAndInsert(jsonObject, true);
                                 bmodel.userMasterHelper.downloadUserDetails();
                             }
@@ -3208,10 +3230,11 @@ SynchronizationHelper {
 
 
     /**
-     * Method to use get upload url for the followning code
-     *
      * @param code - mention upload seqence or new retailer or normal upload
      * @return
+     * @See {@link com.ivy.core.data.sync.SynchronizationDataManagerImpl#getSyncUrl(String)}
+     * Method to use get upload url for the followning code
+     * @deprecated
      */
     public String getUploadUrl(String code) {
         String url = "";
@@ -3245,6 +3268,10 @@ SynchronizationHelper {
         return url;
     }
 
+    /**
+     * @deprecated
+     * @See {@link SynchronizationDataManagerImpl#getSyncUrlList(String)}
+     */
     public void downloadNewRetailerUrl() {
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
@@ -3270,6 +3297,10 @@ SynchronizationHelper {
 
     }
 
+    /**
+     * @deprecated
+     * @See {@link SynchronizationDataManagerImpl#getSyncUrlList(String)}
+     */
     public ArrayList<String> getNewRetailerDownloadurlList() {
         if (mNewRetailerDownloadUrlList != null) {
             return mNewRetailerDownloadUrlList;
@@ -3301,7 +3332,10 @@ SynchronizationHelper {
         }
     }
 
-
+    /**
+     * @deprecated
+     * @See {@link SynchronizationDataManagerImpl#getSyncUrlList(String)}
+     */
     public void downloadUserRetailerTranUrl() {
 
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
@@ -3326,7 +3360,10 @@ SynchronizationHelper {
         }
 
     }
-
+    /**
+     * @deprecated
+     * @See {@link SynchronizationDataManagerImpl#getSyncUrlList(String)}
+     */
     public ArrayList<String> getUserRetailerTranDownloadurlList() {
         if (mUserRetailerTranDownloadUrlList != null) {
             return mUserRetailerTranDownloadUrlList;
@@ -3453,6 +3490,10 @@ SynchronizationHelper {
         return downloadUrl;
     }
 
+    /**
+     * @deprecated
+     * @See {@link SynchronizationDataManagerImpl#getSyncUrl(String)}
+     */
     public String downloadAppTutorialURL() {
         mJsonObjectResponseByTableName = new HashMap<>();
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
@@ -3885,7 +3926,7 @@ SynchronizationHelper {
                         String key = (String) itr.next();
                         if (key.equals(SynchronizationHelper.ERROR_CODE)) {
                             String errorCode = jsonObject.getString(key);
-                            if (errorCode.equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                            if (errorCode.equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                                 JSONArray dataReturn = jsonObject.getJSONArray(JSON_DATA_KEY);
                                 ArrayList<String> arlstValues = new ArrayList<>();
                                 for (int i = 0; i < dataReturn.length(); i++) {
@@ -3994,7 +4035,7 @@ SynchronizationHelper {
             downloadUrl.append(url);
             JSONObject jsonObj = new JSONObject();
             jsonObj.put("loginId", bmodel.userMasterHelper.getUserMasterBO().getLoginName());
-            jsonObj.put("password", bmodel.passwordTemp);
+            jsonObj.put("password", bmodel.getAppDataProvider().getUserPassword());
             jsonObj.put("organisationId", bmodel.userMasterHelper
                     .getUserMasterBO().getOrganizationId());
             Commons.print("Url " + downloadUrl.toString());
@@ -4026,7 +4067,7 @@ SynchronizationHelper {
     public String downloadSessionId(String url) {
         updateAuthenticateToken(false);
         String sessionId = "";
-        if (getAuthErroCode().equals(AUTHENTICATION_SUCCESS_CODE)) {
+        if (getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
             try {
 
                 MyHttpConnectionNew http = new MyHttpConnectionNew();
@@ -4329,7 +4370,7 @@ SynchronizationHelper {
                                     + "," + cur2.getString(3)
                                     + "," + cur2.getString(4)
                                     + "," + cur2.getString(5)
-                                    + "," + StringUtils.QT(cur2.getString(6))
+                                    + "," + StringUtils.getStringQueryParam(cur2.getString(6))
                                     + "," + cur2.getString(7));
                 }
                 cur2.close();
@@ -4342,9 +4383,9 @@ SynchronizationHelper {
                 while (cur3.moveToNext()) {
                     db.insertSQL("LastVisitPlanogramImages", "pid,imageName,mappingId,ImagePath,ImageId,LocId,RetailerId",
                             cur3.getString(0)
-                                    + "," + StringUtils.QT(cur3.getString(1))
+                                    + "," + StringUtils.getStringQueryParam(cur3.getString(1))
                                     + "," + cur3.getString(2)
-                                    + "," + StringUtils.QT(cur3.getString(3))
+                                    + "," + StringUtils.getStringQueryParam(cur3.getString(3))
                                     + "," + cur3.getString(4)
                                     + "," + cur3.getString(5)
                                     + "," + cur3.getString(6));
@@ -4464,6 +4505,12 @@ SynchronizationHelper {
         return hexStr;
     }*/
 
+    /**
+     * @param input
+     * @return
+     * @See {@link com.ivy.core.data.sync.SynchronizationDataManagerImpl#generateChecksum(String)}
+     * @deprecated
+     */
     public String generateChecksum(String input) {
         MessageDigest digest = null;
         String hash = "";
@@ -5014,8 +5061,8 @@ SynchronizationHelper {
             if (pickListIdMap.size() > 0) {
                 for (Map.Entry<String, String> map : pickListIdMap.entrySet()) {
 
-                    String values = StringUtils.QT(map.getKey()) + ","
-                            + StringUtils.QT(map.getValue());
+                    String values = StringUtils.getStringQueryParam(map.getKey()) + ","
+                            + StringUtils.getStringQueryParam(map.getValue());
 
                     db.insertSQL(DataMembers.tbl_picklist, DataMembers.tbl_picklist_cols, values);
 
@@ -5072,11 +5119,11 @@ SynchronizationHelper {
             String userID;
             String downloadedDate;
             if (bmodel.getAppDataProvider().getUser() != null) {
-                syncLogId = bmodel.getAppDataProvider().getUser().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS);
+                bmodel.getAppDataProvider().setSyncLogId(bmodel.getAppDataProvider().getUser().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
                 userID = bmodel.getAppDataProvider().getUser().getUserid() + "";
                 downloadedDate = bmodel.getAppDataProvider().getUser().getDownloadDate();
             } else {
-                syncLogId = "0" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS);
+                bmodel.getAppDataProvider().setSyncLogId("0" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID_MILLIS));
                 userID = "0";
                 downloadedDate = DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL);
             }
@@ -5086,9 +5133,9 @@ SynchronizationHelper {
 
             String query = "select transactionid from synclogdetails where synctype=";
             if (SYNC_TYPE_DGT_DOWNLOAD.equals(syncType))
-                query = query + StringUtils.QT(SYNC_TYPE_DOWNLOAD);
+                query = query + StringUtils.getStringQueryParam(SYNC_TYPE_DOWNLOAD);
             else if (SYNC_TYPE_DGT_UPLOAD.equals(syncType))
-                query = query + StringUtils.QT(SYNC_TYPE_UPLOAD);
+                query = query + StringUtils.getStringQueryParam(SYNC_TYPE_UPLOAD);
 
             Cursor cursor = db.selectSQL(query);
             if (cursor != null) {
@@ -5099,19 +5146,19 @@ SynchronizationHelper {
             }
 
             if (SYNC_TYPE_DGT_DOWNLOAD.equals(syncType))
-                db.updateSQL("update SyncLogDetails set userid=" + StringUtils.QT(bmodel.getAppDataProvider().getUser().getUserid() + "")
-                        + ",downloadeddate=" + StringUtils.QT(bmodel.getAppDataProvider().getUser().getDownloadDate())
-                        + " where synctype=" + StringUtils.QT(SYNC_TYPE_DOWNLOAD));
+                db.updateSQL("update SyncLogDetails set userid=" + StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getUser().getUserid() + "")
+                        + ",downloadeddate=" + StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getUser().getDownloadDate())
+                        + " where synctype=" + StringUtils.getStringQueryParam(SYNC_TYPE_DOWNLOAD));
 
             String columns = "userid,appversionnumber,osname,osversion,devicename,synctype,starttime,endtime,photoscount,syncstatus,upload,transactionid,downloadeddate,totalcount";
 
-            String values = StringUtils.QT(userID) + "," + StringUtils.QT(AppUtils.getApplicationVersionName(context))
-                    + "," + StringUtils.QT("Android")
-                    + "," + StringUtils.QT(android.os.Build.VERSION.RELEASE) + "," + StringUtils.QT(android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL)
-                    + "," + StringUtils.QT(syncType) + "," + StringUtils.QT(startTime)
-                    + "," + StringUtils.QT(endTime) + "," + photosCount
-                    + "," + StringUtils.QT(syncStatus) + ",'N'"
-                    + "," + StringUtils.QT(syncLogId) + "," + StringUtils.QT(downloadedDate)
+            String values = StringUtils.getStringQueryParam(userID) + "," + StringUtils.getStringQueryParam(AppUtils.getApplicationVersionName(context))
+                    + "," + StringUtils.getStringQueryParam("Android")
+                    + "," + StringUtils.getStringQueryParam(android.os.Build.VERSION.RELEASE) + "," + StringUtils.getStringQueryParam(android.os.Build.MANUFACTURER + " " + android.os.Build.MODEL)
+                    + "," + StringUtils.getStringQueryParam(syncType) + "," + StringUtils.getStringQueryParam(startTime)
+                    + "," + StringUtils.getStringQueryParam(endTime) + "," + photosCount
+                    + "," + StringUtils.getStringQueryParam(syncStatus) + ",'N'"
+                    + "," + StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getSyncLogId()) + "," + StringUtils.getStringQueryParam(downloadedDate)
                     + "," + totalCount;
             db.insertSQL("SyncLogDetails", columns,
                     values);
@@ -5138,15 +5185,15 @@ SynchronizationHelper {
             db.createDataBase();
             db.openDataBase();
 
-            String status = StringUtils.isEmptyString(errorInfo) ? "Success" : "Failure";
+            String status = StringUtils.isNullOrEmpty(errorInfo) ? "Success" : "Failure";
 
             String columns = "Tid,apiname,starttime,endtime,errorinfo,status,tablename";
 
-            String values = StringUtils.QT(syncLogId) + "," + StringUtils.QT(apiName)
-                    + "," + StringUtils.QT(startTime)
-                    + "," + StringUtils.QT(endTime)
-                    + "," + StringUtils.QT(errorInfo) + "," + StringUtils.QT(status)
-                    + "," + StringUtils.QT(tableName);
+            String values = StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getSyncLogId()) + "," + StringUtils.getStringQueryParam(apiName)
+                    + "," + StringUtils.getStringQueryParam(startTime)
+                    + "," + StringUtils.getStringQueryParam(endTime)
+                    + "," + StringUtils.getStringQueryParam(errorInfo) + "," + StringUtils.getStringQueryParam(status)
+                    + "," + StringUtils.getStringQueryParam(tableName);
             db.insertSQL("SyncDownloadApiStatus", columns,
                     values);
             db.closeDB();
@@ -5165,14 +5212,14 @@ SynchronizationHelper {
     private void insertSyncTableDetails(String tableName, int lineCount) {
 
         try {
-            if (!StringUtils.isEmptyString(syncLogId)) {
+            if (!StringUtils.isNullOrEmpty(bmodel.getAppDataProvider().getSyncLogId())) {
                 DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
                 db.createDataBase();
                 db.openDataBase();
 
                 String columns = "Tid,tablename,linecount";
 
-                String values = StringUtils.QT(syncLogId) + "," + StringUtils.QT(tableName)
+                String values = StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getSyncLogId()) + "," + StringUtils.getStringQueryParam(tableName)
                         + "," + lineCount;
                 db.insertSQL("SyncDownloadTableStatus", columns,
                         values);
@@ -5194,9 +5241,9 @@ SynchronizationHelper {
             DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
             db.createDataBase();
             db.openDataBase();
-            db.updateSQL("update SyncLogDetails set endtime=" + StringUtils.QT(endTime)
-                    + ",syncstatus=" + StringUtils.QT(syncStatus)
-                    + " where synctype=" + StringUtils.QT(SYNC_TYPE_DOWNLOAD));
+            db.updateSQL("update SyncLogDetails set endtime=" + StringUtils.getStringQueryParam(endTime)
+                    + ",syncstatus=" + StringUtils.getStringQueryParam(syncStatus)
+                    + " where synctype=" + StringUtils.getStringQueryParam(SYNC_TYPE_DOWNLOAD));
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);
