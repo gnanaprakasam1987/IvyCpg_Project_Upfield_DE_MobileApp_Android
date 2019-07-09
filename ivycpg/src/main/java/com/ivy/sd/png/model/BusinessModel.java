@@ -5914,50 +5914,6 @@ public class BusinessModel extends Application {
         });
     }
 
-
-    // Chat
-    String chatRegId, chatUserName, ChatPassword;
-
-    public void downloadChatCredentials() {
-        try {
-
-            DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME
-            );
-            db.openDataBase();
-            Cursor c = db
-                    .selectSQL("select chatregid,chatUserName,chatUserPwd from AppVariables");
-            if (c != null) {
-                if (c.moveToNext()) {
-                    chatRegId = c.getString(0);
-                    chatUserName = c.getString(1);
-                    ChatPassword = c.getString(2);
-                }
-                c.close();
-            }
-            db.closeDB();
-
-        } catch (Exception e) {
-            Commons.printException("" + e);
-        }
-
-
-    }
-
-    public String getChatRegId() {
-        return chatRegId;
-    }
-
-
-    public String getChatUserName() {
-        return chatUserName;
-    }
-
-
-    public String getChatPassword() {
-        return ChatPassword;
-    }
-
-
     public void updatePrintCount(int count) {
         try {
             DBUtil db = new DBUtil(ctx, DataMembers.DB_NAME

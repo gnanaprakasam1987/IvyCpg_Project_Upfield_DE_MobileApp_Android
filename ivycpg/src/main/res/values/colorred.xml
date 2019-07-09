@@ -34,6 +34,10 @@
     <!--List item Value Text color-->
     <color name="list_item_values_text_color_red">#262626</color>
 
+    <!-- Home Screen Burger Menu background color-->
+    <color name="list_view_bg_red">#200606</color>
+    <color name="burger_menu_header_red">#2D0809</color>
+
     <!-- ********************************Planning sub/ LoadManagement Module **************************-->
 
     <color name="startAndEndOfTheDayHeaderLayoutBg_red">#FFEEEE</color>

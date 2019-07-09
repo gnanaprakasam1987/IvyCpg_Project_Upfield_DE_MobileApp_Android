@@ -394,4 +394,7 @@
     <string name="sync_report">Sync Report</string>
     <string name="freeze_columns">Freeze Columns</string>
     <string name="freeze_columns_alert_title">Select columns want to be freeze</string>
+    <string name="announcement">Announcement</string>
+    <string name="order_type">Order Type</string>
+    <string name="profile_view">Profile View</string>
 </resources>

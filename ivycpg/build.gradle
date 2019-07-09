@@ -51,7 +51,7 @@ android {
         versionCode "$minorVersion$patchVersion".toInteger()
         versionName "${majorVersion}.${minorVersion}.${patchVersion}.${revNumber}"
         multiDexEnabled true
-        resConfigs "en", "in", "lo", "th", "vi", "tr", "ar", "es","fr"
+        resConfigs "en", "in", "lo", "th", "vi", "tr", "ar", "es", "fr"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "BASE_URL", "\"${BASE_CPG_DEV_URL}\"")
         buildConfigField("String", "TEST_USER_NAME", "\"${TEST_USER_NAME}\"")
@@ -172,6 +172,7 @@ android {
                     'src/main/res/layouts/note',
                     'src/main/res/layouts/offline',
                     'src/main/res/layouts/retailer',
+                    'src/main/res/layouts/announcement',
                     'src/main/res/layouts',
                     'src/main/res'
             ]

@@ -41,4 +41,8 @@
     <!--List item Value Text color-->
     <color name="list_item_values_text_color_nblue">#262626</color>
 
+    <!-- Home Screen Burger Menu background color-->
+    <color name="list_view_bg_nblue">#191D3D</color>
+    <color name="burger_menu_header_nblue">#161531</color>
+
 </resources>

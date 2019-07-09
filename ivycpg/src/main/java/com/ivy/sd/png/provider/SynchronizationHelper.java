@@ -4702,8 +4702,6 @@ SynchronizationHelper {
         if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && NetworkUtils.isNetworkConnected(context))
             LoginHelper.getInstance(context).onFCMRegistration(context);
 
-        if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
-            bmodel.downloadChatCredentials();
         if (LoginHelper.getInstance(context).IS_PASSWORD_ENCRYPTED)
             setEncryptType();
 

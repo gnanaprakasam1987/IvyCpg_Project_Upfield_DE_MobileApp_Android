@@ -416,7 +416,8 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         mode = getTaskMode();
         retSelectionAutoCompTxt.setVisibility(View.GONE);
         optionTextView.setText(getString(R.string.Seller));
-        peerUserRb.setVisibility(View.VISIBLE);
+        if (!peerUserMasterArrayAdapter.isEmpty())
+            peerUserRb.setVisibility(View.VISIBLE);
         handleLinkUserVisibility(View.GONE);
         handleProductLevelVisibility(View.GONE);
     }
@@ -580,7 +581,7 @@ public class TaskCreationActivity extends BaseActivity implements TaskContract.T
         taskBo.setTaskCategoryID(mSelectedCategoryID);
         taskBo.setMode(mode);
 
-        taskPresenter.onSaveTask(taskAssignId, taskBo, linkUserId, retSelectionId,deletedImageId);
+        taskPresenter.onSaveTask(taskAssignId, taskBo, linkUserId, retSelectionId, deletedImageId);
     }
 
     private int getSelectedUserId() {
