@@ -13,6 +13,7 @@ import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
@@ -1227,7 +1228,7 @@ public class SerializedAssetHelper {
             String columns = "uid,AssetId,serialNumber,NFCNumber,installDate,creationdate,RequestType,reasonid,remark,retailerId,Transfer_To,Transfer_Type,AllocationRefId";
 
             String values = id + ","
-                    + StringUtils.QT(posmId) + "," + StringUtils.QT(mSno) + "," + StringUtils.QT(NFCId) + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                    + StringUtils.QT(posmId) + "," + StringUtils.QT(mSno) + "," + StringUtils.QT(NFCId == null ? "" : NFCId) + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                     + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + StringUtils.QT("R") + ","
                     + StringUtils.QT(reasonId) + "," + StringUtils.QT("") + "," + mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID() + "," + 0 + "," + StringUtils.QT("RTR_WH") + "," + StringUtils.QT(refId);
 
@@ -1302,7 +1303,8 @@ public class SerializedAssetHelper {
 
 
             String values = id + "," + StringUtils.QT(assets.getPOSM()) + "," + StringUtils.QT(assets.getSNO()) + ","
-                    + StringUtils.QT(assets.getNFCTagId()) + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                    + StringUtils.QT( assets.getNFCTagId() == null? "" : assets.getNFCTagId())
+                    + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
                     + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," + StringUtils.QT("T") + "," +
                     StringUtils.QT(assets.getReasonId()) + ","
                     + StringUtils.QT(assets.getRemarks()) + ","
