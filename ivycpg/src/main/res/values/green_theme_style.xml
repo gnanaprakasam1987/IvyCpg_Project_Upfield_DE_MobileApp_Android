@@ -71,7 +71,8 @@
         <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
         <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
         <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
-        <item name="homescreenbackground">@drawable/burger_menu_bg</item>
+        <item name="homeScreenListViewBackground">@color/list_view_bg_green</item>
+        <item name="homeScreenHeaderBackground">@color/burger_menu_header_green</item>
         <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
         <item name="dashboardSpinnerSelector">@color/divider_view_color</item>
         <item name="SearchViewStyle">@style/SearchViewStyle</item>
@@ -86,6 +87,7 @@
         <item name="fabButtonStyle_Configured">@style/fab_icon_style_enabled</item>
         <item name="imageStyle_Configured">@style/image_style_enabled</item>
         <item name="buttonStyle_Configured">@style/button_normal_style_enabled</item>
+        <item name="circleBackground">@drawable/circle_bg_green</item>
 
     </style>
 
@@ -159,7 +161,8 @@
         <item name="tradeCoverageBackgroundTwo">@color/black_bg2</item>
         <item name="tradeCoverageBackgroundThree">@color/black_bg3</item>
         <item name="dashboardSpinnerBackground">@drawable/curved_black_bg</item>
-        <item name="homescreenbackground">@drawable/burger_menu_bg</item>
+        <item name="homeScreenListViewBackground">@color/list_view_bg_green</item>
+        <item name="homeScreenHeaderBackground">@color/burger_menu_header_green</item>
         <item name="mtdDashboardBackground">@drawable/curved_black_bg</item>
         <item name="dashboardSpinnerSelector">@color/divider_view_color</item>
         <item name="SearchViewStyle">@style/SearchViewStyle</item>
@@ -175,6 +178,7 @@
         <item name="fabButtonStyle_Configured">@style/fab_icon_style_disabled</item>
         <item name="imageStyle_Configured">@style/image_style_disabled</item>
         <item name="buttonStyle_Configured">@style/button_normal_style_disabled</item>
+        <item name="circleBackground">@drawable/circle_bg_green</item>
 
     </style>
 

@@ -117,8 +117,6 @@ public class MyThread extends Thread {
 
                 if (bmodel.configurationMasterHelper.IS_ENABLE_GCM_REGISTRATION && bmodel.isOnline())
                     LoginHelper.getInstance(ctx).onFCMRegistration(ctx.getApplicationContext());
-                if (bmodel.configurationMasterHelper.IS_CHAT_ENABLED)
-                    bmodel.downloadChatCredentials();
 
 
                 frm.getHandler().sendEmptyMessage(DataMembers.NOTIFY_USEREXIST);

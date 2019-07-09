@@ -2,66 +2,82 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ivydist="http://schemas.android.com/apk/res-auto">
 
+
     <item
-        android:id="@+id/menu_reminder"
-        android:icon="@drawable/ic_action_remainder"
+        android:id="@+id/menu_sales_selection"
+        android:icon="@drawable/switch_pre_van"
         android:orderInCategory="1"
-        android:title="@string/reminder"
+        android:title="@string/sales_type_vansale"
         ivydist:showAsAction="always" />
+
     <item
-        android:id="@+id/menu_photo"
-        android:icon="@drawable/ic_action_device_access_camera"
+        android:id="@+id/menu_supplier_selection"
         android:orderInCategory="2"
-        android:title="@string/photo"
+        android:title="@string/supplier_label"
+        android:icon="@drawable/supplier"
         ivydist:showAsAction="always" />
 
     <item
         android:id="@+id/menu_loc_filter"
         android:icon="@drawable/ic_action_location_place"
         android:orderInCategory="3"
-        android:title="Location Filter"
-        ivydist:showAsAction="always" />
-    <item
-        android:id="@+id/menu_sales_selection"
-        android:icon="@drawable/switch_pre_van"
-        android:orderInCategory="4"
-        android:title="VanSales"
-        ivydist:showAsAction="always" />
-    <item
-        android:id="@+id/menu_supplier_selection"
-        android:orderInCategory="5"
-        android:title="SupplierSelection"
-        ivydist:showAsAction="always" />
-    <item
-        android:id="@+id/menu_dgtc"
-        android:icon="@drawable/ic_action_device_access_camera"
-        android:orderInCategory="6"
-        android:title="photo"
-        ivydist:showAsAction="always" />
-    <item
-        android:id="@+id/menu_digital_content"
-        android:icon="@drawable/icon_photo"
-        android:orderInCategory="7"
-        android:title="Digital Content"
-        ivydist:showAsAction="always" />
-    <item
-        android:id="@+id/menu_order_type"
-        android:icon="@drawable/order_type_icon"
-        android:orderInCategory="8"
-        android:title="Order type"
-        ivydist:showAsAction="always" />
-    <item
-        android:id="@+id/menu_profile_view"
-        android:icon="@drawable/ic_profile_view"
-        android:orderInCategory="9"
-        android:title="Profile View"
-        android:visible="false"
+        android:title="@string/location"
         ivydist:showAsAction="always" />
 
     <item
         android:id="@+id/menu_category_filter"
         android:icon="@drawable/ic_action_filter"
-        android:orderInCategory="10"
-        android:title="Category Filter"
+        android:orderInCategory="4"
+        android:title="@string/category"
         ivydist:showAsAction="always" />
+
+
+    <item
+        android:id="@+id/menu_reminder"
+        android:icon="@drawable/ic_action_remainder"
+        android:orderInCategory="5"
+        android:title="@string/reminder"
+        ivydist:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_photo"
+        android:icon="@drawable/ic_action_device_access_camera"
+        android:orderInCategory="6"
+        android:title="@string/photo_capture"
+        ivydist:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_dgtc"
+        android:icon="@drawable/ic_action_device_access_camera"
+        android:orderInCategory="9"
+        android:title="@string/gallery"
+        ivydist:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_digital_content"
+        android:icon="@drawable/icon_photo"
+        android:orderInCategory="8"
+        android:title="@string/digital_content"
+        ivydist:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/menu_order_type"
+        android:icon="@drawable/order_type_icon"
+        android:orderInCategory="7"
+        android:title="@string/order_type"
+        ivydist:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_profile_view"
+        android:icon="@drawable/ic_profile_view"
+        android:orderInCategory="10"
+        android:title="@string/profile_view"
+        android:visible="false"
+        ivydist:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/menu_announcement"
+        android:icon="@drawable/ic_action_filter"
+        android:orderInCategory="11"
+        android:title="@string/announcement"
+        android:visible="false"
+        />
 </menu>

@@ -10,8 +10,5 @@
         android:right="1dp"
         android:bottom="1dp"
         />
-
-    <corners android:bottomRightRadius="200dp" android:bottomLeftRadius="200dp"
-        android:topLeftRadius="0dp" android:topRightRadius="0dp"/>
     <solid android:color="#22000000" />
 </shape>

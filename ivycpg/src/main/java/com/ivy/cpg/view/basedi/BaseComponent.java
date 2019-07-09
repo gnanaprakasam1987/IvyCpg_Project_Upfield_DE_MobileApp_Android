@@ -3,6 +3,7 @@ package com.ivy.cpg.view.basedi;
 import com.ivy.core.di.component.IvyAppComponent;
 import com.ivy.core.di.scope.PerActivity;
 import com.ivy.cpg.view.reports.ReportActivity;
+import com.ivy.ui.announcement.view.AnnouncementActivity;
 import com.ivy.ui.notes.view.NotesActivity;
 import com.ivy.ui.task.view.FilterFragment;
 import com.ivy.ui.reports.dynamicreport.view.DynamicReportActivity;
@@ -25,4 +26,6 @@ public interface BaseComponent {
     void inject(DynamicReportTabFragment tabFragment);
 
     void inject(DynamicReportActivity dynamicReportActivity);
+
+    void inject(AnnouncementActivity announcementActivity);
 }

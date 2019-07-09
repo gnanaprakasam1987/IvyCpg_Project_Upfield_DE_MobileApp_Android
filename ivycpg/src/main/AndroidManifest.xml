@@ -905,6 +905,9 @@
             android:name="com.ivy.ui.reports.dynamicreport.view.DynamicReportActivity"
             android:screenOrientation="portrait" />
 
+        <activity
+            android:name="com.ivy.ui.announcement.view.AnnouncementActivity"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

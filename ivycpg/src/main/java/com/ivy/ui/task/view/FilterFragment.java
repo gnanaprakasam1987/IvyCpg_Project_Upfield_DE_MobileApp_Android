@@ -25,6 +25,7 @@ import com.ivy.ui.task.model.FilterBo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import javax.inject.Inject;
@@ -89,12 +90,13 @@ public class FilterFragment extends BaseFragment implements FilterMenuAdapter.Up
 
             if (bundle.containsKey(TaskConstant.SELECTED_FILTER_LIST)
                     && bundle.get(TaskConstant.SELECTED_FILTER_LIST) != null) {
-                selectedIdsHashMap = ((HashMap<String, ArrayList<Object>>) bundle.getSerializable(TaskConstant.SELECTED_FILTER_LIST));
+                selectedIdsHashMap.clear();
+                selectedIdsHashMap .putAll((Map<? extends String, ? extends ArrayList<Object>>) bundle.getSerializable(TaskConstant.SELECTED_FILTER_LIST));
             }
 
             if (bundle.containsKey(TaskConstant.FILTER_LIST)) {
                 hasMapFilterList = new HashMap<>();
-                hasMapFilterList = (HashMap<String, ArrayList<FilterBo>>) bundle.getSerializable(TaskConstant.FILTER);
+                hasMapFilterList.putAll((Map<? extends String, ? extends ArrayList<FilterBo>>) bundle.getSerializable(TaskConstant.FILTER_LIST));
             }
 
             if (bundle.containsKey(TaskConstant.FILTER_MENU_LIST)

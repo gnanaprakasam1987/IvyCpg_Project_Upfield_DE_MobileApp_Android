@@ -21,9 +21,11 @@ public interface ChannelDataManager extends AppDataManagerContract {
 
     Single<String> getChannelHierarchyForDiscount(int channelId);
 
-    Single<String> getChannelHierarchy(int channelId);
+    Single<String> getChannelHierarchy();
 
     Single<String> getLocationHierarchy();
 
     Single<String> fetchChannelIds();
+
+    Single<String>getAccountGroupIds();
 }
