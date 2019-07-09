@@ -62,6 +62,7 @@ public class DataMembers {
     public static final String USER = "USER";
     public static final String TASK_DIGITAL_CONTENT = "TDC";
     public static final String SERIALIZED_ASSET_DIG_CONTENT = "SADC";
+    public static final String PROMOTION = "PROMO";
 
     public static final String APP_TUTORIAL = "AppTutorial";
 

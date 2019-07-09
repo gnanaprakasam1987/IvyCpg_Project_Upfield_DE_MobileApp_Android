@@ -43,6 +43,7 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.HorizontalScrollView;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -65,6 +66,7 @@ import com.ivy.sd.png.model.FiveLevelFilterCallBack;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.CommonDialog;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.sd.png.util.view.OnSingleClickListener;
 import com.ivy.sd.png.view.CircleTransform;
 import com.ivy.sd.png.view.DataPickerDialogFragment;
 import com.ivy.sd.png.view.FilterFiveFragment;
@@ -818,6 +820,7 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
         Button mToDateBTN;
         LinearLayout ll_Rating, ll_price;
         ImageView img_remarks;
+        ImageButton imgAttachment;
     }
 
     private class MyAdapter extends ArrayAdapter<PromotionBO> {
@@ -1502,7 +1505,10 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
                 holder.tv_promoHeader = row
                         .findViewById(R.id.tvPromoHeader);
-                holder.tv_promoHeader.setVisibility(View.GONE);
+
+                holder.imgAttachment = row.findViewById(R.id.imgAttachment);
+                holder.imgAttachment.setVisibility(View.GONE);
+
                 holder.tv_product_price = row
                         .findViewById(R.id.price);
                 holder.rbExecuted = row
@@ -1776,10 +1782,18 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
 
             holder.mPromotionMasterBO = items.get(position);
 
+//            row.findViewById(R.id.ll_attachment).setVisibility(View.GONE);
             if(keySet.contains(holder.mPromotionMasterBO.getPromoName())){
-                holder.tv_promoHeader.setVisibility(View.VISIBLE);
+                row.findViewById(R.id.ll_attachment).setVisibility(View.VISIBLE);
                 holder.tv_promoHeader.setText(holder.mPromotionMasterBO.getPromoName());
                 keySet.remove(holder.mPromotionMasterBO.getPromoName());
+            }
+
+            if(holder.mPromotionMasterBO.getPromotionAttchmentList() != null &&
+                    holder.mPromotionMasterBO.getPromotionAttchmentList().size() > 0){
+                holder.imgAttachment.setVisibility(View.VISIBLE);
+            } else {
+                holder.imgAttachment.setVisibility(View.GONE);
             }
             //holder.tv_product_price.setText(holder.mPromotionMasterBO.getProductPrice() + "");
             if (holder.mPromotionMasterBO.getIsExecuted() == 1) {
@@ -1901,6 +1915,17 @@ public class PromotionTrackingFragment extends IvyBaseFragment implements BrandD
             } else {
                 holder.ll_price.setVisibility(View.GONE);
             }
+
+            holder.imgAttachment.setOnClickListener(new OnSingleClickListener() {
+                @Override
+                public void onSingleClick(View v) {
+                    FragmentTransaction ft = getActivity()
+                            .getSupportFragmentManager().beginTransaction();
+                    PromotionAttachmentDialog dialog = new PromotionAttachmentDialog("MENU_PROMO_REMARKS", holder.mPromotionMasterBO.getPromotionAttchmentList());
+                    dialog.setCancelable(false);
+                    dialog.show(ft, "MENU_PROMO_ATTACHMENT");
+                }
+            });
             return row;
         }
     }
