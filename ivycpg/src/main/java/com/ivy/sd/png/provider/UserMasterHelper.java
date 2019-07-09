@@ -340,7 +340,8 @@ public class UserMasterHelper {
 
                 bmodel.codeCleanUpUtil.setUserData(userMasterBO);
                 c.close();
-            }
+            } else
+                c.close();
         } catch (Exception e) {
             Commons.printException("" + e);
         } finally {
@@ -420,6 +421,12 @@ public class UserMasterHelper {
     /**
      * @See {@link UserDataManagerImpl#fetchUsers()}
      * @deprecated
+     */
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadAllUser;}
+     * @since CPG134 replaced by {@link com.ivy.ui.profile.data.ProfileDataManagerImpl#downloadAllUser}
+     * Will be removed from @version CPG134 Release
+     * @deprecated This has been Migrated to MVP pattern
      */
     public ArrayList<UserMasterBO> downloadUserList() {
         ArrayList<UserMasterBO> userList = null;
@@ -722,7 +729,7 @@ public class UserMasterHelper {
             db.openDataBase();
             String query = "select UM.userpositionid,UM.username,UM.userlevelid,UM.Parentid" +
                     ",(select userlevelname from userhierarchy where userlevelid = UM.userlevelid) as userlevelname" +
-                    " from UserMaster UM where UM.userlevelid >" + bmodel.getAppDataProvider().getUser().getUserlevelId() +" order by UM.userlevelid";
+                    " from UserMaster UM where UM.userlevelid >" + bmodel.getAppDataProvider().getUser().getUserlevelId() + " order by UM.userlevelid";
             Cursor c = db.selectSQL(query);
             ArrayList<ManagerialBO> userList = new ArrayList<>();
             if (c != null) {
@@ -762,7 +769,7 @@ public class UserMasterHelper {
 
     private void createTree(List<ManagerialBO> nodes) {
 
-        Map<String,  ArrayList<ManagerialBO>> mapTmp = new HashMap<>();
+        Map<String, ArrayList<ManagerialBO>> mapTmp = new HashMap<>();
         ArrayList<ManagerialBO> userHierarchy = new ArrayList<>();
 
         for (ManagerialBO current : nodes) {

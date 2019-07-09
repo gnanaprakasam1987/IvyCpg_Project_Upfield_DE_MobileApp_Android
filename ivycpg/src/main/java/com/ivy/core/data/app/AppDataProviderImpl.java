@@ -8,6 +8,8 @@ import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.bo.UserMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.utils.AppUtils;
+import com.ivy.utils.DeviceUtils;
 
 import java.util.ArrayList;
 
@@ -16,6 +18,11 @@ import javax.inject.Inject;
 public class AppDataProviderImpl implements AppDataProvider {
 
     private BusinessModel mContext;
+    private String userName;
+    private String userPassword;
+    private String fcmRegistrationToken;
+    private String syncLogId;
+    private boolean isEditOrder;
 
     @Inject
     public AppDataProviderImpl(@ApplicationContext Context context) {
@@ -39,6 +46,8 @@ public class AppDataProviderImpl implements AppDataProvider {
 
     /**/
     private int globalLocationIndex;
+
+    private String orderHeaderNote;
 
 
     private BeatMasterBO todayBeatMaster;
@@ -216,5 +225,91 @@ public class AppDataProviderImpl implements AppDataProvider {
     @Override
     public RetailerMasterBO getPausedRetailer() {
         return pausedRetailer;
+    }
+
+    @Override
+    public void setOrderHeaderNote(String orderHeaderNote) {
+        mContext.codeCleanUpUtil.setBModelOrderHeaderNote(orderHeaderNote);
+        this.orderHeaderNote = orderHeaderNote;
+    }
+
+    @Override
+    public void setOrderHeaderNote(String orderHeaderNote, boolean isFromBModel) {
+        this.orderHeaderNote = orderHeaderNote;
+    }
+
+    @Override
+    public String getOrderHeaderNote() {
+        return orderHeaderNote;
+    }
+
+    @Override
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    @Override
+    public String getUserName() {
+        return userName;
+    }
+
+    @Override
+    public boolean isEditOrder() {
+        return isEditOrder;
+    }
+
+    @Override
+    public void setIsEditOrder(boolean isEditOrder) {
+        this.isEditOrder=isEditOrder;
+    }
+
+    @Override
+    public void setUserPassword(String userPassword) {
+        this.userPassword = userPassword;
+    }
+
+    @Override
+    public String getUserPassword() {
+        return userPassword;
+    }
+
+    @Override
+    public String getAppVersionName() {
+        return AppUtils.getApplicationVersionName(mContext);
+    }
+
+    @Override
+    public String getAppVersionNumber() {
+        return AppUtils.getApplicationVersionNumber(mContext);
+    }
+
+    @Override
+    public String getDeviceId() {
+        return DeviceUtils.getDeviceId(mContext);
+    }
+
+    @Override
+    public String getIMEINumber() {
+        return DeviceUtils.getIMEINumber(mContext);
+    }
+
+    @Override
+    public void setFcmRegistrationToken(String fcmRegistrationToken) {
+        this.fcmRegistrationToken = fcmRegistrationToken;
+    }
+
+    @Override
+    public String getFcmRegistrationToken() {
+        return fcmRegistrationToken;
+    }
+
+    @Override
+    public void setSyncLogId(String syncLogId) {
+        this.syncLogId = syncLogId;
+    }
+
+    @Override
+    public String getSyncLogId() {
+        return syncLogId;
     }
 }

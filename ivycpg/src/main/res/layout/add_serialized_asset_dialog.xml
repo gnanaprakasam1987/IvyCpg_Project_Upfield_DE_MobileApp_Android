@@ -12,7 +12,7 @@
         layout="@layout/material_tool_bar" />
 
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/label_asset_type"
         style="@style/TextViewCaptionNormal"
         android:layout_width="wrap_content"
@@ -26,7 +26,7 @@
         android:tag="asset_type"
         android:text="@string/type" />
 
-    <android.support.v7.widget.AppCompatSpinner
+    <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/spinner_type"
         android:layout_width="@dimen/spinner_width"
         android:layout_height="@dimen/spinner_height"
@@ -41,7 +41,7 @@
         android:textAlignment="textStart"
         tools:targetApi="lollipop" />
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/label_asset_model"
         style="@style/TextViewCaptionNormal"
         android:layout_width="wrap_content"
@@ -55,7 +55,7 @@
         android:tag="asset_model"
         android:text="@string/model" />
 
-    <android.support.v7.widget.AppCompatSpinner
+    <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/spinner_model"
         android:layout_width="@dimen/spinner_width"
         android:layout_height="@dimen/spinner_height"
@@ -71,7 +71,7 @@
         tools:targetApi="lollipop" />
 
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/label_asset_vendor"
         style="@style/TextViewCaptionNormal"
         android:layout_width="wrap_content"
@@ -85,7 +85,7 @@
         android:tag="asset_vendor"
         android:text="@string/vendor" />
 
-    <android.support.v7.widget.AppCompatSpinner
+    <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/spinner_vendor"
         android:layout_width="@dimen/spinner_width"
         android:layout_height="@dimen/spinner_height"
@@ -99,7 +99,7 @@
         tools:targetApi="lollipop" />
 
 
-    <android.support.v7.widget.AppCompatTextView
+    <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/label_asset_capacity"
         style="@style/TextViewCaptionNormal"
         android:layout_width="wrap_content"
@@ -113,7 +113,7 @@
         android:tag="asset_capacity"
         android:text="@string/capacity" />
 
-    <android.support.v7.widget.AppCompatSpinner
+    <androidx.appcompat.widget.AppCompatSpinner
         android:id="@+id/spinner_capcity"
         android:layout_width="@dimen/spinner_width"
         android:layout_height="@dimen/spinner_height"

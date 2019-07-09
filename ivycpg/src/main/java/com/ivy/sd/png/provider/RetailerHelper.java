@@ -354,6 +354,7 @@ public class RetailerHelper {
                     setRetaierPlannedDate(retailerId, dateWisePlanBO);
                 }
             }
+            c.close();
 
         } catch (Exception e) {
             Commons.printException("" + e);
@@ -626,6 +627,7 @@ public class RetailerHelper {
 
             }
         }
+        c.close();
     }
 
     public String getColorCode(String value) {

@@ -22,8 +22,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.content.FileProvider;
-import android.support.v7.widget.Toolbar;
+import androidx.core.content.FileProvider;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -37,6 +37,8 @@ import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.aem.api.AEMPrinter;
 import com.aem.api.AEMScrybeDevice;
@@ -385,7 +387,7 @@ public class CommonPrintPreviewActivity extends IvyBaseActivityNoActionBar imple
         if (bmodel.mCommonPrintHelper.getInvoiceData().toString().length() > 0) {
 
             if (bmodel.configurationMasterHelper.IS_ORDER_SUMMERY_EXPORT_AND_EMAIL) {
-                android.support.v4.app.FragmentManager ft = getSupportFragmentManager();
+                FragmentManager ft = getSupportFragmentManager();
                 EmailDialog dialog = new EmailDialog(CommonPrintPreviewActivity.this, bmodel.getRetailerMasterBO().getEmail());
                 dialog.setCancelable(false);
                 dialog.show(ft, "MENU_STK_ORD");

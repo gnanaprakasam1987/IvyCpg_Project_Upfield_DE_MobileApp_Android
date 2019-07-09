@@ -7,7 +7,7 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,7 +19,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.ivy.cpg.view.login.LoginHelper;
+import com.ivy.core.IvyConstants;
 import com.ivy.lib.Utils;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
@@ -128,7 +128,7 @@ public class RetailerOTPDialog extends DialogFragment implements View.OnClickLis
                 jsonObject.put("UserId", bmodel.userMasterHelper
                         .getUserMasterBO().getUserid());
                 jsonObject.put("RetailerId", bmodel.getRetailerMasterBO().getRetailerID());
-                jsonObject.put("LoginId", bmodel.userNameTemp.trim());
+                jsonObject.put("LoginId", bmodel.getAppDataProvider().getUserName().trim());
                 jsonObject.put("MobileDateTime",
                         Utils.getDate("yyyy/MM/dd HH:mm:ss"));
                 jsonObject.put("MobileUTCDateTime",
@@ -161,7 +161,7 @@ public class RetailerOTPDialog extends DialogFragment implements View.OnClickLis
 
                     }
                 } else {
-                    if (!bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                    if (!bmodel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                         String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
                         if (errorMsg != null) {
                             Toast.makeText(getActivity(), errorMsg, Toast.LENGTH_SHORT).show();

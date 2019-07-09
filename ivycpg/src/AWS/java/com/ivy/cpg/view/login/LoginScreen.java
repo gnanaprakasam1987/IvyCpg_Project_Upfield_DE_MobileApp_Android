@@ -47,6 +47,7 @@ import com.ivy.utils.FileUtils;
 import com.ivy.utils.FontUtils;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -156,7 +157,7 @@ public class LoginScreen extends LoginBaseActivity
             JSONArray jsonArray = new JSONArray(data);
             AppTutorialPlugin.getInstance().setAppTutorialJsonArray(jsonArray);
         }
-        catch (Exception ex){
+        catch (JSONException ex){
             Commons.printException(ex);
         }
 
@@ -247,14 +248,14 @@ public class LoginScreen extends LoginBaseActivity
      */
     public void onLoginClick(View view) {
         try {
-            businessModel.userNameTemp = (editTextUserName.getText().toString());
-            businessModel.passwordTemp = (editTextPassword.getText().toString());
+            businessModel.getAppDataProvider().setUserName(editTextUserName.getText().toString());
+            businessModel.getAppDataProvider().setUserPassword(editTextPassword.getText().toString());
 
-            if (businessModel.userNameTemp.equals("")) {
+            if (editTextUserName.getText().toString().equals("")) {
                 editTextUserName.requestFocus();
                 editTextUserName.setError(getResources().getString(R.string.enter_username));
                 return;
-            } else if (businessModel.passwordTemp.equals("")) {
+            } else if (editTextPassword.getText().toString().equals("")) {
                 editTextPassword.requestFocus();
                 editTextPassword.setError(getResources().getString(R.string.enter_password));
                 return;
@@ -317,7 +318,7 @@ public class LoginScreen extends LoginBaseActivity
                 @Override
                 public void onClick(View v) {
                     if (!editTextUserName.getText().toString().equals("")) {
-                        businessModel.userNameTemp = editTextUserName.getText().toString();
+                        businessModel.getAppDataProvider().setUserName(editTextUserName.getText().toString());
                         loginPresenter.callForgetPassword();
                     } else {
                         editTextUserName.setError(getResources().getString(R.string.enter_username));
@@ -336,7 +337,7 @@ public class LoginScreen extends LoginBaseActivity
     @Override
     public void callForgetPassDialog() {
         if (!editTextUserName.getText().toString().equals("")) {
-            businessModel.userNameTemp = editTextUserName.getText().toString();
+            businessModel.getAppDataProvider().setUserName(editTextUserName.getText().toString());
             loginPresenter.callForgetPassword();
         } else {
             editTextUserName.setError(getResources().getString(R.string.enter_username));

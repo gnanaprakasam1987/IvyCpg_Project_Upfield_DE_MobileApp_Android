@@ -56,7 +56,7 @@ public class SyncReportDataManagerImpl implements SyncReportDataManager {
                             reportBO.setEndTime(cursor.getString(4));
                             reportBO.setRecordCount(cursor.getInt(5));
 
-                            if (!StringUtils.isEmptyString(apiname) && !apiname.equals(cursor.getString(1))) {
+                            if (!StringUtils.isNullOrEmpty(apiname) && !apiname.equals(cursor.getString(1))) {
                                 syncReportMap.put(apiname, reportList);
                                 reportList = new ArrayList<>();
                             }

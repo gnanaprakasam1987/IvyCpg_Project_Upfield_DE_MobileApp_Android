@@ -54,7 +54,7 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
                     initDb();
                     ArrayList<NonFieldTwoBo> timeTrackList = new ArrayList<>();
                     String query = "SELECT uid , date , intime , outtime , ifnull(remarks,'') , rowid,reasonid from AttendanceTimeDetails where date ="
-                            + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " or outtime IS NULL and userid=" + appDataProvider.getUser().getUserid();
+                            + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " or outtime IS NULL and userid=" + appDataProvider.getUser().getUserid();
                     Cursor c = mDbUtil.selectSQL(query);
                     if (c != null) {
                         NonFieldTwoBo timeTrackBo;
@@ -143,8 +143,8 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
                     initDb();
 
                     String updateSql = "update AttendanceTimeDetails " +
-                            "SET intime = " + StringUtils.QT(nonFieldTwoBo.getInTime()) +
-                            " , outtime = " + StringUtils.QT(nonFieldTwoBo.getOutTime()) +
+                            "SET intime = " + StringUtils.getStringQueryParam(nonFieldTwoBo.getInTime()) +
+                            " , outtime = " + StringUtils.getStringQueryParam(nonFieldTwoBo.getOutTime()) +
                             ", upload ='N'" +
                             " WHERE rowid = " + nonFieldTwoBo.getRowid();
 
@@ -210,12 +210,12 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
                     initDb();
                     String inTime = addNonFieldTwoBo.getInTime() != null ? addNonFieldTwoBo.getInTime() : " ";
                     String columns = "uid,date,intime,reasonid,userid,latitude,longitude,counterid,Remarks,upload";
-                    String value = StringUtils.QT(addNonFieldTwoBo.getId()) + ","
-                            + StringUtils.QT(addNonFieldTwoBo.getFromDate()) + ","
-                            + StringUtils.QT(inTime) + ","
+                    String value = StringUtils.getStringQueryParam(addNonFieldTwoBo.getId()) + ","
+                            + StringUtils.getStringQueryParam(addNonFieldTwoBo.getFromDate()) + ","
+                            + StringUtils.getStringQueryParam(inTime) + ","
                             + addNonFieldTwoBo.getReason() + "," + appDataProvider.getUser().getUserid() + ","
-                            + StringUtils.QT(latitude + "") + "," + StringUtils.QT(longitude + "") + ","
-                            + 0 + "," + StringUtils.QT(addNonFieldTwoBo.getRemarks()) + "," + StringUtils.QT("N");
+                            + StringUtils.getStringQueryParam(latitude + "") + "," + StringUtils.getStringQueryParam(longitude + "") + ","
+                            + 0 + "," + StringUtils.getStringQueryParam(addNonFieldTwoBo.getRemarks()) + "," + StringUtils.getStringQueryParam("N");
 
                     mDbUtil.insertSQL("AttendanceTimeDetails", columns, value);
 
@@ -239,7 +239,7 @@ public class TimeTrackDataMangerImpl implements TimeTrackDataManager {
                     initDb();
                     Cursor c = mDbUtil
                             .selectSQL("SELECT * FROM AttendanceTimeDetails where userid = " + appDataProvider.getUser().getUserid() +
-                                    " AND date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) +
+                                    " AND date = " + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) +
                                     " AND upload = 'N' or upload ='Y'");
                     if (c.getCount() == 0) {
                         shutDownDb();

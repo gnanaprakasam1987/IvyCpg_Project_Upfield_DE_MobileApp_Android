@@ -13,15 +13,16 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.preference.PreferenceManager;
-import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.ActivityOptionsCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -100,8 +101,8 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 import com.ivy.sd.png.view.ChannelSelectionDialog;
 import com.ivy.sd.png.view.NewOutletEditFragment;
-import com.ivy.sd.png.view.NewoutletContainerFragment;
 import com.ivy.sd.png.view.PlanDeviationFragment;
+import com.ivy.sd.png.view.ProfileContainerFragment;
 import com.ivy.sd.png.view.SynchronizationFragment;
 import com.ivy.ui.announcement.AnnouncementConstant;
 import com.ivy.ui.announcement.view.AnnouncementActivity;
@@ -114,8 +115,8 @@ import com.ivy.ui.notes.view.NotesListFragment;
 import com.ivy.ui.retailer.viewretailers.view.map.RetailerMapFragment;
 import com.ivy.ui.retailerplan.calendar.view.CalendarPlanFragment;
 import com.ivy.ui.task.TaskConstant;
-import com.ivy.ui.task.TaskViewListener;
 import com.ivy.ui.task.view.TaskFragment;
+import com.ivy.ui.task.TaskViewListener;
 import com.ivy.ui.task.view.TaskUnplannedFragment;
 import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
@@ -213,6 +214,11 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     private ListView listView;
     private ArrayList<ChannelBO> mChannelList;
     private ChannelSelectionDialog dialogFragment;
+
+
+    /*This ChannelId  used to load loadNewOutletConfiguration*/
+    private int channelId=0;
+    private String channelName;
 
 
     @Nullable
@@ -1644,9 +1650,9 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
     }
 
     private void switchFragment(String fragmentName, String menuName) {
-        android.support.v4.app.FragmentManager fm = getFragmentManager();
+        FragmentManager fm = getFragmentManager();
 
-        NewoutletContainerFragment mNewOutletFragment = (NewoutletContainerFragment) fm
+        ProfileContainerFragment mNewOutletFragment = (ProfileContainerFragment) fm
                 .findFragmentByTag(MENU_NEW_RETAILER);
 
         VisitFragment mVisitFragment = (VisitFragment) fm
@@ -1894,7 +1900,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                 && dynamicReportFragmentNew.isVisible()) {
             return;
         }
-        android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+        FragmentTransaction ft = fm.beginTransaction();
 
         if (mNewOutletFragment != null)
             ft.remove(mNewOutletFragment);
@@ -1992,6 +1998,7 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
 
                 if (!bmodel.configurationMasterHelper.IS_CHANNEL_SELECTION_NEW_RETAILER) {
                     bmodel.newOutletHelper.loadNewOutletConfiguration(0);
+                    channelId=0;
                     bmodel.newOutletHelper.downloadLinkRetailer();
                 }
 
@@ -2007,18 +2014,20 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
                     bmodel.productHelper.setFilterProductsByLevelId(bmodel.productHelper.downloadFilterLevelProducts(bmodel.productHelper.getFilterProductLevels(), true));
                 }
 
-                bmodel.newOutletHelper.downloadLocationLevels();
+             //   bmodel.newOutletHelper.downloadLocationLevels();
                 //clear distributor id and group id
                 bmodel.getRetailerMasterBO().setDistributorId(0);
                 bmodel.getRetailerMasterBO().setGroupId(0);
                 bmodel.newOutletHelper.setRetailerContactList(new ArrayList<RetailerContactBo>());
                 bndl = new Bundle();
                 bndl.putString("screentitle", menuName);
-                fragment = new NewoutletContainerFragment();
+                bndl.putInt("channelid", channelId);
+                if(channelName!=null)
+                    bndl.putString("channelName",channelName);
+                fragment = new ProfileContainerFragment();
                 fragment.setArguments(bndl);
                 fromHomeScreen = true;
-                ft.add(R.id.fragment_content, fragment,
-                        MENU_NEW_RETAILER);
+                ft.add(R.id.fragment_content, fragment, MENU_NEW_RETAILER);
                 break;
             case MENU_VISIT:
                 bndl = new Bundle();
@@ -2427,8 +2436,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
      * @param menuCode detach current fragment based on passed menu code
      */
     public void detach(String menuCode) {
-        android.support.v4.app.FragmentManager fm = getFragmentManager();
-        android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
 
         if (fm.findFragmentByTag(menuCode) != null) {
             ft.detach(fm.findFragmentByTag(menuCode));
@@ -2512,6 +2521,8 @@ public class HomeScreenFragment extends IvyBaseFragment implements VisitFragment
         bmodel.newOutletHelper.loadNewOutletConfiguration(channelBO.getChannelId());
         bmodel.newOutletHelper.loadRetailerType();
         bmodel.newOutletHelper.downloadLinkRetailer();
+        channelId = channelBO.getChannelId();
+        channelName = channelBO.getChannelName();
         switchFragment(MENU_NEW_RETAILER, menuName);
         dialogFragment.dismiss();
     }

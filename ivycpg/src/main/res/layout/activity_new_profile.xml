@@ -9,11 +9,16 @@
         android:id="@+id/toolbar"
         layout="@layout/material_tool_bar" />
 
-    <fragment
+   <!-- <fragment
         android:id="@+id/newoutlet_fragment"
-        android:name="com.ivy.sd.png.view.NewoutletContainerFragment"
+        android:name="com.ivy.sd.png.view.ProfileContainerFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp" />
+        android:padding="10dp" />-->
+    <FrameLayout
+        android:id="@+id/newoutlet_fragment"
+        android:padding="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

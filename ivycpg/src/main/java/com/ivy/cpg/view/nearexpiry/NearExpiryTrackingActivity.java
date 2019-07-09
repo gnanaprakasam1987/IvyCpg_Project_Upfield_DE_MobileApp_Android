@@ -2,10 +2,12 @@ package com.ivy.cpg.view.nearexpiry;
 
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -37,7 +39,7 @@ public class NearExpiryTrackingActivity extends IvyBaseActivityNoActionBar imple
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         NearExpiryTrackingFragment fragment = (NearExpiryTrackingFragment) fm
                 .findFragmentById(R.id.nearexpiry_tracking_fragment);
         fragment.updateBrandText(mFilterText, id);
@@ -45,7 +47,7 @@ public class NearExpiryTrackingActivity extends IvyBaseActivityNoActionBar imple
 
     @Override
     public void updateGeneralText(String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         NearExpiryTrackingFragment fragment = (NearExpiryTrackingFragment) fm
                 .findFragmentById(R.id.nearexpiry_tracking_fragment);
         fragment.updateGeneralText(mFilterText);
@@ -53,7 +55,7 @@ public class NearExpiryTrackingActivity extends IvyBaseActivityNoActionBar imple
 
     @Override
     public void updateCancel() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         NearExpiryTrackingFragment fragment = (NearExpiryTrackingFragment) fm
                 .findFragmentById(R.id.nearexpiry_tracking_fragment);
         fragment.updateCancel();
@@ -62,7 +64,7 @@ public class NearExpiryTrackingActivity extends IvyBaseActivityNoActionBar imple
 
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         NearExpiryTrackingFragment fragment = (NearExpiryTrackingFragment) fm
                 .findFragmentById(R.id.nearexpiry_tracking_fragment);
         fragment.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);

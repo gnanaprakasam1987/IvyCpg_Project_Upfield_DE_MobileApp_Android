@@ -1,14 +1,11 @@
 package com.ivy.ui.AssetServiceRequest;
 
-import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.ivy.core.base.view.BaseActivity;
 import com.ivy.core.data.app.AppDataProvider;
@@ -18,11 +15,8 @@ import com.ivy.lib.adapter.GridImageViewAdapter;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
-import com.ivy.sd.png.view.HomeScreenTwo;
 import com.ivy.ui.AssetServiceRequest.di.AssetServiceRequestModule;
 import com.ivy.ui.AssetServiceRequest.di.DaggerAssetServiceRequestComponent;
-import com.ivy.ui.notes.NoteConstant;
-import com.ivy.ui.task.TaskConstant;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.FileUtils;
 

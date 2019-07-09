@@ -30,17 +30,20 @@ public class StringUtils {
     }
 
 
-    public static String QT(String data) {
-        return "'" + data + "'";
+    public static String getStringQueryParam(String data) {
+        if (data != null)
+            return "'" + data + "'";
+        else
+            return null;
     }
 
-    public static boolean isEmptyString(String text) {
+    public static boolean isNullOrEmpty(String text) {
         return (text == null || text.trim().equals("null") || text.trim()
                 .length() <= 0);
     }
 
     public static boolean isValidEmail(CharSequence target) {
-        return !isEmptyString(target.toString()) && Pattern.compile(
+        return !isNullOrEmpty(target.toString()) && Pattern.compile(
                 "[a-zA-Z0-9\\+\\.\\_\\%\\-\\+]{1,256}" +
                         "\\@" +
                         "[a-zA-Z0-9][a-zA-Z0-9\\-]{0,64}" +

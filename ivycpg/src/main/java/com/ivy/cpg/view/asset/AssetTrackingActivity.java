@@ -2,12 +2,14 @@ package com.ivy.cpg.view.asset;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.cpg.nfc.NFCManager;
 import com.ivy.sd.png.asean.view.R;
@@ -54,7 +56,7 @@ AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
                 @Override
                 public void onTagRead(String tagRead) {
                     if (!tagRead.equals("")) {
-                        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+                        FragmentManager fm = getSupportFragmentManager();
                         AssetTrackingFragment asf = (AssetTrackingFragment) fm
                                 .findFragmentById(R.id.asset_tracking_fragment);
                         asf.updateListByNFCTag(tagRead);
@@ -122,7 +124,7 @@ AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         AssetTrackingFragment asf = (AssetTrackingFragment) fm
                 .findFragmentById(R.id.asset_tracking_fragment);
         asf.updateBrandText(mFilterText, id);
@@ -134,7 +136,7 @@ AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateCancel() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         AssetTrackingFragment asf = (AssetTrackingFragment) fm
                 .findFragmentById(R.id.asset_tracking_fragment);
         asf.updateCancel();
@@ -142,7 +144,7 @@ AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         AssetTrackingFragment asf = (AssetTrackingFragment) fm
                 .findFragmentById(R.id.asset_tracking_fragment);
         asf.updateFromFiveLevelFilter(mProductId,mSelectedIdByLevelId,mAttributeProducts, mFilterText);    }
@@ -154,7 +156,7 @@ AssetTrackingActivity extends IvyBaseActivityNoActionBar implements
 
     @Override
     public void updateDate(Date date, String tag) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         AssetTrackingFragment fragment = (AssetTrackingFragment) fm
                 .findFragmentById(R.id.asset_tracking_fragment);
         fragment.updateDate(date,tag);

@@ -38,7 +38,7 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.functions.Function;
 
 import static com.ivy.sd.png.provider.ConfigurationMasterHelper.CODE_SHOW_ALL_ROUTE_FILTER;
-import static com.ivy.utils.StringUtils.QT;
+import static com.ivy.utils.StringUtils.getStringQueryParam;
 
 public class RetailerDataManagerImpl implements RetailerDataManager {
 
@@ -135,7 +135,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
                                                     + " LEFT JOIN RetailerClientMappingMaster RC " + (configurationMasterHelper.IS_BEAT_WISE_RETAILER_MAPPING ? " on RC.beatID=RBM.beatId" : " on RC.Rid = A.RetailerId")
 
-                                                    + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) : "")
+                                                    + (configurationMasterHelper.SHOW_DATE_ROUTE ? " AND RC.date = " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) : "")
 
                                                     + " LEFT JOIN RetailerAddress RA ON RA.RetailerId = A.RetailerID AND RA.IsPrimary=1"
 
@@ -321,6 +321,8 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                                             retailer.setIndicateFlag(0);
                                             retailer.setIsCollectionView("N");
 
+                                            c.close();
+
                                             //set global gps distance for retailer from the config:GPSDISTANCE
                                             if (retailer.getGpsDistance() <= 0 && configurationMasterHelper.GLOBAL_GPS_DISTANCE > 0)
                                                 retailer.setGpsDistance(configurationMasterHelper.GLOBAL_GPS_DISTANCE);
@@ -357,7 +359,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
                                             retailerMasterBOS.add(retailer);
 
-                                            c.close();
+
 
                                         }
                                     }
@@ -409,9 +411,134 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                             public Observable<ArrayList<RetailerMasterBO>> apply(ArrayList<RetailerMasterBO> retailerMasterBOS) throws Exception {
                                 return fetchRetailerTarget(retailerMasterBOS);
                             }
+                        }).flatMap(new Function<ArrayList<RetailerMasterBO>, ObservableSource<ArrayList<RetailerMasterBO>>>() {
+                            @Override
+                            public ObservableSource<ArrayList<RetailerMasterBO>> apply(ArrayList<RetailerMasterBO> retailerMasterBOS) throws Exception {
+                                return fetchActualVisitAcheived(retailerMasterBOS);
+                            }
+                        }).flatMap(new Function<ArrayList<RetailerMasterBO>, ObservableSource<ArrayList<RetailerMasterBO>>>() {
+                            @Override
+                            public ObservableSource<ArrayList<RetailerMasterBO>> apply(ArrayList<RetailerMasterBO> retailerMasterBOS) throws Exception {
+                                if(configurationMasterHelper.CALC_QDVP3)
+                                    return updateSurveyScoreForRetailers(retailerMasterBOS);
+                                return Observable.fromCallable(() -> retailerMasterBOS);
+                            }
+                        }).flatMap(new Function<ArrayList<RetailerMasterBO>, ObservableSource<ArrayList<RetailerMasterBO> >>() {
+                            @Override
+                            public ObservableSource<ArrayList<RetailerMasterBO> > apply(ArrayList<RetailerMasterBO> retailerMasterBOS) throws Exception {
+                                return updateRetailerMasterInfo(retailerMasterBOS);
+                            }
                         });
                     }
                 });
+            }
+        });
+    }
+
+
+    /**
+     *
+     * Update isToday and is_vansales.
+     * IS_DEFAULT_PRESALE - true than update is_vansales = 0 based on
+     * ORDB08 config RField Value is 1
+     * IS_DEFAULT_PRESALE - fales than update is_vansales = 1
+     */
+    private Observable<ArrayList<RetailerMasterBO>> updateRetailerMasterInfo(final ArrayList<RetailerMasterBO> retailerMasterBOS){
+
+        return Observable.fromCallable(new Callable<ArrayList<RetailerMasterBO>>() {
+            @Override
+            public ArrayList<RetailerMasterBO> call() throws Exception {
+                initDb();
+
+                String query = "";
+                String mRetailerIds = "";
+
+                query = "insert into RetailerMasterInfo (RetailerId)  select retailerid from RetailerMaster ";
+
+                mDbUtil.executeQ(query);
+
+                for (RetailerMasterBO retailerMasterBO : retailerMasterBOS) {
+
+                    if (retailerMasterBO.getIsToday() == 1) {
+
+                        if (!mRetailerIds.equals("")) {
+                            mRetailerIds = mRetailerIds + "," + retailerMasterBO.getRetailerID();
+                        } else {
+                            mRetailerIds = retailerMasterBO.getRetailerID();
+                        }
+                    }
+                }
+
+                query = ("update RetailerMasterInfo set isToday=1 where RetailerId IN (" + mRetailerIds + ")");
+                mDbUtil.updateSQL(query);
+
+                if (configurationMasterHelper.IS_DEFAULT_PRESALE) {
+                    query = ("update RetailerMasterInfo set is_vansales=0");
+                    mDbUtil.updateSQL(query);
+                } else {
+                    query = ("update RetailerMasterInfo set is_vansales=1");
+                    mDbUtil.updateSQL(query);
+                }
+                return retailerMasterBOS;
+            }
+        });
+    }
+
+    private Observable<ArrayList<RetailerMasterBO>> updateSurveyScoreForRetailers(final ArrayList<RetailerMasterBO> retailerMasterBOS){
+        return Observable.fromCallable(new Callable<ArrayList<RetailerMasterBO>>() {
+            @Override
+            public ArrayList<RetailerMasterBO> call() throws Exception {
+                StringBuilder sb = new StringBuilder();
+
+                try {
+                    initDb();
+                    String sql = "";
+                    Cursor c = null;
+
+                    sql = "SELECT sum(ifnull(score,0)),rm.retailerid FROM retailermaster rm "
+                            + " left  join SurveyScoreHistory s on rm.retailerid =s.retailerid and  s.Date >="
+                            + getStringQueryParam(DateTimeUtils.getFirstDayOfCurrentMonth())
+                            + " group by rm.retailerid";
+
+                    c = mDbUtil.selectSQL(sql);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+
+                            for (RetailerMasterBO retailer : retailerMasterBOS) {
+                                if (retailer.getRetailerID().equals(c.getString(1))) {
+                                    retailer.setSurveyHistoryScore(c.getInt(0));
+                                }
+                            }
+                        }
+                        c.close();
+                    }
+
+                    sql = "SELECT sum(AH.achscore),rm.retailerid  FROM  retailermaster rm"
+                            + " join answerheader AH on rm.retailerid = ah.retailerid "
+                            + " Left Join SurveyScoreHistory SSH on SSH.SurveyId=AH.SurveyId and ah.retailerid=ssh.retailerid and AH.Date = "
+                            + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                            + " group by rm.retailerid";
+                    c = mDbUtil.selectSQL(sql);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            for (RetailerMasterBO retailer : retailerMasterBOS) {
+                                if (retailer.getRetailerID().equals(c.getString(1))) {
+                                    retailer.setSurveyHistoryScore(c.getInt(0));
+                                }
+                            }
+                        }
+                        c.close();
+                    }
+
+                    shutDownDb();
+                    return retailerMasterBOS;
+                } catch (Exception e) {
+                    Commons.print(e.getMessage());
+                }
+
+
+                shutDownDb();
+                return retailerMasterBOS;
             }
         });
     }
@@ -425,7 +552,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 List<String> retailerIds = new ArrayList<>();
                 List<String> vistedRetailerIds = new ArrayList<>();
                 Cursor c = mDbUtil.selectSQL("select EntityId,VisitStatus From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
-                        "AND Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                        "AND Date = " + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
                 if (c != null
                         && c.getCount() > 0) {
@@ -682,7 +809,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                         initDb();
 
                     Cursor c = mDbUtil
-                            .selectSQL("select distinct SL.ListCode from AttendanceDetail AD INNER JOIN StandardListMaster SL ON SL.Listid=AD.session where AD.upload='X' and " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " between AD.fromdate and AD.todate");
+                            .selectSQL("select distinct SL.ListCode from AttendanceDetail AD INNER JOIN StandardListMaster SL ON SL.Listid=AD.session where AD.upload='X' and " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " between AD.fromdate and AD.todate");
                     if (c != null) {
                         while (c.moveToNext()) {
                             session = c.getString(0);
@@ -770,7 +897,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
             Cursor c;
             int distId = 0;
-            c = mDbUtil.selectSQL("select DistributorID From RetailerPriceGroup where DistributorID<>0 AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()));
+            c = mDbUtil.selectSQL("select DistributorID From RetailerPriceGroup where DistributorID<>0 AND RetailerId=" + StringUtils.getStringQueryParam(retObj.getRetailerID()));
             if (c != null
                     && c.getCount() > 0) {
                 if (c.moveToNext())
@@ -780,7 +907,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
             }
 
 
-            c = mDbUtil.selectSQL("SELECT IFNULL(GroupId,0) From RetailerPriceGroup WHERE DistributorID=" + distId + " AND RetailerId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
+            c = mDbUtil.selectSQL("SELECT IFNULL(GroupId,0) From RetailerPriceGroup WHERE DistributorID=" + distId + " AND RetailerId=" + StringUtils.getStringQueryParam(retObj.getRetailerID()) + " LIMIT 1");
             if (c != null
                     && c.getCount() > 0) {
                 if (c.moveToNext())
@@ -798,7 +925,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
         try {
 
             Cursor c;
-            c = mDbUtil.selectSQL("select PlanId From DatewisePlan where planStatus ='APPROVED'or 'PENDING' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()));
+            c = mDbUtil.selectSQL("select PlanId From DatewisePlan where planStatus ='APPROVED'or 'PENDING' AND EntityId=" + StringUtils.getStringQueryParam(retObj.getRetailerID()));
             if (c != null
                     && c.getCount() > 0) {
                 if (c.moveToNext())
@@ -807,7 +934,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 c.close();
             }
 
-            c = mDbUtil.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND EntityId=" + StringUtils.QT(retObj.getRetailerID()) + " LIMIT 1");
+            c = mDbUtil.selectSQL("SELECT PlanId From DatewisePlan WHERE VisitStatus= 'COMPLETED' AND EntityId=" + StringUtils.getStringQueryParam(retObj.getRetailerID()) + " LIMIT 1");
             if (c != null
                     && c.getCount() > 0) {
                 if (c.moveToNext())
@@ -878,7 +1005,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
             initDb();
             List<String> retailerIds = new ArrayList<>();
             Cursor c = mDbUtil.selectSQL("select EntityId From DatewisePlan where planStatus ='APPROVED' AND (VisitStatus = 'PLANNED' or VisitStatus = 'COMPLETED')" +
-                    "AND Date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                    "AND Date = " + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
 
             if (c != null
                     && c.getCount() > 0) {
@@ -1001,7 +1128,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 .substring(0, 3).toUpperCase(Locale.ENGLISH);
 
         String sb = "select retailerid,sequenceno from RetailerVisitSequence where " +
-                " weekno=" + QT(currentWeek) + " and day=" + QT(currentDay) + " and retailerid=" + retailer.getRetailerID();
+                " weekno=" + getStringQueryParam(currentWeek) + " and day=" + getStringQueryParam(currentDay) + " and retailerid=" + retailer.getRetailerID();
         Cursor c = mDbUtil.selectSQL(sb);
         if (c.getCount() > 0) {
             while (c.moveToNext()) {
@@ -1052,6 +1179,36 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
     }
 
+    private Observable<ArrayList<RetailerMasterBO>> fetchActualVisitAcheived(ArrayList<RetailerMasterBO> retailerMasterBOS){
+        return Observable.fromCallable(new Callable<ArrayList<RetailerMasterBO>>() {
+            @Override
+            public ArrayList<RetailerMasterBO> call() throws Exception {
+                try {
+
+                    Cursor c = null;
+                    c = mDbUtil.selectSQL("select RetailerID, sum(OrderValue) from OrderHeader where upload!='X' group by retailerid");
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            for (RetailerMasterBO retailerMasterBO : retailerMasterBOS) {
+                                retailerMasterBO.setVisit_Actual(0);
+                                if (retailerMasterBO.getRetailerID().equals(c.getString(0))) {
+                                    retailerMasterBO.setVisit_Actual(c.getFloat(1));
+                                }
+                            }
+                        }
+
+                        c.close();
+                    }
+
+                }catch (Exception ignored){
+
+                }
+                shutDownDb();
+                return retailerMasterBOS;
+            }
+        });
+    }
+
     private Observable<ArrayList<RetailerMasterBO>> fetchRetailerTarget(final ArrayList<RetailerMasterBO> retailerMasterBOS) {
         return Observable.fromCallable(new Callable<ArrayList<RetailerMasterBO>>() {
             @Override
@@ -1063,7 +1220,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
                     String sb = "select rk.retailerid,rk.interval,rkd.target,rk.kpiid,rkd.kpiparamlovid,rkd.achievement from RetailerKPI rk" +
                             " inner join RetailerKPIDetail rkd on rk.kpiid = rkd.kpiid INNER JOIN StandardListMaster SM" +
-                            " ON SM.listid = rkd.KPIParamLovId where SM.listcode=" + QT(code);
+                            " ON SM.listid = rkd.KPIParamLovId where SM.listcode=" + getStringQueryParam(code);
 
                     Cursor c = mDbUtil.selectSQL(sb);
 
@@ -1083,7 +1240,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
                     sb = "select rk.retailerid,rk.interval,rkmd.target,rk.kpiid,rkmd.kpiparamlovid from RetailerKPI rk" +
                             " inner join RetailerKPIModifiedDetail rkmd on rk.kpiid = rkmd.kpiid INNER JOIN StandardListMaster SM" +
-                            " ON SM.listid = rkmd.KPIParamLovId where SM.listcode=" + QT(code);
+                            " ON SM.listid = rkmd.KPIParamLovId where SM.listcode=" + getStringQueryParam(code);
 
                     c = mDbUtil.selectSQL(sb);
                     ArrayList<RetailerMasterBO> tempList = new ArrayList<>();
@@ -1109,7 +1266,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
 
                 setRetailerTarget(retailerMasterBOS, targetList);
 
-                shutDownDb();
+
                 return retailerMasterBOS;
             }
         });
@@ -1231,7 +1388,7 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 try {
                     initDb();
                     String sb = "select Rfield from HhtModuleMaster where flag=1 and hhtcode=" +
-                            QT(CODE_SHOW_ALL_ROUTE_FILTER) + " and  ForSwitchSeller = 0";
+                            getStringQueryParam(CODE_SHOW_ALL_ROUTE_FILTER) + " and  ForSwitchSeller = 0";
                     Cursor c = mDbUtil.selectSQL(sb);
                     if (c.getCount() > 0) {
                         if (c.moveToNext()) {
@@ -1337,6 +1494,112 @@ public class RetailerDataManagerImpl implements RetailerDataManager {
                 shutDownDb();
 
                 return mMissedRetailerList;
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> updatePriceGroupId(boolean isRetailer) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+
+                StringBuilder sb = new StringBuilder();
+
+                try {
+                    initDb();
+
+                    sb.append("SELECT groupId FROM RetailerPriceGroup WHERE");
+
+                    if (isRetailer) {
+                        sb.append(" retailerId =").append(appDataProvider.getRetailMaster().getRetailerID()).append(" AND");
+                    }
+
+                    sb.append(" distributorId =").append(appDataProvider.getRetailMaster().getDistributorId());
+
+
+                    Cursor c = mDbUtil.selectSQL(sb.toString());
+
+                    if (c != null) {
+                        if (c.getCount() > 0) {
+                            while (c.moveToNext()) {
+                                appDataProvider.getRetailMaster().setGroupId(c.getInt(0));
+                            }
+                            c.close();
+                        } else {
+                            appDataProvider.getRetailMaster().setGroupId(0);
+                        }
+                    }
+                    shutDownDb();
+                    return true;
+                } catch (Exception e) {
+                    Commons.print(e.getMessage());
+                }
+
+
+                shutDownDb();
+                return false;
+            }
+        });
+    }
+
+    @Override
+    public Single<Boolean> updateSurveyScoreHistoryRetailerWise() {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() {
+
+                StringBuilder sb = new StringBuilder();
+
+                try {
+                    initDb();
+                    String sql = "";
+                    Cursor c = null;
+
+                    sql = "SELECT sum(ifnull(score,0)),rm.retailerid FROM retailermaster rm "
+                            + " left  join SurveyScoreHistory s on rm.retailerid =s.retailerid and  s.Date >="
+                            + getStringQueryParam(DateTimeUtils.getFirstDayOfCurrentMonth())
+                            + " group by rm.retailerid";
+
+                    c = mDbUtil.selectSQL(sql);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+
+                            for (RetailerMasterBO retailer : appDataProvider.getRetailerMasters()) {
+                                if (retailer.getRetailerID().equals(c.getString(1))) {
+                                    retailer.setSurveyHistoryScore(c.getInt(0));
+                                }
+                            }
+                        }
+                        c.close();
+                    }
+
+                    sql = "SELECT sum(AH.achscore),rm.retailerid  FROM  retailermaster rm"
+                            + " join answerheader AH on rm.retailerid = ah.retailerid "
+                            + " Left Join SurveyScoreHistory SSH on SSH.SurveyId=AH.SurveyId and ah.retailerid=ssh.retailerid and AH.Date = "
+                            + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                            + " group by rm.retailerid";
+                    c = mDbUtil.selectSQL(sql);
+                    if (c != null) {
+                        while (c.moveToNext()) {
+                            for (RetailerMasterBO retailer : appDataProvider.getRetailerMasters()) {
+                                if (retailer.getRetailerID().equals(c.getString(1))) {
+                                    retailer.setSurveyHistoryScore(c.getInt(0));
+                                }
+                            }
+                        }
+                        c.close();
+                    }
+
+                    shutDownDb();
+                    return true;
+                } catch (Exception e) {
+                    Commons.print(e.getMessage());
+                }
+
+
+                shutDownDb();
+                return false;
             }
         });
     }

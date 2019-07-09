@@ -5,6 +5,8 @@ import dagger.Provides;
 
 import android.content.Context;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.ivy.core.IvyConstants;
 import com.ivy.core.data.app.AppDataProvider;
 import com.ivy.core.data.app.AppDataProviderImpl;
@@ -41,17 +43,22 @@ import com.ivy.core.di.scope.PreferenceInfo;
 import com.ivy.core.di.scope.ReasonInfo;
 import com.ivy.core.di.scope.RetailerInfo;
 import com.ivy.core.di.scope.UserInfo;
+import com.ivy.cpg.view.survey.SurveyHelperNew;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.RetailerMasterBO;
 import com.ivy.sd.png.model.BusinessModel;
+import com.ivy.sd.png.provider.BeatMasterHelper;
 import com.ivy.sd.png.provider.ChannelMasterHelper;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.provider.LabelsMasterHelper;
 import com.ivy.sd.png.provider.NewOutletHelper;
+import com.ivy.sd.png.provider.ProductHelper;
+import com.ivy.sd.png.provider.ProductTaggingHelper;
 import com.ivy.sd.png.provider.RetailerHelper;
 import com.ivy.sd.png.provider.SubChannelMasterHelper;
 import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.sd.png.util.DataMembers;
+import com.ivy.ui.profile.create.di.NewRetailer;
 import com.ivy.ui.profile.edit.di.Profile;
 
 import java.util.Vector;
@@ -63,6 +70,7 @@ import javax.inject.Singleton;
 public class IvyAppModule {
 
     private Context mContext;
+    private RequestQueue mRequestQueue;
 
 
     @Provides
@@ -208,6 +216,13 @@ public class IvyAppModule {
     }
 
     @Provides
+    @NewRetailer
+    SurveyHelperNew provideSurveyHelperNew(){
+        return SurveyHelperNew.getInstance(mContext);
+    }
+
+
+    @Provides
     @RetailerInfo
     RetailerDataManager providesRetailerDataManager(RetailerDataManagerImpl retailerDataManager) {
         return retailerDataManager;
@@ -223,5 +238,25 @@ public class IvyAppModule {
     @ReasonInfo
     ReasonDataManager provideReasonDataManager(ReasonDataManagerImpl reasonDataManager) {
         return reasonDataManager;
+    }
+
+    @Provides
+    ProductHelper provideProductHelper(){
+        return ((BusinessModel) mContext).productHelper;
+    }
+
+    @Provides
+    ProductTaggingHelper provideProductTaggingHelper(){
+        return ProductTaggingHelper.getInstance(mContext);
+    }
+
+    @Provides
+    RequestQueue providesRequestQueue(){
+        if (mRequestQueue == null) {
+            mRequestQueue = Volley.newRequestQueue(mContext);
+            mRequestQueue.getCache().clear();
+
+        }
+        return mRequestQueue;
     }
 }

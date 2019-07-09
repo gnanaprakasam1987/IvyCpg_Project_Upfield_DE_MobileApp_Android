@@ -44,7 +44,7 @@
                 android:textSize="@dimen/font_small"
                 android:textStyle="bold" />
 
-            <android.support.v7.widget.SearchView
+            <androidx.appcompat.widget.SearchView
                 android:id="@+id/searchRetailer"
                 style="?attr/SearchViewStyle"
                 android:layout_width="wrap_content"
@@ -365,7 +365,7 @@
                     android:layout_height="@dimen/dimen_1dp"
                     android:background="@color/light_gray" />
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
@@ -390,7 +390,7 @@
 
                     </RelativeLayout>
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
 
             </LinearLayout>

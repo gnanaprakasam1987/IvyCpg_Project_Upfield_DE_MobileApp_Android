@@ -2,9 +2,8 @@ package com.ivy.ui.DisplayAsset;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
-import android.text.Editable;
-import android.text.TextWatcher;
+import androidx.appcompat.widget.Toolbar;
+
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +21,6 @@ import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CompanyBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.view.HomeScreenTwo;
 
 import java.util.ArrayList;

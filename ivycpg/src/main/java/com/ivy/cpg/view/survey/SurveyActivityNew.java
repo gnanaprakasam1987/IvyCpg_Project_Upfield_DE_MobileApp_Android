@@ -1,11 +1,13 @@
 package com.ivy.cpg.view.survey;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Toast;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -78,7 +80,7 @@ public class SurveyActivityNew extends IvyBaseActivityNoActionBar implements Bra
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SurveyActivityNewFragment asf = (SurveyActivityNewFragment) fm
                 .findFragmentById(R.id.survey_fragment);
         asf.updateBrandText(mFilterText, id);
@@ -90,14 +92,14 @@ public class SurveyActivityNew extends IvyBaseActivityNoActionBar implements Bra
 
     @Override
     public void updateCancel() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SurveyActivityNewFragment asf = (SurveyActivityNewFragment) fm.findFragmentById(R.id.survey_fragment);
         asf.updateCancel();
     }
 
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SurveyActivityNewFragment asf = (SurveyActivityNewFragment) fm
                 .findFragmentById(R.id.survey_fragment);
 //		asf.updateFromFiveLevelFilter(parentidList);

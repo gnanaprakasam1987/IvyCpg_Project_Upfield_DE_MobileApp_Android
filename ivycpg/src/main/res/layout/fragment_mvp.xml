@@ -53,7 +53,7 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,7 +62,7 @@
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         android:visibility="gone">
 
-        <android.support.design.widget.CollapsingToolbarLayout
+        <com.google.android.material.appbar.CollapsingToolbarLayout
             android:id="@+id/collapsing_toolbar"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
@@ -72,10 +72,10 @@
             app:expandedTitleMarginStart="@dimen/expandedTitleMarginStart"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
-        </android.support.design.widget.CollapsingToolbarLayout>
+        </com.google.android.material.appbar.CollapsingToolbarLayout>
 
 
-    </android.support.design.widget.AppBarLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -84,7 +84,7 @@
         android:layout_marginTop="-30dp"
         android:orientation="vertical">
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimens_100dp"
             android:layout_gravity="center"
@@ -186,9 +186,9 @@
                     </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.design.widget.TabLayout
+        <com.google.android.material.tabs.TabLayout
             android:id="@+id/tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -203,25 +203,25 @@
             app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
             app:tabTextColor="@color/black_bg1">
 
-            <android.support.design.widget.TabItem
+            <com.google.android.material.tabs.TabItem
                 style="@style/AppTabLayout"
                 android:id="@+id/kpi_tab"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/mvp_kpi_tab1_text" />
 
-            <android.support.design.widget.TabItem
+            <com.google.android.material.tabs.TabItem
                 style="@style/AppTabLayout"
                 android:id="@+id/peer_tab"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/mvp_kpi_tab2_text" />
 
-        </android.support.design.widget.TabLayout>
+        </com.google.android.material.tabs.TabLayout>
 
 
 
-        <android.support.v4.widget.NestedScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="fill"
@@ -242,7 +242,7 @@
                     android:layout_height="wrap_content"
                     app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/dimen_10dp"
@@ -318,10 +318,10 @@
                             android:visibility="gone" />
                     </LinearLayout>
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
@@ -347,10 +347,10 @@
                     </HorizontalScrollView>
 
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_margin="@dimen/dimen_10dp"
@@ -394,12 +394,12 @@
 
                         </LinearLayout>
                     </LinearLayout>
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
             </LinearLayout>
 
 
-        </android.support.v4.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
 
     </LinearLayout>
 

@@ -1390,7 +1390,7 @@ public class DiscountHelper {
             db.openDataBase();
             StringBuffer sb = new StringBuffer();
             sb.append("select typeid,discountType,sum(Value) from OrderDiscountDetail" +
-                    " where orderid=" + StringUtils.QT(orderId) + "  group by typeid");
+                    " where orderid=" + StringUtils.getStringQueryParam(orderId) + "  group by typeid");
             Cursor c = db.selectSQL(sb.toString());
             while (c.moveToNext()) {
                 mDiscountsApplied.put(c.getString(1), c.getDouble(2));

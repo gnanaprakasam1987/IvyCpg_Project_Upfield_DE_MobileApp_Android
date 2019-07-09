@@ -515,9 +515,9 @@ public class ExpenseSheetHelper {
                     db.openDataBase();
                     String sql;
                     db.deleteSQL(DataMembers.tbl_expensedetails, "Refid="
-                            + QT(refID), false); // QT(ImageName));
+                            + QT(refID), false); // getStringQueryParam(ImageName));
                     db.deleteSQL(DataMembers.tbl_expenseimagedetails, "Refid="
-                            + QT(refID), false); // QT(ImageName));
+                            + QT(refID), false); // getStringQueryParam(ImageName));
 
                     double update_total = getExpenseTotal(Tid, date) - SDUtil.convertToDouble(amount);
 

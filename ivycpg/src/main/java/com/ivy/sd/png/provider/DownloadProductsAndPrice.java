@@ -174,7 +174,7 @@ public class DownloadProductsAndPrice extends AsyncTask<Integer, Integer, Boolea
         if (bmodel.configurationMasterHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
             dateTime = IvyConstants.DEFAULT_TIME_CONSTANT;
         bmodel.outletTimeStampHelper.setTimeIn(dateTime);
-        bmodel.outletTimeStampHelper.setUid(StringUtils.QT("OTS" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)));
+        bmodel.outletTimeStampHelper.setUid(StringUtils.getStringQueryParam("OTS" + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID)));
 
 
         boolean outletTimeStampSaved = bmodel.outletTimeStampHelper.saveTimeStamp(

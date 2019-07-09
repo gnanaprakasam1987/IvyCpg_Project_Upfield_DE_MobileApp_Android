@@ -5,6 +5,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import androidx.lifecycle.LifecycleOwner;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -15,16 +16,16 @@ import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.LayoutRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.google.android.material.snackbar.Snackbar;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
@@ -62,7 +63,7 @@ import java.util.Locale;
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
 
-public abstract class BaseActivity extends AppCompatActivity implements BaseIvyView {
+public abstract class BaseActivity extends AppCompatActivity implements BaseIvyView, LifecycleOwner {
 
 
     public static final int PHONE_STATE_AND_WRITE_PERMISSON = 1;
@@ -168,7 +169,71 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
         }
     }
 
+    @Override
+    public void getLocationPermission() {
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        int permissionStatus;
+        permissionStatus = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+            if (mBasePresenter.isLocationConfigurationEnabled()) {
+                listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+            }
+        }
 
+        if (!listPermissionsNeeded.isEmpty()) {
+            requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), LOCATION_PERMISSION);
+        }
+    }
+
+
+    @Override
+    public void getPhoneStatePermission() {
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        int permissionStatus;
+        permissionStatus = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.READ_PHONE_STATE);
+        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.READ_PHONE_STATE);
+        }
+
+        permissionStatus = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+
+        if (!listPermissionsNeeded.isEmpty()) {
+            requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), PHONE_STATE_AND_WRITE_PERMISSON);
+        }
+    }
+
+    @Override
+    public void getCameraPermission() {
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        int permissionStatus;
+        permissionStatus = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.CAMERA);
+        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.CAMERA);
+        }
+
+        permissionStatus = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permissionStatus != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+
+        if (!listPermissionsNeeded.isEmpty()) {
+            requestPermissionsSafely(listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), CAMERA_AND_WRITE_PERMISSION);
+        }
+    }
+
+    @Deprecated
+    /**
+     * Use Contract Methods
+     */
     public boolean checkAndRequestPermissionAtRunTime(int mGroup) {
         List<String> listPermissionsNeeded = new ArrayList<>();
         int permissionStatus;
@@ -343,7 +408,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
                 message, Snackbar.LENGTH_SHORT);
         View sbView = snackbar.getView();
         TextView textView = (TextView) sbView
-                .findViewById(android.support.design.R.id.snackbar_text);
+                .findViewById(R.id.snackbar_text);
         textView.setTextColor(ContextCompat.getColor(this, R.color.white));
         snackbar.show();
     }
@@ -603,7 +668,7 @@ public abstract class BaseActivity extends AppCompatActivity implements BaseIvyV
     public void showAlert(String title, String msg, CommonDialog.PositiveClickListener positiveClickListener, boolean isCancelable) {
 
         CommonDialog dialog = new CommonDialog(this, title, msg, getResources().getString(R.string.ok), positiveClickListener, isCancelable);
-        dialog.setCancelable(true);
+        dialog.setCancelable(isCancelable);
         dialog.show();
     }
 

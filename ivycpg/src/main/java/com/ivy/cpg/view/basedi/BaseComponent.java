@@ -19,6 +19,7 @@ public interface BaseComponent {
 
     void inject(TaskActivity taskActivity);
 
+
     void inject(NotesActivity notesActivity);
 
     void inject(FilterFragment filterFragment);

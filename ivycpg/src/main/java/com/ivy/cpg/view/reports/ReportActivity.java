@@ -7,8 +7,10 @@ import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.widget.Toolbar;
 import android.util.DisplayMetrics;
 import android.view.MenuItem;
 import android.view.View;
@@ -162,7 +164,7 @@ public class ReportActivity extends BaseActivity implements BaseIvyView,
     public boolean onOptionsItemSelected(MenuItem item) {
         int i = item.getItemId();
         if (i == android.R.id.home) {
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FragmentManager fm = getSupportFragmentManager();
 
             SalesVolumeReportFragment salesVolumeReportFragment = (SalesVolumeReportFragment) fm
                     .findFragmentByTag(StandardListMasterConstants.MENU_SKU_REPORT);
@@ -584,7 +586,7 @@ public class ReportActivity extends BaseActivity implements BaseIvyView,
 
     @Override
     public void updateUserSelection(ArrayList<Integer> mSelectedUsers, boolean isAllUser) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SellerMapViewReportFragment fragment = (SellerMapViewReportFragment) fm
                 .findFragmentByTag(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);
         OutletPerformanceReportFragmnet outlet_perf_fragmnet = (OutletPerformanceReportFragmnet) fm
@@ -598,7 +600,7 @@ public class ReportActivity extends BaseActivity implements BaseIvyView,
 
     @Override
     public void updateClose() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         SellerMapViewReportFragment fragment = (SellerMapViewReportFragment) fm
                 .findFragmentByTag(StandardListMasterConstants.MENU_SELLER_MAPVIEW_REPORT);
         OutletPerformanceReportFragmnet outlet_perf_fragmnet = (OutletPerformanceReportFragmnet) fm

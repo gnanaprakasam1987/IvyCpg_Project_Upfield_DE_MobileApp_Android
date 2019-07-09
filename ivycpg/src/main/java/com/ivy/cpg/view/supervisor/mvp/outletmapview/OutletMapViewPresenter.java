@@ -3,7 +3,7 @@ package com.ivy.cpg.view.supervisor.mvp.outletmapview;
 import android.content.Context;
 import android.database.Cursor;
 import android.location.Location;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.format.DateUtils;
 
 import com.google.android.gms.maps.model.BitmapDescriptor;

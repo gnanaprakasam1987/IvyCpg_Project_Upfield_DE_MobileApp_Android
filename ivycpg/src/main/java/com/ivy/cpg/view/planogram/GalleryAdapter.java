@@ -3,10 +3,10 @@ package com.ivy.cpg.view.planogram;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.v4.content.FileProvider;
-import android.support.v4.view.PagerAdapter;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
+import androidx.viewpager.widget.PagerAdapter;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

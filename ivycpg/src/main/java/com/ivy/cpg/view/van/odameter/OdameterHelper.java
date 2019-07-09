@@ -44,7 +44,7 @@ public class OdameterHelper {
             if (!bmodel.configurationMasterHelper.SHOW_PHOTO_ODAMETER) {
                 String columns = "uid,start,end,isstarted,startlatitude,startlongitude,starttime,date,tripUid";
 
-                String values = StringUtils.QT(bmodel.userMasterHelper.getUserMasterBO()
+                String values = StringUtils.getStringQueryParam(bmodel.userMasterHelper.getUserMasterBO()
                         .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID))
                         + ","
                         + mylist.getOdameterstart()
@@ -57,16 +57,16 @@ public class OdameterHelper {
                         + ","
                         + LocationUtil.longitude
                         + ","
-                        + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
+                        + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
                         + ","
                         + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
                         .getDownloadDate());
 
                 if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
-                    values += "," + StringUtils.QT(LoadManagementHelper.getInstance(context.getApplicationContext()).getTripId());
+                    values += "," + StringUtils.getStringQueryParam(LoadManagementHelper.getInstance(context.getApplicationContext()).getTripId());
                 }
                 else {
-                    values += "," + StringUtils.QT("0");
+                    values += "," + StringUtils.getStringQueryParam("0");
                 }
 
                 String sql = "insert into " + "Odameter" + "(" + columns
@@ -78,7 +78,7 @@ public class OdameterHelper {
 
                 String columns = "uid,start,end,isstarted,startlatitude,startlongitude,starttime,date,startImage,tripUid";
 
-                String values = StringUtils.QT(bmodel.userMasterHelper.getUserMasterBO()
+                String values = StringUtils.getStringQueryParam(bmodel.userMasterHelper.getUserMasterBO()
                         .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID))
                         + ","
                         + mylist.getOdameterstart()
@@ -91,18 +91,18 @@ public class OdameterHelper {
                         + ","
                         + LocationUtil.longitude
                         + ","
-                        + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
+                        + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
                         + ","
                         + bmodel.QT(bmodel.userMasterHelper.getUserMasterBO()
                         .getDownloadDate())
                         + ","
-                        + StringUtils.QT(mylist.getStartTripImg());
+                        + StringUtils.getStringQueryParam(mylist.getStartTripImg());
 
                 if(bmodel.configurationMasterHelper.IS_ENABLE_TRIP) {
-                    values += "," + StringUtils.QT(LoadManagementHelper.getInstance(context.getApplicationContext()).getTripId());
+                    values += "," + StringUtils.getStringQueryParam(LoadManagementHelper.getInstance(context.getApplicationContext()).getTripId());
                 }
                 else {
-                    values += "," + StringUtils.QT("0");
+                    values += "," + StringUtils.getStringQueryParam("0");
                 }
 
                 String sql = "insert into " + "Odameter" + "(" + columns
@@ -133,7 +133,7 @@ public class OdameterHelper {
                             sql1 = "insert into odameter(end,endtime,endlatitude,endlongitude,isended,upload) values("
                                     + mylist.getOdameterend()
                                     + ","
-                                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.TIME))
+                                    + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.TIME))
                                     + ","
                                     + LocationUtil.latitude
                                     + ","
@@ -147,7 +147,7 @@ public class OdameterHelper {
                             sql = "update Odameter set end="
                                     + mylist.getOdameterend()
                                     + ",endtime="
-                                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
+                                    + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
                                     + ",endlatitude=" + LocationUtil.latitude
                                     + ",endlongitude=" + LocationUtil.longitude
                                     + ",isended=" + 1 + ",upload='N'";
@@ -161,7 +161,7 @@ public class OdameterHelper {
                             sql1 = "insert into odameter(end,endtime,endlatitude,endlongitude,endImage,isended,upload) values("
                                     + mylist.getOdameterend()
                                     + ","
-                                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.TIME))
+                                    + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.TIME))
                                     + ","
                                     + LocationUtil.latitude
                                     + ","
@@ -177,10 +177,10 @@ public class OdameterHelper {
                             sql = "update Odameter set end="
                                     + mylist.getOdameterend()
                                     + ",endtime="
-                                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
+                                    + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW))
                                     + ",endlatitude=" + LocationUtil.latitude
                                     + ",endlongitude=" + LocationUtil.longitude
-                                    + ",endImage=" + StringUtils.QT(mylist.getEndTripImg())
+                                    + ",endImage=" + StringUtils.getStringQueryParam(mylist.getEndTripImg())
                                     + ",isended=" + 1 + ",upload='N'";
                             db.executeQ(sql);
                         }

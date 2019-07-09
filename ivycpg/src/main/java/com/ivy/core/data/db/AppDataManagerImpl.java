@@ -21,7 +21,7 @@ import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.functions.Function;
 
-import static com.ivy.utils.StringUtils.QT;
+import static com.ivy.utils.StringUtils.getStringQueryParam;
 
 public class AppDataManagerImpl implements AppDataManager {
 
@@ -123,7 +123,7 @@ public class AppDataManagerImpl implements AppDataManager {
 
                     Cursor c = mDbUtil.selectSQL("select sum(ordervalue)from "
                             + DataMembers.tbl_orderHeader + " where retailerid="
-                            + QT(appDataProvider.getRetailMaster().getRetailerID()) +
+                            + getStringQueryParam(appDataProvider.getRetailMaster().getRetailerID()) +
                             " AND upload='N'");
                     if (c != null) {
                         if (c.moveToNext()) {
@@ -153,13 +153,13 @@ public class AppDataManagerImpl implements AppDataManager {
 
                     Cursor c = mDbUtil
                             .selectSQL("SELECT * FROM ModuleCompletionReport WHERE RetailerId="
-                                    + appDataProvider.getRetailMaster().getRetailerID() + " AND MENU_CODE = " + QT(moduleName));
+                                    + appDataProvider.getRetailMaster().getRetailerID() + " AND MENU_CODE = " + getStringQueryParam(moduleName));
 
                     if (c.getCount() == 0) {
                         String columns = "Retailerid,MENU_CODE";
 
                         String values = appDataProvider.getRetailMaster().getRetailerID() + ","
-                                + QT(moduleName);
+                                + getStringQueryParam(moduleName);
 
                         mDbUtil.insertSQL("ModuleCompletionReport", columns, values);
 
@@ -187,13 +187,13 @@ public class AppDataManagerImpl implements AppDataManager {
                     initDb();
                     Cursor c = mDbUtil
                             .selectSQL("SELECT * FROM ModuleCompletionReport WHERE RetailerId="
-                                    + appDataProvider.getRetailMaster().getRetailerID() + " AND MENU_CODE = " + QT(menuName));
+                                    + appDataProvider.getRetailMaster().getRetailerID() + " AND MENU_CODE = " + getStringQueryParam(menuName));
 
                     if (c.getCount() == 0) {
                         String columns = "Retailerid,MENU_CODE";
 
                         String values = appDataProvider.getRetailMaster().getRetailerID() + ","
-                                + QT(menuName);
+                                + getStringQueryParam(menuName);
 
                         mDbUtil.insertSQL("ModuleCompletionReport", columns, values);
 
@@ -232,20 +232,20 @@ public class AppDataManagerImpl implements AppDataManager {
                 sql = "select hhtCode, flag, RField,MName,MNumber,hasLink,RField1 from "
                         + DataMembers.tbl_HhtMenuMaster
                         + " where hhtCode like 'MENU_%' and lang="
-                        + QT(language)
+                        + getStringQueryParam(language)
                         + " and flag=1 and SubChannelId = "
                         + appDataProvider.getRetailMaster().getSubchannelid()
                         + " and AttributeId = 0 and MenuType="
-                        + QT(menuName)
+                        + getStringQueryParam(menuName)
                         + " order by MNumber";
 
                 sql1 = "select hhtCode, flag, RField,MName,MNumber,hasLink,RField1 from "
                         + DataMembers.tbl_HhtMenuMaster
                         + " where hhtCode like 'MENU_%' and lang="
-                        + QT(language)
+                        + getStringQueryParam(language)
                         + " and flag=1 and SubChannelId =0 "
                         + " and AttributeId = 0 and MenuType="
-                        + QT(menuName)
+                        + getStringQueryParam(menuName)
                         + " order by MNumber";
 
                 ArrayList<ConfigureBO> activitymenuconfig = new ArrayList<>();
@@ -298,11 +298,11 @@ public class AppDataManagerImpl implements AppDataManager {
                     sql = "select hhtCode, flag, RField,MName,MNumber,hasLink,RField1 from "
                             + DataMembers.tbl_HhtMenuMaster
                             + " where hhtCode like 'MENU_%' and lang="
-                            + QT(language)
+                            + getStringQueryParam(language)
                             + " and flag=1 and attributeId in (0, "
                             + retailerAttributeList
                             + ") and MenuType="
-                            + QT(menuName)
+                            + getStringQueryParam(menuName)
                             + " order by MNumber";
 
                     getActivityMenuConfig(sql, sql1, activitymenuconfig);
@@ -355,6 +355,78 @@ public class AppDataManagerImpl implements AppDataManager {
         }
 
         shutDownDb();
+    }
+
+
+    /**
+     * This method is used to check if the Day is closed or not. Day will be
+     * closed from sync Screen. By default false. If the day is closed then its
+     * not possible to preform any operation.
+     *
+     * @return true is day closed or false
+     */
+    @Override
+    public Single<Boolean> isDayClosed() {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+
+                int i = 0;
+                try {
+                    initDb();
+                    Cursor c = mDbUtil.selectSQL("select  status  from DayClose");
+                    if (c != null) {
+                        if (c.moveToNext()) {
+                            i = c.getInt(0);
+                        }
+                        c.close();
+                    }
+
+                } catch (Exception e) {
+                    Commons.printException("" + e);
+                }
+                shutDownDb();
+                return i == 1;
+
+            }
+        });
+    }
+
+
+    /**
+     * This method will return RFiled6 column value from the HHTMenuMaster table.
+     *
+     * @return boolean true - survey is required.
+     */
+    @Override
+    public Single<Boolean> isFloatingSurveyEnabled(String moduleCode) {
+        return Single.fromCallable(new Callable<Boolean>() {
+            @Override
+            public Boolean call() throws Exception {
+                try{
+                    String sql = "select RField6 from " + DataMembers.tbl_HhtMenuMaster
+                            + " where hhtCode=" + getStringQueryParam(moduleCode);
+
+                    initDb();
+
+                    Cursor c = mDbUtil.selectSQL(sql);
+                    if (c != null && c.getCount() != 0) {
+                        while (c.moveToNext()) {
+                            if (c.getInt(0) == 1) {
+                                return true;
+                            }
+
+                        }
+                        c.close();
+                    }
+                    shutDownDb();
+
+                }catch (Exception ignored){
+                    return false;
+                }
+                return false;
+            }
+        });
     }
 
     @Override

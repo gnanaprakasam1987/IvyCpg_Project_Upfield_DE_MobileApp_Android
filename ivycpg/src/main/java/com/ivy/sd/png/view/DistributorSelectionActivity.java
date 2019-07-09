@@ -1,11 +1,10 @@
 package com.ivy.sd.png.view;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,7 +17,6 @@ import android.widget.TextView;
 
 import com.ivy.cpg.primarysale.bo.DistributorMasterBO;
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.bo.SyncRetailerBO;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;

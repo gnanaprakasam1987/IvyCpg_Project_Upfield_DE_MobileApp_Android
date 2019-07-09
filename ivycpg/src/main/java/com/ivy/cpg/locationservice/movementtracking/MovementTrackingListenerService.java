@@ -11,8 +11,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
-import android.support.annotation.NonNull;
-import android.support.v4.content.LocalBroadcastManager;
+import androidx.annotation.NonNull;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.google.android.gms.location.ActivityRecognitionClient;
 import com.google.android.gms.tasks.OnFailureListener;

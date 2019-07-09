@@ -8,7 +8,7 @@ import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.WindowManager;
 import android.webkit.WebChromeClient;
@@ -16,12 +16,12 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Toast;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
 import com.ivy.sd.png.model.ApplicationConfigs;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ReportHelper;
-import com.ivy.sd.png.provider.SynchronizationHelper;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -169,7 +169,7 @@ public class WebViewActivity extends IvyBaseActivityNoActionBar implements Appli
                     Toast.makeText(WebViewActivity.this, getResources().getString(R.string.error_message_bad_url), Toast.LENGTH_LONG).show();
                 }
             } else {
-                if (!bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (!bmodel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(bmodel.synchronizationHelper.getAuthErroCode());
                     if (errorMsg != null) {
                         Toast.makeText(WebViewActivity.this, errorMsg, Toast.LENGTH_SHORT).show();

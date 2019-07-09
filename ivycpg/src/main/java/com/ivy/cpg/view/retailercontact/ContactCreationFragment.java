@@ -4,12 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.InputType;
@@ -48,8 +48,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.regex.Pattern;
 
@@ -713,7 +711,6 @@ public class ContactCreationFragment extends IvyBaseFragment implements Contacts
             mcontactTitleList.addAll(list);
 
             mcontactTitleList.add(list.size() + 1, new StandardListBO("0", "Others"));
-            Commons.print("Size Contact List title : " + bmodel.newOutletHelper.getContactTitleList().size());
             contactTitleAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_item, mcontactTitleList);
             contactTitleAdapter.setDropDownViewResource(R.layout.spinner_bluetext_list_item);
             sp_reason.setAdapter(contactTitleAdapter);
@@ -949,7 +946,7 @@ public class ContactCreationFragment extends IvyBaseFragment implements Contacts
             String salutation = "";
 
             if (IS_CONTACTSALUTATION) {
-                if (StringUtils.isEmptyString(retailerContactBo.getSalutationTitle()))
+                if (StringUtils.isNullOrEmpty(retailerContactBo.getSalutationTitle()))
                     salutation = retailerContactBo.getSalutationTitle();
             }
 
@@ -958,7 +955,7 @@ public class ContactCreationFragment extends IvyBaseFragment implements Contacts
             }
 
             if (IS_CONTACTDESIGNATION) {
-                if (StringUtils.isEmptyString(retailerContactBo.getTitle()))
+                if (StringUtils.isNullOrEmpty(retailerContactBo.getTitle()))
                     holder.title.setText(retailerContactBo.getTitle());
                 else
                     holder.title.setVisibility(View.GONE);

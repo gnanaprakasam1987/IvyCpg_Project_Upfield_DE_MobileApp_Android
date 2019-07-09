@@ -3,11 +3,11 @@ package com.ivy.cpg.view.order.productdetails;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -18,10 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.zxing.BarcodeFormat;
-import com.google.zxing.EncodeHintType;
-import com.google.zxing.MultiFormatWriter;
 import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.ConfigureBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
@@ -33,8 +30,6 @@ import com.ivy.utils.FontUtils;
 import com.ivy.utils.StringUtils;
 
 import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.Map;
 import java.util.Vector;
 
 import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
@@ -172,7 +167,7 @@ public class ProductDetailsFragment extends IvyBaseFragment {
             holder.configureBO = productConfigs.get(position);
 
             holder.menuTV.setText(holder.configureBO.getMenuName());
-            if(!StringUtils.isEmptyString(setValue(holder.configureBO, productObj))){
+            if(!StringUtils.isNullOrEmpty(setValue(holder.configureBO, productObj))){
                 holder.valueTV.setText(setValue(holder.configureBO, productObj));
             }
             if (holder.configureBO.getConfigCode().equalsIgnoreCase("PRODET08")){

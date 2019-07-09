@@ -1,18 +1,19 @@
 package com.ivy.sd.png.bo;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.ivy.cpg.view.order.scheme.SchemeBO;
 import com.ivy.cpg.view.order.scheme.SchemeProductBO;
 import com.ivy.cpg.view.order.tax.TaxBO;
 import com.ivy.cpg.view.salesreturn.SalesReturnReasonBO;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 
-public class ProductMasterBO implements Comparable {
+public class ProductMasterBO implements Serializable,Comparable {
 
     // Download from product master
     private String ProductID;

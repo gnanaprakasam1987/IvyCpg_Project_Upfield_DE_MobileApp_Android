@@ -1,10 +1,9 @@
 package com.ivy.utils;
 
-import android.support.annotation.NonNull;
-import android.support.annotation.StringDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringDef;
 import android.text.format.Time;
 
-import com.aem.api.CardReader;
 import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.provider.ConfigurationMasterHelper;
 import com.ivy.sd.png.util.Commons;
@@ -166,6 +165,8 @@ public class DateTimeUtils {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
         return sdf.format(cal.getTime());
     }
+
+
 
 
     /**
@@ -635,4 +636,18 @@ public class DateTimeUtils {
         return "00:00:00";
     }
 
+
+    public static boolean isValidFormat(String format, String value) {
+        Date date = null;
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat(format,Locale.ENGLISH);
+            date = sdf.parse(value);
+            if (!value.equals(sdf.format(date))) {
+                date = null;
+            }
+        } catch (ParseException ex) {
+            ex.printStackTrace();
+        }
+        return date != null;
+    }
 }

@@ -22,6 +22,7 @@ import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.sfdc.MyjsonarrayPostRequest;
 import com.ivy.cpg.view.van.LoadManagementHelper;
 import com.ivy.lib.Utils;
@@ -1003,7 +1004,7 @@ public class UploadHelper {
             }
             return response;
         } else {
-            if (!businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            if (!businessModel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                 String errorMsg = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
                 if (errorMsg != null) {
                     Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
@@ -1415,7 +1416,7 @@ public class UploadHelper {
 
                 }
             } else {
-                if (!businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (!businessModel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     String errorMsg = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
                     if (errorMsg != null) {
                         Toast.makeText(context, errorMsg, Toast.LENGTH_SHORT).show();
@@ -1444,6 +1445,11 @@ public class UploadHelper {
         return responseMessage;
     }
 
+    /**
+     * @See {@link  com.ivy.ui.profile.data.ProfileDataManagerImpl;}
+     * Will be removed from @version CPG134 Release
+     * @deprecated This has been Migrated to MVP pattern
+     */
     public String uploadNewOutlet(Handler handler, Context context, String retailerID) {
         String rid = "";
         try {
@@ -1453,70 +1459,48 @@ public class UploadHelper {
             db.createDataBase();
             db.openDataBase();
             JSONObject jsonobj = new JSONObject();
-
             Set<String> keys = DataMembers.uploadNewRetailerColumn.keySet();
 
             for (String tableName : keys) {
-                JSONArray jsonArray = prepareDataForNewRetailerJSONUpload(db,
-                        handler, tableName,
-                        DataMembers.uploadNewRetailerColumn.get(tableName), retailerID);
-
+                JSONArray jsonArray = prepareDataForNewRetailerJSONUpload(db, handler, tableName, DataMembers.uploadNewRetailerColumn.get(tableName), retailerID);
                 if (jsonArray.length() > 0)
                     jsonobj.put(tableName, jsonArray);
             }
 
             Commons.print("jsonObjData.toString():0:" + jsonobj.toString());
 
-
             JSONFormatter jsonFormatter = new JSONFormatter("HeaderInformation");
-
-            jsonFormatter.addParameter("DeviceId",
-                    DeviceUtils.getIMEINumber(context));
-            jsonFormatter.addParameter("LoginId", businessModel.userMasterHelper
-                    .getUserMasterBO().getLoginName());
-            jsonFormatter.addParameter("VersionCode",
-                    businessModel.getApplicationVersionNumber());
+            jsonFormatter.addParameter("DeviceId", DeviceUtils.getIMEINumber(context));
+            jsonFormatter.addParameter("LoginId", businessModel.userMasterHelper.getUserMasterBO().getLoginName());
+            jsonFormatter.addParameter("VersionCode", businessModel.getApplicationVersionNumber());
             jsonFormatter.addParameter(SynchronizationHelper.VERSION_NAME, businessModel.getApplicationVersionName());
-            jsonFormatter.addParameter("DistributorId", businessModel.userMasterHelper
-                    .getUserMasterBO().getDistributorid());
-            jsonFormatter.addParameter("OrganisationId", businessModel.userMasterHelper
-                    .getUserMasterBO().getOrganizationId());
-            jsonFormatter.addParameter("MobileDateTime",
-                    Utils.getDate("yyyy/MM/dd HH:mm:ss"));
-            jsonFormatter.addParameter("MobileUTCDateTime",
-                    Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
+            jsonFormatter.addParameter("DistributorId", businessModel.userMasterHelper.getUserMasterBO().getDistributorid());
+            jsonFormatter.addParameter("OrganisationId", businessModel.userMasterHelper.getUserMasterBO().getOrganizationId());
+            jsonFormatter.addParameter("MobileDateTime", Utils.getDate("yyyy/MM/dd HH:mm:ss"));
+            jsonFormatter.addParameter("MobileUTCDateTime", Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss"));
             if (!"0".equals(businessModel.userMasterHelper.getUserMasterBO().getBackupSellerID())) {
-                jsonFormatter.addParameter("UserId", businessModel.userMasterHelper
-                        .getUserMasterBO().getBackupSellerID());
+                jsonFormatter.addParameter("UserId", businessModel.userMasterHelper.getUserMasterBO().getBackupSellerID());
                 jsonFormatter.addParameter("WorkingFor", businessModel.userMasterHelper.getUserMasterBO().getUserid());
             } else {
-                jsonFormatter.addParameter("UserId", businessModel.userMasterHelper
-                        .getUserMasterBO().getUserid());
+                jsonFormatter.addParameter("UserId", businessModel.userMasterHelper.getUserMasterBO().getUserid());
             }
-            jsonFormatter.addParameter("VanId", businessModel.userMasterHelper
-                    .getUserMasterBO().getVanId());
+            jsonFormatter.addParameter("VanId", businessModel.userMasterHelper.getUserMasterBO().getVanId());
             String LastDayClose = "";
             if (businessModel.synchronizationHelper.isDayClosed()) {
-                LastDayClose = businessModel.userMasterHelper.getUserMasterBO()
-                        .getDownloadDate();
+                LastDayClose = businessModel.userMasterHelper.getUserMasterBO().getDownloadDate();
             }
             jsonFormatter.addParameter("LastDayClose", LastDayClose);
-            jsonFormatter.addParameter("BranchId", businessModel.userMasterHelper
-                    .getUserMasterBO().getBranchId());
-            jsonFormatter.addParameter("DownloadedDataDate", businessModel.userMasterHelper
-                    .getUserMasterBO().getDownloadDate());
+            jsonFormatter.addParameter("BranchId", businessModel.userMasterHelper.getUserMasterBO().getBranchId());
+            jsonFormatter.addParameter("DownloadedDataDate", businessModel.userMasterHelper.getUserMasterBO().getDownloadDate());
             jsonFormatter.addParameter("DataValidationKey", businessModel.synchronizationHelper.generateChecksum(jsonobj.toString()));
             Commons.print(jsonFormatter.getDataInJson());
             String appendurl = businessModel.synchronizationHelper.getUploadUrl("UPLDRET");
             if (appendurl.length() == 0)
                 return 2 + "";
             Vector<String> responseVector = businessModel.synchronizationHelper
-                    .getUploadResponse(jsonFormatter.getDataInJson(),
-                            jsonobj.toString(), appendurl);
+                    .getUploadResponse(jsonFormatter.getDataInJson(), jsonobj.toString(), appendurl);
 
             if (responseVector.size() > 0) {
-
-
                 for (String s : responseVector) {
                     JSONObject jsonObject = new JSONObject(s);
 
@@ -1631,7 +1615,7 @@ public class UploadHelper {
 
                 }
             } else {
-                if (!businessModel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                if (!businessModel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                     res = businessModel.synchronizationHelper.getErrormessageByErrorCode().get(businessModel.synchronizationHelper.getAuthErroCode());
                 }
             }

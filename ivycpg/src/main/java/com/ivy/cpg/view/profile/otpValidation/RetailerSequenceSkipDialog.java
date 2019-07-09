@@ -130,7 +130,7 @@ public class RetailerSequenceSkipDialog extends Dialog implements View.OnClickLi
                             .show();
                 }
             else {
-                if (StringUtils.isEmptyString(password.getText().toString())) {
+                if (StringUtils.isNullOrEmpty(password.getText().toString())) {
                     messageTv.setText(mContext.getResources().getString(
                             R.string.enter_otp));
                 } else {
@@ -263,7 +263,7 @@ public class RetailerSequenceSkipDialog extends Dialog implements View.OnClickLi
 
                 String columns = "UID,RetailerID,RouteID,Date,ReasonID,ReasonTypes,upload,DistributorID,ridSF";
 
-                id = StringUtils.QT(bmodel.getAppDataProvider().getUser()
+                id = StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getUser()
                         .getDistributorid()
                         + ""
                         + bmodel.getAppDataProvider().getUser().getUserid()
@@ -271,31 +271,31 @@ public class RetailerSequenceSkipDialog extends Dialog implements View.OnClickLi
 
                 values = id
                         + ","
-                        + StringUtils.QT(mRetailerBO.getRetailerID())
+                        + StringUtils.getStringQueryParam(mRetailerBO.getRetailerID())
                         + ","
                         + mRetailerBO.getBeatID()
                         + ","
-                        + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                        + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                         + ","
                         + ((SpinnerBO) reason.getSelectedItem()).getId()
                         + ","
-                        + StringUtils.QT(bmodel
+                        + StringUtils.getStringQueryParam(bmodel
                         .getStandardListId(StandardListMasterConstants.OTP_REASON_TYPE))
-                        + "," + StringUtils.QT("N")
+                        + "," + StringUtils.getStringQueryParam("N")
                         + "," + mRetailerBO.getDistributorId()
-                        + "," + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
+                        + "," + StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getRetailMaster().getRidSF());
 
                 db.deleteSQL(
                         "Nonproductivereasonmaster",
                         "RetailerID="
-                                + StringUtils.QT(mRetailerBO.getRetailerID())
+                                + StringUtils.getStringQueryParam(mRetailerBO.getRetailerID())
                                 + " and DistributorId="
                                 + mRetailerBO.getDistributorId()
                                 + " and ReasonTypes="
-                                + StringUtils.QT(bmodel
+                                + StringUtils.getStringQueryParam(bmodel
                                 .getStandardListId(StandardListMasterConstants.OTP_REASON_TYPE))
                                 + " and Date="
-                                + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE)), false);
+                                + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE)), false);
 
                 db.insertSQL("Nonproductivereasonmaster", columns, values);
 

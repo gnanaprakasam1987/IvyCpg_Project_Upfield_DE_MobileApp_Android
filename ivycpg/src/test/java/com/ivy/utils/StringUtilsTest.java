@@ -18,22 +18,22 @@ public class StringUtilsTest {
 
     @Test
     public void testIsEmptyStringEmpty(){
-        Assert.assertTrue(StringUtils.isEmptyString(""));
+        Assert.assertTrue(StringUtils.isNullOrEmpty(""));
     }
 
     @Test
     public void testIsEmptyStringNull(){
-        Assert.assertTrue(StringUtils.isEmptyString(null));
+        Assert.assertTrue(StringUtils.isNullOrEmpty(null));
     }
 
     @Test
     public void testIsEmptyStringNullString(){
-        Assert.assertTrue(StringUtils.isEmptyString("null"));
+        Assert.assertTrue(StringUtils.isNullOrEmpty("null"));
     }
 
     @Test
     public void testIsNotEmptyString(){
-        Assert.assertFalse(StringUtils.isEmptyString("Hello"));
+        Assert.assertFalse(StringUtils.isNullOrEmpty("Hello"));
     }
 
     @Test
@@ -63,6 +63,6 @@ public class StringUtilsTest {
 
     @Test
     public void testQT(){
-        Assert.assertEquals("'abcdef'",StringUtils.QT("abcdef"));
+        Assert.assertEquals("'abcdef'",StringUtils.getStringQueryParam("abcdef"));
     }
 }

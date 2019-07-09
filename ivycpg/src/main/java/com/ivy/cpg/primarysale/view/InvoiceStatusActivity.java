@@ -1,7 +1,7 @@
 package com.ivy.cpg.primarysale.view;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.widget.Toast;
 
 import com.ivy.sd.png.asean.view.R;

@@ -2,7 +2,9 @@ package com.ivy.sd.png.view;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.cpg.view.tradeCoverage.VisitFragment;
 import com.ivy.maplib.PlanningMapFragment;
@@ -59,7 +61,7 @@ public class PlanningVisitActivity extends IvyBaseActivityNoActionBar implements
         VisitFragment fragmentObject = new VisitFragment();
         fragmentObject.setArguments(bundle);
             fragmentObject.setMapViewListener(this);
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction().add(R.id.content_fragemnt, fragmentObject).commit();
 
     }
@@ -95,7 +97,7 @@ public class PlanningVisitActivity extends IvyBaseActivityNoActionBar implements
                 VisitFragment fragment = new VisitFragment();
                 fragment.setArguments(bndl);
                 fragment.setMapViewListener(this);
-                android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+                FragmentManager fm = getSupportFragmentManager();
                 fm.beginTransaction().add(R.id.fragment_content, fragment,
                         MENU_VISIT);
             }

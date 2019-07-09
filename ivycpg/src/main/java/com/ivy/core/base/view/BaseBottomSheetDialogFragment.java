@@ -9,15 +9,12 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.BottomSheetDialogFragment;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.content.ContextCompat;
+
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+
+import androidx.core.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -411,5 +408,30 @@ public abstract class BaseBottomSheetDialogFragment extends BottomSheetDialogFra
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermissions(permissions, requestCode);
         }
+    }
+
+    @Override
+    public void getCameraPermission() {
+        if (context instanceof BaseActivity)
+            ((BaseActivity) context).getCameraPermission();
+        else if (context instanceof IvyBaseActivityNoActionBar)
+            ((IvyBaseActivityNoActionBar) context).checkAndRequestPermissionAtRunTime(PHONE_STATE_AND_WRITE_PERMISSON);
+    }
+
+    @Override
+    public void getPhoneStatePermission() {
+        if (context instanceof BaseActivity)
+            ((BaseActivity) context).getPhoneStatePermission();
+        else if (context instanceof IvyBaseActivityNoActionBar)
+            ((IvyBaseActivityNoActionBar) context).checkAndRequestPermissionAtRunTime(PHONE_STATE_AND_WRITE_PERMISSON);
+    }
+
+    @Override
+    public void getLocationPermission() {
+        if (context instanceof BaseActivity)
+            ((BaseActivity) context).getLocationPermission();
+        else if (context instanceof IvyBaseActivityNoActionBar)
+            ((IvyBaseActivityNoActionBar) context).checkAndRequestPermissionAtRunTime(LOCATION_PERMISSION);
+
     }
 }

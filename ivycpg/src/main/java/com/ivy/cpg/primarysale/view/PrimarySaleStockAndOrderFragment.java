@@ -7,11 +7,13 @@ import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -165,7 +167,7 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
 
         FrameLayout drawer = (FrameLayout) getView().findViewById(R.id.right_drawer);
         int width = getResources().getDisplayMetrics().widthPixels;
-        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
 
@@ -636,7 +638,7 @@ public class PrimarySaleStockAndOrderFragment extends IvyBaseFragment implements
 
             mDrawerLayout.openDrawer(GravityCompat.END);
 
-            android.support.v4.app.FragmentManager fm = getActivity()
+            FragmentManager fm = getActivity()
                     .getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");

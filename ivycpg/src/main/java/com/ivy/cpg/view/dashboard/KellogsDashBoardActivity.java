@@ -2,7 +2,9 @@ package com.ivy.cpg.view.dashboard;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseActivityNoActionBar;
@@ -33,7 +35,7 @@ public class KellogsDashBoardActivity extends IvyBaseActivityNoActionBar {
         }
         fragmentObject = new KellogsDashboardFragment();
         if (fragmentObject != null) {
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FragmentManager fm = getSupportFragmentManager();
             fm.beginTransaction().add(R.id.content_fragemnt, fragmentObject).commit();
         }
 

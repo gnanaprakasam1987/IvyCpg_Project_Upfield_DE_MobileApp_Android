@@ -6,13 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.constraint.Group;
-import android.support.design.widget.BottomSheetBehavior;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v4.content.ContextCompat;
+import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.Group;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.core.content.ContextCompat;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -56,8 +56,6 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
-
-import com.ivy.cpg.view.profile.CommonReasonDialog;
 
 import static com.ivy.ui.retailer.RetailerConstants.APPROVED;
 import static com.ivy.ui.retailer.RetailerConstants.COMPLETED;

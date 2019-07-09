@@ -5,7 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.TypedArray;
 import android.graphics.Typeface;
-import android.support.v7.widget.AppCompatSpinner;
+import androidx.appcompat.widget.AppCompatSpinner;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;

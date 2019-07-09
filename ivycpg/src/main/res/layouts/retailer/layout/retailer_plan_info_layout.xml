@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView
+<androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -19,7 +19,7 @@
     android:animateLayoutChanges="true"
     app:layout_behavior="@string/bottom_sheet_behavior">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -405,20 +405,20 @@
             app:layout_constraintBottom_toBottomOf="@+id/tv_last_visit_txt" />
         <!--Last Visit Ends-->
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/visitElementGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="visible"
             app:constraint_referenced_ids="tv_visit_time,tv_visit_end_time,tv_visit_time_txt,tv_last_visit_txt,tv_last_visit_date,tv_to_txt" />
 
-        <android.support.constraint.Group
+        <androidx.constraintlayout.widget.Group
             android:id="@+id/saveElementGroup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="visible"
             app:constraint_referenced_ids="tv_save,tv_cancel_edit" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</android.support.v7.widget.CardView>
+</androidx.cardview.widget.CardView>

@@ -2,10 +2,10 @@ package com.ivy.ui.notes.view;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.AppCompatSpinner;
-import android.support.v7.widget.AppCompatTextView;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.MenuItem;

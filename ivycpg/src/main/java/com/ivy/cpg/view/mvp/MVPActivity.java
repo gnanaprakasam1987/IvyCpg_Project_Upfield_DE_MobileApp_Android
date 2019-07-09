@@ -2,7 +2,7 @@ package com.ivy.cpg.view.mvp;
 
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Window;
 
 import com.ivy.sd.png.asean.view.R;

@@ -11,7 +11,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.cpg.view.homescreen.HomeScreenActivity;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.TeamLeadBO;
@@ -241,7 +242,7 @@ public class TLAttendanceActivity extends IvyBaseActivityNoActionBar {
 
         switch (method) {
             case SynchronizationHelper.VOLLEY_TL_ABSENTEES_RETAILER_DOWNLOAD:
-                if (!SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE
+                if (!IvyConstants.AUTHENTICATION_SUCCESS_CODE
                         .equals(errorCode)) {
 
                     alertDialog.dismiss();

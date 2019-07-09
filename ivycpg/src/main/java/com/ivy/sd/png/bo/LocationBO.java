@@ -1,7 +1,7 @@
 package com.ivy.sd.png.bo;
 
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.ivy.cpg.view.nearexpiry.NearExpiryDateBO;
 

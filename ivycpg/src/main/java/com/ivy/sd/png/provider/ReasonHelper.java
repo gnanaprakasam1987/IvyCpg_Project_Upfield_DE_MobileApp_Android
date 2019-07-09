@@ -490,7 +490,8 @@ public class ReasonHelper {
                     getReasonList().add(reason);
                 }
                 c.close();
-            }
+            }else
+                c.close();
             db.closeDB();
         } catch (Exception e) {
             Commons.printException("Load Reason", e);
@@ -901,7 +902,7 @@ public class ReasonHelper {
                 if (addressSB.length() > 0)
                     addressSB.append(",");
 
-                addressSB.append(StringUtils.QT(addCodes));
+                addressSB.append(StringUtils.getStringQueryParam(addCodes));
                 i = i + 1;
             }
         } else

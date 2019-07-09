@@ -340,7 +340,7 @@ public class CollectionReportHelper {
         try {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME);
             db.openDataBase();
-            db.deleteSQL(DataMembers.tbl_Payment, "uid =" + StringUtils.QT(uid), false);
+            db.deleteSQL(DataMembers.tbl_Payment, "uid =" + StringUtils.getStringQueryParam(uid), false);
             db.closeDB();
         } catch (Exception e) {
             Commons.printException(e);

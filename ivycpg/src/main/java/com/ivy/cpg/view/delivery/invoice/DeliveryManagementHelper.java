@@ -235,24 +235,24 @@ public class DeliveryManagementHelper {
                 status = "R";
             }
 
-            String uid = StringUtils.QT(bmodel.userMasterHelper.getUserMasterBO().getUserid()
+            String uid = StringUtils.getStringQueryParam(bmodel.userMasterHelper.getUserMasterBO().getUserid()
                     + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
-            String header = (uid + "," + StringUtils.QT(bmodel.getRetailerMasterBO().getRetailerID()) + ",") +
-                    StringUtils.QT(invoiceHeaderBO.getInvoiceDate()) + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," +
-                    StringUtils.QT(status) + "," + StringUtils.QT(bmodel.mSelectedRetailerLatitude + "") + "," + StringUtils.QT(bmodel.mSelectedRetailerLongitude + "") + "," +
+            String header = (uid + "," + StringUtils.getStringQueryParam(bmodel.getRetailerMasterBO().getRetailerID()) + ",") +
+                    StringUtils.getStringQueryParam(invoiceHeaderBO.getInvoiceDate()) + "," + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + "," +
+                    StringUtils.getStringQueryParam(status) + "," + StringUtils.getStringQueryParam(bmodel.mSelectedRetailerLatitude + "") + "," + StringUtils.getStringQueryParam(bmodel.mSelectedRetailerLongitude + "") + "," +
                     DatabaseUtils.sqlEscapeString(Utils.getGMTDateTime("yyyy/MM/dd HH:mm:ss")) +
-                    "," + StringUtils.QT(invoiceno) +
-                    "," + StringUtils.QT(SignName) +//internal colunm
-                    "," + StringUtils.QT(SignPath) +// proofPicture not used... so using same column
-                    "," + StringUtils.QT(contactName) +
-                    "," + StringUtils.QT(contactNo) +
-                    "," + StringUtils.QT(SignPath) +
-                    "," + StringUtils.QT(invoiceHeaderBO.getPickListId());
+                    "," + StringUtils.getStringQueryParam(invoiceno) +
+                    "," + StringUtils.getStringQueryParam(SignName) +//internal colunm
+                    "," + StringUtils.getStringQueryParam(SignPath) +// proofPicture not used... so using same column
+                    "," + StringUtils.getStringQueryParam(contactName) +
+                    "," + StringUtils.getStringQueryParam(contactNo) +
+                    "," + StringUtils.getStringQueryParam(SignPath) +
+                    "," + StringUtils.getStringQueryParam(invoiceHeaderBO.getPickListId());
             db.insertSQL(DataMembers.tbl_van_delivery_header, deliveryheadercolumns, header);
 
-            String values = StringUtils.QT(invoiceHeaderBO.getPickListId()) + ","
-                    + StringUtils.QT(invoiceno) + ","
-                    + StringUtils.QT(status);
+            String values = StringUtils.getStringQueryParam(invoiceHeaderBO.getPickListId()) + ","
+                    + StringUtils.getStringQueryParam(invoiceno) + ","
+                    + StringUtils.getStringQueryParam(status);
 
             db.insertSQL(DataMembers.tbl_picklist_invoice, DataMembers.tbl_picklist_invoice_cols, values);
 
@@ -422,7 +422,7 @@ public class DeliveryManagementHelper {
         db = new DBUtil(mContext, DataMembers.DB_NAME);
         db.openDataBase();
 
-        String id = StringUtils.QT("SR" + bmodel.getAppDataProvider().getUser().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
+        String id = StringUtils.getStringQueryParam("SR" + bmodel.getAppDataProvider().getUser().getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
         boolean isData = false;
         double totalReturnValue = 0;
         int lpc = 0;
@@ -465,9 +465,9 @@ public class DeliveryManagementHelper {
                         + ","
                         + 0
                         + ","
-                        + StringUtils.QT("")
+                        + StringUtils.getStringQueryParam("")
                         + ","
-                        + StringUtils.QT("")
+                        + StringUtils.getStringQueryParam("")
                         + ","
                         + 0
                         + ","
@@ -481,7 +481,7 @@ public class DeliveryManagementHelper {
                         .getOldBatchIDByMfd(productMasterBO
                                 .getProductID())
                         + ","
-                        + StringUtils.QT((invoiceno == null || "null".equals(invoiceno)) ? "" : invoiceno)
+                        + StringUtils.getStringQueryParam((invoiceno == null || "null".equals(invoiceno)) ? "" : invoiceno)
                         + ","
                         + 0
                         + ","
@@ -489,10 +489,10 @@ public class DeliveryManagementHelper {
                         + ","
                         + totalValue
                         + ","
-                        + StringUtils.QT(bmodel.retailerMasterBO
+                        + StringUtils.getStringQueryParam(bmodel.retailerMasterBO
                         .getRetailerID()) + ","
-                        + 1 + "," + StringUtils.QT("") + "," + productMasterBO.getPcUomid()
-                        + "," + StringUtils.QT("") + "," + StringUtils.QT(productMasterBO.getHsnCode());
+                        + 1 + "," + StringUtils.getStringQueryParam("") + "," + productMasterBO.getPcUomid()
+                        + "," + StringUtils.getStringQueryParam("") + "," + StringUtils.getStringQueryParam(productMasterBO.getHsnCode());
 
                 db.insertSQL(
                         DataMembers.tbl_SalesReturnDetails,
@@ -513,27 +513,27 @@ public class DeliveryManagementHelper {
 
             columns = "uid,date,RetailerID,BeatID,UserID,ReturnValue,lpc,RetailerCode,remark,latitude,longitude,distributorid,DistParentID,SignaturePath,imgName,IFlag,RefModuleTId,RefModule,CollectStatus,invoiceid,ridSF,VisitId";
             String values = id + ","
-                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-                    + StringUtils.QT(bmodel.retailerMasterBO.getRetailerID()) + ","
+                    + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                    + StringUtils.getStringQueryParam(bmodel.retailerMasterBO.getRetailerID()) + ","
                     + bmodel.retailerMasterBO.getBeatID() + "," +
                     srUserID
                     + "," + bmodel.QT(SDUtil.format(totalReturnValue,
                     bmodel.configurationMasterHelper.PERCENT_PRECISION_COUNT, 0)) + "," + lpc + ","
-                    + StringUtils.QT(bmodel.retailerMasterBO.getRetailerCode()) + ","
-                    + StringUtils.QT(bmodel.getSaleReturnNote()) + ","
-                    + StringUtils.QT(bmodel.mSelectedRetailerLatitude + "") + ","
-                    + StringUtils.QT(bmodel.mSelectedRetailerLongitude + "") + ","
+                    + StringUtils.getStringQueryParam(bmodel.retailerMasterBO.getRetailerCode()) + ","
+                    + StringUtils.getStringQueryParam(bmodel.getSaleReturnNote()) + ","
+                    + StringUtils.getStringQueryParam(bmodel.mSelectedRetailerLatitude + "") + ","
+                    + StringUtils.getStringQueryParam(bmodel.mSelectedRetailerLongitude + "") + ","
                     + bmodel.retailerMasterBO.getDistributorId() + ","
                     + bmodel.retailerMasterBO.getDistParentId() + ","
-                    + StringUtils.QT("") + ","
-                    + StringUtils.QT("") + ","
+                    + StringUtils.getStringQueryParam("") + ","
+                    + StringUtils.getStringQueryParam("") + ","
                     + 1;// 1 means Indicative, 0 means normal
 
-            values = values + "," + StringUtils.QT("") + ","
-                    + StringUtils.QT("") + ","
-                    + StringUtils.QT(status) + ","// update delivery status
-                    + StringUtils.QT(invoiceID) + ","
-                    + StringUtils.QT(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+            values = values + "," + StringUtils.getStringQueryParam("") + ","
+                    + StringUtils.getStringQueryParam("") + ","
+                    + StringUtils.getStringQueryParam(status) + ","// update delivery status
+                    + StringUtils.getStringQueryParam(invoiceID) + ","
+                    + StringUtils.getStringQueryParam(bmodel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
                     + bmodel.getAppDataProvider().getUniqueId();
 
             db.insertSQL(DataMembers.tbl_SalesReturnHeader, columns, values);
@@ -701,7 +701,7 @@ public class DeliveryManagementHelper {
             DBUtil db = new DBUtil(mContext, DataMembers.DB_NAME
             );
             db.openDataBase();
-            String s = "SELECT count(uid) from SalesReturnHeader where RetailerID =" + StringUtils.QT(bmodel.getRetailerMasterBO().getRetailerID());
+            String s = "SELECT count(uid) from SalesReturnHeader where RetailerID =" + StringUtils.getStringQueryParam(bmodel.getRetailerMasterBO().getRetailerID());
             int count = 0;
             Cursor c = db.selectSQL(s);
             if (c != null) {
@@ -725,7 +725,7 @@ public class DeliveryManagementHelper {
         try {
             String[] iD = new String[2];
             String query = "select UserID,invoiceno from InvoiceDeliveryMaster" +
-                    " Where InvoiceRefNo=" + StringUtils.QT(invoiceno);
+                    " Where InvoiceRefNo=" + StringUtils.getStringQueryParam(invoiceno);
             Cursor c = db.selectSQL(query);
             if (c != null) {
                 if (c.moveToNext()) {

@@ -12,7 +12,7 @@
     android:paddingBottom="@dimen/target_top_margin">
 
 
-    <android.support.v7.widget.AppCompatRadioButton
+    <androidx.appcompat.widget.AppCompatRadioButton
         android:id="@+id/stock_apply_listview_cb"
         android:layout_width="0dp"
         android:layout_height="match_parent"

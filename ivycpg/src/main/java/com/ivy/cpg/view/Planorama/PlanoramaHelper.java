@@ -2,23 +2,17 @@ package com.ivy.cpg.view.Planorama;
 
 import android.content.Context;
 import android.database.Cursor;
-import android.util.Log;
 
-import com.ivy.core.data.app.AppDataProviderImpl;
 import com.ivy.cpg.view.sf.SFLocationBO;
 import com.ivy.cpg.view.sf.SalesFundamentalHelper;
-import com.ivy.cpg.view.sf.ShelfShareHelper;
 import com.ivy.lib.existing.DBUtil;
 import com.ivy.sd.png.bo.LocationBO;
 import com.ivy.sd.png.bo.ProductMasterBO;
 import com.ivy.sd.png.bo.SOSBO;
-import com.ivy.sd.png.bo.ShelfShareBO;
-import com.ivy.sd.png.commons.SDUtil;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.provider.ProductHelper;
 import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
-import com.ivy.utils.AppUtils;
 import com.ivy.utils.DateTimeUtils;
 import com.ivy.utils.StringUtils;
 
@@ -83,20 +77,20 @@ public class PlanoramaHelper {
 
             String planorama_column = "uid,date,retailerId,comments,NoOfPhotos,ReferenceNo";
             StringBuilder stringBuilder = new StringBuilder();
-            String id = StringUtils.QT(mBusinessModel.getAppDataProvider().getUser().getUserid()
+            String id = StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getUser().getUserid()
                     + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
 
             stringBuilder.append(id);
             stringBuilder.append(",");
-            stringBuilder.append(StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+            stringBuilder.append(StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             stringBuilder.append(",");
             stringBuilder.append(mBusinessModel.getRetailerMasterBO().getRetailerID());
             stringBuilder.append(",");
-            stringBuilder.append(StringUtils.QT(comments));
+            stringBuilder.append(StringUtils.getStringQueryParam(comments));
             stringBuilder.append(",");
             stringBuilder.append(noOfPhotos);
             stringBuilder.append(",");
-            stringBuilder.append(StringUtils.QT(visitId));
+            stringBuilder.append(StringUtils.getStringQueryParam(visitId));
 
 
 
@@ -111,9 +105,9 @@ public class PlanoramaHelper {
                 imageValues = new StringBuilder();
                 imageValues.append(id);
                 imageValues.append(",");
-                imageValues.append(StringUtils.QT(imageName));
+                imageValues.append(StringUtils.getStringQueryParam(imageName));
                 imageValues.append(",");
-                imageValues.append(StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
+                imageValues.append(StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()));
 
 
                 db.insertSQL("PlanoramaImages",
@@ -349,7 +343,7 @@ public class PlanoramaHelper {
             db.openDataBase();
 
             boolean isData;
-            String id = StringUtils.QT(mBusinessModel.getAppDataProvider().getUser().getUserid()
+            String id = StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getUser().getUserid()
                     + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
             if (mBusinessModel.isEditStockCheck()) {
                 Cursor closingStockCursor = db
@@ -358,7 +352,7 @@ public class PlanoramaHelper {
 
                 if (closingStockCursor.getCount() > 0) {
                     closingStockCursor.moveToNext();
-                    id = StringUtils.QT(closingStockCursor.getString(0));
+                    id = StringUtils.getStringQueryParam(closingStockCursor.getString(0));
                     db.deleteSQL("ClosingStockHeader", "StockID=" + id, false);
                     db.deleteSQL("ClosingStockDetail", "StockID=" + id, false);
                 }
@@ -404,10 +398,10 @@ public class PlanoramaHelper {
                             int shelfOuter = ((product.getLocations().get(j).getShelfOuter() == -1) ? 0 : product.getLocations().get(j).getShelfOuter());
                             int availability = ((product.getLocations().get(j).getAvailability() == -1) ? 0 : product.getLocations().get(j).getAvailability());
                             values = (id) + ","
-                                    + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
-                                    + StringUtils.QT(product.getProductId()) + ","
+                                    + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + ","
+                                    + StringUtils.getStringQueryParam(product.getProductId()) + ","
                                     + productMasterBO.getCaseSize() + ","
-                                    + StringUtils.QT(mBusinessModel.retailerMasterBO.getRetailerID()) + ","
+                                    + StringUtils.getStringQueryParam(mBusinessModel.retailerMasterBO.getRetailerID()) + ","
                                     + productMasterBO.getCaseUomId() + ","
                                     + productMasterBO.getMSQty() + ","
                                     + count + ","
@@ -449,20 +443,20 @@ public class PlanoramaHelper {
             if (isData) {
               String  columns = "StockID,Date,RetailerID,RetailerCode,remark,DistributorID,AvailabilityShare,ridSF,VisitId";
 
-                values = (id) + ", " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-                        + ", " + StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()) + ", "
-                        + StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerCode()) + ","
-                        + StringUtils.QT(mBusinessModel.getStockCheckRemark()) + "," + mBusinessModel.getAppDataProvider().getRetailMaster().getDistributorId();
+                values = (id) + ", " + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                        + ", " + StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()) + ", "
+                        + StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerCode()) + ","
+                        + StringUtils.getStringQueryParam(mBusinessModel.getStockCheckRemark()) + "," + mBusinessModel.getAppDataProvider().getRetailMaster().getDistributorId();
 
                 if (mBusinessModel.configurationMasterHelper.IS_ENABLE_SHARE_PERCENTAGE_STOCK_CHECK) {
                     String availabilityShare = (mBusinessModel.getAvailablilityShare() == null ||
                             mBusinessModel.getAvailablilityShare().trim().length() == 0) ? "0.0" : mBusinessModel.getAvailablilityShare();
-                    values = values + "," + StringUtils.QT(availabilityShare);
+                    values = values + "," + StringUtils.getStringQueryParam(availabilityShare);
                 } else {
-                    values = values + "," + StringUtils.QT("0.0");
+                    values = values + "," + StringUtils.getStringQueryParam("0.0");
                 }
 
-                values = values + "," + StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
+                values = values + "," + StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getRetailMaster().getRidSF()) + ","
                         + mBusinessModel.getAppDataProvider().getUniqueId();
 
                 db.insertSQL(DataMembers.tbl_closingstockheader, columns, values);
@@ -588,9 +582,9 @@ public class PlanoramaHelper {
             StringBuilder sb = new StringBuilder();
             sb.append("select StockID,ifnull(remark,'') from ");
             sb.append(DataMembers.tbl_closingstockheader + " where RetailerID=");
-            sb.append(StringUtils.QT(retailerId));
+            sb.append(StringUtils.getStringQueryParam(retailerId));
             sb.append(" AND DistributorID=" + mBusinessModel.getRetailerMasterBO().getDistributorId());
-            sb.append(" AND date = " + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+            sb.append(" AND date = " + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
             sb.append(" and upload= 'N'");
 
 
@@ -607,7 +601,7 @@ public class PlanoramaHelper {
             String sql1 = "select productId,shelfpqty,shelfcqty,whpqty,whcqty,whoqty,shelfoqty,LocId,isDistributed,isListed,reasonID,isDone,IsOwn,Facing,RField1,RField2,isAvailable from "
                     + DataMembers.tbl_closingstockdetail
                     + " where stockId="
-                    + StringUtils.QT(stockID) + "";
+                    + StringUtils.getStringQueryParam(stockID) + "";
             Cursor orderDetailCursor = db.selectSQL(sql1);
             if (orderDetailCursor != null) {
                 while (orderDetailCursor.moveToNext()) {
@@ -710,7 +704,7 @@ public class PlanoramaHelper {
 
             String query = "select Uid,refid from " + modName
                     + "_Tracking_Header  where RetailerId="
-                    + StringUtils.QT(mBusinessModel.retailerMasterBO.getRetailerID());
+                    + StringUtils.getStringQueryParam(mBusinessModel.retailerMasterBO.getRetailerID());
             query += " and (upload='N' OR refid!=0)";
 
             Cursor cursor = db.selectSQL(query);
@@ -718,14 +712,14 @@ public class PlanoramaHelper {
             if (cursor.getCount() > 0) {
                 cursor.moveToNext();
                 db.deleteSQL(modName + "_Tracking_Header",
-                        "Uid=" + StringUtils.QT(cursor.getString(0)), false);
+                        "Uid=" + StringUtils.getStringQueryParam(cursor.getString(0)), false);
                 db.deleteSQL(modName + "_Tracking_Detail",
-                        "Uid=" + StringUtils.QT(cursor.getString(0)), false);
+                        "Uid=" + StringUtils.getStringQueryParam(cursor.getString(0)), false);
                 if (modName.equals("SOS")) {
                     db.deleteSQL(modName + "_Tracking_Parent_Detail", "Uid="
-                            + StringUtils.QT(cursor.getString(0)), false);
+                            + StringUtils.getStringQueryParam(cursor.getString(0)), false);
                     db.deleteSQL(DataMembers.tbl_SOS__Block_Tracking_Detail,
-                            "Uid=" + StringUtils.QT(cursor.getString(0)), false);
+                            "Uid=" + StringUtils.getStringQueryParam(cursor.getString(0)), false);
                 }
                 refId = cursor.getString(1);
                 // uid = cursor.getString(0);
@@ -734,12 +728,12 @@ public class PlanoramaHelper {
 
             // Inserting Header in Tables
 
-            String headerValues = StringUtils.QT(uid)
+            String headerValues = StringUtils.getStringQueryParam(uid)
                     + "," + mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()
-                    + "," + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
-                    + "," + StringUtils.QT(mBusinessModel.getNote())
-                    + "," + StringUtils.QT(refId)
-                    + "," + StringUtils.QT(mBusinessModel.getAppDataProvider().getRetailMaster().getRidSF())
+                    + "," + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                    + "," + StringUtils.getStringQueryParam(mBusinessModel.getNote())
+                    + "," + StringUtils.getStringQueryParam(refId)
+                    + "," + StringUtils.getStringQueryParam(mBusinessModel.getAppDataProvider().getRetailMaster().getRidSF())
                     + "," + mBusinessModel.getAppDataProvider().getUniqueId();
 
             db.insertSQL(modName + "_Tracking_Header", headerColumns,
@@ -756,7 +750,7 @@ public class PlanoramaHelper {
                         if ((!sosBo.getLocations().get(i).getParentTotal().equals("0")
                                 && !sosBo.getLocations().get(i).getParentTotal().equals("0.0"))
                                 || sosBo.getLocations().get(i).getAudit() != 2) {
-                            detailValues = StringUtils.QT(uid)
+                            detailValues = StringUtils.getStringQueryParam(uid)
                                     + "," + sosBo.getProductID()
                                     + "," + mBusinessModel.getAppDataProvider().getRetailMaster().getRetailerID()
                                     + "," + sosBo.getNorm()
@@ -766,14 +760,14 @@ public class PlanoramaHelper {
                                     + "," + sosBo.getLocations().get(i).getPercentage()
                                     + "," + sosBo.getLocations().get(i).getGap()
                                     + "," + (sosBo.getLocations().get(i).getReasonId() == -1 ? 0 : sosBo.getLocations().get(i).getReasonId())
-                                    + "," + StringUtils.QT(sosBo.getLocations().get(i).getImageName())
+                                    + "," + StringUtils.getStringQueryParam(sosBo.getLocations().get(i).getImageName())
                                     + "," + sosBo.getIsOwn()
                                     + "," + sosBo.getParentID()
                                     + "," + sosBo.getLocations().get(i).getAudit()
                                     + "," + sosBo.getMappingId()
                                     + "," + sosBo.getLocations().get(i).getLocationId()
-                                    + "," + StringUtils.QT(sosBo.getLocations().get(i).getImgName())
-                                    + "," + StringUtils.QT(sosBo.getLocations().get(i).getRemarks());
+                                    + "," + StringUtils.getStringQueryParam(sosBo.getLocations().get(i).getImgName())
+                                    + "," + StringUtils.getStringQueryParam(sosBo.getLocations().get(i).getRemarks());
 
                             db.insertSQL(modName + "_Tracking_Detail",
                                     detailColumns, detailValues);
@@ -804,7 +798,7 @@ public class PlanoramaHelper {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME);
         db.openDataBase();
         try {
-            db.updateSQL("update planorama set analysisResult="+StringUtils.QT(result)+" where referenceNo="+StringUtils.QT(visitID));
+            db.updateSQL("update planorama set analysisResult="+StringUtils.getStringQueryParam(result)+" where referenceNo="+StringUtils.getStringQueryParam(visitID));
             db.closeDB();
 
         }
@@ -822,7 +816,7 @@ public class PlanoramaHelper {
         db.openDataBase();
         try {
 
-            String query = "select analysisResult from planorama where referenceNo="+StringUtils.QT(visitId);
+            String query = "select analysisResult from planorama where referenceNo="+StringUtils.getStringQueryParam(visitId);
 
             Cursor cursor = db.selectSQL(query);
 

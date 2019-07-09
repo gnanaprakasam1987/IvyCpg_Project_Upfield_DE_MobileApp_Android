@@ -20,13 +20,12 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.ivy.core.IvyConstants;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.BeatMasterBO;
 import com.ivy.sd.png.bo.LocationBO;
@@ -372,7 +371,7 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
         switch (method) {
             case SynchronizationHelper.RETAILER_DOWNLOAD_BY_LOCATION:
                 if (errorCode != null && !errorCode
-                        .equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+                        .equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
 
 
                     String errorMsg = bmodel.synchronizationHelper.getErrormessageByErrorCode().get(errorCode);
@@ -422,10 +421,10 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
             case SynchronizationHelper.VOLLEY_DOWNLOAD_INSERT:
                 if (errorCode != null) {
                     switch (errorCode) {
-                        case SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE:
+                        case IvyConstants.AUTHENTICATION_SUCCESS_CODE:
                             bmodel.synchronizationHelper.downloadFinishUpdate(SynchronizationHelper.FROM_SCREEN.RETAILER_SELECTION, SynchronizationHelper.RETAILER_DOWNLOAD_FINISH_UPDATE,"");
                             break;
-                        case SynchronizationHelper.UPDATE_TABLE_SUCCESS_CODE:
+                        case IvyConstants.UPDATE_TABLE_SUCCESS_CODE:
                             int updateTableCount = bundle.getInt("updateCount");
                             int totalTableCount = bundle.getInt("totalCount");
                             updaterProgressMsg(String.format(getResources().getString(R.string.table_downloaded), updateTableCount));
@@ -673,7 +672,7 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                 if (!bmodel.configurationMasterHelper.IS_RET_NAME_RETAILER_DOWNLOAD) {
                     if (!bmodel.configurationMasterHelper.IS_USER_WISE_RETAILER_DOWNLOAD && mSelectedLocBO != null) {
                         bmodel.synchronizationHelper.downloadRetailerByLocFromServer(mSelectedLocBO.getLocId(), true);
@@ -716,7 +715,7 @@ public class AdhocPlanningFragment extends IvyBaseFragment {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            if (bmodel.synchronizationHelper.getAuthErroCode().equals(SynchronizationHelper.AUTHENTICATION_SUCCESS_CODE)) {
+            if (bmodel.synchronizationHelper.getAuthErroCode().equals(IvyConstants.AUTHENTICATION_SUCCESS_CODE)) {
                 bool = false;
                 ArrayList<RetailerMasterBO> retailerList = new ArrayList<>();
                 retailerList.addAll(mSecondRetailerList);

@@ -6,8 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -216,7 +216,7 @@ public class SubDFragment extends IvyBaseFragment {
                 if (bmodel.configurationMasterHelper.IS_DISABLE_CALL_ANALYSIS_TIMER)
                     dateTime = IvyConstants.DEFAULT_TIME_CONSTANT;
                 bmodel.outletTimeStampHelper.setTimeIn(dateTime);
-                bmodel.outletTimeStampHelper.setUid(StringUtils.QT("OTS" + temp));
+                bmodel.outletTimeStampHelper.setUid(StringUtils.getStringQueryParam("OTS" + temp));
 
                 bmodel.outletTimeStampHelper.saveTimeStamp(
                         DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL), time

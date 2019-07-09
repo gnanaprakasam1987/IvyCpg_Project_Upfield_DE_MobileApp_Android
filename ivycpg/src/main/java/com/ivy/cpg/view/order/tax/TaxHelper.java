@@ -253,10 +253,10 @@ public class TaxHelper implements TaxInterface {
         if (mBillTaxList != null) {
             String columns = "RetailerId,invoiceid,taxRate,taxType,taxValue,applyLevelId";
             for (TaxBO taxBO : mBillTaxList) {
-                String sb = (StringUtils.QT(mBusinessModel.getRetailerMasterBO()
+                String sb = (StringUtils.getStringQueryParam(mBusinessModel.getRetailerMasterBO()
                         .getRetailerID()) + ",") +
-                        StringUtils.QT(invoiceid) + "," + taxBO.getTaxRate() + "," +
-                        StringUtils.QT(taxBO.getTaxType()) + ","
+                        StringUtils.getStringQueryParam(invoiceid) + "," + taxBO.getTaxRate() + "," +
+                        StringUtils.getStringQueryParam(taxBO.getTaxType()) + ","
                         + taxBO.getTotalTaxAmount()+","+taxBO.getApplyLevelId();
                 db.insertSQL("InvoiceTaxDetails", columns, sb);
 
@@ -369,7 +369,7 @@ public class TaxHelper implements TaxInterface {
             String sb = "select distinct IT.taxType,IT.taxRate,slm.flex1,TM.ParentType from OrderTaxDetails IT" +
                     " inner join taxmaster TM on IT.groupid=TM.Groupid and IT.TaxType=TM.taxtype " +
                     " left join standardlistmaster slm on TM.taxtype=slm.listid " +
-                    " where orderid=" + StringUtils.QT(invoiceid) + " order by IT.taxType,IT.taxRate,slm.flex1 desc";
+                    " where orderid=" + StringUtils.getStringQueryParam(invoiceid) + " order by IT.taxType,IT.taxRate,slm.flex1 desc";
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 int groupid = 0;
@@ -449,7 +449,7 @@ public class TaxHelper implements TaxInterface {
             String sb = "select distinct IT.taxType,pid,IT.taxRate,IT.isFreeProduct from OrderTaxDetails IT" +
                     " left join taxmaster TM on IT.groupid=TM.Groupid" +
                     " left join standardlistmaster slm on TM.taxtype=slm.listid " +
-                    " where orderid=" + StringUtils.QT(invoiceid) + " and IT.isFreeProduct=0 order by IT.taxType,IT.taxRate";
+                    " where orderid=" + StringUtils.getStringQueryParam(invoiceid) + " and IT.isFreeProduct=0 order by IT.taxType,IT.taxRate";
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 String groupid = "";
@@ -507,7 +507,7 @@ public class TaxHelper implements TaxInterface {
             String sb = "select distinct IT.taxType,pid,IT.taxRate,IT.isFreeProduct from invoicetaxdetails IT" +
                     " left join taxmaster TM on IT.groupid=TM.Groupid" +
                     " left join standardlistmaster slm on TM.taxtype=slm.listid " +
-                    " where invoiceid=" + StringUtils.QT(invoiceid) + "and IT.isFreeProduct=1 order by IT.taxType,IT.taxRate";
+                    " where invoiceid=" + StringUtils.getStringQueryParam(invoiceid) + "and IT.isFreeProduct=1 order by IT.taxType,IT.taxRate";
             Cursor c = db.selectSQL(sb);
             if (c.getCount() > 0) {
                 String groupid = "";
@@ -720,7 +720,7 @@ public class TaxHelper implements TaxInterface {
 
     public void updateInvoiceIdInProductLevelTax(DBUtil db, String invid,
                                                  String orderId) {
-        String query = "update InvoiceTaxDetails set InvoiceId=" + StringUtils.QT(invid)
+        String query = "update InvoiceTaxDetails set InvoiceId=" + StringUtils.getStringQueryParam(invid)
                 + " where OrderId=" + orderId;
         db.updateSQL(query);
 
@@ -790,7 +790,7 @@ public class TaxHelper implements TaxInterface {
                 sb.append("where orderid=").append(OrderHelper.getInstance(mContext).getOrderId());
             } else {
                 sb.append("select sum(taxValue) from InvoiceTaxDetails ");
-                sb.append("where invoiceid=").append(StringUtils.QT(mBusinessModel.invoiceNumber));
+                sb.append("where invoiceid=").append(StringUtils.getStringQueryParam(mBusinessModel.invoiceNumber));
             }
             Cursor c = db.selectSQL(sb.toString());
             if (c.moveToFirst()) {

@@ -2,17 +2,17 @@ package com.ivy.lib.adapter;
 
 import android.content.Context;
 import android.net.Uri;
-import android.support.v4.view.PagerAdapter;
-import android.support.v7.widget.AppCompatImageView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.appcompat.widget.AppCompatImageView;
+import androidx.viewpager.widget.PagerAdapter;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.ivy.lib.R;
 
-import java.io.File;
 import java.util.ArrayList;
 
 public class ImageViewPagerAdapter extends PagerAdapter {

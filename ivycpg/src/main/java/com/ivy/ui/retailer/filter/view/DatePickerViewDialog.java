@@ -3,17 +3,13 @@ package com.ivy.ui.retailer.filter.view;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.widget.DatePicker;
 
 import com.ivy.sd.png.asean.view.R;
-import com.ivy.sd.png.util.Commons;
 import com.ivy.utils.DateTimeUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Locale;
 
 public class DatePickerViewDialog extends DatePickerDialog implements DialogInterface.OnClickListener{

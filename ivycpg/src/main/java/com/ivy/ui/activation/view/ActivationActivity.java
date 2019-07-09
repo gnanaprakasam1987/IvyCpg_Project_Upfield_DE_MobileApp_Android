@@ -4,7 +4,7 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.TextView;

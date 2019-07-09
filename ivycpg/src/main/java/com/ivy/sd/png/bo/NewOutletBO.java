@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
 
-public class NewOutletBO extends ArrayList<NewOutletBO> {
+public class NewOutletBO {
     private int mSelectedImageIndex = 0;
     private double NewOutletlattitude, NewOutletLongitude;
-    private String visitDays;
-    private String weekNo;
+    private String visitDays="";
+    private String weekNo="";
     private String mName;
     private String valueText;
     private String srotText;
@@ -21,47 +21,43 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
     public ArrayList<String> ImageName = new ArrayList<>();
     public ArrayList<Integer> ImageId = new ArrayList<>();
 
-    private String Market;
+    private String Market="";
     private int channel, subChannel;
-    private String outletName;
-    private String Address;
-    private String Address2;
-
+    private String outletName="";
+    private String Address="";
+    private String Address2="";
 
     private String Address3 = "";
-    private String City, State;
-    private String Phone, email;
+    private String City="", State="";
+    private String Phone="", email="";
     private String distid = "0";
-    private String contactpersonname, contactpersonname2, Phone2;
-    private String contactpersonnameLastName;
-    private String contactpersonname2LastName;
-    private String Contact1title, contact1titlelovid;
-    private String Contact2title, contact2titlelovid;
-    private int contractStatuslovid;
+    private String contactpersonname="", contactpersonname2="", Phone2="";
+    private String contactpersonnameLastName="";
+    private String contactpersonname2LastName="";
+    private String Contact1title="0", contact1titlelovid="0";
+    private String Contact2title="0", contact2titlelovid="0";
+    private int contractStatuslovid=0;
     private int routeid, locid, loc1id, loc2id;
-    private String Fax;
-    private String Email;
-    private String CreditLimit;
-    private String Vat;
-    private String Payment;
+    private String Fax="";
+    private String CreditLimit="0";
+    private String Payment="0";
     private String retailerId;
     private String creditDays;
-    private ArrayList<NewOutletBO> lst;
-    private String rfield5;
-    private String rfield6;
-    private String rField4;
-    private String rField7;
-    private String tinExpDate;
+    private String rfield5="0";
+    private String rfield6="0";
+    private String rField4="0";
+    private String rField7="0";
+    private String tinExpDate="";
     private int userId;
-    private String panNo;
-    private String drugLicenseNo;
-    private String foodLicenseNo;
-    private String dlExpDate;
-    private String flExpDate;
-    private String region;
-    private String country;
-    private String mobile;
-    private String district;
+    private String panNo="";
+    private String drugLicenseNo="";
+    private String foodLicenseNo="";
+    private String dlExpDate="";
+    private String flExpDate="";
+    private String region="";
+    private String country="";
+    private String mobile="";
+    private String district="";
 
     public java.lang.String getRetailerId() {
         return retailerId;
@@ -125,7 +121,7 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
         return taxTypeId;
     }
 
-    public void setTaxTypeId(java.lang.String taxTypeId) {
+    public void setTaxTypeId(String taxTypeId) {
         this.taxTypeId = taxTypeId;
     }
 
@@ -465,7 +461,7 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
         this.tinno = tinno;
     }
 
-    private String tinno;
+    private String tinno="0";
 
     public java.lang.String getGstNum() {
         return gstNum;
@@ -475,7 +471,7 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
         this.gstNum = gstNum;
     }
 
-    private String gstNum;
+    private String gstNum="";
 
     public int getIsSEZ() {
         return isSEZ;
@@ -495,7 +491,7 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
         this.rfield3 = rfield3;
     }
 
-    private String rfield3;
+    private String rfield3="";
 
     public String getPincode() {
         return pincode;
@@ -505,7 +501,7 @@ public class NewOutletBO extends ArrayList<NewOutletBO> {
         this.pincode = pincode;
     }
 
-    private String pincode;
+    private String pincode="";
 
 
     public java.lang.String getContact1title() {

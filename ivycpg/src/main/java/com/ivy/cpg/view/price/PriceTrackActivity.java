@@ -1,8 +1,10 @@
 package com.ivy.cpg.view.price;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 import android.view.View;
+
+import androidx.fragment.app.FragmentManager;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.bo.CompetitorFilterLevelBO;
@@ -35,7 +37,7 @@ public class PriceTrackActivity extends IvyBaseActivityNoActionBar implements Br
     }
 
     public void numberPressed(View v) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         PriceTrackFragment fragment = (PriceTrackFragment) fm
                 .findFragmentById(R.id.price_track_fragment);
         fragment.numberPressed(v);
@@ -43,7 +45,7 @@ public class PriceTrackActivity extends IvyBaseActivityNoActionBar implements Br
 
     @Override
     public void updateBrandText(String mFilterText, int id) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         PriceTrackFragment fragment = (PriceTrackFragment) fm
                 .findFragmentById(R.id.price_track_fragment);
         fragment.updateBrandText(mFilterText, id);
@@ -51,7 +53,7 @@ public class PriceTrackActivity extends IvyBaseActivityNoActionBar implements Br
 
     @Override
     public void updateGeneralText(String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         PriceTrackFragment fragment = (PriceTrackFragment) fm
                 .findFragmentById(R.id.price_track_fragment);
         fragment.updateGeneralText(mFilterText);
@@ -59,7 +61,7 @@ public class PriceTrackActivity extends IvyBaseActivityNoActionBar implements Br
 
     @Override
     public void updateCancel() {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         PriceTrackFragment fragment = (PriceTrackFragment) fm
                 .findFragmentById(R.id.price_track_fragment);
         fragment.updateCancel();
@@ -67,7 +69,7 @@ public class PriceTrackActivity extends IvyBaseActivityNoActionBar implements Br
 
     @Override
     public void updateFromFiveLevelFilter(int mProductId, HashMap<Integer, Integer> mSelectedIdByLevelId, ArrayList<Integer> mAttributeProducts, String mFilterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         PriceTrackFragment fragment = (PriceTrackFragment) fm
                 .findFragmentById(R.id.price_track_fragment);
         fragment.updateFromFiveLevelFilter(mProductId, mSelectedIdByLevelId, mAttributeProducts, mFilterText);
@@ -75,7 +77,7 @@ public class PriceTrackActivity extends IvyBaseActivityNoActionBar implements Br
 
     @Override
     public void updateCompetitorProducts(Vector<CompetitorFilterLevelBO> parentIdList, HashMap<Integer, Integer> mSelectedIdByLevelId, String filterText) {
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         PriceTrackFragment fragment = (PriceTrackFragment) fm
                 .findFragmentById(R.id.price_track_fragment);
         fragment.updateCompetitorProducts(parentIdList,mSelectedIdByLevelId,filterText);

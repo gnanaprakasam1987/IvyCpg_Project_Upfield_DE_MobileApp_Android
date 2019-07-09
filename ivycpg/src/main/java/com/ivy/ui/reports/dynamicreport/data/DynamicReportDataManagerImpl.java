@@ -44,7 +44,7 @@ public class DynamicReportDataManagerImpl implements DynamicReportDataManager {
                     initDb();
                     HashMap<String, HashMap<String, String>> displayFields = new HashMap<>();
                     LinkedHashMap<String, String> valueMap = new LinkedHashMap<>();
-                    Cursor cursor = mDbUtil.selectSQL("select distinct reportname,displayname,fieldname from RawDataReportFieldDefinition where menucode=" + StringUtils.QT(menucode) + " order by reportname,fieldname");
+                    Cursor cursor = mDbUtil.selectSQL("select distinct reportname,displayname,fieldname from RawDataReportFieldDefinition where menucode=" + StringUtils.getStringQueryParam(menucode) + " order by reportname,fieldname");
                     if (cursor != null) {
                         String reportname = "";
                         while (cursor.moveToNext()) {
@@ -80,7 +80,7 @@ public class DynamicReportDataManagerImpl implements DynamicReportDataManager {
                     initDb();
                     HashMap<String, HashMap<String, HashMap<String, String>>> dataMap = new HashMap<>();
                     HashMap<String, HashMap<String, String>> reportWiseMap = new HashMap<>();
-                    Cursor cursor = mDbUtil.selectSQL("select * from RawDataReportDetail where rid=" + StringUtils.QT(rid));
+                    Cursor cursor = mDbUtil.selectSQL("select * from RawDataReportDetail where rid=" + StringUtils.getStringQueryParam(rid));
                     if (cursor != null) {
                         int count = 0;
                         String reportname = "";
@@ -125,7 +125,7 @@ public class DynamicReportDataManagerImpl implements DynamicReportDataManager {
                 try {
                     initDb();
                     ArrayList<String> tabList = new ArrayList<>();
-                    Cursor cursor = mDbUtil.selectSQL("select distinct reportname from RawDataReportFieldDefinition where menucode=" + StringUtils.QT(menucode) + " order by fieldname");
+                    Cursor cursor = mDbUtil.selectSQL("select distinct reportname from RawDataReportFieldDefinition where menucode=" + StringUtils.getStringQueryParam(menucode) + " order by fieldname");
                     if (cursor != null) {
                         while (cursor.moveToNext()) {
                             tabList.add(cursor.getString(0));

@@ -3,29 +3,31 @@ package com.ivy.sd.png.view;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.ivy.cpg.view.retailercontact.ContactCreationFragment;
+
 import com.ivy.cpg.view.retailercontact.RetailerContactFragment;
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.commons.IvyBaseFragment;
 import com.ivy.sd.png.model.BusinessModel;
 import com.ivy.sd.png.util.Commons;
+import com.ivy.ui.profile.create.view.NewOutletFragmentNew;
 import com.ivy.ui.profile.edit.view.ProfileEditFragmentNew;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-public class NewoutletContainerFragment extends IvyBaseFragment {
+public class ProfileContainerFragment extends IvyBaseFragment {
 
     private BusinessModel bmodel;
     private boolean isFromEditProfileView;
@@ -84,19 +86,26 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
     private void initializeItem(View view) {
 
         try {
+
             if (((AppCompatActivity) getActivity()).getSupportActionBar() != null) {
-                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle(null);
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setTitle("test");
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                 ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowHomeEnabled(true);
+                ((AppCompatActivity) getActivity()).getSupportActionBar().setDisplayShowTitleEnabled(true);
             }
+
             bundle = getArguments();
             if (bundle == null)
                 bundle = getActivity().getIntent().getExtras();
+
             if (bundle != null) {
+
                 isFromEditProfileView = bundle.getBoolean("isEdit", false);
+
                 if (isFromEditProfileView) {
                     setScreenTitle(getResources().getString(R.string.profile_edit_screen__title));
-                } else {
+                }
+                else {
                     if (bundle.getString("screentitle") == null)
                         setScreenTitle(bmodel.getMenuName("MENU_NEW_RETAILER"));
                     else
@@ -109,8 +118,16 @@ public class NewoutletContainerFragment extends IvyBaseFragment {
 
                 if (isFromEditProfileView)
                     adapter.addFragment(new ProfileEditFragmentNew(), getResources().getString(R.string.profile_edit_screen__title));
-                else
-                    adapter.addFragment(new NewOutletFragment(), getResources().getString(R.string.outlet));
+                else {
+                    // adapter.addFragment(new NewOutletFragment(), getResources().getString(R.string.outlet));
+                    NewOutletFragmentNew newOutletFragmentNew=   new NewOutletFragmentNew();
+                    Bundle bundleNewoutLet=new Bundle();
+                    bundleNewoutLet.putInt("channelid",bundle.getInt("channelid",0));
+                    if(bundle.containsKey("channelName"))
+                        bundleNewoutLet.putString("channelName",bundle.getString("channelName",""));
+                    newOutletFragmentNew.setArguments(bundleNewoutLet);
+                    adapter.addFragment(newOutletFragmentNew, getResources().getString(R.string.outlet));
+                }
 
 
                 if (bmodel.configurationMasterHelper.IS_CONTACT_TAB) {

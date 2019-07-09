@@ -10,11 +10,13 @@ import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.widget.Toolbar;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
@@ -143,7 +145,7 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
         FrameLayout drawer = (FrameLayout) findViewById(R.id.right_drawer);
 
         int width = getResources().getDisplayMetrics().widthPixels;
-        DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) drawer.getLayoutParams();
+        DrawerLayout.LayoutParams params = (DrawerLayout.LayoutParams) drawer.getLayoutParams();
         params.width = width;
         drawer.setLayoutParams(params);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -1116,10 +1118,10 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
 
             QUANTITY = null;
             mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FragmentManager fm = getSupportFragmentManager();
             FilterFiveFragment<?> frag = (FilterFiveFragment<?>) fm
                     .findFragmentByTag("Fivefilter");
-            android.support.v4.app.FragmentTransaction ft = fm
+            FragmentTransaction ft = fm
                     .beginTransaction();
             if (frag != null)
                 ft.detach(frag);
@@ -1163,10 +1165,10 @@ public class ToolBarwithFilter extends IvyBaseActivityNoActionBar implements
         try {
             QUANTITY = null;
             mDrawerLayout.openDrawer(GravityCompat.END);
-            android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+            FragmentManager fm = getSupportFragmentManager();
             SpecialFilterFragment frag = (SpecialFilterFragment) fm
                     .findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm
+            FragmentTransaction ft = fm
                     .beginTransaction();
             if (frag != null)
                 ft.detach(frag);

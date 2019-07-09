@@ -1,11 +1,11 @@
 package com.ivy.sd.png.view;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.RequestManager;
 
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_DRAGGING;
-import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
+import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_DRAGGING;
+import static androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 public class PauseOnFling extends RecyclerView.OnScrollListener {
     private static final int FLING_JUMP_LOW_THRESHOLD = 80;

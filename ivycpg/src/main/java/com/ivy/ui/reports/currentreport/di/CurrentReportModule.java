@@ -15,7 +15,6 @@ import com.ivy.sd.png.provider.UserMasterHelper;
 import com.ivy.utils.rx.AppSchedulerProvider;
 import com.ivy.utils.rx.SchedulerProvider;
 
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
@@ -67,13 +66,6 @@ public class CurrentReportModule {
     public ReportHelper provideReportHelper(){
         return new ReportHelper(mContext);
     }
-
-
-    @Provides
-    public ProductHelper provideProductHelper(){
-        return  ProductHelper.getInstance(mContext);
-    }
-
 
     @Provides
     @PerActivity

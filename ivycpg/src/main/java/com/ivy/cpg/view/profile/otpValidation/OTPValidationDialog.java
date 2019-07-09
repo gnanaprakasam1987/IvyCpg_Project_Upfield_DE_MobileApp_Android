@@ -133,7 +133,7 @@ public class OTPValidationDialog extends Dialog implements OnClickListener {
                             .show();
                 }
             else {
-                if (StringUtils.isEmptyString(password.getText().toString())) {
+                if (StringUtils.isNullOrEmpty(password.getText().toString())) {
                     messageTv.setText(mContext.getResources().getString(
                             R.string.enter_otp));
                 } else {

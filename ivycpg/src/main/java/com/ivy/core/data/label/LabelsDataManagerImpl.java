@@ -14,7 +14,7 @@ import javax.inject.Inject;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
-import static com.ivy.utils.StringUtils.QT;
+import static com.ivy.utils.StringUtils.getStringQueryParam;
 
 public class LabelsDataManagerImpl implements LabelsDataManager {
 
@@ -47,7 +47,7 @@ public class LabelsDataManagerImpl implements LabelsDataManager {
 
                     initDb();
                     Cursor c = mDbUtil
-                            .selectSQL("SELECT value from LabelsMaster where lang = " + QT(mSharedPreferenceHelper.getPreferredLanguage()) + " AND key = " + QT(key));
+                            .selectSQL("SELECT value from LabelsMaster where lang = " + getStringQueryParam(mSharedPreferenceHelper.getPreferredLanguage()) + " AND key = " + getStringQueryParam(key));
                     if (c.moveToNext()) {
                         shutDownDb();
                         return c.getString(0);
@@ -71,13 +71,13 @@ public class LabelsDataManagerImpl implements LabelsDataManager {
 
 
                     initDb();
-                    String query = "SELECT value from LabelsMaster where lang = " + QT(mSharedPreferenceHelper.getPreferredLanguage()) + " AND (";
+                    String query = "SELECT value from LabelsMaster where lang = " + getStringQueryParam(mSharedPreferenceHelper.getPreferredLanguage()) + " AND (";
 
                     for (int i = 0; i < keyList.length; i++) {
                         if (i != keyList.length - 1)
-                            query = query + "key = " + QT(keyList[i]) + " OR ";
+                            query = query + "key = " + getStringQueryParam(keyList[i]) + " OR ";
                         else
-                            query = query + "key = " + QT(keyList[i]) + " )";
+                            query = query + "key = " + getStringQueryParam(keyList[i]) + " )";
 
                     }
                     Cursor c = mDbUtil
@@ -106,7 +106,7 @@ public class LabelsDataManagerImpl implements LabelsDataManager {
                     initDb();
 
 
-                    String query = "SELECT value from LabelsMaster where lang = " + QT(mSharedPreferenceHelper.getPreferredLanguage());
+                    String query = "SELECT value from LabelsMaster where lang = " + getStringQueryParam(mSharedPreferenceHelper.getPreferredLanguage());
 
                     Cursor c = mDbUtil
                             .selectSQL(query);

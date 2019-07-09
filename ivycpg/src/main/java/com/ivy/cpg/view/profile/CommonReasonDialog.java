@@ -4,9 +4,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.drawable.StateListDrawable;
-import android.support.v7.widget.AppCompatRadioButton;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.appcompat.widget.AppCompatRadioButton;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -31,8 +31,6 @@ import com.ivy.sd.png.util.Commons;
 import com.ivy.sd.png.util.DataMembers;
 
 import java.util.ArrayList;
-
-import static android.content.res.Configuration.SCREENLAYOUT_SIZE_LARGE;
 
 /**
  * Created by hanifa.m on 3/22/2017.

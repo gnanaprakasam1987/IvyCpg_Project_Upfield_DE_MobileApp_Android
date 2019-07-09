@@ -1,7 +1,7 @@
 package com.ivy.sd.png.provider;
 
 import android.content.Context;
-import android.support.test.InstrumentationRegistry;
+import androidx.test.InstrumentationRegistry;
 
 import com.ivy.cpg.view.order.scheme.SchemeDetailsMasterHelper;
 import com.ivy.lib.existing.DBUtil;

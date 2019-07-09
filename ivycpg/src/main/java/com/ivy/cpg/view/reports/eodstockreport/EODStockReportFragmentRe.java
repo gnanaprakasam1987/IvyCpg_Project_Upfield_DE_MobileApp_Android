@@ -2,8 +2,8 @@ package com.ivy.cpg.view.reports.eodstockreport;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +13,6 @@ import android.widget.ListView;
 
 import com.ivy.sd.png.asean.view.R;
 import com.ivy.sd.png.model.BusinessModel;
-import com.ivy.sd.png.provider.ReportHelper;
 import com.ivy.sd.print.CommonPrintPreviewActivity;
 
 import org.jetbrains.annotations.NotNull;

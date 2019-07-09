@@ -48,7 +48,7 @@ public class DamageReturnPendingFragment extends IvyBaseFragment {
         if (DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().size() > 0) {
 
             for(int i=0;i<DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().size();i++){
-                if(StringUtils.isEmptyString(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i).getStatus())){
+                if(StringUtils.isNullOrEmpty(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i).getStatus())){
                     pandingDeliveryBOS.add(DamageReturenReportHelper.getInstance().getPandingDeliveryBOS().get(i));
                 }
             }

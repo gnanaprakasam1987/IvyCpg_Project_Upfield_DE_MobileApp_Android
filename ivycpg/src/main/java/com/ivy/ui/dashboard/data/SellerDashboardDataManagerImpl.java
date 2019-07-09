@@ -44,7 +44,7 @@ import static com.ivy.ui.dashboard.SellerDashboardConstants.PRD_ORD;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.PRD_STK;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.PRODUCTVIE_CALLS;
 import static com.ivy.ui.dashboard.SellerDashboardConstants.WEEK;
-import static com.ivy.utils.StringUtils.QT;
+import static com.ivy.utils.StringUtils.getStringQueryParam;
 
 public class SellerDashboardDataManagerImpl implements SellerDashboardDataManager {
 
@@ -147,7 +147,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                             + " LEFT join SellerKPIScore SKS on SKD.KPIID= SKS.KPIID and SKD.KPIParamLovId = SKS.KPIParamLovId"
                             + " inner join StandardListMaster SLM on SLM.Listid=SKD.KPIParamLovId"
                             + " where userid = "
-                            + QT(userId)
+                            + getStringQueryParam(userId)
                             + " and interval= 'P3M' "
                             + (userId.equals("0") ? " and SK.isSummary=1" : "")
                             + " order by DisplaySeq asc";
@@ -227,7 +227,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                             + " inner join StandardListMaster SLM on SLM.Listid=SKD.KPIParamLovId"
                             + " LEFT join SellerKPISKUDetail skdd on skdd.KPIParamLovId =SKD.KPIParamLovId "
                             + " where userid = "
-                            + QT(userId)
+                            + getStringQueryParam(userId)
                             + " and interval= 'WEEK'"
                             + " group by SLM.Listid,SK.IntervalDesc order by DisplaySeq asc";
                     Cursor c = mDbUtil.selectSQL(sql);
@@ -292,11 +292,11 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                             + " inner join StandardListMaster SLM on SLM.Listid=SKD.KPIParamLovId"
                             + " LEFT join SellerKPISKUDetail skdd on skdd.KPIParamLovId =SKD.KPIParamLovId "
                             + " where userid = "
-                            + QT(userId)
+                            + getStringQueryParam(userId)
                             + " and interval= "
-                            + QT(interval)
+                            + getStringQueryParam(interval)
                             + " AND "
-                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                            + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                             + " between SK.fromdate and SK.todate "
                             + (userId.equals("0") ? " and SK.isSummary=1" : "")
                             + " group by SLM.Listid order by DisplaySeq asc";
@@ -448,7 +448,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                             + " inner join BeatMaster on RouteID = BeatID "
                             + " where interval= '" + interval + "' "
                             + " AND "
-                            + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                            + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                             + " between RK.fromdate and RK.todate group by SLM.Listid,RKD.KPiid order by DisplaySeq,RKD.KPiid asc";
                     Cursor c = mDbUtil.selectSQL(sql);
                     if (c != null) {
@@ -509,9 +509,9 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                                     + " where userid in ( "
                                     + userId + ")"
                                     + " and interval= "
-                                    + QT(interval)
+                                    + getStringQueryParam(interval)
                                     + " AND "
-                                    + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
+                                    + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL))
                                     + " between SK.fromdate and SK.todate "
                                     + (userId.equals("0") ? " and SK.isSummary=1" : "")
                                     + " group by SLM.Listid order by DisplaySeq asc";
@@ -595,7 +595,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                             + " LEFT join SellerKPIScore SKS on SKD.KPIID= SKS.KPIID and SKD.KPIParamLovId = SKS.KPIParamLovId"
                             + " inner join StandardListMaster SLM on SLM.Listid=SKD.KPIParamLovId"
                             + " where userid = "
-                            + QT(userId)
+                            + getStringQueryParam(userId)
                             + " and interval= 'P3M' "
                             + (userId.equals("0") ? " and SK.isSummary=1" : "")
                             + " order by DisplaySeq asc";
@@ -687,7 +687,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                     String sb = "SELECT Round(IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0)+Inv.paidAmount,2) as RcvdAmt," +
                             " Round(inv.discountedAmount- IFNULL((select sum(payment.Amount) from payment where payment.BillNumber=Inv.InvoiceNo),0),2) as os " +
                             " FROM InvoiceMaster Inv LEFT OUTER JOIN payment ON payment.BillNumber = Inv.InvoiceNo" +
-                            " Where Inv.InvoiceDate = " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+                            " Where Inv.InvoiceDate = " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
 
                     Cursor c = mDbUtil
                             .selectSQL(sb);
@@ -733,11 +733,11 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                     String sb;
                     if (!isFromRetailer) {
                         sb = "SELECT distinct " + monthText + " AS Month FROM SellerKPI " +
-                                "WHERE Interval=" + QT(P3M) +
+                                "WHERE Interval=" + getStringQueryParam(P3M) +
                                 " order by fromdate desc";
                     } else {
                         sb = "SELECT distinct " + monthText + " AS Month FROM RetailerKPI " +
-                                "WHERE RetailerId= " + appDataProvider.getRetailMaster().getRetailerID() + " AND Interval=" + QT(P3M) +
+                                "WHERE RetailerId= " + appDataProvider.getRetailMaster().getRetailerID() + " AND Interval=" + getStringQueryParam(P3M) +
                                 " order by fromdate desc";
                     }
 
@@ -785,7 +785,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                     initDb();
 
                     String sb = "SELECT distinct IntervalDesc AS Week FROM sellerkpi " +
-                            "WHERE Interval=" + QT(WEEK) +
+                            "WHERE Interval=" + getStringQueryParam(WEEK) +
                             " order by Week desc";
                     Cursor c = mDbUtil.selectSQL(sb);
                     if (c.getCount() > 0) {
@@ -811,7 +811,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                 try {
                     initDb();
 
-                    String sb = "Select IntervalDesc from SellerKPI where " + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " between fromdate and todate and Interval = " + QT(WEEK);
+                    String sb = "Select IntervalDesc from SellerKPI where " + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)) + " between fromdate and todate and Interval = " + getStringQueryParam(WEEK);
                     Cursor c = mDbUtil.selectSQL(sb);
                     if (c.getCount() > 0) {
                         while (c.moveToNext()) {
@@ -844,7 +844,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
                     if (!configurationMasterHelper.IS_INVOICE) {
                         sb.append("select  count(distinct retailerid),sum(linespercall),sum(ordervalue) from OrderHeader ");
-                        sb.append("where upload!='X' and OrderDate=").append(QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                        sb.append("where upload!='X' and OrderDate=").append(getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
                         c = mDbUtil
                                 .selectSQL(sb.toString());
                         if (c != null) {
@@ -858,7 +858,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                         }
                     } else {
                         sb.append("select  count(distinct retailerid),sum(linespercall),sum(invoiceAmount) from Invoicemaster ");
-                        sb.append("where InvoiceDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                        sb.append("where InvoiceDate=" + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
                         c = mDbUtil
                                 .selectSQL(sb.toString());
                         if (c != null) {
@@ -872,7 +872,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                     }
                     sb = new StringBuffer();
                     sb.append("select  sum(mspvalues),count(distinct orderid) from OrderHeader ");
-                    sb.append("where upload!='X' and OrderDate=" + QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+                    sb.append("where upload!='X' and OrderDate=" + getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
                     c = mDbUtil
                             .selectSQL(sb.toString());
                     if (c != null) {
@@ -937,7 +937,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                     Cursor c = mDbUtil
                             .selectSQL("select count(distinct Inv.InvoiceNo),sum(Inv.totalamount) from Invoicemaster Inv" +
                                     " INNER JOIN OrderHeader OH ON OH.orderId=Inv.OrderId where Inv.invoicedate = "
-                                    + QT(appDataProvider.getUser().getDownloadDate()));
+                                    + getStringQueryParam(appDataProvider.getUser().getDownloadDate()));
                     if (c != null) {
                         if (c.getCount() > 0) {
                             while (c.moveToNext()) {
@@ -1027,7 +1027,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
 
                         String sql = "SELECT RField FROM "
                                 + DataMembers.tbl_HhtModuleMaster
-                                + " where hhtCode=" + QT(PRODUCTVIE_CALLS) + " AND flag='1' and ForSwitchSeller = 0";
+                                + " where hhtCode=" + getStringQueryParam(PRODUCTVIE_CALLS) + " AND flag='1' and ForSwitchSeller = 0";
 
                         Cursor prodCallsConfigCursor = mDbUtil.selectSQL(sql);
 
@@ -1347,7 +1347,7 @@ public class SellerDashboardDataManagerImpl implements SellerDashboardDataManage
                 try {
                     initDb();
 
-                    Cursor c = mDbUtil.selectSQL("SELECT count( distinct PromotionID) FROM PromotionDetail where RetailerID =" + QT(retailerID));
+                    Cursor c = mDbUtil.selectSQL("SELECT count( distinct PromotionID) FROM PromotionDetail where RetailerID =" + getStringQueryParam(retailerID));
                     if (c.getCount() > 0) {
                         while (c.moveToNext()) {
                             promotionExecutedCount += c.getInt(0);

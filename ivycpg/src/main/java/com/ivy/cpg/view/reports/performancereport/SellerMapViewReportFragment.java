@@ -9,14 +9,16 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.support.v4.graphics.drawable.DrawableCompat;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.AppCompatDrawableManager;
+import androidx.annotation.Nullable;
+import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatDrawableManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -298,9 +300,9 @@ public class SellerMapViewReportFragment extends SupportMapFragment implements S
         try {
             mDrawerLayout.openDrawer(GravityCompat.END);
 
-            android.support.v4.app.FragmentManager fm = getActivity().getSupportFragmentManager();
+            FragmentManager fm = getActivity().getSupportFragmentManager();
             SellerListFragment frag = (SellerListFragment) fm.findFragmentByTag("filter");
-            android.support.v4.app.FragmentTransaction ft = fm.beginTransaction();
+            FragmentTransaction ft = fm.beginTransaction();
             if (frag != null)
                 ft.detach(frag);
 

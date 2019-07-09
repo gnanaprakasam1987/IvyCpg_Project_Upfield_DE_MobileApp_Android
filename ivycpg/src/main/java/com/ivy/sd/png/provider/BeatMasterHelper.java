@@ -89,8 +89,8 @@ public class BeatMasterHelper {
 
         for (int i = 0; i < siz; ++i) {
             beat = getBeatMaster().get(i);
-            if (!StringUtils.isEmptyString(beatName)
-                    && !StringUtils.isEmptyString(beat.getBeatDescription())
+            if (!StringUtils.isNullOrEmpty(beatName)
+                    && !StringUtils.isNullOrEmpty(beat.getBeatDescription())
                     && beatName.equals(beat.getBeatDescription())) {
                 return beat.getBeatId() + "";
             }

@@ -120,15 +120,15 @@ public class NotesDataManagerImpl implements NotesDataManager {
     @Override
     public Single<Boolean> addAndUpdateNote(String retailerId, NotesBo notesBo, String userName, int userId, boolean isEdit) {
         return Single.fromCallable(() -> {
-            String id = StringUtils.QT(appDataProvider.getUser()
+            String id = StringUtils.getStringQueryParam(appDataProvider.getUser()
                     .getUserid() + DateTimeUtils.now(DateTimeUtils.DATE_TIME_ID));
-            String date = StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
-            String time = StringUtils.QT(DateTimeUtils.now(DateTimeUtils.TIME));
+            String date = StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+            String time = StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.TIME));
 
             String noteTitle = notesBo.getNotesTitle().replaceAll("'", " ");
             String noteDesc = notesBo.getNotesDesc().replaceAll("'", " ");
-            String status = StringUtils.QT("I");
-            String noteId = notesBo.getNoteId() == null ? null : StringUtils.QT(notesBo.getNoteId());
+            String status = StringUtils.getStringQueryParam("I");
+            String noteId = notesBo.getNoteId() == null ? null : StringUtils.getStringQueryParam(notesBo.getNoteId());
             String modifiedDateTime = null;
 
             String whereCond = " Tid =''";
@@ -138,14 +138,14 @@ public class NotesDataManagerImpl implements NotesDataManager {
             String value;
 
             if (isEdit) {
-                date = StringUtils.QT(notesBo.getCreatedDate());
-                time = StringUtils.QT(notesBo.getTime());
-                status = StringUtils.QT("U");
-                modifiedDateTime = StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
+                date = StringUtils.getStringQueryParam(notesBo.getCreatedDate());
+                time = StringUtils.getStringQueryParam(notesBo.getTime());
+                status = StringUtils.getStringQueryParam("U");
+                modifiedDateTime = StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_TIME_NEW));
                 if (notesBo.getTid().equals("0")) {
-                    whereCond = " NoteID =" + StringUtils.QT(notesBo.getNoteId());
+                    whereCond = " NoteID =" + StringUtils.getStringQueryParam(notesBo.getNoteId());
                 } else {
-                    whereCond = " Tid =" + StringUtils.QT(notesBo.getTid());
+                    whereCond = " Tid =" + StringUtils.getStringQueryParam(notesBo.getTid());
                 }
             }
 
@@ -164,17 +164,17 @@ public class NotesDataManagerImpl implements NotesDataManager {
 
 
                 value = id + "," +
-                        StringUtils.QT(retailerId) + "," +
+                        StringUtils.getStringQueryParam(retailerId) + "," +
                         date + "," +
                         time + "," +
-                        StringUtils.QT(noteTitle) + "," +
-                        StringUtils.QT(noteDesc) + "," +
-                        StringUtils.QT(userName) + "," +
+                        StringUtils.getStringQueryParam(noteTitle) + "," +
+                        StringUtils.getStringQueryParam(noteDesc) + "," +
+                        StringUtils.getStringQueryParam(userName) + "," +
                         userId + "," +
                         noteId + "," +
                         modifiedDateTime + "," +
                         status + "," +
-                        StringUtils.QT("N");
+                        StringUtils.getStringQueryParam("N");
 
                 mDbUtil.insertSQL("RetailerNotes", column, value);
 
@@ -194,9 +194,9 @@ public class NotesDataManagerImpl implements NotesDataManager {
         String id = "";
         if (noteId != null
                 && !noteId.equals("0")) {
-            id = " NoteID =" + StringUtils.QT(noteId);
+            id = " NoteID =" + StringUtils.getStringQueryParam(noteId);
         } else {
-            id = " Tid =" + StringUtils.QT(tId);
+            id = " Tid =" + StringUtils.getStringQueryParam(tId);
         }
         String finalId = id;
         return Single.fromCallable(() -> {

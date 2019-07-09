@@ -9,7 +9,7 @@
         android:id="@+id/toolbar"
         layout="@layout/material_tool_bar" />
 
-    <android.support.v4.widget.DrawerLayout
+    <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <android.support.design.widget.TabLayout
+            <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_layout"
                 style="?attr/tablayout"
                 android:layout_width="match_parent"
@@ -34,25 +34,25 @@
                 app:tabTextAppearance="@android:style/TextAppearance.Widget.TabWidget"
                 app:tabTextColor="#94B5D8">
 
-                <android.support.design.widget.TabItem
+                <com.google.android.material.tabs.TabItem
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Total Outlet"
                     app:background="@color/white" />
 
-                <android.support.design.widget.TabItem
+                <com.google.android.material.tabs.TabItem
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:text="Covered" />
 
-                <android.support.design.widget.TabItem
+                <com.google.android.material.tabs.TabItem
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/white"
                     android:text="Unbilled" />
 
-            </android.support.design.widget.TabLayout>
+            </com.google.android.material.tabs.TabLayout>
 
             <com.ivy.maplib.MapWrapperLayout
                 android:id="@+id/map_wrap_layout"
@@ -83,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true">
 
-                <android.support.v7.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
+                <androidx.cardview.widget.CardView xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:id="@+id/cardview"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -222,7 +222,7 @@
                         </RelativeLayout>
 
                     </LinearLayout>
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
 
                 <com.ivy.cpg.view.supervisor.customviews.recyclerviewpager.RecyclerViewPager
@@ -282,6 +282,6 @@
             android:layout_gravity="end"
             android:background="@drawable/background_noise" />
 
-    </android.support.v4.widget.DrawerLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>
 
 </RelativeLayout>

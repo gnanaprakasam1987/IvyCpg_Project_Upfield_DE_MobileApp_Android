@@ -34,7 +34,7 @@ public class SalesReturnReportHelper {
 
             String query = "SELECT  distinct RM.RetailerName,srh.* from SalesReturnHeader srh"
                     + " LEFT JOIN RetailerMaster RM ON srh.RetailerID=RM.RetailerID"
-                    + " where srh.upload!='X' and date =" + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
+                    + " where srh.upload!='X' and date =" + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL));
             Cursor c = db.selectSQL(query);
             if (c.getCount() > 0) {
                 while (c.moveToNext()) {
@@ -79,7 +79,7 @@ public class SalesReturnReportHelper {
                                     + " LEFT JOIN ProductMaster PM ON srd.productID=PM.PID"
                                     + " LEFT JOIN StandardListMaster SM on SM.ListId = srd.Condition"
                                     + " LEFT JOIN StandardListMaster SMP on SMP.ListId = SM.Parentid"
-                                    + " WHERE srd.uid=" + StringUtils.QT(uId));
+                                    + " WHERE srd.uid=" + StringUtils.getStringQueryParam(uId));
 
 
                     if (cursor != null) {
@@ -123,7 +123,7 @@ public class SalesReturnReportHelper {
         DBUtil db = new DBUtil(context, DataMembers.DB_NAME
         );
         db.openDataBase();
-        Cursor c = db.selectSQL("select sum (ReturnValue) from SalesReturnHeader where date=" + StringUtils.QT(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
+        Cursor c = db.selectSQL("select sum (ReturnValue) from SalesReturnHeader where date=" + StringUtils.getStringQueryParam(DateTimeUtils.now(DateTimeUtils.DATE_GLOBAL)));
         int totalVal = 0;
         if (c != null) {
             if (c.moveToNext()) {
